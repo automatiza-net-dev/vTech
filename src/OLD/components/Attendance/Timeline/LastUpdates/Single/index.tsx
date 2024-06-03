@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import React, { memo, useState, useEffect } from "react";
+import React from "react";
 
 // Components
 import { Container } from "./styles";
@@ -20,14 +20,14 @@ import DosesModal from "../../LaunchedVaccinesList/DosesModal";
 // Utils
 import moment from "moment";
 
-const Single = memo(function Single({
+export  function Vaccine({
   selectedUpdate,
   patient,
   reload,
   setReload,
   setSelectedUpdate,
   setActiveTab,
-}) {
+}: any) {
   const formControl = (str) => {
     switch (str) {
       case "Vacinas":
@@ -308,6 +308,4 @@ const Single = memo(function Single({
       )}
     </Container>
   );
-});
-
-export default Single;
+}

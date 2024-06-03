@@ -4,131 +4,123 @@ import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
 
+import dynamic from "next/dynamic";
+const InfinityForgeProviders = dynamic(
+  () => import("infinity-forge").then((r) => r.InfinityForgeProviders),
+  {
+    ssr: false,
+  }
+);
+
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
-import { ToastContainer, toast } from "react-toastify";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
-import { AppProvider } from "@/OLD/context/appContext";
-import nookies from "nookies";
-import "moment/locale/pt-br";
-import "@/OLD/styles/uikit.css";
-
-const client = new QueryClient();
-
-import { ContainerAutomatizaLibProviders } from "..";
-
 import GlobalStyles from "@/OLD/styles/global";
+import { AppProvider } from "@/OLD/context/appContext";
+import { SignIn } from "@/OLD/components/Authentication/SignIn";
+
+import {
+  themes,
+  ButtonInfinityForge,
+  AuthFranchisorProvider,
+  InfinityForgeInjections,
+} from "@/presentation";
+import { Storage } from "@/infra";
+import { RemoteLoadUserDashboard } from "@/data";
+import { TypesAutomatiza, container } from "@/container";
+
+import "moment/locale/pt-br";
 
 import "antd/dist/antd.css";
 import "@/OLD/styles/uikit.css";
-import "@/presentation/styles/reset.css";
+import "infinity-forge/dist/infinity-forge.css";
 
-import "semantic-ui-css/semantic.min.css";
-import "react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css";
-import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import { Error } from "infinity-forge";
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
   const [user, setUser] = useState<any>(undefined);
-  const [userAdmin, setUserAdmin] = useState<any>(undefined)
+  const [userAdmin, setUserAdmin] = useState<any>(undefined);
 
   useEffect(() => {
-
     (async () => {
       try {
-        const { token: token, adminUser: adminUserToken } = nookies.get();
+        const tokenAdmin = await container
+          .get<Storage>(TypesAutomatiza.storage)
+          .get("adminUser");
 
-        if (adminUserToken) {
-          const parsedUserAdmin = JSON.parse(adminUserToken);
+        const isAdmin = tokenAdmin?.value ? true : false;
 
-          if (parsedUserAdmin && parsedUserAdmin?.value) {
-            console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API)
-            const { data } = await axios.get(process.env.NEXT_PUBLIC_API + "/auth/me", {
-              headers: { Authorization: `Bearer ${parsedUserAdmin?.value}` },
-            });
+        const user = await container
+          .get<RemoteLoadUserDashboard>(TypesAutomatiza.RemoteLoadUserDashboard)
+          .load({ admin: isAdmin });
 
-            const UserAdminInfinityForgeRequirment = {
-              avatar: data.user?.profile_picture || "",
-              emailAddress: data?.user?.email || "",
-              firstName: data?.user?.name || "",
-              id: (data as any).user.id || "",
-              imagem: data.user?.profile_picture,
-              isExternal: false,
-              lastName: "",
-            };
+        const initialUserData = {
+          ...user,
+          avatar: user.user?.profile_picture || "",
+          emailAddress: user?.user?.email || "",
+          firstName: user?.user?.name || "",
+          id: (user as any)?.user?.id || "",
+          imagem: user.user?.profile_picture,
+          isExternal: false,
+          lastName: "",
+        };
 
-            setUserAdmin({ ...data, ...UserAdminInfinityForgeRequirment })
-
-            setUser({ ...data, ...UserAdminInfinityForgeRequirment });
-
-            return;
-          }
-        }
-
-        if (token) {
-          const parsedToken = JSON.parse(token);
-
-          if (parsedToken?.value) {
-            const { data } = await axios.get(process.env.NEXT_PUBLIC_API + "/auth/me", {
-              headers: { Authorization: `Bearer ${parsedToken.value}` },
-            });
-
-            const UserAdminInfinityForgeRequirment = {
-              avatar: data.user?.profile_picture || "",
-              emailAddress: data?.user?.email || "",
-              firstName: data?.user?.name || "",
-              id: (data as any).user.id || "",
-              imagem: data.user?.profile_picture,
-              isExternal: false,
-              lastName: "",
-            };
-
-            setUser({ ...data, ...UserAdminInfinityForgeRequirment });
-            setUserAdmin(null);
-            return;
-          }
-
-          setUser(null);
-          setUserAdmin(null);
-          return;
-        }
-
-
-        setUser(null);
-        setUserAdmin(null);
+        setUser(initialUserData);
+        setUserAdmin(isAdmin ? initialUserData : null);
       } catch (err) {
-        console.log(err, "error_ssr")
-
         setUser(null);
         setUserAdmin(null);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   return (
-    <QueryClientProvider client={client}>
-      {(user !== undefined || userAdmin !== undefined) && <ContainerAutomatizaLibProviders toast={toast} user={user} userAdmin={userAdmin}>
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          <ConfigProvider locale={ptBR}>
-            <AppProvider>
-              <Head>
-                <title>{process.env.clientName}</title>
-              </Head>
+    <QueryClientProvider client={queryClient}>
+      {(user !== undefined || userAdmin !== undefined) && (
+        <InfinityForgeProviders
+          auth={{
+            initialUser: user,
+            interceptor: {
+              disableInterceptor: true,
+            },
+            onSignOut: () => console.log("SignOut"),
+            signInConfig: { Componnent: SignIn },
+          }}
+          InjectedRemotes={InfinityForgeInjections}
+          Configurations={{
+            notification: false,
+            chat: false,
+            styles: { Button: ButtonInfinityForge },
+          }}
+          theme={themes[process.env.client || "sancla"]}
+        >
+          <AuthFranchisorProvider initialUserAdmin={userAdmin}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <ConfigProvider locale={ptBR}>
+                <AppProvider>
+                  <Head>
+                    <title>{process.env.clientName}</title>
+                    <link
+                      rel="icon"
+                      href={
+                        
+                        `/images/logo/${process.env.client}.png`
+                      }
+                    />
+                  </Head>
 
-              <ToastContainer />
-              <Error name="page_error">
-                <Component {...pageProps} />
-              </Error>
+                  <Component {...pageProps} />
 
-              <GlobalStyles host={process.env.clientName} />
-            </AppProvider>
-          </ConfigProvider>
-        </LocalizationProvider>
-      </ContainerAutomatizaLibProviders>}
+                  <GlobalStyles host={process.env.clientName} />
+                </AppProvider>
+              </ConfigProvider>
+            </LocalizationProvider>
+          </AuthFranchisorProvider>
+        </InfinityForgeProviders>
+      )}
     </QueryClientProvider>
   );
 }

@@ -16,7 +16,7 @@ export const DateFilter = memo(function DateFilter({
   const [typeFilter, setTypeFilter] = useState("day");
 
   return (
-    <Container className="uk-margin-left">
+    <Container className="uk-margin-left uk-flex">
       <Dropdown
         trigger="click"
         overlay={

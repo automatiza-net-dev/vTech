@@ -127,7 +127,7 @@ const Details = React.memo(function Single({
               <div>
                 <Button
                   onClick={() =>
-                    router.push(`/dashboard/atendimento/${patient?.id}`)
+                    router.push(`/dashboard/paciente/${patient?.id}`)
                   }
                   classCallback="uk-margin-small-right"
                 >

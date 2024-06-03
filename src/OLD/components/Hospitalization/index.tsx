@@ -14,7 +14,7 @@ import { Menu, notification, Popconfirm, Button } from "antd";
 import BaseForm from "./BaseForm";
 import HeaderControl from "./Date";
 import PatientList from "./PatientList";
-import {HospitalizationTimeline} from "./HospitalizationTimeline";
+import { HospitalizationTimeline } from "./HospitalizationTimeline";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 // Utils
@@ -176,7 +176,7 @@ const menu = (
         {
           key: "10",
           onClick: () => {
-            router.push(`/dashboard/atendimento/${patient?.patient?.id}`);
+            router.push(`/dashboard/paciente/${patient?.patient?.id}`);
           },
           label: "Ficha paciente",
         },
@@ -234,11 +234,11 @@ export default function HospitalizationTable() {
         formType={formsVisible?.formType}
         selectedHour={formsVisible?.selectedHour}
       />
-   <HeaderControl
+      <HeaderControl
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         classCallback="uk-margin-top"
-      /> 
+      />
       <PatientList
         reload={reload}
         setReload={setReload}
@@ -248,14 +248,13 @@ export default function HospitalizationTable() {
         menu={menu}
         setFormsVisible={setFormsVisible}
         selectedDate={moment(selectedDate).format("DD/MM/YYYY")}
-      /> 
-       <HospitalizationTimeline
+      />
+      <HospitalizationTimeline
         visible={formsVisible.timeline}
         setVisible={setFormsVisible}
         modal={true}
         patientData={selectedPatient}
-      /> 
+      />
     </Container>
   );
 }
-

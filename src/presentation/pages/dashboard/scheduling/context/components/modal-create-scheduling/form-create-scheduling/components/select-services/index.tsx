@@ -57,7 +57,7 @@ export function SelectServices() {
       name="scheduleServiceTypeId"
       placeholder="Serviço"
       options={options || []}
-      onChangeSelect={setTimingService}
+      onChangeSelect={(value) => setTimingService(value as string[])}
     />
   );
 }

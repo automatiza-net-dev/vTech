@@ -26,6 +26,7 @@ import { userService } from "@/OLD/services/user.service";
 import { sessionService } from "@/OLD/services/session.service";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
+import { useAuthAdmin } from "infinity-forge";
 
 const icons = [
   {
@@ -62,9 +63,9 @@ export const Navbar = React.memo(function Navbar({
   const [data, setData] = React.useState({});
 
   
-
-  
   const router = useRouter();
+
+  const { signOut } = useAuthAdmin()
 
   React.useEffect(() => {
     userService.getUser().then((res) => {
@@ -145,7 +146,7 @@ export const Navbar = React.memo(function Navbar({
                   </option>
                   <option
                     onClick={() => {
-                      sessionService.logout();
+                      signOut()
                       router.push("/");
                     }}
                   >

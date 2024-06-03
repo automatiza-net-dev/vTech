@@ -1,13 +1,11 @@
 import { useResizeWindowUpdate } from "./hooks/use-resize-window-update";
 
-import {
-  Chart,
-  Skeleton,
-  useLoadDashboard,
-  LayoutDashboard,
-} from "@/presentation";
+import { Skeleton } from "infinity-forge";
+
+import { Chart, useLoadDashboard } from "@/presentation";
 
 import { Cards, TableDashboard, SchedulesDashboard } from "./components";
+import { InvoicingBySubgroupTable } from "./components/table-dashboard/invoicing-by-subgroup-table";
 
 import * as S from "./styles";
 
@@ -17,39 +15,56 @@ export function DashboardPage() {
 
   const isFetching = dashboard.isFetching || resize;
 
-  return (
-    <LayoutDashboard>
-      <S.Dashboard>
-        {isFetching && (
-          <div className="skeleton">
-            <Skeleton type="line" />
-          </div>
-        )}
-        {!isFetching && (
-          <div className="charts">
-            {dashboard.data?.charts?.map((chart) => (
-              <Chart key={chart.name} {...chart} />
-            ))}
-          </div>
-        )}
-        <div className="cards">
-          {dashboard.data && <Cards {...dashboard.data} />}
+  const subgroupsDataTable = dashboard.data?.tables.find(
+    (item) => item?.name === "subgroups"
+  );
 
+  return (
+    <>
+      <S.Dashboard>
+        <section className="general-dashboard">
           {isFetching && (
-            <div className="cards_skeleton">
-              <Skeleton type="line" />
+            <div className="skeleton">
+              <Skeleton
+                type="line"
+                size={{ height: "600px", width: "100%", margin: "0" }}
+              />
             </div>
           )}
-        </div>
+          {!isFetching && (
+            <div className="charts">
+              <div>
+                {dashboard.data?.charts?.map((chart) => (
+                  <Chart key={chart.name} {...chart} />
+                ))}
+                <div className="custom-table">
+                  {(subgroupsDataTable as any)?.data.length > 0 && (
+                    <InvoicingBySubgroupTable
+                      {...(subgroupsDataTable as any)}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="cards">
+            {dashboard.data && <Cards {...dashboard.data} />}
+            {isFetching && (
+              <div className="cards_skeleton">
+                <Skeleton type="line" />
+              </div>
+            )}
+          </div>
+        </section>
+        <section className="tables-section">
+          {dashboard.data?.tables &&
+            dashboard.data?.tables?.length > 0 &&
+            dashboard.data?.tables?.map((table) => (
+              <TableDashboard key={table.name} {...table} />
+            ))}
+        </section>
       </S.Dashboard>
-
-      {dashboard.data?.tables &&
-        dashboard.data?.tables?.length > 0 &&
-        dashboard.data?.tables?.map((table) => (
-          <TableDashboard key={table.name} {...table} />
-        ))}
-
       {!dashboard.isLoading && <SchedulesDashboard />}
-    </LayoutDashboard>
+    </>
   );
 }

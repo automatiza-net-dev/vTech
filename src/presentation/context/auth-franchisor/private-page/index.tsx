@@ -1,4 +1,4 @@
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 import { Login } from "../login";
 import { useAuthFranchisor } from "../context";

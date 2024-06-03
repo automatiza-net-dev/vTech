@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import moment from "moment";
@@ -6,7 +5,6 @@ import {
   FormHandler,
   updateRoute,
   DatePickerInput,
-  Icon,
 } from "infinity-forge";
 
 import * as S from "./styles";
@@ -28,15 +26,17 @@ export function FiltersDashboard() {
         }}
         onChangeForm={{
           callbackResult: ({ fromDate }: FiltersDashboardParams) => {
-            updateRoute({
-              params: {
-                fromDate: moment(fromDate)
-                  .startOf("month")
-                  .format("DD-MM-YYYY"),
-                toDate: moment(fromDate).endOf("month").format("DD-MM-YYYY"),
-              },
-              router,
-            });
+            if(moment(fromDate).format("DD-MM-YYYY") !== (router.query as any).fromDate) {
+              updateRoute({
+                params: {
+                  fromDate: moment(fromDate)
+                    .startOf("month")
+                    .format("DD-MM-YYYY"),
+                  toDate: moment(fromDate).endOf("month").format("DD-MM-YYYY"),
+                },
+                router,
+              });
+            }
           },
         }}
       >

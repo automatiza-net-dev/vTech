@@ -6,6 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 // Services
 import { timelineService } from "@/OLD/services/timeline.service";
 
+import { useLoadPatient } from "@/presentation";
+
 // Utils
 import moment from "moment";
 
@@ -16,27 +18,28 @@ import FormChild from "./FormChild";
 function WeightForm({
   visible,
   setVisible,
-  patient,
-  reload,
-  setReload,
   type,
   setSelectedUpdate = false,
   modal = true,
   updateData = false,
-}) {
+}: any) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const { user } = useProfile();
+  const { data: patient } = useLoadPatient();
 
   const systemName = process.env.clientName;
 
   useEffect(() => {
     updateData &&
       setData({
-        weight: updateData?.weight || updateData?.value || updateData?.pressure,
-        observation: updateData?.observation,
+        weight:
+          updateData?.timeline_info.weight ||
+          updateData?.timeline_info.value ||
+          updateData?.timeline_info.pressure,
+        observation: updateData?.timeline_info.observation,
       });
-  }, [updateData, reload]);
+  }, [updateData]);
 
   const submitWeight = useCallback(() => {
     setLoading(true);
@@ -63,7 +66,6 @@ function WeightForm({
         setLoading(false);
         setData({});
         setVisible(false);
-        setReload(!reload);
       });
   }, [data]);
 
@@ -93,7 +95,6 @@ function WeightForm({
         setLoading(false);
         setData({});
         setVisible(false);
-        setReload(!reload);
       });
   }, [data]);
 
@@ -123,7 +124,6 @@ function WeightForm({
         setLoading(false);
         setData({});
         setVisible(false);
-        setReload(!reload);
       });
   }, [data]);
 
@@ -142,16 +142,22 @@ function WeightForm({
   };
 
   const detectUpdate = () => {
+    {
+      /*
     if (type === "Pressão arterial") {
       return updatePressure;
     }
+  */
+    }
 
-    if (type === "Glicemia") {
+    {
+      /* if (type === "Glicemia") {
       return updateGlycemia;
+    } */
     }
 
     if (type === "Peso") {
-      return updateWeight;
+      return weightUpdate;
     }
   };
 
@@ -177,35 +183,13 @@ function WeightForm({
       .finally(() => {
         setLoading(false);
         setData({});
-        setReload(!reload);
         setSelectedUpdate(false);
       });
   }, [data, updateData?.id]);
 
-  return modal ? (
-    <Modal
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      title={`Lançamento de ${type} - ${
-        systemName === "LiftOne" ? "Cliente" : "Paciente"
-      }: ${patient?.name}`}
-      footer={null}
-    >
-      <FormChild
-        submit={detectSubmit()}
-        data={data}
-        setData={setData}
-        loading={loading}
-        setLoading={setLoading}
-        visible={visible}
-        setVisible={setVisible}
-        modal={modal}
-        type={type}
-      />
-    </Modal>
-  ) : (
+  return (
     <FormChild
-      submit={detectUpdate()}
+      submit={detectSubmit()}
       data={data}
       setData={setData}
       loading={loading}

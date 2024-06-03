@@ -1,9 +1,7 @@
-import { isValid, add, sub } from "date-fns";
+import { format , add, sub } from "date-fns";
 
 import { useScheduling } from "@/presentation";
 import { LeftArrow, RightArrow } from "./icons";
-
-import SemanticDatepicker from 'react-semantic-ui-datepickers';
 
 import * as S from "./styles";
 
@@ -12,18 +10,6 @@ export function ChangeDayInCalendar() {
     state.changeDate,
     state.selectedDate,
   ]);
-
-  function isValidDateInput(dateString) {
-    return isValid(new Date(dateString));
-  }
-
-  function handleDateChange(value, data) {
-    const isValidDate = isValidDateInput(data.value);
-
-    if (isValidDate) {
-      changeDate(data.value);
-    }
-  }
 
   function handleDayAdvance() {
     const nextDay = add(selectedDate, { days: 1 });
@@ -43,8 +29,15 @@ export function ChangeDayInCalendar() {
         </div>
       </button>
 
-
-      <SemanticDatepicker locale="pt-BR" format="DD/MM/YYYY" onChange={handleDateChange} value={selectedDate} type="basic" clearIcon={undefined} />
+      <input
+        type="date"
+        value={format(new Date(selectedDate), "yyyy-MM-dd")}
+        onChange={(ev) => {
+          if (ev.target.value) {
+            changeDate(new Date(ev.target.value));
+          }
+        }}
+      />
 
       <button onClick={handleDayAdvance}>
         <div className="icon">

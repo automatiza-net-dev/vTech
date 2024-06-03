@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-import { Icon } from "semantic-ui-react";
+import { Error, Icon } from "infinity-forge";
 
 import { Event } from "@/domain";
-import { Error, PermissionItem } from "@/presentation";
+import { PermissionItem } from "@/presentation";
 
 import { ContactForm } from "./contact-form";
 
@@ -20,18 +20,18 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
         process.env.client === "sancla"
           ? event?.event?.holder?.name
           : event?.event?.patient?.name,
-      icon: <Icon name="user" />,
+      icon: <Icon name="IconUser" />,
     },
     github:
       process.env.client === "sancla"
         ? {
             text: `${event?.event?.patient?.name} - RG: ${event?.event?.patient?.tag}`,
-            icon: <Icon name="github" />,
+            icon: <Icon name="IconPet" />,
           }
         : {},
     phone: {
       text: event?.event?.holder?.tutor?.cellphone || "Telefone não informado",
-      icon: <Icon name="phone" />,
+      icon: <Icon name="PhoneIcon" />,
     },
   };
 
@@ -40,7 +40,7 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
       className: "ficha",
       text: "Ficha paciente",
       onClick: () =>
-        router.push(`/dashboard/atendimento/${event?.event?.patient?.id}`),
+        router.push(`/dashboard/paciente/${event?.event?.patient?.id}`),
     },
     contato: {
       className: "contact",

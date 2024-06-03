@@ -6,23 +6,27 @@ import { memo, useState } from "react";
 import { clinicService } from "@/OLD/services/clinic.service";
 
 // Components
-import { AutoComplete, DatePicker, Modal, notification } from "antd";
+import { AutoComplete, Modal, notification } from "antd";
 import Editor from "@/OLD/components/Editor";
 import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
 import { DateTimeField } from "@mui/x-date-pickers";
 
 // Utils
 import moment from "moment";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { petsService } from "@/OLD/services/patient.service";
+import { useLoadPatient } from "@/presentation";
 
 function DeathForm({
-  open = false,
-  close = () => ({}),
-  patient,
+  modal = false,
+  setModal = () => ({}),
 }) {
   const [body, setBody] = useState("");
   const [data, setData] = useState({});
+
+  const patient = useLoadPatient()
+
+  const queryClient = useQueryClient();
 
   const vetsQuery = useQuery({
     queryKey: ["allVets"],
@@ -38,9 +42,14 @@ function DeathForm({
   });
 
   const deathMutation = useMutation(
-    (payload) => petsService.editPatient(payload, patient.id),
+    (payload) => petsService.deathPatient(payload, patient?.data?.id),
     {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["RemotePatient", patient.data.id] })
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patient.data.id],
+        });
+
         close();
       },
       onError: (e) => {
@@ -57,30 +66,16 @@ function DeathForm({
     );
 
     const payload = {
-      name: patient?.name,
-      active: true,
-      holderId: patient?.tutorData?.id,
-      castrated: patient.castrated ?? false,
-      raceId: patient.patientAnimal?.race?.id,
-      type: patient?.type,
-      gender: patient?.gender,
-      birthDate: patient?.birth_date,
-
-      death: true,
-      deathDate: data.executedAt.toJSON(),
       technicianId: technician?.id,
+      deathDate: data.executedAt.toJSON(),
       deathObservation: body,
+
     };
+
     deathMutation.mutate(payload);
   };
 
   return (
-    <Modal
-      visible={open}
-      onCancel={close}
-      title={"Óbito de paciente"}
-      footer={null}
-    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -127,10 +122,9 @@ function DeathForm({
             <Editor editorState={body} setEditorState={setBody} value={body} />
           </div>
 
-          <FormFooter setVisible={close} />
+          <FormFooter setVisible={setModal} />
         </>
       </form>
-    </Modal>
   );
 };
 

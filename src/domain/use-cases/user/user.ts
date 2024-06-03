@@ -9,6 +9,13 @@ export type SystemUser = {
       interval: number;
       allow_change_schedule_duration?: boolean;
     };
+    phone?: string;
+    fantasy_name?: string;
+    address?: string;
+    complement?: string;
+    district?: string;
+    city?: string;
+    state?: string;
     economicGroup: { id: string };
   };
   user: {

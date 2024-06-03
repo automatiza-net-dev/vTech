@@ -9,18 +9,23 @@ import {
   Table,
   notification,
 } from "antd";
+import { useRouter } from "next/router";
 import moment from "moment";
 import * as React from "react";
 import { memo } from "react";
 import { useQuery } from "react-query";
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient } from "@/presentation";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { petsService } from "@/OLD/services/patient.service";
 import { productService } from "@/OLD/services/product.service";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
-import { useCreateBill, useGetBillProducts } from "../../../../OLD/hooks/useBills";
+import {
+  useCreateBill,
+  useGetBillProducts,
+} from "../../../../OLD/hooks/useBills";
 import { useDailyCasher } from "../../../../OLD/hooks/useDailyCashiers";
 import { useDailyMovements } from "../../../../OLD/hooks/useDailyMovements";
 import { convertIntlCurrency } from "../../../../OLD/utils/convertIntl";
@@ -80,12 +85,9 @@ const catchErrors = (err) => {
   );
 };
 
-const CreateBill = memo(function CreateBill({
-  visible,
-  close,
-  clientData,
-  setReloadExtern,
-}) {
+function CreateBill({ visible, setModal }: any) {
+  const { data: clientData } = useLoadPatient();
+
   const [data, setData] = React.useState({
     billDate: moment(),
     items: [],
@@ -99,6 +101,10 @@ const CreateBill = memo(function CreateBill({
   const [loading, setLoading] = React.useState(false);
   const [values, setValues] = React.useState({});
   const [productType, setProductType] = React.useState("");
+
+  const close = () => setModal((prv) => !prv);
+
+  const router = useRouter();
 
   const { data: tutors } = useQuery(
     ["tutors"],
@@ -115,8 +121,7 @@ const CreateBill = memo(function CreateBill({
   const { cashiers } = useDailyCasher();
   const { data: products } = useGetBillProducts(visible);
   const { mutate, isLoading, error } = useCreateBill();
-  const { clinic } = useProfile();
-
+  const { user } = useProfile();
 
   const verifyDiscount = React.useCallback(() => {
     setLoading(true);
@@ -143,7 +148,6 @@ const CreateBill = memo(function CreateBill({
           setLoading(false);
           cleanUp();
           close();
-          setReloadExtern((value) => !value);
           return notification.success({ message: "Venda criada com sucesso!" });
         },
         onError: (err) => {
@@ -184,7 +188,6 @@ const CreateBill = memo(function CreateBill({
       return;
     }
   }, [JSON.stringify(error?.response)]);
-
 
   const submitKit = React.useCallback(() => {
     multipleProducts.map((product) => {
@@ -236,34 +239,33 @@ const CreateBill = memo(function CreateBill({
     patientFilter();
   }, [selectedClient]);
 
+  const customInfo = () => {
+    setSelectedClient(clientData?.id);
+    setClientSearch(clientData?.name);
+    setData({
+      ...data,
+      clientId: clientData?.id,
+      patientId: clientData?.id,
+    });
+  };
+
   const defaultInfo = () => {
-    setSelectedClient(
-      tutors?.find(
-        (t) =>
-          t?.id === clientData?.tutors?.find((tutor) => !!tutor?.is_main)?.id
-      )
-    );
-    setClientSearch(
-      clientData?.tutors?.find((tutor) => !!tutor?.is_main)?.name
-    );
+    setSelectedClient(clientData?.tutor.id);
+    setClientSearch(clientData.tutor.name);
     setPatientSearch(clientData?.name);
     if (clientData) {
       setData({
         ...data,
-        clientId: clientData?.tutors?.find((tutor) => !!tutor?.is_main)?.id,
+        clientId: clientData?.tutor.id,
         patientId: clientData?.id,
       });
     }
   };
 
-  const customInfo = () => {
-    setSelectedClient(clientData?.id);
-    setClientSearch(clientData?.name);
-    setData({ ...data, clientId: clientData?.id, patientId: clientData?.id });
-  };
-
   React.useEffect(() => {
-    process.env.client !== "liftone" ? defaultInfo() : customInfo();
+    if (router.pathname.includes("dashboard/paciente")) {
+      process.env.client !== "liftone" ? defaultInfo() : customInfo();
+    }
   }, [clientData, visible]);
 
   React.useEffect(() => {
@@ -396,95 +398,110 @@ const CreateBill = memo(function CreateBill({
 
   return (
     <>
-      <Modal
-        title="Criar nota"
-        visible={visible}
-        onClose={() => {
-          cleanUp();
-          close();
-        }}
-        width={1000}
-        footer={null}
-        onCancel={() => {
-          cleanUp();
-          close();
+      <h4>Vendas</h4>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (multipleProducts?.length > 0) {
+            return notification.warning({
+              message: (
+                <div>
+                  Deseja adicionar {values?.productDescription} à venda?{" "}
+                  <div>
+                    <Button
+                      type="primary"
+                      className="uk-margin-small-right"
+                      onClick={() => {
+                        notification.destroy();
+                        submitKit();
+                        submit();
+                      }}
+                    >
+                      Sim
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        notification.destroy();
+                        submit();
+                      }}
+                    >
+                      Não
+                    </Button>
+                  </div>{" "}
+                </div>
+              ),
+              placement: "bottomRight",
+            });
+          }
+          submit();
         }}
       >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (multipleProducts?.length > 0) {
-              return notification.warning({
-                message: (
-                  <div>
-                    Deseja adicionar {values?.productDescription} à venda?{" "}
-                    <div>
-                      <Button
-                        type="primary"
-                        className="uk-margin-small-right"
-                        onClick={() => {
-                          notification.destroy();
-                          submitKit();
-                          submit();
-                        }}
-                      >
-                        Sim
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          notification.destroy();
-                          submit();
-                        }}
-                      >
-                        Não
-                      </Button>
-                    </div>{" "}
-                  </div>
-                ),
-                placement: "bottomRight",
-              });
-            }
-            submit();
-          }}
+        <div
+          className="uk-width-1-1 uk-flex uk-flex-column"
+          style={{ gap: "1rem" }}
         >
-          <div
-            className="uk-width-1-1 uk-flex uk-flex-column"
-            style={{ gap: "1rem" }}
-          >
-            <div className="uk-width-1-1">
-              <label>Data da Criação</label>
+          <div className="uk-width-1-1">
+            <label>Data da Criação</label>
 
-              <DatePicker
-                showTime
-                allowEmpty
-                format="HH:mm DD/MM/YYYY"
-                value={moment(data.budgetDate)}
-                onChange={(_date) => {
-                  setData((prev) => ({ ...prev, budgetDate: _date }));
+            <DatePicker
+              showTime
+              allowEmpty
+              format="HH:mm DD/MM/YYYY"
+              value={moment(data.budgetDate)}
+              onChange={(_date) => {
+                setData((prev) => ({ ...prev, budgetDate: _date }));
+              }}
+              style={{ width: "100%" }}
+            />
+          </div>
+          <div className="uk-width-1-1 uk-flex" style={{ gap: "1rem" }}>
+            <div className="uk-width-1-1">
+              <label>Cliente</label>
+              <AutoComplete
+                className="uk-width-1-1"
+                options={clientOptions}
+                value={clientSearch}
+                onChange={(val) => {
+                  setSelectedClient(false);
+                  setData({ ...data, patientId: null });
+                  setPatientSearch("");
+                  setClientSearch(normalizeStr(val));
                 }}
-                style={{ width: "100%" }}
+                onSelect={(_, c) => {
+                  setClientSearch(c.name);
+                  setSelectedClient(c);
+                  setData((prev) => ({
+                    ...prev,
+                    clientId: c.id,
+                    patientId: null,
+                  }));
+                }}
+                filterOption={(inputValue, option) =>
+                  normalizeStr(option.value)
+                    .toUpperCase()
+                    .includes(normalizeStr(inputValue).toUpperCase())
+                    ? option
+                    : null
+                }
               />
             </div>
-            <div className="uk-width-1-1 uk-flex" style={{ gap: "1rem" }}>
+
+            {process.env.client !== "liftone" && (
               <div className="uk-width-1-1">
-                <label>Cliente</label>
+                <label>Paciente</label>
                 <AutoComplete
+                  disabled={!selectedClient}
+                  value={patientSearch}
                   className="uk-width-1-1"
-                  options={clientOptions}
-                  value={clientSearch}
-                  onChange={(val) => {
-                    setSelectedClient(false);
-                    setData({ ...data, patientId: null });
-                    setPatientSearch("");
-                    setClientSearch(normalizeStr(val));
+                  options={patientOptions}
+                  onChange={(value) => {
+                    setPatientSearch(value);
                   }}
-                  onSelect={(_, c) => {
-                    setClientSearch(c.name);
-                    setSelectedClient(c);
+                  onSelect={(_, opt) => {
+                    setPatientSearch(opt?.name);
                     setData((prev) => ({
                       ...prev,
-                      clientId: c.id,
-                      patientId: null,
+                      patientId: opt?.id,
                     }));
                   }}
                   filterOption={(inputValue, option) =>
@@ -496,228 +513,199 @@ const CreateBill = memo(function CreateBill({
                   }
                 />
               </div>
+            )}
+          </div>
+          <div className="uk-width-1-1">
+            <label>Observação</label>
+            <Input
+              value={data?.additionalInformation}
+              onChange={(e) =>
+                setData((prev) => ({
+                  ...prev,
+                  additionalInformation: e.target.value,
+                }))
+              }
+            />
+          </div>
 
-              {process.env.client !== "liftone" && (
-                <div className="uk-width-1-1">
-                  <label>Paciente</label>
-                  <AutoComplete
-                    disabled={!selectedClient}
-                    value={patientSearch}
-                    className="uk-width-1-1"
-                    options={patientOptions}
-                    onChange={(value) => {
-                      setPatientSearch(value);
-                    }}
-                    onSelect={(_, opt) => {
-                      setPatientSearch(opt?.name);
-                      setData((prev) => ({
-                        ...prev,
-                        patientId: opt?.id,
-                      }));
-                    }}
-                    filterOption={(inputValue, option) =>
-                      normalizeStr(option.value)
-                        .toUpperCase()
-                        .includes(normalizeStr(inputValue).toUpperCase())
-                        ? option
-                        : null
-                    }
-                  />
-                </div>
-              )}
-            </div>
-            <div className="uk-width-1-1">
-              <label>Observação</label>
-              <Input
-                value={data?.additionalInformation}
-                onChange={(e) =>
-                  setData((prev) => ({
-                    ...prev,
-                    additionalInformation: e.target.value,
-                  }))
-                }
-              />
-            </div>
-
-            <div className="uk-width-1-1">
-              <div
-                className="uk-width-1-1 uk-flex uk-flex-column uk-flex-between"
-                style={{ gap: "1rem" }}
-              >
-                <section
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    paddingTop: "1rem",
-                  }}
-                >
-                  <div className="uk-width-1-1">
-                    <label>Produto</label>
-
-                    <AutoComplete
-                      className="uk-width-1-1"
-                      options={productOptions}
-                      filterOption={(val, opt) =>
-                        normalizeStr(opt?.description.toUpperCase()).includes(
-                          normalizeStr(val.toUpperCase())
-                        )
-                      }
-                      value={values?.productDescription}
-                      onChange={(val) =>
-                        setValues({ ...values, productDescription: val })
-                      }
-                      onSelect={(_, opt) => {
-                        setProductType(opt?.type);
-
-                        if (opt?.type === "kit") {
-                          return addKitItems(opt?.id);
-                        }
-
-                        setMultipleProducts((prv) => [
-                          {
-                            productVariationId: opt?.variations[0]?.id,
-                            quantity: 1,
-                            unitaryValue: currencyFormatter(
-                              opt?.variations[0]?.businessUnitProducts[0].price
-                            ),
-                            discountValue: currencyFormatter(0),
-                          },
-                        ]);
-                      }}
-                    />
-                  </div>
-                </section>
-
-                {multipleProducts.map((product, i) => (
-                  <>
-                    <strong>
-                      {
-                        productOptions?.find(
-                          (variation) =>
-                            variation?.id === product.productVariationId
-                        )?.product?.description
-                      }
-                    </strong>
-                    <section
-                      className="uk-margin-bottom"
-                      style={{
-                        display: "flex",
-                        gap: "1rem",
-                      }}
-                    >
-                      <div className="uk-width-1-3">
-                        <label>Quantidade</label>
-                        <Input
-                          placeholder="Quantidade"
-                          value={multipleProducts[i]?.quantity}
-                          disabled={productType === "kit"}
-                          onChange={(e) => {
-                            let productsArr = [...multipleProducts];
-                            productsArr.splice(i, 1, {
-                              ...multipleProducts[i],
-                              quantity: e.target.value,
-                            });
-                            setMultipleProducts(productsArr);
-                          }}
-                          min={1}
-                          style={{ width: "100%" }}
-                        />
-                      </div>
-
-                      <div className="uk-width-1-3">
-                        <label>Valor Unitário</label>
-                        <Input
-                          placeholder="Valor Unitário"
-                          value={product?.unitaryValue}
-                          onChange={(e) => {
-                            let productsArr = [...multipleProducts];
-                            productsArr.splice(i, 1, {
-                              ...multipleProducts[i],
-                              unitaryValue: currencyFormatter(
-                                convertIntlCurrency(e.target.value)
-                              ),
-                            });
-                            setMultipleProducts(productsArr);
-                          }}
-                          style={{ width: "100%" }}
-                        />
-                      </div>
-
-                      <div className="uk-width-1-3">
-                        <label>Valor de Desconto</label>
-
-                        <Input
-                          placeholder="Valor"
-                          value={product?.discountValue}
-                          disabled={productType === "kit"}
-                          onChange={(e) => {
-                            let productsArr = [...multipleProducts];
-                            productsArr.splice(i, 1, {
-                              ...multipleProducts[i],
-                              discountValue: currencyFormatter(
-                                convertIntlCurrency(e.target.value)
-                              ),
-                            });
-                            setMultipleProducts(productsArr);
-                          }}
-                        />
-                      </div>
-                    </section>
-                  </>
-                ))}
-                <section
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Button
-                    className="uk-margin-small-bottom"
-                    size={"middle"}
-                    onClick={() => submitKit()}
-                  >
-                    Adicionar
-                  </Button>
-                </section>
-              </div>
-
-              <Table
-                columns={columns}
-                dataSource={productsData}
-                pagination={false}
-                style={{ maxHeight: "300px", overflowY: "auto" }}
-              />
-            </div>
-            <hr />
-
+          <div className="uk-width-1-1">
             <div
-              className="uk-width-1-1 uk-flex uk-flex-right"
+              className="uk-width-1-1 uk-flex uk-flex-column uk-flex-between"
               style={{ gap: "1rem" }}
             >
-              <Button
-                onClick={() => {
-                  cleanUp();
-                  close();
+              <section
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  paddingTop: "1rem",
                 }}
-                disabled={isLoading}
               >
-                Cancelar
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={isLoading}
-                loading={loading}
+                <div className="uk-width-1-1">
+                  <label>Produto</label>
+
+                  <AutoComplete
+                    className="uk-width-1-1"
+                    options={productOptions}
+                    filterOption={(val, opt) =>
+                      normalizeStr(opt?.description.toUpperCase()).includes(
+                        normalizeStr(val.toUpperCase())
+                      )
+                    }
+                    value={values?.productDescription}
+                    onChange={(val) =>
+                      setValues({ ...values, productDescription: val })
+                    }
+                    onSelect={(_, opt) => {
+                      setProductType(opt?.type);
+
+                      if (opt?.type === "kit") {
+                        return addKitItems(opt?.id);
+                      }
+
+                      setMultipleProducts((prv) => [
+                        {
+                          productVariationId: opt?.variations[0]?.id,
+                          quantity: 1,
+                          unitaryValue: currencyFormatter(
+                            opt?.variations[0]?.businessUnitProducts[0].price
+                          ),
+                          discountValue: currencyFormatter(0),
+                        },
+                      ]);
+                    }}
+                  />
+                </div>
+              </section>
+
+              {multipleProducts.map((product, i) => (
+                <>
+                  <strong>
+                    {
+                      productOptions?.find(
+                        (variation) =>
+                          variation?.id === product.productVariationId
+                      )?.product?.description
+                    }
+                  </strong>
+                  <section
+                    className="uk-margin-bottom"
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                    }}
+                  >
+                    <div className="uk-width-1-3">
+                      <label>Quantidade</label>
+                      <Input
+                        placeholder="Quantidade"
+                        value={multipleProducts[i]?.quantity}
+                        disabled={productType === "kit"}
+                        onChange={(e) => {
+                          let productsArr = [...multipleProducts];
+                          productsArr.splice(i, 1, {
+                            ...multipleProducts[i],
+                            quantity: e.target.value,
+                          });
+                          setMultipleProducts(productsArr);
+                        }}
+                        min={1}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+
+                    <div className="uk-width-1-3">
+                      <label>Valor Unitário</label>
+                      <Input
+                        placeholder="Valor Unitário"
+                        value={product?.unitaryValue}
+                        onChange={(e) => {
+                          let productsArr = [...multipleProducts];
+                          productsArr.splice(i, 1, {
+                            ...multipleProducts[i],
+                            unitaryValue: currencyFormatter(
+                              convertIntlCurrency(e.target.value)
+                            ),
+                          });
+                          setMultipleProducts(productsArr);
+                        }}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+
+                    <div className="uk-width-1-3">
+                      <label>Valor de Desconto</label>
+
+                      <Input
+                        placeholder="Valor"
+                        value={product?.discountValue}
+                        disabled={productType === "kit"}
+                        onChange={(e) => {
+                          let productsArr = [...multipleProducts];
+                          productsArr.splice(i, 1, {
+                            ...multipleProducts[i],
+                            discountValue: currencyFormatter(
+                              convertIntlCurrency(e.target.value)
+                            ),
+                          });
+                          setMultipleProducts(productsArr);
+                        }}
+                      />
+                    </div>
+                  </section>
+                </>
+              ))}
+              <section
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-end",
+                }}
               >
-                Salvar
-              </Button>
+                <Button
+                  className="uk-margin-small-bottom"
+                  size={"middle"}
+                  onClick={() => submitKit()}
+                >
+                  Adicionar
+                </Button>
+              </section>
             </div>
+
+            <Table
+              columns={columns}
+              dataSource={productsData}
+              pagination={false}
+              style={{ maxHeight: "300px", overflowY: "auto" }}
+            />
           </div>
-        </form>
-      </Modal>
+          <hr />
+
+          <div
+            className="uk-width-1-1 uk-flex uk-flex-right"
+            style={{ gap: "1rem" }}
+          >
+            <Button
+              onClick={() => {
+                cleanUp();
+                close();
+              }}
+              disabled={isLoading}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={isLoading}
+              loading={loading}
+            >
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </form>
     </>
   );
-});
+}
 
 export default CreateBill;

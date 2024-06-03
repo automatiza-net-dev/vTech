@@ -1,13 +1,11 @@
 // @ts-nocheck
-// Core
-import React, { useState, useEffect, memo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 // Services
-import { useQueryClient } from "react-query";
 import { vaccinesService } from "@/OLD/services/vaccine-service";
 
 // Components
-import { Modal, notification } from "antd";
+import { notification } from "antd";
 import { Container } from "./styles";
 import FormChild from "./FormChild";
 
@@ -15,14 +13,14 @@ import FormChild from "./FormChild";
 import moment from "moment";
 
 export function DosesModal({
-  visible,
-  setVisible,
-  patient,
+  modal = false,
+  setModal,
   vaccine,
-  modal = true,
+  TabVacinaItem,
+  changeTab,
   setActiveTab = false,
   data = false,
-}) {
+}: any) {
   const [vaccineData, setVaccineData] = useState({});
   const [calendars, setCalendars] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
@@ -31,12 +29,14 @@ export function DosesModal({
   const [actualData, setActualData] = useState({});
   const [changes, setChanges] = useState(false);
 
-  const queryClient = useQueryClient();
+  const VaccineProps = vaccine || TabVacinaItem;
 
   const getPatientVaccines = useCallback(() => {
     setLoading(true);
     vaccinesService
-      .showPatientVaccine(vaccine)
+      .showPatientVaccine(
+        VaccineProps?.timeline_info?.patient_vaccine?.id || VaccineProps.id
+      )
       .then((res) => {
         setVaccineData({
           vaccine: res?.data?.vaccine?.name,
@@ -74,20 +74,20 @@ export function DosesModal({
   }, []);
 
   useEffect(() => {
-    vaccine &&
+    VaccineProps &&
       modal &&
       setVaccineData({
-        vaccine: vaccine.vaccine?.name,
-        user: vaccine.user?.name,
-        protocolLabel: `${vaccine.protocol?.name} | ${vaccine.protocol?.doses} x ${vaccine.protocol?.interval}`,
-        createdAt: moment(vaccine.created_at).format("DD/MM/YYYY - HH:mm"),
-        data: vaccine,
+        vaccine: VaccineProps.vaccine?.name,
+        user: VaccineProps.user?.name,
+        protocolLabel: `${VaccineProps.protocol?.name} | ${VaccineProps.protocol?.doses} x ${VaccineProps.protocol?.interval}`,
+        createdAt: moment(VaccineProps.created_at).format("DD/MM/YYYY - HH:mm"),
+        data: VaccineProps,
       });
 
-    vaccine?.calendars &&
+    VaccineProps?.calendars &&
       modal &&
       setCalendars(
-        vaccine.calendars.map((item, i) => {
+        VaccineProps.calendars.map((item, i) => {
           return {
             id: item?.id,
             laboratory: item?.laboratory,
@@ -102,7 +102,7 @@ export function DosesModal({
       );
 
     !modal && getPatientVaccines();
-  }, [vaccine, modal, data]);
+  }, [VaccineProps, modal, data]);
 
   const submitUpdate = (data) => {
     setLoading(true);
@@ -132,58 +132,25 @@ export function DosesModal({
       });
   };
 
-  return modal ? (
-    <Modal
-      visible={visible}
-      setVisible={setVisible}
-      title={`Aplicação da vacina - Paciente: ${patient?.name}`}
-      onCancel={() => setVisible(false)}
-      onOk={() => {
-        if (changes) {
-          queryClient.invalidateQueries(["LoadAllVaccines"]);
-          setVisible(false);
-          setChanges(false);
-          return notification.success({
-            message: "Alterações salvas com sucesso!",
-          });
-        } else {
-          setVisible(false);
-          return;
-        }
-      }}
-      width={800}
-    >
-      <Container>
-        <FormChild
-          vaccineData={vaccineData}
-          calendars={calendars}
-          actionState={actionState}
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-          actualData={actualData}
-          setActualData={setActualData}
-          setActionState={setActionState}
-          submitUpdate={submitUpdate}
-          setCalendars={setCalendars}
-          modal={modal}
-        />
-      </Container>
-    </Modal>
-  ) : (
-    <FormChild
-      vaccineData={vaccineData}
-      calendars={calendars}
-      actionState={actionState}
-      selectedIndex={selectedIndex}
-      setSelectedIndex={setSelectedIndex}
-      actualData={actualData}
-      setActualData={setActualData}
-      setActionState={setActionState}
-      submitUpdate={submitUpdate}
-      setCalendars={setCalendars}
-      modal={modal}
-      setActiveTab={setActiveTab}
-    />
+  return (
+    <Container>
+      <FormChild
+        loading={loading}
+        changeTab={changeTab}
+        vaccineData={vaccineData}
+        calendars={calendars}
+        actionState={actionState}
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+        actualData={actualData}
+        setActualData={setActualData}
+        setActionState={setActionState}
+        submitUpdate={submitUpdate}
+        setCalendars={setCalendars}
+        modal={modal}
+        setActiveTab={setActiveTab}
+      />
+    </Container>
   );
 }
 

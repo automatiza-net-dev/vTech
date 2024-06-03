@@ -35,6 +35,7 @@ export function CalendarEvent({
 
   const fullTime = timeTextStart + " - " + timeTextEnd;
 
+
   if(!event) {
     return;
   }

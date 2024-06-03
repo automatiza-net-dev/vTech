@@ -1,4 +1,4 @@
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 interface IRace {
   id: string;

@@ -1,12 +1,29 @@
 import { useTable } from "infinity-forge";
-import { DashboardTableType, SalesPerPeriod } from "@/domain";
+import { DashboardTableType, Period } from "@/domain";
 
 import { columns } from "./columns";
 
 import * as S from "./styles";
 
+const labelControl = (str: string) => {
+  switch (str) {
+    case "dawn":
+      return "Madrugada";
+    case "morning":
+      return "Manhã";
+    case "afternoon":
+      return "Tarde";
+    case "night":
+      return "Noite";
+    default:
+      return "verificar";
+  }
+};
+
 export function SalesPerPeriodTable({ data, description }: DashboardTableType) {
-  const { Table } = useTable<SalesPerPeriod>({
+  const periods = Object.keys((data as any)[0]?.period);
+
+  const { Table } = useTable<Period>({
     columnsConfiguration: {
       columns,
     },
@@ -26,14 +43,17 @@ export function SalesPerPeriodTable({ data, description }: DashboardTableType) {
         totalPages: 1,
       },
       errorMessage: "Não há itens no momento",
-      tableData: data,
+      tableData: periods.map((item) => ({
+        ...(data as any)[0].period[item],
+        period: labelControl(item),
+      })),
     },
   });
 
   return (
     <S.SalesPerPeriodTable>
       {description && <h3>{description}</h3>}
-      
+
       {Table}
     </S.SalesPerPeriodTable>
   );

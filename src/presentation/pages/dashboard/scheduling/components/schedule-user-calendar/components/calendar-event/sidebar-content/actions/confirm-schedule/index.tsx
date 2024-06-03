@@ -1,15 +1,11 @@
 import { useState } from "react";
 
 import moment from "moment";
-import { Icon } from "semantic-ui-react";
-import { FormHandler, Input, Textarea, useToast } from "infinity-forge";
+import { Icon, FormHandler, Input, Textarea, useToast } from "infinity-forge";
 
 import { container, patientTypes } from "@/container";
 import { RemoteChangeStatus, RemoteSchedule } from "@/data";
-import {
-  PermissionItem,
-  useLoadAllScheduleStatuses,
-} from "@/presentation";
+import { PermissionItem, useLoadAllScheduleStatuses } from "@/presentation";
 
 import { ActionSchedule } from "../interface";
 
@@ -18,18 +14,16 @@ import * as S from "./styles";
 export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
   const [showForm, setShowForm] = useState(false);
 
-  const { toast } = useToast();
+  const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
   async function handleSuccess(data) {
-
     const statusNotConfirmedId = scheduleStatuses.data?.find(
       (status) => status.type === "AN"
     )?.id;
 
-    const statusId = scheduleStatuses.data?.find(
-      (status) => status.type === "AC"
-    )?.id || "";
+    const statusId =
+      scheduleStatuses.data?.find((status) => status.type === "AC")?.id || "";
 
     const payload = {
       ...data,
@@ -52,18 +46,12 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
 
       onExecuteAction();
 
-      toast.success("Agendamento confirmado!", {
-        autoClose: 4000,
-        position: "top-right",
-      });
+      createToast({ message: "Agendamento confirmado!", status: "success" });
 
       setShowForm(false);
     } catch (e: any) {
       if (e?.error?.message) {
-        toast.error(e.error.message, {
-          autoClose: 4000,
-          position: "top-right",
-        });
+        createToast({ message: e.error.message, status: "success" });
       }
     }
   }
@@ -76,7 +64,8 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
           type="button"
           onClick={() => setShowForm(true)}
         >
-          <Icon name="calendar alternate outline" />
+          <Icon name="IconCalendar"/>
+
           <span>Confirmar agendamento</span>
         </button>
 

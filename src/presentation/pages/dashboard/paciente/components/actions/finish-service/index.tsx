@@ -1,16 +1,22 @@
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 import { Button } from "infinity-forge";
+import { EndAttendanceButton } from "@/OLD/components/Attendance/EndAttendanceButton";
 
 export function FinishService() {
   async function finalizarAtendiemnto() {}
 
   return (
     <Error name="FinishService">
+      <EndAttendanceButton />
+
+      {/*
       <Button
-        text="Finalizar Atendimento"
+        svg="IconDoor"
+        text="FINALIZAR ATENDIMENTO"
         onClick={finalizarAtendiemnto}
       />
+      */}
     </Error>
   );
 }

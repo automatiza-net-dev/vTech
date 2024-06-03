@@ -1,11 +1,17 @@
 import { useState } from "react";
+
 import moment from "moment";
-import { HighlightText, SideBar, NextImage } from "infinity-forge";
-import { Popup } from "semantic-ui-react";
+import {
+  HighlightText,
+  SideBar,
+  NextImage,
+  Error,
+  Tooltip,
+} from "infinity-forge";
 
 import { Event } from "@/domain";
 import { IconCalendar } from "./icon";
-import { SideBarContent, Error } from "@/presentation";
+import { SideBarContent } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -54,14 +60,14 @@ export function ScheduleCard(props: Event) {
         </div>
 
         <div className="bottom">
-          {/* {holder?.name && <h5>Dr. (a) {props?.name}</h5>} */}
+          {props?.name && <h5>Dr. (a) {props?.name}</h5>}
 
           {serviceType.type && (
             <p className="service_type">{serviceType.type}</p>
           )}
 
           {isLongDescription ? (
-            <Popup
+            <Tooltip
               trigger={
                 <div
                   className="description"
@@ -69,7 +75,6 @@ export function ScheduleCard(props: Event) {
                 />
               }
               content={serviceType?.description}
-              basic
             />
           ) : (
             <div
@@ -89,17 +94,21 @@ export function ScheduleCard(props: Event) {
         )}
 
         <div className="time_box">
-          {startHour && (
+          {props.date && (
             <span className="date">
               <IconCalendar />
-              {moment(startHour, "YYYY-MM-DD[T]HH:mm:ss").format("DD/MM")} •
-              {moment(endHour, "YYYY-MM-DD[T]HH:mm:ss").format("HH:mm")}
+              {props.date}
             </span>
           )}
 
-          <span className="timeDiff">
-            <HighlightText text={`20 min atrasado`} color="#E02F2F" />
-          </span>
+          {props.late && (
+            <span className="timeDiff">
+              <HighlightText
+                text={`${props.late} min atrasado`}
+                color="#E02F2F"
+              />
+            </span>
+          )}
         </div>
       </S.ScheduleCard>
     </Error>

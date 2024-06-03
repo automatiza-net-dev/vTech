@@ -2,11 +2,74 @@ import styled from "styled-components";
 
 export const Cards = styled("div")`
   .card-box {
-    background-color: ${(props) => props.theme.primaryColor + "9e"};
+    background-color: #b9e2fd;
+    border: 1px solid #000;
     border-radius: 5px;
     margin-top: 10px;
-    padding: clamp(10px, 0.78vw, 15px);
-    line-height: 120%;
+
+    h3 {
+      font-size: 15px !important;
+    }
+
+    .item-description {
+      text-align: right !important;
+      font-size: 12px;
+    }
+
+    .first-section,
+    .card-header,
+    .second-section,
+    .third-section {
+      display: grid;
+      gap: 2px;
+      grid-template-columns: 3fr 2fr 1fr;
+    }
+
+    .card-header,
+    .card-header-sugroup {
+      background-color: #b9e2fd;
+      padding: 10px;
+    }
+
+    .first-section {
+      background-color: #36a2eb;
+      color: #fff;
+      padding: 10px;
+    }
+
+    .second-section {
+      background-color: #b9e2fd;
+      padding: 10px;
+    }
+
+    .third-section {
+      font-style: italic;
+      background-color: #dfeffa;
+      padding: 10px;
+    }
+  }
+
+  .card-header-sugroup,
+  .first-section-subgroup,
+  .second-section-sugroup {
+    display: grid;
+    gap: 2px;
+    grid-template-columns: 4fr 3fr 2fr 1fr;
+  }
+
+  .first-section-subgroup {
+    background-color: #36a2eb;
+    color: #fff;
+    padding: 10px;
+  }
+
+  .second-section-sugroup {
+    background-color: #b9e2fd;
+    padding: 10px;
+  }
+
+  .text-right {
+    text-align: right;
   }
 
   h3 {

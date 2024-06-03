@@ -1,38 +1,36 @@
 // @ts-nocheck
-// Core
-import React, { memo, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-// Components
-import { Modal, notification } from "antd";
+import { notification } from "antd";
 import FormChild from "./FormChild";
 
-// Services
 import { recipeServices } from "@/OLD/services/recipes.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 import { textReplaceService } from "@/OLD/services/textReplace.service";
 
-// Utils
+import { useLoadPatient } from "@/presentation/hooks";
+
 import moment from "moment";
+import { useQueryClient } from "react-query";
 
 function AddMedicalRecipe({
-  visible,
-  setVisible,
-  patient,
-  reload,
-  setReload,
+  modal,
+  setModal,
   setSelectedUpdate = false,
-  modal = true,
-  updateData = false
-}) {
+  updateData = false,
+}: any) {
   const [body, setBody] = useState("");
   const [allRecipes, setAllRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [recipeId, setRecipeId] = useState(false);
   const [recipeSearch, setRecipeSearch] = useState("");
   const { user, clinic } = useProfile();
+  const patient = useLoadPatient();
 
   const systemName = process.env.clientName;
+
+  const queryClient = useQueryClient();
 
   const replaceText = (str, setState) => {
     setLoading(true);
@@ -43,9 +41,9 @@ function AddMedicalRecipe({
         userId: user?.id,
         tutorId:
           systemName !== "LiftOne"
-            ? patient?.tutors?.find((tutor) => tutor?.is_main)?.id
-            : patient?.id,
-        dependentId: patient?.id
+            ? patient?.data?.tutor?.id
+            : patient?.data?.id,
+        dependentId: patient?.data?.id,
       })
       .then((res) => setState(res.data.result))
       .finally(() => setLoading(false));
@@ -59,7 +57,7 @@ function AddMedicalRecipe({
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "Houve um erro ao buscar os modelos de receitas"
+          message: "Houve um erro ao buscar os modelos de receitas",
         });
       })
       .finally(() => {
@@ -68,8 +66,8 @@ function AddMedicalRecipe({
   }, []);
 
   useEffect(() => {
-    (visible || !modal) && getAllRecipes();
-  }, [visible, getAllRecipes]);
+    getAllRecipes();
+  }, [modal, getAllRecipes]);
 
   useEffect(() => {
     updateData && setBody(updateData?.timeline_info?.recipe);
@@ -80,100 +78,108 @@ function AddMedicalRecipe({
           (item) => item.title === updateData?.timeline_info?.name
         )?.id
       );
-  }, [updateData, allRecipes, reload]);
+  }, [updateData, allRecipes]);
 
   const submit = useCallback(() => {
     if (!recipeId) {
       return notification.error({
-        message: "Selecione uma receita"
+        message: "Selecione uma receita",
       });
     }
 
     setLoading(true);
     timelineService
       .insertRecipe({
-        tag: patient?.id,
+        tag: patient?.data?.id,
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,
         realizedAt: moment(new Date()),
-        technicianId: user?.id
+        technicianId: user?.id,
       })
-      .then((_res) =>
+      .then((_res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patient.data?.id],
+        });
+
         notification.success({
-          message: "Receita salva com sucesso!"
-        })
-      )
+          message: "Receita salva com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "houve um erro ao salvar a receita..."
+          message: "houve um erro ao salvar a receita...",
         });
       })
       .finally(() => {
-        setVisible(false);
+        setModal(false);
         setLoading(false);
         setBody("");
         setRecipeId(false);
-        setReload(!reload);
         setRecipeSearch("");
       });
-  }, [patient?.id, recipeId, user?.id, body]);
+  }, [patient?.data?.id, recipeId, user?.id, body]);
 
   const submitUpdate = useCallback(() => {
     setLoading(true);
     timelineService
-      .updateMedicalRecipe(updateData?.id, {
-        tag: patient?.id,
+      .updateMedicalRecipe(updateData?._id, {
+        tag: patient?.data?.id,
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,
         realizedAt: moment(new Date()),
-        technicianId: user?.id
+        technicianId: user?.id,
       })
-      .then((_res) =>
+      .then((_res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patient.data?.id],
+        });
+
         notification.success({
-          message: "Receita atualizada com sucesso!"
-        })
-      )
+          message: "Receita atualizada com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "Houve um erro ao atualizar a receita..."
+          message: "Houve um erro ao atualizar a receita...",
         });
       })
       .finally(() => {
         setLoading(false);
-        setSelectedUpdate({});
-        setReload(!reload);
       });
-  }, [updateData, patient?.id, recipeId, user?.id, body]);
+  }, [updateData, patient?.data?.id, recipeId, user?.id, body]);
 
   const submitUpdatePrint = useCallback(() => {
     setLoading(true);
     timelineService
       .updateMedicalRecipe(updateData?.id, {
-        tag: patient?.id,
+        tag: patient?.data?.id,
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,
         realizedAt: moment(new Date()),
-        technicianId: user?.id
+        technicianId: user?.id,
       })
       .then((_res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patient.data?.id],
+        });
+
         notification.success({
-          message: "Receita atualizada com sucesso!"
+          message: "Receita atualizada com sucesso!",
         });
       })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "Houve um erro ao atualizar a receita..."
+          message: "Houve um erro ao atualizar a receita...",
         });
       })
       .finally(() => {
         setLoading(false);
-        setReload(!reload);
-        modal && setVisible(false);
+        setModal && setModal(false);
       });
-  }, [updateData, patient?.id, recipeId, user?.id, body]);
+  }, [updateData, patient?.data?.id, recipeId, user?.id, body]);
 
   const removeData = (id) => {
     setLoading(true);
@@ -181,9 +187,13 @@ function AddMedicalRecipe({
       .removeComplete(id)
       .then((_res) => {
         setLoading(false);
-        setReload((prv) => !prv);
+
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patient.data?.id],
+        });
+
         return notification.success({
-          message: "Registro removido com sucesso!"
+          message: "Registro removido com sucesso!",
         });
       })
       .catch((_err) => {
@@ -192,35 +202,25 @@ function AddMedicalRecipe({
   };
 
   return modal ? (
-    <Modal
-      title={`Lançamento de receita médica - ${
-        systemName === "LiftOne" ? "Cliente" : "Paciente"
-      }: ${patient?.name}`}
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      footer={null}
-      width={1000}
-    >
-      <FormChild
-        patient={patient}
-        submit={submit}
-        recipeId={recipeId}
-        allRecipes={allRecipes}
-        body={body}
-        setBody={setBody}
-        loading={loading}
-        setRecipeId={setRecipeId}
-        modal={modal}
-        setVisible={setVisible}
-        replaceText={replaceText}
-        recipeSearch={recipeSearch}
-        setRecipeSearch={setRecipeSearch}
-        submitUpdatePrint={submit}
-      />
-    </Modal>
+    <FormChild
+      patient={patient.data}
+      submit={submit}
+      recipeId={recipeId}
+      allRecipes={allRecipes}
+      body={body}
+      setBody={setBody}
+      loading={loading}
+      setRecipeId={setRecipeId}
+      modal={modal}
+      setVisible={setModal}
+      replaceText={replaceText}
+      recipeSearch={recipeSearch}
+      setRecipeSearch={setRecipeSearch}
+      submitUpdatePrint={submit}
+    />
   ) : (
     <FormChild
-      patient={patient}
+      patient={patient.data}
       submit={submitUpdate}
       recipeId={recipeId}
       allRecipes={allRecipes}
@@ -229,7 +229,7 @@ function AddMedicalRecipe({
       loading={loading}
       setRecipeId={setRecipeId}
       modal={modal}
-      setVisible={setVisible}
+      setVisible={setModal}
       replaceText={replaceText}
       submitUpdatePrint={submitUpdatePrint}
       recipeSearch={recipeSearch}
@@ -237,6 +237,6 @@ function AddMedicalRecipe({
       remove={() => removeData(updateData?._id)}
     />
   );
-};
+}
 
 export default AddMedicalRecipe;

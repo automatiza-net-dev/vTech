@@ -14,7 +14,6 @@ export function useLoadDashboard() {
     const response = await container
       .get<RemoteDashboard>(dashboardTypes.RemoteDashboard)
       .loadAll({
-        type: "AVALIADOR",
         ...router.query,
       });
 

@@ -12,7 +12,7 @@ import { usePatients } from "@/OLD/hooks/usePatients";
 
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
-import { PlusSquare } from "@styled-icons/bootstrap/PlusSquare";
+
 import { GiConfirmed } from "react-icons/gi";
 // import { UsersIcon } from "@/OLD/common/icons";
 
@@ -311,14 +311,14 @@ export function List({
             email: tutor?.tutor?.email
               ? tutor?.tutor?.email
               : tutor?.email
-                ? tutor?.email
-                : "-",
+              ? tutor?.email
+              : "-",
             tag: tutor?.tag ?? "-",
             cellphone: tutor?.tutor?.cellphone
               ? Masks.phone(tutor?.tutor?.cellphone)
               : tutor?.cellphone
-                ? Masks.phone(tutor?.cellphone)
-                : "-",
+              ? Masks.phone(tutor?.cellphone)
+              : "-",
             dependents: (
               <>
                 {tutor?.dependents?.map((item) => `${item.name} | `)}
@@ -349,13 +349,26 @@ export function List({
                       />
                     }
                   >
-                    <PlusSquare className="add-icon" size={20} />
+                    <svg
+                      viewBox="0 0 16 16"
+                      height="20"
+                      width="20"
+                      focusable="false"
+                      role="img"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="add-icon" 
+                    >
+                      <title>PlusSquare icon</title>
+                      <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
+                      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                    </svg>
                   </Dropdown>
                 )}
               </>
             ),
             attendance: (
-              <Link href={`/dashboard/atendimento/${tutor?.id}`}>
+              <Link href={`/dashboard/paciente/${tutor?.id}`}>
                 <Tag color="gray" style={{ cursor: "pointer" }}>
                   Ficha paciente
                 </Tag>
@@ -382,19 +395,22 @@ export function List({
             diabetes: tutor?.diabetes ? "Sim" : "Não",
             actions: (
               <div className="uk-flex uk-flex-around">
-                {process.env.client === "sancla" && <div>
-                  {!router.query.page?.includes("tutor") &&
-                    (tutors && tutor?.is_main ? (
-                      <Tag color="blue">Tutor Ativo</Tag>
-                    ) : (
-                      <Tooltip title="Definir tutor ativo">
-                        <GiConfirmed
-                          onClick={() => setActiveTutor(tutor?.id)}
-                          style={{ cursor: "pointer" }}
-                        />
-                      </Tooltip>
-                    ))}
-                </div>}
+
+                {/*process.env.client === "sancla" && (
+                  <div>
+                    {!router.query.page?.includes("tutor") &&
+                      (tutors && tutor?.is_main ? (
+                        <Tag color="blue">Tutor Ativo</Tag>
+                      ) : (
+                        <Tooltip title="Definir tutor ativo">
+                          <GiConfirmed
+                            onClick={() => setActiveTutor(tutor?.id)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </Tooltip>
+                      ))}
+                  </div>
+                )*/}
 
                 {canEditTutor && (
                   <EditTwoTone
@@ -449,8 +465,8 @@ export function List({
               ? crmLiftoneColumns
               : liftColumns
             : petToVinc
-              ? selectTutorColumns
-              : columns
+            ? selectTutorColumns
+            : columns
         }
         dataSource={data}
         loading={loading}

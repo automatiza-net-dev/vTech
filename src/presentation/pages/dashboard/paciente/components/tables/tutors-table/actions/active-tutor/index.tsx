@@ -1,13 +1,9 @@
 import { useState } from "react";
 
-import { Popup } from "semantic-ui-react";
 import { useQueryClient } from "react-query";
-import { LoaderCircle, useToast } from "infinity-forge";
+import { LoaderCircle, useToast, Tooltip } from "infinity-forge";
 
-import {
-  useLoadPatient,
-  useSetMainTutor,
-} from "@/presentation";
+import { useLoadPatient, useSetMainTutor } from "@/presentation";
 import { Patient, Tutor } from "@/domain";
 
 import * as S from "./styles";
@@ -16,7 +12,7 @@ export function ActiveTutor(props: Tutor) {
   const [loading, setLoading] = useState(false);
 
   const patient = useLoadPatient();
-  const { toast } = useToast();
+  const { createToast } = useToast();
   const setMainTutor = useSetMainTutor();
 
   const queryClient = useQueryClient();
@@ -26,10 +22,7 @@ export function ActiveTutor(props: Tutor) {
 
   async function handleSuccess() {
     if (isTutorActive) {
-      toast.error("Tutor já vinculado", {
-        autoClose: 4000,
-        position: "top-right",
-      });
+      createToast({ message: "Tutor já vinculado", status: "error" });
 
       return;
     }
@@ -41,32 +34,25 @@ export function ActiveTutor(props: Tutor) {
       holder: props?.id,
     });
 
-    toast.success("Tutor vinculado com sucesso!", {
-      autoClose: 4000,
-      position: "top-right",
-    });
+    createToast({ message: "Tutor vinculado com sucesso!", status: "success" });
 
-    //TODO JORGE PEGAR DAQUI PAR ATUALIZAR O EDITAR.
     queryClient.setQueryData(["RemotePatient", patientId], (state) => {
       const queryData = state as Patient;
 
       return {
         ...queryData,
-        tutor: {
-          ...queryData.tutor,
-          address: "novo endereço"
-        },
+        tutor: props,
       } as Patient;
     });
+
+    await queryClient.invalidateQueries({ queryKey: ["LastUpdates", patientId] });
 
     setLoading(false);
   }
 
-
-
   return (
     <S.ActiveTutor>
-      <Popup
+      <Tooltip
         content="Definir tutor ativo"
         trigger={
           <button

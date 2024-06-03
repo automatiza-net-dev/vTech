@@ -15,14 +15,16 @@ import { Columns, LiftColumns } from "./Columns";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Components
-import { Input as AntInput, Select, Table, AutoComplete } from "antd";
+import CreateBudget from "./Create";
+import { Modal } from "infinity-forge";
+import BudgetActions from "./Actions/Container";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "@/OLD/components/mini-components/Button";
-import moment from "moment/moment";
 import { Container, Input, Label } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
-import BudgetActions from "./Actions/Container";
-import CreateBudget from "./Create";
+import { Button } from "@/OLD/components/mini-components/Button";
+import { Input as AntInput, Select, Table, AutoComplete } from "antd";
+
+import moment from "moment/moment";
 
 // Icons
 import { MdOutlineClear } from "react-icons/md";
@@ -34,7 +36,7 @@ export const dateFormatter = (date) => {
 export const currencyFormatter = (value) => {
   return Intl.NumberFormat("pt-BR", {
     style: "currency",
-    currency: "BRL"
+    currency: "BRL",
   }).format(value);
 };
 
@@ -70,7 +72,7 @@ const mapper = (data = []) => {
         <>
           <BudgetActions key={budget.id} budget={budget} />
         </>
-      )
+      ),
     };
   });
 };
@@ -85,7 +87,7 @@ const handleDateInput = (data) => {
 
 const Budgets = memo(function Budgets() {
   const [filters, setFilters] = React.useState({
-    noSearch: true
+    noSearch: true,
   });
   const [reload, setReload] = React.useState(false);
 
@@ -106,7 +108,7 @@ const Budgets = memo(function Budgets() {
       ...filters,
       status: "ABERTO",
       fromCreation: moment(),
-      toCreation: moment()
+      toCreation: moment(),
     });
   }, []);
 
@@ -133,7 +135,7 @@ const Budgets = memo(function Budgets() {
               onChange={(val) => {
                 setFilters({
                   ...filters,
-                  fromCreation: val
+                  fromCreation: val,
                 });
               }}
               value={filters?.fromCreation}
@@ -144,7 +146,7 @@ const Budgets = memo(function Budgets() {
               onChange={(val) => {
                 setFilters({
                   ...filters,
-                  toCreation: val
+                  toCreation: val,
                 });
               }}
               value={filters?.toCreation}
@@ -180,7 +182,7 @@ const Budgets = memo(function Budgets() {
                 setFilters((prv) => ({
                   ...prv,
                   fromCreation: null,
-                  toCreation: null
+                  toCreation: null,
                 }));
               }}
             />
@@ -193,7 +195,7 @@ const Budgets = memo(function Budgets() {
               onChange={(val) => {
                 setFilters({
                   ...filters,
-                  fromExpiration: val
+                  fromExpiration: val,
                 });
               }}
               value={filters?.fromExpiration}
@@ -204,7 +206,7 @@ const Budgets = memo(function Budgets() {
               onChange={(val) => {
                 setFilters({
                   ...filters,
-                  toExpiration: val
+                  toExpiration: val,
                 });
               }}
               value={filters?.toExpiration}
@@ -240,7 +242,7 @@ const Budgets = memo(function Budgets() {
                 setFilters((prv) => ({
                   ...prv,
                   fromExpiration: null,
-                  toExpiration: null
+                  toExpiration: null,
                 }));
               }}
             />
@@ -285,7 +287,7 @@ const Budgets = memo(function Budgets() {
               value={values?.clientName}
               options={tutors?.map((tutor) => ({
                 ...tutor,
-                value: tutor?.name
+                value: tutor?.name,
               }))}
               onChange={(val) => {
                 setValues((prv) => ({ ...prv, clientName: val }));
@@ -314,7 +316,7 @@ const Budgets = memo(function Budgets() {
                 value={patientSearch}
                 options={patients?.map((patient) => ({
                   ...patient,
-                  value: patient?.name
+                  value: patient?.name,
                 }))}
                 onChange={(val) => {
                   setPatientSearch(val);
@@ -334,7 +336,7 @@ const Budgets = memo(function Budgets() {
               />
             </Input>
           )}
-          {process.env.client !== "liftone" && (
+          {process.env.client === "liftone" && (
             <Input style={{ width: "100%" }}>
               <label>Avaliador</label>
               <AutoComplete
@@ -343,7 +345,7 @@ const Budgets = memo(function Budgets() {
                 options={colaborators?.map((colab) => ({
                   ...colab,
                   value: colab?.name,
-                  key: colab?.id
+                  key: colab?.id,
                 }))}
                 onChange={(val) =>
                   setValues((prv) => ({ ...prv, reviewerName: val }))
@@ -368,7 +370,7 @@ const Budgets = memo(function Budgets() {
               options={colaborators?.map((colab) => ({
                 ...colab,
                 value: colab?.name,
-                key: colab?.id
+                key: colab?.id,
               }))}
               onChange={(val) =>
                 setValues((prv) => ({ ...prv, sellerName: val }))
@@ -388,9 +390,19 @@ const Budgets = memo(function Budgets() {
             style={{ width: "70%", display: "flex", justifyContent: "right" }}
           >
             {createBudgetPermission && (
-              <Button onClick={() => setOpenCreate((prev) => !prev)}>
-                Novo orçamento
-              </Button>
+              <Modal
+                style={{ maxWidth: "1200px", padding: "20px" }}
+                modal={openCreate}
+                setModal={setOpenCreate}
+                children={
+                  <CreateBudget modal={openCreate} setModal={setOpenCreate} />
+                }
+                trigger={
+                  <Button onClick={() => setOpenCreate((prev) => !prev)}>
+                    Novo orçamento
+                  </Button>
+                }
+              />
             )}
             <Button
               onClick={() =>
@@ -422,16 +434,6 @@ const Budgets = memo(function Budgets() {
           }
         />
       </div>
-
-      {openCreate && (
-        <CreateBudget
-          visible={openCreate}
-          close={() => {
-            refetch();
-            setOpenCreate(false);
-          }}
-        />
-      )}
     </Container>
   );
 });

@@ -17,5 +17,6 @@ export function useLoadSchedule(scheduleId) {
     queryKey: ["RemoteLoadSchedules", scheduleId],
     queryFn: fetcher,
     ...callApiOneTime,
+    enabled: !!(scheduleId)
   });
 }

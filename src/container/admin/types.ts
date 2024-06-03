@@ -3,7 +3,6 @@ export const adminTypes = {
   RemoteBusinessUnits: Symbol.for("RemoteBusinessUnits"),
   RemoteControllerRole: Symbol.for("RemoteControllerRole"),
   RemoteAccessControls: Symbol.for("RemoteAccessControls"),
-  RemoteLoadUrlsSearch: Symbol.for("RemoteLoadUrlsSearch"),
   RemoteUserController: Symbol.for("RemoteUserController"),
   RemoteUpdateDepartaments: Symbol.for("RemoteUpdateDepartaments"),
 };

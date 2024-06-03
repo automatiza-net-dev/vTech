@@ -1,7 +1,8 @@
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 import { Button } from "infinity-forge";
 
 import { Actions } from "./actions";
+import { FinishService } from "./finish-service";
 import { Hospitalization } from "./hospitalization";
 
 import * as S from "./styles";
@@ -13,12 +14,12 @@ export function ActionsPatient() {
         <div className="box">
           <Hospitalization />
 
-          <Button href="/dashboard/agenda" text="AGENDA" />
+          <Button svg="IconCalendar"  href="/dashboard/agenda" text="AGENDA" />
 
           <Actions />
         </div>
 
-        {/* <EndService patientId={patient.id}/> */}
+        <FinishService />
       </S.Actions>
     </Error>
   );

@@ -1,15 +1,16 @@
+import { FormHandler, Input, InputMask } from "infinity-forge";
+
 import {
-  useLoadSchedulesPatients,
   useScheduling,
   useLoadAllPatientTutor,
+  useLoadSchedulesPatients,
 } from "@/presentation";
 
 import { TableAnimals } from "./table";
 import { TableClients } from "./table-clients";
+import { ButtonCreate } from "./button-create";
 
 import * as S from "./styles";
-import { ButtonCreate } from "./button-create";
-import { FormHandler, Input, InputMask } from "infinity-forge";
 
 export function FormSetClients() {
   const patientFilters = useScheduling((state) => state.patientsFilters);

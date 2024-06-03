@@ -18,7 +18,7 @@ export function CancelSchedule({ event, onExecuteAction }: ActionSchedule) {
   const [showForm, setShowForm] = useState(false);
   const [disableObservation, setDisableObservation] = useState(false);
 
-  const { toast } = useToast();
+  const { createToast} = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
   async function handleSuccess(data, handlers) {
@@ -43,10 +43,7 @@ export function CancelSchedule({ event, onExecuteAction }: ActionSchedule) {
       .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
       .change(payload);
 
-    toast.success("Cancelado com sucesso!", {
-      position: "top-right",
-      autoClose: 3000,
-    });
+    createToast({ message: "Cancelado com sucesso!", status: "success" })
 
     onExecuteAction();
   }

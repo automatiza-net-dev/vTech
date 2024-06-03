@@ -4,4 +4,6 @@ export * from "./patient";
 export * from "./vaccines";
 export * from "./attendace";
 export * from "./load-beds";
+export * from "./change-weight";
 export * from "./hospitalization";
+export * from "./load-last-updates";

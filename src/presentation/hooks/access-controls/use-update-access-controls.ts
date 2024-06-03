@@ -10,7 +10,7 @@ import {
 import { adminTypes, container } from "@/container";
 
 export function useUpdateAccessControls({ roleId }: { roleId: number }) {
-  const { toast } = useToast();
+  const { createToast } = useToast();
 
   const queryClient = useQueryClient();
 
@@ -45,10 +45,8 @@ export function useUpdateAccessControls({ roleId }: { roleId: number }) {
       queryClient.invalidateQueries("RemoteLoadAllControllerRoles");
       queryClient.invalidateQueries(["RemoteLoadAccessControls", roleId]);
 
-      toast.success("Controle editado com sucesso!", {
-        position: "top-right",
-        autoClose: 4000,
-      });
+
+      createToast({ message: "Controle editado com sucesso!", status: "success" })
     },
     // onError: () => {
     //   toast.error("Não foi possível editar controle", {

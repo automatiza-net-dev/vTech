@@ -1,19 +1,19 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { DropdownItem } from "semantic-ui-react";
-
-import { Modal } from "@/presentation";
+import { TimeLine } from "@/domain";
+import { Modal } from "infinity-forge";
 
 import * as S from "./styles";
 
 export type DropdownComponentProps = {
-  setModal: Dispatch<SetStateAction<boolean>>;
-};
+  modal?: boolean;
+  setModal?: Dispatch<SetStateAction<boolean>>;
+} & Partial<TimeLine>;
 
 export type DropdownItemActionProps = {
   Icon: any;
   label: string;
-  Component: (props: DropdownComponentProps) => JSX.Element;
+  Component?: (props: DropdownComponentProps) => JSX.Element;
 };
 
 export function DropdownItemAction({
@@ -25,17 +25,22 @@ export function DropdownItemAction({
 
   return (
     <>
-      <Modal maxwidth="1024px" stateModal={modal} setModal={setModal}>
+      <Modal
+        trigger={
+          <button type="button" onClick={() => setModal(true)}>
+            {Icon && Icon}
+
+            {label && <span>{label}</span>}
+          </button>
+        }
+        style={{ maxWidth: "1024px", maxHeight: "90vh", overflow: "auto", padding: 30 }}
+        modal={modal}
+        setModal={setModal}
+      >
         <S.ModalContent>
-          <Component setModal={setModal} />
+          {Component && <Component modal={modal} setModal={setModal} />}
         </S.ModalContent>
       </Modal>
-
-      <DropdownItem onClick={() => setModal(true)}>
-        {Icon && Icon}
-
-        {label && <span>{label}</span>}
-      </DropdownItem>
     </>
   );
 }

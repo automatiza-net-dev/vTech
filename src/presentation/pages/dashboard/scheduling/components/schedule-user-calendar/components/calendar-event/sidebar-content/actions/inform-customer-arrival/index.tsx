@@ -15,7 +15,7 @@ export function InformCustomerArrival({
   event,
   onExecuteAction,
 }: ActionSchedule) {
-  const { toast } = useToast();
+  const { createToast} = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
   async function handleClick() {
@@ -32,10 +32,7 @@ export function InformCustomerArrival({
 
     onExecuteAction();
 
-    toast.success("informado com sucesso!", {
-      autoClose: 4000,
-      position: "top-right",
-    });
+    createToast({ message: "informado com sucesso!", status: "success" });
   }
 
   return (

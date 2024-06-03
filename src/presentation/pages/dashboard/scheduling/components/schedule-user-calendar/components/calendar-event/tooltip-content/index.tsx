@@ -1,3 +1,5 @@
+import { Error } from "infinity-forge";
+
 import PetsIcon from "@mui/icons-material/Pets";
 import Person2Icon from "@mui/icons-material/Person2";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -5,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 
 import { Event, ScheduleUser } from "@/domain";
-import { DateToDDMMYYYY, Error } from "@/presentation";
+import { DateToDDMMYYYY } from "@/presentation";
 
 import * as S from "./styles";
 

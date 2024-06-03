@@ -1,15 +1,12 @@
 // @ts-nocheck
-// Core
-import React, { memo, useState, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
-// Components
-import { Select, Button, AutoComplete, Popconfirm } from "antd";
+import { Button, AutoComplete, Popconfirm } from "antd";
+
 import Editor from "@/OLD/components/Editor";
-import Print from "@/OLD/components/mini-components/Print";
-
-// Utils
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+import Print from "@/OLD/components/mini-components/Print";
+import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 function FormChild({
   submit,
@@ -22,14 +19,12 @@ function FormChild({
   modal,
   setVisible,
   replaceText,
-  submitUpdatePrint = false,
+  submitUpdatePrint,
   recipeSearch,
   setRecipeSearch,
   patient,
-  remove
+  remove,
 }) {
-  const buttonPrintRef = useRef();
-
   useEffect(() => {
     if (!modal && recipeId) {
       setRecipeSearch(
@@ -37,12 +32,6 @@ function FormChild({
       );
     }
   }, [modal, recipeId]);
-
-  // useEffect(() => {
-  //   if (buttonPrintRef.current) {
-  //     buttonPrintRef.current.addEventListener("click", submitUpdatePrint);
-  //   }
-  // }, [buttonPrintRef.current]);
 
   sortItems(allRecipes, "description");
 
@@ -56,14 +45,14 @@ function FormChild({
       <div>
         <label>Receita Médica</label>
         <AutoComplete
-          required
           className="uk-width-1-1"
           value={recipeSearch}
           options={allRecipes?.map((recipe, i) => ({
             ...recipe,
             value: recipe?.description,
-            key: i
+            key: i,
           }))}
+          disabled={!modal}
           onChange={(val, opt) => {
             setRecipeSearch(val);
           }}
@@ -110,6 +99,7 @@ function FormChild({
               onConfirm={() => remove()}
             >
               <Button
+                loading={loading}
                 htmlType="button"
                 type="danger"
                 className="uk-margin-small-right"
@@ -125,6 +115,6 @@ function FormChild({
       </footer>
     </form>
   );
-};
+}
 
 export default FormChild;

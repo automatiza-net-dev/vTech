@@ -3,6 +3,7 @@ import React, { memo, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient } from "@/presentation/hooks";
 
 import { attendanceService } from "@/OLD/services/attendances.service.ts";
 import { calendarService } from "@/OLD/services/calendar.service";
@@ -13,16 +14,14 @@ import { Modal, notification } from "antd";
 import FormChild from "./FormChild";
 
 import moment from "moment";
+import { useQueryClient } from "react-query";
 
 function AttendanceForm({
   visible,
   setVisible,
-  setReload,
-  setSelectedUpdate = false,
   modal = true,
   updateData = false,
-  patient,
-}) {
+}: any) {
   const [data, setData] = useState({});
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,6 +30,7 @@ function AttendanceForm({
   const [created, setCreated] = useState(false);
 
   const { user, clinic } = useProfile();
+  const { data: patient } = useLoadPatient();
 
   const systemName = process.env.clientName;
 
@@ -66,9 +66,11 @@ function AttendanceForm({
       .finally(() => setLoading(false));
   };
 
+  const queryClient = useQueryClient();
+
   const router = useRouter();
   const eventId = router.query.innerpage;
-  const petId = router.query.subpage;
+  const petId = patient?.id;
 
   const formatUpdateData = useCallback(() => {
     systemName === "LiftOne" && setFileList(updateData?.timeline_info?.photos);
@@ -112,6 +114,11 @@ function AttendanceForm({
     attendanceService
       .openAttendance(obj)
       .then((res) => {
+        setData({});
+        setVisible(false);
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
         return notification.success({
           message: "Atendimento criado com sucesso!",
         });
@@ -125,11 +132,6 @@ function AttendanceForm({
       })
       .finally(() => {
         setLoading(false);
-        if (!error) {
-          setData({});
-          setVisible(false);
-          setReload((prv) => !prv);
-        }
       });
   }, [data, body]);
 
@@ -141,7 +143,11 @@ function AttendanceForm({
         protocol: body,
         internalObservation: data?.internalObservation,
       })
-      .then((_res) => {
+      .then(async (_res) => {
+        await queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patientId],
+        });
+
         return notification.success({
           message: "Consulta atualizada com sucesso!",
         });
@@ -154,9 +160,6 @@ function AttendanceForm({
       })
       .finally(() => {
         setLoading(false);
-        setData({});
-        setReload((prv) => !prv);
-        setSelectedUpdate({});
       });
   }, [updateData, data, body]);
 
@@ -181,6 +184,9 @@ function AttendanceForm({
     timelineService
       .insertPatientEvaluation(formData)
       .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
         notification.success({ message: "Avaliação registrada com sucesso!" });
       })
       .catch((err) => {
@@ -200,7 +206,6 @@ function AttendanceForm({
             }
             return false;
           });
-          setReload((prv) => !prv);
           setFileList([]);
           setBody("");
         }
@@ -241,7 +246,6 @@ function AttendanceForm({
         setLoading(false);
         if (!error) {
           setData({});
-          setReload((prv) => !prv);
           setFileList([]);
           setBody("");
         }
@@ -254,7 +258,6 @@ function AttendanceForm({
       .removeComplete(id)
       .then((_res) => {
         setLoading(false);
-        setReload((prv) => !prv);
         return notification.success({
           message: "Registro removido com sucesso!",
         });
@@ -265,39 +268,30 @@ function AttendanceForm({
   };
 
   return modal ? (
-    <Modal
-      title={systemName === "LiftOne" ? `Avaliação` : `Dados de atendimento`}
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      footer={null}
-      width={1000}
-    >
-      <FormChild
-        setReload={setReload}
-        patient={patient}
-        loading={loading}
-        data={data}
-        setData={setData}
-        setVisible={setVisible}
-        body={body}
-        setBody={setBody}
-        eventId={eventId}
-        submit={
-          systemName === "LiftOne"
-            ? created
-              ? submitUpdatePatientEvaluation
-              : submitPatientEvaluation
-            : submitOpenAttendance
-        }
-        scheduleData={scheduleData}
-        beforeUpload={beforeUpload}
-        fileList={fileList}
-        setFileList={setFileList}
-        replaceText={replaceText}
-        setCreated={setCreated}
-        created={created}
-      />
-    </Modal>
+    <FormChild
+      patient={patient}
+      loading={loading}
+      data={data}
+      setData={setData}
+      setVisible={setVisible}
+      body={body}
+      setBody={setBody}
+      eventId={eventId}
+      submit={
+        systemName === "LiftOne"
+          ? created
+            ? submitUpdatePatientEvaluation
+            : submitPatientEvaluation
+          : submitOpenAttendance
+      }
+      scheduleData={scheduleData}
+      beforeUpload={beforeUpload}
+      fileList={fileList}
+      setFileList={setFileList}
+      replaceText={replaceText}
+      setCreated={setCreated}
+      created={created}
+    />
   ) : (
     <FormChild
       patient={patient}
@@ -321,6 +315,6 @@ function AttendanceForm({
       remove={() => removeData(updateData?._id)}
     />
   );
-};
+}
 
 export default AttendanceForm;

@@ -20,7 +20,7 @@ export function FormCreateClient({
   const { data } = useLoadTutorOrigins();
 
   const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const { createToast} = useToast();
 
   const assignTutor = useAssignTutor();
 
@@ -44,8 +44,8 @@ export function FormCreateClient({
 
       queryClient.invalidateQueries("RemoteLoadAllPatientTutor");
 
-      toast.success("Tutor criado com sucesso!", { autoClose: 4000, position: "top-right" })
-      
+      createToast({ message:"Tutor criado com sucesso!", status: "success" });
+
       setModal(false);
     } catch (err) {
       throw new Error((err as any)?.message || "");

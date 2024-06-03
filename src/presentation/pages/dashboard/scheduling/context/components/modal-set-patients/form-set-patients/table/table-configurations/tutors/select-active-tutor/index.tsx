@@ -1,76 +1,20 @@
 import { useState } from "react";
 
-import * as yup from "yup";
-import { useQueryClient } from "react-query";
-import { FormHandler, InputRadio, useToast } from "infinity-forge";
+import { Error } from "infinity-forge";
 
-import {
-  Error,
-  Modal,
-  useScheduling,
-  useSetMainTutor,
-} from "@/presentation";
+import { ModalSelectActiveTutor } from "../../modal-select-active-tutor";
 
 import { ISelectActiveTutorProps } from "./interfaces";
 
 import * as S from "./styles";
 
-export function SelectActiveTutor({ id, tutors }: ISelectActiveTutorProps) {
+export function SelectActiveTutor(props: ISelectActiveTutorProps) {
   const [modal, setModal] = useState(false);
-
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const setMainTutor = useSetMainTutor();
-  const patientsFilters = useScheduling((state) => state.patientsFilters);
-
-  async function handleSuccess(params) {
-    await setMainTutor.mutateAsync({
-      ...params,
-      patient: id,
-    });
-
-    await queryClient.invalidateQueries({
-      queryKey: ["RemoteLoadSchedulesPatients", patientsFilters],
-    });
-
-    setModal(false);
-
-    toast.success("Tutor ativo vinculado com sucesso!", {
-      autoClose: 4000,
-      position: "top-right",
-    });
-  }
 
   return (
     <Error name="SelectActiveTutor">
       <S.SelectActiveTutor>
-        <Modal
-          maxwidth="600px"
-          stateModal={modal}
-          onCloseModal={() => setModal(false)}
-          setModal={setModal}
-          title="Selecionar tutor ativo"
-        >
-          <FormHandler
-            schema={{
-              holder: yup.string().required("Por favor, selecione um tutor."),
-            }}
-            onSucess={handleSuccess}
-            button={{ text: "Alterar" }}
-            initialData={{ holder: tutors.find((tutor) => tutor.isMain)?.id }}
-          >
-            <S.ModalContent>
-              <InputRadio
-                name="holder"
-                options={tutors.map((tutor) => ({
-                  value: tutor.id,
-                  label: tutor.name,
-                }))}
-              />
-            </S.ModalContent>
-          </FormHandler>
-        </Modal>
+        <ModalSelectActiveTutor {...props} modal={modal} setModal={setModal} />
 
         <button
           className="open-vinc-tutor-button"

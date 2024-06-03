@@ -1,17 +1,13 @@
-// @ts-nocheck
-// Core
 import React, { memo, useEffect } from "react";
 
-// Icons
-import { Calendar } from "@styled-icons/bootstrap/Calendar";
-import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
-import { Cancel } from "@styled-icons/material-outlined/Cancel";
 import { TbVaccine } from "react-icons/tb";
 
-// Components
+import { Icon } from "infinity-forge";
+
 import { Input, DatePicker, Button, notification } from "antd";
 
-const FormChild = memo(function FormChild({
+export default function FormChild({
+  changeTab,
   vaccineData,
   calendars,
   actionState,
@@ -23,8 +19,7 @@ const FormChild = memo(function FormChild({
   submitUpdate,
   setCalendars,
   modal,
-  setActiveTab
-}) {
+}: any) {
   useEffect(() => {
     calendars.sort((a, b) => a.dose - b.dose);
   }, [calendars]);
@@ -64,7 +59,7 @@ const FormChild = memo(function FormChild({
                   onChange={(e) => {
                     setActualData({
                       ...actualData,
-                      schedulingDate: e
+                      schedulingDate: e,
                     });
                   }}
                 />
@@ -88,7 +83,7 @@ const FormChild = memo(function FormChild({
                   onChange={(e) => {
                     setActualData({
                       ...actualData,
-                      applicationDate: e
+                      applicationDate: e,
                     });
                   }}
                 />
@@ -110,7 +105,7 @@ const FormChild = memo(function FormChild({
                   onChange={(e) => {
                     setActualData({
                       ...actualData,
-                      laboratory: e.target.value
+                      laboratory: e.target.value,
                     });
                   }}
                 />
@@ -132,13 +127,14 @@ const FormChild = memo(function FormChild({
                   onChange={(e) =>
                     setActualData({
                       ...actualData,
-                      batch: e.target.value
+                      batch: e.target.value,
                     })
                   }
                 />
               </div>
             ))}
         </div>
+
         {modal && (
           <div className="uk-width-1-4">
             <label> Ações </label>
@@ -169,15 +165,7 @@ const FormChild = memo(function FormChild({
                     />
                   </span>
                   <span>
-                    <Calendar
-                      size={15}
-                      className={
-                        !item?.applicationDate
-                          ? !actionState
-                            ? "schedule-active"
-                            : "icon-inative"
-                          : "icon-inative"
-                      }
+                    <svg
                       onClick={() => {
                         if (!item?.applicationDate) {
                           setSelectedIndex(i);
@@ -185,21 +173,32 @@ const FormChild = memo(function FormChild({
                           setActionState("schedule");
                         }
                       }}
-                    />
-                  </span>
-                  <span>
-                    <CheckCircle
-                      size={20}
+                      viewBox="0 0 16 16"
+                      height="15"
+                      width="15"
+                      focusable="false"
+                      role="img"
+                      fill="#000"
+                      xmlns="http://www.w3.org/2000/svg"
                       className={
-                        actionState && selectedIndex === i
-                          ? "confirm-icon-active"
+                        !item?.applicationDate
+                          ? !actionState
+                            ? "schedule-active"
+                            : "icon-inative"
                           : "icon-inative"
                       }
+                    >
+                      <title>Calendar icon</title>
+                      <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"></path>
+                    </svg>
+                  </span>
+                  <span>
+                    <svg
                       onClick={() => {
                         const obj = [...calendars];
                         obj.splice(i, 1, {
                           ...item,
-                          ...actualData
+                          ...actualData,
                         });
                         if (
                           !actualData?.batch ||
@@ -208,7 +207,7 @@ const FormChild = memo(function FormChild({
                         ) {
                           return notification.error({
                             message:
-                              "verifique se os campos estão preenchidos corretamente"
+                              "verifique se os campos estão preenchidos corretamente",
                           });
                         }
 
@@ -220,11 +219,27 @@ const FormChild = memo(function FormChild({
                           setActualData({});
                         }
                       }}
-                    />
+                      viewBox="0 0 16 16"
+                      height="20"
+                      width="20"
+                      focusable="false"
+                      role="img"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={
+                        actionState && selectedIndex === i
+                          ? "confirm-icon-active"
+                          : "icon-inative"
+                      }
+                    >
+                      <title>CheckCircle icon</title>
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                      <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"></path>
+                    </svg>
                   </span>
                   <span>
-                    <Cancel
-                      size={23}
+                    <button
+                      type="button"
                       className={
                         actionState && selectedIndex === i
                           ? "cancel-icon-active"
@@ -235,19 +250,26 @@ const FormChild = memo(function FormChild({
                         setActionState(false);
                         setActualData({});
                       }}
-                    />
+                      style={{
+                        background: "transparent",
+                        border: 0,
+                        padding: 0,
+                      }}
+                    >
+                      <Icon name="IconBlock" fill="#f10" />
+                    </button>
                   </span>
                 </div>
               ))}
           </div>
         )}
       </div>
-      {!modal && (
+      {!modal && changeTab && (
         <div className="uk-margin-top uk-flex uk-flex-right">
           <Button
             type="primary"
             htmlType="button"
-            onClick={() => setActiveTab("11")}
+            onClick={() => changeTab("vaccines")}
           >
             Ir para vacinas
           </Button>
@@ -255,6 +277,4 @@ const FormChild = memo(function FormChild({
       )}
     </form>
   );
-});
-
-export default FormChild;
+}

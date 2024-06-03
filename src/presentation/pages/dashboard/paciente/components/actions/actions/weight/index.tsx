@@ -5,47 +5,69 @@ import {
   Textarea,
   useToast,
   FormHandler,
+  useAuthAdmin,
 } from "infinity-forge";
+import { useQueryClient } from "react-query";
 
+import { User } from "@/domain";
+import { RemotePatient } from "@/data";
+import { TypesAutomatiza, container } from "@/container";
 import { DropdownComponentProps } from "../dropdown-item";
 
 import * as S from "./styles";
 
-export function Weight({ setModal }: DropdownComponentProps) {
+export function Weight(props: DropdownComponentProps) {
   const router = useRouter();
 
-  const { toast } = useToast();
+  const { GetUser } = useAuthAdmin();
+  const { createToast } = useToast();
+  const queryClient = useQueryClient();
+
+  const user = GetUser<User>();
+
+  const patientId = router.query.id as string;
 
   return (
     <Error name="Weight">
       <S.Weight>
+        <h4>Peso</h4>
         <FormHandler
-          button={{ text: "Salvar" }}
+          initialData={{ weight: props.timeline_info?.weight, observation: props.timeline_info?.observation  }}
+          button={props.timeline_info?.weight ? undefined : { text: "Salvar" }}
           onSucess={async (data) => {
-            // await container
-            //   .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
-            //   .open({
-            //     ...data,
-            //     patientId: router.query.id,
-            //     scheduleServiceId: data.scheduleServiceId
-            //       ? data.scheduleServiceId[0]
-            //       : "",
-            //   });
+            await container
+              .get<RemotePatient>(TypesAutomatiza.RemotePatient)
+              .changeWeight({
+                ...data,
+                weight: String(data.weight || ""),
+                realizedAt: new Date(),
+                tag: patientId,
+                technicianId: user.user.id,
+              });
 
-            toast.success("Óbito criado com sucesso!", {
-              autoClose: 4000,
-              position: "top-right",
+              await queryClient.invalidateQueries({
+                queryKey: ["RemotePatient", patientId],
+              });
+
+              await queryClient.invalidateQueries({
+                queryKey: ["LastUpdates", patientId],
+              });
+          
+
+            createToast({
+              message: "Peso criado com sucesso!",
+              status: "success",
             });
 
-            setModal(false);
+            props.setModal && props.setModal(false);
           }}
           disableEnterKeySubmitForm
         >
           <div className="row">
-            <Input name="weight" placeholder="Peso (Kg)" />
+            <Input name="weight" readOnly={!!props.timeline_info?.weight} type="number" placeholder="Peso (Kg)" />
           </div>
 
-          <Textarea name="obervation" placeholder="Observações" />
+          <Textarea name="observation"  readOnly={!!props.timeline_info?.weight} placeholder="Observações" />
         </FormHandler>
       </S.Weight>
     </Error>

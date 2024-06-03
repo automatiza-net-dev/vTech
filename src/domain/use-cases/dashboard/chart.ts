@@ -30,7 +30,7 @@ export type DashboardFunnel = {
 };
 
 export type DashboardChart = {
-  configs?: ECOption & DashboardFunnel[];
+  configs?: (ECOption & DashboardFunnel[]) | string;
   legend?: {
     itemStyle?: { color: string };
     name?: string;
@@ -43,11 +43,39 @@ export type DashboardChart = {
 
 export type DashboardCard = {
   name: string;
+  faturamento_realizado?: {
+    description: string;
+    value: string;
+  };
   items: {
     description: string;
     value: number;
     percentage: string;
   }[];
+};
+
+export type DashboardCardBoundBilling = {
+  name: string;
+  items: {
+    description: string;
+    value: number;
+    percentage: string;
+    categories: {
+      categoria: string;
+      faturamento: number;
+      porcentagem: number;
+      grupos: {
+        grupo: string;
+        porcentagem: number;
+        total: number;
+        origem_clientes: {
+          origem: string;
+          porcentagem: number;
+          total: number;
+        }[];
+      }[];
+    }[];
+  };
 };
 
 export type Dashboard = {

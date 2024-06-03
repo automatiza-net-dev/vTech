@@ -11,7 +11,7 @@ import {
 
 function SelectComponent({ isReturn }) {
   
-  const { toast } = useToast()
+  const { createToast} = useToast()
   const { values, setFieldValue } = useFormikContext<any>();
 
   const serviceType = values["scheduleServiceTypeId"] as any;
@@ -24,7 +24,10 @@ function SelectComponent({ isReturn }) {
     if (data && data.length === 0 && isReturn && !isLoading) {
       setFieldValue("scheduleServiceTypeId", []);
 
-      toast.error("Nenhuma consulta para reagendar.", { autoClose: 4000, position: "top-right" })
+      createToast({
+        message: "Nenhuma consulta para reagendar.",
+        status: "error",
+      });
   
     }
   }, [data, isLoading, serviceType]);

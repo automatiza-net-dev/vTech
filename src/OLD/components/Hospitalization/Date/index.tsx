@@ -1,9 +1,7 @@
 import React from "react";
 
-import { useAuth } from "@/OLD/hooks/useAuth";
+import { Icon } from "infinity-forge"
 
-import { ChevronLeft } from "@styled-icons/entypo/ChevronLeft";
-import { ChevronRight } from "@styled-icons/entypo/ChevronRight";
 import { DatePicker } from "@mui/x-date-pickers";
 import moment from "moment";
 import styled from "styled-components";
@@ -52,7 +50,7 @@ export default function Date({
           setSelectedDate(moment(selectedDate).subtract(1, "days"))
         }
       >
-        <ChevronLeft size={20} color="white" />
+        <Icon name="NavLeftIcon" stroke="#fff" />
       </button>
       <DatePicker
       slotProps={{ textField: { size: 'small' } }}
@@ -67,7 +65,8 @@ export default function Date({
         className={`uk-button bgDarkCyan bgCyanHover ${process.env.clientName}-button`}
         onClick={() => setSelectedDate(moment(selectedDate).add(1, "days"))}
       >
-        <ChevronRight size={20} color="white" />
+        
+        <Icon name="NavRightIcon" stroke="#fff"/>
       </button>
     </Container>
   );

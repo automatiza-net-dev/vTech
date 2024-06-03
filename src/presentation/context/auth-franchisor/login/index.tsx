@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { FormHandler, Input, InputPassword } from "infinity-forge";
 
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 import { useAuthFranchisor } from "../context";
 
 import * as S from "./styles";

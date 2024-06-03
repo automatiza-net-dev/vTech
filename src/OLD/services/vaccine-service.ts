@@ -12,7 +12,7 @@ const updateVacine = async (id, data) => await api.put(`/vaccines/${id}`, data);
 const createVaccineProtocol = async (data) =>
   await api.post("/vaccine-protocols", data);
 
-const listProtocols = async ({ vaccine, specie, name, type } = false) =>
+const listProtocols = async ({ vaccine, specie, name, type }: any) =>
   await api.get(
     `/vaccine-protocols${vaccine ? `?vaccine=${vaccine}` : ""}${
       specie ? `${vaccine ? "&" : "?"}specie=${specie}` : ""

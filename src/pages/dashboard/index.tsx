@@ -1,15 +1,9 @@
-import React from "react";
-import { PrivatePageAdmin } from "infinity-forge";
-import { LayoutDashboard } from "@/presentation";
+import { DashboardPage, LayoutDashboard } from "@/presentation";
 
-import DashboardPage from "@/OLD/components/Dashboard";
-
-export default function Login() {
+export default function Dashboard() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <DashboardPage />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <DashboardPage />
+    </LayoutDashboard>
   );
 }

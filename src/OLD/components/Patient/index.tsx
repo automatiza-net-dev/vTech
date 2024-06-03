@@ -1,10 +1,8 @@
-// @ts-nocheck
-
 import React, { useMemo, useState, useEffect } from "react";
 
 import { Button } from "@/OLD/components/mini-components";
 import { PatientList } from "./List";
-import { Create } from "./Create";
+import { CreatePatient } from "./Create";
 import { useRouter } from "next/router";
 
 // Hooks
@@ -34,7 +32,7 @@ export function Patient({
   patientListVisible = false,
   origin = false,
   setReload = false,
-}) {
+}: any) {
   const router = useRouter();
   const [filters, setFilters] = useState({ noSearch: true });
   const [fastCreateVisible, setFastCreateVisible] = useState(false);
@@ -87,8 +85,8 @@ export function Patient({
                     onChange={(e) =>
                       setFilters({
                         ...filters,
-                        name: normalizeStr(e.target.value),
-                      })
+                        name: normalizeStr(e.target.value) ,
+                      } as any)
                     }
                   />
                   <SearchIcon />
@@ -101,7 +99,7 @@ export function Patient({
                       setFilters({
                         ...filters,
                         tag: e.target.value,
-                      })
+                      } as any)
                     }
                   />
                   <SearchIcon />
@@ -114,7 +112,7 @@ export function Patient({
                       setFilters({
                         ...filters,
                         tutor: normalizeStr(e.target.value),
-                      })
+                      } as any)
                     }
                   />
                   <SearchIcon />
@@ -124,8 +122,8 @@ export function Patient({
                     type="search"
                     placeholder="Fone tutor"
                     onChange={(e) =>
-                      setFilters({ ...filters, phone: e.target.value })
-                    }
+                      setFilters({ ...filters, phone: e.target.value } as any) 
+                    } 
                   />
                   <SearchIcon />
                 </Input>
@@ -134,7 +132,7 @@ export function Patient({
                     type="search"
                     placeholder="CPF tutor"
                     onChange={(e) =>
-                      setFilters({ ...filters, document: e.target.value })
+                      setFilters({ ...filters, document: e.target.value } as any)
                     }
                   />
                   <SearchIcon />
@@ -151,13 +149,6 @@ export function Patient({
                             return setFastCreateVisible(true);
                           }
                           setCreatePetVisible(true);
-                          {
-                            /*
-                          return router.push(
-                            `/dashboard/paciente/criar${querySchedule}`
-                            );
-                          */
-                          }
                         }}
                       >
                         Cadastrar
@@ -177,15 +168,7 @@ export function Patient({
                   </div>
                 </div>
               </div>
-              {/*
-                <div className="uk-margin-right">
-                <Link href="/dashboard/tutor">
-                  <Button theme="default" classCallback="colorButtonWhite">
-                    Tutores
-                  </Button>
-                </Link>
-              </div>
-                  */}
+      
             </div>
           </div>
           <hr />
@@ -214,7 +197,6 @@ export function Patient({
           setSearch={setPayload}
           setNewPacient={setPayload}
           setTutorsReload={setReload}
-          prevValues={filters}
         />
       )}
 
@@ -225,7 +207,7 @@ export function Patient({
           width={1200}
           footer={null}
         >
-          <Create setVisible={setCreatePetVisible} />
+          <CreatePatient setVisible={setCreatePetVisible} onSuccess={() => {}} />
         </Modal>
       )}
     </div>

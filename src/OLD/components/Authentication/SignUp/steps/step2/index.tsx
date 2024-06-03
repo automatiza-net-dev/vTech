@@ -15,8 +15,7 @@ export function Step2(props) {
   const router = useRouter();
 
   const sendToken = useCallback(async () => {
-    await api
-      .post("/users/send-confirmation", {
+    await api?.post("/users/send-confirmation", {
         email: props?.data?.email,
         phone: data?.phone,
         name: data?.name,

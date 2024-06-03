@@ -1,7 +1,6 @@
-import { Error } from "infinity-forge";
+import { Error, useCarousel } from "infinity-forge";
 
 import { Event } from "@/domain";
-import { useCarousel } from "@/presentation";
 
 import { ScheduleCard } from "./card";
 

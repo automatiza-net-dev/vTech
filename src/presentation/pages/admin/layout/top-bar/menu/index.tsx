@@ -1,15 +1,14 @@
 import { useState } from "react";
 
+import {Error} from "infinity-forge"
 import { Logout as MuiLogout } from "@mui/icons-material";
 import { MenuItem as MuiMenuItem } from "@mui/material";
 
 import {
-  Error,
   Modal,
   useAuthFranchisor,
   useIsThirdPartyUser,
 } from "@/presentation";
-
 import { SwapForm } from "./swap-form";
 import { PaperProps, StyledMenu } from "./styled-menu";
 

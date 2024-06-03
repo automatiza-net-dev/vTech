@@ -2,6 +2,7 @@
 // Core
 import React, { memo, useState, useCallback, useEffect } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient } from "@/presentation";
 
 // Services
 import { timelineService } from "@/OLD/services/timeline.service";
@@ -14,35 +15,31 @@ import FormChild from "./FormChild";
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
+import { useRouter } from "next/router";
+import { useQueryClient } from "react-query";
 
-// Utils
-import { convertFileToBase64 } from "@/OLD/utils/generalUtils";
-
-const SendPhotos = memo(function SendPhotos({
-  visible,
-  setVisible,
-  patient,
-  reload,
-  setReload,
+export default function SendPhotos({
+  modal,
+  setModal,
   setSelectedUpdate = false,
-  modal = true,
-  updateData = false
-}) {
+  updateData = false,
+}: any) {
   const [data, setData] = useState({});
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [photosVisible, setPhotosVisible] = useState(false);
   const { user } = useProfile();
 
-  const systemName = process.env.clientName;
-
+  const patient = useLoadPatient();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const beforeUpload = useCallback((file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
         return notification.error({
-          message: "Você só pode upar imagens até 2MB!"
+          message: "Você só pode upar imagens até 2MB!",
         });
       }
     }
@@ -54,7 +51,7 @@ const SendPhotos = memo(function SendPhotos({
     if (updateData) {
       setData({
         note: updateData?.timeline_info?.observation,
-        title: updateData?.timeline_info?.title
+        title: updateData?.timeline_info?.title,
       });
       setFileList(updateData?.timeline_info?.photos);
     }
@@ -64,7 +61,7 @@ const SendPhotos = memo(function SendPhotos({
     setLoading(true);
     const formData = new FormData();
     formData.append("title", data?.title);
-    formData.append("tag", patient?.id);
+    formData.append("tag", patient?.data?.id);
     formData.append("observation", data?.note);
     formData.append("technicianId", user?.id);
 
@@ -74,62 +71,70 @@ const SendPhotos = memo(function SendPhotos({
 
     timelineService
       .insertArquive(formData)
-      .then((_res) =>
+      .then((_res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
+
         notification.success({
-          message: "Arquivo salvo com sucesso!"
-        })
-      )
+          message: "Arquivo salvo com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "Houve um erro ao salvar o arquivo..."
+          message: "Houve um erro ao salvar o arquivo...",
         });
       })
       .finally(() => {
         setData({});
         setLoading(false);
-        modal && setVisible(false);
+        setModal && setModal(false);
         setFileList([]);
-        setReload(!reload);
-        !modal && setSelectedUpdate(false);
+        setSelectedUpdate && setSelectedUpdate(false);
       });
-  }, [patient?.id, data?.note, user?.id, fileList]);
+  }, [patient?.data?.id, data?.note, user?.id, fileList]);
 
   const submitUpdate = useCallback(() => {
     setLoading(true);
     timelineService
-      .updatePhotos(updateData?.id, {
+      .updatePhotos(updateData?._id, {
         title: data?.title,
-        observation: data?.note
+        observation: data?.note,
       })
       .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
         setLoading(false);
         notification.success({
-          message: "Informações atualizadas com sucesso!"
+          message: "Informações atualizadas com sucesso!",
         });
       })
       .catch((err) => {
         setLoading(false);
         notification.error({
-          message: "Houve um erro ao atualizar as informações"
+          message: "Houve um erro ao atualizar as informações",
         });
       })
       .finally(() => {
         setData({});
         setLoading(false);
-        modal && setVisible(false);
+        setModal && setModal(false);
         setFileList([]);
-        setReload(!reload);
-        !modal && setSelectedUpdate(false);
+        setSelectedUpdate && setSelectedUpdate(false);
       });
-  }, [data, updateData?.id]);
+  }, [data, updateData?._id]);
 
   const removePhoto = (idx) => {
     setLoading(true);
     timelineService
       .removeSinglePhoto(updateData?._id, idx, "photos/attachments")
       .then((_res) => {
-        setReload(!reload);
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
+
         notification.success({ message: "Foto removida com sucesso!" });
       })
       .finally(() => setLoading(false));
@@ -141,9 +146,12 @@ const SendPhotos = memo(function SendPhotos({
       .removeComplete(id)
       .then((_res) => {
         setLoading(false);
-        setReload((prv) => !prv);
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
+
         return notification.success({
-          message: "Registro removido com sucesso!"
+          message: "Registro removido com sucesso!",
         });
       })
       .catch((_err) => {
@@ -152,24 +160,17 @@ const SendPhotos = memo(function SendPhotos({
   };
 
   return modal ? (
-    <Modal
-      title={`Lançamento de Fotos - ${
-        systemName === "LiftOne" ? "Cliente" : "Paciente"
-      }: ${patient?.name}`}
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      footer={null}
-      width={800}
-    >
+    <>
       <Container>
+        <h4>Fotos e vídeos</h4>
         <FormChild
           data={data}
           setData={setData}
           beforeUpload={beforeUpload}
           loading={loading}
           submit={submit}
-          setVisible={setVisible}
-          visible={visible}
+          setVisible={setModal}
+          visible={modal}
           modal={modal}
           fileList={fileList}
           setFileList={setFileList}
@@ -215,17 +216,17 @@ const SendPhotos = memo(function SendPhotos({
           </div>
         </div>
       </Modal>
-    </Modal>
+    </>
   ) : (
     <Container>
+      <h4>Fotos e vídeos</h4>
       <FormChild
         data={data}
         setData={setData}
         beforeUpload={beforeUpload}
         loading={loading}
         submit={submitUpdate}
-        setVisible={setVisible}
-        visible={visible}
+        setVisible={setModal}
         modal={modal}
         fileList={fileList}
         setFileList={setFileList}
@@ -286,6 +287,4 @@ const SendPhotos = memo(function SendPhotos({
       </Modal>
     </Container>
   );
-});
-
-export default SendPhotos;
+}

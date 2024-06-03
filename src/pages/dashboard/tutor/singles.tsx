@@ -11,7 +11,7 @@ export default function TutorSinglePage() {
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <div className="uk-padding">
-      <Single />
+      <Single selectedId={undefined} setVisible={undefined} setEditVisible={undefined} setCreatePetVisible={undefined} setVincPetVisible={undefined} />
     </div>
   );
 }

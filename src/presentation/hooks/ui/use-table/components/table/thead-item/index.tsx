@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { updateRoute } from "@/presentation";
 
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 import { ITHeadItemProps } from "./interfaces";
 

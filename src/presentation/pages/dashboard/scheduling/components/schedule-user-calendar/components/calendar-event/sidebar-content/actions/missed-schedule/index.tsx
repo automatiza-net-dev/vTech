@@ -8,17 +8,18 @@ import { PermissionItem, useLoadAllScheduleStatuses } from "@/presentation";
 import { ActionSchedule } from "../interface";
 
 export function MissedSchedule({ event, onExecuteAction }: ActionSchedule) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const { toast } = useToast();
+  const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
   async function handleClick() {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const statusId =
-        scheduleStatuses.data?.find((status) => status.type === "FAL")?.id || "";
+        scheduleStatuses.data?.find((status) => status.type === "FAL")?.id ||
+        "";
 
       await container
         .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
@@ -27,23 +28,16 @@ export function MissedSchedule({ event, onExecuteAction }: ActionSchedule) {
           statusId,
         });
 
-      await onExecuteAction()
+      await onExecuteAction();
 
-      toast.success("Ação efetuada com sucesso!", {
-        autoClose: 4000,
-        position: "top-right",
-      });
-    } catch(err) {
-      if(err instanceof BadRequestError) {
-        toast.error(err.error.message, {
-          autoClose: 4000,
-          position: "top-right",
-        });
+      createToast({ message: "Ação efetuada com sucesso!", status: "success" });
+    } catch (err) {
+      if (err instanceof BadRequestError) {
+        createToast({ message: err.error.message, status: "error" });
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-
   }
 
   return (

@@ -8,7 +8,7 @@ import * as S from "./styles";
 export function Document({ setModal }: DropdownComponentProps) {
   const router = useRouter();
 
-  const { toast } = useToast();
+  const { createToast} = useToast();
 
   return (
     <Error name="Document">
@@ -26,12 +26,9 @@ export function Document({ setModal }: DropdownComponentProps) {
             //       : "",
             //   });
 
-            toast.success("Documento criado com sucesso!", {
-              autoClose: 4000,
-              position: "top-right",
-            });
+            createToast({ message: "Documento criado com sucesso!", status: "success" })
 
-            setModal(false);
+            setModal &&  setModal(false);
           }}
           disableEnterKeySubmitForm
         >

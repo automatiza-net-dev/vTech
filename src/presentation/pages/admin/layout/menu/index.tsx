@@ -5,7 +5,7 @@ import Link from "next/link";
 import MuiCloseIcon from "@mui/icons-material/Close";
 import MuiArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 import { menu } from "./data";
 

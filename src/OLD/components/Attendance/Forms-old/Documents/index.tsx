@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import React, { useState, memo, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 // Services
 import { documentServices } from "@/OLD/services/document.service";
@@ -9,6 +9,7 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 
 // Hooks
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
 import { Modal, notification } from "antd";
@@ -16,17 +17,15 @@ import FormChild from "./FormChild";
 
 // utils
 import moment from "moment";
+import { useQueryClient } from "react-query";
+import { useRouter } from "next/router";
 
-const Documents = memo(function Documents({
-  visible,
-  setVisible,
-  patient,
-  reload,
-  setReload,
+export default function Documents({
+  modal,
+  setModal,
   setSelectedUpdate = false,
-  modal = true,
-  updateData = false
-}) {
+  updateData = false,
+}: any) {
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
   const [allDocuments, setAllDocuments] = useState([]);
@@ -36,22 +35,25 @@ const Documents = memo(function Documents({
   const [documentSearch, setDocumentSearch] = useState("");
   const [value, setValue] = useState(false);
 
-  const systemName = process.env.clientName;
+  const patient = useLoadPatient();
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const replaceText = (id, str) => {
     setLoading(true);
+
     textReplaceService
       .replaceText({
         base: str,
         businessUnitId: clinic?.id,
         userId: user?.id,
         tutorId:
-          systemName !== "LiftOne"
-            ? patient?.tutors?.find((tutor) => tutor?.is_main)?.id
-            : patient?.id,
-        dependentId: patient?.id,
+          process.env.client == "sancla"
+            ? patient.data?.tutor.id
+            : patient.data?.id,
+        dependentId: patient.data?.id,
         documentId: id,
-        tag: patient?.id
+        tag: patient.data?.id,
       })
       .then((res) => {
         setBody(res.data.text);
@@ -64,12 +66,14 @@ const Documents = memo(function Documents({
     setLoading(true);
     documentServices
       .getAll()
-      .then((res) => setAllDocuments(res.data))
+      .then((res) => {
+        setAllDocuments(res.data);
+      })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
           message:
-            "Houve um erro ao recuperar os templates de documentos cadastrados"
+            "Houve um erro ao recuperar os templates de documentos cadastrados",
         });
       })
       .finally(() => {
@@ -78,8 +82,8 @@ const Documents = memo(function Documents({
   }, []);
 
   useEffect(() => {
-    (visible || !modal) && getAllDocumentTemplates();
-  }, [getAllDocumentTemplates, visible]);
+    getAllDocumentTemplates();
+  }, [getAllDocumentTemplates, modal]);
 
   useEffect(() => {
     updateData && setBody(updateData?.timeline_info?.value);
@@ -90,61 +94,55 @@ const Documents = memo(function Documents({
           (item) => item?.title === updateData?.timeline_info?.type
         )
       );
-  }, [updateData.id, allDocuments]);
+  }, [updateData._id, allDocuments]);
 
-  const submit = useCallback(
-    (visible = false) => {
-      if (!document?.id)
+  function submit() {
+    if (!document?.id)
+      return notification.error({
+        message: "Selecione o tipo do documento",
+      });
+
+    setLoading(true);
+    timelineService
+      .insertDocument({
+        tag: patient.data?.id,
+        type: allDocuments.find((item) => item.id === document?.id)?.title,
+        value: document?.type !== "pdf" ? body : value,
+        technicianId: user?.id,
+        realizedAt: moment(new Date()),
+        message: ".",
+      })
+      .then((_res) =>
+        notification.success({ message: "Documento salvo com sucesso!" })
+      )
+      .catch((_err) => {
+        setLoading(false);
         return notification.error({
-          message: "Selecione o tipo do documento"
+          message: "Não foi possível salvar o documento...",
         });
-
-      setLoading(true);
-      timelineService
-        .insertDocument({
-          tag: patient?.id,
-          type: allDocuments.find((item) => item.id === document?.id)?.title,
-          value: document?.type !== "pdf" ? body : value,
-          technicianId: user?.id,
-          realizedAt: moment(new Date()),
-          message: "."
-        })
-        .then((_res) =>
-          notification.success({ message: "Documento salvo com sucesso!" })
-        )
-        .catch((_err) => {
-          setLoading(false);
-          return notification.error({
-            message: "Não foi possível salvar o documento..."
-          });
-        })
-        .finally(() => {
-          setLoading(false);
-          setVisible(visible);
-          setData({});
-          setBody("");
-          setDocument(false);
-          setReload(!reload);
+      })
+      .finally(async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
         });
-    },
-    [patient?.id, document, body, user?.id, allDocuments, value]
-  );
+        setLoading(false);
+        setModal(false);
+        setData({});
+        setBody("");
+        setDocument(false);
+      });
+  }
 
   const submitUpdate = useCallback(
     (visible = false) => {
-      const generateDocumentId = allDocuments?.find(
-        (item) => item?.title === updateData?.timeline_info?.type
-      )?.id;
-
       setLoading(true);
       timelineService
-        .updateDocuments(updateData.id, {
-          tag: patient?.id,
-          type: allDocuments?.find((item) => item.id === generateDocumentId)
-            ?.title,
+        .updateDocuments(updateData?._id, {
+          tag: patient.data?.id,
+          type: updateData.timeline_info.type,
           value: body,
           technicianId: user?.id,
-          realizedAt: moment(new Date())
+          realizedAt: moment(new Date()),
         })
         .then((_res) =>
           notification.success({ message: "Documento atualizado com sucesso!" })
@@ -152,15 +150,14 @@ const Documents = memo(function Documents({
         .catch((_err) => {
           setLoading(false);
           return notification.error({
-            message: "Não foi possível atualizar o documento..."
+            message: "Não foi possível atualizar o documento...",
           });
         })
         .finally(() => {
-          setSelectedUpdate(false);
+          setSelectedUpdate && setSelectedUpdate(false);
           if (!visible) {
             setLoading(false);
             setData({});
-            setReload(!reload);
           }
         });
     },
@@ -173,9 +170,13 @@ const Documents = memo(function Documents({
       .removeComplete(id)
       .then((_res) => {
         setLoading(false);
-        setReload((prv) => !prv);
+
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
+
         return notification.success({
-          message: "Registro removido com sucesso!"
+          message: "Registro removido com sucesso!",
         });
       })
       .catch((_err) => {
@@ -184,29 +185,19 @@ const Documents = memo(function Documents({
   };
 
   return modal ? (
-    <Modal
-      title={`Lançamento de documentos - ${
-        systemName === "LiftOne" ? "Cliente" : "Paciente"
-      }: ${patient?.name}`}
-      onCancel={() => setVisible(false)}
-      visible={visible}
-      footer={null}
-      width={1000}
-    >
-      <FormChild
-        document={document}
-        allDocuments={allDocuments}
-        body={body}
-        setBody={setBody}
-        loading={loading}
-        submit={submit}
-        setDocument={setDocument}
-        modal={modal}
-        setVisible={setVisible}
-        replaceText={replaceText}
-        print={submit}
-      />
-    </Modal>
+    <FormChild
+      document={document}
+      allDocuments={allDocuments}
+      body={body}
+      setBody={setBody}
+      loading={loading}
+      submit={submit}
+      setDocument={setDocument}
+      modal={modal}
+      setVisible={setModal}
+      replaceText={replaceText}
+      print={submit}
+    />
   ) : (
     <FormChild
       document={document}
@@ -223,6 +214,4 @@ const Documents = memo(function Documents({
       updateData={updateData}
     />
   );
-});
-
-export default Documents;
+}

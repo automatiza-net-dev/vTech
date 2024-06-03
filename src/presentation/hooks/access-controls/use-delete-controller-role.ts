@@ -7,7 +7,7 @@ import { DeleteControllerRole } from "@/domain";
 import { adminTypes, container } from "@/container";
 
 export function useDeleteControllerRole(params: DeleteControllerRole.Params) {
-  const { toast } = useToast()
+  const { createToast } = useToast()
   
   const queryClient = useQueryClient();
 
@@ -21,12 +21,11 @@ export function useDeleteControllerRole(params: DeleteControllerRole.Params) {
     onSuccess: () => {
       queryClient.invalidateQueries("RemoteLoadAllControllerRoles");
 
-      toast.success("Controle excluido com sucesso!", { autoClose: 3000, position: "top-right" })
-   
+      createToast({ message: "Controle excluido com sucesso!", status: "success"})
     },
     onError: (err: { message: string }) => {
       if(err instanceof BadRequestError) {
-        toast.error(err.error.message, { autoClose: 3000, position: "top-right" })
+        createToast({ message: err.error.message, status: "success"})
       }
     },
   });

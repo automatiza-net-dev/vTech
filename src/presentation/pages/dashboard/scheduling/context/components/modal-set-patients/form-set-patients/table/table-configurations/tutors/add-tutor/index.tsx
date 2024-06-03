@@ -1,12 +1,16 @@
 import { useState } from "react";
 
 import { useQueryClient } from "react-query";
-import { FormHandler, Select, useToast } from "infinity-forge";
-
 import {
   Error,
-  Modal,
+  Select,
+  useToast,
+  FormHandler,
   LoaderCircle,
+} from "infinity-forge";
+
+import {
+  Modal,
   useScheduling,
   useAssignTutor,
   useSetMainTutor,
@@ -20,8 +24,8 @@ import * as S from "./styles";
 export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
   const [modal, setModal] = useState(false);
   const [initialHolder, setInitialHolder] = useState(null);
-  
-  const { toast } = useToast();
+
+  const { createToast } = useToast();
   const assignutor = useAssignTutor();
   const queryClient = useQueryClient();
   const setMainTutor = useSetMainTutor();
@@ -49,9 +53,9 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
       queryKey: "RemoteLoadAllPatientTutor",
     });
 
-    toast.success("Tutor vinculado com sucesso!", {
-      autoClose: 4000,
-      position: "top-right",
+    createToast({
+      message: "Tutor vinculado com sucesso!",
+      status: "success",
     });
 
     setModal(false);
@@ -89,15 +93,17 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
                   loading={isLoading}
                   name="holder"
                   onlyOneValue
-                  options={data?.map((item) => ({
-                    label:
-                      item?.name +
-                      " / " +
-                      item?.document +
-                      " / " +
-                      item?.cellphone,
-                    value: item.id || "",
-                  })) || []}
+                  options={
+                    data?.map((item) => ({
+                      label:
+                        item?.name +
+                        " / " +
+                        item?.document +
+                        " / " +
+                        item?.cellphone,
+                      value: item.id || "",
+                    })) || []
+                  }
                 />
               </div>
             </FormHandler>

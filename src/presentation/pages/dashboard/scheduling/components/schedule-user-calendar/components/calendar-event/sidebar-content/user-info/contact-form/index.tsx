@@ -1,14 +1,21 @@
 import moment from "moment";
-import { Error, FormHandler, Input, Textarea, useToast, BadRequestError} from "infinity-forge";
+import {
+  Error,
+  FormHandler,
+  Input,
+  Textarea,
+  useToast,
+  BadRequestError,
+} from "infinity-forge";
 
 import { RemoteSchedule } from "@/data";
-import {ConfirmSchedule } from "@/domain";
+import { ConfirmSchedule } from "@/domain";
 import { container, patientTypes } from "@/container";
 
 import * as S from "./styles";
 
 export function ContactForm({ event, setOpen }) {
-  const { toast } = useToast();
+  const { createToast } = useToast();
 
   async function handleOnSuccess(data: ConfirmSchedule.Params) {
     try {
@@ -19,9 +26,11 @@ export function ContactForm({ event, setOpen }) {
         contactDate: moment(data.contactDate).toISOString(),
       };
 
-      await container.get<RemoteSchedule>(patientTypes.RemoteSchedule).confirm(body);
+      await container
+        .get<RemoteSchedule>(patientTypes.RemoteSchedule)
+        .confirm(body);
 
-      toast.success("Contato Salvo!", { autoClose: 4000, position: "top-right" })
+      createToast({ message: "Contato Salvo!", status: "success" });
 
       //TODO rechamar a rota para recarregar o evento RemoteLoadAllSchedulesUser + os parametros corretos atuais- pegar do contexto de useScheduling igual ao da page.tsx
 
@@ -29,11 +38,9 @@ export function ContactForm({ event, setOpen }) {
       return;
     } catch (err) {
       if (err instanceof BadRequestError) {
-        toast.error(err.error.message, { autoClose: 4000, position: "top-right" })
+        createToast({ message: err.error.message, status: "error" });
       }
     }
-
-    return;
   }
 
   return (

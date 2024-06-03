@@ -11,7 +11,7 @@ export const Actions = styled.div`
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #707070;
+      color: #000;
 
       svg {
         width: 15px;

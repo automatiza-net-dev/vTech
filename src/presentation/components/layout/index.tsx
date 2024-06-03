@@ -1,9 +1,8 @@
 import {
   Error,
   Layout,
-  PrivatePageAdmin,
   useAuthAdmin,
-  // useScreenWidth,
+  PrivatePageAdmin,
 } from "infinity-forge";
 
 import { User } from "@/domain";
@@ -25,8 +24,6 @@ function LayoutPage({ children }) {
   const { data } = useLoadAllAvailableUnits();
 
   const { GetUser } = useAuthAdmin();
-  // const { width } = useScreenWidth();
-  // const isFixedSidebar = width <= 1400;
 
   const user = GetUser<User>();
 
@@ -57,7 +54,9 @@ function LayoutPage({ children }) {
     <Error name="LayoutDashboard">
       <S.Layout>
         <Layout
-          isInteralMenu
+          sidebar={{
+            expandedMenu: true
+          }}
           workspaces={workspaces}
           logo={{
             src:

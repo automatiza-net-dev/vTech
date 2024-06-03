@@ -17,7 +17,7 @@ export function Step1(props) {
       e.preventDefault();
       setLoading(true);
 
-      await api.get(`/users/check-email/${data.email}`)
+      await api?.get(`/users/check-email/${data.email}`)
         .then((res) => {
           if (res.data?.inUse) {
             setError(true);

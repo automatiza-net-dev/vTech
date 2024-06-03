@@ -1,9 +1,8 @@
-import AddIcon from "@mui/icons-material/Add";
-import { Select } from "infinity-forge";
 import { useFormikContext } from "formik";
+import { Select, Tooltip, Icon } from "infinity-forge";
 
 import { Unit } from "./unit";
-import { Popover, useLoadAllBusinessUnits } from "@/presentation";
+import { useLoadAllBusinessUnits } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -57,15 +56,19 @@ export function InputAddUnit() {
           />
         )}
 
-        <Popover title="Adicionar" forceClose={!selectUnit}>
-          <button
-            type="button"
-            onClick={addUnit}
-            className={!selectUnit ? "disabled" : ""}
-          >
-            <AddIcon fontSize="small" color="info" />
-          </button>
-        </Popover>
+        <Tooltip
+          content="Adicionar"
+          trigger={
+            <button
+              type="button"
+              onClick={addUnit}
+              className={!selectUnit ? "disabled" : ""}
+            >
+              <Icon name="IconPlusSharp" fill="#000" />
+            </button>
+          }
+          // isOpen={!select}
+        />
       </div>
 
       {values?.units?.map((unit) => {

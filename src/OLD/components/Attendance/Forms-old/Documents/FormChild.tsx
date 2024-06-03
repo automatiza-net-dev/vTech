@@ -1,20 +1,18 @@
-// @ts-nocheck
 // Core
-import React, { memo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 // Services
 import { documentServices } from "@/OLD/services/document.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Components
-import { Button, Select, AutoComplete, Popconfirm } from "antd";
+import { Button, Popconfirm } from "antd";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
-const { Option } = Select;
 
 // Utils
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+import { FormHandler, Select } from "infinity-forge";
 
 function FormChild({
   document,
@@ -29,7 +27,7 @@ function FormChild({
   replaceText,
   print,
   remove,
-  updateData
+  updateData,
 }) {
   const [documentSearch, setDocumentSearch] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
@@ -59,39 +57,43 @@ function FormChild({
       }}
     >
       <div>
+     
         <label>Documento</label>
-        <AutoComplete
-          className="uk-width-1-1"
-          required
-          value={documentSearch}
-          options={allDocuments.map((document) => ({
-            ...document,
-            value: `${document?.title} - ${
-              document?.type === "text" ? "(Texto)" : "(Pdf)"
-            }`
-          }))}
-          onChange={(e) => {
-            setDocumentSearch(e);
-          }}
-          onSelect={(_, opt) => {
-            replaceText(opt?.id, opt?.description);
-            setDocument(opt);
-            if (opt?.type === "pdf") {
-              documentServices
-                .renderPdf(opt?.id)
-                .then((res) =>
-                  setPdfUrl(
-                    process.env.NEXT_PUBLIC_API + "/uploads/" + res?.data?.url
-                  )
+        {allDocuments && allDocuments.length > 0 && (
+          <FormHandler>
+            <Select
+              menuPlacement="bottom"
+              name="document"
+              options={allDocuments.map((document) => ({
+                label: document?.title,
+                value: document?.title,
+              }))}
+              value={document.title}
+              disabled={!modal}
+              onlyOneValue
+              onChangeSelect={(value) => {
+                const optionSelected = allDocuments.find(
+                  (document) => document.title === value
                 );
-            }
-          }}
-          filterOption={(val, opt) =>
-            normalizeStr(opt?.title.toUpperCase()).includes(
-              normalizeStr(val.toUpperCase())
-            )
-          }
-        />
+
+                replaceText(optionSelected?.id, optionSelected?.description);
+
+                setDocument(optionSelected);
+                if (optionSelected?.type === "pdf") {
+                  documentServices
+                    .renderPdf(optionSelected?.id)
+                    .then((res) =>
+                      setPdfUrl(
+                        process.env.NEXT_PUBLIC_API +
+                          "/uploads/" +
+                          res?.data?.url
+                      )
+                    );
+                }
+              }}
+            />
+          </FormHandler>
+        )}
       </div>
       {document?.type === "pdf" ? (
         <div className="uk-margin-top">
@@ -133,14 +135,14 @@ function FormChild({
               onConfirm={() => remove()}
             >
               <Button
+                loading={loading}
                 htmlType="button"
-                type="danger"
                 className="uk-margin-small-right"
               >
                 Excluir
               </Button>
             </Popconfirm>
-            <Button htmlType="submit" type="primary">
+            <Button loading={loading} htmlType="submit" type="primary">
               Atualizar
             </Button>
           </div>
@@ -148,6 +150,6 @@ function FormChild({
       </div>
     </form>
   );
-};
+}
 
 export default FormChild;

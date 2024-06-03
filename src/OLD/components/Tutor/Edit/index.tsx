@@ -1,4 +1,5 @@
-import React, {useCallback, useEffect, useState } from "react";
+// @ts-nocheck
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Form, notification } from "antd";
 import { Button, LoadingSpin } from "@/OLD/components/mini-components";
@@ -29,7 +30,6 @@ export function Edit({
 
   const { originConfig, setOriginConfig } = useAuth();
 
-  
   const editTutorPermission = useUserHasPermission("TUT02");
 
   const verifyErrors = (errMsg) => {
@@ -296,7 +296,7 @@ export function Edit({
             if (ctt?.type === "email" && ctt?.contact === "-") {
               return { ...ctt, notGiven: true, contact: "" };
             } else {
-              if (ctt?.type !== "email") {
+              if (ctt?.type !== "email" && ctt.contact) {
                 return { ...ctt, contact: masks?.phone(ctt?.contact) };
               }
               return ctt;
@@ -350,7 +350,10 @@ export function Edit({
     <AccessDenied loading={editTutorPermission} />
   ) : (
     <Container>
-      <h2> {process.env.client === "liftone" ? "Editar cliente" : "Editar Tutor"}</h2>
+      <h2>
+        {" "}
+        {process.env.client === "liftone" ? "Editar cliente" : "Editar Tutor"}
+      </h2>
 
       <Form
         layout="vertical"

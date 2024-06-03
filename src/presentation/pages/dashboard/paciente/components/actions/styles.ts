@@ -29,6 +29,10 @@ export const Actions = styled("div")`
     .active {
       background-color: #fff !important;
       color: #fa972b !important;
+
+      svg {
+        fill: ${props => props.theme.primaryColor};
+      }
     }
 
     div {
@@ -51,13 +55,13 @@ export const Actions = styled("div")`
     svg {
       width: 14px;
       height: auto;
-      fill: currentColor;
     }
   }
 
   svg {
-    width: 16px;
-    height: auto;
+    height: 18px;
+    width: auto;
+    fill: #fff;
   }
 
   .box {

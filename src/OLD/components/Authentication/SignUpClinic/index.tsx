@@ -7,12 +7,14 @@ import { notification } from "antd";
 import api from "@/OLD/services";
 import { sessionService } from "@/OLD/services/session.service";
 import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { useAuthAdmin } from "infinity-forge";
 
 export function SignUpClinic() {
   const router = useRouter();
   const [data, setData] = useState<{}>({});
   const [loading, setLoading] = useState(false);
 
+  const { signOut } = useAuthAdmin()
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -26,7 +28,7 @@ export function SignUpClinic() {
             description: "Cadastro realizado com sucesso!",
           });
           setLoading(false);
-          sessionService.logout();
+          signOut();
           router.push("/");
         })
         .catch((err) => {

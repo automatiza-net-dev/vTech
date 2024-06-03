@@ -1,64 +1,58 @@
 import { Column } from "infinity-forge";
-import { PeriodTable } from "../period-table";
-import { SalesPerPeriod } from "@/domain";
+import { Period } from "@/domain";
 
-export const columns: Column<SalesPerPeriod>[] = [
-  {
-    id: "identification",
-    label: "Unidade",
-    hasAsc: false,
-    width: 100,
-  },
+export const columns: Column<Period>[] = [
   {
     id: "period",
-    label: "Manha",
+    label: "Total",
     hasAsc: false,
     width: 100,
     Component: {
-      Element: (props) => (
-        <PeriodTable {...props.period.morning} index={props.index} />
-      ),
+      Element: (props) => <span>{props.period}</span>,
       props: {},
       allProps: true,
     },
   },
   {
-    id: "period",
-    label: "Tarde",
+    id: "total",
+    label: "Total",
     hasAsc: false,
     width: 100,
     Component: {
-      Element: (props) => (
-        <PeriodTable {...props.period.afternoon} index={props.index} />
-      ),
+      Element: (props) => <span>{props.total}</span>,
       props: {},
       allProps: true,
     },
   },
   {
-    id: "period",
-    label: "Noite",
+    id: "new",
+    label: "Novos",
     hasAsc: false,
     width: 100,
     Component: {
-      Element: (props) => (
-        <PeriodTable {...props.period.night} index={props.index} />
-      ),
+      Element: (props) => <span>{props.new}</span>,
       props: {},
       allProps: true,
     },
   },
   {
-    id: "period",
-    label: "Madrugada",
+    id: "recurrent",
+    label: "Recorrentes",
     hasAsc: false,
     width: 100,
     Component: {
-      Element: (props) => (
-        <>
-          <PeriodTable {...props.period.dawn} index={props.index} />
-        </>
-      ),
+      Element: (props) => <span>{props.recurrent}</span>,
+      props: {},
+      allProps: true,
+    },
+  },
+  {
+    id: "percentage",
+    label: "Partic. %",
+    hasAsc: false,
+    width: 100,
+    Component: {
+      Element: (props) => <span>{props.percentage}</span>,
       props: {},
       allProps: true,
     },
