@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SalesPerPeriodTable = styled("div")`
-  width: calc(50% - 372px);
+  width: calc(60% - 372px);
   padding-top: 25px;
   margin: 5px;
 

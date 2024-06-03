@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SalesByUserTable = styled.div`
-  width: calc(65% - 372px);
+  width: calc(75% - 372px);
   padding-top: 25px;
 
   table {

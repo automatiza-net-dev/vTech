@@ -13,7 +13,9 @@ export function TableDashboard(props: DashboardTableType) {
       return props.data.length > 0 && <BillSalesUserTable {...props} />;
     case "sales-per-user":
       return props.configs.length > 0 && <SalesByUserTable {...props} />;
-    {/* case "subgroups":
-  return props.data.length > 0 && <InvoicingBySubgroupTable {...props} />; */}
+      {
+        /* case "subgroups":
+  return props.data.length > 0 && <InvoicingBySubgroupTable {...props} />; */
+      }
   }
 }

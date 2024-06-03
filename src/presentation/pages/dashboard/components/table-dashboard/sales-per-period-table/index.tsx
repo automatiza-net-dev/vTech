@@ -51,7 +51,7 @@ export function SalesPerPeriodTable({ data, description }: DashboardTableType) {
   });
 
   return (
-    <S.SalesPerPeriodTable>
+    <S.SalesPerPeriodTable className="sales_period_table">
       {description && <h3>{description}</h3>}
 
       {Table}

@@ -107,9 +107,7 @@ const ByHour = memo(function ByHour({
       setLoading(true);
       hospitalizationPrescriptionsService
         .updateScheduling(medicalSelected?.id, {
-          executedAt: moment(medicalSelected?.selectedDate)
-            .hours(parseInt(moment(medicalSelected?.selectedHour).format("HH")))
-            .toISOString(),
+          executedAt: moment(data?.selectedDate).toISOString(),
           executionUserId: medicalSelected?.executionUserId,
           hospitalizationId: medicalSelected?.hospitalization.id,
           type: medicalSelected?.type,
@@ -230,8 +228,8 @@ const ByHour = memo(function ByHour({
                       showTime
                       format="DD/MM/YYYY HH:mm"
                       value={
-                        !(selectedIndex === index)
-                          ? moment(medicalPrescription?.created_at)
+                        selectedIndex !== index
+                          ? moment(medicalPrescription?.prescribed_at)
                           : moment(data?.selectedDate)
                       }
                       disabled={!(selectedIndex === index)}

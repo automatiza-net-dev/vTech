@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const FiltersDashboard = styled("div")`
   .date_picker_container {
-    background-color: #36a2eb;
+    background-color: ${(props) => props.theme.primaryColor};
     height: 2.81vw;
     max-height: 54px;
     min-height: 48px;
