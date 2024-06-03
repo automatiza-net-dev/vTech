@@ -13,7 +13,7 @@ export function PieChart({ configs, legend }: DashboardChart) {
   useEffect(() => {
     const chart = echarts.init(chartRef.current, "westeros");
 
-    !configs.length && chart.setOption(configs as any, true);
+    configs && !Array.isArray(configs) && chart.setOption(configs as any, true);
   }, []);
 
   return (
