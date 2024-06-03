@@ -1,0 +1,17 @@
+import styled from "styled-components";
+
+export const InvoicingBySubgroupTable = styled.div`
+  min-height: 200px;
+  width: 100%;
+
+  table {
+    min-height: 250px;
+    max-height: 250px;
+  }
+
+  td {
+    padding: 0px;
+    text-align: center;
+    font-size: 11px !important;
+  }
+`;

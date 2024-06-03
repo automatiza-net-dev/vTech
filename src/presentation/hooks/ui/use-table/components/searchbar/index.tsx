@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import MuiSearchIcon from "@mui/icons-material/Search";
 
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 import { ISearchBar } from "./interfaces";
 

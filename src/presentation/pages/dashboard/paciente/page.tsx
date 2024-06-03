@@ -1,13 +1,14 @@
-import { Tab } from "infinity-forge";
+import { Tab, TabItem } from "infinity-forge";
 
 import {
-  BillsTable,
+  LastUpdates,
   TutorsTable,
   ProfileInfos,
   VaccinesTable,
   ActionsPatient,
 } from "./components";
-import { useLoadPatient, LayoutDashboard } from "@/presentation";
+import { useLoadPatient } from "@/presentation";
+
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
 import { BillAndBudget } from "@/OLD/components/Attendance/Timeline/BillAndBudget";
 import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/HospitalizationTimeline";
@@ -21,41 +22,46 @@ export function PacientePage() {
     return <>Carregando...</>;
   }
 
-  const tabs = [
+  const tabs: TabItem[] = [
     {
-      title: "Tutores",
-      content: <TutorsTable {...data} />,
-      key: "tutors",
-      active: data.tag,
-    },
-    {
-      title: "Vacinas lançadas",
-      content: <VaccinesTable {...data} />,
-      key: "vaccines",
+      title: "Últimas Atualizações",
+      content: (props) => <LastUpdates {...data} {...props} />,
+      key: "ultimas_atualizacoes",
       active: true,
     },
     {
+      title: "Tutores",
+      content:(props) => <TutorsTable {...data} {...props}/>,
+      key: "tutors",
+      active: process.env.clientName === "Sanclá",
+    },
+    {
+      title: "Vacinas lançadas",
+      content: (props) => <VaccinesTable {...data}  {...props}/>,
+      key: "vaccines",
+      active: process.env.clientName === "Sanclá",
+    },
+    {
       title: "Vendas",
-      content: <BillAndBudget patient={data} />,
+      content: (props) => <BillAndBudget patient={data} {...props}/>,
       key: "bills",
       active: true,
     },
     {
       title: "Registros de internação",
-      content: <HospitalizationTimeline patientData={data} modal={false} />,
+      content: (props) => <HospitalizationTimeline patientData={data} modal={false} {...props}/>,
       key: "hospitalization",
-      active: true,
+      active: process.env.clientName === "Sanclá",
     },
     {
       title: "Histórico agenda",
-      content: <PatientHistoric id={data?.id} />,
+      content: (props) => <PatientHistoric id={data?.id} {...props}/>,
       key: "schedule",
       active: true,
     },
   ].filter((item) => item.active);
 
   return (
-    <LayoutDashboard>
       <S.Paciente>
         <ProfileInfos patient={data} />
 
@@ -63,6 +69,5 @@ export function PacientePage() {
 
         <Tab tabs={tabs} />
       </S.Paciente>
-    </LayoutDashboard>
   );
 }

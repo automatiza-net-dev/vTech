@@ -20,7 +20,7 @@ export function Pathologie({ setModal }: Type.DropdownComponentProps) {
 
   const me = useMe();
   const patient = useLoadPatient();
-  const { toast } = useToast();
+  const { createToast} = useToast();
   const { data, isFetching } = useLoadAllPathologies();
 
   return (
@@ -38,12 +38,9 @@ export function Pathologie({ setModal }: Type.DropdownComponentProps) {
 
             await container.get<RemotePatientAnimal>(TypesAutomatiza.RemotePatientAnimal).addPathologieInTimeLine(payload)
 
-            toast.success("Patologia registrada com sucesso!", {
-              autoClose: 4000,
-              position: "top-right",
-            });
+            createToast({ message: "Patologia registrada com sucesso!", status: "success" })
 
-            setModal(false);
+            setModal && setModal(false);
           }}
           disableEnterKeySubmitForm
         >

@@ -4,6 +4,7 @@ import { Container } from "inversify";
 import { menuContainer } from "./menu";
 import { infraContainer } from "./infra";
 import { adminContainer } from "./admin";
+import { subgroupContainer } from "./subgroups";
 import {
   crmContainer,
   entriesContainer,
@@ -11,6 +12,7 @@ import {
   userDashboardContainer,
   dashboardContainer,
 } from "./dashboard";
+import { systemContainer } from "./system";
 
 const container = Container.merge(
   infraContainer,
@@ -20,7 +22,9 @@ const container = Container.merge(
   entriesContainer,
   menuContainer,
   userDashboardContainer,
-  dashboardContainer
+  dashboardContainer,
+  subgroupContainer,
+  systemContainer
 );
 
 export { container };

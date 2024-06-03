@@ -1,7 +1,6 @@
 // @ts-nocheck
 // Core
 import * as React from "react";
-import { memo } from "react";
 
 // Hooks
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
@@ -24,10 +23,11 @@ import {
   notification,
   AutoComplete,
 } from "antd";
+import { Modal } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "@/OLD/components/mini-components/Button";
 import { Container, Input, Label } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { Button } from "@/OLD/components/mini-components/Button";
 
 import { useQuery } from "react-query";
 import { useGetAllBills } from "../../../OLD/hooks/useBills";
@@ -35,7 +35,6 @@ import { petsService } from "../../../OLD/services/patient.service";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 import CreateBill from "./Create";
-
 
 export const billStatusFormatter = (status) => {
   switch (status) {
@@ -92,7 +91,6 @@ export default function Bills() {
   const { data, refetch } = useGetAllBills(filters, reload);
   const { patients } = usePatients();
   const { cashiers } = useDailyCasher(cashierFilters);
-
 
   const createPermission = useUserHasPermission("VEN01");
   const listBillsPermission = useUserHasPermission("VEN00");
@@ -287,13 +285,23 @@ export default function Bills() {
               Filtrar
             </Button>
             {createPermission && (
-              <Button
-                onClick={() => {
-                  setOpenCreate((prev) => !prev);
-                }}
-              >
-                Nova venda
-              </Button>
+              <Modal
+                modal={openCreate}
+                setModal={setOpenCreate}
+                style={{ maxWidth: "1200px", padding: "20px" }}
+                children={
+                  <CreateBill visible={openCreate} setModal={setOpenCreate} />
+                }
+                trigger={
+                  <Button
+                    onClick={() => {
+                      setOpenCreate((prev) => !prev);
+                    }}
+                  >
+                    Nova venda
+                  </Button>
+                }
+              />
             )}
           </div>
         </div>
@@ -342,16 +350,6 @@ export default function Bills() {
           )}
         />
       </div>
-      {openCreate && (
-        <CreateBill
-          visible={openCreate}
-          close={() => {
-            refetch();
-            setOpenCreate(false);
-          }}
-        />
-      )}
     </Container>
   );
 }
-

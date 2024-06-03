@@ -15,7 +15,7 @@ const { TextArea } = Input;
 // Utils
 import moment from "moment";
 
-const FormChild = memo(function FormChild({
+function FormChild({
   data,
   setData,
   setVisible,
@@ -129,13 +129,13 @@ const FormChild = memo(function FormChild({
                 {" "}
                 Cancelar{" "}
               </Button>
-              <Button type="primary" htmlType="submit" loading={loading}>
+              <Button loading={loading} type="primary" htmlType="submit" loading={loading}>
                 salvar
               </Button>
             </div>
           ) : (
             <div className="uk-flex uk-flex-right uk-margin-top">
-              <Button htmlType="submit" type="primary">
+              <Button htmlType="submit" type="primary" loading={loading}>
                 Atualizar
               </Button>
               <Popconfirm
@@ -146,6 +146,7 @@ const FormChild = memo(function FormChild({
                   htmlType="button"
                   type="danger"
                   className="uk-margin-small-left"
+                  loading={loading}
                 >
                   Excluir
                 </Button>
@@ -156,6 +157,6 @@ const FormChild = memo(function FormChild({
       </div>
     </form>
   );
-});
+}
 
 export default FormChild;

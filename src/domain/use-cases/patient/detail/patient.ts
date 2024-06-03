@@ -37,7 +37,7 @@ export type Patient = {
   gender: "female" | "male";
   genderText: string;
   tags: string;
-  birth_date:string;
+  birth_date: string;
   age: string;
   tag: string;
   weight: number;
@@ -56,6 +56,10 @@ export type Patient = {
   castrated: boolean;
   hair: string;
   race: string;
-  specie:string;
+  specie: string;
+  specie_id?: string;
+  cellphone?: string;
+  email?: string;
   tutor: Tutor;
+  community: boolean;
 };

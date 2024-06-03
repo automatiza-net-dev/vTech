@@ -31,6 +31,8 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useAuthAdmin } from "infinity-forge";
 import { SystemUser } from "@/domain";
 
+import moment from "moment";
+
 const columns = [
   {
     title: "Qtd",
@@ -83,13 +85,9 @@ const mapper = (data = [], total = 0, handleFn: any) => {
     discount_value: item.discount_value,
     total_value: item.total_value,
   }));
-
 };
 
-export default function ShowBudget({
-  budget,
-  setReload,
-}: any) {
+export default function ShowBudget({ budget, setReload }: any) {
   const [visible, setVisible] = React.useState(false);
   const [payload, setPayload] = React.useState<any>({});
   const [activeTab, setActiveTab] = React.useState("0");
@@ -196,9 +194,9 @@ export default function ShowBudget({
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Data de Expiração</span>
+                  <span className="uk-text-small">Data Validade</span>
                   <span className="uk-text-default">
-                    {dateFormatter(data?.expiration_date)}
+                    {moment(data?.expiration_date).format("DD/MM/YYYY")}
                   </span>
                 </div>
 
@@ -240,7 +238,8 @@ export default function ShowBudget({
                     </span>
                   </div>
                 )}
-                {process.env.client !== "liftone"  && (
+                
+                {process.env.client !== "liftone" && (
                   <>
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <div className="uk-flex">
@@ -311,75 +310,82 @@ export default function ShowBudget({
                       </div>
                     </div>
                     <div className="uk-flex uk-flex-column uk-width-1-1">
-                      <div className="uk-flex">
-                        <span className="uk-text-small uk-margin-right">
-                          Avaliador
-                        </span>
-                        {!editFields?.reviewer ? (
-                          <span
-                            className="uk-link"
-                            onClick={() =>
-                              setEditFields((prv) => ({
-                                ...prv,
-                                reviewer: true,
-                              }))
-                            }
-                          >
-                            Alterar
-                          </span>
-                        ) : (
-                          <div>
-                            <span
-                              className="uk-link uk-margin-right"
-                              onClick={() => submitReviewerAndSeller()}
-                            >
-                              Salvar
+                      {process.env.clientName === "LiftOne" && (
+                        <>
+                          <div className="uk-flex">
+                            <span className="uk-text-small uk-margin-right">
+                              Avaliador
                             </span>
-                            <span
-                              className="uk-link"
-                              onClick={() => {
-                                setEditFields((prv) => ({
-                                  ...prv,
-                                  reviewer: false,
-                                }));
+                            {!editFields?.reviewer ? (
+                              <span
+                                className="uk-link"
+                                onClick={() =>
+                                  setEditFields((prv) => ({
+                                    ...prv,
+                                    reviewer: true,
+                                  }))
+                                }
+                              >
+                                Alterar
+                              </span>
+                            ) : (
+                              <div>
+                                <span
+                                  className="uk-link uk-margin-right"
+                                  onClick={() => submitReviewerAndSeller()}
+                                >
+                                  Salvar
+                                </span>
+                                <span
+                                  className="uk-link"
+                                  onClick={() => {
+                                    setEditFields((prv) => ({
+                                      ...prv,
+                                      reviewer: false,
+                                    }));
+                                    setPayload((prv) => ({
+                                      ...prv,
+                                      reviewerName: budget?.reviewer?.name,
+                                      reviewerId: budget?.reviewer?.id,
+                                    }));
+                                  }}
+                                >
+                                  Cancelar
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="uk-width-1-2">
+                            <AutoComplete
+                              disabled={!editFields?.reviewer}
+                              className="uk-width-1-1"
+                              value={payload?.reviewerName}
+                              options={colaborators?.map((collab: any) => ({
+                                ...collab,
+                                value: collab?.name,
+                              }))}
+                              onChange={(val) =>
                                 setPayload((prv) => ({
                                   ...prv,
-                                  reviewerName: budget?.reviewer?.name,
-                                  reviewerId: budget?.reviewer?.id,
-                                }));
-                              }}
-                            >
-                              Cancelar
-                            </span>
+                                  reviewerName: val,
+                                }))
+                              }
+                              onSelect={(_, opt) =>
+                                setPayload((prv) => ({
+                                  ...prv,
+                                  reviewerId: opt?.id,
+                                  reviewerName: opt?.value,
+                                }))
+                              }
+                              filterOption={(val, opt) =>
+                                normalizeStr(opt?.value.toUpperCase()).includes(
+                                  normalizeStr(val?.toUpperCase())
+                                )
+                              }
+                            />
                           </div>
-                        )}
-                      </div>
-                      <div className="uk-width-1-2">
-                        <AutoComplete
-                          disabled={!editFields?.reviewer}
-                          className="uk-width-1-1"
-                          value={payload?.reviewerName}
-                          options={colaborators?.map((collab: any) => ({
-                            ...collab,
-                            value: collab?.name,
-                          }))}
-                          onChange={(val) =>
-                            setPayload((prv) => ({ ...prv, reviewerName: val }))
-                          }
-                          onSelect={(_, opt) =>
-                            setPayload((prv) => ({
-                              ...prv,
-                              reviewerId: opt?.id,
-                              reviewerName: opt?.value,
-                            }))
-                          }
-                          filterOption={(val, opt) =>
-                            normalizeStr(opt?.value.toUpperCase()).includes(
-                              normalizeStr(val?.toUpperCase())
-                            )
-                          }
-                        />
-                      </div>
+                        </>
+                      )}
                     </div>
                   </>
                 )}
@@ -560,5 +566,3 @@ export default function ShowBudget({
     </>
   );
 }
-
-

@@ -4,7 +4,7 @@ export type CloseSchedule = {
 
 export namespace CloseSchedule {
   export type Params = {
-    idAtendimento: string;
+    idAtendimento: number;
   };
 
   export type Model = {};

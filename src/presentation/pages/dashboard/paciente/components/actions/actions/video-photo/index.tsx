@@ -5,14 +5,22 @@ import {
   Input,
   useToast,
   Textarea,
+  InputFile,
+  useAuthAdmin,
 } from "infinity-forge";
 
+import { User } from "@/domain";
 import { DropdownComponentProps } from "../dropdown-item";
 
 import * as S from "./styles";
 
 export function VideoPhoto({ setModal }: DropdownComponentProps) {
-  const { toast } = useToast();
+  const { createToast } = useToast();
+
+  const router = useRouter();
+  const userId = useAuthAdmin().GetUser<User>().user.id;
+
+  const patientId = router.query.id as string;
 
   return (
     <Error name="VideoPhoto">
@@ -20,6 +28,12 @@ export function VideoPhoto({ setModal }: DropdownComponentProps) {
         <FormHandler
           button={{ text: "Salvar" }}
           onSucess={async (data) => {
+            const payload = {
+              ...data,
+              tag: patientId,
+              technicianId: userId,
+            };
+
             // await container
             //   .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
             //   .open({
@@ -30,12 +44,12 @@ export function VideoPhoto({ setModal }: DropdownComponentProps) {
             //       : "",
             //   });
 
-            toast.success("Video/Foto criada com sucesso!", {
-              autoClose: 4000,
-              position: "top-right",
+            createToast({
+              message: "Video/Foto criada com sucesso!",
+              status: "success",
             });
 
-            setModal(false);
+            setModal && setModal(false);
           }}
           disableEnterKeySubmitForm
         >
@@ -44,6 +58,8 @@ export function VideoPhoto({ setModal }: DropdownComponentProps) {
           </div>
 
           <Textarea name="observation" placeholder="Observações" />
+
+          <InputFile name="photos" />
         </FormHandler>
       </S.VideoPhoto>
     </Error>

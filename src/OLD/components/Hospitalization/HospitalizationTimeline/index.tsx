@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import {
   useTimeline,
-  useCompleteHospitalizationsTimeline
+  useCompleteHospitalizationsTimeline,
 } from "@/OLD/hooks/useTimeline";
 import { Button, DatePicker, Modal, Select } from "antd";
 import Timeline from "./Timeline";
@@ -21,14 +21,14 @@ const filterOptions = [
   { label: "Prescrição médica", value: "prescription", key: 5 },
   { label: "Óbito", value: "death_occurrence", key: 6 },
   { label: "Peso", value: "weight_occurrence", key: 7 },
-  { label: "Finalizar Internação", value: "scheduling_execution", key: 8 }
+  { label: "Finalizar Internação", value: "scheduling_execution", key: 8 },
 ];
 
 export function HospitalizationTimeline({
   visible = false,
   setVisible = false,
   modal,
-  patientData
+  patientData,
 }) {
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -37,13 +37,13 @@ export function HospitalizationTimeline({
 
   const { timelineData } = useTimeline(
     patientData?.id,
-    modal ? visible : true,
+    modal ? visible : false,
     reload
   );
 
   const { timelineData: completeTimeline } =
     useCompleteHospitalizationsTimeline(
-      patientData?.patient?.id,
+      patientData?.id,
       !modal,
       reload
     );
@@ -154,4 +154,4 @@ export function HospitalizationTimeline({
       allowEdit={!patientData?.finished_at}
     />
   );
-};
+}

@@ -6,7 +6,7 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 import * as domain from "@/domain";
 
 @injectable()
-export class RemoteAttendances implements domain.OpenAttendace {
+export class RemoteAttendances implements domain.OpenAttendace, domain.UpdateAttendace {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
@@ -21,5 +21,16 @@ export class RemoteAttendances implements domain.OpenAttendace {
     });
 
     return response as domain.OpenAttendace.Model;
+  }
+
+  async update(params: domain.UpdateAttendace.Params) {
+
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`attendances/update/${params.id}`),
+      method: "put",
+      body: params
+    });
+
+    return response as domain.UpdateAttendace.Model;
   }
 }

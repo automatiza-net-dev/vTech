@@ -1,4 +1,3 @@
-import { Style } from "@mui/icons-material";
 import styled from "styled-components";
 
 export const ButtonSetSchedulling = styled.div`
@@ -17,5 +16,10 @@ export const ButtonSetSchedulling = styled.div`
     box-shadow: none;
     height: 2.08vw;
     min-height: 36px;
+
+    &:disabled {
+      background-color: #dddcdc !important;
+      color: #fff !important;
+    }
   }
 `;

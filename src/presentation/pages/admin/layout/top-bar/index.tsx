@@ -6,7 +6,7 @@ import {
   Tooltip as MuiTooltip,
   IconButton as MuiIconButton,
 } from "@mui/material";
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 import { AccountCircle as MuiAccountCircle } from "@mui/icons-material";
 
 import { TopBarMenu, topBarMenuId } from "./menu";

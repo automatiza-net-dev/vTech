@@ -1,50 +1,49 @@
-import { Icon } from "semantic-ui-react";
+import { useToast, Icon } from "infinity-forge";
 
-import { useToast } from "infinity-forge";
-
-import { RemoteChangeStatus, RemoteSchedule } from "@/data";
 import { container, patientTypes } from "@/container";
-import {
-  PermissionItem,
-  useLoadAllScheduleStatuses,
-} from "@/presentation";
+import { RemoteChangeStatus, RemoteSchedule } from "@/data";
+import { PermissionItem, useLoadAllScheduleStatuses } from "@/presentation";
 
 import { ActionSchedule } from "../interface";
 
 export function EndService({ event, onExecuteAction }: ActionSchedule) {
-  const { toast } = useToast();
+  const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
+
+  const attendances = event.event.attendances;
 
   async function handleClick() {
     const scheduleId = event.event.id;
 
-    const statusId = scheduleStatuses.data?.find(
-      (status) => status.type === "FIN"
-    )?.id || "";
+    const statusId =
+      scheduleStatuses.data?.find((status) => status.type === "FIN")?.id || "";
 
     await container
       .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
       .change({
-        scheduleId: scheduleId,
+        scheduleId,
         statusId,
       });
 
-    await container
-      .get<RemoteSchedule>(patientTypes.RemoteSchedule)
-      .close({ idAtendimento: scheduleId });
+    if (attendances && attendances.length > 0) {
+      const promises = attendances.map((attendance) =>
+        container
+          .get<RemoteSchedule>(patientTypes.RemoteSchedule)
+          .close({ idAtendimento: attendance.id })
+      );
+
+      await Promise.all(promises)
+    }
 
     onExecuteAction();
 
-    toast.success("informado com sucesso!", {
-      autoClose: 4000,
-      position: "top-right",
-    });
+    createToast({ message: "informado com sucesso!", status: "success" });
   }
 
   return (
     <PermissionItem hash="AGE08">
       <button className="reset-button red" type="button" onClick={handleClick}>
-        <Icon name="cancel" />
+        <Icon name="CloseIcon" />
         <span>Encerrar atendimento</span>
       </button>
     </PermissionItem>

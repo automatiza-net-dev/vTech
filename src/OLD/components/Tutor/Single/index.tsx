@@ -9,9 +9,8 @@ import Link from "next/link";
 import { convertDate } from "@/OLD/utils/convertDate";
 import { columns } from "./columns";
 import { AddPatient } from "./AddPatient";
-import { Container } from "./styles";
 
-export const Single = memo(function Single({
+export function Single({
   selectedId,
   setVisible,
   setEditVisible,
@@ -70,7 +69,7 @@ export const Single = memo(function Single({
             patientRec: (
               <Button
                 onClick={() =>
-                  router.push(`/dashboard/atendimento/${patient?.id}`)
+                  router.push(`/dashboard/paciente/${patient?.id}`)
                 }
               >
                 Ficha paciente
@@ -308,4 +307,4 @@ export const Single = memo(function Single({
       )}
     </div>
   );
-});
+}

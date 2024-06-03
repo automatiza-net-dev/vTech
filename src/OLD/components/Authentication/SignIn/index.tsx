@@ -24,11 +24,13 @@ export function SignIn() {
   const {loadUser} = useAuthAdmin()
 
   useEffect(() => {
-    fetch("https://api.ipify.org/")
+    if(process.browser) {
+      fetch("https://api.ipify.org/")
       .then((res) => res.text())
       .then((res) => {
         setData((prev) => ({ ...prev, ipAddress: res }));
       });
+    }
   }, []);
 
   const handleSubmit = useCallback(

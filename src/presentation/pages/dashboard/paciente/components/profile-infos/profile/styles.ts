@@ -4,7 +4,8 @@ export const Profile = styled("div")`
   width: fit-content;
   display: flex;
   gap: 20px;
-  min-width: fit-content;
+  max-width: 400px;
+  width: 100%;
 
   .avatar {
     width: 155px;
@@ -14,6 +15,8 @@ export const Profile = styled("div")`
   }
 
   > div {
+    width: calc(100% - 175px);
+    
     span {
       display: flex;
       align-items: center;

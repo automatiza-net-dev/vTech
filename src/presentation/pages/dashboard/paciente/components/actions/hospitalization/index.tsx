@@ -3,10 +3,16 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 import moment from "moment";
-import { Input, Select, Textarea, FormHandler, useToast } from "infinity-forge";
-
 import {
   Error,
+  Input,
+  Select,
+  Textarea,
+  FormHandler,
+  useToast,
+} from "infinity-forge";
+
+import {
   Modal,
   useLoadBeds,
   PermissionItem,
@@ -21,7 +27,7 @@ import * as S from "./styles";
 export function Hospitalization() {
   const [modal, setModal] = useState(false);
 
-  const { toast } = useToast();
+  const { createToast } = useToast();
 
   const router = useRouter();
 
@@ -57,9 +63,9 @@ export function Hospitalization() {
                     tutorId: patient.data?.tutor.id,
                   });
 
-                toast.success("Hospitalização criada com sucesso!", {
-                  autoClose: 3000,
-                  position: "top-right",
+                createToast({
+                  message: "Hospitalização criada com sucesso!",
+                  status: "success",
                 });
 
                 router.push("/dashboard/internacao");
@@ -156,6 +162,7 @@ export function Hospitalization() {
         </Modal>
 
         <S.Hospitalization
+          svg="IconHospitalization"
           text="INTERNAÇÃO"
           onClick={() => {
             patient.data?.isHospitalized
@@ -167,4 +174,4 @@ export function Hospitalization() {
     </Error>
   );
 }
-{/* */}
+

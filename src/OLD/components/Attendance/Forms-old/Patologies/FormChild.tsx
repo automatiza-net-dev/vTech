@@ -1,18 +1,15 @@
 // @ts-nocheck
-// Core
-import React, { memo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-// Utils
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-// Components
 import { Input, Button, AutoComplete, Popconfirm, notification } from "antd";
 const { TextArea } = Input;
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
 
-const FormChild = memo(function FormChild({
+function FormChild({
   data,
   setData,
   allPathologies,
@@ -49,6 +46,7 @@ const FormChild = memo(function FormChild({
       <div>
         <label>Patologia</label>
         <AutoComplete
+          disabled={!modal}
           value={pathologySearch}
           className="uk-width-1-1"
           options={allPathologies.map((pathology) => ({
@@ -148,6 +146,6 @@ const FormChild = memo(function FormChild({
       </footer>
     </form>
   );
-});
+}
 
 export default FormChild;

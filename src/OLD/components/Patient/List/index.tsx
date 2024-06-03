@@ -2,8 +2,7 @@
 import { Table, Tag, Modal } from "antd";
 import Link from "next/link";
 import ActiveTutorsForm from "../ActiveTutorsForm";
-import { memo, useCallback, useEffect, useState } from "react";
-import { petsService } from "@/OLD/services/patient.service";
+import {  useEffect, useState } from "react";
 import { convertDate } from "@/OLD/utils/convertDate";
 import { Delete } from "../Delete";
 import { columns, customColumns, opportunitiesColumns } from "./columns";
@@ -18,11 +17,11 @@ import { Edit } from "../Edit";
 
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
-import { PlusSquare } from "@styled-icons/bootstrap/PlusSquare";
 
 // Utils
 import TutorVincForm from "./TutorVincForm";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { PermissionItem } from "@/presentation";
 
 export function PatientList({
   filters,
@@ -36,12 +35,11 @@ export function PatientList({
   querySchedule,
   origin = false,
 }) {
-  const [loading, setLoading] = useState();
   const [refreshList, setRefreshList] = useState();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const [activeTutorOpen, setActiveTutorOpen] = useState(false);
   const [selectedId, setSelectedId] = useState();
-  const [patient, setPatient] = useState("");
+  const [patient, setPatient] = useState<any>("");
   const [patientSelected, setPatientSelected] = useState("");
   const [newTutorOpen, setNewTutorOpen] = useState(false);
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -49,13 +47,13 @@ export function PatientList({
 
   const { patients } = usePatients(internReload, filters);
 
-  const canEditPet = useUserHasPermission("PET02");
-  const canDeletePet = useUserHasPermission("PET03");
+  
+  // const canDeletePet = useUserHasPermission("PET03");
 
   const handleCreateTable = () => {
     patients?.length > 0
       ? setData(
-          patients?.map((patient) => {
+          patients?.map((patient: any) => {
             return {
               name: (
                 <div
@@ -92,14 +90,24 @@ export function PatientList({
                         <span>{item?.name}&nbsp;|&nbsp;</span>
                       )
                     )}
-                  <PlusSquare
-                    size={20}
+                  <svg
+                    viewBox="0 0 16 16"
+                    height="20"
+                    width="20"
+                    focusable="false"
+                    role="img"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
                     className="add-icon"
                     onClick={() => {
                       setPatientSelected(patient);
                       setNewTutorOpen(true);
                     }}
-                  />
+                  >
+                    <title>PlusSquare icon</title>
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                  </svg>
                   &nbsp;
                   <span
                     className="uk-link"
@@ -117,29 +125,30 @@ export function PatientList({
                   ? `${patient?.race?.specie?.description} > ${patient?.race?.description}`
                   : "Raça não informado",
               attendance: (
-                <Link href={`/dashboard/atendimento/${patient?.id}`}>
+                <Link href={`/dashboard/paciente/${patient?.id}`}>
                   <Tag color="gray" style={{ cursor: "pointer" }}>
                     Ficha paciente
                   </Tag>
                 </Link>
               ),
+              community: patient.community ? "Sim" : "Não",
               actions: (
                 <div className="uk-flex" style={{ gap: "20px" }}>
-                  {canEditPet && (
-                    <EditTwoTone
+                  <PermissionItem hash="PET02">
+                  <EditTwoTone
                       className=""
                       onClick={() => {
                         setSelectedId(patient.id);
                         setEditVisible(true);
                       }}
                     />
-                  )}
-                  {canDeletePet && (
+                  </PermissionItem>
+                
+                  {/* {canDeletePet && (
                     <Delete
-                      id={patient.id}
                       setRefreshList={() => setRefreshList(!refreshList)}
                     />
-                  )}
+                  )} */}
                 </div>
               ),
               schedule: (
@@ -197,8 +206,6 @@ export function PatientList({
   }, [
     refreshList,
     internReload,
-    canEditPet,
-    canDeletePet,
     querySchedule,
     filters,
     patients,
@@ -240,7 +247,6 @@ export function PatientList({
             : customColumns
         }
         dataSource={Object.keys(filters).length === 0 ? [] : data}
-        loading={loading}
         locale={{
           emptyText:
             Object.keys(filters).length === 0 ? (

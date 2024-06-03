@@ -7,7 +7,7 @@ import { Modal, useScheduling } from "@/presentation";
 import * as S from "./styles";
 
 export function ModalOpportunitie() {
-  const { toast } = useToast();
+  const { createToast } = useToast();
 
   const oppotunities = useScheduling((state) => state.oppotunities);
   const setOpportunities = useScheduling((state) => state.setOpportunities);
@@ -31,7 +31,9 @@ export function ModalOpportunitie() {
 
               <td>Cliente</td>
 
-              {oppotunities.find(item => item?.client?.name) && <td>Paciente</td>}
+              {oppotunities.find((item) => item?.client?.name) && (
+                <td>Paciente</td>
+              )}
 
               <td></td>
             </tr>
@@ -59,28 +61,26 @@ export function ModalOpportunitie() {
                       onClick={async () => {
                         try {
                           await container
-                          .get<RemoteCRM>(CrmTypes.RemoteCRM)
-                          .sync({
-                            opportunityId: oppotunitie.id,
-                            scheduleId: oppotunitie.scheduleId || "",
+                            .get<RemoteCRM>(CrmTypes.RemoteCRM)
+                            .sync({
+                              opportunityId: oppotunitie.id,
+                              scheduleId: oppotunitie.scheduleId || "",
+                            });
+
+                          createToast({
+                            message: "Oportunidade vinculada com sucesso!",
+                            status: "success",
                           });
 
-                        toast.success("Oportunidade vinculada com sucesso!", {
-                          autoClose: 3000,
-                          position: "top-right",
-                        });
-
-                        setOpportunities(null);
-                        }catch(err) {
-                          if(err instanceof BadRequestError) {
-                            console.log("entro",err.error.message )
-                            toast.error(err.error.message, {
-                              autoClose: 3000,
-                              position: "top-right",
+                          setOpportunities(null);
+                        } catch (err) {
+                          if (err instanceof BadRequestError) {
+                            createToast({
+                              message: err.error.message,
+                              status: "success",
                             });
                           }
                         }
-                
                       }}
                     >
                       Vincular

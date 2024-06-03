@@ -1,7 +1,8 @@
 import { useQueryClient } from "react-query";
+import { Error } from "infinity-forge";
 
 import { Event, ScheduleUser } from "@/domain";
-import { DateToYYYYMMDD, Error, useScheduling } from "@/presentation";
+import { DateToYYYYMMDD, useScheduling } from "@/presentation";
 
 import { EndService } from "./end-service";
 import { EditSchedule } from "./edit-schedule";

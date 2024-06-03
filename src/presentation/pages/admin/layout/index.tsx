@@ -1,6 +1,7 @@
 import TopBar from "./top-bar";
 import { SideBar } from "./menu";
-import { Breadcrumb, GoBackRoute, Error } from "@/presentation";
+
+import { Breadcrumb, Error } from "infinity-forge";
 
 import { ILayoutProps } from "./interfaces";
 
@@ -8,7 +9,6 @@ import * as S from "./styles";
 
 export function LayoutAdmin({
   children,
-  back,
   disableBreadcrumb,
 }: ILayoutProps) {
   return (
@@ -18,11 +18,6 @@ export function LayoutAdmin({
 
         <div className="content">
           <TopBar />
-          {back && (
-            <div className="goBack">
-              <GoBackRoute />
-            </div>
-          )}
 
           <div className="page">
             {!disableBreadcrumb && <Breadcrumb />}

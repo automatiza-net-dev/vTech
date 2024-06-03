@@ -26,4 +26,8 @@ export const InputBox = styled.div`
     border: none;
     width: 100%;
   }
+
+  .custom-input {
+    border: 1px solid var(--cinza-200, #e1e1e1);
+  }
 `;

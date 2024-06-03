@@ -1,5 +1,4 @@
 import moment from "moment";
-import { Icon } from "semantic-ui-react";
 
 import {
   useScheduling,
@@ -10,7 +9,7 @@ import {
 } from "@/presentation";
 
 import { ActionSchedule } from "../interface";
-import {  } from "@/presentation";
+import { Icon } from "infinity-forge";
 
 export function EditSchedule({ event, scheduleUser }: ActionSchedule) {
   const setCreateSchedulingArgs = useScheduling(
@@ -46,7 +45,7 @@ export function EditSchedule({ event, scheduleUser }: ActionSchedule) {
           setCreateSchedulingArgs(args);
         }}
       >
-        <Icon name="edit outline" />
+        <Icon name="IconEdit" />
         <span>Editar agendamento</span>
       </button>
     </PermissionItem>

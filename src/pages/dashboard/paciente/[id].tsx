@@ -1,7 +1,12 @@
 import React from "react";
 
 import { PacientePage } from "@/presentation";
+import { LayoutDashboard } from "@/presentation";
 
 export default function PatientPage() {
-  return <PacientePage />;
+  return (
+    <LayoutDashboard>
+      <PacientePage />
+    </LayoutDashboard>
+  );
 }

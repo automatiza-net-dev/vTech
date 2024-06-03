@@ -1,31 +1,62 @@
-import { Error, HighlightText, NextImage, Icon } from "infinity-forge";
+import { useState } from "react";
+import { Error, HighlightText, NextImage, Icon, Modal } from "infinity-forge";
 
-import { Patient, Tutor } from "@/domain";
+import { Patient } from "@/domain";
+import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
+import { Edit as EditTutor } from "@/OLD/components/Tutor/Edit";
 
 import * as S from "./styles";
 
 export function Profile({
   tag,
   name,
+  id,
   tags,
   tutor,
   photo,
   isHospitalized,
+  cellphone,
+  email,
+  community,
 }: Patient) {
+  const [modal, setModal] = useState(false);
+
   const DEFAULT_AVATAR =
     process?.env?.client === "sancla"
-      ? "/images/logo/sancla-default-profile.png"
-      : "/images/logo/liftone-default-profile.jpg";
+      ? "/images/pages/patient/pet.jpg"
+      : "/images/pages/patient/humano.jpg";
 
   return (
     <Error name="Profile">
       <S.Profile>
         <div className="avatar">
-          <NextImage src={photo || DEFAULT_AVATAR} />
+          <img
+            src={photo ? process.env.NEXT_PUBLIC_API + photo : DEFAULT_AVATAR}
+          />
         </div>
 
         <div>
-          {name && <h1>{name}</h1>}
+          {name && (
+            <Modal
+              children={
+                process.env.clientName === "Sanclá" ? (
+                  <EditPatient id={id} setVisible={setModal} />
+                ) : (
+                  <EditTutor tutorId={id} setVisible={setModal} />
+                )
+              }
+              modal={modal}
+              setModal={setModal}
+              style={{ maxWidth: "1200px", padding: "20px", overflow: "auto" }}
+              trigger={
+                <h1>
+                  <span className="custom-link" onClick={() => setModal(true)}>
+                    {name}
+                  </span>
+                </h1>
+              }
+            />
+          )}
 
           {isHospitalized && (
             <span className="status">
@@ -34,20 +65,43 @@ export function Profile({
           )}
 
           <div className="infos">
-            {tag && <span>RG {tag}</span>}
+            {tag && (
+              <span>
+                RG {tag} {community ? "- Comunidade Sanclá" : ""}
+              </span>
+            )}
 
-            <span>
-              <a href={`tel:${tutor?.cellphone}`}>
-                <Icon name="IconWhatsInverse" />{" "}
-                {tutor?.cellphone || "Telefone não informado"}
-              </a>
-            </span>
+            {process.env.clientName === "Sanclá" ? (
+              <>
+                <span>
+                  <a href={tutor?.cellphone ? `tel:${tutor?.cellphone}` : ""}>
+                    <Icon name="IconWhatsInverse" />{" "}
+                    {tutor?.cellphone || "Telefone não informado"}
+                  </a>
+                </span>
 
-            <span>
-              <a href={`mailto:${tutor?.email}`}>
-                {tutor?.email || "Email não informado"}
-              </a>
-            </span>
+                <span>
+                  <a href={tutor?.email ? `mailto:${tutor?.email}` : ""}>
+                    {tutor?.email || "Email não informado"}
+                  </a>
+                </span>
+              </>
+            ) : (
+              <>
+                <span>
+                  <a href={cellphone ? `tel:${cellphone}` : ""}>
+                    <Icon name="IconWhatsInverse" />{" "}
+                    {cellphone || "Telefone não informado"}
+                  </a>
+                </span>
+
+                <span>
+                  <a href={email ? `mailto:${email}` : ""}>
+                    {email || "Email não informado"}
+                  </a>
+                </span>
+              </>
+            )}
 
             {tags && <div dangerouslySetInnerHTML={{ __html: tags }} />}
           </div>

@@ -1,4 +1,4 @@
-import { Popup } from "semantic-ui-react";
+import { Tooltip } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 import { useLoadPatient } from "@/presentation";
@@ -16,7 +16,7 @@ export function DeleteTutor(props: Tutor) {
 
   return (
     <S.DeleteTutor>
-      <Popup
+      <Tooltip
         content="Deletar"
         trigger={
           <button onClick={() => console.log("delete")}>

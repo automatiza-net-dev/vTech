@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  font-size: 0.6em;
+  font-size: 1em;
 
   .table-section {
     background-color: #ffffff;

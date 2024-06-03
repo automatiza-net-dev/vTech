@@ -97,7 +97,7 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
                         label: "Ficha do patiente",
                         onClick: () =>
                           router.push(
-                            `/dashboard/atendimento/${hospitalization?.patient?.id}`
+                            `/dashboard/paciente/${hospitalization?.patient?.id}`
                           ),
                       },
                       {

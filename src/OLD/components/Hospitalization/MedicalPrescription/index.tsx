@@ -29,9 +29,9 @@ export default function MedicalPrescription({
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
 
-  const { medicalPrescription } = useMedicalPrescription(router.query.innerid);
+  const { medicalPrescription } = useMedicalPrescription(router.query.id);
 
-  const hospitalizationId = router.query.innerpage;
+  const hospitalizationId = router.query.id;
 
   const toFillFields = () => {
     setType(medicalPrescription?.type);

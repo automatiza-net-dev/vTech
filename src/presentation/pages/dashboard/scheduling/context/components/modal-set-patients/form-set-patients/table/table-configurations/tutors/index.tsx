@@ -1,4 +1,4 @@
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 import { AddTutor } from "./add-tutor";

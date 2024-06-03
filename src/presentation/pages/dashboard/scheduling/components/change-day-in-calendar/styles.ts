@@ -6,6 +6,7 @@ export const ChangeDayInCalendar = styled("div")`
   align-items: center;
   height: 38px;
   gap: 10px;
+  margin-top: 10px;
 
   .react-date-picker {
     height: 100%;
@@ -33,6 +34,12 @@ export const ChangeDayInCalendar = styled("div")`
       height: auto;
       color: #6e6e6e;
     }
+  }
+
+  input {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 14px;
   }
 
   > button {

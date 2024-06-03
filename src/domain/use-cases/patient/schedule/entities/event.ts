@@ -5,6 +5,13 @@ export type Event = {
   start: string;
   type: "working" | "unavailable" | "schedule";
   event: {
+    attendances?: {
+      id: number;
+      scheduleService: {
+        id: string;
+        description: string;
+      };
+    }[];
     title?: string;
     id: string;
     week_day: string;
@@ -53,4 +60,7 @@ export type Event = {
     start: string;
     type: "schedule";
   };
+  name?: string;
+  late?: number;
+  date?: string;
 };

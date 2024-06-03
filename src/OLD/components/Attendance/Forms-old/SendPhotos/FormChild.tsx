@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import React, { memo } from "react";
+import React from "react";
 
 // Icons
 import { PlusOutline } from "styled-icons/evaicons-outline";
@@ -97,6 +97,7 @@ function FormChild({
             <Popconfirm
               title="Deseja remover este registro?"
               onConfirm={() => remove()}
+              loading={loading}
             >
               <Button
                 htmlType="button"

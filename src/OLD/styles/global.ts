@@ -2,9 +2,13 @@
 import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle<any>`
 
-.Toastify + * {
+#__next {
     position: relative;
     z-index: 1;
+}
+
+.side_bar_infinity_forge {
+    z-index: 99999999 !important;
 }
 
     * {
@@ -25,11 +29,6 @@ export const GlobalStyle = createGlobalStyle<any>`
         color: #707070;
         background-color: #ffff;
         overflow-x: hidden;
-    }
-
-    h1, h2, h3, h4, h5, h6, button, a {
-        font-family: 'Poppins';
-        color: #707070;
     }
 
     :root {
@@ -68,7 +67,11 @@ export const GlobalStyle = createGlobalStyle<any>`
     }
 
     .bgDarkBlue {
-        background-color: ${process.env.client === "sancla"  ?"var(--orange-light-1)" : "var(--lo-blue)"};
+        background-color: ${
+          process.env.client === "sancla"
+            ? "var(--orange-light-1)"
+            : "var(--lo-blue)"
+        };
     }
 
     .bgBlueHover:hover {
@@ -116,7 +119,11 @@ export const GlobalStyle = createGlobalStyle<any>`
 
     /* Adiciona a barra arrastável */
     ::-webkit-scrollbar-thumb {
-        background-color: ${process.env.client === "sancla"  ?"var(--orange-light-1)" : "var(--lo-blue)"};
+        background-color: ${
+          process.env.client === "sancla"
+            ? "var(--orange-light-1)"
+            : "var(--lo-blue)"
+        };
     }
 
     /*
@@ -133,7 +140,11 @@ export const GlobalStyle = createGlobalStyle<any>`
 
     .colorButton{
         background-color: red;
-        background-color: ${process.env.client === "sancla"  ?"var(--orange-light-1)" : "var(--lo-blue)"} !important;
+        background-color: ${
+          process.env.client === "sancla"
+            ? "var(--orange-light-1)"
+            : "var(--lo-blue)"
+        } !important;
     }
 
     .colorButtonWhite{
@@ -149,6 +160,7 @@ export const GlobalStyle = createGlobalStyle<any>`
         &:hover {
             text-decoration: underline;
             color: var(--cyan) !important;
+            cursor: pointer;
         }
  }
     
@@ -162,7 +174,11 @@ export const GlobalStyle = createGlobalStyle<any>`
     }
 
     .uk-button-primary {
-        background-color: ${process.env.client === "sancla"  ?"var(--orange-light-1)" : "var(--lo-blue)"};
+        background-color: ${
+          process.env.client === "sancla"
+            ? "var(--orange-light-1)"
+            : "var(--lo-blue)"
+        };
         
         &:hover {
             text-decoration: none;
@@ -201,6 +217,12 @@ export const GlobalStyle = createGlobalStyle<any>`
 
     .print-screen {
         margin: 500cm
+    }
+
+    .row {
+        > div {
+            width: 100%;
+        }
     }
 `;
 export default GlobalStyle;

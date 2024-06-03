@@ -269,6 +269,7 @@ const TitlesFilters = memo(function TitlesFilters({
             <label>Documento</label>
             <InputBox>
               <Input
+                className="custom-input"
                 onChange={(e) =>
                   setFilters({ ...filters, document: e.target.value })
                 }
@@ -279,6 +280,7 @@ const TitlesFilters = memo(function TitlesFilters({
             <label>Nota Fiscal</label>
             <InputBox>
               <Input
+              className="custom-input"
                 value={filters?.fiscalNote}
                 onChange={(e) =>
                   setFilters({ ...filters, fiscalNote: e.target.value })
@@ -291,6 +293,7 @@ const TitlesFilters = memo(function TitlesFilters({
           <label>Nº Comprovante / NSU</label>
           <InputBox>
             <Input
+            className="custom-input"
               onChange={(e) => setFilters({ ...filters, nsu: e.target.value })}
               value={filters?.nsu}
             />

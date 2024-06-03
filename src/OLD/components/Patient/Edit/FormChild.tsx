@@ -237,6 +237,12 @@ export const FormChild = React.memo(function FormChild({
                   onChange={(val) => setData({ ...data, birthDate: val })}
                 />
               </Form.Item>
+              <Form.Item label="Comunidade Sanclá">
+                <Switch
+                  checked={data?.community}
+                  onChange={(val) => setData({ ...data, community: val })}
+                />
+              </Form.Item>
               <Form.Item label={data?.active ? "Ativo" : "Inativo"}>
                 <Switch
                   checked={data?.active}

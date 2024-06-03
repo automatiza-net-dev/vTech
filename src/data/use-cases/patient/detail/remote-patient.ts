@@ -6,7 +6,7 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 import * as domain from "@/domain";
 
 @injectable()
-export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domain.CreateHospitalization, domain.LoadAllVaccines {
+export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domain.CreateHospitalization, domain.LoadAllVaccines, domain.LoadLastUpdates, domain.ChangeWeight {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
@@ -49,5 +49,24 @@ export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domai
     });
 
     return response as domain.LoadAllVaccines.Model;
+  }
+
+  async loadLastUpdates(params: domain.LoadLastUpdates.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`n-timeline/${params.id}`),
+      method: "get",
+    });
+
+    return response as domain.LoadLastUpdates.Model;
+  }
+
+  async changeWeight(params: domain.ChangeWeight.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`n-timeline/weight`),
+      method: "post",
+      body: params
+    });
+
+    return response
   }
 }

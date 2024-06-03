@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-import { Modal, useLoadPatient } from "@/presentation";
+import { Modal } from "infinity-forge";
+
+import { useLoadPatient } from "@/presentation";
 import { DosesModal } from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesList/DosesModal";
 
 import * as S from "./styles";
@@ -10,16 +12,23 @@ export function NameVaccine(props) {
 
   const { data } = useLoadPatient();
 
-  // TODO tipar retorno de vacina - Jorge
-
   return (
     <S.NameVaccine>
-      <DosesModal
-        visible={modal}
-        setVisible={setModal}
-        patient={data}
-        vaccine={props}
-      />
+      <Modal
+        modal={modal}
+        setModal={setModal}
+        trigger={undefined}
+        style={{ maxWidth: "700px", padding: 30 }}
+      >
+        <DosesModal
+          modal={true}
+          visible={modal}
+          setVisible={setModal}
+          patient={data}
+          TabVacinaItem={props}
+          
+        />
+      </Modal>
 
       {props?.vaccine.name && (
         <span className="modal-link" onClick={() => setModal(true)}>

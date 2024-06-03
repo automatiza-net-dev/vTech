@@ -7,7 +7,7 @@ import { adminTypes, container } from "@/container";
 
 export function useCopyRole(params: CreateCopyRole.Params) {
   const queryClient = useQueryClient();
-  const { toast } = useToast()
+  const { createToast } = useToast()
 
   async function fetcher() {
    return await container.get<RemoteAccessControls>(adminTypes.RemoteAccessControls).copy(params);
@@ -19,7 +19,7 @@ export function useCopyRole(params: CreateCopyRole.Params) {
     onSuccess: () => {
       queryClient.invalidateQueries("RemoteLoadAllControllerRoles");
 
-      toast.success("Role duplicada com sucesso!", { autoClose: 3000, position: "top-right" })
+      createToast({ message: "Role duplicada com sucesso!", status: "success"})
     },
   });
 }

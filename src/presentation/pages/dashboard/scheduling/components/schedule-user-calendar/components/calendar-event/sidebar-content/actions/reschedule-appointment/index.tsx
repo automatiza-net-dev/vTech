@@ -1,10 +1,10 @@
-import { Icon } from "semantic-ui-react";
 
+import { Icon } from "infinity-forge";
 import { ActionSchedule } from "../interface";
 import {
+  useScheduling,
   PermissionItem,
   useLoadSchedulesPatients,
-  useScheduling,
 } from "@/presentation";
 
 export function RescheduleAppointment({ event, scheduleUser }: ActionSchedule) {
@@ -31,7 +31,7 @@ export function RescheduleAppointment({ event, scheduleUser }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE04">
       <button className="reset-button" type="button" onClick={handleClick}>
-        <Icon name="repeat" />
+        <Icon name="IconEdit" />
         <span>Reagendar consulta</span>
       </button>
     </PermissionItem>

@@ -9,8 +9,13 @@ import * as S from "./styles";
 export function Chart(props: DashboardChart) {
   function Chart() {
     switch (props.type) {
-      case "funnel":
-        return <Funnel {...props} />;
+      case "funnel": {
+        if (props.configs && typeof props.configs === "string") {
+          const svg = props.configs;
+          const svgCorreto = svg.replace(/\\n/g, "\n").replace(/\\"/g, '"');
+          return <div dangerouslySetInnerHTML={{ __html: svgCorreto }}></div>;
+        }
+      }
 
       default:
         return <PieChart {...props} />;

@@ -28,6 +28,7 @@ import { userService } from "@/OLD/services/user.service";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 import { useIsThirdPartyUser } from "@/presentation";
+import { useAuthAdmin } from "infinity-forge";
 
 const Header = ({ origin = "dashboard" }) => {
   const [chooseClinicVisible, setChooseClinicVisible] = useState(false);
@@ -39,6 +40,8 @@ const Header = ({ origin = "dashboard" }) => {
 
   const { user, clinic } = useProfile(false, reload);
   const router = useRouter();
+
+  const {signOut} = useAuthAdmin()
 
   sortItems(units, "identification");
 
@@ -183,7 +186,7 @@ const Header = ({ origin = "dashboard" }) => {
                   <Menu.Item
                     onClick={() => {
                       if (!isThirdParty) {
-                        sessionService.logout();
+                        signOut()
                         router.push("/");
                       } else {
                         window.location.href =

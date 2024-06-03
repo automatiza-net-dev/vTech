@@ -29,9 +29,11 @@ function FormChild({
       }}
     >
       <div>
+        <h4>{type}</h4>
         <label>{type === "Peso" ? `${type} (Kg)` : type}</label>
         <Input
           required
+          type='number'
           value={data?.weight}
           onChange={(e) => {
             const inputValue = e.target.value;

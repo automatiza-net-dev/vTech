@@ -36,8 +36,7 @@ export function Step3({ data, setStep }) {
   };
 
   const resendCode = useCallback(async () => {
-    await api
-      .get(`/users/resend-confirmation/${data?.email}`)
+    await api?.get(`/users/resend-confirmation/${data?.email}`)
       .then((_res) =>
         notification.success({ message: "Código reenviado com sucesso!" })
       );

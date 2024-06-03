@@ -124,7 +124,7 @@ const PatientData = memo(function PatientData({
         {hours.map((item, index) => {
           const hourData = moment(new Date())
             .startOf("day")
-            .add(index, "hour")
+            .add(index -3, "hour")
             .format("HH:mm");
 
           return (

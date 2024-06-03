@@ -11,6 +11,7 @@ import {
   notification,
   Select,
   Upload,
+  Switch,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { petsService } from "@/OLD/services/patient.service";
@@ -242,6 +243,12 @@ export const FormChild = React.memo(function FormChild({
                   type="date"
                   value={data?.birthDate}
                   onChange={(val) => setData({ ...data, birthDate: val })}
+                />
+              </Form.Item>
+              <Form.Item label="Comunidade Sanclá">
+                <Switch
+                  checked={data?.community}
+                  onChange={(val) => setData({ ...data, community: val })}
                 />
               </Form.Item>
             </div>

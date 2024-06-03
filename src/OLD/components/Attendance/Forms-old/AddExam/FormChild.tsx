@@ -28,6 +28,7 @@ import Print from "@/OLD/components/mini-components/Print";
 import { sortItems } from "@/OLD/utils/sortItems";
 
 export default function FormChild({
+  loading,
   examPatientData,
   data,
   allExams,
@@ -85,6 +86,7 @@ export default function FormChild({
         {!modal && (
           <div className="uk-flex uk-flex-right">
             <Button
+              loading={loading}
               type="primary"
               htmlType="submit"
               className="uk-margin-small-right"
@@ -95,7 +97,7 @@ export default function FormChild({
               title="Tem certeza que deseja remover este registro?"
               onConfirm={() => remove(examPatientData?.timelineId)}
             >
-              <Button type="primary" htmlType="button">
+              <Button loading={loading} type="primary" htmlType="button">
                 Excluir
               </Button>
             </Popconfirm>
@@ -187,32 +189,7 @@ export default function FormChild({
                   />
                 </div>
                 <div className="uk-width-1-1">
-                  {/*
-                  <div className="uk-flex uk-flex-between">
-                    <div className="uk-width-1-2 uk-margin-small-right">
-                      <label>Data de lançamento</label>
-                      <DatePicker
-                        value={data?.releasedAt}
-                        disabled={!examPatientData}
-                        format={"DD/MM/YYYY"}
-                        onChange={(val) =>
-                          setData({ ...data, releasedAt: val })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label>Data Execução</label>
-                      <br />
-                      <DatePicker
-                        disabled={!examPatientData}
-                        format={"DD/MM/YYYY"}
-                        value={data?.resultDate}
-                        onChange={(val) =>
-                          setData({ ...data, resultDate: val })
-                        }
-                      />
-                    </div>
-                  </div>*/}
+          
                   <div className="editor-container uk-width-1-1">
                     <Editor editorState={report} setEditorState={setReport} />
                     <Print
@@ -275,6 +252,7 @@ export default function FormChild({
                 type="primary"
                 htmlType="submit"
                 className="uk-margin-small-right"
+                loading={loading}
               >
                 Salvar
               </Button>

@@ -1,21 +1,27 @@
-import { Dropdown, DropdownMenu } from "semantic-ui-react";
-
-import { Error } from "@/presentation";
+import { Error } from "infinity-forge";
 import { Button } from "infinity-forge";
 
-import { options } from "./options";
+import { useActionsPatient } from "./options";
 import { DropdownItemAction } from "./dropdown-item";
 
+import * as S from "./styles";
+
 export function Actions() {
+  const actionsPatient = useActionsPatient();
+
   return (
     <Error name="AddButton">
-      <Dropdown simple icon={null} trigger={<Button text="ADICIONAR" />}>
-        <DropdownMenu>
-          {options.map((option) => (
-            <DropdownItemAction key={option.value} {...option} />
-          ))}
-        </DropdownMenu>
-      </Dropdown>
+      <S.Actions>
+        <div className="hover_container">
+          <Button svg="IconPlusSharp" text="ADICIONAR" />
+
+          <div className="sub_menu">
+            {actionsPatient.activeActions.map((option) => (
+              <DropdownItemAction key={option.value} {...option} />
+            ))}
+          </div>
+        </div>
+      </S.Actions>
     </Error>
   );
 }

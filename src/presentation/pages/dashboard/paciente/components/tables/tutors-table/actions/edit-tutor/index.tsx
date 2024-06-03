@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Icon } from "infinity-forge";
-import { Popup } from "semantic-ui-react";
+import { Tooltip } from "infinity-forge";
 
 import { Tutor } from "@/domain";
-import { Edit } from "@/OLD/components/Tutor/Edit";
 import { Modal } from "@/presentation";
+
+import { Edit } from "@/OLD/components/Tutor/Edit";
 
 import * as S from "./styles";
 
@@ -19,7 +19,7 @@ export function EditTutor(
         <Edit tutorId={props?.id} setVisible={setModal} />
       </Modal>
 
-      <Popup
+      <Tooltip
         content="Editar"
         trigger={
           <button onClick={() => setModal(true)}>

@@ -12,7 +12,7 @@ import {
 } from "antd";
 import moment from "moment";
 import * as React from "react";
-import { memo } from "react";
+import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 
 import { petsService } from "@/OLD/services/patient.service";
@@ -22,6 +22,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import Masks from "@/OLD/utils/masks";
 import { useBudgetProducts, useCreateBudget } from "@/OLD/hooks/useBudgets";
 import { useDailyMovements } from "@/OLD/hooks/useDailyMovements";
+import { useLoadPatient } from "@/presentation";
 
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile } from "@/OLD/hooks/useProfile";
@@ -65,13 +66,12 @@ const columns = [
   },
 ];
 
-const CreateBudget = memo(function CreateBudget({
-  visible,
-  close,
-  clientData = false,
+function CreateBudget({
+  modal,
   setReloadExtern = false,
   attendanceId = false,
-}) {
+  setModal,
+}: any) {
   const [data, setData] = React.useState({
     budgetDate: moment(),
     expirationDate: moment().add(1, "days"),
@@ -89,6 +89,9 @@ const CreateBudget = memo(function CreateBudget({
 
   const { colaborators } = useColaborators();
   const { user, clinic } = useProfile();
+  const clientData = useLoadPatient();
+
+  const close = () => setModal((prv) => !prv);
 
   const cleanUp = () => {
     setData({
@@ -107,49 +110,49 @@ const CreateBudget = memo(function CreateBudget({
       return data ?? [];
     },
     {
-      enabled: visible,
+      enabled: modal,
     }
   );
   const { movements } = useDailyMovements();
-  const { data: products } = useBudgetProducts(visible);
+  const { data: products } = useBudgetProducts(modal);
   const { mutate, isLoading } = useCreateBudget();
 
-  const defaultInfo = () => {
-    setSelectedClient(
-      tutors?.find(
-        (t) =>
-          t?.id === clientData?.tutors?.find((tutor) => !!tutor?.is_main)?.id
-      )
-    );
-    setValues({
-      clientName: clientData?.tutors?.find((tutor) => !!tutor?.is_main)?.name,
-      patientName: clientData?.name,
-    });
+  const router = useRouter();
 
+  const customInfo = () => {
+    setValues({
+      clientName: clientData.data.name,
+      patientName: clientData?.data.name,
+    });
+    setData({
+      ...data,
+      clientId: clientData?.data.id,
+      patientId: clientData?.data.id,
+      sellerName: user?.name,
+      sellerId: user?.id,
+    });
+  };
+
+  const defaultInfo = () => {
+    setSelectedClient(clientData?.data.tutor.id);
+    setValues({
+      clientName: clientData.data.tutor.name,
+      patientName: clientData?.data.name,
+    });
     if (clientData) {
       setData({
         ...data,
-        clientId: clientData?.tutors?.find((tutor) => !!tutor?.is_main)?.id,
-        patientId: clientData?.id,
+        clientId: clientData?.data.tutor.id,
+        patientId: clientData?.data.id,
       });
     }
   };
 
-  const customInfo = () => {
-    setSelectedClient(clientData?.id);
-    setValues({ clientName: clientData?.name });
-    setData({
-      ...data,
-      clientId: clientData?.id,
-      patientId: clientData?.id,
-      reviewerName: user?.name,
-      reviewerId: user?.id,
-    });
-  };
-
   React.useEffect(() => {
-    process.env.client !== "liftone" ? defaultInfo() : customInfo();
-  }, [clientData, visible]);
+    if (router.pathname.includes("dashboard/paciente")) {
+      process.env.client !== "liftone" ? defaultInfo() : customInfo();
+    }
+  }, [clientData, modal]);
 
   React.useEffect(() => {
     if (data?.dailyMovementId) {
@@ -457,107 +460,129 @@ const CreateBudget = memo(function CreateBudget({
 
   return (
     <>
-      <Modal
-        title="Criar orçamento"
-        visible={visible}
-        onClose={() => {
-          cleanUp();
-          close((prv) => {
-            if (prv?.budget) {
-              return { ...prv, budget: false };
-            }
-            return false;
-          });
-        }}
-        width={1000}
-        footer={null}
-        onCancel={() => {
-          cleanUp();
-          close((prv) => {
-            if (prv?.budget) {
-              return { ...prv, budget: false };
-            }
-            return false;
-          });
+      <h4>Novo orçamento</h4>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (multipleProducts?.length > 0) {
+            return notification.warning({
+              message: (
+                <div>
+                  Deseja adicionar {values?.productDescription} à venda?{" "}
+                  <div>
+                    <Button
+                      type="primary"
+                      className="uk-margin-small-right"
+                      onClick={() => {
+                        notification.destroy();
+                        submitKit();
+                        submit();
+                      }}
+                    >
+                      Sim
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        notification.destroy();
+                        submit();
+                      }}
+                    >
+                      Não
+                    </Button>
+                  </div>{" "}
+                </div>
+              ),
+              placement: "bottomRight",
+            });
+          }
+          submit();
         }}
       >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (multipleProducts?.length > 0) {
-              return notification.warning({
-                message: (
-                  <div>
-                    Deseja adicionar {values?.productDescription} à venda?{" "}
-                    <div>
-                      <Button
-                        type="primary"
-                        className="uk-margin-small-right"
-                        onClick={() => {
-                          notification.destroy();
-                          submitKit();
-                          submit();
-                        }}
-                      >
-                        Sim
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          notification.destroy();
-                          submit();
-                        }}
-                      >
-                        Não
-                      </Button>
-                    </div>{" "}
-                  </div>
-                ),
-                placement: "bottomRight",
-              });
-            }
-            submit();
-          }}
+        <div
+          className="uk-width-1-1 uk-flex uk-flex-column"
+          style={{ gap: "1rem" }}
         >
-          <div
-            className="uk-width-1-1 uk-flex uk-flex-column"
-            style={{ gap: "1rem" }}
-          >
+          <div className="uk-width-1-1 uk-flex" style={{ gap: "1rem" }}>
+            <div className="uk-width-1-2">
+              <label>Data da Criação</label>
+
+              <DatePicker
+                showTime
+                allowEmpty
+                format="HH:mm DD/MM/YYYY"
+                value={moment(data.budgetDate)}
+                onChange={(_date) => {
+                  setData((prev) => ({ ...prev, budgetDate: _date }));
+                }}
+                style={{ width: "100%" }}
+              />
+            </div>
+
+            <div className="uk-width-1-2">
+              <label>Data da Expiração</label>
+
+              <DatePicker
+                allowEmpty
+                format="DD/MM/YYYY"
+                value={moment(data.expirationDate)}
+                onChange={(_date) => {
+                  setData((prev) => ({ ...prev, expirationDate: _date }));
+                }}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div className="uk-width-1-1">
+              <label>Cliente</label>
+
+              <AutoComplete
+                style={{ width: "100%" }}
+                value={values?.clientName}
+                options={clientOptions}
+                filterOption={(inputValue, option) =>
+                  normalizeStr(option.value)
+                    .toUpperCase()
+                    .includes(normalizeStr(inputValue).toUpperCase())
+                    ? option
+                    : null
+                }
+                onChange={(val) => {
+                  setSelectedClient(false);
+                  setData({ ...data, patientId: null });
+                  setValues({
+                    clientName: normalizeStr(val),
+                    patientName: "",
+                  });
+                }}
+                onSelect={(_, c) => {
+                  setValues((prv) => ({ ...prv, clientName: c.name }));
+                  setSelectedClient(c);
+                  setData((prev) => ({
+                    ...prev,
+                    clientId: c.id,
+                    patientId: null,
+                  }));
+                }}
+              />
+            </div>
+          </div>
+
+          {process.env.client !== "liftone" && (
             <div className="uk-width-1-1 uk-flex" style={{ gap: "1rem" }}>
-              <div className="uk-width-1-2">
-                <label>Data da Criação</label>
-
-                <DatePicker
-                  showTime
-                  allowEmpty
-                  format="HH:mm DD/MM/YYYY"
-                  value={moment(data.budgetDate)}
-                  onChange={(_date) => {
-                    setData((prev) => ({ ...prev, budgetDate: _date }));
-                  }}
-                  style={{ width: "100%" }}
-                />
-              </div>
-
-              <div className="uk-width-1-2">
-                <label>Data da Expiração</label>
-
-                <DatePicker
-                  allowEmpty
-                  format="DD/MM/YYYY"
-                  value={moment(data.expirationDate)}
-                  onChange={(_date) => {
-                    setData((prev) => ({ ...prev, expirationDate: _date }));
-                  }}
-                  style={{ width: "100%" }}
-                />
-              </div>
               <div className="uk-width-1-1">
-                <label>Cliente</label>
+                <label>Paciente</label>
 
-                <AutoComplete
+                <Select
+                  showSearch
                   style={{ width: "100%" }}
-                  value={values?.clientName}
-                  options={clientOptions}
+                  value={values?.patientName}
+                  onSearch={(val) => setValues({ ...values, patientName: val })}
+                  options={patientOptions}
+                  onSelect={(_, option) => {
+                    setData((prev) => ({
+                      ...prev,
+                      patientId: option?.id,
+                    }));
+                  }}
                   filterOption={(inputValue, option) =>
                     normalizeStr(option.value)
                       .toUpperCase()
@@ -565,359 +590,310 @@ const CreateBudget = memo(function CreateBudget({
                       ? option
                       : null
                   }
-                  onChange={(val) => {
-                    setSelectedClient(false);
-                    setData({ ...data, patientId: null });
-                    setValues({
-                      clientName: normalizeStr(val),
-                      patientName: "",
-                    });
-                  }}
-                  onSelect={(_, c) => {
-                    setValues((prv) => ({ ...prv, clientName: c.name }));
-                    setSelectedClient(c);
-                    setData((prev) => ({
-                      ...prev,
-                      clientId: c.id,
-                      patientId: null,
-                    }));
+                  onChange={(value) => {
+                    setValues((prv) => ({ ...prv, patientName: value }));
                   }}
                 />
               </div>
             </div>
-
-            {process.env.client !== "liftone" && (
-              <div className="uk-width-1-1 uk-flex" style={{ gap: "1rem" }}>
-                <div className="uk-width-1-1">
-                  <label>Paciente</label>
-
-                  <Select
-                    showSearch
-                    style={{ width: "100%" }}
-                    value={values?.patientName}
-                    onSearch={(val) =>
-                      setValues({ ...values, patientName: val })
-                    }
-                    options={patientOptions}
-                    onSelect={(_, option) => {
-                      setData((prev) => ({
-                        ...prev,
-                        patientId: option?.id,
-                      }));
-                    }}
-                    filterOption={(inputValue, option) =>
-                      normalizeStr(option.value)
-                        .toUpperCase()
-                        .includes(normalizeStr(inputValue).toUpperCase())
-                        ? option
-                        : null
-                    }
-                    onChange={(value) => {
-                      setValues((prv) => ({ ...prv, patientName: value }));
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-            {process.env.client === "liftone" && (
-              <div className="uk-flex uk-width-1-1" style={{ gap: "1rem" }}>
-                <div className="uk-width-1-2">
-                  <label>Vendedor</label>
-                  <AutoComplete
-                    className="uk-width-1-1"
-                    value={data?.sellerName}
-                    options={colaborators?.map((collab) => ({
-                      ...collab,
-                      value: collab?.name,
-                    }))}
-                    onChange={(val) =>
-                      setData((prv) => ({ ...prv, sellerName: val }))
-                    }
-                    onSelect={(_, opt) =>
-                      setData((prv) => ({
-                        ...prv,
-                        sellerId: opt?.id,
-                        sellerName: opt?.value,
-                      }))
-                    }
-                    filterOption={(val, opt) =>
-                      normalizeStr(opt?.value.toUpperCase()).includes(
-                        normalizeStr(val?.toUpperCase())
-                      )
-                    }
-                  />
-                </div>
-                <div className="uk-width-1-2">
-                  <label>Avaliador</label>
-                  <AutoComplete
-                    className="uk-width-1-1"
-                    value={data?.reviewerName}
-                    options={colaborators?.map((collab) => ({
-                      ...collab,
-                      value: collab?.name,
-                    }))}
-                    onChange={(val) =>
-                      setData((prv) => ({ ...prv, reviewerName: val }))
-                    }
-                    onSelect={(_, opt) =>
-                      setData((prv) => ({
-                        ...prv,
-                        reviewerId: opt?.id,
-                        reviewerName: opt?.value,
-                      }))
-                    }
-                    filterOption={(val, opt) =>
-                      normalizeStr(opt?.value.toUpperCase()).includes(
-                        normalizeStr(val?.toUpperCase())
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            )}
-            <div className="uk-flex" style={{ gap: "5px" }}>
+          )}
+          {process.env.client === "liftone" && (
+            <div className="uk-flex uk-width-1-1" style={{ gap: "1rem" }}>
               <div className="uk-width-1-2">
-                <label>Observação</label>
-                <Input
-                  value={data?.observation}
-                  onChange={(e) =>
-                    setData((prev) => ({
-                      ...prev,
-                      observation: e.target.value,
+                <label>Vendedor</label>
+                <AutoComplete
+                  className="uk-width-1-1"
+                  value={data?.sellerName}
+                  options={colaborators?.map((collab) => ({
+                    ...collab,
+                    value: collab?.name,
+                  }))}
+                  onChange={(val) =>
+                    setData((prv) => ({ ...prv, sellerName: val }))
+                  }
+                  onSelect={(_, opt) =>
+                    setData((prv) => ({
+                      ...prv,
+                      sellerId: opt?.id,
+                      sellerName: opt?.value,
                     }))
                   }
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.value.toUpperCase()).includes(
+                      normalizeStr(val?.toUpperCase())
+                    )
+                  }
                 />
               </div>
               <div className="uk-width-1-2">
-                <label>Observação interna</label>
-                <Input
-                  value={data?.internalObservation}
-                  onChange={(e) =>
-                    setData({ ...data, internalObservation: e.target.value })
+                <label>Avaliador</label>
+                <AutoComplete
+                  className="uk-width-1-1"
+                  value={data?.reviewerName}
+                  options={colaborators?.map((collab) => ({
+                    ...collab,
+                    value: collab?.name,
+                  }))}
+                  onChange={(val) =>
+                    setData((prv) => ({ ...prv, reviewerName: val }))
+                  }
+                  onSelect={(_, opt) =>
+                    setData((prv) => ({
+                      ...prv,
+                      reviewerId: opt?.id,
+                      reviewerName: opt?.value,
+                    }))
+                  }
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.value.toUpperCase()).includes(
+                      normalizeStr(val?.toUpperCase())
+                    )
                   }
                 />
               </div>
             </div>
-            <hr className="uk-margin-remove" />
-            <div className="uk-width-1-1">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  gap: "1rem",
-                }}
-              >
-                <div className="uk-width-1-1">
-                  <label>Produto</label>
-                  <AutoComplete
-                    className="uk-width-1-1"
-                    options={productOptions}
-                    filterOption={(val, opt) =>
-                      normalizeStr(opt?.description.toUpperCase()).includes(
-                        normalizeStr(val.toUpperCase())
-                      )
-                    }
-                    value={values?.productDescription}
-                    onChange={(val) =>
-                      setValues({ ...values, productDescription: val })
-                    }
-                    onSelect={(_, opt) => {
-                      setProductType(opt?.type);
-                      if (opt?.type === "kit") {
-                        return addKitItems(opt?.id);
-                      }
-
-                      setMultipleProducts((prv) => [
-                        {
-                          productVariationId: opt?.variations[0]?.id,
-                          quantity: 1,
-                          saleValue:
-                            opt?.variations[0]?.businessUnitProducts[0].price,
-                          unitaryValue: currencyFormatter(
-                            opt?.variations[0]?.businessUnitProducts[0].price
-                          ),
-                          discountValue: currencyFormatter(0),
-                        },
-                      ]);
-                    }}
-                  />
-                </div>
-              </div>
-              {multipleProducts.map((product, i) => (
-                <div className="uk-width-1-1 uk-margin-small-top uk-flex uk-flex-middle">
-                  <>
-                    <strong>
-                      {
-                        productOptions?.find(
-                          (variation) =>
-                            variation?.id === product.productVariationId
-                        )?.product?.description
-                      }
-                    </strong>
-                    <section
-                      className="uk-margin-bottom"
-                      style={{
-                        display: "flex",
-                        gap: "1rem",
-                      }}
-                    >
-                      <div className="uk-width-1-3">
-                        <label>Quantidade</label>
-                        <Input
-                          placeholder="Quantidade"
-                          disabled={productType === "kit"}
-                          value={product?.quantity}
-                          onChange={(e) => {
-                            let productsArr = [...multipleProducts];
-                            productsArr.splice(i, 1, {
-                              ...multipleProducts[i],
-                              quantity: e.target.value,
-                            });
-                            setMultipleProducts(productsArr);
-                          }}
-                          min={1}
-                          style={{ width: "100%" }}
-                        />
-                      </div>
-
-                      <div className="uk-width-1-3">
-                        <label>Valor Unitário</label>
-
-                        <Input
-                          disabled={!clinic?.unitConfig?.alter_prices}
-                          placeholder="Valor Unitário"
-                          value={product?.unitaryValue}
-                          onChange={(e) => {
-                            let productsArr = [...multipleProducts];
-                            productsArr.splice(i, 1, {
-                              ...multipleProducts[i],
-                              unitaryValue: Masks.money(e.target.value),
-                            });
-                            setMultipleProducts(productsArr);
-                          }}
-                          style={{ width: "100%" }}
-                        />
-                      </div>
-
-                      <div className="uk-width-1-3">
-                        <label>Valor de Desconto</label>
-
-                        <Input
-                          placeholder="Valor"
-                          disabled={productType === "kit"}
-                          value={product?.discountValue}
-                          onChange={(e) => {
-                            let productsArr = [...multipleProducts];
-                            productsArr.splice(i, 1, {
-                              ...multipleProducts[i],
-                              discountValue: Masks.money(e.target.value),
-                            });
-                            setMultipleProducts(productsArr);
-                          }}
-                        />
-                      </div>
-                    </section>
-                  </>
-                </div>
-              ))}
-
-              <div className="uk-flex uk-flex-right">
-                <Button
-                  size={"small"}
-                  onClick={() => submitKit()}
-                  className="uk-margin-top"
-                >
-                  Adicionar
-                </Button>
-              </div>
+          )}
+          <div className="uk-flex" style={{ gap: "5px" }}>
+            <div className="uk-width-1-2">
+              <label>Observação</label>
+              <Input
+                value={data?.observation}
+                onChange={(e) =>
+                  setData((prev) => ({
+                    ...prev,
+                    observation: e.target.value,
+                  }))
+                }
+              />
             </div>
-
-            <Table
-              columns={columns}
-              dataSource={productsData}
-              pagination={false}
-              style={{ maxHeight: "300px", overflowY: "auto" }}
-            />
+            <div className="uk-width-1-2">
+              <label>Observação interna</label>
+              <Input
+                value={data?.internalObservation}
+                onChange={(e) =>
+                  setData({ ...data, internalObservation: e.target.value })
+                }
+              />
+            </div>
+          </div>
+          <hr className="uk-margin-remove" />
+          <div className="uk-width-1-1">
             <div
-              className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small uk-flex-around"
-              style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                gap: "1rem",
+              }}
             >
-              <div className="uk-width-1-3">
-                <strong>Totais:</strong>
-              </div>
-              <div>
-                {productsData
-                  .reduce((acc, current) => acc + current.quantity, 0)
-                  .toFixed(1)}
-              </div>
-              <div>
-                {currencyFormatter(
-                  productsData.reduce(
-                    (acc, current) =>
-                      acc +
-                      (convertIntlCurrency(current.total) +
-                        convertIntlCurrency(current?.discount)),
-                    0
-                  )
-                )}
-              </div>
-              <div>
-                {currencyFormatter(
-                  productsData.reduce(
-                    (acc, current) =>
-                      acc + convertIntlCurrency(current.discount),
-                    0
-                  )
-                )}
-              </div>
-              <div>
-                {currencyFormatter(
-                  productsData.reduce(
-                    (acc, current) => acc + convertIntlCurrency(current.total),
-                    0
-                  )
-                )}
+              <div className="uk-width-1-1">
+                <label>Produto</label>
+                <AutoComplete
+                  className="uk-width-1-1"
+                  options={productOptions}
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.description.toUpperCase()).includes(
+                      normalizeStr(val.toUpperCase())
+                    )
+                  }
+                  value={values?.productDescription}
+                  onChange={(val) =>
+                    setValues({ ...values, productDescription: val })
+                  }
+                  onSelect={(_, opt) => {
+                    setProductType(opt?.type);
+                    if (opt?.type === "kit") {
+                      return addKitItems(opt?.id);
+                    }
+
+                    setMultipleProducts((prv) => [
+                      {
+                        productVariationId: opt?.variations[0]?.id,
+                        quantity: 1,
+                        saleValue:
+                          opt?.variations[0]?.businessUnitProducts[0].price,
+                        unitaryValue: currencyFormatter(
+                          opt?.variations[0]?.businessUnitProducts[0].price
+                        ),
+                        discountValue: currencyFormatter(0),
+                      },
+                    ]);
+                  }}
+                />
               </div>
             </div>
-            <hr />
+            {multipleProducts.map((product, i) => (
+              <div className="uk-width-1-1 uk-margin-small-top uk-flex uk-flex-middle">
+                <>
+                  <strong>
+                    {
+                      productOptions?.find(
+                        (variation) =>
+                          variation?.id === product.productVariationId
+                      )?.product?.description
+                    }
+                  </strong>
+                  <section
+                    className="uk-margin-bottom"
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                    }}
+                  >
+                    <div className="uk-width-1-3">
+                      <label>Quantidade</label>
+                      <Input
+                        placeholder="Quantidade"
+                        disabled={productType === "kit"}
+                        value={product?.quantity}
+                        onChange={(e) => {
+                          let productsArr = [...multipleProducts];
+                          productsArr.splice(i, 1, {
+                            ...multipleProducts[i],
+                            quantity: e.target.value,
+                          });
+                          setMultipleProducts(productsArr);
+                        }}
+                        min={1}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
 
-            <div
-              className="uk-width-1-1 uk-flex uk-flex-right"
-              title="Criar orçamento"
-              visible={visible}
-              onClose={() =>
+                    <div className="uk-width-1-3">
+                      <label>Valor Unitário</label>
+
+                      <Input
+                        disabled={!clinic?.unitConfig?.alter_prices}
+                        placeholder="Valor Unitário"
+                        value={product?.unitaryValue}
+                        onChange={(e) => {
+                          let productsArr = [...multipleProducts];
+                          productsArr.splice(i, 1, {
+                            ...multipleProducts[i],
+                            unitaryValue: Masks.money(e.target.value),
+                          });
+                          setMultipleProducts(productsArr);
+                        }}
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+
+                    <div className="uk-width-1-3">
+                      <label>Valor de Desconto</label>
+
+                      <Input
+                        placeholder="Valor"
+                        disabled={productType === "kit"}
+                        value={product?.discountValue}
+                        onChange={(e) => {
+                          let productsArr = [...multipleProducts];
+                          productsArr.splice(i, 1, {
+                            ...multipleProducts[i],
+                            discountValue: Masks.money(e.target.value),
+                          });
+                          setMultipleProducts(productsArr);
+                        }}
+                      />
+                    </div>
+                  </section>
+                </>
+              </div>
+            ))}
+
+            <div className="uk-flex uk-flex-right">
+              <Button
+                size={"small"}
+                onClick={() => submitKit()}
+                className="uk-margin-top"
+              >
+                Adicionar
+              </Button>
+            </div>
+          </div>
+
+          <Table
+            columns={columns}
+            dataSource={productsData}
+            pagination={false}
+            style={{ maxHeight: "300px", overflowY: "auto" }}
+          />
+          <div
+            className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small uk-flex-around"
+            style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+          >
+            <div className="uk-width-1-3">
+              <strong>Totais:</strong>
+            </div>
+            <div>
+              {productsData
+                .reduce((acc, current) => acc + current.quantity, 0)
+                .toFixed(1)}
+            </div>
+            <div>
+              {currencyFormatter(
+                productsData.reduce(
+                  (acc, current) =>
+                    acc +
+                    (convertIntlCurrency(current.total) +
+                      convertIntlCurrency(current?.discount)),
+                  0
+                )
+              )}
+            </div>
+            <div>
+              {currencyFormatter(
+                productsData.reduce(
+                  (acc, current) => acc + convertIntlCurrency(current.discount),
+                  0
+                )
+              )}
+            </div>
+            <div>
+              {currencyFormatter(
+                productsData.reduce(
+                  (acc, current) => acc + convertIntlCurrency(current.total),
+                  0
+                )
+              )}
+            </div>
+          </div>
+          <hr />
+
+          <div
+            className="uk-width-1-1 uk-flex uk-flex-right"
+            title="Criar orçamento"
+            visible={modal}
+            onClose={() =>
+              close((prv) => {
+                if (prv?.budget) {
+                  return { ...prv, budget: false };
+                }
+                return false;
+              })
+            }
+            width={800}
+            footer={null}
+            style={{ gap: "1rem" }}
+          >
+            <Button
+              onClick={() => {
+                cleanUp();
                 close((prv) => {
                   if (prv?.budget) {
                     return { ...prv, budget: false };
                   }
                   return false;
-                })
-              }
-              width={800}
-              footer={null}
-              style={{ gap: "1rem" }}
+                });
+              }}
+              disabled={isLoading}
             >
-              <Button
-                onClick={() => {
-                  cleanUp();
-                  close((prv) => {
-                    if (prv?.budget) {
-                      return { ...prv, budget: false };
-                    }
-                    return false;
-                  });
-                }}
-                disabled={isLoading}
-              >
-                Cancelar
-              </Button>
-              <Button type="primary" htmlType="submit" disabled={isLoading}>
-                Salvar
-              </Button>
-            </div>
+              Cancelar
+            </Button>
+            <Button type="primary" htmlType="submit" disabled={isLoading}>
+              Salvar
+            </Button>
           </div>
-        </form>
-      </Modal>
+        </div>
+      </form>
       <Modal
         visible={confirmMissingClientId}
         footer={null}
@@ -949,6 +925,6 @@ const CreateBudget = memo(function CreateBudget({
       </Modal>
     </>
   );
-});
+}
 
 export default CreateBudget;

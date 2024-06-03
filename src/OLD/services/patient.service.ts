@@ -66,6 +66,15 @@ const createTutor = async (data) => {
   });
 };
 
+
+const deathPatient = async (data, patientId) => {
+  return api.put(`patients/declare-death/${patientId}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+};
+
 const createPatient = async (data) => {
   return api.post("/patients", data, {
     headers: {
@@ -101,6 +110,8 @@ const deletePatient = async (id) => {
 };
 
 export const petsService = {
+  deathPatient,
+
   getTutors,
   getSingleTutor,
   getPatientsByTutor,

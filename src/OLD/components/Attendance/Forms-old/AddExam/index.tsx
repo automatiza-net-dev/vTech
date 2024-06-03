@@ -10,8 +10,8 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
-import { useAuth } from "@/OLD/hooks/useAuth";
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -25,17 +25,14 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 
 import FormChild from "./FormChild";
+import { useQueryClient } from "react-query";
 
-const LaunchExam = memo(function LaunchExam({
-  reload,
-  setReload,
-  patient,
-  visible,
-  setVisible,
+export default function LaunchExam({
+  modal,
+  setModal,
   examPatientData = false,
-  modal = true,
   setSelectedPatientExam = false,
-}) {
+}: any) {
   const [photosOpen, setPhotosOpen] = useState(false);
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -46,6 +43,8 @@ const LaunchExam = memo(function LaunchExam({
   const [fileList, setFileList] = useState([]);
   const [viewArquives, setViewArquives] = useState([]);
   const [examSearch, setExamSearch] = useState("");
+
+  const patient = useLoadPatient();
 
   const router = useRouter();
   const eventId = router.query.innerpage;
@@ -62,9 +61,9 @@ const LaunchExam = memo(function LaunchExam({
         userId: user?.id,
         tutorId:
           systemName !== "LiftOne"
-            ? patient?.tutors?.find((tutor) => tutor?.is_main)?.id
-            : patient?.id,
-        dependentId: patient?.id,
+            ? patient.data?.tutor.id
+            : patient.data?.id,
+        dependentId: patient.data?.id,
       })
       .then((res) => setState(res.data.result))
       .catch((_err) => setState(""))
@@ -117,15 +116,17 @@ const LaunchExam = memo(function LaunchExam({
   };
 
   useEffect(() => {
-    (visible || !modal) && getAllExams();
-    (visible || !modal) && examPatientData && getUpdateData(examPatientData.id);
-  }, [visible, examSearch]);
+    (async () => {
+      await getAllExams();
+      !modal && getUpdateData(examPatientData?.timeline_info?.patient_exam?.id);
+    })();
+  }, [modal, examSearch]);
 
   const submitArquives = useCallback(
     (id) => {
       setLoading(true);
       const formData = new FormData();
-      formData.append("patientId", patient?.id);
+      formData.append("patientId", patient.data?.id);
       formData.append("realizedAt", moment(new Date()).format("YYYY-MM-DD"));
 
       fileList.forEach((item) => {
@@ -145,6 +146,8 @@ const LaunchExam = memo(function LaunchExam({
     [fileList]
   );
 
+  const queryClient = useQueryClient();
+
   const submitExamLauching = useCallback(
     (visible = false) => {
       let error = false;
@@ -156,7 +159,7 @@ const LaunchExam = memo(function LaunchExam({
             : data?.laboratory,
           report: request,
           examId: selectedExam?.id,
-          patientId: patient?.id,
+          patientId: patient.data?.id,
           scheduleId: eventId,
           solicitorId: user?.id,
           status: report,
@@ -179,16 +182,19 @@ const LaunchExam = memo(function LaunchExam({
           }
         })
         .finally(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["LastUpdates", router.query.id],
+          });
+
           if (!error) {
-            modal && setVisible(false);
+            modal && setModal && setModal(false);
             if (!visible) {
               setSelectedExam({});
               setFileList([]);
               setData({});
-              setVisible(false);
+              setModal && setModal(false);
               setRequest("");
               setReport("");
-              setReload(!reload);
               setExamSearch("");
             }
           }
@@ -201,11 +207,11 @@ const LaunchExam = memo(function LaunchExam({
     (visible = false) => {
       setLoading(false);
       patientExamsService
-        .updatePatientExam(examPatientData.id, {
+        .updatePatientExam(examPatientData?.timeline_info?.patient_exam?.id, {
           laboratory: data?.laboratory,
           report: request,
           examId: selectedExam?.id,
-          patientId: patient?.id,
+          patientId: patient.data?.id,
           scheduleId: eventId,
           status: report,
           releasedAt: moment(data?.releasedAt).toISOString(),
@@ -213,7 +219,7 @@ const LaunchExam = memo(function LaunchExam({
         })
         .then((_res) => {
           fileList.length > 0
-            ? submitArquives(examPatientData.id)
+            ? submitArquives(examPatientData._id)
             : notification.success({
                 message: "Exame atualizado com sucesso!",
               });
@@ -225,6 +231,10 @@ const LaunchExam = memo(function LaunchExam({
           });
         })
         .finally(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["LastUpdates", router.query.id],
+          });
+
           if (!visible) {
             setSelectedExam({});
             setFileList([]);
@@ -232,7 +242,6 @@ const LaunchExam = memo(function LaunchExam({
             setRequest("");
             setReport("");
             setSelectedPatientExam && setSelectedPatientExam(false);
-            setReload(!reload);
           }
         });
     },
@@ -243,9 +252,10 @@ const LaunchExam = memo(function LaunchExam({
     (attachmentId) => {
       setLoading(true);
       patientExamsService
-        .removeAttachment(examPatientData?.id, attachmentId)
+        .removeAttachment(examPatientData?._id, attachmentId)
         .then((_res) => {
-          setReload((prv) => !prv);
+
+
           setLoading(false);
           return notification.success({ message: "Anexo removido!" });
         })
@@ -259,13 +269,15 @@ const LaunchExam = memo(function LaunchExam({
     [examPatientData]
   );
 
-  const removeData = (id) => {
+  const removeData = () => {
     setLoading(true);
     timelineService
-      .removeComplete(id)
+      .removeComplete(examPatientData?._id)
       .then((_res) => {
         setLoading(false);
-        setReload((prv) => !prv);
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
         return notification.success({
           message: "Registro removido com sucesso!",
         });
@@ -278,6 +290,7 @@ const LaunchExam = memo(function LaunchExam({
   return !modal ? (
     <>
       <FormChild
+        loading={loading}
         patient={patient}
         examPatientData={examPatientData}
         data={data}
@@ -322,7 +335,9 @@ const LaunchExam = memo(function LaunchExam({
                     const elem = document?.querySelector(
                       `#custom-download-${i}`
                     );
-                    elem.href = window.URL.createObjectURL(res.data);
+                    if (elem) {
+                      elem.href = window.URL.createObjectURL(res.data);
+                    }
                   });
 
               return item?.attachment ? (
@@ -393,25 +408,9 @@ const LaunchExam = memo(function LaunchExam({
       </Modal>
     </>
   ) : (
-    <Modal
-      visible={visible}
-      title={`Solicitação de exame - ${
-        systemName === "LiftOne" ? "Cliente" : "Paciente"
-      }: ${patient?.name}`}
-      width={1000}
-      onCancel={() => {
-        setVisible(false);
-        setSelectedExam({});
-        setFileList([]);
-        setData({});
-        setVisible(false);
-        setRequest("");
-        setReport("");
-        setExamSearch("");
-      }}
-      footer={null}
-    >
+    <>
       <FormChild
+        loading={loading}
         patient={patient}
         examPatientData={examPatientData}
         data={data}
@@ -423,7 +422,7 @@ const LaunchExam = memo(function LaunchExam({
         report={report}
         setReport={setReport}
         fileList={fileList}
-        setVisible={setVisible}
+        setVisible={setModal}
         setSelectedExam={setSelectedExam}
         setFileList={setFileList}
         submitExamLauching={submitExamLauching}
@@ -477,8 +476,6 @@ const LaunchExam = memo(function LaunchExam({
             })}
         </div>
       </Modal>
-    </Modal>
+    </>
   );
-});
-
-export default LaunchExam;
+}

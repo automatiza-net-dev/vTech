@@ -62,7 +62,7 @@ export function useSubmitSchedule() {
     return isEventoDentroDoRange;
   }
 
-  const { toast } = useToast();
+  const { createToast} = useToast();
   const queryClient = useQueryClient();
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
@@ -160,7 +160,7 @@ export function useSubmitSchedule() {
           }
         }
 
-        toast.success("Sucesso!!", { autoClose: 3000, position: "top-right" });
+        createToast({ message: "Sucesso!!", status: "success" });
 
         queryClient.invalidateQueries({ queryKey: "RemoteSchedules" });
 

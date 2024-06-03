@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 
-import { Modal, PermissionItem } from "@/presentation";
+import { PermissionItem } from "@/presentation";
+import { Modal } from "infinity-forge";
 import { CreateTutor } from "@/OLD/components/Tutor/Create";
 import { CreatePatient } from "@/OLD/components/Patient/Create";
 
@@ -30,20 +31,24 @@ export function ButtonCreate({ patientFilters }) {
   return (
     <PermissionItem hash={process.env.client === "sancla" ? "PET01" : "TUT01"}>
       <S.ButtonCreate>
-        {visible && (
-          <Modal stateModal={visible} maxwidth="1200px" setModal={setVisible}>
-            {process.env.client === "sancla" ? (
+        <Modal
+          style={{ maxWidth: "1200px", padding: "20px" }}
+          trigger={
+            <Button
+              text="Cadastrar novo paciente"
+              type="button"
+              onClick={() => setVisible(true)}
+            />
+          }
+          modal={visible}
+          setModal={setVisible}
+          children={
+            process.env.client === "sancla" ? (
               <CreatePatient {...props} />
             ) : (
               <CreateTutor {...props} />
-            )}
-          </Modal>
-        )}
-
-        <Button
-          text="Cadastrar novo paciente"
-          type="button"
-          onClick={() => setVisible(true)}
+            )
+          }
         />
       </S.ButtonCreate>
     </PermissionItem>

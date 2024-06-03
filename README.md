@@ -1,27 +1,57 @@
 {
-"include": ["src/**/*"],
-"compilerOptions": {
-"lib": ["es2021", "dom"],
-"types": ["reflect-metadata", "node"],
-"experimentalDecorators": true,
-"emitDecoratorMetadata": true,
-"jsx": "react-jsx",
-"baseUrl": "./src",
-"outDir": "./dist",
-"declaration": true,
-"sourceMap": true,
-"paths": {
-"@/_": ["./_"]
-},
-"esModuleInterop": true,
-"moduleResolution": "node",
-"skipLibCheck": true
-},
-"afterDeclarations": true
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "lib": ["es2021", "dom"],
+    "types": ["reflect-metadata", "node"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "declaration": true,
+    "sourceMap": true,
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "esModuleInterop": true, 
+    "moduleResolution": "node",
+    "skipLibCheck": true
+  },
+  "afterDeclarations": true
 }
 
 controller@liftone.com.br
 102030
 
-admin area franqueador: controller@liftone.com.br 102030
-admin area franqueador: controller@sancla.com.br 102030
+# LIFTONE - PROD
+# api=https://vetech-api.creativecode.dev.br/
+# NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
+# SYSTEM_URL=https://liftone.automatiza.net
+# plataform=web
+# client=liftone
+# clientName=LiftOne
+
+#LIFTONE - HMG
+# api=https://vetech-api.creativecode.dev.br/
+# NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
+# SYSTEM_URL=https://liftone.creativecode.dev.br
+# plataform=web
+# client=liftone
+# clientName=LiftOne
+
+# Sancla - PROD
+# api=https://vetech-api.creativecode.dev.br/
+# NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
+# SYSTEM_URL=https://sancla.automatiza.net
+# plataform=web
+# client=sancla
+# clientName=Sanclá
+
+# Sancla - HMG
+# api=https://vetech-api.creativecode.dev.br/
+# NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
+# SYSTEM_URL=https://sancla.creativecode.dev.br
+# plataform=web
+# client=sancla
+# clientName=Sanclá
+

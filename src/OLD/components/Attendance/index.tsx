@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState, useCallback, memo } from "react";
 
 import { useRouter } from "next/router";
@@ -9,7 +8,6 @@ import TimeLine from "./Timeline";
 import { petsService } from "@/OLD/services/patient.service";
 
 import { Container } from "./styles";
-import AttendanceHeader from "./Header";
 
 export default function Attendance() {
   const [patient, setPatient] = useState({});
@@ -70,14 +68,6 @@ export default function Attendance() {
 
   return (
     <Container className="uk-padding uk-padding-remove-top">
-      <AttendanceHeader
-        patient={
-          process.env.client !== "liftone" ? { ...patient, tutorData } : patient
-        }
-        reload={reload}
-        setReload={setReload}
-        setReloadExtern={setReloadExtern}
-      />
       <section>
         <TimeLine
           patient={

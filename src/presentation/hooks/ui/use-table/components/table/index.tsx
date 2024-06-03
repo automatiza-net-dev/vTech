@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import Pagination from "@mui/material/Pagination";
 
-import { updateRoute, Error, Skeleton } from "@/presentation";
+import { updateRoute } from "@/presentation";
+
+import {Error, Skeleton} from "infinity-forge"
 
 import { THeadItem } from "./thead-item";
 import { ScreenNotFound } from "@/presentation";
@@ -127,7 +129,7 @@ export function Table({
 
           {configs?.isFetching && (
             <Error name="Skeleton">
-              <Skeleton type="table" spacing={0} />
+              <Skeleton type="line" size={{ height: "500px", width: "100%", margin: "0" }} />
             </Error>
           )}
         </div>

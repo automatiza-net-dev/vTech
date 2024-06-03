@@ -22,7 +22,7 @@ export function FormUserController({
   userController?: UserController;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { toast } = useToast();
+  const { createToast} = useToast();
   const queryClient = useQueryClient();
 
   const id = userController?.id;
@@ -40,10 +40,7 @@ export function FormUserController({
 
     queryClient.invalidateQueries("RemoteLoadUserControllers");
 
-    toast.success(
-      `Colaborador ${id ? "atualizado" : "cadastrado"} com sucesso!`,
-      { autoClose: 4000, position: "top-right" }
-    );
+    createToast({ message: `Colaborador ${id ? "atualizado" : "cadastrado"} com sucesso!`, status: "success" })
 
     setModal(false);
   }
@@ -66,7 +63,6 @@ export function FormUserController({
               }}
               button={{ text: id ? "Editar" : "Cadastrar" }}
               onSucess={onSucess}
-              schema={{}}
             >
               <div className="row">
                 <Input name="name" label="Nome" />

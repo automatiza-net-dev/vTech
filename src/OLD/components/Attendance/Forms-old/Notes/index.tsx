@@ -7,6 +7,7 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient } from "@/presentation";
 
 // Components
 import { Modal, notification, Button, Popconfirm } from "antd";
@@ -19,26 +20,20 @@ import { MdDownload } from "react-icons/md";
 
 // utils
 import moment from "moment";
+import { useQueryClient } from "react-query";
+import { useRouter } from "next/router";
 
-function Notes({
-  visible,
-  setVisible,
-  patient,
-  reload,
-  setReload,
-  setSelectedUpdate = false,
-  modal = true,
-  updateData = false,
-  flex = false
-}) {
+function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const [fileList, setFileList] = useState([]);
   const [photosOpen, setPhotosOpen] = useState(false);
 
   const { user } = useProfile();
+  const patient = useLoadPatient();
 
-  const systemName = process.env.clientName;
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const beforeUpload = useCallback((file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
@@ -46,7 +41,7 @@ function Notes({
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
         return notification.error({
-          message: "Você só pode upar imagens até 2MB!"
+          message: "Você só pode upar imagens até 2MB!",
         });
       }
     }
@@ -58,7 +53,7 @@ function Notes({
     const newArr = arr?.map((item, i) => {
       return (arr[i] = {
         ...item,
-        url: `${item?.url}`
+        url: `${item?.url}`,
       });
     });
     setFileList(newArr);
@@ -72,14 +67,14 @@ function Notes({
         date: moment(updateData?.createdAt),
         updatedAt: moment(updateData?.updatedAt),
         observations: updateData?.timeline_info?.observation,
-        resume: updateData?.timeline_info?.resume
+        resume: updateData?.timeline_info?.resume,
       });
   }, [updateData]);
 
   const submit = useCallback(() => {
     setLoading(true);
     const formData = new FormData();
-    formData.append("tag", patient?.id);
+    formData.append("tag", patient.data?.id);
     formData.append("observation", data?.observations);
     formData.append("technicianId", user?.id);
     formData.append("resume", data?.resume);
@@ -91,30 +86,33 @@ function Notes({
 
     timelineService
       .insertObservations(formData)
-      .then((_res) =>
+      .then(async (_res) => {
+        await queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
+
         notification.success({
-          message: "Observação registrada com sucesso!"
-        })
-      )
+          message: "Observação registrada com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "Houve um erro ao registrar a observação..."
+          message: "Houve um erro ao registrar a observação...",
         });
       })
       .finally(() => {
         setLoading(false);
-        setVisible(false);
+        setModal(false);
         setFileList([]);
         setData({});
-        setReload(!reload);
       });
-  }, [data, patient?.id, data, user?.id, fileList]);
+  }, [data, patient?.data?.id, data, user?.id, fileList]);
 
   const submitUpdate = useCallback(() => {
     setLoading(true);
     const formData = new FormData();
-    formData.append("tag", patient?.id);
+    formData.append("tag", patient.data?.id);
     formData.append("observation", data?.observations);
     formData.append("technicianId", user?.id);
     formData.append("createdAt", moment(data?.date).toISOString());
@@ -128,16 +126,20 @@ function Notes({
       });
 
     timelineService
-      .updateObservation(updateData?.id, formData)
-      .then((_res) =>
+      .updateObservation(updateData?._id, formData)
+      .then(async (_res) => {
+        await queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
+
         notification.success({
-          message: "Observação atualizada com sucesso!"
-        })
-      )
+          message: "Observação atualizada com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
         return notification.error({
-          message: "Houve um erro ao atualizar a observação..."
+          message: "Houve um erro ao atualizar a observação...",
         });
       })
       .finally(() => {
@@ -145,26 +147,25 @@ function Notes({
         setLoading(false);
         setFileList([]);
         setData({});
-        setReload(!reload);
       });
-  }, [data, patient?.id, data, user?.id, fileList, updateData?.id]);
+  }, [data, patient?.data?.id, data, user?.id, fileList, updateData?.id]);
 
   const removeMedia = useCallback(
     (idx) => {
       setLoading(true);
       timelineService
         .removeObservationMedia(updateData?.id, idx)
-        .then((_res) => {
+        .then(async (_res) => {
           setLoading(false);
-          setReload(!reload);
+      
           return notification.success({
-            messge: "Anexo removido com sucesso!"
+            messge: "Anexo removido com sucesso!",
           });
         })
         .catch((_err) => {
           setLoading(false);
           return notification.error({
-            message: "Houve um erro ao remvoer o anexo selecionado"
+            message: "Houve um erro ao remvoer o anexo selecionado",
           });
         });
     },
@@ -175,11 +176,13 @@ function Notes({
     setLoading(true);
     timelineService
       .removeComplete(id)
-      .then((_res) => {
+      .then(async (_res) => {
         setLoading(false);
-        setReload((prv) => !prv);
+        await queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", router.query.id],
+        });
         return notification.success({
-          message: "Registro removido com sucesso!"
+          message: "Registro removido com sucesso!",
         });
       })
       .catch((_err) => {
@@ -188,19 +191,13 @@ function Notes({
   };
 
   return modal ? (
-    <Modal
-      visible={visible}
-      title={`Lançamento de observações - ${
-        systemName === "LiftOne" ? "Cliente" : "Paciente"
-      }: ${patient.name}`}
-      onCancel={() => setVisible(false)}
-      footer={null}
-    >
+    <>
       <Container>
         <FormChild
+          loading={loading}
           patient={patient}
-          visible={visible}
-          setVisible={setVisible}
+          visible={modal}
+          setVisible={setModal}
           data={data}
           setData={setData}
           submit={submit}
@@ -253,13 +250,14 @@ function Notes({
             })}
         </div>
       </Modal>
-    </Modal>
+    </>
   ) : (
     <>
       <FormChild
+        loading={loading}
         patient={patient}
-        visible={visible}
-        setVisible={setVisible}
+        visible={modal}
+        setVisible={setModal}
         data={data}
         setData={setData}
         beforeUpload={beforeUpload}
@@ -288,7 +286,9 @@ function Notes({
                     const elem = document?.querySelector(
                       `#custom-download-${idx}`
                     );
-                    elem.href = window.URL.createObjectURL(res.data);
+                    if (elem) {
+                      elem.href = window.URL.createObjectURL(res.data);
+                    }
                   });
 
               return item?.url ? (
@@ -318,7 +318,10 @@ function Notes({
                       color="red"
                       style={{ cursor: "pointer" }}
                     />
-                    <a download={`${item?.filename}`} id={`custom-download-${idx}`}>
+                    <a
+                      download={`${item?.filename}`}
+                      id={`custom-download-${idx}`}
+                    >
                       <MdDownload />
                     </a>
                   </Popconfirm>
@@ -360,6 +363,6 @@ function Notes({
       )}
     </>
   );
-};
+}
 
 export default Notes;

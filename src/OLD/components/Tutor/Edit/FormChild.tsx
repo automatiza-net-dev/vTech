@@ -1,6 +1,5 @@
 // @ts-nocheck
 import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 
 import { userService } from "@/OLD/services/user.service";
 
@@ -32,8 +31,6 @@ import {
 } from "@/OLD/hooks/useTutorOrigins";
 import { useProfessions } from "@/OLD/hooks/useProfessions";
 
-const ImgCrop = dynamic(() => import("antd-img-crop"), { ssr: false });
-
 import { viacepService } from "@/OLD/services/viacep.service";
 import { sortItems } from "@/OLD/utils/sortItems";
 import moment from "moment";
@@ -41,7 +38,6 @@ import moment from "moment";
 export function FormChild({
   data,
   setData,
-  photo,
   setPhoto,
   padding = true,
   contacts,
@@ -269,8 +265,6 @@ export function FormChild({
               <Form.Item label="Data de nascimento*" className="uk-width-1-5">
                 <DatePicker
                   slotProps={{ textField: { variant: "standard" } }}
-                  id={"birthDate"}
-                  type="date"
                   value={data?.birthDate}
                   onChange={(val) => setData({ ...data, birthDate: val })}
                 />
