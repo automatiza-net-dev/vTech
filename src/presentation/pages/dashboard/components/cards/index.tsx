@@ -8,6 +8,7 @@ export function Cards({ cards }: Dashboard) {
   return (
     <S.Cards>
       <FiltersDashboard />
+
       {cards?.map((item) => (
         <CardRenderingControl key={item.name} {...item} />
       ))}

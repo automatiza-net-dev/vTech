@@ -25,7 +25,7 @@ controller@liftone.com.br
 
 # LIFTONE - PROD
 # api=https://vetech-api.creativecode.dev.br/
-# NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
+# NEXT_PUBLIC_API=https://vetech-api.automatiza.net
 # SYSTEM_URL=https://liftone.automatiza.net
 # plataform=web
 # client=liftone
@@ -41,7 +41,7 @@ controller@liftone.com.br
 
 # Sancla - PROD
 # api=https://vetech-api.creativecode.dev.br/
-# NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
+# NEXT_PUBLIC_API=https://vetech-api.automatiza.net
 # SYSTEM_URL=https://sancla.automatiza.net
 # plataform=web
 # client=sancla
