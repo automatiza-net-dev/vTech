@@ -105,10 +105,7 @@ export default function App({ Component, pageProps }) {
                     <title>{process.env.clientName}</title>
                     <link
                       rel="icon"
-                      href={
-                        
-                        `/images/logo/${process.env.client}.png`
-                      }
+                      href={`/images/logo/${process.env.client}.png`}
                     />
                   </Head>
 

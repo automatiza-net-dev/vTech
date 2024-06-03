@@ -17,7 +17,7 @@ export const columns: Column<SalesUser>[] = [
     id: "total",
     label: "Total",
     hasAsc: false,
-    width: 100,
+    width: 50,
     Component: {
       Element: (props) => <span>{props.total}</span>,
       props: {},
@@ -26,9 +26,9 @@ export const columns: Column<SalesUser>[] = [
   },
   {
     id: "qty",
-    label: "Qtd Vendas",
+    label: "Qtd",
     hasAsc: false,
-    width: 100,
+    width: 50,
     Component: {
       Element: (props) => <span>{props.qty}</span>,
       props: {},
@@ -37,9 +37,9 @@ export const columns: Column<SalesUser>[] = [
   },
   {
     id: "avg",
-    label: "Ticket Médio",
+    label: "Tkt Méd.",
     hasAsc: false,
-    width: 100,
+    width: 70,
     Component: {
       Element: (props) => <span>{props.avg}</span>,
       props: {},
@@ -48,9 +48,9 @@ export const columns: Column<SalesUser>[] = [
   },
   {
     id: "percentage",
-    label: "Part. %",
+    label: "%",
     hasAsc: false,
-    width: 100,
+    width: 50,
     Component: {
       Element: (props) => <span>{props.percentage}</span>,
       props: {},

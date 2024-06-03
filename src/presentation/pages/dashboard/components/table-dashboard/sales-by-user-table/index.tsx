@@ -30,7 +30,7 @@ export function SalesByUserTable(props: DashboardTableType) {
   });
 
   return (
-    <S.SalesByUserTable>
+    <S.SalesByUserTable className="sales_by_user_table">
       {props.description && <h3>{props.description}</h3>}
       {Table}
     </S.SalesByUserTable>

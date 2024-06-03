@@ -4,7 +4,7 @@ import { Period } from "@/domain";
 export const columns: Column<Period>[] = [
   {
     id: "period",
-    label: "Total",
+    label: "Período",
     hasAsc: false,
     width: 100,
     Component: {
@@ -37,9 +37,9 @@ export const columns: Column<Period>[] = [
   },
   {
     id: "recurrent",
-    label: "Recorrentes",
+    label: "Recor.",
     hasAsc: false,
-    width: 100,
+    width: 70,
     Component: {
       Element: (props) => <span>{props.recurrent}</span>,
       props: {},
@@ -48,9 +48,9 @@ export const columns: Column<Period>[] = [
   },
   {
     id: "percentage",
-    label: "Partic. %",
+    label: "%",
     hasAsc: false,
-    width: 100,
+    width: 50,
     Component: {
       Element: (props) => <span>{props.percentage}</span>,
       props: {},

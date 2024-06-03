@@ -21,9 +21,9 @@ export const columns: Column<SubgroupInvoicing>[] = [
   },
   {
     id: "quantity",
-    label: "Quantidade",
+    label: "Qtd",
     hasAsc: false,
-    width: 100,
+    width: 20,
     Component: {
       Element: (props) => <span>{props.quantity}</span>,
       props: {},
@@ -32,9 +32,9 @@ export const columns: Column<SubgroupInvoicing>[] = [
   },
   {
     id: "total",
-    label: "Valor venda",
+    label: "R$",
     hasAsc: false,
-    width: 100,
+    width: 50,
     Component: {
       Element: (props) => <span>{props.total}</span>,
       props: {},
@@ -45,7 +45,7 @@ export const columns: Column<SubgroupInvoicing>[] = [
     id: "percentage",
     label: "%",
     hasAsc: false,
-    width: 100,
+    width: 50,
     Component: {
       Element: (props) => <span>{props.percentage}</span>,
       props: {},

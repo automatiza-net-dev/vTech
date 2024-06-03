@@ -6,6 +6,11 @@ export const InvoicingBySubgroupTable = styled.div`
   overflow-y: auto;
   width: 100%;
 
+  h2  {
+    font-weight: bold;
+    text-align: center;
+  }
+
   table {
     min-height: 250px;
     max-height: 250px;

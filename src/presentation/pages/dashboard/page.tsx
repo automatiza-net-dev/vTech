@@ -19,9 +19,11 @@ export function DashboardPage() {
     (item) => item?.name === "subgroups"
   );
 
+  const breakColumns = dashboard?.data && dashboard?.data?.charts?.length <= 4;
+
   return (
     <>
-      <S.Dashboard>
+      <S.Dashboard $breakColumns={breakColumns}>
         <section className="general-dashboard">
           {isFetching && (
             <div className="skeleton">

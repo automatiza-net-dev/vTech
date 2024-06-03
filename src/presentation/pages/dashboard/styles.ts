@@ -1,9 +1,23 @@
 import styled from "styled-components";
 
-export const Dashboard = styled("div")`
+interface IStyledDashboard {
+  $breakColumns?: boolean;
+}
+
+export const Dashboard = styled("div")<IStyledDashboard>`
+  --cardsWidth: ${(props) => (props.$breakColumns ? "435px" : "372px")};
+
+  .sales_period_table {
+    width: calc(50% - var(--cardsWidth)) !important;
+  }
+
+  .sales_by_user_table {
+    width: calc(65% - var(--cardsWidth)) !important;
+  }
+
   .general-dashboard {
     display: flex;
-    gap: clamp(10px, 1.56vw, 30px);
+    gap: 15px;
 
     .cards_skeleton {
       span {
@@ -12,7 +26,7 @@ export const Dashboard = styled("div")`
     }
 
     .skeleton {
-      width: calc(100% - 372px);
+      width: calc(100% - var(--cardsWidth));
       height: 50vh;
 
       span {
@@ -21,7 +35,7 @@ export const Dashboard = styled("div")`
     }
 
     .charts {
-      width: calc(100% - 372px);
+      width: calc(100% - var(--cardsWidth));
 
       > div {
         display: flex;
@@ -40,16 +54,19 @@ export const Dashboard = styled("div")`
           align-items: center;
           flex-direction: column;
           padding: 10px;
-          width: calc(33.33333333% - 3.4px);
+          width: ${(props) =>
+            props.$breakColumns
+              ? "calc(50% - 3.4px)"
+              : "calc(33.33333333% - 3.4px)"};
         }
       }
     }
 
     .cards {
-      width: 19.53vw;
-      max-width: 372px;
+      max-width: var(--cardsWidth);
       min-width: 260px;
       margin: 0 0 0 auto;
+      width: var(--cardsWidth);
     }
 
     table {

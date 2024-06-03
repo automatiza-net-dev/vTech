@@ -43,7 +43,7 @@ export function EndService({ event, onExecuteAction }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE08">
       <button className="reset-button red" type="button" onClick={handleClick}>
-        <Icon name="CloseIcon" />
+        <Icon name="CloseIcon" fill={"#fff"} />
         <span>Encerrar atendimento</span>
       </button>
     </PermissionItem>
