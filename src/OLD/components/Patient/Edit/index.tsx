@@ -1,0 +1,205 @@
+// @ts-nocheck
+import React, { memo, useCallback, useEffect, useState } from "react";
+
+import { Form, notification } from "antd";
+import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useAuth } from "@/OLD/hooks/useAuth";
+import { petsService } from "@/OLD/services/patient.service";
+import { FormChild } from "./FormChild";
+import AccessDenied from "@/OLD/components/AccessDenied";
+import { Container } from "./styles";
+import moment from "moment";
+
+export function Edit({ id, setVisible }) {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  const [selectedTutors, setSelectedTutors] = useState([]);
+  const [activeTutor, setActiveTutor] = useState(false);
+
+  const { originConfig, setOriginConfig } = useAuth();
+
+  const editPatientPermission = useUserHasPermission("PET02");
+
+  const handleSubmit = useCallback(() => {
+    setLoading(true);
+
+    if (originConfig === "Crm") {
+      if (!data?.name) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de nome",
+        });
+      }
+    }
+
+    if (originConfig === "") {
+      if (!data?.name) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de nome",
+        });
+      }
+
+      if (!data?.raceId?.id) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo da raça do paciente",
+        });
+      }
+
+      if (!data?.gender) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de Gênero",
+        });
+      }
+
+      if (!data?.birthDate) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de data de nascimento",
+        });
+      }
+
+      /*
+      if (!data.tutors.length) {
+        setLoading(false);
+        return notification.error({
+          message: "Selecione um tutor para este paciente"
+        });
+      }
+      */
+
+      if (!data?.vaccineOrigin) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de 'O paciente é vacinado?'",
+        });
+      }
+
+      if (!data?.castrated) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de 'O paciente é castrado'",
+        });
+      }
+
+      if (!data?.hairId) {
+        setLoading(false);
+        return notification.error({
+          message: "Preencha o campo de 'Tipo de pelagem do paciente'",
+        });
+      }
+    }
+
+    if (selectedTutors?.length > 0) {
+      selectedTutors.forEach((tutor) =>
+        petsService.assignPatientToTutor({
+          holder: tutor?.id,
+          patient: id,
+        })
+      );
+    }
+
+    petsService
+      .editPatient(
+        {
+          ...data,
+          photo: photo,
+          birthDate: moment(data?.birthDate).format("YYYY-MM-DD"),
+          raceId: data?.raceId
+            ? data?.raceId.id
+            : data?.patientAnimal?.race?.id,
+          deathDate: moment(data?.deathDate).toISOString(),
+        },
+        id
+      )
+      .then((_res) => {
+        setVisible(false);
+        petsService.setMainTutor(id, activeTutor?.id);
+        return notification.success({
+          message: "Sucesso",
+          description: "Paciente editado!",
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        notification.error({
+          message: "Erro",
+          description: "Erro ao editar paciente",
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [data, photo, id, selectedTutors, activeTutor?.id]);
+
+  useEffect(() => {
+    petsService
+      .getSinglePatient(id)
+      .then((res) => {
+        setData({
+          ...res.data,
+          raceId: { id: res?.data?.patientAnimal?.race?.id },
+          vaccineOrigin: res?.data?.vaccine_origin,
+          birthDate: res.data.birth_date
+            ? moment(res.data.birth_date, "YYYY-MM-DD[T]HH:mm:ss")
+            : null,
+          microchip: res.data?.patientAnimal?.microchip,
+          castrated: res.data?.patientAnimal?.castrated
+            ? `${res.data?.patientAnimal?.castrated}`
+            : "false",
+          death: `${res.data?.patientAnimal?.death}`,
+          deathDate: res.data?.patientAnimal?.death_date
+            ? moment(res.data?.patientAnimal?.death_date)
+            : null,
+          hairId: res.data?.patientAnimal?.hair?.id,
+        });
+      })
+      .catch((err) => {
+        notification.error({
+          message: "Erro",
+          description: "Erro ao buscar paciente",
+        });
+      });
+  }, [id]);
+
+  return !editPatientPermission || editPatientPermission === "loading" ? (
+    <AccessDenied loading={editPatientPermission} />
+  ) : (
+    <Container>
+      <h3>Editar paciente</h3>
+
+      <Form
+        layout="vertical"
+        onSubmitCapture={(e) => {
+          if (
+            e.target.id !== "form-especie-create" &&
+            e.target.id !== "form-create-race" &&
+            e.target.id !== "form-create-tutor"
+          )
+            handleSubmit();
+        }}
+      >
+        <FormChild
+          data={data}
+          setData={setData}
+          setPhoto={setPhoto}
+          selectedTutors={selectedTutors}
+          setSelectedTutors={setSelectedTutors}
+          setActiveTutor={setActiveTutor}
+        />
+        <hr />
+        <div className="uk-flex uk-flex-between uk-width-1-5">
+          <Button type="button" onClick={() => setVisible(false)}>
+            {" "}
+            Voltar{" "}
+          </Button>
+          <Button type="submit">{loading ? <LoadingSpin /> : "Salvar"}</Button>
+        </div>
+      </Form>
+    </Container>
+  );
+}

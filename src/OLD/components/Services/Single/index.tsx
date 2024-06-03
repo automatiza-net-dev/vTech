@@ -1,0 +1,162 @@
+// @ts-nocheck
+import React, { memo, useCallback, useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
+import { servicesService } from "@/OLD/services/services.service";
+
+import { Container } from "./styles";
+import { Table, notification } from "antd";
+import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import Header from "./Header";
+import Edit from "./Edit";
+
+import { servicesDetailsColumns } from "./Columns";
+import { currencyFormatter } from "@/OLD/components/Budget";
+
+const verifyErrors = (msg) => {
+  const fields = msg?.map((item) => item?.field);
+
+  if (fields?.includes("subgroupId")) {
+    return notification.warning({ message: "Campo subgrupo obrigatório" });
+  }
+
+  if (fields?.includes("taxationGroupId")) {
+    return notification.warning({
+      message: "campo grupo de imposto obrigatório",
+    });
+  }
+};
+
+const Single = memo(function Single({ setVisible, serviceId }) {
+  const [service, setService] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [formatedServiceUnits, setFormatedServiceUnits] = useState([]);
+  const [reload, setReload] = useState(false);
+
+  const router = useRouter();
+
+  const getService = useCallback(() => {
+    setLoading(true);
+    servicesService
+      .showService(serviceId)
+      .then((res) => {
+        setService({
+          id: res?.data?.id,
+          originalDescription: res.data?.description,
+          description: res?.data?.description,
+          referenceCode: res?.data?.reference_code,
+          variationGroup: res.data?.variationGroup?.id,
+          subgroupId: res.data?.subgroup?.id,
+          subgroupDescription: res.data?.subgroup?.description,
+          taxationGroupId: res.data?.taxationGroup?.id,
+          taxationGroupDescription: res.data?.taxationGroup?.name,
+          type: res.data?.type,
+          active: res.data?.active,
+          features: res.data?.features,
+          serviceCode: res.data?.service_code,
+          variations: res.data?.variations,
+          serviceType: res?.data?.type,
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+      })
+      .finally(() => setLoading(false));
+  }, [serviceId, reload]);
+
+  const formatServiceUnits = () => {
+    service?.variations?.length > 0 &&
+      service?.variations[0]?.businessUnitProducts?.length > 0 &&
+      service?.variations[0]?.businessUnitProducts.sort((a, b) => {
+        if (
+          a.businessUnit?.fantasy_name.toLowerCase() <
+          b.businessUnit?.fantasy_name.toLowerCase()
+        ) {
+          return -1;
+        }
+
+        if (
+          a.businessUnit?.fantasy_name.toLowerCase() >
+          b.businessUnit?.fantasy_name.toLowerCase()
+        ) {
+          return 1;
+        }
+
+        return 0;
+      });
+
+    service?.variations?.length > 0 &&
+      service?.variations[0]?.businessUnitProducts?.length > 0 &&
+      setFormatedServiceUnits(
+        service?.variations[0]?.businessUnitProducts?.map((item) => {
+          return {
+            unit: item?.businessUnit?.fantasy_name,
+            maxDiscountPercentage: `${item?.maximum_discount_percentage}%`,
+            maxDiscountValue: currencyFormatter(item?.maximum_discount_value),
+            costPrice: currencyFormatter(item?.cost_price),
+            profitMargin: item?.profit_margin,
+            price: currencyFormatter(item?.price),
+            metaType: item?.meta_type === "q" ? "Quantidade" : "Valor",
+            commission: item?.commission,
+            meta: item?.meta,
+            commissionMeta: item?.commission_meta,
+            actions: <Edit unitVariation={item} setReload={setReload} />,
+          };
+        })
+      );
+  };
+
+  useEffect(() => {
+    getService();
+  }, [getService]);
+
+  useEffect(() => {
+    formatServiceUnits();
+  }, [service]);
+
+  const submitUpdate = useCallback(() => {
+    setLoading(true);
+    servicesService
+      .updateService(service?.id, service)
+      .then((res) => {
+        setLoading(false);
+        setReload((prv) => !prv);
+        setVisible(false);
+        return notification.success({
+          message: "Serviço atualizado com sucesso!",
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        return verifyErrors(err?.response?.data?.errors);
+      });
+  }, [service]);
+
+  return (
+    <Container className="uk-padding">
+      <div className="uk-flex uk-flex-between">
+        <h3 className="uk-line uk-margin-remove">
+          Detalhes do serviço - {service?.originalDescription}
+        </h3>
+        <div className="uk-flex">
+          <CustomButton
+            classCallback="uk-margin-small-right"
+            onClick={() => setVisible(false)}
+          >
+            Voltar
+          </CustomButton>
+          <CustomButton onClick={submitUpdate}>Salvar</CustomButton>
+        </div>
+      </div>
+      <hr />
+      <Header service={service} setService={setService} />
+      <hr />
+      <Table
+        columns={servicesDetailsColumns}
+        dataSource={formatedServiceUnits}
+      />
+    </Container>
+  );
+});
+
+export default Single;

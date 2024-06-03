@@ -1,0 +1,46 @@
+// @ts-nocheck
+import { notification, Popconfirm, Tooltip } from "antd";
+import React, { memo, useCallback } from "react";
+import { userService } from "@/OLD/services/user.service";
+import { DeleteTwoTone } from "@ant-design/icons";
+import { useQueryClient } from "react-query";
+
+export const Delete = memo(({ id, onDelete, reload, setReload }) => {
+  const handleDelete = useCallback(() => {
+    userService
+      .deleteWorkingDay(id)
+      .then((res) => {
+        notification.success({
+          message: "Sucesso",
+          description: "Escala deletada",
+        });
+
+        if (onDelete) onDelete();
+      })
+      .catch((err) => {
+        notification.error({
+          message: "Erro",
+          description: "Erro ao deletar escala de trabalho",
+        });
+      })
+      .finally(() => {
+        setReload(!reload);
+      });
+  }, [id]);
+
+  return (
+    <div>
+      <Popconfirm
+        title="Deseja realmete excluir essa escala?"
+        onConfirm={handleDelete}
+        okText="Sim"
+        cancelText="Não"
+        placement="left"
+      >
+        <Tooltip title="Apagar">
+          <DeleteTwoTone twoToneColor="red" />
+        </Tooltip>
+      </Popconfirm>
+    </div>
+  );
+});

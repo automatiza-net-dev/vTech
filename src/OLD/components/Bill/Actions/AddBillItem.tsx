@@ -1,0 +1,644 @@
+// @ts-nocheck
+import { billService } from "@/OLD/services/bills.service";
+import { productService } from "@/OLD/services/product.service";
+
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useProfile } from "@/OLD/hooks/useProfile";
+
+import {
+  AutoComplete,
+  Button,
+  Input,
+  Modal,
+  Popconfirm,
+  Radio,
+  Table,
+  Tooltip,
+  notification,
+} from "antd";
+import {
+  useCreateBillItem,
+  useGetBillProducts,
+  useShowBill,
+} from "@/OLD/hooks/useBills";
+import * as React from "react";
+import { GrAddCircle } from "react-icons/gr";
+import { useQueryClient } from "react-query";
+
+import { DeleteTwoTone } from "@ant-design/icons";
+
+import { convertIntlCurrency } from "../../../../OLD/utils/convertIntl";
+import Masks from "../../../../OLD/utils/masks";
+import { currencyFormatter } from "../../Budget";
+const { Group } = Radio;
+
+import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { sortItems } from "@/OLD/utils/sortItems";
+
+const columns = [
+  {
+    title: "Produto",
+    dataIndex: "product",
+    key: "product",
+  },
+  {
+    title: "Quantidade",
+    dataIndex: "quantity",
+    key: "quantity",
+  },
+  {
+    title: "Valor",
+    dataIndex: "value",
+    key: "value",
+  },
+  {
+    title: "Desconto",
+    dataIndex: "discount",
+    key: "discount",
+  },
+  {
+    title: "Total",
+    dataIndex: "total",
+    key: "total",
+  },
+  {
+    title: "Remover",
+    dataIndex: "delete",
+    key: "delete",
+  },
+];
+
+const AddBillItem = React.memo(function AddBillItem({ bill }) {
+  const queryClient = useQueryClient();
+  const [visible, setVisible] = React.useState(false);
+  const [formData, setFormData] = React.useState({});
+  const [itemData, setItemData] = React.useState([]);
+  const [editDiscount, setEditDiscount] = React.useState(false);
+  const [discountType, setDiscountType] = React.useState("value");
+  const [reload, setReload] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [multipleProducts, setMultipleProducts] = React.useState([]);
+  const [productType, setProductType] = React.useState("");
+  const [generalDiscount, setGeneralDiscount] = React.useState(
+    currencyFormatter(0)
+  );
+
+  const { data } = useShowBill(bill.id, visible);
+  const { data: products } = useGetBillProducts(visible);
+  const { mutate, isLoading } = useCreateBillItem();
+  const { clinic } = useProfile();
+
+  const addItemPermission = useUserHasPermission("VEN02");
+  const removeItemPermission = useUserHasPermission("VEN03");
+
+  sortItems(products, "description");
+
+  const submitDiscount = React.useCallback(() => {
+    setLoading(true);
+    const items = itemData?.map((item) => {
+      return {
+        ...item,
+        discountValue: convertIntlCurrency(item?.discountValue),
+      };
+    });
+
+    billService
+      .updateBillItem({ items })
+      .then((_res) => {
+        queryClient.invalidateQueries(["bills"]);
+        setLoading(false);
+        setReload(!reload);
+      })
+      .catch((_err) => setLoading(false));
+  }, [itemData]);
+
+  React.useEffect(() => {
+    data &&
+      setItemData(
+        data.items.map((item) => {
+          return {
+            discountValue: currencyFormatter(item?.discount_value),
+            billItemId: item?.id,
+          };
+        })
+      );
+  }, [data, reload]);
+
+  const productData = React.useMemo(() => {
+    if (!data?.items || !itemData?.length || itemData?.length === 0) {
+      return [];
+    }
+
+    return data.items.map((item, i) => {
+      return (
+        item?.status !== "INATIVA" && {
+          key: item.id,
+          product: [
+            item.productVariation.product.description,
+            `(${item.productVariation.product.reference_code})`,
+            ...item?.productVariation?.variationOptions?.map(
+              (option) => option?.description
+            ),
+            item?.productVariation?.barcode,
+          ].join(" - "),
+          quantity: item.quantity,
+          value: currencyFormatter(item.unitary_value.toString()),
+          total: currencyFormatter(item.total_value.toString()),
+          delete: removeItemPermission && (
+            <Popconfirm
+              title="Deseja remover este item?"
+              onConfirm={() => removeBillItem(item?.id)}
+            >
+              <DeleteTwoTone twoToneColor="red" />
+            </Popconfirm>
+          ),
+          discount: (
+            <Input
+              key={i}
+              value={itemData[i]?.discountValue}
+              onChange={(e) => {
+                setEditDiscount(true);
+                const arr = [...itemData];
+                arr.splice(i, 1, {
+                  ...itemData[i],
+                  discountValue: currencyFormatter(
+                    convertIntlCurrency(e.target.value)
+                  ),
+                });
+                setItemData(arr);
+              }}
+            />
+          ),
+        }
+      );
+    });
+  }, [data, itemData, reload]);
+
+  const setDiscountValue = (value) => {
+    setEditDiscount(true);
+    const arr = [...itemData];
+
+    data?.items?.forEach((item, i) => {
+      arr.splice(i, 1, {
+        ...itemData[i],
+        discountValue: currencyFormatter(
+          (item?.total_value / data?.total_value) * convertIntlCurrency(value)
+        ),
+      });
+    });
+    setItemData(arr);
+  };
+
+  const removeBillItem = (id) => {
+    billService
+      .removeBillItem(id)
+      .then((_res) =>
+        notification.success({ message: "Item removido com sucesso" })
+      )
+      .finally(() => {
+        queryClient.invalidateQueries(["bills"]);
+        setReload((prv) => !prv);
+      });
+  };
+
+  const productOptions = products?.map((product) => {
+    return {
+      ...product,
+      variation_id: product?.variation?.id,
+      value:
+        product?.type !== "kit"
+          ? `${product?.description} - Cod.: ${product?.reference_code} - ${
+              product?.variations && product?.variations[0]?.barcode
+                ? product?.variations[0]?.barcode
+                : ""
+            }`
+          : product?.description,
+      key: product?.id,
+    };
+  });
+  /*
+    ?.map((p) => p.variations)
+    .flat()
+    .sort((a, b) => {
+      if (
+        a.product.description.toLowerCase() <
+        b.product.description.toLowerCase()
+      ) {
+        return -1;
+      }
+
+      if (
+        a.product.description.toLowerCase() >
+        b.product.description.toLowerCase()
+      ) {
+        return 1;
+      }
+
+      return 0;
+    })
+    .map((variation) => ({
+      ...variation,
+      value: [
+        variation.product.description,
+        `Cod.: (${variation.product.reference_code})`,
+        ...variation?.variationOptions?.map((option) => option?.description),
+        variation?.barcode
+      ].join(" - ")
+    }));
+    */
+
+  const addKitItems = (kitId) => {
+    setLoading(true);
+    productService
+      .showProductGroup(kitId)
+      .then((res) => {
+        setMultipleProducts(
+          res.data.items.map(({ product }) => ({
+            billId: bill?.id,
+            productVariationId: product?.variation_id,
+            quantity: product?.quantity,
+            unitaryValue: currencyFormatter(product?.original_price),
+            discountValue: currencyFormatter(product?.discount_price),
+          }))
+        );
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+  };
+
+  const submitKit = React.useCallback(() => {
+    setLoading(true);
+    billService
+      .createMultipleItems({
+        items: multipleProducts.map((item) => ({
+          ...item,
+          billId: bill?.id,
+          quantity:
+            typeof item?.quantity === "string"
+              ? parseFloat(item?.quantity.replaceAll(",", "."))
+              : item?.quantity,
+          unitaryValue: convertIntlCurrency(item?.unitaryValue),
+          discountValue: convertIntlCurrency(item?.discountValue),
+        })),
+      })
+      .then((_res) => {
+        setLoading(false);
+        setFormData({});
+        queryClient.invalidateQueries(["bills"]);
+        setReload((prv) => !prv);
+        setMultipleProducts([]);
+        return notification.success({
+          message: "Produtos adicionados com sucesso!",
+        });
+      })
+      .catch((_err) => {
+        setLoading(false);
+
+        if (Array.isArray(_err?.response?.data)) {
+          _err?.response?.data?.forEach((err) => {
+            notification.error({
+              message: err.message,
+            });
+          });
+          return;
+        }
+
+        if (_err?.response?.data?.message) {
+          notification.error({
+            message: _err?.response?.data?.message,
+          });
+          return;
+        }
+
+        notification.error({
+          message: "Houve um erro ao salvar os produtos selecionados",
+        });
+        return;
+      });
+  }, [multipleProducts, bill]);
+
+  return (
+    <>
+      {addItemPermission && (
+        <Tooltip title="Adicionar Item">
+          <GrAddCircle
+            className="icon"
+            size={20}
+            onClick={() => setVisible((prevState) => !prevState)}
+          />
+        </Tooltip>
+      )}
+      <Modal
+        visible={visible}
+        footer={null}
+        title={
+          <span>
+            Adicionar Item - {bill?.tag}&nbsp;&nbsp;
+            {data?.client && `Cliente: ${data?.client?.name}`}&nbsp;&nbsp;
+            {data?.patient && `Paciente: ${data?.patient?.name}`}
+          </span>
+        }
+        width={1000}
+        onCancel={() => setVisible((prevState) => !prevState)}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submitKit();
+          }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            paddingTop: "1rem",
+          }}
+        >
+          <div className="uk-width-1-1 uk-flex" style={{ gap: "1rem" }}>
+            <div className="uk-width-1-1">
+              <label>Produto</label>
+              <AutoComplete
+                placeholder="Produto"
+                options={productOptions}
+                value={formData?.productDescription}
+                onChange={(val) =>
+                  setFormData({ ...formData, productDescription: val })
+                }
+                onSelect={(_, opt) => {
+                  setProductType(opt?.type);
+                  if (opt?.type === "kit") {
+                    return addKitItems(opt?.id);
+                  }
+
+                  setMultipleProducts((prv) => [
+                    {
+                      productVariationId: opt?.variations[0]?.id,
+                      quantity: 1,
+                      unitaryValue: currencyFormatter(
+                        opt?.variations[0]?.businessUnitProducts[0].price
+                      ),
+                      discountValue: currencyFormatter(0),
+                    },
+                  ]);
+                }}
+                filterOption={(val, opt) =>
+                  normalizeStr(opt?.value.toUpperCase()).includes(
+                    normalizeStr(val.toUpperCase())
+                  )
+                }
+                style={{ width: "100%" }}
+              />
+            </div>
+          </div>
+          {multipleProducts.map((product, i) => (
+            <>
+              <strong>
+                {
+                  productOptions?.find(
+                    (variation) => variation?.id === product.productVariationId
+                  )?.product?.description
+                }
+              </strong>
+              <section
+                className="uk-margin-bottom"
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                }}
+              >
+                <div className="uk-width-1-3">
+                  <label>Quantidade</label>
+                  <Input
+                    placeholder="Quantidade"
+                    disabled={productType === "kit"}
+                    value={product?.quantity}
+                    onChange={(e) => {
+                      let productsArr = [...multipleProducts];
+                      productsArr.splice(i, 1, {
+                        ...multipleProducts[i],
+                        quantity: e.target.value,
+                      });
+                      setMultipleProducts(productsArr);
+                    }}
+                    min={1}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+
+                <div className="uk-width-1-3">
+                  <label>Valor Unitário</label>
+
+                  <Input
+                    disabled={!clinic?.unitConfig?.alter_prices}
+                    placeholder="Valor Unitário"
+                    value={product?.unitaryValue}
+                    onChange={(e) => {
+                      let productsArr = [...multipleProducts];
+                      productsArr.splice(i, 1, {
+                        ...multipleProducts[i],
+                        unitaryValue: Masks.money(e.target.value),
+                      });
+                      setMultipleProducts(productsArr);
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+
+                <div className="uk-width-1-3">
+                  <label>Valor de Desconto</label>
+
+                  <Input
+                    placeholder="Valor"
+                    disabled={productType === "kit"}
+                    value={product?.discountValue}
+                    onChange={(e) => {
+                      let productsArr = [...multipleProducts];
+                      productsArr.splice(i, 1, {
+                        ...multipleProducts[i],
+                        discountValue: Masks.money(e.target.value),
+                      });
+                      setMultipleProducts(productsArr);
+                    }}
+                  />
+                </div>
+              </section>
+            </>
+          ))}
+          <section
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              className="uk-margin-small-bottom"
+              size={"middle"}
+              htmlType="submit"
+              loading={loading}
+            >
+              Adicionar
+            </Button>
+          </section>
+        </form>
+
+        <hr />
+        <div className="uk-flex uk-flex-column">
+          <div
+            className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small"
+            style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+          >
+            <div className="uk-margin-right">
+              <strong>Aplicar desconto:</strong>
+            </div>
+            <Group
+              className="uk-flex uk-margin-right"
+              value={discountType}
+              onChange={(e) => {
+                setDiscountType(e.target.value);
+                e.target.value === "value"
+                  ? setGeneralDiscount(currencyFormatter(0))
+                  : setGeneralDiscount("0");
+              }}
+            >
+              <Radio
+                value="value"
+                onClick={() => setGeneralDiscount(currencyFormatter("0"))}
+              >
+                Valor bruto
+              </Radio>
+              <Radio
+                value="percent"
+                onClick={() => setGeneralDiscount(convertIntlCurrency("0"))}
+              >
+                Porcentagem
+              </Radio>
+            </Group>
+            <div className="uk-flex uk-flex-between">
+              <Input
+                className="uk-width-1-1 uk-margin-right"
+                value={generalDiscount}
+                onChange={(e) => {
+                  if (discountType === "percent" && e.target.value > 100) {
+                    return notification.warning({
+                      message: "O valor máximo é 100",
+                    });
+                  }
+
+                  const value =
+                    discountType === "value"
+                      ? e.target.value
+                      : JSON.stringify(
+                          parseInt(
+                            (e.target.value / 100) * data?.total_value * 100
+                          )
+                        );
+
+                  setDiscountValue(value);
+
+                  discountType === "value"
+                    ? setGeneralDiscount(
+                        currencyFormatter(convertIntlCurrency(value))
+                      )
+                    : setGeneralDiscount(e.target.value);
+                }}
+              />
+            </div>
+            {editDiscount && (
+              <div className="">
+                <Button
+                  onClick={() => {
+                    submitDiscount();
+                    setEditDiscount(false);
+                  }}
+                  type="primary"
+                >
+                  Aplicar desconto
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="uk-margin-small-top">
+            <Table
+              columns={columns}
+              dataSource={productData}
+              pagination={false}
+              style={{ maxHeight: "300px", overflowY: "auto" }}
+            />
+          </div>
+          <div
+            className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small uk-flex-around"
+            style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+          >
+            {!loading ? (
+              <>
+                <strong>Totais:</strong>
+                <div>
+                  {currencyFormatter(data?.total_value + data?.discount_value)}
+                </div>
+                <div>{currencyFormatter(data?.discount_value)}</div>
+                <div>{currencyFormatter(data?.total_value)}</div>
+              </>
+            ) : (
+              <section>
+                <strong>Calculando...</strong>
+              </section>
+            )}
+          </div>
+        </div>
+        <hr />
+        <div className="uk-flex uk-flex-right">
+          <Button
+            type="primary"
+            onClick={() => {
+              if (multipleProducts?.length > 0) {
+                return notification.warning({
+                  message: (
+                    <div>
+                      {" "}
+                      Deseja adicionar o produto {formData?.productDescription}?
+                      <div>
+                        <Button
+                          type="primary"
+                          className="uk-margin-small-right"
+                          onClick={() => {
+                            submitDiscount();
+                            setFormData({});
+                            setVisible((prevState) => !prevState);
+                            notification.destroy();
+                            return submitKit();
+                          }}
+                        >
+                          Sim
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            submitDiscount();
+                            setFormData({});
+                            setVisible((prevState) => !prevState);
+                            notification.destroy();
+                          }}
+                        >
+                          Não
+                        </Button>
+                      </div>
+                    </div>
+                  ),
+                  placement: "bottomRight",
+                });
+              }
+              submitDiscount();
+              setFormData({});
+              setVisible((prevState) => !prevState);
+            }}
+          >
+            Salvar
+          </Button>
+        </div>
+      </Modal>
+    </>
+  );
+});
+
+export default AddBillItem;

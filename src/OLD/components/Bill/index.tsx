@@ -1,0 +1,357 @@
+// @ts-nocheck
+// Core
+import * as React from "react";
+import { memo } from "react";
+
+// Hooks
+import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
+import { usePatients } from "@/OLD/hooks/usePatients";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
+// Utils
+import { Columns, LiftColumns } from "./Columns";
+import moment from "moment";
+import { normalizeStr } from "@/OLD/utils/normalizeString";
+
+// Icons
+import { MdOutlineClear } from "react-icons/md";
+
+// Components
+import {
+  Input as AntInput,
+  Select,
+  Table,
+  notification,
+  AutoComplete,
+} from "antd";
+import { DatePicker } from "@mui/x-date-pickers";
+import { Button } from "@/OLD/components/mini-components/Button";
+import { Container, Input, Label } from "./styles";
+import AccessDenied from "@/OLD/components/AccessDenied";
+
+import { useQuery } from "react-query";
+import { useGetAllBills } from "../../../OLD/hooks/useBills";
+import { petsService } from "../../../OLD/services/patient.service";
+import { currencyFormatter, dateFormatter } from "../Budget";
+import BillActions from "./Actions/Container";
+import CreateBill from "./Create";
+
+
+export const billStatusFormatter = (status) => {
+  switch (status) {
+    case "ABERTA":
+      return <span style={{ color: "red" }}>Aberta</span>;
+    case "EXTORNADA":
+      return "Extornada";
+    case "BAIXADA":
+      return <span style={{ color: "green" }}>Baixada</span>;
+    default:
+      return status;
+  }
+};
+
+const mapper = (data = [], cashiers) => {
+  data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
+
+  return data.map((bill) => {
+    return {
+      id: bill.id,
+      fn: bill?.hasDocuments ? "Sim" : "Não",
+      bill_date: dateFormatter(bill.bill_date),
+      code: bill?.tag ?? "-",
+      client: bill.client.name,
+      patient: bill.patient?.name ?? "-",
+      user: bill.seller ? bill.seller.name : bill.user.name,
+      total: currencyFormatter(bill.total_value),
+      status: billStatusFormatter(bill.status),
+      missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
+      actions: (
+        <>
+          <BillActions bill={bill} cashiers={cashiers} />
+        </>
+      ),
+    };
+  });
+};
+
+export default function Bills() {
+  const [filters, setFilters] = React.useState({
+    fromBill: moment(),
+    toBill: moment(),
+    noSearch: true,
+  });
+  const [patientSearch, setPatientSearch] = React.useState("");
+  const [clientSearch, setClientSearch] = React.useState("");
+  const [cashierFilters, setCashierFilters] = React.useState({
+    from: moment(new Date()).startOf("day"),
+    to: moment(new Date()).endOf("day"),
+    status: "ABERTO",
+  });
+  const [reload, setReload] = React.useState(false);
+
+  const { data, refetch } = useGetAllBills(filters, reload);
+  const { patients } = usePatients();
+  const { cashiers } = useDailyCasher(cashierFilters);
+
+
+  const createPermission = useUserHasPermission("VEN01");
+  const listBillsPermission = useUserHasPermission("VEN00");
+
+  const { data: tutors } = useQuery(
+    ["tutors"],
+    async () => {
+      const { data } = await petsService.getTutors();
+
+      return data ?? [];
+    },
+    { refetchOnWindowFocus: false }
+  );
+
+  const [openCreate, setOpenCreate] = React.useState(false);
+
+  React.useEffect(() => {
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        setFilters((prv) => ({ ...prv, noSearch: false }));
+        setReload((prv) => !prv);
+      }
+    });
+  }, []);
+
+  return !listBillsPermission || listBillsPermission === "loading" ? (
+    <AccessDenied loading={listBillsPermission} />
+  ) : (
+    <Container className="uk-padding">
+      <h3 className="uk-margin-remove">Vendas</h3>
+      <section className="uk-margin-top uk-width-1-1">
+        <div
+          className="uk-flex uk-flex-between uk-width-1-1"
+          style={{ gap: "1rem" }}
+        >
+          <Input style={{ width: "100%" }}>
+            <Label>Criação</Label>
+            <DatePicker
+              slotProps={{ textField: { variant: "standard" } }}
+              format="DD/MM/YYYY"
+              onChange={(val) => {
+                setFilters({
+                  ...filters,
+                  fromBill: val,
+                });
+              }}
+              value={filters?.fromBill}
+            />
+            à
+            <DatePicker
+              format="DD/MM/YYYY"
+              slotProps={{ textField: { variant: "standard" } }}
+              onChange={(val) => {
+                setFilters({
+                  ...filters,
+                  toBill: val,
+                });
+              }}
+              value={filters?.toBill}
+            />
+            {/*
+            <DatePicker.RangePicker
+              showTime
+              value={[moment(filters?.fromBill), moment(filters?.toBill)]}
+              allowEmpty={[true, true]}
+              format="DD/MM/YYYY"
+              onChange={([from, to]) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  fromBill: from?.startOf("day").toISOString(),
+                  toBill: to?.endOf("day").toISOString()
+                }));
+              }}
+            />
+            */}
+            <MdOutlineClear
+              size={40}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setFilters((prv) => ({
+                  ...prv,
+                  fromBill: null,
+                  toBill: null,
+                }));
+              }}
+            />
+          </Input>
+
+          <Input style={{ width: "100%" }}>
+            <Label>Status</Label>
+            <Select
+              allowClear
+              defaultValue={"all"}
+              placeholder="Status"
+              className="uk-width-1-1"
+              value={filters.status}
+              onChange={(e) => {
+                if (e === "all") {
+                  const newObj = { ...filters };
+                  delete newObj?.status;
+                  return setFilters(newObj);
+                }
+                setFilters({ ...filters, status: e });
+              }}
+            >
+              <Select.Option value="all">Todos</Select.Option>
+              <Select.Option value="ABERTA">Aberta</Select.Option>
+              <Select.Option value="BAIXADA">Baixada</Select.Option>
+            </Select>
+          </Input>
+
+          <Input style={{ width: "100%" }}>
+            <Label>Cliente</Label>
+            <AutoComplete
+              className="uk-width-1-1"
+              value={clientSearch}
+              options={tutors?.map((tutor) => ({
+                ...tutor,
+                value: tutor?.name,
+              }))}
+              onChange={(val) => {
+                setClientSearch(val);
+                if (val === "") {
+                  const newObj = { ...filters };
+                  delete newObj.client;
+                  setFilters(newObj);
+                }
+              }}
+              onSelect={(_, option) => {
+                setClientSearch(option?.name);
+                setFilters({ ...filters, client: option?.id });
+              }}
+              filterOption={(val, opt) =>
+                normalizeStr(opt?.name.toUpperCase()).includes(
+                  normalizeStr(val.toUpperCase())
+                )
+              }
+            />
+          </Input>
+        </div>
+        <div
+          className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
+          style={{ gap: "1rem" }}
+        >
+          {process.env.client !== "liftone" && (
+            <Input style={{ width: "100%" }}>
+              <Label>Paciente</Label>
+              <AutoComplete
+                className="uk-width-1-1"
+                value={patientSearch}
+                options={patients?.map((patient) => ({
+                  ...patient,
+                  value: patient?.name,
+                }))}
+                onChange={(val) => {
+                  setPatientSearch(val);
+                  if (val === "") {
+                    const newObj = { ...filters };
+                    delete newObj.patient;
+                    setFilters(newObj);
+                  }
+                }}
+                onSelect={(_, option) => {
+                  setPatientSearch(option?.name);
+                  setFilters({ ...filters, patient: option?.id });
+                }}
+                filterOption={(val, opt) =>
+                  normalizeStr(opt?.name.toUpperCase()).includes(
+                    normalizeStr(val.toUpperCase())
+                  )
+                }
+              />
+            </Input>
+          )}
+          <Input style={{ width: "70%" }}>
+            <label>Código</label>
+            <AntInput
+              value={filters.tag}
+              onChange={(e) => setFilters({ ...filters, tag: e.target.value })}
+            />
+          </Input>
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "right" }}
+          >
+            <Button
+              classCallback="uk-margin-small-right"
+              onClick={() => {
+                setFilters((prv) => ({ ...prv, noSearch: false }));
+                setReload((prv) => !prv);
+              }}
+            >
+              Filtrar
+            </Button>
+            {createPermission && (
+              <Button
+                onClick={() => {
+                  setOpenCreate((prev) => !prev);
+                }}
+              >
+                Nova venda
+              </Button>
+            )}
+          </div>
+        </div>
+      </section>
+      <hr />
+      <div className="uk-margin-top">
+        <Table
+          columns={process.env.client !== "liftone" ? Columns : LiftColumns}
+          dataSource={mapper(data, cashiers)}
+          footer={() => (
+            <section className="uk-flex uk-flex-center">
+              <div className="uk-flex uk-flex-around custom-footer-box">
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total:&nbsp;</strong>
+                  {data?.length > 0 &&
+                    currencyFormatter(
+                      data.reduce(
+                        (acc, current) => acc + current.total_value,
+                        0
+                      )
+                    )}
+                </div>
+                <div className="uk-width-1-1">
+                  <strong>Total em aberto:&nbsp;</strong>
+                  {data?.length > 0 &&
+                    currencyFormatter(
+                      data.reduce(
+                        (acc, current) =>
+                          acc + (current?.total_value - current?.paid_value),
+                        0
+                      )
+                    )}
+                </div>
+                <div className="uk-width-1-1">
+                  <strong>Total pago:</strong>
+                  {data?.length > 0 &&
+                    currencyFormatter(
+                      data.reduce(
+                        (acc, current) => acc + current?.paid_value,
+                        0
+                      )
+                    )}
+                </div>
+              </div>
+            </section>
+          )}
+        />
+      </div>
+      {openCreate && (
+        <CreateBill
+          visible={openCreate}
+          close={() => {
+            refetch();
+            setOpenCreate(false);
+          }}
+        />
+      )}
+    </Container>
+  );
+}
+

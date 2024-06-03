@@ -1,0 +1,145 @@
+// @ts-nocheck
+import {
+  Form,
+  Input,
+  Modal,
+  notification,
+  Select,
+  Button as ButtonA,
+} from "antd";
+import { Button } from "@/OLD/components/mini-components";
+import { useSpecies } from "@/OLD/hooks/useSpecies";
+import { memo, useCallback, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { animalServices } from "@/OLD/services/animal.service";
+import { Create as CreateSpecie } from "@/OLD/components/Species/Create";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
+export const Create = memo(
+  ({ visible, setVisible, button, reload, setReload, fetchRaces }) => {
+    const queryClient = useQueryClient();
+    const [payload, setPayload] = useState();
+    const [createSpecieVisible, setCreateSpecieVisible] = useState(false);
+    const { Option } = Select;
+    const { species, loadingSpecies } = useSpecies("ALL", reload);
+
+    const { mutate, loading } = useMutation(
+      (data) => animalServices.createRace(data),
+      {
+        onSuccess: () => {
+          notification.success({
+            message: "Sucesso",
+            description: "Raça criada!",
+          });
+          setVisible(false);
+          setPayload(null);
+          queryClient.invalidateQueries("getRaces");
+          if (fetchRaces) {
+            fetchRaces();
+          }
+        },
+        onError: (error) => {
+          notification.error({
+            message: "Erro",
+            description: "Erro ao criar Raça!",
+          });
+        },
+      }
+    );
+
+    const handleSubmit = useCallback(() => {
+      mutate(payload);
+    }, [payload]);
+
+    const canCreateRace = useUserHasPermission("RAC01");
+    const canCreateSpecie = useUserHasPermission("ESP01");
+
+    return (
+      <div>
+        {button && (
+          <Button disabled={!canCreateRace} onClick={() => setVisible(true)}>
+            Criar nova Raça
+          </Button>
+        )}
+        <Modal
+          loading={loading}
+          title="Criar Raça"
+          visible={visible}
+          onOk={() => document.getElementById("create-race").click()}
+          onCancel={() => {
+            setVisible(false);
+          }}
+        >
+          <Form
+            layout="vertical"
+            onSubmitCapture={handleSubmit}
+            id="form-create-race"
+          >
+            <Form.Item label="Descrição">
+              <Input
+                required
+                max="14"
+                value={payload?.description}
+                onChange={(e) =>
+                  setPayload({ ...payload, description: e.target.value })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Espécie">
+              <Select
+                loading={loadingSpecies}
+                value={payload?.specie_id}
+                required
+                onChange={(e) =>
+                  setPayload({
+                    ...payload,
+                    specie_id: e !== "nova-especie" ? e : "",
+                  })
+                }
+              >
+                {(species || [])?.map((item) => (
+                  <Option value={item.id}>{item.description}</Option>
+                ))}
+                {canCreateSpecie && (
+                  <Option value="nova-especie">
+                    <ButtonA
+                      className="uk-width-1-1"
+                      onClick={() => {
+                        setPayload({ ...payload, specie_id: "" });
+                        setCreateSpecieVisible(true);
+                      }}
+                    >
+                      Criar nova espécie
+                    </ButtonA>
+                  </Option>
+                )}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Tipo Pelagem">
+              <Select
+                onChange={(e) => setPayload({ ...payload, fur: e })}
+                value={payload?.fur}
+              >
+                <Option value="PELO_LONGO">Pelo longo</Option>
+                <Option value="PELO_CURTO">Pelo curto</Option>
+              </Select>
+            </Form.Item>
+            <input
+              type={"submit"}
+              id="create-race"
+              style={{ display: "none" }}
+            />
+          </Form>
+        </Modal>
+        <CreateSpecie
+          visible={createSpecieVisible}
+          setVisible={setCreateSpecieVisible}
+          reload={reload}
+          setReload={setReload}
+          t
+          button={false}
+        />
+      </div>
+    );
+  }
+);

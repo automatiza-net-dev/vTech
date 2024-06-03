@@ -1,0 +1,121 @@
+// @ts-nocheck
+import React, { memo, useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
+// Hooks
+import { useServices } from "@/OLD/hooks/useServices";
+
+import { Container } from "./styles";
+import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Table, Tooltip, Modal } from "antd";
+import Filters from "./Filters";
+import Actions from "./Actions";
+import AccessDenied from "@/OLD/components/AccessDenied";
+import CreateServices from "./Create";
+
+import { servicesColumns } from "./Columns";
+import moment from "moment";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
+const Services = memo(function Services() {
+  const [filters, setFilters] = useState({ noSearch: true });
+  const [formatedServices, setFormatedServices] = useState([]);
+  const [reload, setReload] = useState(false);
+  const [createVisible, setCreateVisible] = useState(false);
+
+  const listServicesPermission = useUserHasPermission("SRV00");
+  const canCreateService = useUserHasPermission("SRV01");
+
+  const { services } = useServices(filters, reload);
+
+  const router = useRouter();
+
+  const serviceMaper = () => {
+    services.length > 0 || Object.keys(filters).length !== 0
+      ? setFormatedServices(
+          services.map((service) => {
+            return {
+              description: service?.description,
+              code: service?.referenceCode,
+              type: service?.type === "service" ? "Serviço" : service?.type,
+              status: service?.active ? "Ativo" : "Inativo",
+              createdAt: moment(service?.created_at).format("DD/MM/YYYY"),
+              actions: <Actions service={service} setReload={setReload} />,
+              subgroup: service?.subgroup?.description,
+              type: service?.type,
+            };
+          })
+        )
+      : setFormatedServices([]);
+  };
+
+  useEffect(() => {
+    serviceMaper();
+  }, [services]);
+
+  useEffect(() => {
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        setFilters((prv) => ({ ...prv, noSearch: false }));
+        setReload((prv) => !prv);
+      }
+    });
+  }, []);
+
+  return !listServicesPermission || listServicesPermission === "loading" ? (
+    <AccessDenied loading={listServicesPermission} />
+  ) : (
+    <Container className="uk-padding">
+      <h3 className="uk-line uk-margin-remove">Controle de serviços</h3>
+      <Filters filters={filters} setFilters={setFilters} />
+      <div className="uk-flex uk-flex-right">
+        <CustomButton
+          classCallback="uk-margin-right"
+          onClick={() => setFilters({ ...filters, noSearch: false })}
+        >
+          Filtrar
+        </CustomButton>
+        <CustomButton
+          onClick={() => {
+            setCreateVisible(true);
+            {
+              /*
+            router.push("/dashboard/servicos/cadastrar");
+          */
+            }
+          }}
+          disabled={!canCreateService}
+        >
+          Cadastrar
+        </CustomButton>
+      </div>
+      <hr />
+      <section>
+        <Table
+          columns={servicesColumns}
+          dataSource={formatedServices}
+          locale={{
+            emptyText:
+              Object.keys(filters).length === 0 ? (
+                <>Pesquise acima para exibir o resultado</>
+              ) : (
+                <>Nenhum resultado encontrado</>
+              ),
+          }}
+        />
+      </section>
+      {createVisible && (
+        <Modal
+          visible={createVisible}
+          onCancel={() => setCreateVisible(false)}
+          width={1200}
+          footer={null}
+        >
+          <CreateServices setVisible={setCreateVisible} />
+        </Modal>
+      )}
+    </Container>
+  );
+});
+
+export default Services;

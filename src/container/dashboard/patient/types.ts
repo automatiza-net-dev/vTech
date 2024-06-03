@@ -1,0 +1,16 @@
+export const patientTypes = {
+  RemoteTutor: Symbol.for("RemoteTutor"),
+  RemotePatient: Symbol.for("RemotePatient"),
+  RemoteSchedule: Symbol.for("RemoteSchedule"),
+  RemoteAttendances: Symbol.for("RemoteAttendances"),
+  RemoteChangeStatus: Symbol.for("RemoteChangeStatus"),
+  RemotePatientAnimal: Symbol.for("RemotePatientAnimal"),
+  RemoteLoadAllReasons: Symbol.for("RemoteLoadAllReasons"),
+  RemoteLoadAllSchedulesUser: Symbol.for("RemoteLoadAllSchedulesUser"),
+  RemoteLoadSchedulesPatient: Symbol.for("RemoteLoadSchedulesPatient"),
+  RemoteLoadAllScheduleStatuses: Symbol.for("RemoteLoadAllScheduleStatuses"),
+  RemoteLoadAllSchedulesUsersWeek: Symbol.for("RemoteLoadAllSchedulesUsersWeek"),
+  RemoteLoadProfessionalsSchedule: Symbol.for("RemoteLoadProfessionalsSchedule"),
+  RemoteLoadAllScheduleServicesGroups: Symbol.for("RemoteLoadAllScheduleServicesGroups"),
+  RemoteLoadReturnablesSchedulePatient: Symbol.for("RemoteLoadReturnablesSchedulePatient"),
+};

@@ -1,0 +1,1 @@
+export { signUpClinic } from "./signUpClinic";

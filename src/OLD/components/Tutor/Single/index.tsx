@@ -1,0 +1,311 @@
+// @ts-nocheck
+import React, { memo, useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { petsService } from "@/OLD/services/patient.service";
+import { useAuth } from "@/OLD/hooks/useAuth";
+import { notification, Table } from "antd";
+import { Button, LoadingSkeleton } from "@/OLD/components/mini-components";
+import Link from "next/link";
+import { convertDate } from "@/OLD/utils/convertDate";
+import { columns } from "./columns";
+import { AddPatient } from "./AddPatient";
+import { Container } from "./styles";
+
+export const Single = memo(function Single({
+  selectedId,
+  setVisible,
+  setEditVisible,
+  setCreatePetVisible,
+  setVincPetVisible,
+}) {
+  const [tutor, setTutor] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [patients, setPatients] = useState();
+  const [photoSrc, setPhotoSrc] = useState(false);
+  const [reload, setReload] = useState(false);
+  
+  const router = useRouter();
+
+  const handleCreateTable = useCallback(
+    (data) => {
+      setPatients(
+        data.map((patient) => {
+          const photoSrc = process.env.NEXT_PUBLIC_API + patient.photo;
+          return {
+            name: (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className="uk-margin-right"
+                  style={{
+                    borderRadius: "50%",
+                    background: "#ccc",
+                    width: "50px",
+                    height: "50px",
+                    display: "flex",
+                  }}
+                >
+                  {patient.photo && (
+                    <img
+                      className="uk-border-circle uk-margin-right"
+                      width="50px"
+                      height="50px"
+                      src={photoSrc}
+                    />
+                  )}
+                </div>
+                <Link href={`/dashboard/paciente/visualizar/${patient?.id}`}>
+                  <div>{patient?.name}</div>
+                </Link>
+              </div>
+            ),
+            gender: patient?.gender,
+            birthDate: patient?.birth_date
+              ? convertDate(patient?.birth_date)
+              : "--------",
+            patientRec: (
+              <Button
+                onClick={() =>
+                  router.push(`/dashboard/atendimento/${patient?.id}`)
+                }
+              >
+                Ficha paciente
+              </Button>
+            ),
+          };
+        })
+      );
+    },
+    [router]
+  );
+
+  const handleGetSingleTutor = (id) => {
+    petsService
+      .getSingleTutor(id)
+      .then((res) => {
+        setTutor(res.data);
+        handleCreateTable(res?.data?.dependents);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        notification.error({
+          message: "Erro",
+          description: "Erro ao buscar tutor",
+        });
+      });
+  };
+
+  React.useEffect(() => {
+    setLoading(true);
+    handleGetSingleTutor(selectedId);
+  }, [reload, selectedId]);
+
+  useEffect(() => {
+    tutor?.photo && setPhotoSrc(process.env.NEXT_PUBLIC_API + tutor?.photo);
+  }, [tutor]);
+
+  return loading ? (
+    <LoadingSkeleton />
+  ) : (
+    <div>
+      <h2>{process.env.client === "liftone" ? "Cliente" : "Tutor"}</h2>
+      <div
+        className="uk-card uk-card-body uk-margin-bottom"
+        style={{ background: "#fff", borderRadius: "20px", marginTop: "50px" }}
+      >
+        <>
+          <div className="uk-margin-large-bottom">
+            <div
+              style={{
+                borderRadius: "50%",
+                background: "#ccc",
+                width: "115px",
+                height: "115px",
+                display: "flex",
+                border: "solid 3px var(--darkBlue)",
+                marginTop: "50px",
+                position: "absolute",
+                top: -80,
+              }}
+            >
+              <img
+                className="uk-border-circle"
+                width="115px"
+                height="115px"
+                src={
+                  photoSrc
+                    ? photoSrc
+                    : "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+                }
+              />
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                right: 40,
+              }}
+            >
+              {process.env.client === "liftone" && (
+                <Link href={`/dashboard/paciente/${tutor?.id}`}>
+                  <Button type="secondary" classCallback="uk-margin-right">
+                    Ficha paciente
+                  </Button>
+                </Link>
+              )}
+              <Button
+                type="secondary"
+                classCallback="uk-margin-right"
+                onClick={() => setVisible(false)}
+              >
+                Voltar
+              </Button>
+
+              <Button onClick={() => setEditVisible(true)}>Editar</Button>
+            </div>
+          </div>
+          {process.env.client === "liftone" && (
+            <div>
+              <div>
+                <label>Diabetes: {tutor?.diabetes ? "Sim" : "Não"}</label>
+              </div>
+              <div>
+                <label>
+                  Hipertensão: {tutor?.hypertension ? "Sim" : "Não"}
+                </label>
+              </div>
+            </div>
+          )}
+
+          <div className="uk-flex uk-flex-between">
+            <div className="uk-flex uk-flex-column uk-width-1-4 uk-margin-top">
+              <h5 className="uk-heading-line">
+                <span>Contato</span>
+              </h5>
+
+              <span>
+                Telefone:{" "}
+                {tutor?.tutor?.cellphone === ""
+                  ? "Nenhum telefone cadastrado"
+                  : tutor?.tutor?.cellphone}
+              </span>
+              <span>
+                Email:{" "}
+                {tutor?.tutor?.email === ""
+                  ? "Nenhum email cadastrado"
+                  : tutor?.tutor?.email}
+              </span>
+            </div>
+            <div className="uk-flex uk-flex-column uk-width-1-4">
+              <h5 className="uk-heading-line">
+                <span>Documentos</span>
+              </h5>
+              <span>
+                Nome:{" "}
+                {tutor?.name === "" ? "Nenhum nome cadastrado" : tutor?.name}
+              </span>
+              <span>
+                Data de nascimento:{" "}
+                {tutor?.birth_date === ""
+                  ? "Nenhuma razão social cadastrada"
+                  : convertDate(tutor?.birth_date)}
+              </span>
+              <span>
+                CPF:{" "}
+                {tutor?.tutor?.document === ""
+                  ? "Nenhum documento cadastrado"
+                  : tutor?.tutor?.document}
+              </span>
+              <span>
+                RG:{" "}
+                {tutor?.tutor?.inscription === null
+                  ? "Nenhum documento cadastrado"
+                  : tutor?.tutor?.inscription}
+              </span>
+              <span>
+                Profissão:{" "}
+                {tutor?.tutor?.profession &&
+                  tutor?.tutor?.profession?.description}
+              </span>
+              <span>
+                Estado Civil:{" "}
+                {tutor?.tutor?.civil_status && tutor?.tutor?.civil_status}
+              </span>
+              <span>
+                Nacionalidade:{" "}
+                {tutor?.tutor?.nationality && tutor?.tutor?.nationality}
+              </span>
+            </div>
+
+            <div className="uk-flex uk-flex-column uk-width-1-4">
+              <h5 className="uk-heading-line">
+                <span>Endereço</span>
+              </h5>
+              <span>
+                CEP:{" "}
+                {tutor?.tutor?.postal_code === ""
+                  ? "Nenhum cep cadastrado"
+                  : tutor?.tutor?.postal_code}
+              </span>
+              <span>
+                Rua:{" "}
+                {tutor?.tutor?.street === ""
+                  ? "Nenhuma rua cadastrada"
+                  : tutor?.tutor?.street}
+              </span>
+              <span>
+                Bairro:{" "}
+                {tutor?.tutor?.district === ""
+                  ? "Nenhum bairro cadastrado"
+                  : tutor?.tutor?.district}
+              </span>
+              <span>
+                Complemento:{" "}
+                {tutor?.tutor?.complement === ""
+                  ? ""
+                  : tutor?.tutor?.complement}
+              </span>
+              <span>
+                Número:{" "}
+                {tutor?.tutor?.number === ""
+                  ? "Nenhum número cadastrado"
+                  : tutor?.tutor?.number}
+              </span>
+              <span>
+                Cidade:{" "}
+                {tutor?.tutor?.city === ""
+                  ? "Nenhuma cidade cadastrada"
+                  : tutor?.tutor?.city}
+              </span>
+              <span>
+                Estado:{" "}
+                {tutor?.tutor?.state === ""
+                  ? "Nenhum estado cadastrado"
+                  : tutor?.tutor?.state}
+              </span>
+            </div>
+          </div>
+        </>
+      </div>
+
+      {process.env.client !== "liftone" && (
+        <>
+          <div className="uk-flex uk-flex-between uk-margin-bottom">
+            <h3 className="uk-margin-remove">Pacientes</h3>
+            <AddPatient
+              tutorId={tutor?.id}
+              setReload={setReload}
+              setCreatePetVisible={setCreatePetVisible}
+              setVincPetVisible={setVincPetVisible}
+            />
+          </div>
+          <Table columns={columns} dataSource={patients} />
+        </>
+      )}
+    </div>
+  );
+});

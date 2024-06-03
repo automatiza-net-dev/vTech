@@ -1,0 +1,133 @@
+// @ts-nocheck
+import {
+  Form,
+  Input,
+  Modal,
+  notification,
+  Select,
+  Tooltip,
+  Button as ButtonA,
+} from "antd";
+import { memo, useCallback, useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { animalServices } from "@/OLD/services/animal.service";
+import { EditTwoTone } from "@ant-design/icons";
+import { useSpecies } from "@/OLD/hooks/useSpecies";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
+export const Edit = memo(({ item, reload, setReload }) => {
+  const queryClient = useQueryClient();
+  const [isVisible, setIsVisible] = useState(false);
+  const { Option } = Select;
+  const [payload, setPayload] = useState({});
+
+  useEffect(() => {
+    setPayload({
+      description: item.description,
+      specie_id: item.specie.id,
+      fur: item?.fur,
+    });
+  }, [item]);
+
+  const { species, loadingSpecies } = useSpecies("ALL");
+
+  const { mutate, loading } = useMutation(
+    (data) => animalServices.editRace(item.id, data),
+    {
+      onSuccess: () => {
+        notification.success({
+          message: "Sucesso",
+          description: "Espécie editada!",
+        });
+        setIsVisible(false);
+        setPayload(null);
+        setReload(!reload);
+        queryClient.invalidateQueries("getSpecies");
+      },
+      onError: () => {
+        notification.error({
+          message: "Erro",
+          description: "Erro ao editar espécie!",
+        });
+      },
+    }
+  );
+
+  const handleSubmit = useCallback(() => {
+    mutate(payload);
+  }, [payload, item.id]);
+
+  const canEditRace = useUserHasPermission("RAC02");
+  const canCreateSpecie = useUserHasPermission("ESP01");
+
+  return (
+    <div>
+      {canEditRace && (
+        <Tooltip title="Editar">
+          <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+        </Tooltip>
+      )}
+
+      <Modal
+        loading={loading}
+        title="Editar espécie"
+        visible={isVisible}
+        onOk={() => document.getElementById(`edit-specie-${item.id}`).click()}
+        onCancel={() => {
+          setIsVisible(false);
+        }}
+      >
+        <Form layout="vertical" onSubmitCapture={handleSubmit}>
+          <Form.Item label="Descrição">
+            <Input
+              required
+              max="14"
+              value={payload?.description}
+              onChange={(e) =>
+                setPayload({ ...payload, description: e.target.value })
+              }
+            />
+          </Form.Item>
+          <Form.Item label="Espécie">
+            <Select
+              loading={loadingSpecies}
+              required
+              value={payload?.specie_id}
+              onChange={(e) => setPayload({ ...payload, specie_id: e })}
+            >
+              {(species || [])?.map((item) => (
+                <Option value={item.id}>{item.description}</Option>
+              ))}
+              {canCreateSpecie && (
+                <Option>
+                  <ButtonA
+                    className="uk-width-1-1"
+                    onClick={() =>
+                      document.getElementById("create-new-specie-modal").click()
+                    }
+                  >
+                    Criar nova espécie
+                  </ButtonA>
+                </Option>
+              )}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Tipo Pelagem">
+            <Select
+              onChange={(e) => setPayload({ ...payload, fur: e })}
+              value={payload?.fur}
+            >
+              <Option value="PELO_LONGO">Pelo longo</Option>
+              <Option value="PELO_CURTO">Pelo curto</Option>
+            </Select>
+          </Form.Item>
+          <input
+            type={"submit"}
+            id={`edit-specie-${item.id}`}
+            style={{ display: "none" }}
+          />
+        </Form>
+      </Modal>
+    </div>
+  );
+});

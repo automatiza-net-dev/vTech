@@ -1,0 +1,119 @@
+// @ts-nocheck
+import {
+  Form,
+  Input,
+  Modal,
+  notification,
+  Select,
+  Button as ButtonA,
+} from "antd";
+import { Button } from "@/OLD/components/mini-components";
+import { memo, useCallback, useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { metasService } from "@/OLD/services/metas.service";
+
+export const Create = memo(({ canCreate }) => {
+  const queryClient = useQueryClient();
+  const [payload, setPayload] = useState({
+    description: "",
+    type: "R$",
+  });
+  const [visible, setVisible] = useState(false);
+  const { Option } = Select;
+
+  useEffect(() => {
+    if (!canCreate) {
+      return;
+    }
+
+    setPayload({
+      description: "",
+      type: "R$",
+    });
+  }, [canCreate]);
+
+  const { mutate, loading } = useMutation((data) => metasService.create(data), {
+    onSuccess: () => {
+      setVisible(false);
+      setPayload({});
+      notification.success({
+        message: "Sucesso",
+        description: "Meta criada!",
+      });
+      queryClient.invalidateQueries("metas");
+    },
+    onError: (_error) => {
+      const errorData = _error?.response?.data;
+      if (errorData && errorData.message === "E_ERR: Meta já cadastrada") {
+        notification.error({
+          message: "Erro",
+          description: "Meta já existe!",
+        });
+        return;
+      }
+
+      notification.error({
+        message: "Erro",
+        description: "Erro ao criar Meta!",
+      });
+    },
+  });
+
+  const handleSubmit = useCallback(() => {
+    mutate(payload);
+  }, [payload]);
+
+  return (
+    <div>
+      {canCreate && (
+        <Button onClick={() => setVisible(true)}>Criar nova meta</Button>
+      )}
+      <Modal
+        loading={loading}
+        title="Criar Raça"
+        visible={visible}
+        onCancel={() => {
+          setVisible(false);
+        }}
+        footer={
+          <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
+            <ButtonA onClick={() => setVisible(false)}>Cancelar</ButtonA>
+          </div>
+        }
+      >
+        <Form
+          layout="vertical"
+          onSubmitCapture={handleSubmit}
+          id="form-create-meta"
+        >
+          <Form.Item label="Descrição">
+            <Input
+              required
+              max="14"
+              value={payload?.description}
+              onChange={(e) =>
+                setPayload({ ...payload, description: e.target.value })
+              }
+            />
+          </Form.Item>
+          <Form.Item label="Tipo Pelagem">
+            <Select
+              onChange={(e) => setPayload({ ...payload, type: e })}
+              value={payload?.type}
+            >
+              <Option value="R$">Valor (R$)</Option>
+              <Option value="%">Porcentagem (%)</Option>
+              <Option value="Qtd">Quantidade</Option>
+            </Select>
+          </Form.Item>
+
+          <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
+            <ButtonA type="primary" htmlType="submit">
+              Criar
+            </ButtonA>
+          </div>
+        </Form>
+      </Modal>
+    </div>
+  );
+});
