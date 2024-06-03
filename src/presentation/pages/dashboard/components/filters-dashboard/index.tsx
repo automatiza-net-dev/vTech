@@ -1,11 +1,7 @@
 import { useRouter } from "next/router";
 
 import moment from "moment";
-import {
-  FormHandler,
-  updateRoute,
-  DatePickerInput,
-} from "infinity-forge";
+import { FormHandler, updateRoute, DatePickerInput } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -21,18 +17,27 @@ export function FiltersDashboard() {
     <S.FiltersDashboard>
       <FormHandler
         initialData={{
-          toDate: moment(router.query.toDate || moment().format("DD-MM-YYYY"), "DD-MM-YYYY").toDate(),
-          fromDate: moment(router.query.fromDate || moment().format("DD-MM-YYYY"), "DD-MM-YYYY").toDate(),
+          toDate: moment(
+            router.query.toDate || moment().format("YYYY-MM-DD"),
+            "YYYY-MM-DD"
+          ).toDate(),
+          fromDate: moment(
+            router.query.fromDate || moment().format("YYYY-MM-DD"),
+            "YYYY-MM-DD"
+          ).toDate(),
         }}
         onChangeForm={{
           callbackResult: ({ fromDate }: FiltersDashboardParams) => {
-            if(moment(fromDate).format("DD-MM-YYYY") !== (router.query as any).fromDate) {
+            if (
+              moment(fromDate).format("YYYY-MM-DD") !==
+              (router.query as any).fromDate
+            ) {
               updateRoute({
                 params: {
                   fromDate: moment(fromDate)
                     .startOf("month")
-                    .format("DD-MM-YYYY"),
-                  toDate: moment(fromDate).endOf("month").format("DD-MM-YYYY"),
+                    .format("YYYY-MM-DD"),
+                  toDate: moment(fromDate).endOf("month").format("YYYY-MM-DD"),
                 },
                 router,
               });

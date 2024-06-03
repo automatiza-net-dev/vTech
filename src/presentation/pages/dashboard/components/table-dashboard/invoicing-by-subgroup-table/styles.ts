@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const InvoicingBySubgroupTable = styled.div`
   min-height: 200px;
+  max-height: 500px;
+  overflow-y: auto;
   width: 100%;
 
   table {

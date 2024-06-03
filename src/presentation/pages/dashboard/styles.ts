@@ -12,7 +12,7 @@ export const Dashboard = styled("div")`
     }
 
     .skeleton {
-      width: calc(100% - 260px);
+      width: calc(100% - 372px);
       height: 50vh;
 
       span {
@@ -21,7 +21,7 @@ export const Dashboard = styled("div")`
     }
 
     .charts {
-      width: calc(100% - 260px);
+      width: calc(100% - 372px);
 
       > div {
         display: flex;
@@ -46,9 +46,9 @@ export const Dashboard = styled("div")`
     }
 
     .cards {
-      width: 13.54vw;
-      max-width: 260px;
-      min-width: 220px;
+      width: 19.53vw;
+      max-width: 372px;
+      min-width: 260px;
       margin: 0 0 0 auto;
     }
 
