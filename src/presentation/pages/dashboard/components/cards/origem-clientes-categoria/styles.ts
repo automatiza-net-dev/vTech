@@ -2,6 +2,12 @@ import styled from "styled-components";
 
 export const OrigemClientesCategoria = styled("div")`
   width: 100%;
+  border-radius: 5px;
+  background-color: #b9e2fd;
+
+  h2 {
+    margin-left: 10px;
+  }
 
   table {
     border-radius: 5px;

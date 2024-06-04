@@ -3,8 +3,14 @@ import { useQuery } from "react-query";
 import { RemoteBusinessUnits } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { adminTypes, container } from "@/container";
+import { useAuthAdmin } from "infinity-forge";
+import { User } from "@/domain";
 
 export function useLoadAllAvailableUnits() {
+  const { GetUser } = useAuthAdmin();
+
+  const user = GetUser<User>();
+
   async function fetcher() {
     return await container
       .get<RemoteBusinessUnits>(adminTypes.RemoteBusinessUnits)
@@ -12,7 +18,7 @@ export function useLoadAllAvailableUnits() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllAvailableUnits",
+    queryKey: ["RemoteLoadAllAvailableUnits", user?.user?.id],
     queryFn: fetcher,
     ...callApiOneTime,
   });

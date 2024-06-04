@@ -9,9 +9,11 @@ import { Button } from "@/OLD/components/mini-components";
 import { sessionService } from "@/OLD/services/session.service";
 
 import { Storage } from "infinity-forge";
-import{container, TypesAutomatiza} from "@/container"
+import { adminTypes, container, TypesAutomatiza } from "@/container";
 
 import { Container } from "./styles";
+import { useLoadAllAvailableUnits } from "@/presentation";
+import { RemoteBusinessUnits } from "@/data";
 
 export function SignIn() {
   const [data, setData] = useState({
@@ -21,15 +23,15 @@ export function SignIn() {
   });
   const [saveAccess, setSaveAccess] = useState(false);
 
-  const {loadUser} = useAuthAdmin()
+  const { loadUser } = useAuthAdmin();
 
   useEffect(() => {
-    if(process.browser) {
+    if (process.browser) {
       fetch("https://api.ipify.org/")
-      .then((res) => res.text())
-      .then((res) => {
-        setData((prev) => ({ ...prev, ipAddress: res }));
-      });
+        .then((res) => res.text())
+        .then((res) => {
+          setData((prev) => ({ ...prev, ipAddress: res }));
+        });
     }
   }, []);
 
@@ -44,14 +46,25 @@ export function SignIn() {
         });
       }
       try {
-        const getBusinessUnits = await sessionService.login({ ...data, system: process.env.clientName });
-        const loginResponse = await sessionService.login({ ...data, system: process.env.clientName, business_unit_id : getBusinessUnits.data[0].businessUnits[0].id });
+        const getBusinessUnits = await sessionService.login({
+          ...data,
+          system: process.env.clientName,
+        });
 
-        await container.get<Storage>(TypesAutomatiza.storage).set('token', { value: loginResponse.data.token });
+        const loginResponse = Array.isArray(getBusinessUnits.data) && getBusinessUnits.data[0].businessUnits && await sessionService.login({
+          ...data,
+          system: process.env.clientName,
+          business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
+        });
 
-        loadUser()
+        await container
+        .get<Storage>(TypesAutomatiza.storage)
+        .set("token", { value: getBusinessUnits?.data?.token || loginResponse?.data?.token });
+
+        loadUser();
 
       } catch (err: any) {
+        console.log(err);
         notification.error({
           message: "Erro",
           description:
@@ -64,61 +77,61 @@ export function SignIn() {
     [data]
   );
 
+  return (
+    <Container>
+      <img
+        className="uk-margin-xlarge-right"
+        src={
+          process.env.client === "sancla"
+            ? "/img/Imagem_Logo_Gato.png"
+            : "/img/lo-logo-green.png"
+        }
+        width="500"
+      />
+      <div className="left-side">
+        <div className="uk-card uk-card-default uk-card-body uk-width-1-1 border-radius">
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              className="uk-input uk-margin-bottom"
+              required
+              onChange={(e) => setData({ ...data, email: e.target.value })}
+            />
 
-  return <Container>
-        <img
-          className="uk-margin-xlarge-right"
-          src={
-            process.env.client === "sancla"
-              ? "/img/Imagem_Logo_Gato.png"
-              : "/img/lo-logo-green.png"
-          }
-          width="500"
-        />
-        <div className="left-side">
-          <div className="uk-card uk-card-default uk-card-body uk-width-1-1 border-radius">
-            <form onSubmit={(e) => handleSubmit(e)}>
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                className="uk-input uk-margin-bottom"
-                required
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-              />
-
-              <label htmlFor="password">Senha</label>
-              <input
-                id="password"
-                type="password"
-                className="uk-input uk-margin-bottom"
-                required
-                onChange={(e) => setData({ ...data, password: e.target.value })}
-              />
-              <div className="uk-flex uk-flex-column">
-                <div className="uk-margin-bottom uk-flex uk-flex-between">
-                  <div className="checkbox">
-                    <input
-                      id="save-access"
-                      type="radio"
-                      className="uk-radio"
-                      checked={saveAccess}
-                      onClick={() => setSaveAccess(!saveAccess)}
-                    />
-                    <label htmlFor="save-access">Permanecer logado </label>
-                  </div>
-                  <Link href="/senha/esqueci">Esqueci minha senha</Link>
+            <label htmlFor="password">Senha</label>
+            <input
+              id="password"
+              type="password"
+              className="uk-input uk-margin-bottom"
+              required
+              onChange={(e) => setData({ ...data, password: e.target.value })}
+            />
+            <div className="uk-flex uk-flex-column">
+              <div className="uk-margin-bottom uk-flex uk-flex-between">
+                <div className="checkbox">
+                  <input
+                    id="save-access"
+                    type="radio"
+                    className="uk-radio"
+                    checked={saveAccess}
+                    onClick={() => setSaveAccess(!saveAccess)}
+                  />
+                  <label htmlFor="save-access">Permanecer logado </label>
                 </div>
-
-                <Button type="submit">Entrar</Button>
-
-                <div style={{ textAlign: "center", marginTop: "10px" }}>
-                  <Link href="/admin">Área do franqueador</Link>
-                </div>
+                <Link href="/senha/esqueci">Esqueci minha senha</Link>
               </div>
-            </form>
-          </div>
-        </div>
-      </Container>
 
+              <Button type="submit">Entrar</Button>
+
+              <div style={{ textAlign: "center", marginTop: "10px" }}>
+                <Link href="/admin">Área do franqueador</Link>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Container>
+  );
 }

@@ -6,6 +6,7 @@ export function OrigemClientesCategoria(props) {
   return (
     <Error name="OrigemClientesCategoria">
       <S.OrigemClientesCategoria>
+        <h2>Origem clientes</h2>
         <table>
           <thead>
             <tr>

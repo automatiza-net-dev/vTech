@@ -13,11 +13,13 @@ const generalTheme = {
 const liftone: DefaultThemeInfinityForge = {
   ...generalTheme,
   primaryColor: "#005862",
+  cardsColor: "#b9e2fd",
 };
 
 const sancla: DefaultThemeInfinityForge = {
   ...generalTheme,
   primaryColor: "#FA972B",
+  cardsColor: "#FFCD56",
 };
 
 const vetech: DefaultThemeInfinityForge = {

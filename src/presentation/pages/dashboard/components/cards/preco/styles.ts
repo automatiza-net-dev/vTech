@@ -3,9 +3,9 @@ import styled from "styled-components";
 export const PrecoCard = styled("div")`
   border-radius: 5px;
   background: #dfeffa;
-  color: #2b2b2b;
   padding: clamp(8px, 0.78vw, 15px);
   width: 100%;
+  background-color: ${(props) => props.theme.cardsColor};
 
   h3 {
     margin-bottom: 5px;

@@ -1,12 +1,19 @@
 import React from "react";
+
 import { Error } from "infinity-forge";
+
 import * as S from "./styles";
 
 export function SubgruposDetalhado(props) {
-  console.log(props);
+
+  if(!props.items || !Array.isArray(props.items) || props.items.length === 0) {
+    return <></>
+  }
+
   return (
     <Error name="SubgruposDetalhado">
       <S.SubgruposDetalhado>
+        <h2>Faturamento Subgrupos</h2>
         <table>
           <thead>
             <tr>
@@ -16,6 +23,7 @@ export function SubgruposDetalhado(props) {
               <th className="text-right">Qtd.</th>
             </tr>
           </thead>
+
           <tbody>
             {(props.items as any).map((item) => (
               <React.Fragment key={item.id}>
