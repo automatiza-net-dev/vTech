@@ -16,7 +16,6 @@ export function CardRenderingControl(props: DashboardCard) {
     case "SubgruposDetalhado": {
       return <SubgruposDetalhado {...props} />;
     }
-    default:
-      return <PrecoCard {...props} />;
+    default: return <PrecoCard {...props} />;
   }
 }

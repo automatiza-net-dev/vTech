@@ -15,17 +15,17 @@ export function DashboardPage() {
 
   const isFetching = dashboard.isFetching || resize;
 
-  const subgroupsDataTable = dashboard.data?.tables.find(
+  const breakColumns = dashboard?.data && dashboard?.data?.charts?.length <= 4;
+
+  const subgroupsDataTable = dashboard?.data?.tables?.find(
     (item) => item?.name === "subgroups"
   );
 
-  const breakColumns = dashboard?.data && dashboard?.data?.charts?.length <= 4;
-
-  const TableSalesPerPeriod = dashboard?.data?.tables.find(
+  const TableSalesPerPeriod = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-period"
   );
 
-  const TableSalesPerUser = dashboard?.data?.tables.find(
+  const TableSalesPerUser = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-user"
   );
 
@@ -98,6 +98,7 @@ export function DashboardPage() {
           </section>
         )}
       </S.Dashboard>
+      
       {!dashboard.isLoading && <SchedulesDashboard />}
     </>
   );

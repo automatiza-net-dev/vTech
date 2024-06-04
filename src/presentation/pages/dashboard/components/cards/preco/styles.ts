@@ -1,11 +1,12 @@
 import styled from "styled-components";
 
-import chroma from "chroma-js"
+import chroma from "chroma-js";
 
 export const PrecoCard = styled("div")`
   border-radius: 5px;
   width: 100%;
-  background-color: ${(props) => chroma(props.theme.cardsColor).alpha(0.7).hex() };
+  background-color: ${(props) =>
+    chroma(props.theme.primaryColor).alpha(0.2).hex()};
   min-height: 76px;
   display: flex;
   flex-direction: column;
@@ -17,13 +18,13 @@ export const PrecoCard = styled("div")`
     margin-bottom: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #2B2B2B;
+    color: ${(props) => props.theme.primaryColor};
   }
 
   p {
     font-size: 16px;
     margin-bottom: 0;
-    color: #2B2B2B;
+    color: #2b2b2b;
   }
 
   @media only screen and (max-width: 1600px) {

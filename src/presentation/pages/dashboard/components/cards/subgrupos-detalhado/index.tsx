@@ -5,49 +5,63 @@ import { Error } from "infinity-forge";
 import * as S from "./styles";
 
 export function SubgruposDetalhado(props) {
-
-  if(!props.items || !Array.isArray(props.items) || props.items.length === 0) {
-    return <></>
+  if (!props.items || !Array.isArray(props.items) || props.items.length === 0) {
+    return <></>;
   }
 
   return (
     <Error name="SubgruposDetalhado">
-      <S.SubgruposDetalhado>
+      <S.TableLevels>
         <h2>Faturamento Subgrupos</h2>
+
         <table>
           <thead>
             <tr>
               <th>Descrição</th>
-              <th className="text-right">Total</th>
-              <th className="text-right">%</th>
-              <th className="text-right">Qtd.</th>
+              <th>Qtd.</th>
+
+              <th>Total</th>
+              <th>%</th>
             </tr>
           </thead>
 
           <tbody>
             {(props.items as any).map((item) => (
               <React.Fragment key={item.id}>
-                <tr className="first-section-subgroup">
-                  <td>{item?.description}</td>
-                  <td className="text-right">R$: {item?.total}</td>
-                  <td className="text-right">{item?.percentage.toFixed(2)}%</td>
-                  <td className="text-right">{item?.quantity}</td>
+                <tr className="primary">
+                  <td>{item?.description || "-"}</td>
+
+                  <td>{item?.quantity || "-"}</td>
+
+                  <td>R$ {item?.total || "0,00"}</td>
+
+                  <td>
+                    {item?.percentage ? item?.percentage.toFixed(2) + "%" : "-"}
+                  </td>
                 </tr>
+
                 {item?.children.map((child) => (
-                  <tr className="second-section-sugroup" key={child.id}>
-                    <td>{child?.description}</td>
-                    <td className="text-right">R$: {child?.total}</td>
-                    <td className="text-right">
-                      {child?.percentage.toFixed(2)}%
+                  <tr className="second" key={child.id}>
+                    <td>
+                      <span>{child?.description || "-"}</span>
                     </td>
-                    <td className="text-right">{child?.quantity}</td>
+
+                    <td>{child?.quantity || "-"}</td>
+
+                    <td>R$ {child?.total || "0,00"}</td>
+
+                    <td>
+                      {child?.percentage
+                        ? child?.percentage.toFixed(2) + "%"
+                        : "-"}
+                    </td>
                   </tr>
                 ))}
               </React.Fragment>
             ))}
           </tbody>
         </table>
-      </S.SubgruposDetalhado>
+      </S.TableLevels>
     </Error>
   );
 }

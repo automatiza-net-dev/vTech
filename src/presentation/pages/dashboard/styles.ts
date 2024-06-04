@@ -63,10 +63,8 @@ export const Dashboard = styled("div")<IStyledDashboard>`
     }
 
     .cards {
-      max-width: var(--cardsWidth);
-      min-width: 260px;
-      margin: 0 0 0 auto;
       width: var(--cardsWidth);
+      margin: 0 0 0 auto;
     }
 
     table {
@@ -88,11 +86,18 @@ export const Dashboard = styled("div")<IStyledDashboard>`
       }
     }
 
-    @media only screen and (max-width: 1700px) {
+    @media only screen and (max-width: 1650px) {
       .charts {
-        width: 100%;
         grid-template-columns: repeat(2, 1fr);
       }
+    }
+
+    @media only screen and (max-width: 1600px) {
+      --cardsWidth: ${(props) => (props.$breakColumns ? "390px" : "372px")};
+    }
+
+    @media only screen and (max-width: 1400px) {
+      --cardsWidth: ${(props) => (props.$breakColumns ? "370px" : "372px")};
     }
 
     @media only screen and (max-width: 1024px) {

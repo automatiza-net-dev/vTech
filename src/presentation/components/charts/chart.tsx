@@ -2,7 +2,6 @@ import { Error } from "infinity-forge";
 
 import { PieChart } from "./pie";
 import { DashboardChart } from "@/domain";
-import { Funnel } from "./funnel";
 
 import * as S from "./styles";
 

@@ -68,7 +68,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
     {
       id: 7,
       icon: "IconHypertension",
-      color: "#F4BF00",
+      color: "#C700D9",
       title: patient.hypertension ? "Sim" : "Não",
       subTitle: "Hipertensão",
       active: process.env.clientName === "LiftOne",
@@ -76,7 +76,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
     {
       id: 8,
       icon: "IconDiabets",
-      color: "#F4BF00",
+      color: "#002CCA",
       title: patient.diabetes ? "Sim" : "Não",
       subTitle: "Diabetes",
       active: process.env.clientName === "LiftOne",

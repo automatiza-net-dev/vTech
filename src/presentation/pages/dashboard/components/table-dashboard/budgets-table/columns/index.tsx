@@ -5,7 +5,7 @@ import { BudgetsUser } from "@/domain";
 export const columns: Column<BudgetsUser>[] = [
   {
     id: "name",
-    label: "Aval",
+    label: "Avaliador",
     hasAsc: false,
     width: 100,
     Component: {

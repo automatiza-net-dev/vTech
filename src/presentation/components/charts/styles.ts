@@ -6,9 +6,11 @@ export const Chart = styled("div")<{ $hasLegend: boolean }>`
   > div {
     width: 100%;
     display: ${(props) => (props.$hasLegend ? "block" : "flex")};
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     height: 100%;
+    width: 100%;
+    padding-top: 6px;
 
     .chart_container {
       width: 100%;

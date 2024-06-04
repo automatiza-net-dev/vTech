@@ -1,3 +1,4 @@
+import chroma from "chroma-js";
 import styled from "styled-components";
 
 export const FaturamentoAgrupado = styled("div")`
@@ -6,29 +7,34 @@ export const FaturamentoAgrupado = styled("div")`
   color: #2b2b2b;
   padding: clamp(8px, 0.78vw, 15px);
   width: 100%;
+  background-color: ${(props) =>
+    chroma(props.theme.primaryColor).alpha(0.2).hex()};
+  margin-bottom: 20px;
 
   .top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 4px;
     width: 100%;
-    padding-bottom: 13px;
+    padding-bottom: 8px;
     margin-bottom: 10px;
-    border-bottom: 1px solid #36a2eb;
-
+    border-bottom: 1px solid ${(props) => props.theme.primaryColor};
+    
     h3 {
-      font-weight: 400;
+      font-weight: 500;
     }
 
     h3,
     p {
+      color: #2b2b2b;
       font-size: 18px;
+      margin: 0;
     }
   }
 
   > p {
-    font-size: 16px;
+    font-size: 15px;
     margin: 0;
     text-align: end;
   }

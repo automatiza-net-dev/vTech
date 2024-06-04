@@ -1,11 +1,19 @@
 import React from "react";
 import { Error } from "infinity-forge";
-import * as S from "./styles";
+import { TableLevels } from "../subgrupos-detalhado/styles";
 
 export function OrigemClientesCategoria(props) {
+  if (
+    !(props.items as any).categories ||
+    !Array.isArray((props.items as any).categories) ||
+    (props.items as any).categories.length === 0
+  ) {
+    return <></>;
+  }
+
   return (
     <Error name="OrigemClientesCategoria">
-      <S.OrigemClientesCategoria>
+      <TableLevels>
         <h2>Origem clientes</h2>
         <table>
           <thead>
@@ -15,26 +23,41 @@ export function OrigemClientesCategoria(props) {
               <th>Porcent.</th>
             </tr>
           </thead>
+
           <tbody>
             {(props.items as any).categories.map((item) => (
               <React.Fragment key={item.id}>
-                <tr className="first-row">
-                  <td>{item?.categoria}</td>
-                  <td>R$: {item?.faturamento}</td>
-                  <td>{item?.porcentagem.toFixed(2)}%</td>
+                <tr className="primary">
+                  <td>
+                    <span>{item?.categoria || "-"}</span>
+                  </td>
+                  <td>R$: {item?.faturamento || "0,00"}</td>
+                  <td>
+                    {item?.porcentagem
+                      ? item?.porcentagem.toFixed(2) + "%"
+                      : "-"}
+                  </td>
                 </tr>
+
                 {item?.grupos.map((group) => (
                   <React.Fragment key={group.id}>
-                    <tr className="second-row">
-                      <td>{group?.grupo}</td>
-                      <td>R$: {group?.total}</td>
-                      <td>{group?.porcentagem.toFixed(2)}%</td>
+                    <tr className="second">
+                      <td>
+                        <span>{group?.grupo || "-"}</span>
+                      </td>
+                      <td>R$: {group?.total || "0,00"}</td>
+                      <td>
+                        {item?.porcentagem
+                          ? item?.porcentagem.toFixed(2) + "%"
+                          : "-"}
+                      </td>
                     </tr>
+
                     {group?.origem_clientes.map((origin) => (
-                      <tr className="third-row" key={origin.id}>
-                        <td>{origin?.origem}</td>
-                        <td>R$: {origin?.total}</td>
-                        <td>{origin?.porcentagem.toFixed(2)}%</td>
+                      <tr className="third" key={origin.id}>
+                        <td><span>{origin?.origem || "-"}</span></td>
+                        <td>R$: {origin?.total || "0,00"}</td>
+                        <td>{origin?.porcentagem ? origin?.porcentagem.toFixed(2) + "%" : "-"}</td>
                       </tr>
                     ))}
                   </React.Fragment>
@@ -43,7 +66,7 @@ export function OrigemClientesCategoria(props) {
             ))}
           </tbody>
         </table>
-      </S.OrigemClientesCategoria>
+      </TableLevels>
     </Error>
   );
 }
