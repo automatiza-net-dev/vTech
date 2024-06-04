@@ -52,7 +52,7 @@ export function SubgroupDetails(props) {
   return (
     <Modal
       children={<InvoicingBySubgroupTable details={data || []} />}
-      style={{ maxWidth: "800px", padding: "20px" }}
+      style={{ maxWidth: "800px", padding: "20px", overflow: "auto", maxHeight: "95vh" }}
       modal={visible}
       setModal={setVisible}
       trigger={<span className="custom-link"> {props.description}</span>}

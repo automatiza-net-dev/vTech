@@ -10,8 +10,8 @@ export function PrecoCard(props) {
       <S.PrecoCard>
         {props?.items?.length > 0 &&
           props?.items?.map((subItem) => (
-            <div key={subItem?.description} className="subitem-box">
-              <h3>
+            <div key={subItem?.description} className="subitem-box ">
+              <h3 className="poppins-semibold">
                 <strong>
                   {subItem?.description === "Tendencia"
                     ? `${subItem?.percentage} - ${subItem?.value}`

@@ -14,11 +14,13 @@ export const GlobalStyle = createGlobalStyle<any>`
     * {
         padding: 0;
         margin: 0;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Open Sans", sans-serif;
         &:focus {
             outline: 0px solid transparent !important
         }
     }
+
+    
 
     html, body, #root {
         height: 100vh;

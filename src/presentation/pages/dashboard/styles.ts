@@ -103,7 +103,15 @@ export const Dashboard = styled("div")<IStyledDashboard>`
   }
 
   .tables-section {
-    display: flex;
-    flex-wrap: wrap;
+    .row {
+      > div {
+        width: 100% !important;
+        margin: 0;
+
+        > h3 {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
   }
 `;

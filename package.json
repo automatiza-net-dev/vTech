@@ -32,6 +32,7 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.12",
     "@mui/x-date-pickers": "^6.16.0",
+    "@types/chroma-js": "^2.4.4",
     "antd": "^4.13.1",
     "antd-img-crop": "^4.5.1",
     "axios": "^0.27.2",

@@ -1,11 +1,18 @@
 import useSWR from "swr";
+import { useAuthAdmin } from "infinity-forge";
 
+import { User } from "@/domain";
 import { RemoteLoadUserDashboard } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
 export function useMe() {
+
+  const { GetUser } = useAuthAdmin()
+
+  const user = GetUser<User>()
+
   return useSWR(
-    "Me",
+    "Me" + user?.user?.id,
     async () => {
       return await container
         .get<RemoteLoadUserDashboard>(TypesAutomatiza.RemoteLoadUserDashboard)

@@ -21,6 +21,18 @@ export function DashboardPage() {
 
   const breakColumns = dashboard?.data && dashboard?.data?.charts?.length <= 4;
 
+  const TableSalesPerPeriod = dashboard?.data?.tables.find(
+    (table) => table.name === "sales-per-period"
+  );
+
+  const TableSalesPerUser = dashboard?.data?.tables.find(
+    (table) => table.name === "sales-per-user"
+  );
+
+  const TableBudgets = dashboard?.data?.tables.find(
+    (table) => table.name === "budgets"
+  );
+
   return (
     <>
       <S.Dashboard $breakColumns={breakColumns}>
@@ -58,13 +70,33 @@ export function DashboardPage() {
             )}
           </div>
         </section>
-        <section className="tables-section">
-          {dashboard.data?.tables &&
-            dashboard.data?.tables?.length > 0 &&
-            dashboard.data?.tables?.map((table) => (
-              <TableDashboard key={table.name} {...table} />
-            ))}
-        </section>
+
+        {dashboard.data?.tables && dashboard.data?.tables?.length > 0 && (
+          <section className="tables-section">
+            <div className="row">
+              {TableSalesPerPeriod && (
+                <TableDashboard
+                  key={TableSalesPerPeriod.name}
+                  {...TableSalesPerPeriod}
+                />
+              )}
+
+              {TableSalesPerUser && (
+                <TableDashboard
+                  key={TableSalesPerUser.name}
+                  {...TableSalesPerUser}
+                />
+              )}
+            </div>
+
+            {TableBudgets && (
+              <TableDashboard
+                key={TableBudgets.name}
+                {...TableBudgets}
+              />
+            )}
+          </section>
+        )}
       </S.Dashboard>
       {!dashboard.isLoading && <SchedulesDashboard />}
     </>
