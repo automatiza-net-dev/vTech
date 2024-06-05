@@ -1,12 +1,12 @@
 import { inject, injectable } from "inversify";
 
-import {User } from "@/domain";
+import { User } from "@/domain";
 import * as domain from "infinity-forge";
-import * as domainAutomatiza from "@/domain"
+import * as domainAutomatiza from "@/domain";
 import { InfraTypes } from "@/container/infra/types";
 
 @injectable()
-export class RemoteLoadUserDashboard  {
+export class RemoteLoadUserDashboard {
   constructor(
     @inject(InfraTypes.makeApiURL)
     private readonly makeApiURL: domain.makeApiURL,
@@ -15,8 +15,8 @@ export class RemoteLoadUserDashboard  {
     @inject(InfraTypes.authorizeAdminHttp)
     private readonly httpClientAdmin: domainAutomatiza.HttpClient<User>
   ) {}
-  async load(params: { admin?:  boolean }) {
-    const HTTP = params?.admin ? this.httpClientAdmin : this.httpClient
+  async load(params: { admin?: boolean }) {
+    const HTTP = params?.admin ? this.httpClientAdmin : this.httpClient;
 
     const response = await HTTP.request({
       url: this.makeApiURL.make("auth/me"),

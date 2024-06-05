@@ -8,7 +8,6 @@ export function Cards({ cards }: Partial<Dashboard>) {
   return (
     <S.Cards>
       <FiltersDashboard />
-
       {cards?.map((item) => (
         <CardRenderingControl key={item.name} {...item} />
       ))}

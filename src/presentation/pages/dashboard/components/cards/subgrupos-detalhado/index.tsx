@@ -36,7 +36,7 @@ export function SubgruposDetalhado(props) {
                   <td>R$ {item?.total || "0,00"}</td>
 
                   <td>
-                    {item?.percentage ? item?.percentage.toFixed(2) + "%" : "-"}
+                    {item?.percentage}
                   </td>
                 </tr>
 
@@ -51,9 +51,7 @@ export function SubgruposDetalhado(props) {
                     <td>R$ {child?.total || "0,00"}</td>
 
                     <td>
-                      {child?.percentage
-                        ? child?.percentage.toFixed(2) + "%"
-                        : "-"}
+                      {child?.percentage}
                     </td>
                   </tr>
                 ))}

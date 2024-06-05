@@ -132,11 +132,6 @@ const TitlesForm = memo(function TitlesForm({
                         newArr.splice(i, 1, {
                           ...title,
                           paymentDate: e,
-                          paymentValue: currencyFormatter(
-                            totalFee +
-                              convertIntlCurrency(title?.originalValue) -
-                              totalDiscount
-                          ),
                         });
 
                         setData(newArr);

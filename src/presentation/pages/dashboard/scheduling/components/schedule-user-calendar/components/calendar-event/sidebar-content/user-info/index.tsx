@@ -14,6 +14,8 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
   const [showContact, setShowContact] = useState(false);
   const router = useRouter();
 
+  console.log(event, "<<<");
+
   const contactInfo = {
     user: {
       text:
@@ -30,7 +32,10 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
           }
         : {},
     phone: {
-      text: event?.event?.holder?.tutor?.cellphone || "Telefone não informado",
+      text:
+        process.env.client === "sancla"
+          ? event?.event?.holder?.tutor?.cellphone || "Telefone não informado"
+          : event?.event.patient.cellphone || "Telefone não informado",
       icon: <Icon name="PhoneIcon" />,
     },
   };

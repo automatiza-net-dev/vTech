@@ -46,19 +46,22 @@ export function DashboardPage() {
               />
             </div>
           )}
-          {!isFetching && (
+          {!isFetching && dashboard.data && (
             <div className="charts">
               <div>
                 {dashboard.data?.charts?.map((chart) => (
                   <Chart key={chart.name} {...chart} />
                 ))}
-                <div className="custom-table">
-                  {(subgroupsDataTable as any)?.data.length > 0 && (
-                    <InvoicingBySubgroupTable
-                      {...(subgroupsDataTable as any)}
-                    />
-                  )}
-                </div>
+                {subgroupsDataTable && (
+                  <div className="custom-table">
+                    {(subgroupsDataTable as any)?.data.length > 0 &&
+                      dashboard.data && (
+                        <InvoicingBySubgroupTable
+                          {...(subgroupsDataTable as any)}
+                        />
+                      )}
+                  </div>
+                )}
               </div>
             </div>
           )}
