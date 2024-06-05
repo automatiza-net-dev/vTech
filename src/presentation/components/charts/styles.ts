@@ -17,4 +17,20 @@ export const Chart = styled("div")<{ $hasLegend: boolean }>`
       aspect-ratio: ${(props) => (props.$hasLegend ? 1.6 : 1)};
     }
   }
+
+  h4 {
+    font-size: 16px;
+  }
+
+  @media only screen and (max-width: 1400px) {
+    h4 {
+      font-size: 14px;
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    h4 {
+      font-size: 12px;
+    }
+  }
 `;

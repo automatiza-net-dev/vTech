@@ -7,7 +7,7 @@ import { TableChart } from "../table-chart";
 
 import * as S from "./styles";
 
-export function PieChart({ configs, legend }: DashboardChart) {
+export function PieChart({ configs, legend, title }: DashboardChart) {
   const chartRef = useRef<any>();
 
   useEffect(() => {
@@ -17,10 +17,12 @@ export function PieChart({ configs, legend }: DashboardChart) {
   }, []);
 
   return (
-    <S.Pie>
-      <div ref={chartRef} className="chart_container" />
-
-      {legend && <TableChart data={legend} />}
-    </S.Pie>
+    <>
+      <h4>{title}</h4>
+      <S.Pie>
+        <div ref={chartRef} className="chart_container" />
+        {legend && <TableChart data={legend} />}
+      </S.Pie>
+    </>
   );
 }

@@ -1,20 +1,15 @@
 import { useState } from "react";
-import { Modal } from "infinity-forge";
-import { useTable } from "infinity-forge";
+import { Modal, useTable } from "infinity-forge";
 
 import { SubgroupsDetails } from "@/domain";
+import { useLoadSubgroupDetails } from "@/presentation";
 
 import { columns } from "./columns";
 
-import * as S from "./styles";
+export function InvoicingBySubgroupTable({ id }) {
+  
+  const { data } = useLoadSubgroupDetails({ subgroup: id });
 
-import { useLoadSubgroupDetails } from "@/presentation/hooks";
-
-export function InvoicingBySubgroupTable({
-  details,
-}: {
-  details: SubgroupsDetails[] | [];
-}) {
   const { Table } = useTable<SubgroupsDetails>({
     columnsConfiguration: {
       columns,
@@ -35,7 +30,7 @@ export function InvoicingBySubgroupTable({
         totalPages: 1,
       },
       errorMessage: "Não há itens no momento",
-      tableData: details,
+      tableData: data,
     },
   });
 
@@ -45,14 +40,15 @@ export function InvoicingBySubgroupTable({
 export function SubgroupDetails(props) {
   const [visible, setVisible] = useState(false);
 
-  const { data } = useLoadSubgroupDetails({
-    subgroupFilters: { subgroup: props.id },
-  });
-
   return (
     <Modal
-      children={<InvoicingBySubgroupTable details={data || []} />}
-      style={{ maxWidth: "800px", padding: "20px", overflow: "auto", maxHeight: "95vh" }}
+      children={<InvoicingBySubgroupTable {...props} />}
+      style={{
+        maxWidth: "800px",
+        padding: "20px",
+        overflow: "auto",
+        maxHeight: "95vh",
+      }}
       modal={visible}
       setModal={setVisible}
       trigger={<span className="custom-link"> {props.description}</span>}

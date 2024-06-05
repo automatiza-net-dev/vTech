@@ -14,7 +14,7 @@ export default function PrintHeader({ unit }) {
     <section className="uk-flex uk-flex-between" style={{ fontSize: "1em" }}>
       <div>
         <img
-            src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+            src={`/images/logo/${process.env.client}.png`}
           width="100"
         />
       </div>

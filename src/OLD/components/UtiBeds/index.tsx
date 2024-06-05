@@ -36,7 +36,7 @@ const labelFormat = (str) => {
   }
 };
 
-const UtiBeds = memo(function UtiBeds() {
+export function UtiBeds () {
   const [allBeds, setAllBeds] = useState([]);
   const [filters, setFilters] = useState({ active: "true" });
   const [createVisible, setCreateVisible] = useState(false);
@@ -163,6 +163,4 @@ const UtiBeds = memo(function UtiBeds() {
       />
     </Container>
   );
-});
-
-export default UtiBeds;
+};

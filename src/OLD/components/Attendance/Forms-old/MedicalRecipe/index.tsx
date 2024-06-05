@@ -153,7 +153,7 @@ function AddMedicalRecipe({
   const submitUpdatePrint = useCallback(() => {
     setLoading(true);
     timelineService
-      .updateMedicalRecipe(updateData?.id, {
+      .updateMedicalRecipe(updateData?._id, {
         tag: patient?.data?.id,
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,

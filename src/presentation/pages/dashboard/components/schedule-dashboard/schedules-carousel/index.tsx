@@ -1,10 +1,28 @@
-import { Error, useCarousel } from "infinity-forge";
+import { Error, Icon, useCarousel } from "infinity-forge";
 
 import { Event } from "@/domain";
 
 import { ScheduleCard } from "./card";
 
 import * as S from "./styles";
+
+function SampleNextArrow(props) {
+  const { className, onClick } = props;
+  return (
+    <div className={className} onClick={onClick}>
+      <Icon name="NavRightIcon" />
+    </div>
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div className={className} onClick={onClick}>
+      <Icon name="NavLeftIcon" />
+    </div>
+  );
+}
 
 export function SchedulesCarousel({
   event,
@@ -18,14 +36,23 @@ export function SchedulesCarousel({
     data: event,
     Component: ScheduleCard,
     settings: {
-      slidesToShow: 4,
+      slidesToShow: 5,
       infinite: false,
       centerMode: false,
       draggable: false,
-      arrows: false,
-      slidesToScroll: event.length > 4 ? 4 : 1,
-      spacing: 20,
+      arrows: true,
+      slidesToScroll: event.length > 5 ? 5 : 1,
+      spacing: 0,
+      nextArrow: <SampleNextArrow />,
+      prevArrow: <SamplePrevArrow />,
       responsive: [
+        {
+          breakpoint: 1600,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: event.length > 4 ? 4 : 1,
+          },
+        },
         {
           breakpoint: 1200,
           settings: {

@@ -63,7 +63,7 @@ export const TableLevels = styled("div")`
 
     th:last-child,
     td:last-child {
-      padding-right: 15px;
+      padding-right: 5px;
     }
 
     tbody {
@@ -133,11 +133,10 @@ export const TableLevels = styled("div")`
 
   @media only screen and (max-width: 1450px) {
     h2 {
-    font-size: 14px;
-    padding-bottom: 4px;
-    margin: 0 auto 8px;
-
-  }
+      font-size: 14px;
+      padding-bottom: 4px;
+      margin: 0 auto 8px;
+    }
 
     table {
       thead {
@@ -171,7 +170,8 @@ export const TableLevels = styled("div")`
 
       th:last-child,
       td:last-child {
-        padding-right: 13px;
+        padding-right: 5px;
+        text-align: right;
       }
 
       tbody {

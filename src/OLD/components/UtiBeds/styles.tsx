@@ -15,6 +15,10 @@ export const Input = styled.div`
   input {
     margin-left: 10px;
     border: none;
-    width: 100%;
+    width: 70%;
+    height: 30px;
+    margin-right: 2px;
+    border-radius: 5px;
+    border: solid 1px #E1E1E1;
   }
 `;

@@ -1,24 +1,24 @@
-import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 
+import { useQuery } from "react-query";
+import { useAuthAdmin } from "infinity-forge";
+
 import { RemoteSubgroups } from "@/data";
-import { LoadSubgroupDetails } from "@/domain";
 import { callApiOneTime } from "@/presentation";
+import { LoadSubgroupDetails, User } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
-export function useLoadSubgroupDetails({
-  needFilterToCallApi = false,
-  subgroupFilters,
-}: {
-  subgroupFilters?: LoadSubgroupDetails.Params | null;
-  needFilterToCallApi?: boolean;
-}) {
+export function useLoadSubgroupDetails(params: LoadSubgroupDetails.Params) {
+  const { GetUser } = useAuthAdmin();
   const router = useRouter();
+
+  const user = GetUser<User>();
+  const userID = user?.user?.id;
 
   async function fetcher() {
     const response = await container
       .get<RemoteSubgroups>(TypesAutomatiza.RemoteSubgroups)
-      .loadDetails({ ...router.query, ...subgroupFilters });
+      .loadDetails({ ...router.query, ...params });
 
     return response;
   }
@@ -26,12 +26,13 @@ export function useLoadSubgroupDetails({
   return useQuery({
     queryKey: [
       "RemoteLoadSubgroupDetails",
-      subgroupFilters,
+      JSON.stringify(params),
       router.query.fromDate,
       router.query.toDate,
+      userID,
     ],
     queryFn: fetcher,
     ...callApiOneTime,
-    enabled: needFilterToCallApi ? !!subgroupFilters : true,
+    enabled: !!userID,
   });
 }

@@ -391,7 +391,11 @@ const Budgets = memo(function Budgets() {
           >
             {createBudgetPermission && (
               <Modal
-                style={{ maxWidth: "1200px", padding: "20px" }}
+                style={{
+                  maxWidth: "1200px",
+                  padding: "20px",
+                  overflow: "auto",
+                }}
                 modal={openCreate}
                 setModal={setOpenCreate}
                 children={

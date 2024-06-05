@@ -459,7 +459,7 @@ function CreateBudget({
   };
 
   return (
-    <>
+    <div>
       <h4>Novo orçamento</h4>
       <form
         onSubmit={(e) => {
@@ -923,7 +923,7 @@ function CreateBudget({
           </Button>
         </footer>
       </Modal>
-    </>
+    </div>
   );
 }
 

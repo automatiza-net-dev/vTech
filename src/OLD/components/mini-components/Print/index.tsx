@@ -23,6 +23,8 @@ export default function Print({
   
   const componentRef: any = useRef();
 
+  console.log(patient, "<<<")
+
   return (
     <>
       <ReactToPrint

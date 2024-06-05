@@ -15,7 +15,8 @@ export function DashboardPage() {
 
   const isFetching = dashboard.isFetching || resize;
 
-  const breakColumns = dashboard?.data && dashboard?.data?.charts?.length <= 4;
+  const breakColumns =
+    dashboard?.data?.charts && dashboard?.data?.charts?.length <= 4;
 
   const subgroupsDataTable = dashboard?.data?.tables?.find(
     (item) => item?.name === "subgroups"
@@ -29,7 +30,7 @@ export function DashboardPage() {
     (table) => table.name === "sales-per-user"
   );
 
-  const TableBudgets = dashboard?.data?.tables.find(
+  const TableBudgets = dashboard?.data?.tables?.filter(
     (table) => table.name === "budgets"
   );
 
@@ -89,16 +90,14 @@ export function DashboardPage() {
               )}
             </div>
 
-            {TableBudgets && (
-              <TableDashboard
-                key={TableBudgets.name}
-                {...TableBudgets}
-              />
-            )}
+            {TableBudgets &&
+              TableBudgets.map((item) => (
+                <TableDashboard key={item?.name} {...item} />
+              ))}
           </section>
         )}
       </S.Dashboard>
-      
+
       {!dashboard.isLoading && <SchedulesDashboard />}
     </>
   );

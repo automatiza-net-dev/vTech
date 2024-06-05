@@ -4,7 +4,7 @@ import { CardRenderingControl } from "./card-rendering-control";
 
 import * as S from "./styles";
 
-export function Cards({ cards }: Dashboard) {
+export function Cards({ cards }: Partial<Dashboard>) {
   return (
     <S.Cards>
       <FiltersDashboard />

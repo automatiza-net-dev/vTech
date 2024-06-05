@@ -32,6 +32,7 @@ export type DashboardFunnel = {
 export type DashboardChart = {
   configs?: (ECOption & DashboardFunnel[]) | string;
   hasData: boolean;
+  title?: string;
   legend?: {
     itemStyle?: { color: string };
     name?: string;

@@ -68,11 +68,11 @@ function FormChild({
                 label: document?.title,
                 value: document?.title,
               }))}
-              value={document.title}
+              value={document?.title}
               disabled={!modal}
               onlyOneValue
               onChangeSelect={(value) => {
-                const optionSelected = allDocuments.find(
+                const optionSelected = allDocuments?.find(
                   (document) => document.title === value
                 );
 

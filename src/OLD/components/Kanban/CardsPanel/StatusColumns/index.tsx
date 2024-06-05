@@ -12,8 +12,9 @@ import UpdateActivity from "@/OLD/components/OpportunitiesActivities/Update";
 import FormControll from "../FormControll";
 import { Tooltip, Modal, Menu, Dropdown, Button } from "antd";
 import SyncOpportunity from "../SyncOpportunity";
-//TODO Revisitar
-// import ScheduleDetails from "@/OLD/components/Calendar/Details";
+
+import { SideBarContent } from "@/presentation";
+import { SideBar } from "infinity-forge";
 
 import { PlusOutline } from "styled-icons/evaicons-outline";
 import { BsFillClockFill } from "react-icons/bs";
@@ -412,7 +413,6 @@ const StatusColumns = memo(function StatusColumns({
           />
         </>
       )}
-
       {syncOpportunityVisible && (
         <Modal
           onCancel={() => setSyncOpportunityVisible(false)}
@@ -435,21 +435,31 @@ const StatusColumns = memo(function StatusColumns({
         setFormData={setFormData}
         setReload={setReload}
       />
-
-      {/*TODO Revisar {scheduleDetailsVisible && (
-        <ScheduleDetails
-          visible={scheduleDetailsVisible}
-          setVisible={setScheduleDetailsVisible}
-          reload={reload}
-          setReload={setReload}
-          item={{
-            event: schedule,
-            end: schedule.end_hour,
-            start: schedule.start_hour,
-            type: "schedule",
-          }}
-        />
-      )} */}
+      {schedule && (
+        <div className="side-bar-section">
+          <SideBar
+            open={scheduleDetailsVisible}
+            setOpen={setScheduleDetailsVisible}
+            maxWidth="400px"
+            overlay
+          >
+            <SideBarContent
+              event={{ event: schedule }}
+              timeText={`${moment(
+                schedule?.start_hour,
+                "YYYY-MM-DD[T]HH:mm:ss"
+              ).format("HH:mm")} - ${moment(
+                schedule?.end_hour,
+                "YYYY-MM-DD[T]HH:mm:ss"
+              ).format("HH:mm")}`}
+              setOpen={setScheduleDetailsVisible}
+              scheduleUser={null as any}
+              viewCalendar={"day"}
+              refetchKeyWeekCalendar={undefined}
+            />
+          </SideBar>
+        </div>
+      )}
     </Container>
   );
 });

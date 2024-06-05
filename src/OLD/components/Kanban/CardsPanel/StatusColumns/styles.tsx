@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  .side-bar-section {
+    z-index: 21;
+  }
+
   .title-header {
     align-items: center;
     background-color: #ffffff;

@@ -14,9 +14,13 @@ export function SchedulesDashboard() {
   return (
     <SchedulingContextProvider>
       <div style={{ marginTop: 30 }}>
-       {data?.nonConfirmed && <SchedulesCarousel confirmed event={data?.nonConfirmed} />}
+        {data?.nonConfirmed && (
+          <SchedulesCarousel confirmed event={data?.nonConfirmed} />
+        )}
 
-        {data?.confirmed && <SchedulesCarousel confirmed={false} event={data?.confirmed} />}
+        {data?.confirmed && (
+          <SchedulesCarousel confirmed={false} event={data?.confirmed} />
+        )}
       </div>
     </SchedulingContextProvider>
   );

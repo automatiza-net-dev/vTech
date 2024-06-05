@@ -8,6 +8,8 @@ import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useListCrmStatus } from "@/OLD/hooks/useCrmStatus";
 import { useActivitiesTypes } from "@/OLD/hooks/useActivitiesTypes";
 
+import { SchedulingContextProvider } from "@/presentation";
+
 import Opportunities from "@/OLD/components/Opportunities";
 import CardsPanel from "./CardsPanel";
 import Activities from "@/OLD/components/OpportunitiesActivities/Activities";
@@ -41,45 +43,47 @@ export default function Kanban() {
     <AccessDenied loading={showKanbanPermission} />
   ) : (
     <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Crm</h3>
-      <Tabs
-        defaultActiveKey="1"
-        activeKey={smallConfigs?.currentKanbanTab}
-        onChange={(key) => {
-          setSmallConfigs({ ...smallConfigs, currentKanbanTab: key });
-        }}
-      >
-        <TabPane key="1" tab="Crm">
-          <CardsPanel
-            clients={clients}
-            colaborators={colaborators}
-            crmStatus={crmStatus}
-            contactTypes={contactTypes}
-            subjects={subjects}
-            actTypes={actTypes}
-            currentKanbanTab={smallConfigs?.currentKanbanTab}
-          />
-        </TabPane>
-        <TabPane key="2" tab="Oportunidades">
-          <Opportunities
-            title={false}
-            clients={clients}
-            colaborators={colaborators}
-            crmStatus={crmStatus}
-            contactTypes={contactTypes}
-            subjects={subjects}
-            actTypes={actTypes}
-            currentKanbanTab={smallConfigs?.currentKanbanTab}
-          />
-        </TabPane>
-        <TabPane key="3" tab="Atividades">
-          <Activities
-            colaborators={colaborators}
-            actTypes={actTypes}
-            currentKanbanTab={smallConfigs?.currentKanbanTab}
-          />
-        </TabPane>
-      </Tabs>
+      <SchedulingContextProvider>
+        <h3 className="uk-margin-remove">Crm</h3>
+        <Tabs
+          defaultActiveKey="1"
+          activeKey={smallConfigs?.currentKanbanTab}
+          onChange={(key) => {
+            setSmallConfigs({ ...smallConfigs, currentKanbanTab: key });
+          }}
+        >
+          <TabPane key="1" tab="Crm">
+            <CardsPanel
+              clients={clients}
+              colaborators={colaborators}
+              crmStatus={crmStatus}
+              contactTypes={contactTypes}
+              subjects={subjects}
+              actTypes={actTypes}
+              currentKanbanTab={smallConfigs?.currentKanbanTab}
+            />
+          </TabPane>
+          <TabPane key="2" tab="Oportunidades">
+            <Opportunities
+              title={false}
+              clients={clients}
+              colaborators={colaborators}
+              crmStatus={crmStatus}
+              contactTypes={contactTypes}
+              subjects={subjects}
+              actTypes={actTypes}
+              currentKanbanTab={smallConfigs?.currentKanbanTab}
+            />
+          </TabPane>
+          <TabPane key="3" tab="Atividades">
+            <Activities
+              colaborators={colaborators}
+              actTypes={actTypes}
+              currentKanbanTab={smallConfigs?.currentKanbanTab}
+            />
+          </TabPane>
+        </Tabs>
+      </SchedulingContextProvider>
     </Container>
   );
 }

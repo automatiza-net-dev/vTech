@@ -7,9 +7,9 @@ import * as S from "./styles";
 
 export function BillSalesUserTable({
   data,
-
   description,
 }: DashboardTableType) {
+
   const formattedData = (data as any)[0].units[0].users.map((item) => ({
     name: item.name,
     cancelled: {

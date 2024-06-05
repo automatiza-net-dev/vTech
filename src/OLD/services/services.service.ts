@@ -18,14 +18,14 @@ const getAllServices = async (
     }`
   );
 
-const showService = async (id) => await api.get(`/@/OLD/services/${id}`);
+const showService = async (id) => await api.get(`/services/${id}`);
 
 const createService = async (data) => await api.post("/services", data);
 
 const updateService = async (id, data) =>
-  await api.put(`/@/OLD/services/${id}`, data);
+  await api.put(`/services/${id}`, data);
 
-const removeService = async (id) => await api.delete(`/@/OLD/services/${id}`);
+const removeService = async (id) => await api.delete(`/services/${id}`);
 
 export const servicesService = {
   getAllServices,

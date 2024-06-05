@@ -31,7 +31,7 @@ export function OrigemClientesCategoria(props) {
                   <td>
                     <span>{item?.categoria || "-"}</span>
                   </td>
-                  <td>R$: {item?.faturamento || "0,00"}</td>
+                  <td>R$ {item?.faturamento || "0,00"}</td>
                   <td>
                     {item?.porcentagem
                       ? item?.porcentagem.toFixed(2) + "%"
@@ -55,9 +55,15 @@ export function OrigemClientesCategoria(props) {
 
                     {group?.origem_clientes.map((origin) => (
                       <tr className="third" key={origin.id}>
-                        <td><span>{origin?.origem || "-"}</span></td>
+                        <td>
+                          <span>{origin?.origem || "-"}</span>
+                        </td>
                         <td>R$: {origin?.total || "0,00"}</td>
-                        <td>{origin?.porcentagem ? origin?.porcentagem.toFixed(2) + "%" : "-"}</td>
+                        <td>
+                          {origin?.porcentagem
+                            ? origin?.porcentagem.toFixed(2) + "%"
+                            : "-"}
+                        </td>
                       </tr>
                     ))}
                   </React.Fragment>

@@ -4,8 +4,9 @@ import React from "react";
 import moment from "moment";
 import { convertToAge } from "@/OLD/utils/generalUtils";
 
-export default  function PatientHeader({ patient }) {
+export default function PatientHeader({ patient }) {
   const years = moment(new Date()).diff(patient?.birth_date, "years", true);
+
   return (
     <>
       <hr />
@@ -14,21 +15,11 @@ export default  function PatientHeader({ patient }) {
           <div>
             Pet: {patient?.tag} - {patient?.name}
           </div>
-          <div>
-            Espécie: {patient?.patientAnimal?.race?.specie?.description}
-          </div>
-          <div>Raça: {patient?.patientAnimal?.race?.description}</div>
-          <div>Pelagem: {patient?.patientAnimal?.hair?.description}</div>
-          <div>
-            Responsável: {patient?.tutorData?.tag} - {patient?.tutorData?.name}
-          </div>
-          <div>
-            Endereço: {patient?.tutorData?.address?.street},{" "}
-            {patient?.tutorData?.address?.number}.{" "}
-            {patient?.tutorData?.address?.district},{" "}
-            {patient?.tutorData?.address?.city},{" "}
-            {patient?.tutorData?.address?.state}
-          </div>
+          <div>Espécie: {patient?.specie}</div>
+          <div>Raça: {patient?.race}</div>
+          <div>Pelagem: {patient?.hair}</div>
+          <div>Responsável: {patient?.tutor?.name}</div>
+          <div>Endereço: {patient?.tutor?.address}</div>
         </section>
         <section className="uk-text-left uk-width-1-3">
           <div>
@@ -43,15 +34,14 @@ export default  function PatientHeader({ patient }) {
           <div>Idade: {convertToAge(years)}</div>
           <div>
             Chip:{" "}
-            {patient?.patientAnimal?.microchip
-              ? patient?.patientAnimal?.microchip
+            {patient?.microchip
+              ? patient?.microchip
               : "-"}
           </div>
-          <div>CPF: {patient?.tutorData?.document}</div>
+          <div>CPF: {patient?.tutor?.document}</div>
         </section>
       </div>
       <hr />
     </>
   );
 }
-
