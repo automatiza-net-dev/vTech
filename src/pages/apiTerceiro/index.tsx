@@ -6,9 +6,12 @@ import { Storage } from "@/infra";
 import { InfraTypes, container } from "@/container";
 
 import axios from "axios";
+import { useAuthAdmin } from "infinity-forge";
 
 export default function ValidaTerceiros() {
     const router = useRouter();
+
+    const { loadUser } = useAuthAdmin();
 
     useQuery({
       queryKey: ["validarToken", router.query.token],
@@ -24,6 +27,8 @@ export default function ValidaTerceiros() {
     
             container.get<Storage>(InfraTypes.storage).set("adminUser", { value: null });
             container.get<Storage>(InfraTypes.storage).set("token", { value: token });
+
+            await loadUser();
     
             router.push("/dashboard");
           } else {

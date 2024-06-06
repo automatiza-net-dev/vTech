@@ -64,10 +64,18 @@ const ByHour = memo(function ByHour({
     hospitalizationPrescriptionsService
       .getAllMedicalPrescriptionSchedulling({
         from: moment(selectedDate, "DD/MM/YYYY")
-          .hours(parseInt(moment(selectedHour, "HH").format("HH")))
+          .hours(
+            parseInt(
+              moment(selectedHour, "HH").subtract(3, "hours").format("HH")
+            )
+          )
           .toISOString(),
         to: moment(selectedDate, "DD/MM/YYYY")
-          .hours(parseInt(moment(selectedHour, "HH").format("HH")))
+          .hours(
+            parseInt(
+              moment(selectedHour, "HH").subtract(3, "hours").format("HH")
+            )
+          )
           .add(1, "hour")
           .toISOString(),
       })
