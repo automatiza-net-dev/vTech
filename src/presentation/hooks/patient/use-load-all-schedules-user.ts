@@ -62,3 +62,10 @@ export function useLoadAllSchedulesUserWeek(
 
   return { ...query, refetchKeyWeekCalendar };
 }
+
+
+
+
+
+
+ 

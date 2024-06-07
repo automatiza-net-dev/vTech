@@ -15,7 +15,6 @@ import * as XLSX from "xlsx/xlsx.mjs";
 const PrintTable = memo(function PrintTable({ data = [], loading }) {
   const { clinic } = useProfile();
 
-
   const componentRef = useRef();
 
   const handleExport = () => {
@@ -33,7 +32,7 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
       num_parcela: item?.parcela,
       item: item?.historico,
       fornecedor: item?.pessoa,
-      valor_parcela: item?.valor_pago,
+      valor_parcela: parseFloat(item?.valor_pago?.replaceAll(" ", "")),
       status: item?.status,
     }));
 

@@ -28,7 +28,7 @@ function FormChild({
   setPhotosOpen,
   print,
   patient,
-  remove
+  remove,
 }) {
   return (
     <form
@@ -85,9 +85,6 @@ function FormChild({
         <div className="uk-flex uk-flex-column uk-flex-middle uk-margin-top">
           <label>Anexos</label>
           <div className="uk-flex">
-            <ButtonA className="uk-link" onClick={() => setPhotosOpen(true)}>
-              Visualizar fotos anexadas
-            </ButtonA>
             <Upload
               name="pet-photos"
               className="avatar-uploader uk-text-center"
@@ -103,6 +100,9 @@ function FormChild({
                 anexos
               </ButtonA>
             </Upload>
+            <ButtonA className="uk-link" onClick={() => setPhotosOpen(true)}>
+              Visualizar fotos anexadas
+            </ButtonA>
           </div>
         </div>
       </div>
@@ -129,7 +129,12 @@ function FormChild({
                 {" "}
                 Cancelar{" "}
               </Button>
-              <Button loading={loading} type="primary" htmlType="submit" loading={loading}>
+              <Button
+                loading={loading}
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+              >
                 salvar
               </Button>
             </div>

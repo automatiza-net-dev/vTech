@@ -60,9 +60,7 @@ export default function LaunchExam({
         businessUnitId: clinic?.id,
         userId: user?.id,
         tutorId:
-          systemName !== "LiftOne"
-            ? patient.data?.tutor.id
-            : patient.data?.id,
+          systemName !== "LiftOne" ? patient.data?.tutor.id : patient.data?.id,
         dependentId: patient.data?.id,
       })
       .then((res) => setState(res.data.result))
@@ -219,7 +217,7 @@ export default function LaunchExam({
         })
         .then((_res) => {
           fileList.length > 0
-            ? submitArquives(examPatientData._id)
+            ? submitArquives(examPatientData?.timeline_info?.patient_exam?.id)
             : notification.success({
                 message: "Exame atualizado com sucesso!",
               });
@@ -254,8 +252,6 @@ export default function LaunchExam({
       patientExamsService
         .removeAttachment(examPatientData?._id, attachmentId)
         .then((_res) => {
-
-
           setLoading(false);
           return notification.success({ message: "Anexo removido!" });
         })

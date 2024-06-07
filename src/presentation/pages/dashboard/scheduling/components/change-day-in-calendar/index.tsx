@@ -1,4 +1,4 @@
-import { format , add, sub } from "date-fns";
+import { format, add, sub } from "date-fns";
 
 import { useScheduling } from "@/presentation";
 import { LeftArrow, RightArrow } from "./icons";
@@ -6,19 +6,23 @@ import { LeftArrow, RightArrow } from "./icons";
 import * as S from "./styles";
 
 export function ChangeDayInCalendar() {
-  const [changeDate, selectedDate] = useScheduling<any>((state) => [
+  const [changeDate, selectedDate] = useScheduling((state) => [
     state.changeDate,
     state.selectedDate,
   ]);
 
   function handleDayAdvance() {
-    const nextDay = add(selectedDate, { days: 1 });
-    changeDate(nextDay);
+    if (selectedDate) {
+      const nextDay = add(selectedDate, { days: 1 });
+      changeDate(nextDay);
+    }
   }
 
   function handleDayRetreat() {
-    const previousDay = sub(selectedDate, { days: 1 });
-    changeDate(previousDay);
+    if (selectedDate) {
+      const previousDay = sub(selectedDate, { days: 1 });
+      changeDate(previousDay);
+    }
   }
 
   return (
@@ -31,7 +35,7 @@ export function ChangeDayInCalendar() {
 
       <input
         type="date"
-        value={format(new Date(selectedDate), "yyyy-MM-dd")}
+        value={selectedDate && format(selectedDate, "yyyy-MM-dd")}
         onChange={(ev) => {
           if (ev.target.value) {
             changeDate(new Date(ev.target.value));

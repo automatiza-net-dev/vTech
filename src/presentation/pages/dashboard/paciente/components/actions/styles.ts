@@ -28,7 +28,7 @@ export const Actions = styled("div")`
     &:hover,
     .active {
       background-color: #fff !important;
-      color: #fa972b !important;
+      color: ${(props) => props.theme.primaryColor} !important;
 
       svg {
         fill: ${props => props.theme.primaryColor};

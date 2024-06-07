@@ -12,18 +12,26 @@ const initialData = {
 };
 
 export const scheduleStore = (_?: Partial<ScheduleStoreProps>) => {
-
   return createStore<ScheduleStoreState>()((set) => ({
     ...initialData,
-    setRemovedCancelledEvents: (listCancelledEvents) => set(state => ({...state, listCancelledEvents })),
-    
-    setOpportunities: (oppotunities) => set(state => ({...state, oppotunities })),
+    setRemovedCancelledEvents: (listCancelledEvents) =>
+      set((state) => ({ ...state, listCancelledEvents })),
 
-    setPatientsFilters: (patientsFilters) => set((state) => ({ ...state, patientsFilters })),
+    setOpportunities: (oppotunities) =>
+      set((state) => ({ ...state, oppotunities })),
 
-    changeDate: (date) => set((state) => ({ ...state, selectedDate: typeof date === "string" ? moment(date).toDate() : date })),
+    setPatientsFilters: (patientsFilters) =>
+      set((state) => ({ ...state, patientsFilters })),
 
-    setCreateSchedulingArgs: (createSchedulingArgs) => set((state) => ({ ...state, createSchedulingArgs })),
+    changeDate: (date) => {
+      set((state) => ({
+        ...state,
+        selectedDate: moment(date).add({ day: 1 }).toDate(),
+      }));
+    },
+
+    setCreateSchedulingArgs: (createSchedulingArgs) =>
+      set((state) => ({ ...state, createSchedulingArgs })),
 
     setModalPatients: (params) => {
       set((state) => ({ ...state, modalPatients: params }));

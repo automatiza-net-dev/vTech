@@ -4,25 +4,29 @@ import { useRouter } from "next/router";
 import {
   Error,
   Input,
+  Modal,
+  Button,
   useToast,
   Textarea,
   Accordion,
+  InputFile,
   TextEditor,
-  Modal,
-  Button,
   FormHandler,
+  useAuthAdmin,
 } from "infinity-forge";
+import moment from "moment";
 import { useQueryClient } from "react-query";
 
-import { Attendace } from "@/domain";
-import { Print, useLoadSchedule } from "@/presentation";
+import { User } from "@/domain";
 import { RemoteAttendances } from "@/data";
 import { PdfPatientAttendance } from "@/presentation";
+import { Print, useLoadSchedule } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
+
 import AddBudget from "@/OLD/components/Budget/Create";
 
-import { DropdownComponentProps } from "../dropdown-item";
 import { SelectTypeService } from "./components";
+import { DropdownComponentProps } from "../dropdown-item";
 
 import * as S from "./styles";
 
@@ -33,6 +37,10 @@ export function Avaliation(props: DropdownComponentProps) {
   const { createToast } = useToast();
   const queryClient = useQueryClient();
 
+  const { GetUser } = useAuthAdmin();
+
+  const user = GetUser<User>();
+
   const patientId = router.query.id as string;
   const attendanceId = props.timeline_info?.attendance?.id;
   const scheduleId = router.query?.scheduleId as string | undefined;
@@ -40,51 +48,53 @@ export function Avaliation(props: DropdownComponentProps) {
 
   const schedule = useLoadSchedule(scheduleId);
 
-  async function handleSubmit(data: Attendace) {
+  async function handleSubmit(data) {
+    const payload = {
+      ...data,
+      scheduleId,
+      realizedAt: moment().toDate(),
+      technicianId: user?.user?.id as string,
+      scheduleServiceId: data.scheduleServiceId
+        ? data.scheduleServiceId[0]
+        : "",
+      patientId,
+      photos: data.photos.map((photo) => photo.file),
+    };
     if (attendanceId) {
       await container
         .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
         .update({
-          id: attendanceId,
-          resume: data.resume,
-          protocol: data.protocol,
-          internalObservation: data.internalObservation,
+          ...payload,
+          id: process.env.client === "liftone" ? props._id : attendanceId,
         });
     } else {
       await container
         .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
-        .open({
-          ...data,
-          scheduleId,
-          patientId,
-          scheduleServiceId: data.scheduleServiceId
-            ? data.scheduleServiceId[0]
-            : "",
-        });
+        .open(payload);
 
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["RemotePatient", patientId],
       });
     }
 
-    await queryClient.invalidateQueries({
+    queryClient.invalidateQueries({
       queryKey: ["LastUpdates", patientId],
     });
 
-    scheduleDate &&
-      (await queryClient.invalidateQueries({
+    if (scheduleDate) {
+      queryClient.invalidateQueries({
         queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "true",
-      }));
+      });
 
-    scheduleDate &&
-      (await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "false",
-      }));
+      });
+    }
 
     createToast({
-      message: attendanceId
-        ? "Atendimento atualizado com sucesso!"
-        : "Atendimento criado com sucesso!",
+      message: `Atendimento ${
+        attendanceId ? "atualizado" : "criado"
+      }  com sucesso!`,
       status: "success",
     });
 
@@ -94,7 +104,7 @@ export function Avaliation(props: DropdownComponentProps) {
   return (
     <Error name="Avaliation">
       <S.Avaliation>
-        <h2>Atendimento</h2>
+        <h2>{process.env.client === "sancla" ? "Atendimento" : "Avaliação"}</h2>
 
         <FormHandler
           cleanFieldsOnSubmit={false}
@@ -150,6 +160,8 @@ export function Avaliation(props: DropdownComponentProps) {
               </>
             )}
           </div>
+
+          <InputFile name="photos" isLocalFile multiple />
 
           {attendanceId && (
             <Print

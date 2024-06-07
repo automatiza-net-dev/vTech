@@ -28,6 +28,7 @@ import {
   AuthFranchisorProvider,
   InfinityForgeInjections,
 } from "@/presentation";
+import {User} from "@/domain"
 import { Storage } from "@/infra";
 import { RemoteLoadUserDashboard } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -86,9 +87,13 @@ export default function App({ Component, pageProps }) {
             interceptor: {
               disableInterceptor: true,
             },
-            onSignOut: () => console.log("SignOut"),
+            onSignOut: (user: User) => {
+              if(user.isThirdParty) {
+                window.location.href = "https://portal.liftonefranquias.com.br/"
+              }
+            },
             signInConfig: { Componnent: SignIn },
-          }}
+          } as any}
           InjectedRemotes={InfinityForgeInjections}
           Configurations={{
             notification: false,

@@ -50,13 +50,13 @@ export const ModalContent = styled.div`
     a,
     button {
       height: 40px !important;
-      background-color: #fa972b !important;
+      background-color: ${(props) => props.theme.primaryColor} !important;
       padding: 0 15px;
       font-weight: 700;
       color: #fff;
       width: 100%;
       border-radius: 5px;
-      border: 1px solid #fa972b !important;
+      border: 1px solid ${(props) => props.theme.primaryColor} !important;
       text-decoration: unset !important;
 
       &:hover {

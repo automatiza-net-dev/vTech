@@ -29,7 +29,7 @@ const PrintTable = memo(function PrintTable({ data = [], loading, date }) {
       plano_contas: item?.plano_contas,
       item: item?.historico,
       fornecedor: item?.pessoa,
-      valor_total: currencyFormatter(parseInt(item?.valor_titulo)),
+      valor_total: parseInt(item?.valor_titulo),
     }));
 
     let wb = XLSX.utils.book_new(),
