@@ -41,6 +41,9 @@ export class RemoteAttendances
       ),
       method: "put",
       body: params,
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=something"
+      }
     });
 
     return response as domain.UpdateAttendace.Model;

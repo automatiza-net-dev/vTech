@@ -13,6 +13,7 @@ import {
   TextEditor,
   FormHandler,
   useAuthAdmin,
+  uid,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
@@ -58,7 +59,7 @@ export function Avaliation(props: DropdownComponentProps) {
         ? data.scheduleServiceId[0]
         : "",
       patientId,
-      photos: data.photos.map((photo) => photo.file),
+      photos: data?.photos?.map((photo) => photo.file),
     };
     if (attendanceId) {
       await container
@@ -101,12 +102,16 @@ export function Avaliation(props: DropdownComponentProps) {
     props.setModal && props.setModal(false);
   }
 
+  
+
   return (
     <Error name="Avaliation">
       <S.Avaliation>
         <h2>{process.env.client === "sancla" ? "Atendimento" : "Avaliação"}</h2>
 
         <FormHandler
+          key={uid(11)}
+          debugMode
           cleanFieldsOnSubmit={false}
           initialData={{
             ...props.timeline_info,

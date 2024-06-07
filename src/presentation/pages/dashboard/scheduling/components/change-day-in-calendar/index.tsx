@@ -6,23 +6,19 @@ import { LeftArrow, RightArrow } from "./icons";
 import * as S from "./styles";
 
 export function ChangeDayInCalendar() {
-  const [changeDate, selectedDate] = useScheduling((state) => [
+  const [changeDate, selectedDate] = useScheduling<any>((state) => [
     state.changeDate,
     state.selectedDate,
   ]);
 
   function handleDayAdvance() {
-    if (selectedDate) {
-      const nextDay = add(selectedDate, { days: 1 });
-      changeDate(nextDay);
-    }
+    const nextDay = add(selectedDate, { days: 1 });
+    changeDate(nextDay, true);
   }
 
   function handleDayRetreat() {
-    if (selectedDate) {
-      const previousDay = sub(selectedDate, { days: 1 });
-      changeDate(previousDay);
-    }
+    const previousDay = sub(selectedDate, { days: 1 });
+    changeDate(previousDay, true);
   }
 
   return (

@@ -30,7 +30,7 @@ type ScheduleStoreProps = {
 };
 
 interface ScheduleStoreState extends ScheduleStoreProps {
-  changeDate: (date: string | Date) => void;
+  changeDate: (date: string | Date, noAddDay?: boolean) => void;
   setModalPatients: (params: ScheduleParams) => void;
   setCreateSchedulingArgs: (params: ScheduleParams) => void;
   setOpportunities: (value: OpportunitieSchedule[] | null) => void;

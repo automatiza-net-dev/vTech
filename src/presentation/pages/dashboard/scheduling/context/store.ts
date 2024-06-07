@@ -23,11 +23,20 @@ export const scheduleStore = (_?: Partial<ScheduleStoreProps>) => {
     setPatientsFilters: (patientsFilters) =>
       set((state) => ({ ...state, patientsFilters })),
 
-    changeDate: (date) => {
-      set((state) => ({
-        ...state,
-        selectedDate: moment(date).add({ day: 1 }).toDate(),
-      }));
+    changeDate: (date, noAddDay) => {
+      set((state) => {
+        if (noAddDay) {
+          return {
+            ...state,
+            selectedDate: moment(date).toDate(),
+          };
+        }
+
+        return {
+          ...state,
+          selectedDate: moment(date).add({ day: 1 }).toDate(),
+        };
+      });
     },
 
     setCreateSchedulingArgs: (createSchedulingArgs) =>
