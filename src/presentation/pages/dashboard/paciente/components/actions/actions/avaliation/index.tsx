@@ -239,7 +239,7 @@ export function Avaliation(props: DropdownComponentProps) {
         )}
 
         <Modal
-          styles={{ height: "95vh", overflow: "auto" }}
+          styles={{ height: "95vh", maxWidth: "1400px", overflow: "auto" }}
           stylesContent={{ height: "100%" }}
           open={modal}
           onClose={() => setModal(false)}

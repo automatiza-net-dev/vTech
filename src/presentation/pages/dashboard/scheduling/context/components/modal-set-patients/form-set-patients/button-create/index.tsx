@@ -32,7 +32,7 @@ export function ButtonCreate({ patientFilters }) {
     <PermissionItem hash={process.env.client === "sancla" ? "PET01" : "TUT01"}>
       <S.ButtonCreate>
         <Modal
-          styles={{ maxWidth: "1200px", padding: "20px" }}
+          styles={{ maxWidth: "1200px", padding: "20px", height: "95vh", overflow: "auto" }}
           open={visible}
           onClose={() => setVisible(false)}
           children={

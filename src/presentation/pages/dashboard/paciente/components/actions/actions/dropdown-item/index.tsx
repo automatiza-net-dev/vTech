@@ -29,7 +29,7 @@ export function DropdownItemAction({
     <>
       <Modal
         styles={{
-          maxWidth: "1024px",
+          maxWidth: "1400px",
           maxHeight: "95vh",
           overflow: "auto",
           ...customModalStyles,

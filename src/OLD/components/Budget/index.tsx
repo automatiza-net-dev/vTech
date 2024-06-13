@@ -418,7 +418,7 @@ const Budgets = memo(function Budgets() {
             <ModalInfinityForge
               styles={{
                 overflow: "auto",
-                maxHeight: "95vh",
+                height: "95vh",
                 maxWidth: "1400px",
                 minHeight: "600px",
                 display: "flex",

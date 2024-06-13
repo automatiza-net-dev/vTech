@@ -22,6 +22,11 @@ export const AddBudget = styled("div")`
     height: 100%;
   }
 
+  form {
+  padding-bottom: 20px;
+
+  }
+
   .expirationDate {
     .date_picker_container {
       background-color: transparent;
