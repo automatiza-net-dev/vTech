@@ -15,6 +15,8 @@ export const Container = styled.div`
   justify-content: center;
   gap: 100px;
 
+  font-size: 14px;
+
   h3 {
     color: #ffffff;
   }

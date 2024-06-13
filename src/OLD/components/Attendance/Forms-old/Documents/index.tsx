@@ -144,9 +144,14 @@ export default function Documents({
           technicianId: user?.id,
           realizedAt: moment(new Date()),
         })
-        .then((_res) =>
-          notification.success({ message: "Documento atualizado com sucesso!" })
-        )
+        .then((_res) => {
+          queryClient.invalidateQueries({
+            queryKey: ["LastUpdates", router.query.id],
+          });
+          notification.success({
+            message: "Documento atualizado com sucesso!",
+          });
+        })
         .catch((_err) => {
           setLoading(false);
           return notification.error({

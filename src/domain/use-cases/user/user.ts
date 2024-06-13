@@ -7,6 +7,7 @@ export type SystemUser = {
     id: string;
     unitConfig: {
       interval: number;
+      alter_prices?: boolean;
       allow_change_schedule_duration?: boolean;
     };
     phone?: string;

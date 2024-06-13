@@ -10,7 +10,8 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { useLoadPatient } from "@/presentation";
 
 // Components
-import { Modal, notification, Button, Popconfirm } from "antd";
+import { notification, Button, Popconfirm } from "antd";
+import { Modal } from "infinity-forge";
 import { Container } from "./styles";
 import FormChild from "./FormChild";
 
@@ -157,7 +158,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         .removeObservationMedia(updateData?.id, idx)
         .then(async (_res) => {
           setLoading(false);
-      
+
           return notification.success({
             messge: "Anexo removido com sucesso!",
           });
@@ -210,12 +211,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
           setPhotosOpen={setPhotosOpen}
         />
       </Container>
-      <Modal
-        visible={photosOpen}
-        title="Fotos anexadas"
-        footer={null}
-        onCancel={() => setPhotosOpen(false)}
-      >
+      <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
         <div>
           {fileList?.length > 0 &&
             fileList.map((item) => {
@@ -271,12 +267,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         remove={() => removeData(updateData?._id)}
       />
       {!modal && (
-        <Modal
-          visible={photosOpen}
-          title="Fotos anexadas"
-          onCancel={() => setPhotosOpen(false)}
-          footer={null}
-        >
+        <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
           {fileList?.length > 0 &&
             fileList.map((item, idx) => {
               item?.url &&

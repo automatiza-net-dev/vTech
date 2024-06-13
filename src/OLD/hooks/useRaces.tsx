@@ -32,12 +32,14 @@ export function useRaces(
                   ...item,
                   actions: (
                     <div className="uk-flex" style={{ gap: "10px" }}>
+                      {/*
                       <Edit item={item} setReload={setReload} reload={reload} />
                       <Delete
                         id={item.id}
                         reload={reload}
                         setReload={setReload}
                       />
+                       */}
                     </div>
                   ),
                 };

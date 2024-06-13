@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { FormSetClients } from "./form-set-patients";
-import { useScheduling } from "@/presentation";
+
 import { Modal } from "infinity-forge";
+
+import { useScheduling } from "@/presentation";
+import { FormSetClients } from "./form-set-patients";
 
 export function ModalSetPatients() {
   const modalPatients = useScheduling((state) => state.modalPatients);
@@ -20,11 +22,16 @@ export function ModalSetPatients() {
 
   return (
     <Modal
-      style={{ maxWidth: "80vw", padding: "10px", overflow: "auto", height: "95vh" }}
-      modal={!!modalPatients}
-      children={<FormSetClients />}
-      setModal={setModalPatients as any}
-      trigger={undefined}
-    />
+      styles={{
+        maxWidth: "80vw",
+        padding: "10px",
+        overflow: "auto",
+        maxHeight: "95vh"
+      }}
+      open={!!modalPatients}
+      onClose={() => setModalPatients(null)}
+    >
+      <FormSetClients />
+    </Modal>
   );
 }

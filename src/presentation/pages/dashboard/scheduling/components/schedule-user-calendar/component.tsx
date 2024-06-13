@@ -1,3 +1,4 @@
+import moment from "moment";
 import FullCalendar from "@fullcalendar/react";
 
 import { CalendarEvent } from "./components";
@@ -8,7 +9,6 @@ import { calendarConfigurations } from "./calendar-configurations";
 import { IScheduleUserCalendarProps } from "./interfaces";
 
 import * as S from "./styles";
-import moment from "moment";
 
 export function ScheduleUserCalendar({
   scheduleUser,

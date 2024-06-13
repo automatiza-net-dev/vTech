@@ -6,3 +6,4 @@ export * from "./dashboard";
 export * from "./subgroups";
 export * from "./business-unit";
 export * from "./access-controls";
+export * from "./financial-services";

@@ -1,5 +1,5 @@
-export * from "./page";
 export * from "./sales";
 export * from "./paciente";
-export * from "./components";
 export * from "./scheduling";
+export * from "./_dashboard_";
+export * from "./financial-services";

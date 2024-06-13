@@ -91,7 +91,7 @@ export function SignIn() {
       <div className="left-side">
         <div className="uk-card uk-card-default uk-card-body uk-width-1-1 border-radius">
           <form onSubmit={(e) => handleSubmit(e)}>
-            <label htmlFor="email">Email</label>
+            <span style={{ fontSize: "16px" }}>Email</span>
             <input
               id="email"
               type="email"
@@ -100,7 +100,7 @@ export function SignIn() {
               onChange={(e) => setData({ ...data, email: e.target.value })}
             />
 
-            <label htmlFor="password">Senha</label>
+            <span style={{ fontSize: "16px"}} >Senha</span>
             <input
               id="password"
               type="password"
@@ -114,11 +114,11 @@ export function SignIn() {
                   <input
                     id="save-access"
                     type="radio"
-                    className="uk-radio"
+                    className="uk-radio uk-margin-small-right"
                     checked={saveAccess}
                     onClick={() => setSaveAccess(!saveAccess)}
                   />
-                  <label htmlFor="save-access">Permanecer logado </label>
+                  <span style={{ fontSize: "14px" }}>Permanecer logado </span>
                 </div>
                 <Link href="/senha/esqueci">Esqueci minha senha</Link>
               </div>

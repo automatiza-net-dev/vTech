@@ -22,6 +22,7 @@ export class AuthorizeHttpClientDecorator implements domain.HttpClient {
       headers: Object.assign(data.headers || {}, {
         Authorization: `Bearer ${token || ""}`,
         flag: "adminUser",
+        "X-System": process.env.clientName
       }),
     });
 

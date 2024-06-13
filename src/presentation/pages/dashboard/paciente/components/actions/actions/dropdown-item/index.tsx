@@ -13,6 +13,7 @@ export type DropdownComponentProps = {
 export type DropdownItemActionProps = {
   Icon: any;
   label: string;
+  customModalStyles?: {};
   Component?: (props: DropdownComponentProps) => JSX.Element;
 };
 
@@ -20,27 +21,32 @@ export function DropdownItemAction({
   Component,
   Icon,
   label,
+  customModalStyles,
 }: DropdownItemActionProps) {
-  const [modal, setModal] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <>
       <Modal
-        trigger={
-          <button type="button" onClick={() => setModal(true)}>
-            {Icon && Icon}
-
-            {label && <span>{label}</span>}
-          </button>
-        }
-        style={{ maxWidth: "1024px", maxHeight: "90vh", overflow: "auto", padding: 30 }}
-        modal={modal}
-        setModal={setModal}
+        styles={{
+          maxWidth: "1024px",
+          maxHeight: "95vh",
+          overflow: "auto",
+          ...customModalStyles,
+        }}
+        open={open}
+        onClose={() => setOpen(false)}
       >
         <S.ModalContent>
-          {Component && <Component modal={modal} setModal={setModal} />}
+          {Component && <Component modal={open} setModal={setOpen} />}
         </S.ModalContent>
       </Modal>
+
+      <button type="button" onClick={() => setOpen(true)}>
+        {Icon && Icon}
+
+        {label && <span>{label}</span>}
+      </button>
     </>
   );
 }

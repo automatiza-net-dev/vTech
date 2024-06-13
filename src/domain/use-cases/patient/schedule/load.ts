@@ -66,7 +66,7 @@ export namespace LoadSchedule {
         color: string;
       };
     }[];
-    scheduleReturn: null | any;
+    scheduleReturn?: {id?: string} | null;
     scheduleOrigin: null | any;
   };
 }

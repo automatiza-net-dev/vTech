@@ -55,7 +55,7 @@ const risks = [
   { id: 1, value: "Leve" },
   { id: 2, value: "Médio" },
   { id: 3, value: "Grave" },
-  { id: 4, value: "Gravíssimo" }
+  { id: 4, value: "Gravíssimo" },
 ];
 
 const renderTimeline = (obj, functions, allowEdit) => {
@@ -63,151 +63,151 @@ const renderTimeline = (obj, functions, allowEdit) => {
   switch (obj?.meta?.origin || obj?.meta?.type) {
     case "begin_hospitalization":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
-            {moment(obj?.createdAt).format("HH:mm")}
+        <TimelineContainer>
+          <div>
+            <span className="inf-tag hospitalization">
+              {obj?.data?.type === "Internação" && "Entrada"}&nbsp;
+              {obj?.data?.type}
+            </span>
+
+            <span className="inf-tag">
+              {moment(obj?.createdAt).format("DD/MM/YYYY")}&nbsp;às&nbsp;
+              {moment(obj?.createdAt).format("HH:mm")}
+            </span>
+            <span className="inf-tag">{obj?.data?.technician?.name}</span>
           </div>
-          <div className="uk-width-1-1">
-            <h4 className="begin-hospitalization uk-margin-remove">
-              {obj?.data?.type === "Internação" && "Entrada"}
-              &nbsp;
-              {obj?.data?.type} {" - "} {obj?.data?.technician?.name}
-            </h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                <strong>Previsão Alta:</strong>{" "}
+          <div className="desc-box">
+            <section>
+              <span>
+                <strong>Previsão Alta:&nbsp;</strong>
                 {moment(obj?.data?.expectedDischarge).format("DD/MM/YYYY")}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Gravidade:</strong>
+              </span>
+              <span>
+                <strong>Gravidade:&nbsp;</strong>
                 {risks?.find((item) => item?.id === obj?.data?.risk)?.value}
-              </p>
+              </span>
+              <span>
+                <strong>Queixa:&nbsp;</strong>{obj?.data?.complaint}
+              </span>
+            </section>
+            <section>
               {obj?.data?.deathAt && (
-                <p className="uk-margin-remove">
-                  <strong>Óbito em:</strong>{" "}
+                <span>
+                  <strong>Óbito em:&nbsp;</strong>
                   {moment(obj?.deathAt).format("DD/MM/YYYY - HH:mm")}
-                </p>
+                </span>
               )}
-              <br />
+
               {obj?.data?.releasedAt && (
-                <p className="uk-margin-remove">
-                  <br />
-                  <strong>Alta em:</strong>{" "}
+                <span>
+                  <strong>Alta em:&nbsp;</strong>
                   {moment(obj?.releasedAt).format("DD/MM/YYYY - HH:mm")}
-                </p>
+                </span>
               )}
-              <p className="uk-margin-remove">
-                <strong>Queixa:</strong> {obj?.data?.complaint}
-              </p>
-              <br />
-              <p className="uk-margin-remove">
-                <strong>Diagnóstico:</strong>
+
+              <span>
+                <strong>Diagnóstico:&nbsp;</strong>
                 {obj?.data?.diagnosis}
-              </p>
-              <br />
-              <p className="uk-margin-remove">
-                <strong>Prognóstico: </strong>
+              </span>
+
+              <span>
+                <strong>Prognóstico:&nbsp;</strong>
                 {obj?.data?.prognosis}
-              </p>
+              </span>
             </section>
           </div>
         </TimelineContainer>
       );
     case "report_occurrence":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
-            {moment(obj?.createdAt).format("HH:mm")}
+        <TimelineContainer>
+          <div>
+            <span className="inf-tag medical-report">{obj?.data?.type}</span>
+            <span className="inf-tag">
+              {moment(obj?.createdAt).format("DD/MM/YYYY")}
+              &nbsp;às&nbsp;
+              {moment(obj?.createdAt).format("HH:mm")}
+            </span>
+
+            <span className="inf-tag">{obj?.data?.technician?.name}</span>
+            {allowEdit && (
+              <Button
+                onClick={() => {
+                  setOccurrenceVisible(true);
+                  setOccurrenceData({
+                    id: obj?.meta?.occurrence,
+                    occurrence: {
+                      id: obj?.meta?.rootOcurrence,
+                      type: "RM",
+                      description: "Relatório Médico",
+                    },
+                    executed_at: obj?.data?.realizedAt,
+                    description: obj?.data?.description,
+                    active: true,
+                    previewed_at: obj?.data?.issuedAt,
+                    resume: obj?.data?.resume,
+                    user: {
+                      name: obj?.data?.technician?.name,
+                      id: obj?.data?.technician?.id,
+                    },
+                  });
+                }}
+              >
+                Editar
+              </Button>
+            )}
           </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove uk-flex uk-flex-between">
-              <div>
-                {obj?.data?.type} {" - "} {obj?.data?.technician?.name}
-              </div>
-              {allowEdit && (
-                <Button
-                  onClick={() => {
-                    setOccurrenceVisible(true);
-                    setOccurrenceData({
-                      id: obj?.meta?.occurrence,
-                      occurrence: {
-                        id: obj?.meta?.rootOcurrence,
-                        type: "RM",
-                        description: "Relatório Médico"
-                      },
-                      executed_at: obj?.data?.realizedAt,
-                      description: obj?.data?.description,
-                      active: true,
-                      previewed_at: obj?.data?.issuedAt,
-                      resume: obj?.data?.resume,
-                      user: {
-                        name: obj?.data?.technician?.name,
-                        id: obj?.data?.technician?.id
-                      }
-                    });
-                  }}
-                >
-                  Editar
-                </Button>
-              )}
-            </h4>
-            <section className="">
-              <p
-                className="uk-margin-remove"
-                dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
-              ></p>
-              <div className="uk-flex uk-flex-wrap uk-flex-middle uk-margin-remove">
-                {/*<p style={{ marginRight: "3px" }}> Descrição: </p>*/}
-              </div>
-            </section>
-          </div>
+
+          <section>
+            <span>
+              <strong>Descrição:&nbsp;</strong>
+            </span>
+            <span
+              dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
+            ></span>
+          </section>
         </TimelineContainer>
       );
     case "hospitalization_completed":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
+        <TimelineContainer>
+          <span className="inf-tag end-hospitalization">
+            Internação finalizada
+          </span>
+          <span className="inf-tag">
             {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
+            &nbsp;às&nbsp;
             {moment(obj?.createdAt).format("HH:mm")}
-          </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove">
-              Internação finalizada {" - "} {obj?.data?.technician?.name}
-            </h4>
-            <section className=""></section>
-          </div>
+          </span>
+
+          <span className="inf-tag">{obj?.data?.technician?.name}</span>
         </TimelineContainer>
       );
     case "prescription":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
-            {moment(obj?.createdAt).format("HH:mm")}
+        <TimelineContainer>
+          <div>
+            <span className="inf-tag medical-presc">Prescrição médica</span>
+            <span className="inf-tag">
+              {moment(obj?.createdAt).format("DD/MM/YYYY")}
+              &nbsp;às&nbsp;
+              {moment(obj?.createdAt).format("HH:mm")}
+            </span>
+            <span className="inf-tag">{obj?.data?.technician?.name}</span>
           </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove uk-flex">
-              Prescrição médica{" - "}
-              {obj?.data?.technician?.name}{" "}
-            </h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                <strong>Tipo:</strong> {obj?.data?.prescription_type}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Inicio execução:</strong>{" "}
+          <section className="desc-box">
+            <section>
+              <span>
+                <strong>Tipo:&nbsp;</strong>{obj?.data?.prescription_type}
+              </span>
+              <span>
+                <strong>Inicio execução:&nbsp;</strong>
                 {moment(obj?.data?.executionStart).format(
                   "DD/MM/YYYY HH:mm:ss"
                 )}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Frequência:</strong>{" "}
+              </span>
+              <span>
+                <strong>Frequência:&nbsp;</strong>
                 {obj?.data?.frequency === "RECURRENT" ? (
                   <span>
                     Frequência:{" "}
@@ -221,7 +221,7 @@ const renderTimeline = (obj, functions, allowEdit) => {
                       `${obj?.data?.frequencyQuantity} ${parseInterval(
                         obj?.data?.frequencyQuantityUnit,
                         obj?.data?.frequencyQuantity
-                      )}`
+                      )}`,
                     ].join(" ")}
                   </span>
                 ) : (
@@ -232,77 +232,79 @@ const renderTimeline = (obj, functions, allowEdit) => {
                       : "Apenas uma vez"}
                   </span>
                 )}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Descrição:</strong> {obj?.data?.description}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Resumo:</strong> {obj?.data?.resume}
-              </p>
+              </span>
             </section>
-          </div>
+            <section>
+              <span>
+                <strong>Descrição:&nbsp;</strong>{obj?.data?.description}
+              </span>
+              <span>
+                <strong>Resumo:&nbsp;</strong>{obj?.data?.resume}
+              </span>
+            </section>
+          </section>
         </TimelineContainer>
       );
     case "occurrence":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
+        <TimelineContainer>
+          <span className="inf-tag occurrence-tag">Ocorrência</span>
+          <span className="inf-tag">
             {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
+            às
             {moment(obj?.createdAt).format("HH:mm")}
-          </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove uk-flex uk-flex-between">
-              <div>Ocorrência - {obj?.data?.technician?.name}</div>
-              {allowEdit && (
-                <Button
-                  onClick={() => {
-                    setOccurrenceVisible(true);
-                    setOccurrenceData({
-                      id: obj?.meta?.occurrence,
-                      occurrence: {
-                        id: obj?.meta?.rootOcurrence,
-                        type: "OC",
-                        description: "Ocorrência"
-                      },
-                      executed_at: obj?.data?.realizedAt,
-                      description: obj?.data?.description,
-                      active: true,
-                      previewed_at: obj?.data?.issuedAt,
-                      resume: obj?.data?.resume,
-                      user: {
-                        name: obj?.data?.technician?.name,
-                        id: obj?.data?.technician?.id
-                      }
-                    });
-                  }}
-                >
-                  Editar
-                </Button>
-              )}
-            </h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                <strong>
-                  Data da ocorrência:&nbsp;
-                  {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")}
-                </strong>
+          </span>
+
+          <span className="inf-tag">{obj?.data?.technician?.name}</span>
+
+          {allowEdit && (
+            <Button
+              onClick={() => {
+                setOccurrenceVisible(true);
+                setOccurrenceData({
+                  id: obj?.meta?.occurrence,
+                  occurrence: {
+                    id: obj?.meta?.rootOcurrence,
+                    type: "OC",
+                    description: "Ocorrência",
+                  },
+                  executed_at: obj?.data?.realizedAt,
+                  description: obj?.data?.description,
+                  active: true,
+                  previewed_at: obj?.data?.issuedAt,
+                  resume: obj?.data?.resume,
+                  user: {
+                    name: obj?.data?.technician?.name,
+                    id: obj?.data?.technician?.id,
+                  },
+                });
+              }}
+            >
+              Editar
+            </Button>
+          )}
+
+          <section className="">
+            <p className="uk-margin-remove">
+              <strong>
+                Data da ocorrência:&nbsp;
+                {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")}
+              </strong>
+            </p>
+            <p className="uk-margin-remove">
+              <strong>Resumo:&nbsp;</strong>{obj?.data?.resume}
+            </p>
+            <div className="uk-flex uk-flex-wrap uk-flex-middle uk-margin-remove">
+              <p style={{ marginRight: "3px" }}>
+                {" "}
+                <strong>Descrição:&nbsp;</strong>
               </p>
-              <p className="uk-margin-remove">
-                <strong>Resumo:</strong> {obj?.data?.resume}
-              </p>
-              <div className="uk-flex uk-flex-wrap uk-flex-middle uk-margin-remove">
-                <p style={{ marginRight: "3px" }}>
-                  {" "}
-                  <strong>Descrição:</strong>{" "}
-                </p>
-                <p
-                  className="uk-margin-remove"
-                  dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
-                ></p>
-              </div>
-            </section>
-          </div>
+              <p
+                className="uk-margin-remove"
+                dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
+              ></p>
+            </div>
+          </section>
         </TimelineContainer>
       );
     case "weight_occurrence":
@@ -319,11 +321,11 @@ const renderTimeline = (obj, functions, allowEdit) => {
             </h4>
             <section className="">
               <p className="uk-margin-remove">
-                <strong>Peso:</strong> {obj?.data?.resume}Kg
+                <strong>Peso:&nbsp;</strong>{obj?.data?.resume}Kg
               </p>
               <div className="uk-flex uk-flex-wrap uk-flex-middle">
                 <p style={{ marginRight: "3px" }}>
-                  <strong>Descrição:</strong>
+                  <strong>Descrição:&nbsp;</strong>
                 </p>
 
                 <p
@@ -355,7 +357,7 @@ const renderTimeline = (obj, functions, allowEdit) => {
               </p>
               <br />
               <p className="uk-margin-remove">
-                <strong>Relatório óbito:</strong>
+                <strong>Relatório óbito:&nbsp;</strong>
               </p>
               <p
                 className="uk-margin-remove"
@@ -367,67 +369,75 @@ const renderTimeline = (obj, functions, allowEdit) => {
       );
     case "scheduling_execution":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
-            {moment(obj?.createdAt).format("HH:mm")}
+        <TimelineContainer>
+          <div>
+            <span className="inf-tag medical-presc-exec">
+              Execução prescrição
+            </span>
+            <span className="inf-tag">
+              {moment(obj?.createdAt).format("DD/MM/YYYY")}
+              &nbsp;às&nbsp;
+              {moment(obj?.createdAt).format("HH:mm")}
+            </span>
+            <span className="inf-tag">{obj?.data?.technician?.name}</span>
           </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove">
-              Execução prescrição {" - "}
-              {obj?.data?.technician?.name}
-            </h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                <strong>Tipo:</strong>{" "}
+          <div className="desc-box">
+            <section>
+              <span>
+                <strong>Tipo:&nbsp;</strong>
                 {labelControl(obj?.data?.prescription_type)}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Data execução:</strong>{" "}
+              </span>
+              <span>
+                <strong>Data execução:&nbsp;</strong>
                 {moment(obj?.executedAt).format("DD/MM/YYYY - HH:mm")}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Resumo:</strong> {obj?.data?.resume}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Observação:</strong>
+              </span>
+            </section>
+            <section>
+              <span>
+                <strong>Resumo:&nbsp;</strong> {obj?.data?.resume}
+              </span>
+              <span>
+                <strong>Observação:&nbsp;</strong>
                 {obj?.data?.description}
-              </p>
+              </span>
             </section>
           </div>
         </TimelineContainer>
       );
     case "hospitalization_release":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
-            {moment(obj?.createdAt).format("HH:mm")}
+        <TimelineContainer>
+          <div>
+            <span className="inf-tag release-hospitalization">
+              {" "}
+              Alta Internação
+            </span>
+            <span className="inf-tag">
+              {moment(obj?.createdAt).format("DD/MM/YYYY")}
+              &nbsp;às&nbsp;
+              {moment(obj?.createdAt).format("HH:mm")}
+            </span>
+            <span className="inf-tag">{obj?.data?.technician?.name}</span>
           </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove">
-              Alta Internação {" - "}
-              {obj?.data?.technician?.name}
-            </h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                Data da alta:{" "}
+
+          <div className="desc-box">
+            <section>
+              <span>
+                <strong>Data da alta:&nbsp;</strong>
                 {moment(obj?.data?.realizedAt).format("DD/MM/YYYY - HH:mm")}
-              </p>
-              <p className="uk-margin-remove">
-                <strong>Tipo:</strong>
+              </span>
+              <span>
+                <strong>Tipo:&nbsp;</strong>
                 {obj?.data?.releaseType}
-              </p>
-              <br />
-              <p className="uk-margin-remove">
-                <strong>Relatório da alta:</strong>
-                <p
-                  className="uk-margin-remove"
+              </span>
+            </section>
+            <section>
+              <span>
+                <strong>Relatório da alta:&nbsp;</strong>
+                <div
                   dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
-                ></p>
-              </p>
+                ></div>
+              </span>
             </section>
           </div>
         </TimelineContainer>
@@ -435,17 +445,16 @@ const renderTimeline = (obj, functions, allowEdit) => {
 
     case "hospitalization_completed":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
-            {moment(obj?.createdAt).format("HH:mm")}
-          </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove">
-              Finalização da internação {" - "}
-              {obj?.data?.technician?.name}
-            </h4>
+        <TimelineContainer>
+          <div>
+            <span className="inf-tag">
+              {moment(obj?.createdAt).format("DD/MM/YYYY")}
+              &nbsp;às&nbsp;
+              {moment(obj?.createdAt).format("HH:mm")}
+            </span>
+
+            <span className="inf-tag">Finalização da internação</span>
+            <span className="inf-tag">{obj?.data?.technician?.name}</span>
           </div>
         </TimelineContainer>
       );
@@ -456,14 +465,14 @@ const Timeline = memo(function Timeline({
   data,
   patientData,
   setReload,
-  allowEdit
+  allowEdit,
 }) {
   const [occurrenceVisible, setOccurrenceVisible] = useState(false);
   const [occurrenceData, setOccurrenceData] = useState({});
 
   const functions = {
     setOccurrenceVisible,
-    setOccurrenceData
+    setOccurrenceData,
   };
 
   return (

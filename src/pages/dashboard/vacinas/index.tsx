@@ -1,10 +1,10 @@
-import Vaccines from "@/OLD/components/Attendance/Forms/Vaccines";
+import { VaccinesList } from "@/OLD/components/Vaccines";
 import { LayoutDashboard } from "@/presentation";
 
 export default function VaccinesPage() {
   return (
     <LayoutDashboard>
-      <Vaccines />
+      <VaccinesList />
     </LayoutDashboard>
   );
 }

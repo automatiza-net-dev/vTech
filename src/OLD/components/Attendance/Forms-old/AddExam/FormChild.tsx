@@ -24,6 +24,7 @@ import { Container } from "./styles";
 import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
+import { Select, FormHandler } from "infinity-forge";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 
@@ -106,77 +107,104 @@ export default function FormChild({
         <div>
           <label>Exame</label>
           <br />
-          <AutoComplete
-            disabled={examPatientData}
-            className="uk-width-1-1"
-            options={allExams.map((exam) => ({
-              ...exam,
-              value: exam?.name,
-            }))}
-            value={examSearch}
-            onChange={(val) => {
-              setExamSearch(val);
-            }}
-            onSelect={(val, opt) => {
-              setExamSearch(opt?.name);
-              setData({ ...data, examId: opt?.id });
-              setSelectedExam(opt);
-              replaceText(opt?.description, setRequest);
-            }}
-            filterOption={(val, opt) =>
-              normalizeStr(opt?.name?.toUpperCase()).includes(
-                normalizeStr(val?.toUpperCase())
-              )
-            }
-          />
-          {data?.examId && (
-            <div>
-              <div className="uk-margin-right uk-width-1-2 uk-flex uk-flex-between uk-margin-top">
-                <div className="uk-width-1-3">
-                  <label>Laboratório</label>
-                  <Input
-                    value={
-                      !examPatientData
-                        ? selectedExam?.own_laboratory
-                          ? clinic?.fantasy_name
-                          : data?.laboratory
+          {allExams && allExams.length > 0 && (
+            <FormHandler>
+              <Select
+                menuPlacement="bottom"
+                name="exam"
+                options={allExams.map((exam) => ({
+                  label: exam?.name,
+                  value: exam?.id,
+                }))}
+                disabled={!modal}
+                onlyOneValue
+                onChangeSelect={async (value) => {
+                  const optionSelected = allExams?.find(
+                    (exam) => exam.id === value
+                  );
+
+                  await replaceText(optionSelected?.description, setRequest);
+
+                  setSelectedExam(optionSelected);
+                  setExamSearch(optionSelected?.name);
+                  setData({ ...data, examId: optionSelected?.id });
+                }}
+              />
+            </FormHandler>
+          )}
+
+          <div>
+            <div className="uk-margin-right uk-width-1-2 uk-flex uk-flex-between uk-margin-top">
+              <div className="uk-width-1-3">
+                <label>Laboratório</label>
+                <Input
+                  value={
+                    !examPatientData
+                      ? selectedExam?.own_laboratory
+                        ? clinic?.fantasy_name
                         : data?.laboratory
-                    }
-                    onChange={(e) =>
-                      setData({ ...data, laboratory: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label>Data de solicitação</label>
-                  <br />
-                  <DatePicker
-                    defaultValue={moment(new Date())}
-                    disabled={examPatientData}
-                    format={"DD/MM/YYYY"}
-                    value={data?.realizedAt}
-                    onChange={(e) => setData({ ...data, realizedAt: e })}
-                  />
-                </div>
+                      : data?.laboratory
+                  }
+                  onChange={(e) =>
+                    setData({ ...data, laboratory: e.target.value })
+                  }
+                />
               </div>
-              <div className="uk-flex uk-flex-around uk-margin-top">
-                <p className="uk-margin-remove">Solicitação</p>
-                <p className="uk-margin-remove">Laudo | Conclusões</p>
+              <div>
+                <label>Data de solicitação</label>
+                <br />
+                <DatePicker
+                  defaultValue={moment(new Date())}
+                  disabled={examPatientData}
+                  format={"DD/MM/YYYY"}
+                  value={data?.realizedAt}
+                  onChange={(e) => setData({ ...data, realizedAt: e })}
+                />
               </div>
-              <div className="uk-flex">
-                <div className="uk-width-1-1 uk-margin-small-right">
-                  <Editor editorState={request} setEditorState={setRequest} />
+            </div>
+            <div className="uk-flex uk-flex-around uk-margin-top">
+              <p className="uk-margin-remove">Solicitação</p>
+              <p className="uk-margin-remove">Laudo | Conclusões</p>
+            </div>
+            <div className="uk-flex">
+              <div className="uk-width-1-1 uk-margin-small-right">
+                <Editor editorState={request} setEditorState={setRequest} />
+                <Print
+                  patient={patient.data}
+                  triggerComponent={
+                    <Button
+                      className="uk-margin-right uk-margin-top"
+                      type="primary"
+                    >
+                      Imprimir Solicitação
+                    </Button>
+                  }
+                  content={typeof request === "string" ? request : ""}
+                  title={
+                    allExams.find((item) => item?.id === data?.examId)?.name
+                  }
+                  string={true}
+                  onBeforePrint={() =>
+                    examPatientData
+                      ? submitUpdatePatientExam(true)
+                      : submitExamLauching(true)
+                  }
+                />
+              </div>
+              <div className="uk-width-1-1">
+                <div className="editor-container uk-width-1-1">
+                  <Editor editorState={report} setEditorState={setReport} />
                   <Print
-                    patient={patient.data}
+                    patient={patient}
                     triggerComponent={
                       <Button
                         className="uk-margin-right uk-margin-top"
                         type="primary"
                       >
-                        Imprimir Solicitação
+                        Imprimir Laudo
                       </Button>
                     }
-                    content={typeof request === "string" ? request : ""}
+                    content={typeof report === "string" ? report : ""}
                     title={
                       allExams.find((item) => item?.id === data?.examId)?.name
                     }
@@ -188,61 +216,34 @@ export default function FormChild({
                     }
                   />
                 </div>
-                <div className="uk-width-1-1">
-          
-                  <div className="editor-container uk-width-1-1">
-                    <Editor editorState={report} setEditorState={setReport} />
-                    <Print
-                      patient={patient}
-                      triggerComponent={
-                        <Button
-                          className="uk-margin-right uk-margin-top"
-                          type="primary"
-                        >
-                          Imprimir Laudo
-                        </Button>
-                      }
-                      content={typeof report === "string" ? report : ""}
-                      title={
-                        allExams.find((item) => item?.id === data?.examId)?.name
-                      }
-                      string={true}
-                      onBeforePrint={() =>
-                        examPatientData
-                          ? submitUpdatePatientExam(true)
-                          : submitExamLauching(true)
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="uk-flex uk-flex-middle uk-flex-center uk-margin-top">
-                <div className="uk-flex uk-flex-column uk-flex-middle">
-                  <Upload
-                    name="pet-photos"
-                    className="avatar-uploader uk-text-center"
-                    multiple={true}
-                    beforeUpload={beforeUpload}
-                    showUploadList={false}
-                    fileList={fileList}
-                    onChange={(info) => {
-                      setFileList(info.fileList);
-                    }}
-                  >
-                    <ButtonA>
-                      <PlusOutline size={15} className="upload-icon" />{" "}
-                      Adicionar anexos
-                    </ButtonA>
-                  </Upload>
-                </div>
-                <div className="">
-                  <ButtonA onClick={() => setPhotosOpen(true)}>
-                    <BsPaperclip size={15} /> Visualizar Arquivos anexados{" "}
-                  </ButtonA>
-                </div>
               </div>
             </div>
-          )}
+            <div className="uk-flex uk-flex-middle uk-flex-center uk-margin-top">
+              <div className="uk-flex uk-flex-column uk-flex-middle">
+                <Upload
+                  name="pet-photos"
+                  className="avatar-uploader uk-text-center"
+                  multiple={true}
+                  beforeUpload={beforeUpload}
+                  showUploadList={false}
+                  fileList={fileList}
+                  onChange={(info) => {
+                    setFileList(info.fileList);
+                  }}
+                >
+                  <ButtonA>
+                    <PlusOutline size={15} className="upload-icon" /> Adicionar
+                    anexos
+                  </ButtonA>
+                </Upload>
+              </div>
+              <div className="">
+                <ButtonA onClick={() => setPhotosOpen(true)}>
+                  <BsPaperclip size={15} /> Visualizar Arquivos anexados{" "}
+                </ButtonA>
+              </div>
+            </div>
+          </div>
         </div>
         {modal && (
           <footer className="uk-margin-top">

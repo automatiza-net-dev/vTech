@@ -8,22 +8,21 @@ import { DosesModal } from "@/OLD/components/Attendance/Timeline/LaunchedVaccine
 import * as S from "./styles";
 
 export function NameVaccine(props) {
-  const [modal, setModal] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { data } = useLoadPatient();
 
   return (
     <S.NameVaccine>
       <Modal
-        modal={modal}
-        setModal={setModal}
-        trigger={undefined}
-        style={{ maxWidth: "700px", padding: 30 }}
+        open={open}
+        onClose={() => setOpen(false)}
+        styles={{ maxWidth: "700px", padding: 30 }}
       >
         <DosesModal
           modal={true}
-          visible={modal}
-          setVisible={setModal}
+          visible={open}
+          setVisible={setOpen}
           patient={data}
           TabVacinaItem={props}
           
@@ -31,7 +30,7 @@ export function NameVaccine(props) {
       </Modal>
 
       {props?.vaccine.name && (
-        <span className="modal-link" onClick={() => setModal(true)}>
+        <span className="modal-link" onClick={() => setOpen(true)}>
           {props.vaccine.name}
         </span>
       )}

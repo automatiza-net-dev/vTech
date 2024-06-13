@@ -7,6 +7,7 @@ import Editor from "@/OLD/components/Editor";
 import { sortItems } from "@/OLD/utils/sortItems";
 import Print from "@/OLD/components/mini-components/Print";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { Select, FormHandler } from "infinity-forge";
 
 function FormChild({
   submit,
@@ -44,33 +45,27 @@ function FormChild({
     >
       <div>
         <label>Receita Médica</label>
-        <AutoComplete
-          className="uk-width-1-1"
-          value={recipeSearch}
-          options={allRecipes?.map((recipe, i) => ({
-            ...recipe,
-            value: recipe?.description,
-            key: i,
-          }))}
-          disabled={!modal}
-          onChange={(val, opt) => {
-            setRecipeSearch(val);
-          }}
-          onSelect={(_, opt) => {
-            setRecipeSearch(opt?.description);
-            setRecipeId(opt?.id);
-            replaceText(opt?.template, setBody);
-          }}
-          filterOption={(val, opt) => {
-            if (recipeSearch === "") {
-              return opt;
-            }
+        <FormHandler>
+          <Select
+            menuPlacement="bottom"
+            name="exam"
+            options={allRecipes.map((recipe) => ({
+              label: recipe?.description,
+              value: recipe?.id,
+            }))}
+            disabled={!modal}
+            onlyOneValue
+            onChangeSelect={async (value) => {
+              const selectedRecipe = allRecipes.find(
+                (recipe) => recipe.id === value
+              );
 
-            return normalizeStr(opt?.description.toUpperCase()).includes(
-              normalizeStr(val?.toUpperCase())
-            );
-          }}
-        />
+              setRecipeSearch(selectedRecipe?.description);
+              setRecipeId(selectedRecipe?.id);
+              replaceText(selectedRecipe?.template, setBody);
+            }}
+          />
+        </FormHandler>
       </div>
       <div className="uk-margin-top">
         <Editor editorState={body} setEditorState={setBody} />

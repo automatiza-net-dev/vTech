@@ -18,7 +18,7 @@ import {
 } from "antd";
 const { Option } = Select;
 
-const Vaccines = memo(function Vaccines({
+function Vaccines({
   patient,
   reload,
   setReload,
@@ -219,6 +219,6 @@ const Vaccines = memo(function Vaccines({
       </Modal>
     </div>
   );
-});
+}
 
 export default Vaccines;

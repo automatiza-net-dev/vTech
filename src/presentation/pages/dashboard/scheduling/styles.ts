@@ -12,7 +12,7 @@ export const Scheduling = styled("div")`
     font-weight: 700;
     margin-bottom: 0;
     margin-left: 48px;
-    margin-bottom: -10px;
+    margin-bottom: 0;
 
     &::first-letter {
       text-transform: capitalize;

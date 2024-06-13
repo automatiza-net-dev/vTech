@@ -11,6 +11,7 @@ import {
   patientContainer,
   userDashboardContainer,
   dashboardContainer,
+  financialServicesContainer,
 } from "./dashboard";
 import { systemContainer } from "./system";
 
@@ -24,7 +25,8 @@ const container = Container.merge(
   userDashboardContainer,
   dashboardContainer,
   subgroupContainer,
-  systemContainer
+  systemContainer,
+  financialServicesContainer
 );
 
 export { container };

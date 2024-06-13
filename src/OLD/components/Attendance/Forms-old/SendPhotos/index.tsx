@@ -8,7 +8,8 @@ import { useLoadPatient } from "@/presentation";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Components
-import { Modal, notification, Button } from "antd";
+import { notification, Button } from "antd";
+import { Modal } from "infinity-forge";
 import { Container } from "./styles";
 import FormChild from "./FormChild";
 
@@ -177,12 +178,7 @@ export default function SendPhotos({
           setPhotosVisible={setPhotosVisible}
         />
       </Container>
-      <Modal
-        title="Arquivos"
-        footer={null}
-        onCancel={() => setPhotosVisible(false)}
-        visible={photosVisible}
-      >
+      <Modal onClose={() => setPhotosVisible(false)} open={photosVisible} styles={{ width: '500px' }}>
         <div>
           {fileList?.map((item, idx) => {
             return (
@@ -233,12 +229,7 @@ export default function SendPhotos({
         setPhotosVisible={setPhotosVisible}
         remove={() => removeData(updateData?._id)}
       />
-      <Modal
-        title="Arquivos"
-        footer={null}
-        onCancel={() => setPhotosVisible(false)}
-        visible={photosVisible}
-      >
+      <Modal onClose={() => setPhotosVisible(false)} open={photosVisible} styles={{ width: '500px' }}>
         <div>
           {fileList?.map((item, idx) => {
             item?.url &&

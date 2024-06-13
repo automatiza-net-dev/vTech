@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const FormSetClients = styled("div")`
-  max-height: 60vh;
   width: 100%;
 
   .top {

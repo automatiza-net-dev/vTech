@@ -5,7 +5,6 @@ import * as React from "react";
 // Hooks
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 import { usePatients } from "@/OLD/hooks/usePatients";
-import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Utils
 import { Columns, LiftColumns } from "./Columns";
@@ -20,7 +19,6 @@ import {
   Input as AntInput,
   Select,
   Table,
-  notification,
   AutoComplete,
 } from "antd";
 import { Modal } from "infinity-forge";
@@ -35,6 +33,12 @@ import { petsService } from "../../../OLD/services/patient.service";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 import CreateBill from "./Create";
+
+import {
+  AddSale,
+  PermissionItem,
+  useVerifyPermissions,
+} from "@/presentation";
 
 export const billStatusFormatter = (status) => {
   switch (status) {
@@ -74,6 +78,7 @@ const mapper = (data = [], cashiers) => {
 };
 
 export default function Bills() {
+  const [visible, setVisible] = React.useState(false);
   const [filters, setFilters] = React.useState({
     fromBill: moment(),
     toBill: moment(),
@@ -92,8 +97,8 @@ export default function Bills() {
   const { patients } = usePatients();
   const { cashiers } = useDailyCasher(cashierFilters);
 
-  const createPermission = useUserHasPermission("VEN01");
-  const listBillsPermission = useUserHasPermission("VEN00");
+  const createPermission = useVerifyPermissions("VEN01");
+  const listBillsPermission = useVerifyPermissions("VEN00");
 
   const { data: tutors } = useQuery(
     ["tutors"],
@@ -119,39 +124,40 @@ export default function Bills() {
   return !listBillsPermission || listBillsPermission === "loading" ? (
     <AccessDenied loading={listBillsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Vendas</h3>
-      <section className="uk-margin-top uk-width-1-1">
-        <div
-          className="uk-flex uk-flex-between uk-width-1-1"
-          style={{ gap: "1rem" }}
-        >
-          <Input style={{ width: "100%" }}>
-            <Label>Criação</Label>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              format="DD/MM/YYYY"
-              onChange={(val) => {
-                setFilters({
-                  ...filters,
-                  fromBill: val,
-                });
-              }}
-              value={filters?.fromBill}
-            />
-            à
-            <DatePicker
-              format="DD/MM/YYYY"
-              slotProps={{ textField: { variant: "standard" } }}
-              onChange={(val) => {
-                setFilters({
-                  ...filters,
-                  toBill: val,
-                });
-              }}
-              value={filters?.toBill}
-            />
-            {/*
+    <>
+      <Container className="uk-padding">
+        <h3 className="uk-margin-remove">Vendas</h3>
+        <section className="uk-margin-top uk-width-1-1">
+          <div
+            className="uk-flex uk-flex-between uk-width-1-1"
+            style={{ gap: "1rem" }}
+          >
+            <Input style={{ width: "100%" }}>
+              <Label>Criação</Label>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                format="DD/MM/YYYY"
+                onChange={(val) => {
+                  setFilters({
+                    ...filters,
+                    fromBill: val,
+                  });
+                }}
+                value={filters?.fromBill}
+              />
+              à
+              <DatePicker
+                format="DD/MM/YYYY"
+                slotProps={{ textField: { variant: "standard" } }}
+                onChange={(val) => {
+                  setFilters({
+                    ...filters,
+                    toBill: val,
+                  });
+                }}
+                value={filters?.toBill}
+              />
+              {/*
             <DatePicker.RangePicker
               showTime
               value={[moment(filters?.fromBill), moment(filters?.toBill)]}
@@ -166,96 +172,62 @@ export default function Bills() {
               }}
             />
             */}
-            <MdOutlineClear
-              size={40}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setFilters((prv) => ({
-                  ...prv,
-                  fromBill: null,
-                  toBill: null,
-                }));
-              }}
-            />
-          </Input>
+              <MdOutlineClear
+                size={40}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setFilters((prv) => ({
+                    ...prv,
+                    fromBill: null,
+                    toBill: null,
+                  }));
+                }}
+              />
+            </Input>
 
-          <Input style={{ width: "100%" }}>
-            <Label>Status</Label>
-            <Select
-              allowClear
-              defaultValue={"all"}
-              placeholder="Status"
-              className="uk-width-1-1"
-              value={filters.status}
-              onChange={(e) => {
-                if (e === "all") {
-                  const newObj = { ...filters };
-                  delete newObj?.status;
-                  return setFilters(newObj);
-                }
-                setFilters({ ...filters, status: e });
-              }}
-            >
-              <Select.Option value="all">Todos</Select.Option>
-              <Select.Option value="ABERTA">Aberta</Select.Option>
-              <Select.Option value="BAIXADA">Baixada</Select.Option>
-            </Select>
-          </Input>
-
-          <Input style={{ width: "100%" }}>
-            <Label>Cliente</Label>
-            <AutoComplete
-              className="uk-width-1-1"
-              value={clientSearch}
-              options={tutors?.map((tutor) => ({
-                ...tutor,
-                value: tutor?.name,
-              }))}
-              onChange={(val) => {
-                setClientSearch(val);
-                if (val === "") {
-                  const newObj = { ...filters };
-                  delete newObj.client;
-                  setFilters(newObj);
-                }
-              }}
-              onSelect={(_, option) => {
-                setClientSearch(option?.name);
-                setFilters({ ...filters, client: option?.id });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.name.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                )
-              }
-            />
-          </Input>
-        </div>
-        <div
-          className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
-          style={{ gap: "1rem" }}
-        >
-          {process.env.client !== "liftone" && (
             <Input style={{ width: "100%" }}>
-              <Label>Paciente</Label>
+              <Label>Status</Label>
+              <Select
+                allowClear
+                defaultValue={"all"}
+                placeholder="Status"
+                className="uk-width-1-1"
+                value={filters.status}
+                onChange={(e) => {
+                  if (e === "all") {
+                    const newObj = { ...filters };
+                    delete newObj?.status;
+                    return setFilters(newObj);
+                  }
+                  setFilters({ ...filters, status: e });
+                }}
+              >
+                <Select.Option value="all">Todos</Select.Option>
+                <Select.Option value="ABERTA">Aberta</Select.Option>
+                <Select.Option value="BAIXADA">Baixada</Select.Option>
+              </Select>
+            </Input>
+
+            <Input style={{ width: "100%" }}>
+              <Label>Cliente</Label>
               <AutoComplete
                 className="uk-width-1-1"
-                value={patientSearch}
-                options={patients?.map((patient) => ({
-                  ...patient,
-                  value: patient?.name,
+                value={clientSearch}
+                options={tutors?.map((tutor) => ({
+                  ...tutor,
+                  value: tutor?.name,
                 }))}
                 onChange={(val) => {
-                  setPatientSearch(val);
+                  setClientSearch(val);
                   if (val === "") {
                     const newObj = { ...filters };
-                    delete newObj.patient;
+                    delete newObj.client;
                     setFilters(newObj);
                   }
                 }}
                 onSelect={(_, option) => {
-                  setPatientSearch(option?.name);
-                  setFilters({ ...filters, patient: option?.id });
+                  setClientSearch(option?.name);
+                  setFilters({ ...filters, client: option?.id });
                 }}
                 filterOption={(val, opt) =>
                   normalizeStr(opt?.name.toUpperCase()).includes(
@@ -264,92 +236,134 @@ export default function Bills() {
                 }
               />
             </Input>
-          )}
-          <Input style={{ width: "70%" }}>
-            <label>Código</label>
-            <AntInput
-              value={filters.tag}
-              onChange={(e) => setFilters({ ...filters, tag: e.target.value })}
-            />
-          </Input>
+          </div>
           <div
-            style={{ width: "100%", display: "flex", justifyContent: "right" }}
+            className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
+            style={{ gap: "1rem" }}
           >
-            <Button
-              classCallback="uk-margin-small-right"
-              onClick={() => {
-                setFilters((prv) => ({ ...prv, noSearch: false }));
-                setReload((prv) => !prv);
+            {process.env.client !== "liftone" && (
+              <Input style={{ width: "100%" }}>
+                <Label>Paciente</Label>
+                <AutoComplete
+                  className="uk-width-1-1"
+                  value={patientSearch}
+                  options={patients?.map((patient) => ({
+                    ...patient,
+                    value: patient?.name,
+                  }))}
+                  onChange={(val) => {
+                    setPatientSearch(val);
+                    if (val === "") {
+                      const newObj = { ...filters };
+                      delete newObj.patient;
+                      setFilters(newObj);
+                    }
+                  }}
+                  onSelect={(_, option) => {
+                    setPatientSearch(option?.name);
+                    setFilters({ ...filters, patient: option?.id });
+                  }}
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.name.toUpperCase()).includes(
+                      normalizeStr(val.toUpperCase())
+                    )
+                  }
+                />
+              </Input>
+            )}
+            <Input style={{ width: "70%" }}>
+              <label>Código</label>
+              <AntInput
+                value={filters.tag}
+                onChange={(e) =>
+                  setFilters({ ...filters, tag: e.target.value })
+                }
+              />
+            </Input>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "right",
               }}
             >
-              Filtrar
-            </Button>
-            {createPermission && (
-              <Modal
-                modal={openCreate}
-                setModal={setOpenCreate}
-                style={{ maxWidth: "1200px", padding: "20px" }}
-                children={
-                  <CreateBill visible={openCreate} setModal={setOpenCreate} />
-                }
-                trigger={
+              {createPermission && (
+                <>
                   <Button
                     onClick={() => {
-                      setOpenCreate((prev) => !prev);
+                      setVisible(true);
                     }}
                   >
                     Nova venda
                   </Button>
-                }
-              />
-            )}
+                </>
+              )}
+
+              <Button
+                classCallback="uk-margin-small-right"
+                onClick={() => {
+                  setFilters((prv) => ({ ...prv, noSearch: false }));
+                  setReload((prv) => !prv);
+                }}
+              >
+                Filtrar
+              </Button>
+            </div>
           </div>
+        </section>
+        <hr />
+        <div className="uk-margin-top">
+          <Table
+            columns={process.env.client !== "liftone" ? Columns : LiftColumns}
+            dataSource={mapper(data, cashiers)}
+            footer={() => (
+              <section className="uk-flex uk-flex-center">
+                <div className="uk-flex uk-flex-around custom-footer-box">
+                  <div className="uk-width-1-2 uk-margin-right">
+                    <strong>Total:&nbsp;</strong>
+                    {data?.length > 0 &&
+                      currencyFormatter(
+                        data.reduce(
+                          (acc, current) => acc + current.total_value,
+                          0
+                        )
+                      )}
+                  </div>
+                  <div className="uk-width-1-1">
+                    <strong>Total em aberto:&nbsp;</strong>
+                    {data?.length > 0 &&
+                      currencyFormatter(
+                        data.reduce(
+                          (acc, current) =>
+                            acc + (current?.total_value - current?.paid_value),
+                          0
+                        )
+                      )}
+                  </div>
+                  <div className="uk-width-1-1">
+                    <strong>Total pago:</strong>
+                    {data?.length > 0 &&
+                      currencyFormatter(
+                        data.reduce(
+                          (acc, current) => acc + current?.paid_value,
+                          0
+                        )
+                      )}
+                  </div>
+                </div>
+              </section>
+            )}
+          />
         </div>
-      </section>
-      <hr />
-      <div className="uk-margin-top">
-        <Table
-          columns={process.env.client !== "liftone" ? Columns : LiftColumns}
-          dataSource={mapper(data, cashiers)}
-          footer={() => (
-            <section className="uk-flex uk-flex-center">
-              <div className="uk-flex uk-flex-around custom-footer-box">
-                <div className="uk-width-1-2 uk-margin-right">
-                  <strong>Total:&nbsp;</strong>
-                  {data?.length > 0 &&
-                    currencyFormatter(
-                      data.reduce(
-                        (acc, current) => acc + current.total_value,
-                        0
-                      )
-                    )}
-                </div>
-                <div className="uk-width-1-1">
-                  <strong>Total em aberto:&nbsp;</strong>
-                  {data?.length > 0 &&
-                    currencyFormatter(
-                      data.reduce(
-                        (acc, current) =>
-                          acc + (current?.total_value - current?.paid_value),
-                        0
-                      )
-                    )}
-                </div>
-                <div className="uk-width-1-1">
-                  <strong>Total pago:</strong>
-                  {data?.length > 0 &&
-                    currencyFormatter(
-                      data.reduce(
-                        (acc, current) => acc + current?.paid_value,
-                        0
-                      )
-                    )}
-                </div>
-              </div>
-            </section>
-          )}
-        />
-      </div>
-    </Container>
+      </Container>
+
+      <Modal
+        open={visible}
+        styles={{ height: "95vh", maxWidth: "1400px", overflow: "auto" }}
+        onClose={() => setVisible(false)}
+      >
+        <AddSale setModal={setVisible} />
+      </Modal>
+    </>
   );
 }

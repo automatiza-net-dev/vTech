@@ -5,6 +5,7 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
 import { Input, Button, AutoComplete, Popconfirm, notification } from "antd";
+import { Select, FormHandler } from "infinity-forge";
 const { TextArea } = Input;
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
@@ -21,7 +22,7 @@ function FormChild({
   setVisible,
   print,
   remove,
-  patient
+  patient,
 }) {
   const [pathologySearch, setPathologySearch] = useState("");
 
@@ -37,7 +38,7 @@ function FormChild({
         e.preventDefault();
         if (defaultProtocol === "") {
           return notification.warning({
-            message: "Campo protocolo obrigatório"
+            message: "Campo protocolo obrigatório",
           });
         }
         submit();
@@ -45,32 +46,32 @@ function FormChild({
     >
       <div>
         <label>Patologia</label>
-        <AutoComplete
-          disabled={!modal}
-          value={pathologySearch}
-          className="uk-width-1-1"
-          options={allPathologies.map((pathology) => ({
-            ...pathology,
-            value: pathology?.description
-          }))}
-          onChange={(val) => {
-            setPathologySearch(val);
-          }}
-          onSelect={(val, opt) => {
-            setPathologySearch(val);
-            setData({
-              ...data,
-              pathology: opt?.description,
-              description: opt?.definition
-            });
-            setDefaultProtocol(opt?.template);
-          }}
-          filterOption={(val, opt) =>
-            normalizeStr(opt?.description?.toUpperCase()).includes(
-              normalizeStr(val?.toUpperCase())
-            )
-          }
-        />
+        {allPathologies && allPathologies.length > 0 && (
+          <FormHandler>
+            <Select
+              menuPlacement="bottom"
+              name="exam"
+              options={allPathologies.map((pathology) => ({
+                label: pathology?.description,
+                value: pathology?.id,
+              }))}
+              disabled={!modal}
+              onlyOneValue
+              onChangeSelect={async (value) => {
+                const selectedPathology = allPathologies.find(
+                  (pathology) => pathology.id === value
+                );
+
+                setData({
+                  ...data,
+                  pathology: selectedPathology?.description,
+                  description: selectedPathology?.definition,
+                });
+                setDefaultProtocol(selectedPathology?.template);
+              }}
+            />
+          </FormHandler>
+        )}
       </div>
       <div className="uk-margin-top">
         <label>Descrição</label>

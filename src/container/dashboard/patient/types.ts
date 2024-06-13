@@ -1,5 +1,6 @@
 export const patientTypes = {
   RemoteTutor: Symbol.for("RemoteTutor"),
+  RemoteVaccine: Symbol.for("RemoteVaccine"),
   RemotePatient: Symbol.for("RemotePatient"),
   RemoteSchedule: Symbol.for("RemoteSchedule"),
   RemoteAttendances: Symbol.for("RemoteAttendances"),

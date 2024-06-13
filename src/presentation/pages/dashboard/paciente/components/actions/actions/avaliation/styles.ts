@@ -6,6 +6,13 @@ export const Avaliation = styled("div")`
     min-height: 500px;
   }
 
+  .form-button {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    width: 100%;
+  }
 
   .internal_observations {
     margin-bottom: 20px;

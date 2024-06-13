@@ -1,3 +1,4 @@
+import { TimeLine } from "../load-last-updates";
 import { Attendace } from "./attendace";
 
 
@@ -8,5 +9,5 @@ export type OpenAttendace = {
 export namespace OpenAttendace {
   export type Params = Attendace
 
-  export type Model = {};
+  export type Model = TimeLine;
 }

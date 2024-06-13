@@ -4,6 +4,8 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 
 import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
 
+import * as S from "./styles";
+
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
@@ -29,7 +31,7 @@ export default function PrintScreen({ bill }: any) {
   });
 
   return (
-    <section>
+    <S.PrintScreen>
       <PrintHeader unit={clinic} />
       <hr />
       <section className="uk-flex uk-flex-around uk-margin-top">
@@ -176,7 +178,6 @@ export default function PrintScreen({ bill }: any) {
         <strong>Observações</strong>
       </h4>
       <section>{bill?.additional_information}</section>
-    </section>
+    </S.PrintScreen>
   );
 }
-

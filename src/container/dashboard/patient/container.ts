@@ -6,6 +6,7 @@ import { infraContainer } from "../../infra";
 import {
   RemoteTutor,
   RemotePatient,
+  RemoteVaccine,
   RemoteSchedule,
   RemoteAttendances,
   RemoteChangeStatus,
@@ -29,6 +30,7 @@ patientContainer.parent = infraContainer;
 
 patientContainer.bind(patientTypes.RemoteTutor).to(RemoteTutor);
 patientContainer.bind(patientTypes.RemotePatient).to(RemotePatient);
+patientContainer.bind(patientTypes.RemoteVaccine).to(RemoteVaccine);
 patientContainer.bind(patientTypes.RemoteSchedule).to(RemoteSchedule);
 patientContainer.bind(patientTypes.RemoteAttendances).to(RemoteAttendances);
 patientContainer.bind(patientTypes.RemoteChangeStatus).to(RemoteChangeStatus);

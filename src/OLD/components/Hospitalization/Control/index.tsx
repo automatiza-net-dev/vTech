@@ -323,7 +323,7 @@ const HospitalizationControl = memo(function HospitalizationControl({
                         gridTemplateColumns: "1fr 1fr 2fr 1fr",
                         width: "100%",
                         minWidth: "1150px",
-                        fontSize: "0.90rem",
+                        fontSize: "1.2rem",
                         rowGap: "0.5rem",
                       }}
                     >

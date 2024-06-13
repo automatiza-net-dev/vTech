@@ -5,9 +5,7 @@ import { Avaliation } from "./avaliation";
 import { TimeLineEvent, TimelineType } from "@/domain";
 
 // temp
-import { useLoadPatient } from "@/presentation";
-import AddBill from "@/OLD/components/Bill/Create";
-import AddBudget from "@/OLD/components/Budget/Create";
+import { AddBudgetNew, AddSale, useLoadPatient } from "@/presentation";
 import Exams from "@/OLD/components/Attendance/Forms-old/AddExam";
 import Vaccines from "@/OLD/components/Attendance/Forms-old/Vaccines";
 import DeathReport from "@/OLD/components/Attendance/Forms-old/Death";
@@ -15,7 +13,6 @@ import Observations from "@/OLD/components/Attendance/Forms-old/Notes";
 import Documents from "@/OLD/components/Attendance/Forms-old/Documents";
 import AddWeight from "@/OLD/components/Attendance/Forms-old/AddWeight";
 import SendPhotos from "@/OLD/components/Attendance/Forms-old/SendPhotos";
-import Attendance from "@/OLD/components/Attendance/Forms-old/Attendance";
 import Pathologies from "@/OLD/components/Attendance/Forms-old/Patologies";
 import MedicalRecipes from "@/OLD/components/Attendance/Forms-old/MedicalRecipe";
 import DosesModal from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesList/DosesModal";
@@ -271,8 +268,11 @@ export function useActionsPatient(): {
           <path d="M10 13v1m0 -8v1"></path>
         </svg>
       ),
-      Component: AddBill,
-      SingleComponent: AddBill,
+      customModalStyles: {
+        height: "95vh",
+      },
+      Component: AddSale,
+      SingleComponent: AddSale,
     },
     {
       active: true,
@@ -297,8 +297,11 @@ export function useActionsPatient(): {
           <path d="M10 13v1m0 -8v1"></path>
         </svg>
       ),
-      Component: AddBudget,
-      SingleComponent: AddBudget,
+      customModalStyles: {
+        height: "95vh",
+      },
+      Component: AddBudgetNew,
+      SingleComponent: AddBudgetNew,
     },
     {
       active: process.env.clientName === "LiftOne",

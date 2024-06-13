@@ -69,10 +69,10 @@ const columns = [
 
 export default function AddBudgetItem({
   budget,
-  setReload = false,
-  tableRender = true,
-  externVisible = false,
-  setExternVisible = false,
+  setReload,
+  tableRender,
+  externVisible,
+  setExternVisible,
 }) {
   const queryClient = useQueryClient();
   const [visible, setVisible] = React.useState(false);
@@ -124,7 +124,7 @@ export default function AddBudgetItem({
 
     budgetService
       .createMultipleBudgetItems({
-        items: multipleProducts.map((item) => ({
+        items: multipleProducts.map((item: any) => ({
           ...item,
           unitaryValue: convertIntlCurrency(item?.unitaryValue),
           discountValue: convertIntlCurrency(item?.discountValue),
@@ -255,16 +255,15 @@ export default function AddBudgetItem({
         </Tooltip>
       )}
 
-      <Modal
+   <Modal
         visible={tableRender ? visible : externVisible}
         footer={null}
         title={`Adicionar Item ao Orçamento - ${budget?.tag}`}
         width={1300}
-        onCancel={() =>
-          tableRender
-            ? setVisible((prevState) => !prevState)
-            : setExternVisible((prv) => !prv)
-        }
+        onCancel={() => {
+          tableRender && setVisible && setVisible(false);
+          setExternVisible && setExternVisible(false);
+        }}
       >
         <Tabs
           defaultActiveKey="1"
@@ -540,10 +539,8 @@ export default function AddBudgetItem({
               </footer>
             </div>
           </TabPane>
-        
         </Tabs>
       </Modal>
     </>
   );
 }
-

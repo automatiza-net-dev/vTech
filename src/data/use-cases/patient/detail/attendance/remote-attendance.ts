@@ -7,7 +7,10 @@ import * as domain from "@/domain";
 
 @injectable()
 export class RemoteAttendances
-  implements domain.OpenAttendace, domain.UpdateAttendace
+  implements
+    domain.OpenAttendace,
+    domain.UpdateAttendace,
+    domain.DeleteAttendace
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -25,8 +28,8 @@ export class RemoteAttendances
       method: "post",
       body: params,
       headers: {
-        "Content-Type": "multipart/form-data; boundary=something"
-      }
+        "Content-Type": "multipart/form-data; boundary=something",
+      },
     });
 
     return response as domain.OpenAttendace.Model;
@@ -42,10 +45,19 @@ export class RemoteAttendances
       method: "put",
       body: params,
       headers: {
-        "Content-Type": "multipart/form-data; boundary=something"
-      }
+        "Content-Type": "multipart/form-data; boundary=something",
+      },
     });
 
     return response as domain.UpdateAttendace.Model;
+  }
+
+  async delete(params: domain.DeleteAttendace.Params) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`n-timeline/${params.id}`),
+      method: "delete",
+    });
+
+    return {};
   }
 }

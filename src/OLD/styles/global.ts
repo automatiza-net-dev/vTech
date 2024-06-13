@@ -226,5 +226,59 @@ export const GlobalStyle = createGlobalStyle<any>`
             width: 100%;
         }
     }
+
+
+    .react-date-picker {
+  height: 100%;
+}
+
+.date_picker_container {
+  background-color: transparent;
+  border: 1px solid #ccc;
+
+  > svg {
+    fill: #979797;
+  }
+
+  .react-datepicker-wrapper {
+    input {
+      color: #111;
+    }
+  }
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+  font-size: 1.2rem !important;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+    color: #000;
+    width: 2.5rem !important;
+    text-align: center;
+    margin: 0.2rem !important;
+    display: inline-block;
+    line-height: 2rem !important;
+    font-size: 12px !important;
+}
+.date_picker_container {
+    background-color: #f9f9f9 !important;
+}
+
+.date_picker_container .react-datepicker-wrapper input {
+    color: #000 !important;
+}
+ .date_picker_container >svg {
+    fill: #6e6e6e !important;
+}
+
+.error-form {
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
 `;
 export default GlobalStyle;

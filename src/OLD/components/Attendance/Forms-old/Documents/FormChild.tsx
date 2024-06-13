@@ -57,7 +57,6 @@ function FormChild({
       }}
     >
       <div>
-     
         <label>Documento</label>
         {allDocuments && allDocuments.length > 0 && (
           <FormHandler>
@@ -71,12 +70,15 @@ function FormChild({
               value={document?.title}
               disabled={!modal}
               onlyOneValue
-              onChangeSelect={(value) => {
+              onChangeSelect={async (value) => {
                 const optionSelected = allDocuments?.find(
                   (document) => document.title === value
                 );
 
-                replaceText(optionSelected?.id, optionSelected?.description);
+                await replaceText(
+                  optionSelected?.id,
+                  optionSelected?.description
+                );
 
                 setDocument(optionSelected);
                 if (optionSelected?.type === "pdf") {

@@ -1,4 +1,3 @@
-
 import React, { memo, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
@@ -69,7 +68,6 @@ export default function FormChild({
   // sortItems(tutors, "name");
 
   const router = useRouter();
-  
 
   const getAllRaces = useCallback(() => {
     animalServices
@@ -284,7 +282,9 @@ export default function FormChild({
                   disabled={!footer ? !edit : false}
                   className="uk-width-1-1"
                   onChange={(e: any) => {
-                    const choosed = races.find((option: any) => option.value === e) as any;
+                    const choosed = races.find(
+                      (option: any) => option.value === e
+                    ) as any;
                     setData({
                       ...data,
                       raceId: choosed?.id,
@@ -646,10 +646,7 @@ export default function FormChild({
           onCancel={() => setEditPatientVisible(false)}
           width={1200}
         >
-          <EditPatient
-            id={data?.clientId}
-            setVisible={setEditPatientVisible}
-          />
+          <EditPatient id={data?.clientId} setVisible={setEditPatientVisible} />
         </Modal>
       )}
       {createPatientVisible && (

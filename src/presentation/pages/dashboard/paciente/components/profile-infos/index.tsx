@@ -54,7 +54,9 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       icon: patient.death ? "IconDeath" : "IconClock",
       color: patient.death ? "#E02F2F" : "#36A2EB",
       title: patient?.age,
-      subTitle: patient.death ? `Óbito em ${moment(patient.death_date).format("DD/MM/YYYY")}` : "Idade",
+      subTitle: patient.death
+        ? `Óbito em ${moment(patient.death_date).format("DD/MM/YYYY")}`
+        : "Idade",
       active: true,
     },
     {
@@ -93,23 +95,29 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
             {details?.map((detail) => {
               if (detail.subTitle === "Tutor Ativo" && detail.active) {
                 return (
-                  <Modal
-                    modal={modal}
-                    style={{ maxWidth: "1200px", padding: "20px", overflow: "auto" }}
-                    setModal={setModal}
-                    key={detail.id}
-                    children={
+                  <>
+                    <Modal
+                      open={modal}
+                      styles={{
+                        maxWidth: "1200px",
+                        padding: "20px",
+                        overflow: "auto",
+                      }}
+                      onClose={() => setModal(false)}
+                    >
                       <EditTutor
                         tutorId={patient?.tutor?.id}
                         setVisible={setModal}
                       />
-                    }
-                    trigger={
-                      <span onClick={() => setModal(true)} className="custom-link">
-                        <DetailCard key={detail.id} {...detail} />
-                      </span>
-                    }
-                  />
+                    </Modal>
+
+                    <span
+                      onClick={() => setModal(true)}
+                      className="custom-link"
+                    >
+                      <DetailCard key={detail.id} {...detail} />
+                    </span>
+                  </>
                 );
               }
 

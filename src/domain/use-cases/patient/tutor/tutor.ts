@@ -1,3 +1,5 @@
+import { Patient } from "../detail";
+
 export type Tutor = {
   address: {};
   isMain: boolean;
@@ -7,7 +9,7 @@ export type Tutor = {
     id: string;
     description: string;
   };
-  dependents: [];
+  dependents: Patient[];
   diabetes: boolean;
   document: string;
   email: string;

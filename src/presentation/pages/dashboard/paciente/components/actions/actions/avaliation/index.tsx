@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 import {
   Error,
   Input,
-  Modal,
-  Button,
   useToast,
   Textarea,
   Accordion,
@@ -13,26 +11,29 @@ import {
   TextEditor,
   FormHandler,
   useAuthAdmin,
-  uid,
+  Modal,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
 
-import { User } from "@/domain";
+import { TimeLine, User } from "@/domain";
 import { RemoteAttendances } from "@/data";
-import { PdfPatientAttendance } from "@/presentation";
-import { Print, useLoadSchedule } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
+import {
+  AddBudgetNew,
+  PdfPatientAttendance,
+  Print,
+  useLoadSchedule,
+} from "@/presentation";
 
-import AddBudget from "@/OLD/components/Budget/Create";
-
-import { SelectTypeService } from "./components";
 import { DropdownComponentProps } from "../dropdown-item";
+import { AttendanceBudgets, SelectTypeService } from "./components";
 
 import * as S from "./styles";
 
 export function Avaliation(props: DropdownComponentProps) {
   const [modal, setModal] = useState(false);
+  const [attendance, setAttendance] = useState<TimeLine | null>(null);
 
   const router = useRouter();
   const { createToast } = useToast();
@@ -42,8 +43,10 @@ export function Avaliation(props: DropdownComponentProps) {
 
   const user = GetUser<User>();
 
+  const timeLine = attendance || props;
+
   const patientId = router.query.id as string;
-  const attendanceId = props.timeline_info?.attendance?.id;
+  const attendanceId = timeLine.timeline_info?.attendance?.id;
   const scheduleId = router.query?.scheduleId as string | undefined;
   const scheduleDate = router.query?.scheduleDate as string | undefined;
 
@@ -61,25 +64,38 @@ export function Avaliation(props: DropdownComponentProps) {
       patientId,
       photos: data?.photos?.map((photo) => photo.file),
     };
-    if (attendanceId) {
-      await container
-        .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
-        .update({
-          ...payload,
-          id: process.env.client === "liftone" ? props._id : attendanceId,
-        });
-    } else {
-      await container
-        .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
-        .open(payload);
 
-      queryClient.invalidateQueries({
-        queryKey: ["RemotePatient", patientId],
+    const attendanceResponse = await container
+      .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
+      [!attendanceId ? "open" : "update"]({
+        ...payload,
+        id: attendanceId
+          ? process.env.client === "liftone"
+            ? timeLine._id
+            : attendanceId
+          : undefined,
       });
-    }
 
-    queryClient.invalidateQueries({
-      queryKey: ["LastUpdates", patientId],
+    setAttendance(attendanceResponse);
+
+    queryClient.setQueryData(["LastUpdates", patientId], (state) => {
+      const lastUpdates = state as TimeLine[];
+
+      const itemAlredyExist = lastUpdates.find((timeline) => {
+        return timeline._id === attendanceResponse._id;
+      });
+
+      if (itemAlredyExist) {
+        return lastUpdates.map((timeline) => {
+          if (timeline._id === attendanceResponse._id) {
+            return {...attendanceResponse, updatedAt: timeline.updatedAt};
+          }
+
+          return timeline;
+        });
+      }
+
+      return [attendanceResponse , ...lastUpdates] as TimeLine[];
     });
 
     if (scheduleDate) {
@@ -98,95 +114,145 @@ export function Avaliation(props: DropdownComponentProps) {
       }  com sucesso!`,
       status: "success",
     });
-
-    props.setModal && props.setModal(false);
   }
 
-  
+  const initialData = {
+    ...timeLine.timeline_info,
+    internalObservations: timeLine?.timeline_info?.internalObservation
+      ? timeLine?.timeline_info?.internalObservation
+      : schedule?.data
+      ? schedule?.data?.serviceType?.description
+      : "",
+    scheduleServiceId: timeLine?.timeline_info?.service?.id
+      ? [timeLine?.timeline_info?.service?.id]
+      : schedule?.data
+      ? [schedule?.data?.serviceType?.id]
+      : [],
+  };
 
   return (
     <Error name="Avaliation">
       <S.Avaliation>
         <h2>{process.env.client === "sancla" ? "Atendimento" : "Avaliação"}</h2>
 
-        <FormHandler
-          key={uid(11)}
-          debugMode
-          cleanFieldsOnSubmit={false}
-          initialData={{
-            ...props.timeline_info,
-            internalObservations: props?.timeline_info?.internalObservation
-              ? props?.timeline_info?.internalObservation
-              : schedule?.data
-              ? schedule?.data?.serviceType?.description
-              : "",
-            scheduleServiceId: props?.timeline_info?.service?.id
-              ? [props?.timeline_info?.service?.id]
-              : schedule?.data
-              ? [schedule?.data?.serviceType?.id]
-              : [],
-          }}
-          button={{ text: "Salvar" }}
-          onSucess={handleSubmit}
-          disableEnterKeySubmitForm
-        >
-          <div className="row">
-            <div>
-              <label>Tipo atendimento</label>
+        {!modal && (
+          <FormHandler
+            debugMode
+            cleanFieldsOnSubmit={false}
+            initialData={initialData}
+            customSubmit={[
+              {
+                action: async () => {
+                  await container
+                    .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
+                    .delete({
+                      id: timeLine._id as TimeLine["_id"],
+                    });
 
-              <SelectTypeService
-                initialService={props?.timeline_info?.service?.id}
-              />
+                  createToast({
+                    message: `Excluido com sucesso!`,
+                    status: "success",
+                  });
+
+                  queryClient.setQueryData(
+                    ["LastUpdates", patientId],
+                    (state) => {
+                      const queryData = state as TimeLine[];
+
+                      return queryData.filter(
+                        (item) => item._id !== timeLine._id
+                      );
+                    }
+                  );
+                },
+                props: { text: "Excluir" },
+                active: !!props.timeline_id,
+              },
+              {
+                action: async (data) => {
+                  await handleSubmit(data);
+                  setModal(true);
+                },
+                props: { text: "NOVO ORÇAMENTO" },
+                active: true,
+              },
+              {
+                action: async (data) => {
+                  await handleSubmit(data);
+
+                  props?.setModal && props.setModal(false);
+                },
+                props: { text: "SALVAR" },
+                active: true,
+              },
+            ].filter((item) => item.active)}
+            disableEnterKeySubmitForm
+          >
+            <div className="row">
+              <div>
+                <label>Tipo atendimento</label>
+
+                <SelectTypeService
+                  initialService={timeLine?.timeline_info?.service?.id}
+                />
+              </div>
+
+              <div>
+                <label>Resumo</label>
+                <Input name="resume" placeholder="Resumo" />
+              </div>
             </div>
 
-            <div>
-              <label>Resumo</label>
-              <Input name="resume" placeholder="Resumo" />
+            <TextEditor name="protocol" className="custom-editor" />
+
+            <div className="internal_observations">
+              {props.timeline_info?.protocol ? (
+                <Accordion title="Observações internas">
+                  <Textarea
+                    name="internalObservation"
+                    placeholder="Observações internas"
+                  />
+                </Accordion>
+              ) : (
+                <>
+                  <label>Observações internas</label>
+                  <Textarea
+                    name="internalObservation"
+                    placeholder="Observações internas"
+                  />
+                </>
+              )}
             </div>
-          </div>
 
-          <TextEditor name="protocol" className="custom-editor" />
-
-          <div className="internal_observations">
-            {props.timeline_info?.protocol ? (
-              <Accordion title="Observações internas">
-                <Textarea
-                  name="internalObservation"
-                  placeholder="Observações internas"
-                />
-              </Accordion>
-            ) : (
-              <>
-                <label>Observações internas</label>
-                <Textarea
-                  name="internalObservation"
-                  placeholder="Observações internas"
-                />
-              </>
+            {process.env.client === "liftone" && (
+              <InputFile name="photos" isLocalFile multiple />
             )}
-          </div>
 
-          <InputFile name="photos" isLocalFile multiple />
+            {props.timeline_info?.attendance?.id && (
+              <Print
+                PdfContent={
+                  <PdfPatientAttendance {...timeLine?.timeline_info} />
+                }
+              />
+            )}
+          </FormHandler>
+        )}
 
-          {attendanceId && (
-            <Print
-              PdfContent={<PdfPatientAttendance {...props?.timeline_info} />}
-            />
-          )}
+        <Modal
+          styles={{ height: "95vh", overflow: "auto" }}
+          stylesContent={{ height: "100%" }}
+          open={modal}
+          onClose={() => setModal(false)}
+        >
+          <AddBudgetNew
+            attendanceId={timeLine?.timeline_info?.attendance?.id}
+            setModal={setModal}
+          />
+        </Modal>
 
-          <div className="button_new_budget">
-            <Modal
-              style={{ maxWidth: "1200px", padding: "20px" }}
-              modal={modal}
-              setModal={setModal}
-              trigger={
-                <Button text="NOVO ORÇAMENTO" onClick={() => setModal(true)} />
-              }
-              children={<AddBudget modal={modal} setModal={setModal} />}
-            />
-            {/* <ButtonNewBudget /> */}
-          </div>
-        </FormHandler>
+        {props?.timeline_info?.attendance?.id && (
+          <AttendanceBudgets id={props.timeline_info?.attendance.id} />
+        )}
       </S.Avaliation>
     </Error>
   );

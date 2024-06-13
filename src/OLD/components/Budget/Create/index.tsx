@@ -67,10 +67,9 @@ const columns = [
 ];
 
 function CreateBudget({
-  modal,
   setReloadExtern = false,
   attendanceId = false,
-  setModal,
+  setAttendance
 }: any) {
   const [data, setData] = React.useState({
     budgetDate: moment(),
@@ -91,7 +90,7 @@ function CreateBudget({
   const { user, clinic } = useProfile();
   const clientData = useLoadPatient();
 
-  const close = () => setModal((prv) => !prv);
+  const close = () => {setModal(false)};
 
   const cleanUp = () => {
     setData({
@@ -109,12 +108,9 @@ function CreateBudget({
 
       return data ?? [];
     },
-    {
-      enabled: modal,
-    }
   );
   const { movements } = useDailyMovements();
-  const { data: products } = useBudgetProducts(modal);
+  const { data: products } = useBudgetProducts(true);
   const { mutate, isLoading } = useCreateBudget();
 
   const router = useRouter();
@@ -152,7 +148,7 @@ function CreateBudget({
     if (router.pathname.includes("dashboard/paciente")) {
       process.env.client !== "liftone" ? defaultInfo() : customInfo();
     }
-  }, [clientData, modal]);
+  }, [clientData]);
 
   React.useEffect(() => {
     if (data?.dailyMovementId) {
@@ -459,7 +455,7 @@ function CreateBudget({
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "140px" }}>
       <h4>Novo orçamento</h4>
       <form
         onSubmit={(e) => {
@@ -861,14 +857,9 @@ function CreateBudget({
           <div
             className="uk-width-1-1 uk-flex uk-flex-right"
             title="Criar orçamento"
-            visible={modal}
-            onClose={() =>
-              close((prv) => {
-                if (prv?.budget) {
-                  return { ...prv, budget: false };
-                }
-                return false;
-              })
+            visible={true}
+            onClose={() => {}
+        
             }
             width={800}
             footer={null}

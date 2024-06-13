@@ -37,25 +37,29 @@ export function Profile({
 
         <div>
           {name && (
-            <Modal
-              children={
-                process.env.clientName === "Sanclá" ? (
+            <>
+              <Modal
+                open={modal}
+                onClose={() => setModal(false)}
+                styles={{
+                  maxWidth: "1200px",
+                  padding: "20px",
+                  overflow: "auto",
+                }}
+              >
+                {process.env.clientName === "Sanclá" ? (
                   <EditPatient id={id} setVisible={setModal} />
                 ) : (
                   <EditTutor tutorId={id} setVisible={setModal} />
-                )
-              }
-              modal={modal}
-              setModal={setModal}
-              style={{ maxWidth: "1200px", padding: "20px", overflow: "auto" }}
-              trigger={
-                <h1>
-                  <span className="custom-link" onClick={() => setModal(true)}>
-                    {name}
-                  </span>
-                </h1>
-              }
-            />
+                )}
+              </Modal>
+
+              <h1>
+                <span className="custom-link" onClick={() => setModal(true)}>
+                  {name}
+                </span>
+              </h1>
+            </>
           )}
 
           {isHospitalized && (

@@ -10,6 +10,7 @@ import {
   dashboardContainer,
   userDashboardTypes,
   dashboardTypes,
+  financialServicesTypes,
 } from "./dashboard";
 import { adminTypes } from "./admin";
 import { systemTypes } from "./system";
@@ -26,5 +27,6 @@ export const TypesAutomatiza = {
   ...dashboardContainer,
   ...userDashboardTypes,
   ...dashboardTypes,
-  ...subgroupTypes
+  ...subgroupTypes,
+  ...financialServicesTypes,
 };

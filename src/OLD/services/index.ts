@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { TypesAutomatiza, container } from "@/container";
 import axios from "axios";
 import { Storage } from "infinity-forge";
@@ -9,6 +10,7 @@ const api = () => {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers":
         "Origin, X-Requested-With, Content-Type, Accept",
+      "X-System": process.env.clientName as string,
     },
   });
 

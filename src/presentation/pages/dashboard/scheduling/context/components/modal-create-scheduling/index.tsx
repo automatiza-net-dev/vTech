@@ -1,4 +1,6 @@
-import { Modal, useScheduling } from "@/presentation";
+import { Modal } from "infinity-forge";
+
+import { useScheduling } from "@/presentation";
 import { FormCreateScheduling } from "./form-create-scheduling";
 
 export function ModalCreateScheduling() {
@@ -13,13 +15,11 @@ export function ModalCreateScheduling() {
     return <></>;
   }
 
-
   return (
     <Modal
-      maxwidth="800px"
-      stateModal={true}
-      disableOverflow
-      onCloseModal={() => setCreateSchedulingArgs(null)}
+      styles={{ maxWidth: "800px" }}
+      open={!!createSchedulingArgs}
+      onClose={() => setCreateSchedulingArgs(null)}
     >
       <FormCreateScheduling />
     </Modal>

@@ -18,7 +18,8 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Components
-import { Button, Modal, Popconfirm, notification } from "antd";
+import { Button, Popconfirm, notification } from "antd";
+import { Modal } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -313,12 +314,8 @@ export default function LaunchExam({
         submitArquives={submitArquives}
         remove={removeData}
       />
-      <Modal
-        visible={photosOpen}
-        title="Fotos anexadas"
-        footer={null}
-        onCancel={() => setPhotosOpen(false)}
-      >
+
+      <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
         <div>
           {fileList?.length > 0 &&
             fileList.map((item, i) => {
@@ -432,12 +429,7 @@ export default function LaunchExam({
         setExamSearch={setExamSearch}
         setPhotosOpen={setPhotosOpen}
       />
-      <Modal
-        visible={photosOpen}
-        title="Fotos anexadas"
-        footer={null}
-        onCancel={() => setPhotosOpen(false)}
-      >
+      <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
         <div>
           {fileList?.length > 0 &&
             fileList.map((item) => {

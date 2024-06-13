@@ -24,10 +24,13 @@ import { EditTwoTone } from "@ant-design/icons";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-const VaccinesList = memo(function VaccinesList() {
+import { useDeleteVaccine } from "@/presentation/hooks/patient/vaccines/use-delete-vaccine";
+
+export function VaccinesList() {
   const [filters, setFilters] = useState(false);
   const [allProtocols, setAllProtocols] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState(false);
 
   const router = useRouter();
 
@@ -35,6 +38,10 @@ const VaccinesList = memo(function VaccinesList() {
   const canCreateVaccine = useUserHasPermission("VAC01");
   const canEditVaccine = useUserHasPermission("VAC02");
   const canDeleteVaccine = useUserHasPermission("VAC03");
+
+  const { mutateAsync } = useDeleteVaccine({
+    id: selectedId,
+  });
 
   const getAllProtocols = useCallback(() => {
     setLoading(false);
@@ -57,7 +64,7 @@ const VaccinesList = memo(function VaccinesList() {
                       <EditTwoTone
                         size={15}
                         onClick={() =>
-                          !permissions?.VAC2
+                          !canEditVaccine
                             ? notification.error({
                                 message: "Ação não permitida",
                               })
@@ -72,10 +79,14 @@ const VaccinesList = memo(function VaccinesList() {
                     <DeleteTwoTone
                       size={15}
                       twoToneColor="red"
-                      onClick={() =>
-                        !permissions.VAC3 &&
-                        notification.error({ message: "Ação não permitida" })
-                      }
+                      onMouseOver={() => setSelectedId(item.id)}
+                      onClick={() => {
+                        !canDeleteVaccine
+                          ? notification.error({
+                              message: "Ação não permitida",
+                            })
+                          : mutateAsync();
+                      }}
                     />
                   )}
                 </div>
@@ -85,6 +96,7 @@ const VaccinesList = memo(function VaccinesList() {
         );
       })
       .catch((err) => {
+        console.log(err, "<<<");
         return notification.error({
           message: "Houve um erro ao buscar os protocolos registrados...",
         });
@@ -133,7 +145,7 @@ const VaccinesList = memo(function VaccinesList() {
         <div className="uk-margin-small-top">
           <div
             onClick={() =>
-              !permissions?.VAC1
+              !canCreateVaccinePermission
                 ? notification.error({ message: "Ação não permitida" })
                 : router.push("/dashboard/vacinas/cadastrar")
             }
@@ -150,6 +162,6 @@ const VaccinesList = memo(function VaccinesList() {
       />
     </Container>
   );
-});
+}
 
 export default VaccinesList;

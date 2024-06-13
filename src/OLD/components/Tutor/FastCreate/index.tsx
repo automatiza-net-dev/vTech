@@ -60,9 +60,6 @@ export default function FastCreateTutor({
     false,
     visible
   );
-  
-
-  
 
   sortItems(tutorOrigins, "description");
 
@@ -124,22 +121,29 @@ export default function FastCreateTutor({
       })
       .then((res) => {
         setSearch(res?.data?.tutor?.name);
+
         setPayload({
           ...payload,
-          tutor_id: res?.data?.tutor?.id,
-          patient_id: res?.data?.patient?.id,
-          tutorName: res?.data?.tutor?.name,
-          contactId: res?.data?.tutor?.id,
           patientName: res?.data?.patient?.name,
-          clientId: res?.data?.patient?.id,
+          tutor_id: res?.data?.tutor.id,
+          contactId: res.data.tutor.id,
+          tutorName: res.data?.tutor.name,
+          clientId: res.data?.patient?.id,
+          contact: { cellphone: data?.tutorPhone },
+          originDescription: data?.originDescription,
           originId: data?.tutorOriginId,
+          clientOriginItemDescription: data?.clientOriginItemDescription,
+          raceDescription: races.find(
+            (item) => item.id === patientData?.patientRaceId
+          )?.description,
+          raceId: patientData?.patientRaceId,
+          gender: patientData?.patientGender,
         });
         setTutorsReload && setTutorsReload((prv) => !prv);
         res?.data?.patient?.id &&
           vincPatientToTutor(res?.data?.patient?.id, res?.data?.tutor?.id);
         setLoading(false);
         setVisible(false);
-        setData({});
         setPatientData({});
         fetchData();
       })
@@ -169,7 +173,6 @@ export default function FastCreateTutor({
     }
 
     if (data?.tutorPhone?.length < 15) {
-      console.log("aoo potencia");
       message = "o telefone precisa ter 11 digitos";
     }
 
@@ -178,31 +181,35 @@ export default function FastCreateTutor({
     } else {
       setLoading(true);
       petsService
-        .createTutor({
-          name: verifyTutorName(data?.tutorName, data?.tutorPhone),
-          cellphone: masks.noPhone(data?.tutorPhone),
-          clientOriginId: data?.tutorOriginId,
-          tutorOriginId: data?.tutorOriginId,
-          clientOriginItemDescription: data?.clientOriginItemDescription,
+        .fastPatientRegister({
+          ...data,
+          tutorName: verifyTutorName(data?.tutorName),
         })
         .then((res) => {
           process.env.client === "sancla"
             ? setPayload({
                 ...payload,
-                tutor_id: res?.data?.id,
-                contactId: res.data.id,
-                tutorName: res.data?.name,
+                clientId: res?.data?.tutor.id,
+                contactId: res.data.tutor.id,
+                tutorName: res.data?.tutor.name,
                 contact: { cellphone: data?.tutorPhone },
                 originDescription: data?.originDescription,
                 originId: data?.tutorOriginId,
                 clientOriginItemDescription: data?.clientOriginItemDescription,
+                patientName: res?.data?.patient?.name || patientData?.name,
+                patient_id: res.data?.patient?.id || patientData?.id,
+                raceDescription:
+                  races.find((item) => item.id === patientData?.patientRaceId)
+                    ?.description || patientData?.race?.description,
+                raceId: patientData?.patientRaceId || patientData?.race?.id,
+                gender: patientData?.patientGender || patientData?.gender,
               })
             : setPayload({
                 ...payload,
-                patientName: res?.data?.name,
-                patient_id: res.data?.id,
-                tutorName: res.data.name,
-                contactId: res.data.id,
+                patientName: res?.data?.tutor.name,
+                clientId: res.data?.tutor.id,
+                tutorName: res.data.tutor.name,
+                contactId: res.data.tutor.id,
                 contact: { cellphone: data?.tutorPhone },
                 originDescription: data?.originDescription,
                 originId: data?.tutorOriginId,
@@ -353,6 +360,7 @@ export default function FastCreateTutor({
               </div>
             )}
           </section>
+
           {process.env.client !== "liftone" && (
             <section className="uk-width-1-3">
               Paciente
@@ -456,6 +464,7 @@ export default function FastCreateTutor({
         visible={tutorInfoVisible}
         onCancel={() => setTutorInfoVisible(false)}
         onOk={() => {
+          console.log(data, "<<")
           setPayload((prv) => ({
             ...prv,
             tutor_id: selectedTutor?.id,
@@ -464,6 +473,7 @@ export default function FastCreateTutor({
             clientId: selectedTutor?.id,
             originDescription: selectedTutor?.clientOrigin?.description,
             originId: selectedTutor?.clientOrigin?.id,
+            contact: { cellphone: data?.tutorPhone }
           }));
           setTutorInfoVisible(false);
           setVisible(false);
@@ -486,6 +496,16 @@ export default function FastCreateTutor({
               }
               onSelect={(_, opt) => {
                 setSelectedTutor(opt);
+
+                setPayload({
+                  ...payload,
+                  clientId: opt.id,
+                  contactId: opt.id,
+                  tutorName: opt.name,
+                  contact: { cellphone: data?.tutorPhone },
+                  originDescription: opt?.clientOrigin?.description,
+                  originId: opt?.clientOrigin?.id,
+                });
               }}
               filterOption={(val, opt) =>
                 normalizeStr(opt?.value.toUpperCase()).includes(
@@ -507,6 +527,9 @@ export default function FastCreateTutor({
                     ...payload,
                     patientName: patient?.name,
                     clientId: patient?.id,
+                    raceDescription: patient?.race?.description,
+                    raceId: patient?.race?.id,
+                    gender: patient?.gender,
                   });
                 }}
               >

@@ -1,0 +1,24 @@
+import { useQuery } from "react-query";
+import { callApiOneTime } from "infinity-forge";
+
+import { RemoteBudget } from "@/data";
+import { LoadAllBudgetsAttendance } from "@/domain";
+import { TypesAutomatiza, container } from "@/container";
+
+export function useLoadAllBudgetAttendances(
+  props: LoadAllBudgetsAttendance.Params
+) {
+  console.log(props)
+  return useQuery({
+    queryKey: ["LoadAllBudgetAttendances", props.id],
+    queryFn: async () => {
+      const response = await container
+        .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
+        .loadAll(props);
+
+      return response;
+    },
+    ...callApiOneTime,
+    enabled: !!(props?.id)
+  });
+}

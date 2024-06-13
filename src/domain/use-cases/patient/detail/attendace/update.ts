@@ -1,3 +1,4 @@
+import { TimeLine } from "../load-last-updates";
 import { Attendace } from "./attendace";
 
 export type UpdateAttendace = {
@@ -12,5 +13,5 @@ export namespace UpdateAttendace {
     internalObservation: Attendace["internalObservation"];
   };
 
-  export type Model = {};
+  export type Model = TimeLine;
 }

@@ -4,6 +4,9 @@ import * as React from "react";
 import { memo, useEffect } from "react";
 
 // Hooks
+
+import { Modal as ModalInfinityForge } from "infinity-forge";
+
 import { useFindPartialBudgets } from "@/OLD/hooks/useBudgets";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";
@@ -28,6 +31,7 @@ import moment from "moment/moment";
 
 // Icons
 import { MdOutlineClear } from "react-icons/md";
+import { AddBudgetNew } from "@/presentation";
 
 export const dateFormatter = (date) => {
   return moment(new Date(date)).format("HH:mm DD/MM/YYYY");
@@ -90,7 +94,7 @@ const Budgets = memo(function Budgets() {
     noSearch: true,
   });
   const [reload, setReload] = React.useState(false);
-
+  const [modalCriar, setModalCriar] = React.useState(false);
   const { data, refetch } = useFindPartialBudgets(filters, reload);
   const { patients } = usePatients();
   const { tutors } = useTutor();
@@ -408,6 +412,27 @@ const Budgets = memo(function Budgets() {
                 }
               />
             )}
+
+            <Button onClick={() => setModalCriar(true)}>Novo orçamento</Button>
+
+            <ModalInfinityForge
+              styles={{
+                overflow: "auto",
+                maxHeight: "95vh",
+                maxWidth: "1400px",
+                minHeight: "600px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+              }}
+              stylesContent={{ height: "100%", width: "100%" }}
+              open={modalCriar}
+              onClose={() => setModalCriar(false)}
+            >
+              <AddBudgetNew setModal={setModalCriar} />
+            </ModalInfinityForge>
+
             <Button
               onClick={() =>
                 setFilters((prv) => {

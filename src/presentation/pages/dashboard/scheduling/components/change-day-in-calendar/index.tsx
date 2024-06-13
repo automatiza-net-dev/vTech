@@ -1,4 +1,9 @@
-import { format, add, sub } from "date-fns";
+import { useEffect } from "react";
+
+import moment from "moment";
+import {  add, sub } from "date-fns";
+import { useFormikContext } from "formik";
+import { DatePickerInput, FormHandler } from "infinity-forge";
 
 import { useScheduling } from "@/presentation";
 import { LeftArrow, RightArrow } from "./icons";
@@ -13,12 +18,13 @@ export function ChangeDayInCalendar() {
 
   function handleDayAdvance() {
     const nextDay = add(selectedDate, { days: 1 });
-    changeDate(nextDay, true);
+    changeDate(nextDay);
   }
 
   function handleDayRetreat() {
     const previousDay = sub(selectedDate, { days: 1 });
-    changeDate(previousDay, true);
+
+    changeDate(previousDay);
   }
 
   return (
@@ -29,15 +35,15 @@ export function ChangeDayInCalendar() {
         </div>
       </button>
 
-      <input
-        type="date"
-        value={selectedDate && format(selectedDate, "yyyy-MM-dd")}
-        onChange={(ev) => {
-          if (ev.target.value) {
-            changeDate(new Date(ev.target.value));
-          }
+      <FormHandler
+        onChangeForm={{
+          callbackResult: (data) => {
+            if (data.date) changeDate(data.date);
+          },
         }}
-      />
+      >
+        <DatePickerSchedule />
+      </FormHandler>
 
       <button onClick={handleDayAdvance}>
         <div className="icon">
@@ -46,4 +52,19 @@ export function ChangeDayInCalendar() {
       </button>
     </S.ChangeDayInCalendar>
   );
+}
+function DatePickerSchedule() {
+  const { values, setFieldValue } = useFormikContext<{ date: string }>();
+  const selectedDate = useScheduling((state) => state.selectedDate);
+
+  useEffect(() => {
+    const formikDate = new Date(values["date"]).getTime();
+    const selectedDateMilliseconds = selectedDate?.getTime();
+
+    if (formikDate !== selectedDateMilliseconds) {
+      setFieldValue("date", moment(selectedDate).toISOString());
+    }
+  }, [selectedDate]);
+
+  return <DatePickerInput hasIcon name="date" typePicker="normal" />;
 }

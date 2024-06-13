@@ -4,3 +4,4 @@ export * from "./types";
 export * from "./sales";
 export * from "./patient";
 export * from "./container";
+export * from "./financial-services";

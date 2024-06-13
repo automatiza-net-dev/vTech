@@ -32,16 +32,9 @@ export function ButtonCreate({ patientFilters }) {
     <PermissionItem hash={process.env.client === "sancla" ? "PET01" : "TUT01"}>
       <S.ButtonCreate>
         <Modal
-          style={{ maxWidth: "1200px", padding: "20px" }}
-          trigger={
-            <Button
-              text="Cadastrar novo paciente"
-              type="button"
-              onClick={() => setVisible(true)}
-            />
-          }
-          modal={visible}
-          setModal={setVisible}
+          styles={{ maxWidth: "1200px", padding: "20px" }}
+          open={visible}
+          onClose={() => setVisible(false)}
           children={
             process.env.client === "sancla" ? (
               <CreatePatient {...props} />
@@ -49,6 +42,12 @@ export function ButtonCreate({ patientFilters }) {
               <CreateTutor {...props} />
             )
           }
+        />
+
+        <Button
+          text="Cadastrar novo paciente"
+          type="button"
+          onClick={() => setVisible(true)}
         />
       </S.ButtonCreate>
     </PermissionItem>

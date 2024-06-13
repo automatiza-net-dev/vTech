@@ -5,6 +5,8 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 
 import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
 
+import * as S from "./styles";
+
 import moment from "moment";
 import { currencyFormatter } from "..";
 
@@ -13,7 +15,7 @@ export default  function PrintScreen({ budget }) {
 
 
   return (
-    <div className="uk-container">
+    <S.PrintScreen className="uk-container">
       <hr />
       <PrintHeader unit={clinic} />
       <section className="uk-margin-top uk-flex uk-flex-around">
@@ -212,6 +214,6 @@ export default  function PrintScreen({ budget }) {
           <strong>Motivo Cancelamento / Confirmação Parcial</strong>
         </h4>
       </section>
-    </div>
+    </S.PrintScreen>
   );
 }

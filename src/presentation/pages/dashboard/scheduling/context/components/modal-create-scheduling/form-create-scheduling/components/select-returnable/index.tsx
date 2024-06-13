@@ -5,13 +5,13 @@ import { useFormikContext } from "formik";
 import { Select, useToast } from "infinity-forge";
 
 import {
+  useScheduling,
   useLoadAllScheduleServicesGroups,
   useLoadReturnablesSchedulePatient,
 } from "@/presentation";
 
 function SelectComponent({ isReturn }) {
-  
-  const { createToast} = useToast()
+  const { createToast } = useToast();
   const { values, setFieldValue } = useFormikContext<any>();
 
   const serviceType = values["scheduleServiceTypeId"] as any;
@@ -19,6 +19,8 @@ function SelectComponent({ isReturn }) {
   const { data, isLoading } = useLoadReturnablesSchedulePatient(
     (values as any).patientId
   );
+
+  const createSchedulingArgs = useScheduling(state => state.createSchedulingArgs);
 
   useEffect(() => {
     if (data && data.length === 0 && isReturn && !isLoading) {
@@ -28,28 +30,31 @@ function SelectComponent({ isReturn }) {
         message: "Nenhuma consulta para reagendar.",
         status: "error",
       });
-  
     }
   }, [data, isLoading, serviceType]);
 
-  if (data && data.length === 0) {
+  if (
+    (data && data.length === 0) ||
+    createSchedulingArgs?.type === "reschedule"
+  ) {
     return <></>;
   }
+
+  const options =
+    data?.map((item) => ({
+      label:
+        moment.parseZone(item.start_hour).format("DD/MM/YYYY hh:mm") +
+        " " +
+        item.description,
+      value: item.id,
+    })) || [];
 
   return (
     <Select
       label="Selecione a consulta de retorno"
       name="scheduleOriginId"
       placeholder="Selecione a consulta de retorno"
-      options={
-        data?.map((item) => ({
-          label:
-            moment.parseZone(item.start_hour).format("DD/MM/YYYY hh:mm") +
-            " " +
-            item.description,
-          value: item.id,
-        })) || []
-      }
+      options={options}
     />
   );
 }

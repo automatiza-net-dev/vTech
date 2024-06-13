@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  overflow-y: auto;
+
   .img-box {
     width: 150px;
     height: 150px;
