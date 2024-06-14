@@ -6,7 +6,7 @@ import { userService } from "@/OLD/services/user.service";
 import {
   Form,
   Input,
-  Select,
+  Select as AntSelect,
   Switch,
   Upload,
   AutoComplete,
@@ -18,6 +18,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import CamBox from "@/OLD/components/mini-components/CamBox";
 import MultipleContacts from "../MultipleContacts";
+import { Select, FormHandler, useToast } from "infinity-forge";
 
 // utils
 import { places } from "@/OLD/utils/places";
@@ -52,11 +53,10 @@ export function FormChild({
   const [originFilters, setOriginFilters] = useState({});
 
   const { tutorOrigins } = useTutorOrigins();
-  
+
   const { professions } = useProfessions();
   const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
-
-  
+  const { createToast } = useToast();
 
   sortItems(tutorOrigins, "description");
 
@@ -88,8 +88,9 @@ export function FormChild({
         });
       })
       .catch((_err) => {
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao buscar o cep informado",
+          status: "error",
         });
       });
   };
@@ -147,7 +148,10 @@ export function FormChild({
       .checkDocument(Masks?.noDocument(str?.join(",").replaceAll(",", "")))
       .then((res) => {
         if (!res?.data?.valid) {
-          return notification.warning({ message: "CPF Inválido" });
+          return createToast({
+            message: "CPF Inválido",
+            status: "error",
+          });
         }
       })
       .catch((err) => setLoading(false));
@@ -278,49 +282,68 @@ export function FormChild({
               }}
             >
               <Form.Item label="Gênero*" className="uk-width-1-6">
-                <Select
-                  id={"gender"}
-                  value={data?.gender}
-                  required
-                  onChange={(e) => setData({ ...data, gender: e })}
-                >
-                  <option value="male">Masculino</option>
-                  <option value="female">Feminino</option>
-                </Select>
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="gender"
+                    options={[
+                      { label: "Feminino", value: "female" },
+                      { value: "male", label: "Masculino" },
+                    ]}
+                    onlyOneValue
+                    value={data?.gender}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, gender: value });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
               <Form.Item label="Profissão*" className="uk-width-1-3">
-                <AutoComplete
-                  options={professions.map((prof) => ({
-                    ...prof,
-                    value: prof?.description,
-                  }))}
-                  value={data?.profDescription}
-                  onChange={(val) => setData({ ...data, profDescription: val })}
-                  filterOption={(val, opt) =>
-                    normalizeStr(opt?.value.toUpperCase()).includes(
-                      normalizeStr(val.toUpperCase())
-                    )
-                  }
-                  onSelect={(_, opt) =>
-                    setData({
-                      ...data,
-                      professionId: opt?.id,
-                      profDescription: opt?.value,
-                    })
-                  }
-                />
+                {professions?.length > 0 && (
+                  <FormHandler>
+                    <Select
+                      menuPlacement="bottom"
+                      name="professions"
+                      options={professions.map((race) => ({
+                        label: race?.description,
+                        value: race?.id,
+                      }))}
+                      onlyOneValue
+                      value={data?.professionId}
+                      onChangeSelect={async (value) => {
+                        const opt = professions.find(
+                          (prof) => prof.id === value
+                        );
+
+                        setData({
+                          ...data,
+                          professionId: opt?.id,
+                          profDescription: opt?.value,
+                        });
+                      }}
+                    />
+                  </FormHandler>
+                )}
               </Form.Item>
               <Form.Item label="Estado Civil" className="uk-width-1-6">
-                <Select
-                  value={data?.civilStatus}
-                  onChange={(val) => setData({ ...data, civilStatus: val })}
-                >
-                  <Option value="Solteiro(a)">Solteiro(a)</Option>
-                  <Option value="Casado(a)">Casado(a)</Option>
-                  <Option value="Separado(a)">Separado(a)</Option>
-                  <Option value="Divorciado(a)">Divorciado(a)</Option>
-                  <Option value="Viuvo(a)">Viuvo(a)</Option>
-                </Select>
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="professions"
+                    options={[
+                      { value: "Solteiro(a)", label: "Solteiro(a)" },
+                      { value: "Casado(a)", label: "Casado(a)" },
+                      { value: "Separado(a)", label: "Separado(a)" },
+                      { value: "Divorciado(a)", label: "Divorciado(a)" },
+                      { value: "Viuvo(a)", label: "Viuvo(a)" },
+                    ]}
+                    onlyOneValue
+                    value={data?.civilStatus}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, civilStatus: value });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
               <Form.Item label="Nacionalidade" className="uk-width-1-6">
                 <Input
@@ -337,7 +360,7 @@ export function FormChild({
                 className="uk-width-1-3"
                 requried
               >
-                <Select
+                <AntSelect
                   value={data?.clientOriginId}
                   onChange={(e) => {
                     setData({ ...data, clientOriginId: e });
@@ -352,7 +375,7 @@ export function FormChild({
                         {origin?.description}
                       </Option>
                     ))}
-                </Select>
+                </AntSelect>
               </Form.Item>
               {selectedOrigin?.default && (
                 <Form.Item label="Campanha Mídia" className="uk-width-1-4">
@@ -485,7 +508,7 @@ export function FormChild({
           </Form.Item>
 
           <Form.Item label="Estado*" className="uk-width-1-3">
-            <Select
+            <AntSelect
               onChange={(e) => setData({ ...data, state: e })}
               value={data?.state}
             >
@@ -495,7 +518,7 @@ export function FormChild({
                     {item.value}
                   </Option>
                 ))}
-            </Select>
+            </AntSelect>
           </Form.Item>
           <Form.Item label="Cidade*" className="uk-width-1-3">
             <AutoComplete
@@ -512,18 +535,27 @@ export function FormChild({
             />
           </Form.Item>
           <Form.Item label="Tipo de residência*" className="uk-width-1-4">
-            <Select
-              required
-              className="uk-width-1-4"
-              onChange={(e) => setData({ ...data, residence: e })}
-              value={data?.residence}
-            >
-              <Option value="CASA">Casa</Option>
-              <Option value="APARTAMENTO">Apartamento</Option>
-              <Option value="CONDOMINIO">Condominio</Option>
-              <Option value="SITIO">Sitio</Option>
-              <Option value="COMERCIAL">Comercial</Option>
-            </Select>
+            <FormHandler>
+              <Select
+                menuPlacement="bottom"
+                name="houseType"
+                options={[
+                  { label: "Casa", value: "CASA" },
+                  {
+                    label: "Apartamento",
+                    value: "APARTAMENTO",
+                  },
+                  { value: "CONDOMINIO", label: "Condominio" },
+                  { value: "SITIO", label: "Sitio" },
+                  { value: "COMERCIAL", label: "Comercial" },
+                ]}
+                onlyOneValue
+                value={data?.residence}
+                onChangeSelect={async (value) => {
+                  setData({ ...data, residence: value });
+                }}
+              />
+            </FormHandler>
           </Form.Item>
           <Form.Item label="Código da cidade" className="uk-width-1-4">
             <Input

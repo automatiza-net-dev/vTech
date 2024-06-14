@@ -57,7 +57,7 @@ function LayoutPage({ children }) {
           sidebar={{
             expandedMenu: true
           }}
-          workspaces={workspaces}
+          workspaces={workspaces as any}
           logo={{
             src:
               process.env.NEXT_PUBLIC_API +

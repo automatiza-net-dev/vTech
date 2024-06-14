@@ -12,9 +12,11 @@ export function useLoadAllAvailableUnits() {
   const user = GetUser<User>();
 
   async function fetcher() {
-    return await container
+    const response = await container
       .get<RemoteBusinessUnits>(adminTypes.RemoteBusinessUnits)
       .loadAllAvailableSwaps({ dashboard: true });
+
+    return response;
   }
 
   return useQuery({

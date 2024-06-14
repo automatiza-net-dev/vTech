@@ -6,7 +6,8 @@ import { infraContainer } from "../../infra";
 import {
   RemoteBills,
   RemoteBudget,
-  RemoteDailyMovements
+  RemoteDailyMovements,
+  RemoteProduct
 } from "@/data";
 
 const financialServicesContainer = new Container({
@@ -18,6 +19,7 @@ financialServicesContainer.parent = infraContainer;
 
 financialServicesContainer.bind(financialServicesTypes.RemoteBills).to(RemoteBills);
 financialServicesContainer.bind(financialServicesTypes.RemoteBudget).to(RemoteBudget);
+financialServicesContainer.bind(financialServicesTypes.RemoteProduct).to(RemoteProduct);
 financialServicesContainer.bind(financialServicesTypes.RemoteDailyMovements).to(RemoteDailyMovements);
 
 export { financialServicesContainer };

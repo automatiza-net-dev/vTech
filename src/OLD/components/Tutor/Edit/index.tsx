@@ -10,6 +10,7 @@ import { patientContactsService } from "@/OLD/services/patientContacts.service";
 import { FormChild } from "../Edit/FormChild";
 import { Container } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { Select, FormHandler, useToast } from "infinity-forge";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
 
@@ -29,25 +30,30 @@ export function Edit({
   const [contacts, setContacts] = React.useState<any[]>([{}]);
 
   const { originConfig, setOriginConfig } = useAuth();
+  const { createToast } = useToast();
 
   const editTutorPermission = useUserHasPermission("TUT02");
 
   const verifyErrors = (errMsg) => {
     if (errMsg === "E_DOCUMENT_ALREADY_REGISTERED") {
-      return notification.warning({ message: "Documento já cadastrado" });
-    }
-
-    if (errMsg === "E_INVALID_DOCUMENT") {
-      return notification.warning({
-        message: "Cpf inválido, verifique o cpf informado",
+      return createToast({
+        message: "Documento já cadastrado",
+        status: "error",
       });
     }
 
-    notification.error({
-      message: "Erro",
-      description: `Erro ao editar ${
+    if (errMsg === "E_INVALID_DOCUMENT") {
+      return createToast({
+        message: "Cpf inválido, verifique o cpf informado",
+        status: "error",
+      });
+    }
+
+    return createToast({
+      message: `Erro ao editar ${
         process.env.client === "LiftOne" ? "Cliente" : "Tutor"
       }`,
+      status: "error",
     });
   };
 
@@ -143,15 +149,17 @@ export function Edit({
     if (originConfig === "Crm") {
       if (!data?.name) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu nome",
+          status: "error",
         });
       }
 
       if (!data?.clientOriginId) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe como conheceu a clinica",
+          status: "error",
         });
       }
 
@@ -159,92 +167,107 @@ export function Edit({
 
       if (message) {
         setLoading(false);
-        return notification.error({ message });
+        return createToast({
+          message,
+          status: "error",
+        });
       }
     }
 
     if (originConfig === "") {
       if (!data?.document) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu CPF",
+          status: "error",
         });
       }
 
       if (!data?.birthDate) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe a sua data de nascimento",
+          status: "error",
         });
       }
 
       if (!data?.gender) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu gênero",
+          status: "error",
         });
       }
 
       if (!data?.postalCode) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu CEP",
+          status: "error",
         });
       }
 
       if (!data?.street) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe a sua rua",
+          status: "error",
         });
       }
 
       if (!data?.number) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o número da residência",
+          status: "error",
         });
       }
 
       if (!data?.district) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu bairro",
+          status: "error",
         });
       }
 
       if (!data?.state) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu estado",
+          status: "error",
         });
       }
 
       if (!data?.city) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe a sua cidade",
+          status: "error",
         });
       }
 
       if (!data?.residence) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu tipo de residência",
+          status: "error",
         });
       }
 
       if (!data?.name) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe o seu nome",
+          status: "error",
         });
       }
 
       if (!data?.clientOriginId) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
           message: "Informe como conheceu a clinica",
+          status: "error",
         });
       }
 
@@ -252,7 +275,10 @@ export function Edit({
 
       if (message) {
         setLoading(false);
-        return notification.error({ message });
+        return createToast({
+          message,
+          status: "error",
+        });
       }
     }
 
@@ -271,11 +297,11 @@ export function Edit({
       .then((res) => {
         setOriginConfig("");
         updateContacts(() => setVisible(false));
-        return notification.success({
-          message: "Sucesso",
-          description: `${
+        return createToast({
+          message: `${
             process.env.client === "liftone" ? "Cliente" : "Tutor"
           } editado!`,
+          status: "success",
         });
       })
       .catch((err) => {
@@ -332,9 +358,9 @@ export function Edit({
         });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao buscar tutor",
+        return createToast({
+          message: "Erro ao buscar tutor",
+          status: "error",
         });
       })
       .finally(() => {
@@ -359,8 +385,9 @@ export function Edit({
         layout="vertical"
         onSubmitCapture={() => {
           if (!data?.clientOriginId) {
-            return notification.warning({
+            return createToast({
               message: "Informe como conheceu a clinica",
+              status: "error",
             });
           }
 

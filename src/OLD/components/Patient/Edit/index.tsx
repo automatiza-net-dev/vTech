@@ -11,6 +11,9 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import { Container } from "./styles";
 import moment from "moment";
 
+import { Select, FormHandler } from "infinity-forge";
+import { useToast } from "infinity-forge";
+
 export function Edit({ id, setVisible }) {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -19,6 +22,7 @@ export function Edit({ id, setVisible }) {
   const [activeTutor, setActiveTutor] = useState(false);
 
   const { originConfig, setOriginConfig } = useAuth();
+  const { createToast } = useToast();
 
   const editPatientPermission = useUserHasPermission("PET02");
 
@@ -28,8 +32,9 @@ export function Edit({ id, setVisible }) {
     if (originConfig === "Crm") {
       if (!data?.name) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de nome",
+          status: "error",
         });
       }
     }
@@ -37,29 +42,33 @@ export function Edit({ id, setVisible }) {
     if (originConfig === "") {
       if (!data?.name) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de nome",
+          status: "error",
         });
       }
 
       if (!data?.raceId?.id) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo da raça do paciente",
+          status: "error",
         });
       }
 
       if (!data?.gender) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de Gênero",
+          status: "error",
         });
       }
 
       if (!data?.birthDate) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de data de nascimento",
+          status: "error",
         });
       }
 
@@ -74,22 +83,25 @@ export function Edit({ id, setVisible }) {
 
       if (!data?.vaccineOrigin) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de 'O paciente é vacinado?'",
+          status: "error",
         });
       }
 
       if (!data?.castrated) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de 'O paciente é castrado'",
+          status: "error",
         });
       }
 
       if (!data?.hairId) {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Preencha o campo de 'Tipo de pelagem do paciente'",
+          status: "error",
         });
       }
     }
@@ -119,16 +131,16 @@ export function Edit({ id, setVisible }) {
       .then((_res) => {
         setVisible(false);
         petsService.setMainTutor(id, activeTutor?.id);
-        return notification.success({
-          message: "Sucesso",
-          description: "Paciente editado!",
+        return createToast({
+          message: "Paciente editado!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar paciente",
+        return createToast({
+          message: "Erro ao editar paciente",
+          status: "error",
         });
       })
       .finally(() => {
@@ -159,9 +171,9 @@ export function Edit({ id, setVisible }) {
         });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao buscar paciente",
+        return createToast({
+          message: "Erro ao buscar paciente",
+          status: "error",
         });
       });
   }, [id]);

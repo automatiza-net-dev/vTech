@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 
-import { RemoteBudget } from "@/data";
+import { RemoteProduct } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
@@ -9,8 +9,8 @@ export function useLoadAllProducts() {
     queryKey: ["Products"],
     queryFn: async () => {
       const response = await container
-        .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
-        .loadAllProducts();
+        .get<RemoteProduct>(TypesAutomatiza.RemoteProduct)
+        .loadAll();
       return response;
     },
     ...callApiOneTime,

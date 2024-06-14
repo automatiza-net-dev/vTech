@@ -7,10 +7,7 @@ import * as domain from "@/domain";
 
 @injectable()
 export class RemoteBudget
-  implements
-    domain.LoadAllBudgetsAttendance,
-    domain.CreateBudget,
-    domain.LoadAllProducts
+  implements domain.LoadAllBudgetsAttendance, domain.CreateBudget
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -35,14 +32,5 @@ export class RemoteBudget
     });
 
     return response as domain.CreateBudget.Model;
-  }
-
-  async loadAllProducts() {
-    const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`budgets/products`),
-      method: "get",
-    });
-
-    return response as domain.LoadAllProducts.Model;
   }
 }

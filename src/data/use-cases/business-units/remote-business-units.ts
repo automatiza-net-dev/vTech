@@ -57,6 +57,6 @@ export class RemoteBusinessUnits
       method: "get",
     });
 
-    return response
+    return response as { id: string; identification: string; group: string }[];
   }
 }

@@ -7,8 +7,8 @@ import { usePatientAnimalHairTypes } from "@/OLD/hooks/usePatientAnimal";
 import {
   Form,
   Input,
-  Select,
   Switch,
+  Select as SelectAnt,
   Upload,
   AutoComplete,
   Button,
@@ -17,6 +17,7 @@ import {
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { ModalCreateTutor } from "../Create/Modal";
+import { Select, FormHandler } from "infinity-forge";
 
 import dynamic from "next/dynamic";
 
@@ -166,46 +167,30 @@ export const FormChild = React.memo(function FormChild({
                 label="Espécie > Raça do paciente"
                 className="uk-width-1-2"
               >
-                <AutoComplete
-                  required
-                  className="uk-width-1-1"
-                  loading={loading}
-                  value={previousRace ? previousRace : data?.raceId?.value}
-                  onChange={(e) => {
-                    setPreviousRace(false);
-                    const choosed = races.find((option) => option.value === e);
+                {races?.length > 0 && (
+                  <FormHandler>
+                    <Select
+                      menuPlacement="bottom"
+                      name="races"
+                      options={races.map((race) => ({
+                        label: race?.value,
+                        value: race?.value,
+                      }))}
+                      onlyOneValue
+                      value={previousRace ? previousRace : data?.raceId?.value}
+                      onChangeSelect={async (value) => {
+                        setPreviousRace(false);
+                        const choosed = races.find(
+                          (option) => option.value === value
+                        );
 
-                    choosed
-                      ? setData({ ...data, raceId: choosed })
-                      : setData({ ...data, raceId: e });
-                  }}
-                  placeholder="Digite o nome da raça"
-                  filterOption={(inputValue, option) =>
-                    option.value
-                      .toUpperCase()
-                      .indexOf(inputValue.toUpperCase()) !== -1
-                  }
-                >
-                  {races.length > 0 &&
-                    races.map((option, key) => {
-                      return (
-                        <Option key={key} value={option.value}>
-                          {option.value}
-                        </Option>
-                      );
-                    })}
-                  <Option value="">
-                    <Button
-                      style={{
-                        width: "100%",
-                        height: "100%",
+                        choosed
+                          ? setData({ ...data, raceId: choosed })
+                          : setData({ ...data, raceId: value });
                       }}
-                      onClick={() => setNewRaceOpen(true)}
-                    >
-                      Cadastrar nova raça +
-                    </Button>
-                  </Option>
-                </AutoComplete>
+                    />
+                  </FormHandler>
+                )}
               </Form.Item>
             </div>
             <div
@@ -218,15 +203,21 @@ export const FormChild = React.memo(function FormChild({
                 label="Gênero"
                 className="uk-width-1-2 uk-margin-small-right"
               >
-                <Select
-                  id={"gender"}
-                  value={data?.gender}
-                  required
-                  onChange={(e) => setData({ ...data, gender: e })}
-                >
-                  <option value="male">Macho</option>
-                  <option value="female">Fêmea</option>
-                </Select>
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="gender"
+                    options={[
+                      { label: "Fêmea", value: "female" },
+                      { value: "male", label: "Macho" },
+                    ]}
+                    onlyOneValue
+                    value={data?.gender}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, gender: value });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
               <Form.Item label="Data de nascimento" className="uk-width-2-5">
                 <DatePicker
@@ -265,21 +256,31 @@ export const FormChild = React.memo(function FormChild({
                 label="O paciente é vacinado?"
                 className="uk-width-1-2"
               >
-                <Select
-                  value={data?.vaccineOrigin}
-                  className="uk-width-1-1"
-                  onChange={(e) => setData({ ...data, vaccineOrigin: e })}
-                >
-                  <Option value="PROPRIA_CLINICA">
-                    Vacinado na própria clinica
-                  </Option>
-                  <Option value="FORA_DA_CLINICA">
-                    Vacinado fora da clinica
-                  </Option>
-                  <Option value="NAO_VACINADO">
-                    Não vacinado / sem conhecimento
-                  </Option>
-                </Select>
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="races"
+                    options={[
+                      {
+                        label: "Vacinado na própria clinica",
+                        value: "PROPRIA_CLINICA",
+                      },
+                      {
+                        label: "Vacinado fora da clinica",
+                        value: "FORA_DA_CLINICA",
+                      },
+                      {
+                        label: "Não vacinado / sem conhecimento",
+                        value: "NAO_VACINADO",
+                      },
+                    ]}
+                    onlyOneValue
+                    value={data?.vaccineOrigin}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, vaccineOrigin: value });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
             </div>
             <div className="uk-flex" style={{ gap: "30px" }}>
@@ -287,14 +288,27 @@ export const FormChild = React.memo(function FormChild({
                 label="O paciente é castrado?"
                 className="uk-width-1-3"
               >
-                <Select
-                  className="uk-width-1-1"
-                  value={data?.castrated}
-                  onChange={(val) => setData({ ...data, castrated: val })}
-                >
-                  <Option value="true">Sim</Option>
-                  <Option value="false">Não</Option>
-                </Select>
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="castrated"
+                    options={[
+                      {
+                        label: "Sim",
+                        value: "true",
+                      },
+                      {
+                        label: "Não",
+                        value: "false",
+                      },
+                    ]}
+                    onlyOneValue
+                    value={data?.castrated}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, castrated: value });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
               <Form.Item label="Microchip" className="uk-width-1-3">
                 <Input
@@ -308,29 +322,24 @@ export const FormChild = React.memo(function FormChild({
                 label="Tipo de pelagem do paciente"
                 className="uk-width-1-3"
               >
-                <AutoComplete
-                  value={
-                    hairTypes.find((hair) => hair.id === data?.hairId)
-                      ?.description
-                  }
-                  className="uk-width-1-1"
-                  onChange={(val) => setData({ ...data, hairId: val })}
-                  onSelect={(_, opt) =>
-                    setData({
-                      ...data,
-                      hairId: opt?.id,
-                    })
-                  }
-                  options={hairTypes.map((hair) => ({
-                    ...hair,
-                    value: hair?.description,
-                  }))}
-                  filterOption={(value, option) =>
-                    normalizeStr(option.value.toUpperCase()).includes(
-                      normalizeStr(value.toUpperCase())
-                    )
-                  }
-                />
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="fur"
+                    options={hairTypes.map((hair) => ({
+                      label: hair.description,
+                      value: hair.id,
+                    }))}
+                    onlyOneValue
+                    value={data?.hairId}
+                    onChangeSelect={async (value) => {
+                      setData({
+                        ...data,
+                        hairId: value,
+                      });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
             </div>
             <div className="uk-flex" style={{ gap: "30px" }}>
@@ -338,14 +347,27 @@ export const FormChild = React.memo(function FormChild({
                 label="O paciente veio a óbito?"
                 className="uk-width-1-4"
               >
-                <Select
-                  value={data?.death}
-                  className="uk-width-1-1"
-                  onChange={(val) => setData({ ...data, death: val })}
-                >
-                  <Option value="true">Sim</Option>
-                  <Option value="false">Não</Option>
-                </Select>
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="death"
+                    options={[
+                      {
+                        label: "Sim",
+                        value: "true",
+                      },
+                      {
+                        label: "Não",
+                        value: "false",
+                      },
+                    ]}
+                    onlyOneValue
+                    value={data?.death}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, death: value });
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
               {data?.death === "true" && (
                 <Form.Item label="Data do óbito" className="uk-width-1-4">
@@ -372,32 +394,31 @@ export const FormChild = React.memo(function FormChild({
       </p>
       <Form.Item label="Tutor" className="uk-width-1-2">
         <div className="uk-flex">
-          <AutoComplete
-            loading={loading}
-            className="uk-margin-small-right"
-            onChange={(e) => {
-              const choosed = formatedTutors.find(
-                (option) => option.value === e
-              );
-              setData({
-                ...data,
-                holder: { id: choosed?.id, name: choosed?.value },
-              });
-            }}
-            placeholder="Digite o nome do tutor"
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
-          >
-            {formatedTutors.map((option, key) => {
-              return (
-                <Option key={key} value={option.value}>
-                  {option.value}
-                </Option>
-              );
-            })}
-          </AutoComplete>
+          {formatedTutors?.length > 0 && (
+            <div className="custom-select">
+              <FormHandler>
+                <Select
+                  menuPlacement="bottom"
+                  name="tutor"
+                  options={formatedTutors.map((tutor) => ({
+                    label: tutor?.value,
+                    value: tutor?.id,
+                  }))}
+                  onlyOneValue
+                  value={data?.holder?.id}
+                  onChangeSelect={async (value) => {
+                    const choosed = formatedTutors.find(
+                      (option) => option.value === value
+                    );
+                    setData({
+                      ...data,
+                      holder: { id: choosed?.id, name: choosed?.value },
+                    });
+                  }}
+                />
+              </FormHandler>
+            </div>
+          )}
           <Popconfirm
             title={`Deseja definir ${data?.holder?.name} como o tutor ativo?`}
             onConfirm={() => setActiveTutor(data?.holder)}

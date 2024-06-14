@@ -1,2 +1,2 @@
-export * from "./budget"
+export * from "./product"
 export * from "./daily-movements"

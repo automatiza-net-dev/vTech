@@ -1,7 +1,7 @@
-import { Product } from "./entities";
+import { Product } from "./product";
 
 export type LoadAllProducts = {
-  loadAllProducts: () => Promise<LoadAllProducts.Model>;
+  loadAll: () => Promise<LoadAllProducts.Model>;
 };
 
 export namespace LoadAllProducts {
