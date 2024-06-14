@@ -5,7 +5,7 @@ import { Button, LoadingSpin } from "@/OLD/components/mini-components";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { petsService } from "@/OLD/services/patient.service";
 import { useTutor } from "@/OLD/hooks/useTutor";
-import { FormChild } from "./FormChild";
+import { FormChild } from "../Edit/FormChild";
 import { Container } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
 

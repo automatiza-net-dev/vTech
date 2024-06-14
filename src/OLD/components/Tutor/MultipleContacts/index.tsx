@@ -2,11 +2,13 @@
 import { memo } from "react";
 
 import { Container } from "./styles";
-import { Input, Select, Button, Tooltip, Checkbox, notification } from "antd";
+import { Input, Button, Tooltip, Checkbox, notification } from "antd";
 const { Option } = Select;
 
 import { DeleteTwoTone } from "@ant-design/icons";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+
+import { Select, FormHandler } from "infinity-forge";
 
 import masks from "@/OLD/utils/masks";
 
@@ -49,22 +51,26 @@ const MultipleContacts = memo(function MultipleContacts({
         <div className="uk-flex form-container uk-margin-small-top" key={i}>
           <div className="uk-width-1-5">
             <label>Tipo Contato*</label>
-            <Select
-              className="uk-width-1-1"
-              value={contact?.type}
-              onChange={(val) => {
-                const arr = [...contacts];
-                arr.splice(i, 1, {
-                  ...contacts[i],
-                  type: val,
-                });
-                setContacts(arr);
-              }}
-            >
-              {types.map((type) => (
-                <Option value={type?.value}>{type.description}</Option>
-              ))}
-            </Select>
+            <FormHandler>
+              <Select
+                menuPlacement="bottom"
+                name="type"
+                options={types.map((type) => ({
+                  label: type.description,
+                  value: type?.value,
+                }))}
+                onlyOneValue
+                value={contact?.type}
+                onChangeSelect={async (value) => {
+                  const arr = [...contacts];
+                  arr.splice(i, 1, {
+                    ...contacts[i],
+                    type: value,
+                  });
+                  setContacts(arr);
+                }}
+              />
+            </FormHandler>
           </div>
           <div className="uk-width-1-3">
             <label>

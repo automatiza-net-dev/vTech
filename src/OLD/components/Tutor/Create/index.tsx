@@ -10,7 +10,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Form, notification } from "antd";
 import { Button, LoadingSpin } from "@/OLD/components/mini-components";
-import { FormChild } from "./FormChild";
+import { FormChild } from "../Edit/FormChild";
 import { Container } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
