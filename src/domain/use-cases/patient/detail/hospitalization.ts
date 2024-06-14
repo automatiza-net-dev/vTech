@@ -1,6 +1,6 @@
 import { Tutor } from "../tutor";
 import { Bed } from "./load-beds";
-import { Patient } from "./patient";
+import { Patient } from "./entities/patient";
 
 export type CreateHospitalization = {
   createHospitalization: (params: CreateHospitalization.Params) => Promise<{}>;

@@ -6,7 +6,16 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 import * as domain from "@/domain";
 
 @injectable()
-export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domain.CreateHospitalization, domain.LoadAllVaccines, domain.LoadLastUpdates, domain.ChangeWeight {
+export class RemotePatient
+  implements
+    domain.LoadPatient,
+    domain.LoadBeds,
+    domain.CreateHospitalization,
+    domain.LoadAllVaccines,
+    domain.LoadLastUpdates,
+    domain.ChangeWeight,
+    domain.CreatePatient
+{
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
@@ -21,11 +30,24 @@ export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domai
     return response as domain.LoadPatient.Model;
   }
 
+  async create(params: domain.CreatePatient.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`n-timeline/weight`),
+      method: "post",
+      body: params,
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=something",
+      },
+    });
+
+    return response as domain.CreatePatient.Model;
+  }
+
   async loadBeds(params: domain.LoadBeds.Params) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(`beds`),
       method: "get",
-      body: params
+      body: params,
     });
 
     return response as domain.LoadBeds.Model;
@@ -35,7 +57,7 @@ export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domai
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("hospitalizations"),
       method: "post",
-      body: params
+      body: params,
     });
 
     return response;
@@ -64,9 +86,9 @@ export class RemotePatient implements domain.LoadPatient, domain.LoadBeds, domai
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(`n-timeline/weight`),
       method: "post",
-      body: params
+      body: params,
     });
 
-    return response
+    return response;
   }
 }

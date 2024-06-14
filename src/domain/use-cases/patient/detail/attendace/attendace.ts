@@ -1,4 +1,4 @@
-import { Patient } from "../patient";
+import { Patient } from "../entities/patient";
 import { Event, ScheduleService } from "../../schedule";
 import { User } from "@/domain/use-cases/user";
 

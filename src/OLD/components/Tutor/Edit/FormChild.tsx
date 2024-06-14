@@ -360,22 +360,25 @@ export function FormChild({
                 className="uk-width-1-3"
                 requried
               >
-                <AntSelect
-                  value={data?.clientOriginId}
-                  onChange={(e) => {
-                    setData({ ...data, clientOriginId: e });
+                <FormHandler>
+              <Select
+                menuPlacement="bottom"
+                name="houseType"
+                options={tutorOrigins?.map((origin) => ({
+                  label: origin.description,
+                  value: origin.id
+                }))}
+                onlyOneValue
+                value={data?.clientOriginId}
+                onChangeSelect={async (value) => {
+                  setData({ ...data, clientOriginId: value });
                     setSelectedOrigin(
-                      tutorOrigins?.find((item) => item?.id === e)
+                      tutorOrigins?.find((item) => item?.id === value)
                     );
-                  }}
-                >
-                  {tutorOrigins.length > 0 &&
-                    tutorOrigins.map((origin, i) => (
-                      <Option key={i} value={origin?.id}>
-                        {origin?.description}
-                      </Option>
-                    ))}
-                </AntSelect>
+                }}
+              />
+            </FormHandler>
+               
               </Form.Item>
               {selectedOrigin?.default && (
                 <Form.Item label="Campanha Mídia" className="uk-width-1-4">

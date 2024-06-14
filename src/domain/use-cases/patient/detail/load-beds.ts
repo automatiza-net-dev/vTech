@@ -1,4 +1,4 @@
-import { Patient } from "./patient";
+import { Patient } from "./entities/patient";
 
 export type LoadBeds = {
   loadBeds: (params: LoadBeds.Params) => Promise<LoadBeds.Model>;
