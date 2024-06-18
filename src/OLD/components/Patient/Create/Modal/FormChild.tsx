@@ -14,7 +14,7 @@ import cep from "cep-promise";
 import { places } from "@/OLD/utils/places";
 import masks from "@/OLD/utils/masks";
 
-export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
+export function FormChild({ data, setData, setPhoto }) {
   const [fileList, setFileList] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -39,12 +39,12 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
           district: res.neighborhood,
           street: res.street,
           state: res.state,
-          city: res.city,
+          city: res.city
         });
       })
       .catch((_err) => {
         return notification.error({
-          message: "Houve um erro ao buscar o cep informado",
+          message: "Houve um erro ao buscar o cep informado"
         });
       });
   };
@@ -57,7 +57,7 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
         background: "#fff",
         borderRadius: "20px",
         boder: "2px",
-        marginBottom: "20px",
+        marginBottom: "20px"
       }}
     >
       <div>
@@ -67,7 +67,7 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
         <div
           className="uk-flex"
           style={{
-            gap: "30px",
+            gap: "30px"
           }}
         >
           <Form.Item label="Nome" className="uk-width-1-2">
@@ -93,7 +93,7 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
         <div
           className="uk-flex"
           style={{
-            gap: "30px",
+            gap: "30px"
           }}
         >
           <Form.Item label="Celular" className="uk-width-1-4">
@@ -173,7 +173,7 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
         <div
           className="uk-flex"
           style={{
-            gap: "30px",
+            gap: "30px"
           }}
         >
           <Form.Item label="CEP" className="uk-width-1-4">
@@ -216,7 +216,7 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
         <div
           className="uk-flex"
           style={{
-            gap: "30px",
+            gap: "30px"
           }}
         >
           <Form.Item label="Bairro" className="uk-width-1-3">
@@ -261,4 +261,4 @@ export const FormChild = memo(function FormChild({ data, setData, setPhoto }) {
       </div>
     </div>
   );
-});
+}

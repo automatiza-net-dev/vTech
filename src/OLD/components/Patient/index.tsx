@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 
 import { Button } from "@/OLD/components/mini-components";
 import { PatientList } from "./List";
-import { CreatePatient } from "./Create";
+import { Create } from "./Create";
 import { useRouter } from "next/router";
 
 // Hooks
@@ -207,7 +207,7 @@ export function Patient({
           width={1200}
           footer={null}
         >
-          <CreatePatient setVisible={setCreatePetVisible} onSuccess={() => {}} />
+          <Create setVisible={setCreatePetVisible} onSuccess={() => {}} />
         </Modal>
       )}
     </div>

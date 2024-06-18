@@ -9,21 +9,20 @@ import masks from "@/OLD/utils/masks";
 
 import moment from "moment";
 
-export const ModalCreateTutor = memo(
+export const ModalCreateTutor = 
+
   ({
     refreshAutoComplete,
     setRefreshAutoComplete,
     isOpen,
     setIsOpen,
     setCreatedTutor = false,
-    setRefreshTutors,
+    setRefreshTutors
   }) => {
     const [data, setData] = useState();
     const [photo, setPhoto] = useState();
     const [loading, setLoading] = useState(false);
     const [contacts, setContacts] = useState([{ main: false }]);
-
-    
 
     const createContacts = useCallback(
       (tutorId) => {
@@ -35,8 +34,8 @@ export const ModalCreateTutor = memo(
             contact:
               ctt?.type !== "email"
                 ? masks?.noPhone(ctt?.contact)
-                : ctt?.contact,
-          })),
+                : ctt?.contact
+          }))
         });
       },
       [contacts]
@@ -72,7 +71,7 @@ export const ModalCreateTutor = memo(
     const handleSubmit = useCallback(() => {
       if (!data?.clientOriginId) {
         return notification.warning({
-          message: "Informe como conheceu a clinica",
+          message: "Informe como conheceu a clinica"
         });
       }
 
@@ -91,13 +90,13 @@ export const ModalCreateTutor = memo(
           photo: photo,
           birthDate: data?.birthDate
             ? moment(data?.birthDate).format("YYYY-MM-DD")
-            : null,
+            : null
         })
         .then((res) => {
           if (setCreatedTutor) {
             setCreatedTutor((prv) => ({
               ...prv,
-              holder: { id: res?.data?.id, name: res?.data?.name },
+              holder: { id: res?.data?.id, name: res?.data?.name }
             }));
           }
           contacts[0]?.type && createContacts(res.data.id);
@@ -108,14 +107,14 @@ export const ModalCreateTutor = memo(
           notification.success({
             message: "Sucesso",
             description: `${
-              process.env.client === "liftone" ? "Cliente" : "Tutor"
-            } cadastrado!`,
+              process.env.clientName === "LiftOne" ? "Cliente" : "Tutor"
+            } cadastrado!`
           });
         })
         .catch((err) => {
           notification.error({
             message: "Erro",
-            description: "Erro ao cadastrar tutor",
+            description: "Erro ao cadastrar tutor"
           });
         })
         .finally(() => {
@@ -159,4 +158,4 @@ export const ModalCreateTutor = memo(
       </Modal>
     );
   }
-);
+

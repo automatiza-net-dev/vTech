@@ -5,17 +5,17 @@ import { Button, LoadingSpin } from "@/OLD/components/mini-components";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { petsService } from "@/OLD/services/patient.service";
 import { useTutor } from "@/OLD/hooks/useTutor";
-import { FormChild } from "../Edit/FormChild";
+import { FormChild } from "./FormChild";
 import { Container } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import moment from "moment";
 
-export function CreatePatient({
+export function Create({
   setVisible,
   onSuccess,
   tutorToVinc = false,
-  isSchedule = false,
+  isSchedule = false
 }) {
   const [data, setData] = useState();
   const [photo, setPhoto] = useState();
@@ -36,28 +36,28 @@ export function CreatePatient({
     if (!newObj?.name) {
       setLoading(false);
       return notification.error({
-        message: "Preencha o campo de nome",
+        message: "Preencha o campo de nome"
       });
     }
 
     if (!newObj?.raceId) {
       setLoading(false);
       return notification.error({
-        message: "Preencha o campo de Espécie > Raça do paciente",
+        message: "Preencha o campo de Espécie > Raça do paciente"
       });
     }
 
     if (!newObj?.gender) {
       setLoading(false);
       return notification.error({
-        message: "Preencha o campo de Gênero",
+        message: "Preencha o campo de Gênero"
       });
     }
 
     if (!newObj?.birthDate) {
       setLoading(false);
       return notification.error({
-        message: "Preencha o campo de data de nascimento",
+        message: "Preencha o campo de data de nascimento"
       });
     }
 
@@ -65,7 +65,7 @@ export function CreatePatient({
       setLoading(false);
       if (!tutorToVinc) {
         return notification.error({
-          message: "Selecione um tutor para este paciente",
+          message: "Selecione um tutor para este paciente"
         });
       }
     }
@@ -74,21 +74,21 @@ export function CreatePatient({
       if (!newObj?.vaccineOrigin) {
         setLoading(false);
         return notification.error({
-          message: "Preencha o campo de 'O paciente é vacinado?'",
+          message: "Preencha o campo de 'O paciente é vacinado?'"
         });
       }
 
       if (!newObj?.castrated) {
         setLoading(false);
         return notification.error({
-          message: "Preencha o campo de 'O paciente é castrado'",
+          message: "Preencha o campo de 'O paciente é castrado'"
         });
       }
 
       if (!newObj?.hairId) {
         setLoading(false);
         return notification.error({
-          message: "Preencha o campo de 'Tipo de pelagem do paciente'",
+          message: "Preencha o campo de 'Tipo de pelagem do paciente'"
         });
       }
     }
@@ -99,7 +99,7 @@ export function CreatePatient({
         photo: photo,
         birthDate: moment(newObj?.birthDate).format("YYYY-MM-DD"),
         holderId: selectedTutors[0]?.id ? selectedTutors[0]?.id : tutorToVinc,
-        castrated: data?.castrated === "true" ? true : false,
+        castrated: data?.castrated === "true" ? true : false
       })
       .then((res) => {
         setLoading(false);
@@ -107,7 +107,7 @@ export function CreatePatient({
           i !== 0 &&
             petsService.assignPatientToTutor({
               holder: tutor?.id,
-              patient: res?.data?.id,
+              patient: res?.data?.id
             });
 
           i === 0 && petsService.setMainTutor(res?.data?.id, tutor?.id);
@@ -119,7 +119,7 @@ export function CreatePatient({
         setVisible(false);
         notification.success({
           message: "Sucesso",
-          description: "Paciente cadastrado!",
+          description: "Paciente cadastrado!"
         });
 
         onSuccess && onSuccess(res.data);
@@ -128,14 +128,14 @@ export function CreatePatient({
         if (err?.response?.data?.errors?.length > 0) {
           if (err?.response?.data?.errors[0]?.field === "holderId") {
             return notification.warning({
-              message: "Cadastre ou vincule um tutor para o pet",
+              message: "Cadastre ou vincule um tutor para o pet"
             });
           }
         }
         setLoading(false);
         notification.error({
           message: "Erro",
-          description: "Erro ao criar paciente",
+          description: "Erro ao criar paciente"
         });
       })
       .finally(() => {
@@ -146,6 +146,7 @@ export function CreatePatient({
   useEffect(() => {
     allTutors?.length > 0 && setTutors(allTutors);
   }, [allTutors]);
+
 
   return !createPatientPermission || createPatientPermission === "loading" ? (
     <AccessDenied loading={createPatientPermission} />
@@ -193,4 +194,4 @@ export function CreatePatient({
       </Form>
     </Container>
   );
-};
+}
