@@ -4,7 +4,7 @@ import { useQueryClient } from "react-query";
 import { PermissionItem } from "@/presentation";
 import { Modal } from "infinity-forge";
 import { CreateTutor } from "@/OLD/components/Tutor/Create";
-import { CreatePatient } from "@/OLD/components/Patient/Create";
+import { Create } from "@/OLD/components/Patient/Create";
 
 import { Button } from "infinity-forge";
 
@@ -37,7 +37,7 @@ export function ButtonCreate({ patientFilters }) {
           onClose={() => setVisible(false)}
           children={
             process.env.client === "sancla" ? (
-              <CreatePatient {...props} />
+              <Create {...props} />
             ) : (
               <CreateTutor {...props} />
             )
