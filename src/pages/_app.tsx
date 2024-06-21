@@ -88,6 +88,8 @@ export default function App({ Component, pageProps }) {
               disableInterceptor: true,
             },
             onSignOut: (user: User) => {
+              queryClient.clear();
+              queryClient.removeQueries();
               if(user.isThirdParty) {
                 window.location.href = "https://portal.liftonefranquias.com.br/"
               }
