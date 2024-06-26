@@ -1,5 +1,5 @@
 
-import { Patient, Tutor, ProductCart } from "@/domain";
+import { Patient, Tutor, ProductCart, Budget } from "@/domain";
 
 import { DailyMovement } from "../daily-movements";
 
@@ -13,7 +13,7 @@ export namespace CreateBill {
     clientId: Tutor["id"];
     patientId?: Patient["id"];
     billDate: string;
-    budgetId?: string;
+    budgetId?: Budget["id"];
     additionalInformation?: string;
     financialResponsibleId?: string;
     dailyMovementId?: DailyMovement["id"];
