@@ -82,7 +82,7 @@ importers:
         version: 3.0.16(react@18.3.1)
       infinity-forge:
         specifier: ^0.55.6
-        version: 0.55.6(@ckeditor/ckeditor5-core@41.4.2)(@ckeditor/ckeditor5-editor-multi-root@41.4.2)(@ckeditor/ckeditor5-engine@41.4.2)(@ckeditor/ckeditor5-utils@41.4.2)(@ckeditor/ckeditor5-watchdog@41.4.2)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1)
+        version: 0.55.6(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1)
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -1156,8 +1156,8 @@ packages:
   '@types/hoist-non-react-statics@3.3.5':
     resolution: {integrity: sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==}
 
-  '@types/lodash@4.17.5':
-    resolution: {integrity: sha512-MBIOHVZqVqgfro1euRDWX7OO0fBVUUMrN6Pwm8LQsz8cWhEpihlvR70ENj3f40j58TNxZaWv2ndSkInykNBBJw==}
+  '@types/lodash@4.17.6':
+    resolution: {integrity: sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==}
 
   '@types/node@18.19.39':
     resolution: {integrity: sha512-nPwTRDKUctxw3di5b4TfT3I0sWDiWoPQCZjXhvdkINntwr8lcoVCKsTgnXeRubKIlfnV+eN/HYk6Jb40tbcEAQ==}
@@ -2442,6 +2442,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   run-parallel@1.2.0:
@@ -2449,13 +2450,6 @@ packages:
 
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
-
-  safer-buffer@2.1.2:
-    resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
-
-  saxes@5.0.1:
-    resolution: {integrity: sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==}
-    engines: {node: '>=10'}
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
@@ -3275,16 +3269,16 @@ snapshots:
       '@floating-ui/core': 1.6.3
       '@floating-ui/utils': 0.2.3
 
-  '@floating-ui/react-dom@2.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@floating-ui/react-dom@2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@floating-ui/dom': 1.6.5
+      '@floating-ui/dom': 1.6.6
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@floating-ui/react@0.26.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@floating-ui/react@0.26.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@floating-ui/react-dom': 2.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@floating-ui/utils': 0.2.2
+      '@floating-ui/react-dom': 2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@floating-ui/utils': 0.2.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tabbable: 6.2.0
@@ -3860,7 +3854,7 @@ snapshots:
       '@types/react': 18.3.3
       hoist-non-react-statics: 3.3.2
 
-  '@types/lodash@4.17.5': {}
+  '@types/lodash@4.17.6': {}
 
   '@types/node@18.19.39':
     dependencies:
@@ -4396,7 +4390,7 @@ snapshots:
 
   frac@1.1.2: {}
 
-  framer-motion@11.2.10(@emotion/is-prop-valid@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.2.12(@emotion/is-prop-valid@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.6.3
     optionalDependencies:
@@ -4516,7 +4510,7 @@ snapshots:
       parent-module: 1.0.1
       resolve-from: 4.0.0
 
-  infinity-forge@0.55.6(@ckeditor/ckeditor5-core@41.4.2)(@ckeditor/ckeditor5-editor-multi-root@41.4.2)(@ckeditor/ckeditor5-engine@41.4.2)(@ckeditor/ckeditor5-utils@41.4.2)(@ckeditor/ckeditor5-watchdog@41.4.2)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1):
+  infinity-forge@0.55.6(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1):
     dependencies:
       '@ckeditor/ckeditor5-react': 7.0.0(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(react@18.3.1)
       '@types/react-slick': 0.23.13
@@ -4526,7 +4520,7 @@ snapshots:
       date-fns: 3.6.0
       exenv: 1.2.2
       formik: 2.4.6(react@18.3.1)
-      framer-motion: 11.2.10(@emotion/is-prop-valid@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      framer-motion: 11.2.12(@emotion/is-prop-valid@1.2.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       fs: 0.0.1-security
       fs-extra: 11.2.0
       inversify: 6.0.2
@@ -4549,7 +4543,7 @@ snapshots:
       reflect-metadata: 0.2.2
       sharp: 0.33.4
       styled-components: 6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      typescript: 5.4.5
+      typescript: 5.5.2
       yup: 1.4.0
       zustand: 4.5.4(@types/react@18.3.3)(react@18.3.1)
     transitivePeerDependencies:
@@ -5217,7 +5211,7 @@ snapshots:
 
   react-datepicker@6.9.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@floating-ui/react': 0.26.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@floating-ui/react': 0.26.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       clsx: 2.1.1
       date-fns: 3.6.0
       prop-types: 15.8.1
@@ -5415,12 +5409,6 @@ snapshots:
   rxjs@7.8.1:
     dependencies:
       tslib: 2.6.3
-
-  safer-buffer@2.1.2: {}
-
-  saxes@5.0.1:
-    dependencies:
-      xmlchars: 2.2.0
 
   scheduler@0.23.2:
     dependencies:
@@ -5732,7 +5720,7 @@ snapshots:
   yup@0.32.11:
     dependencies:
       '@babel/runtime': 7.24.7
-      '@types/lodash': 4.17.5
+      '@types/lodash': 4.17.6
       lodash: 4.17.21
       lodash-es: 4.17.21
       nanoclone: 0.2.1
