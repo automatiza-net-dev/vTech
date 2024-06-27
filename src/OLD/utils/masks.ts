@@ -77,7 +77,7 @@ const Masks = {
   money(value) {
     const cleanValue = +value.replace(/\D+/g, "");
     const options = { style: "currency", currency: "BRL" };
-    return new Intl.NumberFormat("pt-br", options).format(cleanValue / 100);
+    return new Intl.NumberFormat("pt-br", options as any).format(cleanValue / 100);
   },
 
   noMoney(value) {
