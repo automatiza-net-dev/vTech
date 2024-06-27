@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const AddBudget = styled("div")`
   height: 100%;
   width: 100%;
+  min-width: 700px;
 
   h2 {
     margin-bottom: 20px;
@@ -23,8 +24,7 @@ export const AddBudget = styled("div")`
   }
 
   form {
-  padding-bottom: 20px;
-
+    padding-bottom: 20px;
   }
 
   .expirationDate {

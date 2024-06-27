@@ -17,7 +17,7 @@ export function ModalCreateScheduling() {
 
   return (
     <Modal
-      styles={{ maxWidth: "800px" }}
+      styles={{ maxWidth: "1200px", width: "100%" }}
       open={!!createSchedulingArgs}
       onClose={() => setCreateSchedulingArgs(null)}
     >

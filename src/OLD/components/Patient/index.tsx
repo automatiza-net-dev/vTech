@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect } from "react";
 
 import { Button } from "@/OLD/components/mini-components";
 import { PatientList } from "./List";
-import { Create } from "./Create";
 import { useRouter } from "next/router";
 
 // Hooks
@@ -13,14 +12,15 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { Input } from "./styles";
 import FastCreateTutor from "@/OLD/components/Tutor/FastCreate";
 import AccessDenied from "@/OLD/components/AccessDenied";
-import { Modal } from "antd";
 
 // Icons
 import { SearchIcon } from "@/OLD/common/icons";
 
 // Utils
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { Tooltip } from "antd";
+import { FormCreatePatient } from "@/presentation";
+
+import {Button as ButtonInfinityForge} from "infinity-forge"
 
 export function Patient({
   setPayload = false,
@@ -37,7 +37,6 @@ export function Patient({
   const [filters, setFilters] = useState({ noSearch: true });
   const [fastCreateVisible, setFastCreateVisible] = useState(false);
   const [internReload, setInternReload] = useState(false);
-  const [createPetVisible, setCreatePetVisible] = useState(false);
 
   const { fetchPatientTutors } = usePatientTutors(
     "",
@@ -63,8 +62,8 @@ export function Patient({
     });
   }, []);
 
-  const canCreatePet = useUserHasPermission("PET01");
   const listPatientsPermission = useUserHasPermission("PET00");
+
 
   return !listPatientsPermission || listPatientsPermission === "loading" ? (
     <AccessDenied loading={listPatientsPermission} />
@@ -85,7 +84,7 @@ export function Patient({
                     onChange={(e) =>
                       setFilters({
                         ...filters,
-                        name: normalizeStr(e.target.value) ,
+                        name: normalizeStr(e.target.value),
                       } as any)
                     }
                   />
@@ -122,8 +121,8 @@ export function Patient({
                     type="search"
                     placeholder="Fone tutor"
                     onChange={(e) =>
-                      setFilters({ ...filters, phone: e.target.value } as any) 
-                    } 
+                      setFilters({ ...filters, phone: e.target.value } as any)
+                    }
                   />
                   <SearchIcon />
                 </Input>
@@ -132,28 +131,17 @@ export function Patient({
                     type="search"
                     placeholder="CPF tutor"
                     onChange={(e) =>
-                      setFilters({ ...filters, document: e.target.value } as any)
+                      setFilters({
+                        ...filters,
+                        document: e.target.value,
+                      } as any)
                     }
                   />
                   <SearchIcon />
                 </Input>
                 <div className="uk-flex uk-flex-right">
                   <div className="uk-margin-small-top">
-                    <Tooltip title={canCreatePet ? "-" : "Você não tem acesso"}>
-                      <Button
-                        classCallback="uk-margin-small-right"
-                        disabled={!canCreatePet}
-                        onClick={() => {
-                          if (origin === "opportunities") {
-                            setVisible(false);
-                            return setFastCreateVisible(true);
-                          }
-                          setCreatePetVisible(true);
-                        }}
-                      >
-                        Cadastrar
-                      </Button>
-                    </Tooltip>
+                    {router.asPath.includes("crm") ? <ButtonInfinityForge type="button" onClick={() => setFastCreateVisible(true)} text="Novo Paciente" /> :   <FormCreatePatient isModal />}
                   </div>
                   <div className="uk-margin-small-top">
                     {" "}
@@ -168,7 +156,6 @@ export function Patient({
                   </div>
                 </div>
               </div>
-      
             </div>
           </div>
           <hr />
@@ -198,17 +185,6 @@ export function Patient({
           setNewPacient={setPayload}
           setTutorsReload={setReload}
         />
-      )}
-
-      {createPetVisible && (
-        <Modal
-          visible={createPetVisible}
-          onCancel={() => setCreatePetVisible(false)}
-          width={1200}
-          footer={null}
-        >
-          <Create setVisible={setCreatePetVisible} onSuccess={() => {}} />
-        </Modal>
       )}
     </div>
   );

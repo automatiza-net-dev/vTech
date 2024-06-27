@@ -15,7 +15,7 @@ export const InputBox = styled.div`
       width: 100%;
     }
     input {
-      font-size: 0.8em;
+      font-size: 14px;
       width: 220px;
     }
   }

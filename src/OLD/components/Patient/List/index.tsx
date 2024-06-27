@@ -2,7 +2,7 @@
 import { Table, Tag, Modal } from "antd";
 import Link from "next/link";
 import ActiveTutorsForm from "../ActiveTutorsForm";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { convertDate } from "@/OLD/utils/convertDate";
 import { Delete } from "../Delete";
 import { columns, customColumns, opportunitiesColumns } from "./columns";
@@ -21,7 +21,8 @@ import { EditTwoTone } from "@ant-design/icons";
 // Utils
 import TutorVincForm from "./TutorVincForm";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { PermissionItem } from "@/presentation";
+import { FormCreatePatient, PermissionItem } from "@/presentation";
+import { Icon } from "infinity-forge";
 
 export function PatientList({
   filters,
@@ -47,7 +48,6 @@ export function PatientList({
 
   const { patients } = usePatients(internReload, filters);
 
-  
   // const canDeletePet = useUserHasPermission("PET03");
 
   const handleCreateTable = () => {
@@ -134,21 +134,9 @@ export function PatientList({
               community: patient.community ? "Sim" : "Não",
               actions: (
                 <div className="uk-flex" style={{ gap: "20px" }}>
-                  <PermissionItem hash="PET02">
-                  <EditTwoTone
-                      className=""
-                      onClick={() => {
-                        setSelectedId(patient.id);
-                        setEditVisible(true);
-                      }}
-                    />
-                  </PermissionItem>
-                
-                  {/* {canDeletePet && (
-                    <Delete
-                      setRefreshList={() => setRefreshList(!refreshList)}
-                    />
-                  )} */}
+                  
+                  <FormCreatePatient isModal patientId={patient.id}  trigger={<Icon name="IconEdit"  fill="#000" />} />
+             
                 </div>
               ),
               schedule: (
@@ -176,7 +164,6 @@ export function PatientList({
                 <CustomButton
                   onClick={() => {
                     const tutor = patient.tutors.find((item) => item?.isMain);
-
                     setPayload((prv) => ({
                       ...prv,
                       clientId: patient?.id,
@@ -188,6 +175,7 @@ export function PatientList({
                       gender: patient?.gender,
                       castrated: `${patient?.castrated}`,
                       weight: patient?.weight,
+                      contact: { tutor },
                     }));
                     setVisible(false);
                   }}
@@ -203,13 +191,7 @@ export function PatientList({
 
   useEffect(() => {
     handleCreateTable();
-  }, [
-    refreshList,
-    internReload,
-    querySchedule,
-    filters,
-    patients,
-  ]);
+  }, [refreshList, internReload, querySchedule, filters, patients]);
 
   return (
     <Container>

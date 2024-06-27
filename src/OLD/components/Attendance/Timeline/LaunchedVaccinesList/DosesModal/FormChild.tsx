@@ -6,6 +6,8 @@ import { Icon } from "infinity-forge";
 
 import { Input, DatePicker, Button, notification } from "antd";
 
+import moment from "moment";
+
 export default function FormChild({
   changeTab,
   vaccineData,
@@ -21,13 +23,25 @@ export default function FormChild({
   modal,
 }: any) {
   useEffect(() => {
-    calendars.sort((a, b) => a.dose - b.dose);
+    calendars
+      .sort((a, b) => a.dose - b.dose)
+      .map(
+        (item) =>
+          item?.applicationDate && {
+            ...item,
+            applicationDate: moment(item.applicationDate).format("DD/MM/YYYY"),
+          }
+      );
   }, [calendars]);
 
   return (
     <form>
       <div>
-        <label>Vacina</label>
+        <label>
+          {vaccineData?.data?.vaccine?.type === "vaccine"
+            ? "Vacina"
+            : "Vermifugo"}
+        </label>
         <p>{`${vaccineData?.vaccine} - ${vaccineData?.protocolLabel}`}</p>
       </div>
       <div className="uk-margin-top uk-flex">
@@ -45,16 +59,16 @@ export default function FormChild({
           {calendars.length > 0 &&
             calendars.map((item, i) => (
               <div>
-                <DatePicker
-                  className="uk-width-1-1"
-                  format={"DD/MM/YYYY"}
+                <input
+                  type="date"
+                  className="uk-width-1-1 custom-input"
                   disabled={
                     !(actionState === "schedule" && selectedIndex === i)
                   }
                   value={
                     actionState === "schedule" && selectedIndex === i
                       ? actualData?.schedulingDate
-                      : item?.schedulingDate
+                      : moment(item?.schedulingDate).format("YYYY-MM-DD")
                   }
                   onChange={(e) => {
                     setActualData({
@@ -66,24 +80,24 @@ export default function FormChild({
               </div>
             ))}
         </div>
-        <div className="uk-width-1-2">
+        <div className="uk-width-1-2 input-box">
           <label> Data de aplicação </label>
           {calendars.length > 0 &&
             calendars.map((item, i) => (
               <div>
-                <DatePicker
-                  className="uk-width-1-1"
-                  format={"DD/MM/YYYY"}
+                <input
+                  type="date"
+                  className="uk-width-1-1 custom-input"
                   disabled={!(actionState === "vaccine" && selectedIndex === i)}
                   value={
                     actionState === "vaccine" && selectedIndex === i
                       ? actualData?.applicationDate
-                      : item?.applicationDate
+                      : moment(item?.applicationDate).format("YYYY-MM-DD")
                   }
                   onChange={(e) => {
                     setActualData({
                       ...actualData,
-                      applicationDate: e,
+                      applicationDate: e.target.value,
                     });
                   }}
                 />
@@ -271,7 +285,7 @@ export default function FormChild({
             htmlType="button"
             onClick={() => changeTab("vaccines")}
           >
-            Ir para vacinas
+            Ir para vacinas / Vermífugos
           </Button>
         </div>
       )}

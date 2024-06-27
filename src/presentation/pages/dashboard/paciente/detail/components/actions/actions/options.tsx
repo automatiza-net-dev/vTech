@@ -18,6 +18,7 @@ import MedicalRecipes from "@/OLD/components/Attendance/Forms-old/MedicalRecipe"
 import DosesModal from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesList/DosesModal";
 import { Icon } from "infinity-forge";
 import { CreateTutor } from "@/OLD/components/Tutor/Create";
+import { Pathologie } from "./pathologie";
 
 type ActionPatient = {
   active: boolean;
@@ -37,7 +38,8 @@ export function useActionsPatient(): {
   const listActions = [
     {
       active: true,
-      label: process.env.clientName === "LiftOne" ? "Avaliação" : "Atendimentos",
+      label:
+        process.env.clientName === "LiftOne" ? "Avaliação" : "Atendimentos",
       value: process.env.clientName === "LiftOne" ? "Avaliação" : "Consulta",
       Icon: (
         <svg
@@ -123,7 +125,7 @@ export function useActionsPatient(): {
       ),
     },
     {
-      active: !patient.data?.death,
+      active: !patient.data?.death && process.env.client === "sancla",
       label: "Óbito",
       value: "OBITO",
       Icon: (
@@ -246,6 +248,58 @@ export function useActionsPatient(): {
       ),
     },
     {
+      active: process.env.clientName === "Sanclá",
+      label: "Vermífugo",
+      value: "Vermifugos",
+      Icon: (
+        <svg
+          version="1.1"
+          id="svg9"
+          width="682.66669"
+          height="682.66669"
+          viewBox="0 0 682.66669 682.66669"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs id="defs13">
+            <clipPath clipPathUnits="userSpaceOnUse" id="clipPath23">
+              <path d="M 0,512 H 512 V 0 H 0 Z" id="path21" />
+            </clipPath>
+          </defs>
+          <g id="g15" transform="matrix(1.3333333,0,0,-1.3333333,0,682.66667)">
+            <g id="g17">
+              <g id="g19" clip-path="url(#clipPath23)">
+                <g id="g25" transform="translate(256,376.5)">
+                  <path
+                    d="m 0,0 v -90.37 c -11.28,-8.47 -21.34,-18.49 -29.84,-29.75 -19.09,-25.24 -30.41,-56.67 -30.41,-90.75 0,-38.2 14.22,-73.08 37.66,-99.63 -21.87,-30.43 -57.57,-50.25 -97.91,-50.25 -66.55,0 -120.5,53.95 -120.5,120.5 V 0 c 0,66.55 53.95,120.5 120.5,120.5 33.28,0 63.4,-13.49 85.21,-35.29 C -13.49,63.4 0,33.28 0,0 Z"
+                    id="path27"
+                  />
+                </g>
+                <g id="g29" transform="translate(226.16,256.38)">
+                  <path d="M 0,0 H -211.16" id="path31" />
+                </g>
+                <g id="g33" transform="translate(497,165.63)">
+                  <path
+                    d="m 0,0 h -301.25 c 0,34.08 11.32,65.51 30.41,90.75 8.5,11.26 18.56,21.28 29.84,29.75 25.17,18.92 56.47,30.12 90.37,30.12 C -67.44,150.62 0,83.18 0,0 Z"
+                    id="path35"
+                  />
+                </g>
+                <g id="g37" transform="translate(497,165.63)">
+                  <path
+                    d="m 0,0 c 0,-83.19 -67.44,-150.63 -150.63,-150.63 -44.98,0 -85.36,19.72 -112.96,51 -23.44,26.55 -37.66,61.43 -37.66,99.63 z"
+                    id="path39"
+                  />
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+      ),
+      Component: Vaccines,
+      SingleComponent: (props) => (
+        <DosesModal changeTab={props.changeTab} vaccine={props} modal={false} />
+      ),
+    },
+    {
       active: true,
       label: "Vendas",
       value: "Vendas",
@@ -268,9 +322,6 @@ export function useActionsPatient(): {
           <path d="M10 13v1m0 -8v1"></path>
         </svg>
       ),
-      customModalStyles: {
-        height: "95vh",
-      },
       Component: AddSale,
       SingleComponent: AddSale,
     },
@@ -297,9 +348,6 @@ export function useActionsPatient(): {
           <path d="M10 13v1m0 -8v1"></path>
         </svg>
       ),
-      customModalStyles: {
-        height: "95vh",
-      },
       Component: AddBudgetNew,
       SingleComponent: AddBudgetNew,
     },

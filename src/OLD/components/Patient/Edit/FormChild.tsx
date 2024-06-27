@@ -16,7 +16,7 @@ import {
   Popconfirm,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { ModalCreateTutor } from "../Create/Modal";
+
 import { Select, FormHandler } from "infinity-forge";
 
 import dynamic from "next/dynamic";
@@ -451,13 +451,14 @@ export const FormChild = React.memo(function FormChild({
           )}
         </div>
       </Form.Item>
-      <ModalCreateTutor
+
+      {/* <ModalCreateTutor
         setRefreshAutoComplete={setReload}
         refreshAutoComplete={reload}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         setCreatedTutor={setData}
-      />
+      /> */}
     </div>
   );
 });

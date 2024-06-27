@@ -68,7 +68,7 @@ export function AddSale({
   return (
     <S.AddSale>
       <FormHandler
-        debugMode
+        isStickyButtons
         button={{ text: "CRIAR VENDA" }}
         initialData={initialData}
         onSucess={async (data) => {

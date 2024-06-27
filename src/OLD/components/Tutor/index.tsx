@@ -17,6 +17,10 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePatientTutors } from "@/OLD/hooks/usePatientTutors";
 
+import { Button as ButtonInfinityForge } from "infinity-forge";
+import { FormCreateTutor } from "@/presentation";
+import { useRouter } from "next/router";
+
 export function Tutor({
   setPayload = false,
   payload = false,
@@ -34,13 +38,11 @@ export function Tutor({
   const [localReload, setLocalReload] = useState(false);
   const [createTutorVisible, setCreateTutorVisible] = useState(false);
 
-  
   const { fetchPatientTutors } = usePatientTutors(filters);
 
-  
+  const router = useRouter();
 
   const listTutorsPermission = useUserHasPermission("TUT00");
-  const canCreateTutor = useUserHasPermission("TUT01");
 
   return !listTutorsPermission || listTutorsPermission === "loading" ? (
     <AccessDenied loading={listTutorsPermission} />
@@ -107,25 +109,17 @@ export function Tutor({
                 />
                 <SearchIcon />
               </Input>
-              <div className="uk-margin-small-top uk-margin-small-right">
-                {canCreateTutor && (
-                  <Button
-                    disabled={!canCreateTutor}
-                    onClick={() => {
-                      if (origin === "opportunities") {
-                        setVisible(false);
-                        return setFastCreateVisible(true);
-                      }
-                      return setCreateTutorVisible(true);
-                      {
-                        /*return router.push(`/dashboard/tutor/criar`)*/
-                      }
-                    }}
-                  >
-                    Cadastrar
-                  </Button>
-                )}
-              </div>
+
+              {router.asPath.includes("crm") ? (
+                <ButtonInfinityForge
+                  text="Cadastrar"
+                  onClick={() => setFastCreateVisible(true)}
+                  type="button"
+                />
+              ) : (
+                <FormCreateTutor isModal origin="Cadastro" />
+              )}
+
               <div className="uk-margin-small-top">
                 <Button
                   onClick={() => {
@@ -172,15 +166,6 @@ export function Tutor({
           prevPhone={filters?.phone}
         />
       )}
-
-      <Modal
-        visible={createTutorVisible}
-        width={1200}
-        onCancel={() => setCreateTutorVisible(false)}
-        footer={null}
-      >
-        <CreateTutor setVisible={setCreateTutorVisible} />
-      </Modal>
     </div>
   );
 }

@@ -24,12 +24,14 @@ export function Print({
     <button
       type="button"
       style={{
-        height: 40,
-        width: 200,
-        background: "#eee",
+        height: 32,
+        border: "1px solid #d9d9d9",
+        background: "#fff",
+        padding: "0 15px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        color: "rgba(0, 0, 0, 0.85)"
       }}
       className="font-14"
     >

@@ -3,19 +3,20 @@ import styled from "styled-components";
 
 export const ButtonSetSchedulling = styled.div`
   width: 100%;
-  max-width: 6.61vw;
-  min-width: 110px;
   margin: 0 auto;
 
   button {
     width: 100%;
-    border-radius: 100rem;
-    padding: 0 20px;
+    padding: 0 15px;
     text-transform: uppercase;
-    font-size: 14px;
-    background-color: ${(props) => props.theme.primaryColor};
+    font-size: 13px;
+    background-color: #2ca5a5;
     box-shadow: none;
-    height: 2.08vw;
-    min-height: 36px;
+    height: 30px;
+
+    &:disabled {
+      background-color: #dddcdc !important;
+      color: #fff !important;
+    }
   }
 `;

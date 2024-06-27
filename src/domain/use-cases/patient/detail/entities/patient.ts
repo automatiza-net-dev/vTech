@@ -2,10 +2,12 @@ import { Tutor } from "../../tutor";
 import { PatientAnimal } from "../animal";
 
 export interface PatientHuman {
+  active: boolean;
   id: string;
   name: string;
   type: string;
   photo: string | null;
+  vaccineOrigin?: string;
   gender: "female" | "male";
   genderText: string;
   tags: string;

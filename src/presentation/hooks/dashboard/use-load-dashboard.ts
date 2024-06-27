@@ -5,11 +5,11 @@ import { BadRequestError, useAuthAdmin } from "infinity-forge";
 
 import { RemoteDashboard } from "@/data";
 import { LoadDashboard, User } from "@/domain";
-// import { callApiOneTime } from "@/presentation";
 import { container, dashboardTypes } from "@/container";
 
 export function useLoadDashboard() {
   const { GetUser } = useAuthAdmin();
+
   const router = useRouter();
 
   const user = GetUser<User>();
@@ -35,10 +35,12 @@ export function useLoadDashboard() {
   return useQuery({
     queryKey: [
       "dasboard",
-      router.query.fromDate,
-      router.query.toDate,
       user?.user?.id,
+      router.query.toDate,
+      router.query.fromDate,
     ],
     queryFn: fetcher,
+    refetchOnWindowFocus: false,
+    enabled: !!(router.query.toDate && router.query.fromDate && router.isReady)
   });
 }

@@ -1,12 +1,9 @@
-export type Specie = {
-  id: string;
-  description: string;
-};
+import { SpecieAnimal } from './specie'
 
 export type Race = {
   id: string;
   description: string;
-  specie: Specie;
+  specie: SpecieAnimal;
   fur: null;
   createdAt: string;
 };

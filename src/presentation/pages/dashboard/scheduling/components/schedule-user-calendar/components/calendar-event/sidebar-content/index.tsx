@@ -5,8 +5,9 @@ import { UserInfos } from "./user-info";
 import { Event, ScheduleUser } from "@/domain";
 import { DateToDDMMYYYY } from "@/presentation";
 
-import * as S from "./styles";
 import { SidebarTabs } from "./tabs";
+
+import * as S from "./styles";
 
 export function SideBarContent({
   event,

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { convertDate } from "@/OLD/utils/convertDate";
 import { columns } from "./columns";
 import { AddPatient } from "./AddPatient";
+import { FormCreateTutor } from "@/presentation";
 
 export function Single({
   selectedId,
@@ -22,7 +23,7 @@ export function Single({
   const [patients, setPatients] = useState();
   const [photoSrc, setPhotoSrc] = useState(false);
   const [reload, setReload] = useState(false);
-  
+
   const router = useRouter();
 
   const handleCreateTable = useCallback(
@@ -164,7 +165,11 @@ export function Single({
                 Voltar
               </Button>
 
-              <Button onClick={() => setEditVisible(true)}>Editar</Button>
+              <FormCreateTutor
+                isModal
+                tutorId={tutor?.id}
+                trigger={<Button>Editar</Button>}
+              />
             </div>
           </div>
           {process.env.client === "liftone" && (

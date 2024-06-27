@@ -22,6 +22,9 @@ import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
 
+import { ModalListagemDocumentosVenda } from "./modal-listagem-documentos-venda";
+import { GerarDocumentoVenda } from "./gerar-documento-venda";
+
 const Container = styled.div`
   display: flex;
   gap: 0.75rem;
@@ -33,6 +36,7 @@ const Container = styled.div`
 
 const BillActions = React.memo(function BillActions({
   bill,
+  client,
   setReload = false,
   cashiers,
 }) {
@@ -168,6 +172,11 @@ const BillActions = React.memo(function BillActions({
       {convertTreatmentPermission && (
         <ConvertBillToTreatment bill={bill} setReload={setReload} />
       )}
+
+      <GerarDocumentoVenda bill={bill} client={client} />
+
+      <ModalListagemDocumentosVenda bill={bill} />
+
       <Tooltip title="Detalhes da nota">
         <CgDetailsMore
           size={25}

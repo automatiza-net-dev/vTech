@@ -4,13 +4,13 @@ import { useQueryClient } from "react-query";
 import {
   Error,
   Select,
+  Modal,
   useToast,
   FormHandler,
   LoaderCircle,
 } from "infinity-forge";
 
 import {
-  Modal,
   useScheduling,
   useAssignTutor,
   useSetMainTutor,
@@ -64,20 +64,17 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
   return (
     <Error name="AddTutor">
       <Modal
-        maxwidth="600px"
-        stateModal={modal}
-        onCloseModal={() => setModal(false)}
-        setModal={setModal}
-        title="Vincular tutor"
-        Wrapper={S.ModalContent}
+        styles={{ maxWidth: "600px", width: "100%", paddingBottom: "20px" , overflow: "unset"}}
+      stylesContent={{ overflow: "unset" }}  
+        open={modal}
+        onClose={() => setModal(false)}
       >
         {isLoading ? (
           <LoaderCircle size={20} />
         ) : (
           <S.ModalContent>
-            <span>Selecione o tutor a ser vinculado</span>
-
             <FormHandler
+              isStickyButtons
               onSucess={hanldeOnSuccess}
               button={{ text: "Vincular" }}
               customAction={
@@ -90,6 +87,7 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
             >
               <div className="select-box">
                 <Select
+                  label="Selecione o tutor a ser vinculado"
                   loading={isLoading}
                   name="holder"
                   onlyOneValue

@@ -56,7 +56,7 @@ export const FormSetClients = styled("div")`
       gap: 10px;
 
       button {
-        max-width: 150px;
+        max-width: 195px;
       }
     }
   }

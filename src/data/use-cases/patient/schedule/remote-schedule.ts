@@ -14,7 +14,10 @@ export class RemoteSchedule
     domain.CreateSchedule,
     domain.Reschedule,
     domain.PrintSchedule,
-    domain.LoadAllSchedulesDashboard
+    domain.LoadAllSchedulesDashboard,
+    domain.ReopenSchedule,
+    domain.ChangeUpsertStatus,
+    domain.DeleteSchedule
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -29,16 +32,6 @@ export class RemoteSchedule
     });
 
     return response as domain.LoadSchedule.Model;
-  }
-
-  async loadAllSchedulesDashboard(params: domain.LoadAllSchedulesDashboard.Params) {
-    const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`schedules/home-2`),
-      method: "get",
-      body: params
-    });
-
-    return response as  domain.LoadAllSchedulesDashboard.Model;
   }
 
   async create(params: domain.CreateSchedule.Params) {
@@ -60,6 +53,28 @@ export class RemoteSchedule
 
     return response as domain.CreateSchedule.Model;
   }
+
+  async delete(params: domain.DeleteSchedule.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`schedules/${params?.id}`),
+      method: "delete",
+    });
+
+    return response;
+  }
+
+  async loadAllSchedulesDashboard(
+    params: domain.LoadAllSchedulesDashboard.Params
+  ) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`schedules/home-2`),
+      method: "get",
+      body: params,
+    });
+
+    return response as domain.LoadAllSchedulesDashboard.Model;
+  }
+
 
   async confirm(params: domain.ConfirmSchedule.Params) {
     const response = await this.httpClient.request({
@@ -99,4 +114,26 @@ export class RemoteSchedule
 
     return response;
   }
+
+  async reopen(params: domain.ReopenSchedule.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`schedules/reopen/${params?.id}`),
+      method: "put",
+      body: params,
+    });
+
+    return response;
+  }
+
+  async changeUpsert(params: domain.ChangeUpsertStatus.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`schedules/upsert/${params?.scheduleId}`),
+      method: "put",
+      body: params,
+    });
+
+    return response;
+  }
+
+
 }

@@ -78,32 +78,27 @@ export function FormCreateScheduling() {
 
   return (
     <S.FormCreateScheduling>
-      <div className="top">
-        <h2>
-          {createSchedulingArgs?.type === "reschedule"
-            ? "Reagendamento"
-            : createSchedulingArgs?.type === "edit"
-            ? "Alterar Agendamento"
-            : "Criar agendamento"}
-        </h2>
-      </div>
-
       <FormHandler
+        isStickyButtons
         button={{ text: "Agendar" }}
         onSucess={submit}
         initialData={initialData}
         cleanFieldsOnSubmit={false}
       >
+        <div className="top">
+          <h2 className="font-18-bold">
+            {createSchedulingArgs?.type === "reschedule"
+              ? "Reagendamento"
+              : createSchedulingArgs?.type === "edit"
+              ? "Alterar Agendamento"
+              : "Criar agendamento"}
+          </h2>
+        </div>
+
         {(createSchedulingArgs?.forceSelectUser ||
           !createSchedulingArgs?.scheduleUser?.id) && (
           <Select name="userId" label="Usuário" options={users || []} />
         )}
-
-        <div className="row">
-          <SelectHolder />
-
-          {process.env.client === "sancla" && <SelectPatient />}
-        </div>
 
         <div className="row">
           <div style={{ width: "92%" }}>
@@ -122,6 +117,12 @@ export function FormCreateScheduling() {
               label="Duração consulta (minutos)"
             />
           </div>
+        </div>
+
+        <div className="row">
+          <SelectHolder />
+
+          {process.env.client === "sancla" && <SelectPatient />}
         </div>
 
         {createSchedulingArgs?.type === "reschedule" && (

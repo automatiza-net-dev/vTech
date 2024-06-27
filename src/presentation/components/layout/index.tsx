@@ -21,25 +21,25 @@ export function LayoutDashboard({ children }) {
 }
 
 function LayoutPage({ children }) {
-  const { data } = useLoadAllAvailableUnits();
+  const avaiableUnits = useLoadAllAvailableUnits();
 
   const { GetUser } = useAuthAdmin();
 
   const user = GetUser<User>();
 
   const workspaces = {
-    list: data?.map((companie) => ({
+    list: avaiableUnits?.data?.map((companie) => ({
       img: "",
       label: companie.identification,
       subtitle: companie.group,
       value: companie.id,
     })),
-    activeWorkspace: data?.find((companie) => companie?.id === user?.unit?.id)
+    activeWorkspace: avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
       ?.id,
     onChangeWorkSpace: async (value: any) => {
       if (
         value.workspace !==
-        data?.find((companie) => companie?.id === user?.unit?.id)?.id
+        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)?.id
       ) {
         await container
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)

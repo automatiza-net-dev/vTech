@@ -21,7 +21,8 @@ export type TimelineType =
   | "Observação"
   | "Formato Receita Médica"
   | "Vacinas"
-  | "Hospitalização";
+  | "Hospitalização"
+  | "Vermifugos";
 
 export type TimeLineEvent = "TROCA_TUTOR_PRINCIPAL" | "new_vaccine" | "OBITO";
 
@@ -34,10 +35,22 @@ export type TimeLine = {
   _id: string;
   timeline_id: string;
   timeline_info: {
-    origin?: "new_vaccine" | "vaccine_application"
-    attachments?: any[]
-    photos?: any[]
-    medias?: any[]
+    print?: {
+      date: string;
+      user_id: string;
+    };
+    $meta?: {
+      bill_document_id?: string;
+      bill_id?: string;
+    };
+    origin?:
+      | "new_vaccine"
+      | "vaccine_application"
+      | "new_vermifuge"
+      | "vermifuge_application";
+    attachments?: any[];
+    photos?: any[];
+    medias?: any[];
     title?: string;
     type?: string;
     observation?: string;

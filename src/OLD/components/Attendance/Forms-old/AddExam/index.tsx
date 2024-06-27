@@ -18,8 +18,8 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Components
-import { Button, Popconfirm, notification } from "antd";
-import { Modal } from "infinity-forge";
+import { Button, Popconfirm } from "antd";
+import { Modal, useToast } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -49,7 +49,9 @@ export default function LaunchExam({
 
   const router = useRouter();
   const eventId = router.query.innerpage;
+
   const { user, clinic } = useProfile();
+  const { createToast } = useToast();
 
   const systemName = process.env.clientName;
 
@@ -73,16 +75,24 @@ export default function LaunchExam({
     setLoading(true);
     examService
       .listExams({ active: true })
-      .then((res) => setAllExams(res.data))
+      .then((res) => {
+        setLoading(false);
+        setAllExams(res.data);
+      })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        createToast({
           message: "Houve um erro ao recuperar os exames disponíveis...",
+          status: "error",
         });
       });
   }, []);
 
   const getUpdateData = (patientExamId) => {
+    if (!patientExamId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     patientExamsService
       .showPatientExam(patientExamId)
@@ -104,9 +114,10 @@ export default function LaunchExam({
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        createToast({
           message:
             "Houve um problema ao recuperar as informações do exame do paciente",
+          status: "error",
         });
       })
       .finally(() => {
@@ -134,11 +145,13 @@ export default function LaunchExam({
 
       patientExamsService.createAttachment(id, formData).then((_res) => {
         examPatientData
-          ? notification.success({
+          ? createToast({
               message: "Exame atualizado com sucesso!",
+              status: "error",
             })
-          : notification.success({
+          : createToast({
               message: "Exame solicitado com sucesso!",
+              status: "error",
             });
       });
     },
@@ -166,8 +179,9 @@ export default function LaunchExam({
         .then((res) => {
           fileList.length > 0
             ? submitArquives(res?.data?.id)
-            : notification.success({
+            : createToast({
                 message: "Exame solicitado com sucesso!",
+                status: "success",
               });
         })
         .catch((err) => {
@@ -175,8 +189,9 @@ export default function LaunchExam({
           setLoading(false);
           const errors = err?.response?.data?.errors.map((item) => item?.field);
           if (errors.includes("report")) {
-            return notification.error({
+            return createToast({
               message: `O campo de solicitação é necessário`,
+              status: "error",
             });
           }
         })
@@ -219,14 +234,16 @@ export default function LaunchExam({
         .then((_res) => {
           fileList.length > 0
             ? submitArquives(examPatientData?.timeline_info?.patient_exam?.id)
-            : notification.success({
+            : createToast({
                 message: "Exame atualizado com sucesso!",
+                status: "error",
               });
         })
         .catch((err) => {
           setLoading(false);
-          return notification.error({
+          return createToast({
             message: `${err.response.data.errors[0].message}`,
+            status: "error",
           });
         })
         .finally(() => {
@@ -254,11 +271,11 @@ export default function LaunchExam({
         .removeAttachment(examPatientData?._id, attachmentId)
         .then((_res) => {
           setLoading(false);
-          return notification.success({ message: "Anexo removido!" });
+          return toast({ message: "Anexo removido!", status: "success" });
         })
         .catch((err) => {
           setLoading(false);
-          return notification.error({
+          return createToast({
             message: "Houve um problema ao remover o anexo",
           });
         });
@@ -275,8 +292,9 @@ export default function LaunchExam({
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-        return notification.success({
+        return createToast({
           message: "Registro removido com sucesso!",
+          status: "error",
         });
       })
       .catch((_err) => {

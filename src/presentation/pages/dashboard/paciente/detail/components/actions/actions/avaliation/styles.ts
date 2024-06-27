@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const Avaliation = styled("div")`
-
   .custom-editor {
     min-height: 500px;
   }

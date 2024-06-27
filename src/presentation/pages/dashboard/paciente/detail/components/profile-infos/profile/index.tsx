@@ -1,25 +1,23 @@
-import { useState } from "react";
-import { Error, HighlightText, NextImage, Icon, Modal } from "infinity-forge";
+import { Error, HighlightText, Icon } from "infinity-forge";
 
 import { Patient } from "@/domain";
-import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
-import { Edit as EditTutor } from "@/OLD/components/Tutor/Edit";
+import { FormCreatePatient } from "../../../../create";
 
 import * as S from "./styles";
 
-export function Profile({
-  tag,
-  name,
-  id,
-  tags,
-  tutor,
-  photo,
-  isHospitalized,
-  cellphone,
-  email,
-  community,
-}: Patient) {
-  const [modal, setModal] = useState(false);
+export function Profile(props: Patient) {
+  const {
+    tag,
+    name,
+    id,
+    tags,
+    tutor,
+    photo,
+    isHospitalized,
+    cellphone,
+    email,
+    community,
+  } = props;
 
   const DEFAULT_AVATAR =
     process?.env?.client === "sancla"
@@ -30,36 +28,20 @@ export function Profile({
     <Error name="Profile">
       <S.Profile>
         <div className="avatar">
-          <img
-            src={photo ? process.env.NEXT_PUBLIC_API + photo : DEFAULT_AVATAR}
-          />
+          <img src={photo || DEFAULT_AVATAR} />
         </div>
 
         <div>
           {name && (
-            <>
-              <Modal
-                open={modal}
-                onClose={() => setModal(false)}
-                styles={{
-                  maxWidth: "1200px",
-                  padding: "20px",
-                  overflow: "auto",
-                }}
-              >
-                {process.env.clientName === "Sanclá" ? (
-                  <EditPatient id={id} setVisible={setModal} />
-                ) : (
-                  <EditTutor tutorId={id} setVisible={setModal} />
-                )}
-              </Modal>
-
-              <h1>
-                <span className="custom-link" onClick={() => setModal(true)}>
-                  {name}
-                </span>
-              </h1>
-            </>
+            <FormCreatePatient
+              trigger={
+                <h1>
+                  <span>{name}</span>
+                </h1>
+              }
+              patientId={props.id}
+              isModal
+            />
           )}
 
           {isHospitalized && (

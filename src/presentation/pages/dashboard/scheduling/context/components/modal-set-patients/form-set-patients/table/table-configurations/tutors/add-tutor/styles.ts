@@ -45,24 +45,14 @@ export const ModalContent = styled.div`
     margin: 15px 0 0 auto;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 15px;
-    justify-content: flex-end;
 
-    a,
-    button {
-      height: 40px !important;
-      background-color: ${(props) => props.theme.primaryColor} !important;
-      padding: 0 15px;
-      font-weight: 700;
-      color: #fff;
-      width: 100%;
-      border-radius: 5px;
-      border: 1px solid ${(props) => props.theme.primaryColor} !important;
-      text-decoration: unset !important;
-
-      &:hover {
-        opacity: 0.9;
-        color: #fff !important;
-      }
+    > div {
+      max-width: 160px;
+    }
+    
+    a,button {
+      max-width: 200px;
+      padding: 0;
     }
   }
 `;

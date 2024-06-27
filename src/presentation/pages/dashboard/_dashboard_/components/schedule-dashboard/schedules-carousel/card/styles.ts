@@ -12,9 +12,9 @@ export const ScheduleCard = styled("button")`
   z-index: 21;
   align-self: stretch;
   min-height: 380px;
+  
 
   &:hover {
-    transform: scale(1.01);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   }
 
@@ -139,4 +139,6 @@ export const ScheduleCard = styled("button")`
       text-align: center;
     }
   }
+
+
 `;

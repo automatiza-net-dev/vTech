@@ -80,18 +80,21 @@ export function AddBudgetNew({
   return (
     <S.AddBudget>
       <FormHandler
+        isStickyButtons
         disableEnterKeySubmitForm
         debugMode
         button={{ text: "CRIAR ORÇAMENTO" }}
         initialData={initialData}
         onSucess={async (data) => {
-
-          const verifyClientExist = patientTutor.data?.find(tutor => tutor.id === data.clientId);
+          const verifyClientExist = patientTutor.data?.find(
+            (tutor) => tutor.id === data.clientId
+          );
 
           const payload = {
             ...data,
             clientId: verifyClientExist ? data.clientId : "",
-            clientName: data.clientName || verifyClientExist ? "" : data.clientId,
+            clientName:
+              data.clientName || verifyClientExist ? "" : data.clientId,
             attendanceId,
             items: formatCart(data.cart),
             budgetDate: new Date().toISOString(),

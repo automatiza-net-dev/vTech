@@ -4,13 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
 
-import dynamic from "next/dynamic";
-const InfinityForgeProviders = dynamic(
-  () => import("infinity-forge").then((r) => r.InfinityForgeProviders),
-  {
-    ssr: false,
-  }
-);
+import { InfinityForgeProviders } from "infinity-forge"
 
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -90,6 +84,7 @@ export default function App({ Component, pageProps }) {
             onSignOut: (user: User) => {
               queryClient.clear();
               queryClient.removeQueries();
+
               if(user.isThirdParty) {
                 window.location.href = "https://portal.liftonefranquias.com.br/"
               }
@@ -98,9 +93,8 @@ export default function App({ Component, pageProps }) {
           } as any}
           InjectedRemotes={InfinityForgeInjections}
           Configurations={{
-            notification: false,
             chat: false,
-            styles: { Button: ButtonInfinityForge },
+            styles: { Button: ButtonInfinityForge,  },
           }}
           theme={themes[process.env.client || "sancla"]}
         >
@@ -142,3 +136,5 @@ export default function App({ Component, pageProps }) {
     </QueryClientProvider>
   );
 }
+
+

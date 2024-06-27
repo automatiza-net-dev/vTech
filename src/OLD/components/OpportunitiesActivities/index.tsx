@@ -6,14 +6,13 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
 import { useShowOpportunity } from "@/OLD/hooks/useOpportunities";
 import { useProfile } from "@/OLD/hooks/useProfile";
-import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
 import OpportunitiesForm from "@/OLD/components/Opportunities/FormChild";
 import Actions from "./Actions";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
-import { Table, notification } from "antd";
+import { Table, notification, Input } from "antd";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { opportunitiesActivitiesColumns } from "./Columns";
@@ -39,9 +38,6 @@ const OpActivities = memo(function OpActivities({
   const [createActVisible, setCreateActVisible] = useState(false);
   const [edit, setEdit] = useState(false);
 
-  
-
-  
   const router = useRouter();
 
   const newAcitivityPermission = useUserHasPermission("CRM06");
@@ -197,6 +193,39 @@ const OpActivities = memo(function OpActivities({
         footer={false}
         setReload={setReload}
       />
+      {opportunitiesData?.balance !== null && (
+        <div>
+          <hr />
+          {opportunitiesData?.balance === "Ganho" && (
+            <section className="gain-section">
+              <div>
+                <span>Valor ganho</span>
+                <Input disabled value={opportunity?.profitValue} />
+              </div>
+              <div>
+                <span>Motivo ganho</span>
+                <Input disabled value={opportunity?.reason?.reason} />
+              </div>
+              <div>
+                <span>Observação ganho</span>
+                <Input disabled value={opportunity?.resultObservation} />
+              </div>
+            </section>
+          )}
+          {opportunitiesData?.balance === "Perda" && (
+            <section className="loss-section">
+              <div>
+                <span>Motivo Perda</span>
+                <Input disabled value={opportunity?.reason?.reason} />
+              </div>
+              <div>
+                <span> Observações Perda </span>
+                <Input disabled value={opportunity?.resultObservation} />
+              </div>
+            </section>
+          )}
+        </div>
+      )}
       <hr />
       <div className="uk-flex uk-flex-between">
         <h4 className="uk-margin-remove">Atividades</h4>
@@ -224,6 +253,7 @@ const OpActivities = memo(function OpActivities({
         colaborators={colaborators}
         actTypes={actTypes}
       />
+      {console.log(opportunitiesData, "<<<")}
     </Container>
   );
 });

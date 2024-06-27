@@ -4,7 +4,7 @@ export const AddProduct = styled("div")`
   border-radius: 5px;
   border: 1px solid #e1e1e1;
   background: #fafafa;
-  padding: 15px 0 0;
+  padding-top: 15px;
   max-width: 1400px;
   width: 100%;
   margin: 0 auto 20px;

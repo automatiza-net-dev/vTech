@@ -13,6 +13,7 @@ import Print from "@/OLD/components/mini-components/Print";
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import { FormHandler, Select } from "infinity-forge";
+import moment from "moment";
 
 function FormChild({
   document,
@@ -28,6 +29,7 @@ function FormChild({
   print,
   remove,
   updateData,
+  registerPrint,
 }) {
   const [documentSearch, setDocumentSearch] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
@@ -104,7 +106,10 @@ function FormChild({
           </a>
         </div>
       ) : (
-        <div className="uk-margin-top">
+        <div
+          className="uk-margin-top"
+          style={{ maxHeight: "500px", overflowY: "auto" }}
+        >
           <Editor editorState={body} setEditorState={setBody} value={body} />
         </div>
       )}
@@ -119,6 +124,7 @@ function FormChild({
             onBeforePrint={() => {
               if (print) {
                 submit();
+                registerPrint && registerPrint();
               }
             }}
           />
@@ -150,6 +156,14 @@ function FormChild({
           </div>
         )}
       </div>
+      {updateData?.timeline_info?.print && (
+        <div style={{ marginTop: "20px" }}>
+          <strong>
+            Impresso por {updateData?.timeline_info?.print?.user_name} em{" "}
+            {moment(updateData?.timeline_info?.print.date).format("DD/MM/YYYY")}
+          </strong>
+        </div>
+      )}
     </form>
   );
 }

@@ -16,6 +16,7 @@ import moment from "moment";
 // Icons
 import { BiPlusMedical } from "react-icons/bi";
 import { GiConfirmed } from "react-icons/gi";
+import { FormCreatePatient } from "@/presentation";
 
 const Details = React.memo(function Single({
   selectedId,
@@ -139,7 +140,8 @@ const Details = React.memo(function Single({
                 >
                   Voltar
                 </Button>
-                <Button onClick={() => setEditVisible(true)}>Editar</Button>
+
+                <FormCreatePatient isModal patientId={patient?.id} trigger={ <Button>Editar</Button>} />
               </div>
             </div>
           </div>

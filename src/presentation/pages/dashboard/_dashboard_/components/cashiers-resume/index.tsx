@@ -1,8 +1,10 @@
-import { CashiersResume } from "@/domain";
+import { useLoadCashiersResume } from "@/presentation";
 
 import * as S from "./styles";
 
-export function CashiersResumeCards({ data }: { data: CashiersResume[] }) {
+export function CashiersResumeCards() {
+  const { data } = useLoadCashiersResume();
+
   return (
     <S.CashiersResumeCard>
       <h2>

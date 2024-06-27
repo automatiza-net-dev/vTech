@@ -1,28 +1,27 @@
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 
+import { Patient } from "@/domain";
 import { RemotePatient } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
 
-export function useLoadPatient() {
+export function useLoadPatient(patientId?: Patient["id"]) {
   const router = useRouter();
-  const patientId = router?.query?.id as string;
+  const ID = patientId || (router?.query?.id as string);
 
   async function fetcher() {
     const response = await container
       .get<RemotePatient>(patientTypes.RemotePatient)
-      .load({ patientId });
+      .load({ patientId: ID });
 
     return response;
   }
 
   return useQuery({
-    queryKey: ["RemotePatient", patientId],
+    queryKey: ["RemotePatient", ID],
     queryFn: fetcher,
     ...callApiOneTime,
-    enabled: !!(patientId && router.isReady),
+    enabled: !!(ID && router.isReady),
   });
 }
-
-

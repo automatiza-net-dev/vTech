@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { FormHandler, LoaderCircle, Select, TabContentProps } from "infinity-forge";
+import {
+  FormHandler,
+  LoaderCircle,
+  Select,
+  TabContentProps,
+} from "infinity-forge";
 
 import { useQuery } from "react-query";
 
@@ -19,7 +24,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
     null
   );
 
-  const actionsPatient = useActionsPatient()
+  const actionsPatient = useActionsPatient();
 
   const { data, isFetching } = useQuery({
     queryKey: ["LastUpdates", id],
@@ -45,6 +50,8 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
     (item) => item._id === timeLineSelected?._id
   );
 
+  console.log(timeLineSelected?.timeline_type?.description, "<<<")
+
   const ComponentSelected =
     timeLine &&
     timeLineSelected &&
@@ -53,13 +60,17 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
       (action) => action.value === timeLineSelected.timeline_type.description
     )?.SingleComponent;
 
-    useEffect(() => {
-      if(listTimeLine && listTimeLine.length > 0 && timeLineSelected) {
-        if(timeLineSelected.updatedAt !== timeLine?.updatedAt) {
-          setTimeLineSelected(listTimeLine.find(timeline => timeline._id === timeLineSelected._id) || null)
-        }
+  useEffect(() => {
+    if (listTimeLine && listTimeLine.length > 0 && timeLineSelected) {
+      if (timeLineSelected.updatedAt !== timeLine?.updatedAt) {
+        setTimeLineSelected(
+          listTimeLine.find(
+            (timeline) => timeline._id === timeLineSelected._id
+          ) || null
+        );
       }
-    }, [listTimeLine])
+    }
+  }, [listTimeLine]);
 
   return (
     <S.LastUpdates>

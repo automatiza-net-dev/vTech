@@ -14,7 +14,8 @@ export class RemotePatient
     domain.LoadAllVaccines,
     domain.LoadLastUpdates,
     domain.ChangeWeight,
-    domain.CreatePatient
+    domain.CreatePatient,
+    domain.RequestPrinting
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -32,7 +33,7 @@ export class RemotePatient
 
   async create(params: domain.CreatePatient.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`n-timeline/weight`),
+      url: this.makeApiURL.make(`patients`),
       method: "post",
       body: params,
       headers: {
@@ -41,6 +42,19 @@ export class RemotePatient
     });
 
     return response as domain.CreatePatient.Model;
+  }
+
+  async edit(params: domain.EditPatient.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`patients/` + params.id),
+      method: "put",
+      body: params,
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=something",
+      },
+    });
+
+    return response as domain.EditPatient.Model;
   }
 
   async loadBeds(params: domain.LoadBeds.Params) {
@@ -90,5 +104,15 @@ export class RemotePatient
     });
 
     return response;
+  }
+
+  async requestPrinting(params: domain.RequestPrinting.Params) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`product-documents/print`),
+      method: "post",
+      body: params,
+    });
+
+    return {};
   }
 }

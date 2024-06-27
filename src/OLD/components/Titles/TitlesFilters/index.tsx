@@ -54,12 +54,14 @@ const TitlesFilters = memo(function TitlesFilters({
       tutors?.map((tutor) => ({
         ...tutor,
         value: tutor?.name,
+        key: tutor?.id
       })) || [];
 
     const formattedSuppliers = Array.isArray(suppliers)
       ? suppliers.map((supplier) => ({
           ...supplier,
           value: supplier?.name,
+          key: supplier?.id
         }))
       : [];
 
@@ -114,7 +116,7 @@ const TitlesFilters = memo(function TitlesFilters({
               }}
               className="date-component"
             />
-            à
+
             <DatePicker
               slotProps={{ textField: { variant: "standard" } }}
               value={filters?.toIssue}
@@ -161,7 +163,7 @@ const TitlesFilters = memo(function TitlesFilters({
               }
               className="date-component"
             />
-            à
+
             <DatePicker
               slotProps={{ textField: { variant: "standard" } }}
               value={filters?.toExpiration}
@@ -208,7 +210,7 @@ const TitlesFilters = memo(function TitlesFilters({
               }
               className="date-component"
             />
-            à{" "}
+
             <DatePicker
               slotProps={{ textField: { variant: "standard" } }}
               value={filters?.toPayment}
@@ -239,9 +241,9 @@ const TitlesFilters = memo(function TitlesFilters({
           <label>Data competência</label>
           <InputBox>
             <DatePicker
+              className="date-component"
               slotProps={{ textField: { variant: "standard" } }}
               required
-              className="uk-width-1-1"
               format="MM/YYYY"
               picker="month"
               value={filters?.competence}
@@ -280,7 +282,7 @@ const TitlesFilters = memo(function TitlesFilters({
             <label>Nota Fiscal</label>
             <InputBox>
               <Input
-              className="custom-input"
+                className="custom-input"
                 value={filters?.fiscalNote}
                 onChange={(e) =>
                   setFilters({ ...filters, fiscalNote: e.target.value })
@@ -293,7 +295,7 @@ const TitlesFilters = memo(function TitlesFilters({
           <label>Nº Comprovante / NSU</label>
           <InputBox>
             <Input
-            className="custom-input"
+              className="custom-input"
               onChange={(e) => setFilters({ ...filters, nsu: e.target.value })}
               value={filters?.nsu}
             />

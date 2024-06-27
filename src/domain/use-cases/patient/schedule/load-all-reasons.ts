@@ -6,12 +6,12 @@ export type Reason = {
   id: string;
   reason: string;
   requires_observation: boolean;
-  type: "CA";
+  type: "CA" | "RA" | "REATIVAR" | "TROCA";
 };
 
 export namespace LoadAllReasons {
   export type Params = {
-    type: "CA" | "RA";
+    type: Reason["type"];
   };
 
   export type Model = Reason[];

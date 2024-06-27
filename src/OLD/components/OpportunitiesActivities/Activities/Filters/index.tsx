@@ -24,9 +24,6 @@ const Filters = memo(function Filters({
 }) {
   const [values, setValues] = useState({});
 
-  
-
-  
   const viewAllActivitiesPermission = useUserHasPermission("CRM09");
 
   return (
@@ -45,13 +42,14 @@ const Filters = memo(function Filters({
           <InputBox>
             <DatePicker
               format="DD/MM/YYYY"
+              className="custom-date-component"
               slotProps={{ textField: { variant: "standard" } }}
               value={filters?.fromDate}
               onChange={(val) => setFilters({ ...filters, fromDate: val })}
             />
             &nbsp;à&nbsp;
             <DatePicker
-              className="uk-margin-right"
+              className="uk-margin-right custom-date-component"
               slotProps={{ textField: { variant: "standard" } }}
               format="DD/MM/YYYY"
               value={filters?.toDate}
@@ -106,11 +104,6 @@ const Filters = memo(function Filters({
               className="uk-width-1-1"
               value={filters?.status}
               onChange={(val) => {
-                if (val === "all") {
-                  const obj = { ...filters };
-                  delete obj?.status;
-                  return setFilters(obj);
-                }
                 setFilters({ ...filters, status: val });
                 setReload((prv) => !prv);
               }}
@@ -163,7 +156,9 @@ const Filters = memo(function Filters({
           </div>
         )}
         <div className="uk-width-1-3 uk-margin-small-right">
-          <label>Nome {process.env.client !== "liftone" ? "Tutor" : "Cliente"}</label>
+          <label>
+            Nome {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
+          </label>
           <InputBox>
             <Input
               value={filters?.contactName}

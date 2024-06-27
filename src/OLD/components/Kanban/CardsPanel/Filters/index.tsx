@@ -19,11 +19,13 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { MdOutlineClear } from "react-icons/md";
 
 const Filters = memo(function Filters({ filters, setFilters, setReload }) {
-
-
   const [values, setValues] = useState({});
 
-  const { patients } = usePatients(false, false, process.env.client !== "sancla");
+  const { patients } = usePatients(
+    false,
+    false,
+    process.env.client !== "sancla"
+  );
   const { colaborators } = useColaborators();
   const { businessUnits } = useBusinessUnitsByUser(false);
   const { user } = useProfile();
@@ -49,18 +51,21 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
     <section className="uk-flex">
       <div className="uk-margin-right uk-width-1-4">
         <InputBox>
-          <label>{process.env.client === "liftone" ? "Cliente" : "Tutor"}</label>
+          <label>
+            {process.env.client === "liftone" ? "Cliente" : "Tutor"}
+          </label>
           <Input
             value={filters?.contactName}
             onChange={(e) =>
               setFilters((prv) => ({ ...prv, contactName: e.target.value }))
             }
           />
-    
         </InputBox>
         <InputBox className="uk-width-1-1 uk-margin-small-top">
           <label>Dt Interação:&nbsp;</label>
           <DatePicker
+            style={{ fontSize: "14px" }}
+            className="custom-datepicker"
             key="dateFrom"
             format={"DD/MM/YYYY"}
             slotProps={{ textField: { variant: "standard" } }}
@@ -75,7 +80,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           &nbsp;à&nbsp;
           <DatePicker
             key="dateTo"
-            className="uk-margin-right"
+            className="uk-margin-right custom-datepicker"
             format={"DD/MM/YYYY"}
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.dateTo}
@@ -141,6 +146,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           <label>Dt Abertura:&nbsp;</label>
           <DatePicker
             format={"DD/MM/YYYY"}
+            className="custom-datepicker"
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.openingFrom}
             onChange={(val) =>
@@ -152,7 +158,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           />
           &nbsp;à&nbsp;
           <DatePicker
-            className="uk-margin-right"
+            className="uk-margin-right custom-datepicker"
             format={"DD/MM/YYYY"}
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.openingTo}
@@ -205,6 +211,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
         <InputBox className="uk-margin-small-top uk-width-1-1">
           <label>Dt. contato:&nbsp;</label>
           <DatePicker
+            className="custom-datepicker"
             format={"DD/MM/YYYY"}
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.contactFrom}
@@ -217,7 +224,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           />
           &nbsp;à&nbsp;
           <DatePicker
-            className="uk-margin-right"
+            className="uk-margin-right custom-datepicker"
             format={"DD/MM/YYYY"}
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.contactTo}

@@ -107,7 +107,6 @@ export default  function Create({
           onCancel={() => setPatientListVisible(false)}
           footer={null}
         >
-          {" "}
           <Patient
             setPayload={setData}
             payload={data}

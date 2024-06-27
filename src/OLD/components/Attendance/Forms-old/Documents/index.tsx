@@ -7,13 +7,17 @@ import { documentServices } from "@/OLD/services/document.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 import { textReplaceService } from "@/OLD/services/textReplace.service";
 
+import { RemotePatient } from "@/data";
+import { container, patientTypes } from "@/container";
+
 // Hooks
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
-import { Modal, notification } from "antd";
+import { notification } from "antd";
 import FormChild from "./FormChild";
+import { useToast } from "infinity-forge";
 
 // utils
 import moment from "moment";
@@ -35,9 +39,26 @@ export default function Documents({
   const [documentSearch, setDocumentSearch] = useState("");
   const [value, setValue] = useState(false);
 
+  const { createToast } = useToast();
+
   const patient = useLoadPatient();
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  async function registerPrint() {
+    try {
+      await container.get<RemotePatient>(patientTypes.RemotePatient).print(
+        updateData?.timeline_info?.$meta?.bill_document_id
+          ? {
+              billDocumentId:
+                updateData?.timeline_info?.$meta?.bill_document_id,
+            }
+          : { timelineId: updateData?._id }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const replaceText = (id, str) => {
     setLoading(true);
@@ -217,6 +238,7 @@ export default function Documents({
       print={submitUpdate}
       remove={() => removeData(updateData?._id)}
       updateData={updateData}
+      registerPrint={registerPrint}
     />
   );
 }

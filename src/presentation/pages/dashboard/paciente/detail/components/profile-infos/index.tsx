@@ -1,21 +1,18 @@
-import { useState } from "react";
-
-import { Edit as EditTutor } from "@/OLD/components/Tutor/Edit";
-import { DetailCard, Error, IDetailCard, Modal } from "infinity-forge";
+import moment from "moment";
+import { DetailCard, Error, IDetailCard } from "infinity-forge";
 
 import { Patient } from "@/domain";
+import { FormCreateTutor } from "@/presentation";
+
 import { Profile } from "./profile";
 
 import * as S from "./styles";
-import moment from "moment";
 
 export type DetailCard = {
   active: boolean;
 } & IDetailCard;
 
 export function ProfileInfos({ patient }: { patient: Patient }) {
-  const [modal, setModal] = useState(false);
-
   const details: DetailCard[] = [
     {
       id: 1,
@@ -95,29 +92,15 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
             {details?.map((detail) => {
               if (detail.subTitle === "Tutor Ativo" && detail.active) {
                 return (
-                  <>
-                    <Modal
-                      open={modal}
-                      styles={{
-                        maxWidth: "1200px",
-                        padding: "20px",
-                        overflow: "auto",
-                      }}
-                      onClose={() => setModal(false)}
-                    >
-                      <EditTutor
-                        tutorId={patient?.tutor?.id}
-                        setVisible={setModal}
-                      />
-                    </Modal>
-
-                    <span
-                      onClick={() => setModal(true)}
-                      className="custom-link"
-                    >
-                      <DetailCard key={detail.id} {...detail} />
-                    </span>
-                  </>
+                  <FormCreateTutor
+                    isModal
+                    tutorId={patient.tutor.id}
+                    trigger={
+                      <span className="custom-link" style={{ width: "100%", display: "block", textAlign: "left" }}>
+                        <DetailCard key={detail.id} {...detail} />
+                      </span>
+                    }
+                  />
                 );
               }
 

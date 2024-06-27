@@ -1,6 +1,6 @@
-import { Patient, SystemUser } from "@/domain";
+import { Patient, SystemUser, Vaccine } from "@/domain";
 
-export type Vaccine = {
+export type ScheduleVaccine = {
   id: string;
   created_at: string;
   calendars: {
@@ -29,4 +29,5 @@ export type Vaccine = {
   patient: Patient;
   user: SystemUser["user"];
   schedule: string | null;
+  vaccine: Vaccine;
 };

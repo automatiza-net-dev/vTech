@@ -143,13 +143,7 @@ export function VaccinesList() {
           />
         </Input>
         <div className="uk-margin-small-top">
-          <div
-            onClick={() =>
-              !canCreateVaccinePermission
-                ? notification.error({ message: "Ação não permitida" })
-                : router.push("/dashboard/vacinas/cadastrar")
-            }
-          >
+          <div onClick={() => router.push("/dashboard/vacinas/cadastrar")}>
             <Button disabled={!canCreateVaccine}>Adicionar</Button>
           </div>
         </div>

@@ -83,9 +83,8 @@ function DeathForm({ modal = false, setModal = () => ({}) }) {
     >
       <>
         <div className="uk-width-1-1">
-          {console.log(vetsQuery.data)}
           <label>Veterinário responsável</label>
-          {vetsQuery.data.length > 0 && (
+          {vetsQuery?.data && vetsQuery?.data?.length > 0 && (
             <FormHandler>
               <Select
                 menuPlacement="bottom"

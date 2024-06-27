@@ -11,7 +11,12 @@ export const InputBox = styled.div`
   input,
   .date-component,
   .select-component {
-    border: none;
     width: 100%;
+  }
+
+  .custom-datepicker {
+    input {
+      font-size: 14px;
+    }
   }
 `;

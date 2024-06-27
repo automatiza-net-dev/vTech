@@ -14,7 +14,7 @@ export function useDeleteVaccine(params: DeleteVaccine.Params) {
   async function fetcher() {
     await container
       .get<RemoteVaccine>(patientTypes.RemoteVaccine)
-      .delete(params);
+      .deleteVaccine(params);
   }
 
   return useMutation({

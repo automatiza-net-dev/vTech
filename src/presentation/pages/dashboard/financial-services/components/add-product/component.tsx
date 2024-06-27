@@ -65,7 +65,7 @@ export function AddProduct() {
   }
 
   return (
-    <S.AddProduct>
+    <S.AddProduct style={{ minHeight: !cart || cart.length < 4 ? 335 : "unset" }}>
       <SelectProduct />
 
       {cart && (
@@ -126,7 +126,7 @@ export function AddProduct() {
                       name={pathName + `.quantity`}
                       onChangeInput={(value) => {
                         handleInputChange({
-                          value,
+                          value: value as string,
                           pathName,
                           indexProduct,
                           indexVariation,
@@ -141,7 +141,7 @@ export function AddProduct() {
                       readOnly={!isPossibleChangePricesProducs}
                       onChangeInput={(value) => {
                         handleInputChange({
-                          value,
+                          value: value as string,
                           pathName,
                           indexProduct,
                           indexVariation,
@@ -165,7 +165,7 @@ export function AddProduct() {
                           indexProduct,
                           fieldName: "discountValue",
                           value:
-                            Number(value) > maxDiscount ? maxDiscount : value,
+                            Number(value) > maxDiscount ? maxDiscount : value as string,
                         });
 
                         if (Number(value) > maxDiscount) {

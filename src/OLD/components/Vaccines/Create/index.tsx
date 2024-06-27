@@ -132,7 +132,6 @@ const CreateVaccine = memo(function CreateVaccine() {
                 onChange={(e) => setData({ ...data, name: e.target.value })}
               />
             </div>
-
             <div className="uk-width-1-3">
               <label>Descrição</label>
               <Input

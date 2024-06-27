@@ -6,12 +6,33 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 import * as domain from "@/domain";
 
 @injectable()
-export class RemoteTutor implements domain.CreateTutor, domain.AssignTutor, domain.LoadAllPatientTutor, domain.LoadTutorOrigins, domain.SetPhone, domain.SetMainTutor {
+export class RemoteTutor
+  implements
+    domain.SetPhone,
+    domain.CreateTutor,
+    domain.AssignTutor,
+    domain.SetMainTutor,
+    domain.CreateContact,
+    domain.LoadTutorOrigins,
+    domain.LoadAllProfessions,
+    domain.LoadAllPatientTutor,
+    domain.LoadTutor,
+    domain.EditTutor
+{
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
     private readonly httpClient: domain.HttpClient<any>
   ) {}
+
+  async load(params: domain.LoadTutor.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`patient-tutors/display/${params.id}`),
+      method: "get",
+    });
+
+    return response as domain.LoadTutor.Model;
+  }
 
   async loadAll(params: domain.LoadAllPatientTutor.Params) {
     const response = await this.httpClient.request({
@@ -25,14 +46,30 @@ export class RemoteTutor implements domain.CreateTutor, domain.AssignTutor, doma
 
   async create(params: domain.CreateTutor.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make("patient-tutors"),
+      url: this.makeApiURL.make(`patient-tutors`),
       method: "post",
       body: params,
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=something",
+      },
     });
 
     return response as domain.CreateTutor.Model;
   }
-  
+
+  async update(params: domain.EditTutor.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`patient-tutors/${params.id}`),
+      method: "put",
+      body: params,
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=something",
+      },
+    });
+
+    return response as domain.EditTutor.Model;
+  }
+
   async loadOrigins() {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("client-origins"),
@@ -71,5 +108,24 @@ export class RemoteTutor implements domain.CreateTutor, domain.AssignTutor, doma
     });
 
     return response as domain.SetPhone.Model;
+  }
+
+  async loadAllProfessions() {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make("professions"),
+      method: "get",
+    });
+
+    return response as domain.LoadAllProfessions.Model;
+  }
+
+  async createContact(params: domain.CreateContact.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make("patient-contacts/batch"),
+      method: "post",
+      body: params,
+    });
+
+    return response;
   }
 }

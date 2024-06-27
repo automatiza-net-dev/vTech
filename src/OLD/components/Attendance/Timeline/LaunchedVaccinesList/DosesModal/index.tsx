@@ -20,6 +20,7 @@ export function DosesModal({
   changeTab,
   setActiveTab = false,
   data = false,
+  setReload,
 }: any) {
   const [vaccineData, setVaccineData] = useState({});
   const [calendars, setCalendars] = useState([]);

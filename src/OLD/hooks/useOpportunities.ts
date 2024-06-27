@@ -178,6 +178,10 @@ export const useShowActivities = (filters, reload, fetch) => {
       };
     }
 
+    if (newObj.status === "all") {
+      delete newObj.status;
+    }
+
     opportunitiesService
       .getAllActivities(newObj)
       .then((res) => setAllActivities(res.data))

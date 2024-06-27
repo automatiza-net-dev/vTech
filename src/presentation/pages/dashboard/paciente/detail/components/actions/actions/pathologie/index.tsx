@@ -7,6 +7,7 @@ import {
   useToast,
 } from "infinity-forge";
 import moment from "moment";
+import { useQueryClient } from "react-query";
 
 import { RemotePatientAnimal } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -16,29 +17,50 @@ import * as Type from "../dropdown-item";
 
 import * as S from "./styles";
 
-export function Pathologie({ setModal }: Type.DropdownComponentProps) {
-
+export function Pathologie({
+  setModal,
+  _id,
+  timeline_info,
+}: Type.DropdownComponentProps) {
   const me = useMe();
   const patient = useLoadPatient();
-  const { createToast} = useToast();
+  const { createToast } = useToast();
   const { data, isFetching } = useLoadAllPathologies();
+
+  const queryClient = useQueryClient();
 
   return (
     <Error name="Pathologie">
       <S.Patology>
         <FormHandler
+          isStickyButtons
+          initialData={timeline_info}
           button={{ text: "Salvar" }}
           onSucess={async (data) => {
             const payload = {
               ...data,
+              id: _id,
               tag: patient.data?.id,
               realizedAt: moment(),
               technicianId: me.data?.user.id,
             };
 
-            await container.get<RemotePatientAnimal>(TypesAutomatiza.RemotePatientAnimal).addPathologieInTimeLine(payload)
+         await container
+              .get<RemotePatientAnimal>(TypesAutomatiza.RemotePatientAnimal)
+              [
+                !timeline_info
+                  ? "addPathologieInTimeLine"
+                  : "updatePathologieInTimeLine"
+              ](payload);
 
-            createToast({ message: "Patologia registrada com sucesso!", status: "success" })
+            queryClient.invalidateQueries({
+              queryKey: ["LastUpdates", patient.data?.id],
+            });
+
+            createToast({
+              message: "Patologia registrada com sucesso!",
+              status: "success",
+            });
 
             setModal && setModal(false);
           }}
@@ -48,10 +70,12 @@ export function Pathologie({ setModal }: Type.DropdownComponentProps) {
             name="pathology"
             placeholder="Patologia"
             onlyOneValue
-            options={data?.map((opt) => ({
-              label: opt.description,
-              value: opt.id,
-            })) || []}
+            options={
+              data?.map((opt) => ({
+                label: opt.description,
+                value: opt.id,
+              })) || []
+            }
             loading={isFetching}
           />
 

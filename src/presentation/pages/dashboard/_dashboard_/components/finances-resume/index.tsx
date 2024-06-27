@@ -1,15 +1,18 @@
 import { FinancesResume } from "@/domain";
+import { useLoadFinancesResume } from "@/presentation";
 
 import * as S from "./styles";
 
-export function FinancesResumeCards({ data }: { data: FinancesResume[] }) {
+export function FinancesResumeCards() {
+  const {data} = useLoadFinancesResume();
+
   return (
     <S.FinancesResume>
       <h2>
         <strong>Financeiro</strong>
       </h2>
       <div>
-        {data.map((item, i) => (
+        {data?.map((item, i) => (
           <section key={i}>
             <div className="title-header">
               <h4>

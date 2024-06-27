@@ -66,6 +66,7 @@ export function SelectProduct() {
   return (
     <div className="select_product">
       <Select
+        menuPlacement="bottom"
         onlyOneValue
         options={options}
         name="product_selected"

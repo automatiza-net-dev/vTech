@@ -221,7 +221,7 @@ export default function ShowBudget({ budget, setReload }: any) {
               >
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <span className="uk-text-small">Cliente</span>
-                  <span className="uk-text-default">{data?.client_name}</span>
+                  <span className="uk-text-default">{data?.client?.name}</span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
@@ -238,7 +238,7 @@ export default function ShowBudget({ budget, setReload }: any) {
                     </span>
                   </div>
                 )}
-                
+
                 {process.env.client !== "liftone" && (
                   <>
                     <div className="uk-flex uk-flex-column uk-width-1-1">

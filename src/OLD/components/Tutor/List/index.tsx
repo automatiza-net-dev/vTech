@@ -33,13 +33,14 @@ import {
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import { Single } from "../Single";
 import { Edit } from "../Edit";
-import { CreatePatient } from "@/OLD/components/Patient/Create";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { FormCreatePatient, FormCreateTutor } from "@/presentation";
+import { Icon, Modal as InfinityForgeModal } from "infinity-forge";
 
 export function List({
   filters,
@@ -357,7 +358,7 @@ export function List({
                       role="img"
                       fill="currentColor"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="add-icon" 
+                      className="add-icon"
                     >
                       <title>PlusSquare icon</title>
                       <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
@@ -395,32 +396,12 @@ export function List({
             diabetes: tutor?.diabetes ? "Sim" : "Não",
             actions: (
               <div className="uk-flex uk-flex-around">
+                <FormCreateTutor
+                  tutorId={tutor.id}
+                  isModal
+                  trigger={<Icon name="IconEdit" fill="#000" />}
+                />
 
-                {/*process.env.client === "sancla" && (
-                  <div>
-                    {!router.query.page?.includes("tutor") &&
-                      (tutors && tutor?.is_main ? (
-                        <Tag color="blue">Tutor Ativo</Tag>
-                      ) : (
-                        <Tooltip title="Definir tutor ativo">
-                          <GiConfirmed
-                            onClick={() => setActiveTutor(tutor?.id)}
-                            style={{ cursor: "pointer" }}
-                          />
-                        </Tooltip>
-                      ))}
-                  </div>
-                )*/}
-
-                {canEditTutor && (
-                  <EditTwoTone
-                    className="uk-margin-small-top"
-                    onClick={() => {
-                      setSelectedId(tutor?.id);
-                      setEditVisible(true);
-                    }}
-                  />
-                )}
                 {canDeleteTutor && (
                   <Delete id={tutor.id} reload={reload} setReload={setReload} />
                 )}
@@ -479,6 +460,25 @@ export function List({
             ),
         }}
       />
+      <InfinityForgeModal
+        open={createPetVisible}
+        onClose={() => setCreatePetVisible(false)}
+        styles={{
+          maxWidth: "1400px",
+        }}
+      >
+        <FormCreatePatient
+          onSuccess={() => setCreatePetVisible(false)}
+          initialDataForm={
+            selectedTutor && {
+              holders: [{ id: selectedTutor?.id, main: true }],
+            }
+          }
+          isModal={false}
+          origin="aa"
+        />
+      </InfinityForgeModal>
+
       {detailsVisible && (
         <Modal
           visible={detailsVisible}
@@ -505,19 +505,7 @@ export function List({
           <Edit tutorId={selectedId} setVisible={setEditVisible} />
         </Modal>
       )}
-      {createPetVisible && (
-        <Modal
-          visible={createPetVisible}
-          onCancel={() => setCreatePetVisible(false)}
-          width={1200}
-          footer={null}
-        >
-          <CreatePatient
-            setVisible={setCreatePetVisible}
-            tutorToVinc={selectedTutor?.id}
-          />
-        </Modal>
-      )}
+
       {vincPetVisible && (
         <Modal
           visible={vincPetVisible}

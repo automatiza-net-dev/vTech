@@ -117,7 +117,7 @@ function Vaccines({
           }}
         >
           <div>
-            <label>Vacinas - Protocolos</label>
+            <label>Protocolos</label>
             <br />
             <Select
               className="uk-width-1-1"

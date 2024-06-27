@@ -2,6 +2,22 @@ import styled from "styled-components";
 
 export const AddSale = styled("div")`
   height: 100%;
+  width: 100%;
+  min-width: 700px;
+  height: 100%;
+
+  form {
+    height: 100%;
+
+  > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 1;
+    height: -webkit-fill-available;
+  }
+  }
 
   h2 {
     margin-bottom: 20px;

@@ -6,13 +6,13 @@ export const usePatients = (reload = false, filters = false, fetch = true) => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = () => {
+  const fetchData =async  () => {
     if (filters?.noSearch || !fetch) {
       return;
     }
 
     setLoading(true);
-    petsService
+   await petsService
       .getPatients(filters)
       .then((res) => {
         setPatients(res);

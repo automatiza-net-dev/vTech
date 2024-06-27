@@ -1,4 +1,4 @@
-import { Race, Specie } from "./entities";
+import { Race, SpecieAnimal } from "./entities";
 
 export type LoadAllRaces = {
   loadAllRaces: (params: LoadAllRaces.Params) => Promise<LoadAllRaces.Model>;
@@ -7,7 +7,7 @@ export type LoadAllRaces = {
 export namespace LoadAllRaces {
   export type Params = {
     description?: string;
-    specie?: Specie["id"];
+    specie?: SpecieAnimal["id"];
   };
 
   export type Model = Race[];

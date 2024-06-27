@@ -1,10 +1,5 @@
-import { VaccinesList } from "@/OLD/components/Vaccines";
-import { LayoutDashboard } from "@/presentation";
+import { LayoutDashboard, VaccinesProtocols } from "@/presentation";
 
 export default function VaccinesPage() {
-  return (
-    <LayoutDashboard>
-      <VaccinesList />
-    </LayoutDashboard>
-  );
+  return <VaccinesProtocols type={"vaccine"} />;
 }

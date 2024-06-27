@@ -30,7 +30,7 @@ export function SidebarTabs({ event }: { event: Event }) {
               </div>
 
               {data?.reschedules?.map((info) => (
-                <div className="schedule-content">
+                <div className="schedule-content font-16-regular" key={info?.created_at}>
                   <p>
                     Data: {moment(info?.created_at).format("DD-MM-YYYY HH:mm")}
                   </p>
@@ -65,7 +65,7 @@ export function SidebarTabs({ event }: { event: Event }) {
               </div>
 
               {data?.contacts?.map((info) => (
-                <div className="schedule-content">
+                <div className="schedule-content font-16-regular" key={info?.contact_date}>
                   <p>
                     Data:{" "}
                     {moment(info?.contact_date).format("DD-MM-YYYY HH:mm")}
@@ -97,8 +97,8 @@ export function SidebarTabs({ event }: { event: Event }) {
                 <h5>Status:</h5>
               </div>
 
-              {data?.statusChanges?.map((info) => (
-                <div className="schedule-content">
+              {data?.statusChanges?.reverse()?.map((info) => (
+                <div className="schedule-content font-16-regular" key={info.id}>
                   <p>
                     Data: {moment(info?.created_at).format("DD-MM-YYYY HH:mm")}
                   </p>

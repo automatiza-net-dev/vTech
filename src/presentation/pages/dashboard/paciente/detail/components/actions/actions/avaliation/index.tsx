@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import {
   Error,
   Input,
+  Modal,
   useToast,
   Textarea,
   Accordion,
@@ -11,7 +12,6 @@ import {
   TextEditor,
   FormHandler,
   useAuthAdmin,
-  Modal,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
@@ -44,7 +44,6 @@ export function Avaliation(props: DropdownComponentProps) {
   const user = GetUser<User>();
 
   const timeLine = attendance || props;
-
   const patientId = router.query.id as string;
   const attendanceId = timeLine.timeline_info?.attendance?.id;
   const scheduleId = router.query?.scheduleId as string | undefined;
@@ -88,14 +87,14 @@ export function Avaliation(props: DropdownComponentProps) {
       if (itemAlredyExist) {
         return lastUpdates.map((timeline) => {
           if (timeline._id === attendanceResponse._id) {
-            return {...attendanceResponse, updatedAt: timeline.updatedAt};
+            return { ...attendanceResponse, updatedAt: timeline.updatedAt };
           }
 
           return timeline;
         });
       }
 
-      return [attendanceResponse , ...lastUpdates] as TimeLine[];
+      return [attendanceResponse, ...lastUpdates] as TimeLine[];
     });
 
     if (scheduleDate) {
@@ -133,10 +132,9 @@ export function Avaliation(props: DropdownComponentProps) {
   return (
     <Error name="Avaliation">
       <S.Avaliation>
-        <h2>{process.env.client === "sancla" ? "Atendimento" : "Avaliação"}</h2>
-
         {!modal && (
           <FormHandler
+            isStickyButtons
             debugMode
             cleanFieldsOnSubmit={false}
             initialData={initialData}
@@ -165,7 +163,7 @@ export function Avaliation(props: DropdownComponentProps) {
                     }
                   );
                 },
-                props: { text: "Excluir" },
+                props: { text: "EXCLUIR" },
                 active: !!props.timeline_id,
               },
               {
@@ -189,18 +187,11 @@ export function Avaliation(props: DropdownComponentProps) {
             disableEnterKeySubmitForm
           >
             <div className="row">
-              <div>
-                <label>Tipo atendimento</label>
+              <SelectTypeService
+                initialService={timeLine?.timeline_info?.service?.id}
+              />
 
-                <SelectTypeService
-                  initialService={timeLine?.timeline_info?.service?.id}
-                />
-              </div>
-
-              <div>
-                <label>Resumo</label>
-                <Input name="resume" placeholder="Resumo" />
-              </div>
+              <Input label="Resumo" name="resume" placeholder="Resumo" />
             </div>
 
             <TextEditor name="protocol" className="custom-editor" />
@@ -214,13 +205,11 @@ export function Avaliation(props: DropdownComponentProps) {
                   />
                 </Accordion>
               ) : (
-                <>
-                  <label>Observações internas</label>
-                  <Textarea
-                    name="internalObservation"
-                    placeholder="Observações internas"
-                  />
-                </>
+                <Textarea
+                  label="Observações internas"
+                  name="internalObservation"
+                  placeholder="Observações internas"
+                />
               )}
             </div>
 
@@ -239,8 +228,10 @@ export function Avaliation(props: DropdownComponentProps) {
         )}
 
         <Modal
-          styles={{ height: "95vh", maxWidth: "1400px", overflow: "auto" }}
-          stylesContent={{ height: "100%" }}
+          styles={{
+            maxWidth: "1400px",
+            width: "calc(100% - 30px)",
+          }}
           open={modal}
           onClose={() => setModal(false)}
         >

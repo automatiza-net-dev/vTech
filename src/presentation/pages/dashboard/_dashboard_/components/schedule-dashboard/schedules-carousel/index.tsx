@@ -6,24 +6,6 @@ import { ScheduleCard } from "./card";
 
 import * as S from "./styles";
 
-function SampleNextArrow(props) {
-  const { className, onClick } = props;
-  return (
-    <div className={className} onClick={onClick}>
-      <Icon name="NavRightIcon" />
-    </div>
-  );
-}
-
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div className={className} onClick={onClick}>
-      <Icon name="NavLeftIcon" />
-    </div>
-  );
-}
-
 export function SchedulesCarousel({
   event,
   confirmed,
@@ -31,57 +13,53 @@ export function SchedulesCarousel({
   event: Event[];
   confirmed: boolean;
 }) {
-  const { Carousel } = useCarousel<Event>({
-    title: confirmed ? "Consultas a confirmar" : "Consultas já confirmadas",
-    data: event,
+  const { Carousel, Next, Prev } = useCarousel<Event>({
+    items: event,
     Component: ScheduleCard,
-    settings: {
-      slidesToShow: 5,
-      infinite: false,
-      centerMode: false,
-      draggable: false,
-      arrows: true,
-      slidesToScroll: event.length > 5 ? 5 : 1,
-      spacing: 0,
-      nextArrow: <SampleNextArrow />,
-      prevArrow: <SamplePrevArrow />,
-      responsive: [
-        {
-          breakpoint: 1600,
-          settings: {
-            slidesToShow: 4,
-            slidesToScroll: event.length > 4 ? 4 : 1,
-          },
+    id: "ScheduleDashboard",
+    config: {
+      slidesPerView: 5,
+      loop: false,
+      spaceBetween: 20,
+      breakpoints: {
+        1600: {
+          slidesPerView: 4,
         },
-        {
-          breakpoint: 1200,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: event.length > 3 ? 3 : 1,
-          },
+        1200: {
+          slidesPerView: 3,
         },
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: event.length > 2 ? 2 : 1,
-          },
+        1024: {
+          slidesPerView: 2,
         },
-        {
-          breakpoint: 768,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-          },
+        768: {
+          slidesPerView: 1,
         },
-      ],
+      },
     },
   });
+
+  if (!event || event.length === 0) {
+    return <></>;
+  }
 
   return (
     <Error name="ConfirmedSchedules">
       <S.SchedulesCarousel>
-        <Carousel />
+        <h3 className="font-20-bold">
+          {confirmed ? "Consultas a confirmar" : "Consultas já confirmadas"}
+        </h3>
+
+          <Carousel />
+
+          <div className="navigation">
+            <Prev>
+              <Icon name="NavLeftIcon" />
+            </Prev>
+
+            <Next>
+              <Icon name="NavRightIcon" />
+            </Next>
+        </div>
       </S.SchedulesCarousel>
     </Error>
   );

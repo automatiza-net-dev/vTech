@@ -1,8 +1,9 @@
 // @ts-nocheck
+import { memo, useCallback, useEffect, useState } from "react";
+
 import { Form, Input, Modal, notification, Select, Upload } from "antd";
 import { useRouter } from "next/router";
-import { memo, useCallback, useEffect, useState } from "react";
-import { useQuery, useQueryClient, useMutation } from "react-query";
+import {  useMutation } from "react-query";
 import { petsService } from "@/OLD/services/patient.service";
 import dynamic from "next/dynamic";
 
@@ -14,8 +15,6 @@ export const NewPatient = memo(({ isVisible, close }) => {
   const [photo, setPhoto] = useState();
   const [fileList, setFileList] = useState([]);
 
-  const queryClient = useQueryClient();
-
   const { loading, mutate } = useMutation(
     (payload) => petsService.createPatient(payload),
     {
@@ -26,7 +25,7 @@ export const NewPatient = memo(({ isVisible, close }) => {
         });
         close();
       },
-      onError: (error) => {
+      onError: () => {
         notification.error({
           message: "Erro",
           message: "Erro ao cadastrar paciente",

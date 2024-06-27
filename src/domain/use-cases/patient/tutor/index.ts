@@ -1,3 +1,5 @@
+export * from "./edit"
+export * from "./load"
 export * from "./tutor"
 export * from "./create";
 export * from "./set-main";
@@ -5,3 +7,5 @@ export * from "./load-all";
 export * from "./set-phone";
 export * from "./assign-tutor";
 export * from "./load-origins";
+export * from "./create-contact";
+export * from "./load-all-professions";

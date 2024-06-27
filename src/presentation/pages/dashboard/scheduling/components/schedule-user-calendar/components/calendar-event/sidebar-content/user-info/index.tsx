@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Error, Icon } from "infinity-forge";
 
 import { Event } from "@/domain";
-import { PermissionItem } from "@/presentation";
+import { FormCreateTutor, PermissionItem } from "@/presentation";
 
 import { ContactForm } from "./contact-form";
 
@@ -12,9 +12,8 @@ import * as S from "./styles";
 
 export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
   const [showContact, setShowContact] = useState(false);
+  
   const router = useRouter();
-
-  console.log(event, "<<<");
 
   const contactInfo = {
     user: {
@@ -65,6 +64,26 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
 
               if (!item?.text) {
                 return;
+              }
+
+              if (key === "user") {
+                return (
+                  <FormCreateTutor
+                    isModal
+                    tutorId={
+                      process.env.client === "sancla"
+                        ? event?.event?.holder?.id
+                        : event.event.patient.id
+                    }
+                    trigger={
+                      <div key={key}>
+                        <span>
+                          {item?.icon} {item?.text}
+                        </span>
+                      </div>
+                    }
+                  />
+                );
               }
 
               return (

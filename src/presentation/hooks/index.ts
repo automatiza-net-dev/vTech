@@ -1,4 +1,5 @@
 export * from "./ui";
+export * from "./tutor";
 export * from "./users";
 export * from "./patient";
 export * from "./schedules";

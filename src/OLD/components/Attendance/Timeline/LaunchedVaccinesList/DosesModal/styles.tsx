@@ -24,4 +24,10 @@ export const Container = styled.div`
     color: #c0c0c0;
     cursor: not-allowed;
   }
+
+  .custom-input {
+    border: 1px solid #bababa;
+    height: 32px;
+    border-radius: 3px;
+  }
 `;

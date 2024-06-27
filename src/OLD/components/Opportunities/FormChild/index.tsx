@@ -1,37 +1,35 @@
-import React, { memo, useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
-// import { useTutor } from "@/OLD/hooks/useTutor";
-import { useSchedule } from "@/OLD/hooks/useSchedules";
 import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 
-import { Edit } from "@/OLD/components/Tutor/Edit";
+import { FormHandler, Select } from "infinity-forge";
 import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
-// import { Create as CreatePatient } from "@/OLD/components/Patient/Create";
 
 import {
   Input,
   AutoComplete,
-  Select,
   Popconfirm,
   Switch,
   notification,
   Button,
+  Select as SelectAnt,
   Tooltip,
   Modal,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-const { Option } = Select;
 const { TextArea } = Input;
+const { Option } = SelectAnt;
 import { Container } from "./styles";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+import { FormCreatePatient, FormCreateTutor } from "@/presentation";
 
 export default function FormChild({
   clients,
@@ -57,7 +55,6 @@ export default function FormChild({
   const [refreshAutoComplete, setRefreshAutoComplete] = useState(false);
   const [races, setRaces] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState<any>({});
-  const [editTutorVisible, setEditTutorVisible] = useState(false);
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
@@ -142,53 +139,33 @@ export default function FormChild({
       <div className="body-form uk-padding-small">
         <div className="uk-flex uk-flex-between">
           <div className="uk-width-1-1 uk-margin-small-right">
-            <Tooltip
-              title={
-                process.env.client !== "liftone"
-                  ? "Clique para editar dados do tutor"
-                  : "Clique para editar os dados do cliente"
-              }
-            >
-              <label
-                className="uk-link"
-                onClick={() => {
-                  setCrmData(data);
-                  setOriginConfig("Crm");
-                  setEditTutorVisible(true);
-                  // router.push(`/dashboard/tutor/editar/${data?.contactId}`);
-                }}
-              >
-                {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
-              </label>
-            </Tooltip>
-            <Input value={data?.tutorName} disabled />
-            {/*
-            <AutoComplete
-              className="uk-width-1-1"
-              disabled={!footer ? !edit : false}
-              options={tutors?.map((tutor) => ({
-                ...tutor,
-                value: tutor?.name,
-                key: tutor?.id
-              }))}
-              value={data?.tutorName}
-              onChange={(val) => setData({ ...data, tutorName: val })}
-              onSelect={(_, opt) => {
-                setSelectedPatients(opt?.dependents);
-                setData({
-                  ...data,
-                  tutorName: opt?.value,
-                  contactId: opt?.id,
-                  contact: opt
-                });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val?.toUpperCase())
-                )
+            <FormCreateTutor
+              isModal
+              tutorId={data?.contact?.tutor?.id}
+              origin="Crm"
+              trigger={
+                <Tooltip
+                  title={
+                    process.env.client !== "liftone"
+                      ? "Clique para editar dados do tutor"
+                      : "Clique para editar os dados do cliente"
+                  }
+                >
+                  <label
+                    className="uk-link"
+                    style={{
+                      textAlign: "left",
+                      display: "flex",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
+                  </label>
+                </Tooltip>
               }
             />
-            */}
+
+            <Input value={data?.tutorName} disabled />
           </div>
           <div className="uk-width-1-1 uk-margin-right">
             <label>Telefone</label>
@@ -229,24 +206,13 @@ export default function FormChild({
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">
-                <label
-                  className="uk-link"
-                  onClick={() => {
-                    setOriginConfig("Crm");
-                    data?.clientId
-                      ? setEditPatientVisible(true)
-                      : setCreatePatientVisible(true);
-                    /*
-                      ? router.push(
-                          `/dashboard/paciente/editar/${data?.clientId}`
-                        )
-                      : router.push(
-                          `/dashboard/paciente/criar/${data?.contactId}`
-                        );*/
-                  }}
-                >
-                  Pet
-                </label>
+                <FormCreatePatient
+                  isModal
+                  origin="Crm"
+                  patientId={data?.clientId}
+                  trigger={<label className="uk-link">Pet</label>}
+                />
+
                 <AutoComplete
                   disabled={
                     !footer ? !edit : false || selectedPatients.length === 0
@@ -310,7 +276,7 @@ export default function FormChild({
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
               <label>Genero</label>
-              <Select
+              <SelectAnt
                 disabled={!footer ? !edit : false}
                 className="uk-width-1-1"
                 id={"gender"}
@@ -319,11 +285,11 @@ export default function FormChild({
               >
                 <option value="male">Macho</option>
                 <option value="female">Fêmea</option>
-              </Select>
+              </SelectAnt>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
               <label>Castrado</label>
-              <Select
+              <SelectAnt
                 disabled={!footer ? !edit : false}
                 className="uk-width-1-1"
                 value={data?.castrated}
@@ -331,7 +297,7 @@ export default function FormChild({
               >
                 <Option value="true">Sim</Option>
                 <Option value="false">Não</Option>
-              </Select>
+              </SelectAnt>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
               <label>Peso (Kg)</label>
@@ -385,7 +351,7 @@ export default function FormChild({
           </div>
           <div className="uk-width-1-3 uk-margin-small-right">
             <label>Status</label>
-            <Select
+            <SelectAnt
               disabled={!footer ? !edit : false}
               className="uk-width-1-1"
               value={data?.statusId}
@@ -395,7 +361,7 @@ export default function FormChild({
                 crmStatus?.map((status) => (
                   <Option value={status?.id}>{status?.description}</Option>
                 ))}
-            </Select>
+            </SelectAnt>
           </div>
           {type === "update" && (
             <div className="uk-flex uk-flex-right">
@@ -415,92 +381,82 @@ export default function FormChild({
           <>
             <div className="uk-width-1-4 uk-margin-small-right">
               <label>Tipo do contato</label>
-              <Select
-                disabled={!footer ? !edit : false}
-                className="uk-width-1-1"
-                value={data?.contactTypeId}
-                onChange={(val) => setData({ ...data, contactTypeId: val })}
-              >
-                {contactTypes?.length > 0 &&
-                  contactTypes?.map((contact) => (
-                    <Option value={contact?.id}>{contact?.description}</Option>
-                  ))}
-              </Select>
+              <FormHandler>
+                <Select
+                  menuPlacement="bottom"
+                  name="contact"
+                  disabled={!footer ? !edit : false}
+                  options={contactTypes.map((ctt) => ({
+                    label: ctt?.description,
+                    value: ctt?.id,
+                  }))}
+                  onlyOneValue
+                  onChangeSelect={(val) =>
+                    setData({ ...data, contactTypeId: val })
+                  }
+                  value={data?.contactTypeId}
+                />
+              </FormHandler>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-margin-small">
                 <label>Como conheceu a clinica</label>
-                <AutoComplete
-                  disabled={!footer ? !edit : false}
-                  className="uk-width-1-1"
-                  options={clients?.map((origin) => ({
-                    ...origin,
-                    value: origin?.description,
-                    key: origin?.id,
-                  }))}
-                  value={data?.originDescription}
-                  onChange={(val) =>
-                    setData({ ...data, originDescription: val })
-                  }
-                  onSelect={(_, opt) => {
-                    setData({
-                      ...data,
-                      originId: opt?.id,
-                      originDescription: opt?.value,
-                    });
-                    setSelectedOrigin(opt);
-                  }}
-                  filterOption={(val, opt: any) =>
-                    normalizeStr(opt?.value.toUpperCase()).includes(
-                      normalizeStr(val?.toUpperCase())
-                    )
-                  }
-                />
+                <FormHandler>
+                  <Select
+                    disabled={!footer ? !edit : false}
+                    menuPlacement="bottom"
+                    name="originDescription"
+                    options={clients.map((client) => ({
+                      label: client?.description,
+                      value: client?.id,
+                    }))}
+                    onlyOneValue
+                    onChangeSelect={(val) =>
+                      setData({ ...data, originDescription: val })
+                    }
+                    value={data?.originDescription}
+                  />
+                </FormHandler>
               </div>
             </div>
             {selectedOrigin?.default && (
               <div className="uk-width-1-4 uk-margin-small-right">
                 <label>Campanha mídia</label>
-                <AutoComplete
-                  disabled={!footer ? !edit : false}
-                  className="uk-width-1-1"
-                  options={uniqueOrigins?.sort().map((item) => ({
-                    value: item,
-                    key: item,
-                  }))}
-                  value={data?.clientOriginItemDescription}
-                  onChange={(val) =>
-                    setData({ ...data, clientOriginItemDescription: val })
-                  }
-                  onSelect={(_, opt) =>
-                    setData({
-                      ...data,
-                      clientOriginItemDescription: opt?.value,
-                    })
-                  }
-                  filterOption={(inputValue, option: any) =>
-                    option.value
-                      .toUpperCase()
-                      .includes(inputValue.toUpperCase())
-                      ? option
-                      : null
-                  }
-                />
+                <FormHandler>
+                  <Select
+                    menuPlacement="bottom"
+                    name="clientOriginDescription"
+                    options={uniqueOrigins.sort().map((origin) => ({
+                      label: origin,
+                      value: origin,
+                    }))}
+                    onlyOneValue
+                    onChangeSelect={(val) =>
+                      setData({ ...data, clientOriginItemDescription: val })
+                    }
+                    value={data?.clientOriginItemDescription}
+                  />
+                </FormHandler>
               </div>
             )}
             <div className="uk-width-1-4">
               <label>Assunto Contato</label>
-              <Select
-                disabled={!footer ? !edit : false}
-                className="uk-width-1-1"
-                value={data?.contactSubjectId}
-                onChange={(val) => setData({ ...data, contactSubjectId: val })}
-              >
-                {subjects.length > 0 &&
-                  subjects?.map((subject) => (
-                    <Option value={subject?.id}>{subject?.description}</Option>
-                  ))}
-              </Select>
+              <FormHandler>
+                <Select
+                  disabled={!footer ? !edit : false}
+                  menuPlacement="bottom"
+                  name="contactSubjectId"
+                  options={subjects.map((subject) => ({
+                    label: subject.description,
+                    value: subject.id,
+                  }))}
+                  onlyOneValue
+                  onChangeSelect={(val) =>
+                    setData({ ...data, contactSubjectId: val })
+                  }
+                  value={data?.contactSubjectId}
+                />
+              </FormHandler>
             </div>
           </>
         </section>
@@ -629,16 +585,7 @@ export default function FormChild({
           reload={reload}
         />
       )} */}
-      {editTutorVisible && (
-        <Modal
-          width={1200}
-          visible={editTutorVisible}
-          onCancel={() => setEditTutorVisible(false)}
-          footer={null}
-        >
-          <Edit tutorId={data?.contactId} setVisible={setEditTutorVisible} />
-        </Modal>
-      )}
+
       {editPatientVisible && (
         <Modal
           visible={editPatientVisible}

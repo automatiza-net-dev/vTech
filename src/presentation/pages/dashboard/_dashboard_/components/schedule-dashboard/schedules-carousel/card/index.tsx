@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import moment from "moment";
 import {
   HighlightText,
   SideBar,
@@ -17,7 +16,7 @@ import * as S from "./styles";
 
 export function ScheduleCard(props: Event) {
   const [open, setOpen] = useState(false);
-  const { holder, patient, endHour, startHour, serviceType, serviceStatus } =
+  const { holder, patient, serviceType, serviceStatus } =
     props.event;
 
   const timeTextStart = props.start?.substring(11, 16);

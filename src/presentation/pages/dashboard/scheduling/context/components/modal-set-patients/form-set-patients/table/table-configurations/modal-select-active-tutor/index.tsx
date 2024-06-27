@@ -2,10 +2,16 @@ import { Dispatch, SetStateAction } from "react";
 
 import { useQueryClient } from "react-query";
 
-import { Error, FormHandler, InputRadio, useToast } from "infinity-forge";
+import {
+  Modal,
+  Error,
+  useToast,
+  InputRadio,
+  FormHandler,
+} from "infinity-forge";
 
-import { LoadSchedulesPatient, SchedulePatient, Tutor } from "@/domain";
-import { Modal, useScheduling, useSetMainTutor } from "@/presentation";
+import { SchedulePatient, Tutor } from "@/domain";
+import { useScheduling, useSetMainTutor } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -35,30 +41,31 @@ export function ModalSelectActiveTutor({
         patient: id,
       });
 
-      queryClient.setQueryData(["RemoteLoadSchedulesPatients", patientsFilters], (state) => {
-        const queryData = state as  SchedulePatient[];
+      queryClient.setQueryData(
+        ["RemoteLoadSchedulesPatients", patientsFilters],
+        (state) => {
+          const queryData = state as SchedulePatient[];
 
-        const updatedCache = queryData.map(item => {
-          if(item.id === id) {
+          const updatedCache = queryData.map((item) => {
+            if (item.id === id) {
+              return {
+                ...item,
+                tutors: item.tutors.map((tutor) => {
+                  if (tutor.id === tutorId) {
+                    return { ...tutor, isMain: true };
+                  }
 
-            return {
-              ...item,
-              tutors: item.tutors.map(tutor => {
-                if(tutor.id === tutorId) {
-                  return {...tutor, isMain: true}
-                }
-
-                return {...tutor, isMain: false}
-              })
+                  return { ...tutor, isMain: false };
+                }),
+              };
             }
-          }
 
-          return item;
-        })
-  
-        return updatedCache as  SchedulePatient[];
-      });
-  
+            return item;
+          });
+
+          return updatedCache as SchedulePatient[];
+        }
+      );
 
       setModal(false);
 
@@ -73,14 +80,15 @@ export function ModalSelectActiveTutor({
 
   return (
     <Modal
-      maxwidth="600px"
-      stateModal={modal}
-      onCloseModal={() => setModal(false)}
-      setModal={setModal}
-      title="Selecionar tutor ativo"
+      styles={{ maxWidth: "600px", width: "100%" }}
+      open={modal}
+      onClose={() => setModal(false)}
     >
       <Error name="modal-select-active-tutor">
+        <h3 className="font-18-bold">Selecionar tutor ativo</h3>
+
         <FormHandler
+          isStickyButtons
           onSucess={handleSuccess}
           button={{ text: "Alterar" }}
           initialData={{ holder: tutors.find((tutor) => tutor.isMain)?.id }}

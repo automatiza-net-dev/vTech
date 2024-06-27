@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { BadRequestError, useAuthAdmin } from "infinity-forge";
+import { BadRequestError } from "infinity-forge";
 
 import { RemoteFinancesResume } from "@/data";
 import { container, dashboardTypes } from "@/container";
@@ -20,5 +20,6 @@ export function useLoadFinancesResume() {
   return useQuery({
     queryKey: ["loadFinancesResume"],
     queryFn: fetcher,
+    refetchOnWindowFocus: false
   });
 }

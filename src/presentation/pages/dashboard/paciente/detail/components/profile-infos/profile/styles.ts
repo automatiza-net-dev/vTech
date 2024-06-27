@@ -28,6 +28,11 @@ export const Profile = styled("div")`
       font-size: 32px;
       font-weight: 700;
       text-transform: capitalize;
+      text-align: left;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     .status {

@@ -30,9 +30,12 @@ export function Weight(props: DropdownComponentProps) {
   return (
     <Error name="Weight">
       <S.Weight>
-        <h4>Peso</h4>
         <FormHandler
-          initialData={{ weight: props.timeline_info?.weight, observation: props.timeline_info?.observation  }}
+          isStickyButtons
+          initialData={{
+            weight: props.timeline_info?.weight,
+            observation: props.timeline_info?.observation,
+          }}
           button={props.timeline_info?.weight ? undefined : { text: "Salvar" }}
           onSucess={async (data) => {
             await container
@@ -45,14 +48,13 @@ export function Weight(props: DropdownComponentProps) {
                 technicianId: user.user.id,
               });
 
-              await queryClient.invalidateQueries({
-                queryKey: ["RemotePatient", patientId],
-              });
+            await queryClient.invalidateQueries({
+              queryKey: ["RemotePatient", patientId],
+            });
 
-              await queryClient.invalidateQueries({
-                queryKey: ["LastUpdates", patientId],
-              });
-          
+            await queryClient.invalidateQueries({
+              queryKey: ["LastUpdates", patientId],
+            });
 
             createToast({
               message: "Peso criado com sucesso!",
@@ -64,10 +66,19 @@ export function Weight(props: DropdownComponentProps) {
           disableEnterKeySubmitForm
         >
           <div className="row">
-            <Input name="weight" readOnly={!!props.timeline_info?.weight} type="number" placeholder="Peso (Kg)" />
+            <Input
+              name="weight"
+              readOnly={!!props.timeline_info?.weight}
+              type="number"
+              placeholder="Peso (Kg)"
+            />
           </div>
 
-          <Textarea name="observation"  readOnly={!!props.timeline_info?.weight} placeholder="Observações" />
+          <Textarea
+            name="observation"
+            readOnly={!!props.timeline_info?.weight}
+            placeholder="Observações"
+          />
         </FormHandler>
       </S.Weight>
     </Error>

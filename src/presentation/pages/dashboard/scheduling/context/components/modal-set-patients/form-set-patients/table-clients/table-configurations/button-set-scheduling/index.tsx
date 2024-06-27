@@ -1,4 +1,4 @@
-import { useScheduling } from "@/presentation";
+import { PermissionItem, useScheduling } from "@/presentation";
 import { Button } from "infinity-forge";
 
 import * as S from "./styles";
@@ -10,18 +10,20 @@ export function ButtonSetSchedulling(props) {
   );
 
   return (
-    <S.ButtonSetSchedulling>
-      <Button
-        text="AGENDAR"
-        type="button"
-        onClick={() => {
-          setCreateSchedulingArgs({
-            ...modalPatients,
-            ...props,
-            type: "create",
-          });
-        }}
-      />
-    </S.ButtonSetSchedulling>
+    <PermissionItem hash="AGE01">
+      <S.ButtonSetSchedulling>
+        <Button
+          text="AGENDAR"
+          type="button"
+          onClick={() => {
+            setCreateSchedulingArgs({
+              ...modalPatients,
+              ...props,
+              type: "create",
+            });
+          }}
+        />
+      </S.ButtonSetSchedulling>
+    </PermissionItem>
   );
 }

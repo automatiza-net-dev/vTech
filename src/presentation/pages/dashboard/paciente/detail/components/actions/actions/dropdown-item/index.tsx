@@ -8,6 +8,7 @@ import * as S from "./styles";
 export type DropdownComponentProps = {
   modal?: boolean;
   setModal?: Dispatch<SetStateAction<boolean>>;
+  value?: string;
 } & Partial<TimeLine>;
 
 export type DropdownItemActionProps = {
@@ -15,13 +16,14 @@ export type DropdownItemActionProps = {
   label: string;
   customModalStyles?: {};
   Component?: (props: DropdownComponentProps) => JSX.Element;
+  value?: string;
 };
 
 export function DropdownItemAction({
-  Component,
   Icon,
   label,
-  customModalStyles,
+  Component,
+  value,
 }: DropdownItemActionProps) {
   const [open, setOpen] = useState(false);
 
@@ -29,16 +31,17 @@ export function DropdownItemAction({
     <>
       <Modal
         styles={{
-          maxWidth: "1400px",
-          maxHeight: "95vh",
-          overflow: "auto",
-          ...customModalStyles,
+          maxWidth: "1200px",
+          padding: "10px",
+          width: "100%",
         }}
         open={open}
         onClose={() => setOpen(false)}
       >
         <S.ModalContent>
-          {Component && <Component modal={open} setModal={setOpen} />}
+          {Component && (
+            <Component modal={open} setModal={setOpen} value={value} />
+          )}
         </S.ModalContent>
       </Modal>
 

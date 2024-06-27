@@ -23,9 +23,8 @@ export function ModalSetPatients() {
   return (
     <Modal
       styles={{
-        maxWidth: "80vw",
-        padding: "10px",
-        overflow: "auto",
+        maxWidth: "1200px",
+        width: "100%",
         maxHeight: "95vh"
       }}
       open={!!modalPatients}

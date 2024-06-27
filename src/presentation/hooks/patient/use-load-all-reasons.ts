@@ -14,7 +14,7 @@ export function useLoadAllReasons(type: LoadAllReasons.Params["type"]) {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllReasons",
+    queryKey: ["RemoteLoadAllReasons", type],
     queryFn: fetcher,
     ...callApiOneTime,
   });

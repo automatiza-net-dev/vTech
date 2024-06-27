@@ -30,7 +30,6 @@ export function SelectTypeService({
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups();
 
-
   async function AddInitialValueInResumeInput(value: string) {
     const optionSelected = data?.find((option) =>
       option.types.find((type) => type.id === value)
@@ -67,6 +66,7 @@ export function SelectTypeService({
 
   return (
     <Select
+      label="Tipo atendimento"
       menuPlacement={"bottom"}
       isGroup
       onChangeSelect={(ev) => {
@@ -78,18 +78,20 @@ export function SelectTypeService({
       name="scheduleServiceId"
       loading={isFetching}
       placeholder="Selecione o tipo de atendimento"
-      options={data?.reduce((reducer: any, result: any) => {
-        return [
-          ...reducer,
-          {
-            label: result.description,
-            options: result.types.map((type) => ({
-              value: type.id,
-              label: type.description,
-            })),
-          },
-        ];
-      }, []) || []}
+      options={
+        data?.reduce((reducer: any, result: any) => {
+          return [
+            ...reducer,
+            {
+              label: result.description,
+              options: result.types.map((type) => ({
+                value: type.id,
+                label: type.description,
+              })),
+            },
+          ];
+        }, []) || []
+      }
     />
   );
 }

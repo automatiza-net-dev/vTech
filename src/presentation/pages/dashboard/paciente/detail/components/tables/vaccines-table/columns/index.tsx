@@ -1,13 +1,13 @@
 import { Column } from "infinity-forge";
 import moment from "moment";
 
-import { Vaccine } from "@/domain";
+import { ScheduleVaccine } from "@/domain";
 import { NameVaccine } from "./name-vaccine";
 
-export const columns: Column<Vaccine>[] = [
+export const columns: Column<ScheduleVaccine>[] = [
   {
     id: "patient",
-    label: "Vacina",
+    label: "Vacina / Vermífugo",
     hasAsc: false,
     width: 200,
     Component: {
@@ -27,6 +27,19 @@ export const columns: Column<Vaccine>[] = [
           {props.protocol.name} | {props.protocol.doses} |
           {props.protocol.interval}
         </div>
+      ),
+      props: {},
+      allProps: true,
+    },
+  },
+  {
+    id: "vaccine",
+    label: "Tipo",
+    hasAsc: false,
+    width: 200,
+    Component: {
+      Element: (props) => (
+        <div>{props.vaccine.type === "vaccine" ? "Vacina" : "Vermífugo"}</div>
       ),
       props: {},
       allProps: true,

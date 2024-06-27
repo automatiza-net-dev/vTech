@@ -8,14 +8,11 @@ export const ButtonSetSchedulling = styled.div`
 
   button {
     width: 100%;
-    border-radius: 100rem;
-    padding: 0 20px;
+    padding: 0 15px;
     text-transform: uppercase;
-    font-size: 14px;
-    background-color: ${(props) => props.theme.primaryColor};
+    font-size: 13px;
     box-shadow: none;
-    height: 2.08vw;
-    min-height: 36px;
+    height: 30px;
 
     &:disabled {
       background-color: #dddcdc !important;

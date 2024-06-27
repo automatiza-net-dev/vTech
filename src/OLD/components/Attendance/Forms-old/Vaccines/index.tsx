@@ -14,7 +14,7 @@ import { useQueryClient } from "react-query";
 import { Select, FormHandler } from "infinity-forge";
 import { Container } from "./styles";
 
-function Vaccines({ modal, setModal }) {
+function Vaccines({ modal, setModal, value }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [allProtocols, setAllProtocols] = useState([]);
@@ -29,7 +29,10 @@ function Vaccines({ modal, setModal }) {
   const getProtocols = useCallback(() => {
     setLoading(true);
     vaccinesService
-      .listProtocols({ specie: patient?.data?.specie_id || "" })
+      .listProtocols({
+        specie: patient?.data?.specie_id || "",
+        type: value === "Vacinas" ? "vaccine" : "vermifuge",
+      })
       .then((res) => {
         setAllProtocols(
           res.data.map((item) => {
@@ -102,6 +105,7 @@ function Vaccines({ modal, setModal }) {
 
   return (
     <Container>
+      <h4>Lançamento de {value}</h4>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -109,7 +113,7 @@ function Vaccines({ modal, setModal }) {
         }}
       >
         <div>
-          <label>Vacinas - Protocolos</label>
+          <label>Protocolos</label>
           <br />
           {allProtocols && allProtocols.length > 0 && (
             <FormHandler>
@@ -202,7 +206,12 @@ function Vaccines({ modal, setModal }) {
 
         <div className="uk-flex uk-flex-right">
           <div className="uk-margin-top uk-flex uk-width-1-2 uk-flex-right">
-            <Button type="primary" className="uk-margin-small-right" htmlType="submit" loading={loading}>
+            <Button
+              type="primary"
+              className="uk-margin-small-right"
+              htmlType="submit"
+              loading={loading}
+            >
               Salvar
             </Button>
             <Button onClick={() => setModal(false)}>Cancelar</Button>

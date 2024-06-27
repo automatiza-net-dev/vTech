@@ -36,7 +36,7 @@ export function PacientePage() {
       active: process.env.clientName === "Sanclá",
     },
     {
-      title: "Vacinas lançadas",
+      title: "Vacinas / Vermífugos lançados",
       content: (props) => <VaccinesTable {...data}  {...props}/>,
       key: "vaccines",
       active: process.env.clientName === "Sanclá",

@@ -2,6 +2,32 @@
 import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle<any>`
 
+.form-button.sticky {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px; 
+    border-top: 1px solid #ccc;
+    padding-right: 0 !important;
+
+    button:last-child {
+        width: fit-content;
+        height: 40px;
+        padding: 0 40px !important;
+        background-color: ${props => props.theme.primaryColor} !important;
+        font-size: 14px;
+        transition: 0.3s;
+
+        &:hover {
+            transition: 0.3s;
+            opacity: 0.9;
+        }
+
+        &:disabled {
+            
+        }
+    }
+}
+
 #__next {
     position: relative;
     z-index: 1;

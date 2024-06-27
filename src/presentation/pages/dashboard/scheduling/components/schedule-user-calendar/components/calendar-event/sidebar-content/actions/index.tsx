@@ -4,14 +4,19 @@ import { Error } from "infinity-forge";
 import { Event, ScheduleUser } from "@/domain";
 import { DateToYYYYMMDD, useScheduling } from "@/presentation";
 
-import { EndService } from "./end-service";
-import { EditSchedule } from "./edit-schedule";
-import { StartService } from "./start-service";
-import { CancelSchedule } from "./cancel-schedule";
-import { MissedSchedule } from "./missed-schedule";
-import { ConfirmSchedule } from "./confirm-schedule";
-import { RescheduleAppointment } from "./reschedule-appointment";
-import { InformCustomerArrival } from "./inform-customer-arrival";
+import {
+  EndService,
+  EditSchedule,
+  StartService,
+  DeleteSchedule,
+  CancelSchedule,
+  MissedSchedule,
+  ConfirmSchedule,
+  ReactivateSchedule,
+  InformCustomerArrival,
+  RescheduleAppointment,
+  ChangeUpsertStatusAction,
+} from "./components";
 
 import { IconComment, IconHospital } from "../icons";
 
@@ -38,8 +43,13 @@ export function Actions({
 
   const description = event?.event?.serviceStatus?.description;
 
-  async function onExecuteAction() {
+  async function onExecuteAction(params?: any) {
     await queryClient.invalidateQueries({ queryKey: "RemoteSchedules" });
+
+    params?.scheduleId &&
+      (await queryClient.invalidateQueries({
+        queryKey: ["RemoteLoadSchedules", params.scheduleId],
+      }));
 
     if (viewCalendar !== "day") {
       await queryClient.invalidateQueries({
@@ -71,6 +81,8 @@ export function Actions({
     scheduleUser,
     onExecuteAction,
   };
+
+  console.log(isCancelled)
 
   return (
     <Error name="Actions">
@@ -122,29 +134,39 @@ export function Actions({
               <StartService {...propsActions} />
             )}
 
-            {(description !== "Atendimento finalizado" &&
-              description !== "Em atendimento") && (
+            {description !== "Atendimento finalizado" &&
+              description !== "Em atendimento" && (
                 <EditSchedule {...propsActions} />
               )}
 
             {(description === "Agendado (Confirmado)" ||
               description === "Agendado (Não confirmado)") && (
-                <MissedSchedule {...propsActions} />
-              )}
+              <MissedSchedule {...propsActions} />
+            )}
 
-            {(description !== "Atendimento finalizado" &&
-              description !== "Em atendimento") && (
+            {description !== "Atendimento finalizado" &&
+              description !== "Em atendimento" && (
                 <CancelSchedule {...propsActions} />
               )}
 
-            {(description !== "Atendimento finalizado" &&
-              description !== "Em atendimento") && (
+            {description !== "Atendimento finalizado" &&
+              description !== "Em atendimento" && (
                 <RescheduleAppointment {...propsActions} />
               )}
 
             {description === "Em atendimento" && (
               <EndService {...propsActions} />
             )}
+            
+            <ChangeUpsertStatusAction {...propsActions} />
+
+            <DeleteSchedule {...propsActions} />
+          </div>
+        )}
+
+        {isCancelled && (
+          <div className="buttons-box">
+            <ReactivateSchedule {...propsActions} />
           </div>
         )}
       </S.Actions>

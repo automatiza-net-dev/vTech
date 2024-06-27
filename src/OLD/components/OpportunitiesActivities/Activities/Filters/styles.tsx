@@ -14,4 +14,10 @@ export const InputBox = styled.div`
     border: none;
     width: 100%;
   }
+
+  .custom-date-component {
+    input {
+      font-size: 14px;
+    }
+  }
 `;

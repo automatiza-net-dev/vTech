@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React  from "react";
+import React from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
@@ -10,9 +10,8 @@ import * as S from "./styles";
 import moment from "moment";
 import { currencyFormatter } from "..";
 
-export default  function PrintScreen({ budget }) {
+export default function PrintScreen({ budget }) {
   const { clinic } = useProfile();
-
 
   return (
     <S.PrintScreen className="uk-container">
@@ -52,7 +51,7 @@ export default  function PrintScreen({ budget }) {
         )}
       </section>
       <h4 className="uk-margin-top uk-text-center">
-        <strong>Items confirmados</strong>
+        <strong>Itens confirmados</strong>
       </h4>
       <section>
         <div className="uk-flex uk-flex-around uk-width-1-1">
@@ -131,7 +130,7 @@ export default  function PrintScreen({ budget }) {
       </section>
       <hr />
       <h4 className="uk-margin-top uk-text-center">
-        <strong>Items não confirmados</strong>
+        <strong>Itens não confirmados</strong>
       </h4>
       <section>
         <div className="uk-flex uk-flex-around uk-width-1-1">

@@ -1,15 +1,19 @@
 import styled from "styled-components";
 
 export const FormCreateScheduling = styled("div")`
+  width: 100%;
+  min-width: 700px;
+  padding: 10px;
+
   .top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin-bottom: 10px;
 
     h2 {
-      font-size: 17px;
       text-transform: uppercase;
+      text-align: center;
     }
 
     button {
@@ -18,7 +22,6 @@ export const FormCreateScheduling = styled("div")`
       padding-top: 7px;
     }
   }
-
 
   h3 {
     margin-bottom: 2px;
@@ -44,7 +47,7 @@ export const FormCreateScheduling = styled("div")`
       color: #fff;
       text-transform: uppercase;
       font-weight: 500;
-      background-color: ${props => props.theme.primaryColor};
+      background-color: ${(props) => props.theme.primaryColor};
     }
   }
 `;

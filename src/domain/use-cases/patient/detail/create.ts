@@ -5,23 +5,20 @@ export type CreatePatient = {
 export namespace CreatePatient {
   export type Params = {
     name: string;
-    raceId: {
-      value: string;
-      id: string;
-    };
+    raceId: string;
     gender: string;
     birthDate: string;
     community: boolean;
     active: boolean;
     tags: string;
     vaccineOrigin: string;
-    castrated: boolean;
+    castrated: string;
     microchip: string;
     hairId: string;
-    death: boolean;
-    holderId: boolean;
-    deathDate?: Date;
-    photo?: File;
+    death: string;
+    holderId: string;
+    deathDate?: Date | string;
+    photo?: File | string;
   };
 
   export type Model = {};

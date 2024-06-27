@@ -1,5 +1,5 @@
 export type DeleteVaccine = {
-  delete: (params: DeleteVaccine.Params) => Promise<void>;
+  deleteVaccine: (params: DeleteVaccine.Params) => Promise<void>;
 };
 
 export namespace DeleteVaccine {

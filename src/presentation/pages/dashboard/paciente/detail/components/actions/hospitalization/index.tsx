@@ -6,6 +6,7 @@ import moment from "moment";
 import {
   Error,
   Input,
+  Modal,
   Select,
   Textarea,
   FormHandler,
@@ -13,7 +14,6 @@ import {
 } from "infinity-forge";
 
 import {
-  Modal,
   useLoadBeds,
   PermissionItem,
   useLoadPatient,
@@ -43,15 +43,17 @@ export function Hospitalization() {
     <Error name="Hospitalization">
       <PermissionItem hash="FIC04">
         <Modal
-          setModal={setModal}
-          stateModal={modal}
-          maxwidth="600px"
-          title={`Internação - Admissão, Paciente: ${patient.data?.name}, Rg: ${
-            patient.data?.tag ?? "-"
-          }`}
+          onClose={() => setModal(false)}
+          open={modal}
+          styles={{ maxWidth: "800px", width: "100%" }}
+
+          // title={`Internação - Admissão, Paciente: ${patient.data?.name}, Rg: ${
+          //   patient.data?.tag ?? "-"
+          // }`}
         >
           <S.HospitalizationContent>
             <FormHandler
+              isStickyButtons
               button={{ text: "SALVAR" }}
               cleanFieldsOnSubmit={false}
               onSucess={async (data) => {
@@ -174,4 +176,3 @@ export function Hospitalization() {
     </Error>
   );
 }
-

@@ -1,3 +1,5 @@
+import { Contact } from "./create-contact";
+
 export type CreateTutor = {
   create: (params: CreateTutor.Params) => Promise<CreateTutor.Model>;
 };
@@ -17,5 +19,6 @@ export namespace CreateTutor {
     tag: string;
     created_at: string;
     updated_at: string;
+    contacts: Contact[];
   };
 }

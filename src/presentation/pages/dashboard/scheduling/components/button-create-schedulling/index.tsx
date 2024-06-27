@@ -4,8 +4,6 @@ import { Button } from "infinity-forge";
 export function ButtonCreateSchedulling() {
   const setModalPatients = useScheduling((state) => state.setModalPatients);
 
-  // variant="outlined"
-
   return (
     <PermissionItem hash="AGE01">
       <Button

@@ -70,7 +70,7 @@ const mapper = (data = [], cashiers) => {
       missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
       actions: (
         <>
-          <BillActions bill={bill} cashiers={cashiers} />
+          <BillActions bill={bill} cashiers={cashiers} client={bill?.client} />
         </>
       ),
     };
@@ -359,7 +359,8 @@ export default function Bills() {
 
       <Modal
         open={visible}
-        styles={{ height: "95vh", maxWidth: "1400px", overflow: "auto" }}
+        styles={{  maxWidth: "1200px", width: "100%" }}
+        stylesContent={{ height: "70dvh" }}
         onClose={() => setVisible(false)}
       >
         <AddSale setModal={setVisible} />
