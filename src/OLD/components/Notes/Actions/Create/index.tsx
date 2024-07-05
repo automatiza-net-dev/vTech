@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { memo, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { receiptService } from "@/OLD/services/receipt.service";
 
@@ -12,7 +12,7 @@ const verifyErrors = (err) => {
   return notification.error({ message: "Houve um erro ao cadastrar a nota" });
 };
 
-const Create = memo(function Create({ setReload, setVisible }) {
+function Create({ setReload, setVisible, listCreated }) {
   const [data, setData] = useState({ receiptDate: moment(), items: [] });
   const [loading, setLoading] = useState(false);
 
@@ -20,11 +20,12 @@ const Create = memo(function Create({ setReload, setVisible }) {
     setLoading(true);
     receiptService
       .createReceipt(data)
-      .then((_res) => {
+      .then((res) => {
         setReload((prv) => !prv);
         setLoading(false);
         setVisible(false);
         setData({ receiptDate: moment(), items: [] });
+        listCreated(res.data.id);
         return notification.success({
           message: "Nota de entrada criada com sucesso!",
         });
@@ -43,6 +44,6 @@ const Create = memo(function Create({ setReload, setVisible }) {
       setVisible={setVisible}
     />
   );
-});
+}
 
 export default Create;

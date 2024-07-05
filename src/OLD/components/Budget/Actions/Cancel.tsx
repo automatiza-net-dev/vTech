@@ -7,16 +7,20 @@ import { useCancelBudget } from "@/OLD/hooks/useBudgets";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsXCircle } from "react-icons/bs";
+import { useDictionary } from "@/presentation";
 
 const CancelBudget = React.memo(function CancelBudget({
   budget,
   setReload = false
 }) {
+  const {getWord} = useDictionary()
+
   const queryClient = useQueryClient();
   const [visible, setVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({
     finishedAt: moment()
   });
+
 
   const cancelBudgetPermission = useUserHasPermission("ORC04");
 
@@ -26,8 +30,9 @@ const CancelBudget = React.memo(function CancelBudget({
   });
   const { mutate, isLoading } = useCancelBudget(budget.id);
 
+
   const validBudget =
-    budget.status === "ABERTO" || budget.status === "Orçamento em aberto";
+    budget.status === "ABERTO" || budget.status === `${getWord("Orçamento")} em aberto`;
 
   const submit = React.useCallback(() => {
     if (!validBudget) {
@@ -55,7 +60,7 @@ const CancelBudget = React.memo(function CancelBudget({
   return (
     <>
       {cancelBudgetPermission && (
-        <Tooltip title="Cancelar orçamento">
+        <Tooltip title={`Cancelar ${getWord("Orçamento")}`}>
           <BsXCircle
             className="icon"
             size={20}
@@ -70,7 +75,7 @@ const CancelBudget = React.memo(function CancelBudget({
       <Modal
         visible={visible}
         footer={null}
-        title={`Cancelar Orçamento - ${budget?.tag}`}
+        title={`Cancelar ${getWord("Orçamento")} - ${budget?.tag}`}
         width={600}
         onCancel={() => setVisible((prevState) => !prevState)}
       >

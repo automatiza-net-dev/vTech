@@ -4,6 +4,7 @@ import React, { memo, useState, useEffect } from "react";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Collapse, Table } from "antd";
+import { Button } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Panel } = Collapse;
 import RemoveBillPayment from "../../AddBillPayment/RemoveBillPayment";
@@ -17,6 +18,7 @@ const ProductsPanel = memo(function ProductsPanel({
   reload,
   setReload,
   billId,
+  bill,
 }) {
   const [formatedPayments, setFormatedPayments] = useState([]);
   const [editExpirationDate, setEditExpirationDate] = useState(false);
@@ -25,6 +27,7 @@ const ProductsPanel = memo(function ProductsPanel({
   const formatPayments = () => {
     setFormatedPayments(
       payments?.map((payment, i) => {
+        console.log(payment, "<<<<");
         return {
           date: !editExpirationDate ? (
             moment(payment?.expiration_date).format("DD/MM/YYYY")
@@ -52,6 +55,10 @@ const ProductsPanel = memo(function ProductsPanel({
               ? `${payment?.paymentMethod?.tef} CARTÃO ${payment?.paymentMethod?.type} - ${payment?.flag?.description}`
               : payment?.paymentMethod?.description,
           nsu: payment?.nsu_document,
+          downDate: payment?.finance?.paymentDate
+            ? moment(payment?.finance?.paymentDate).format("DD/MM/YYYY")
+            : "-",
+          print: <Button text="imprimir" />,
         };
       })
     );
@@ -75,25 +82,28 @@ const ProductsPanel = memo(function ProductsPanel({
       <Collapse className="uk-margin-small-top uk-width-1-1">
         <Panel
           header={
-            <div className="uk-flex">
-              <div className="uk-margin-right">
-                {payments[0]?.paymentMethod?.description}&nbsp;
-                {payments[0]?.qty_installments > 0 ? "(Parcelado)" : ""}&nbsp;
-                {payments[0]?.flag?.description
-                  ? payments[0]?.flag?.description
-                  : ""}
-                &nbsp;
-                {payments[0]?.paymentMethod?.type}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ display: "flex" }}>
+                <div className="uk-margin-right">
+                  {payments[0]?.paymentMethod?.description}&nbsp;
+                  {payments[0]?.qty_installments > 0 ? "(Parcelado)" : ""}&nbsp;
+                  {payments[0]?.flag?.description
+                    ? payments[0]?.flag?.description
+                    : ""}
+                  &nbsp;
+                  {payments[0]?.paymentMethod?.type}
+                </div>
+                <div className="uk-margin-right">
+                  {currencyFormatter(
+                    payments.reduce(
+                      (acc, current) => acc + current.total_value,
+                      0
+                    )
+                  )}
+                </div>
+                <div>{payments?.length}x</div>
               </div>
-              <div className="uk-margin-right">
-                {currencyFormatter(
-                  payments.reduce(
-                    (acc, current) => acc + current.total_value,
-                    0
-                  )
-                )}
-              </div>
-              <div>{payments?.length}x</div>
+              <Button text="Imprimir recibo" />
             </div>
           }
         >

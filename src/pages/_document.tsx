@@ -38,8 +38,26 @@ export default class MyDocument extends Document {
 
         <body>
           <Main />
-
+          <div id="NeoassistCentral"></div>
           <NextScript />
+
+          <script defer type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+            (function() {
+window.NeoAssistTag = {};
+NeoAssistTag.querystring = true;
+NeoAssistTag.pageid = '';
+NeoAssistTag.clientdomain = 'sunguider.neoassist.com';
+NeoAssistTag.initialize = { };
+var na = document.createElement('script');
+na.type = 'text/javascript';
+na.async = true;
+na.src = 'https://cdn.atendimen.to/n.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(na, s);
+})();
+          ` }}>
+
+</script>
         </body>
       </Html>
     );

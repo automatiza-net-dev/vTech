@@ -19,49 +19,54 @@ import {
 } from "../../../Budget"
 import BudgetActions from "../../../Budget/Actions/Container"
 import CreateBudgetDrawer from "./Create"
+import { useDictionary } from "@/presentation"
 
-const Columns = [
-  {
-    title: "Data Orçamento",
-    dataIndex: "budget_date",
-    key: "budget_date"
-  },
-  {
-    title: "Data Validade",
-    dataIndex: "expiration_date",
-    key: "expiration_date"
-  },
-  {
-    title: "Data Conf/Canc.",
-    dataIndex: "finished_at",
-    key: "finished_at"
-  },
-  {
-    title: "Funcionário",
-    dataIndex: "user_name",
-    key: "user_name"
-  },
-  {
-    title: "Qtd. Items",
-    dataIndex: "items_count",
-    key: "items_count"
-  },
-  {
-    title: "Total",
-    dataIndex: "total_value",
-    key: "total_value"
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status"
-  },
-  {
-    title: "Ações",
-    dataIndex: "actions",
-    key: "actions"
-  }
-]
+const Columns = () => {
+  const { getWord } = useDictionary();
+
+  return [
+    {
+      title: `Data ${getWord("Orçamento")}`,
+      dataIndex: "budget_date",
+      key: "budget_date"
+    },
+    {
+      title: "Data Validade",
+      dataIndex: "expiration_date",
+      key: "expiration_date"
+    },
+    {
+      title: "Data Conf/Canc.",
+      dataIndex: "finished_at",
+      key: "finished_at"
+    },
+    {
+      title: "Funcionário",
+      dataIndex: "user_name",
+      key: "user_name"
+    },
+    {
+      title: "Qtd. Items",
+      dataIndex: "items_count",
+      key: "items_count"
+    },
+    {
+      title: "Total",
+      dataIndex: "total_value",
+      key: "total_value"
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status"
+    },
+    {
+      title: "Ações",
+      dataIndex: "actions",
+      key: "actions"
+    }
+  ]
+} 
 
 const mapper = (data = []) => {
   return data.map((budget) => {
@@ -87,6 +92,8 @@ const PatientBudgets = React.memo(function PatientBudgets({ patient }) {
   const [openCreate, setOpenCreate] = React.useState(false)
   const { data, refetch } = useFindCompleteBudgets({ patient: patient.id })
 
+  const colunms = Columns()
+
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
@@ -94,7 +101,7 @@ const PatientBudgets = React.memo(function PatientBudgets({ patient }) {
           Criar novo
         </Button>
 
-        <Table dataSource={mapper(data)} columns={Columns} />
+        <Table dataSource={mapper(data)} columns={colunms} />
       </div>
 
       <CreateBudgetDrawer

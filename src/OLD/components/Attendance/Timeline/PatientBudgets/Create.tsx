@@ -19,6 +19,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { useDailyMovements } from "@/OLD/hooks/useDailyMovements";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import Masks from "@/OLD/utils/masks";
+import { useDictionary } from "@/presentation";
 
 const columns = [
   {
@@ -156,10 +157,12 @@ const CreateBudgetDrawer = React.memo(function CreateBudgetDrawer({
     return [];
   }, [selectedProducts]);
 
+  const { getWord } = useDictionary()
+
   return (
     <>
       <Drawer
-        title="Criar orçamento"
+        title={`Criar ${words["orcamento"]}`}
         visible={visible}
         onOk={() => {
           close();
@@ -237,7 +240,7 @@ const CreateBudgetDrawer = React.memo(function CreateBudgetDrawer({
             <hr />
 
             <Button htmlType="submit" type="primary" disabled={isLoading}>
-              Criar Orçamento
+              Criar {getWord("Orçamento")}
             </Button>
           </div>
         </form>

@@ -15,12 +15,7 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { MdOutlineClear } from "react-icons/md";
 
 // Components
-import {
-  Input as AntInput,
-  Select,
-  Table,
-  AutoComplete,
-} from "antd";
+import { Input as AntInput, Select, Table, AutoComplete } from "antd";
 import { Modal } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
@@ -34,11 +29,7 @@ import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 import CreateBill from "./Create";
 
-import {
-  AddSale,
-  PermissionItem,
-  useVerifyPermissions,
-} from "@/presentation";
+import { AddSale, PermissionItem, useVerifyPermissions } from "@/presentation";
 
 export const billStatusFormatter = (status) => {
   switch (status) {
@@ -58,15 +49,15 @@ const mapper = (data = [], cashiers) => {
 
   return data.map((bill) => {
     return {
-      id: bill.id,
+      id: bill?.id,
       fn: bill?.hasDocuments ? "Sim" : "Não",
-      bill_date: dateFormatter(bill.bill_date),
+      bill_date: dateFormatter(bill?.bill_date),
       code: bill?.tag ?? "-",
-      client: bill.client.name,
+      client: bill?.client?.name || "-",
       patient: bill.patient?.name ?? "-",
-      user: bill.seller ? bill.seller.name : bill.user.name,
-      total: currencyFormatter(bill.total_value),
-      status: billStatusFormatter(bill.status),
+      user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
+      total: currencyFormatter(bill?.total_value),
+      status: billStatusFormatter(bill?.status),
       missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
       actions: (
         <>
@@ -120,6 +111,11 @@ export default function Bills() {
       }
     });
   }, []);
+
+  const listCreated = (id) => {
+    setFilters({ bill_id: id });
+    setReload((prv) => !prv);
+  };
 
   return !listBillsPermission || listBillsPermission === "loading" ? (
     <AccessDenied loading={listBillsPermission} />
@@ -302,7 +298,9 @@ export default function Bills() {
               <Button
                 classCallback="uk-margin-small-right"
                 onClick={() => {
-                  setFilters((prv) => ({ ...prv, noSearch: false }));
+                  const newObj = { ...filters };
+                  delete newObj.bill_id;
+                  setFilters((prv) => ({ ...newObj, noSearch: false }));
                   setReload((prv) => !prv);
                 }}
               >
@@ -359,11 +357,11 @@ export default function Bills() {
 
       <Modal
         open={visible}
-        styles={{  maxWidth: "1200px", width: "100%" }}
+        styles={{ maxWidth: "1200px", width: "100%" }}
         stylesContent={{ height: "70dvh" }}
         onClose={() => setVisible(false)}
       >
-        <AddSale setModal={setVisible} />
+        <AddSale setModal={setVisible} listCreated={listCreated} />
       </Modal>
     </>
   );

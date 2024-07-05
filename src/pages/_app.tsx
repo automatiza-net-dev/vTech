@@ -1,10 +1,10 @@
 import "reflect-metadata";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import Head from "next/head";
 
-import { InfinityForgeProviders } from "infinity-forge"
+import { InfinityForgeProviders } from "infinity-forge";
 
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -19,11 +19,8 @@ import { SignIn } from "@/OLD/components/Authentication/SignIn";
 import {
   themes,
   ButtonInfinityForge,
-  AuthFranchisorProvider,
   InfinityForgeInjections,
 } from "@/presentation";
-import {User} from "@/domain"
-import { Storage } from "@/infra";
 import { RemoteLoadUserDashboard } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
@@ -32,109 +29,102 @@ import "moment/locale/pt-br";
 import "antd/dist/antd.css";
 import "@/OLD/styles/uikit.css";
 import "infinity-forge/dist/infinity-forge.css";
+import { useRouter } from "next/router";
 
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
-  const [user, setUser] = useState<any>(undefined);
-  const [userAdmin, setUserAdmin] = useState<any>(undefined);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const tokenAdmin = await container
-          .get<Storage>(TypesAutomatiza.storage)
-          .get("adminUser");
-
-        const isAdmin = tokenAdmin?.value ? true : false;
-
-        const user = await container
-          .get<RemoteLoadUserDashboard>(TypesAutomatiza.RemoteLoadUserDashboard)
-          .load({ admin: isAdmin });
-
-        const initialUserData = {
-          ...user,
-          avatar: user.user?.profile_picture || "",
-          emailAddress: user?.user?.email || "",
-          firstName: user?.user?.name || "",
-          id: (user as any)?.user?.id || "",
-          imagem: user.user?.profile_picture,
-          isExternal: false,
-          lastName: "",
-        };
-
-        setUser(initialUserData);
-        setUserAdmin(isAdmin ? initialUserData : null);
-      } catch (err) {
-        setUser(null);
-        setUserAdmin(null);
-      }
-    })();
-  }, []);
+  const router = useRouter();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {(user !== undefined || userAdmin !== undefined) && (
-        <InfinityForgeProviders
-          auth={{
-            initialUser: user,
-            interceptor: {
-              disableInterceptor: true,
+      <InfinityForgeProviders
+        auth={{
+          roles: {
+            admin: {},
+            user: {
+              signInConfig: { Component: SignIn },
+              loadUserConfig: {
+                queryFn: async (): Promise<any> => {
+                  try {
+                    const user = await container
+                      .get<RemoteLoadUserDashboard>(
+                        TypesAutomatiza.RemoteLoadUserDashboard
+                      )
+                      .load({ admin: false });
+
+                    const initialUserData = {
+                      ...user,
+                      avatar: user.user?.profile_picture || "",
+                      emailAddress: user?.user?.email || "",
+                      firstName: user?.user?.name || "",
+                      id: (user as any)?.user?.id || "",
+                      imagem: user.user?.profile_picture,
+                      isExternal: false,
+                      lastName: "",
+                    };
+
+                    return initialUserData;
+                  } catch {
+                    return null;
+                  }
+                },
+              },
+              onSignOut: (user: any) => {
+                queryClient.clear();
+                queryClient.removeQueries();
+
+                if (user?.isThirdParty) {
+                  window.location.href =
+                    "https://portal.liftonefranquias.com.br/";
+                }
+              },
             },
-            onSignOut: (user: User) => {
-              queryClient.clear();
-              queryClient.removeQueries();
+          },
+        }}
+        InjectedRemotes={InfinityForgeInjections}
+        Configurations={{
+          chat: false,
+          menu: {
+            mode: "expandedMenu",
+            position: "auto"
+          },
+          styles: { Button: ButtonInfinityForge },
+          notification: {
+            enable: false,
+          },
+        }}
+        theme={themes[process.env.client || "sancla"]}
+      >
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <ConfigProvider locale={ptBR}>
+              <AppProvider>
+                <Head>
+                  <title>{process.env.clientName}</title>
+                  <link
+                    rel="icon"
+                    href={`/images/logo/${process.env.client}.png`}
+                  />
 
-              if(user.isThirdParty) {
-                window.location.href = "https://portal.liftonefranquias.com.br/"
-              }
-            },
-            signInConfig: { Componnent: SignIn },
-          } as any}
-          InjectedRemotes={InfinityForgeInjections}
-          Configurations={{
-            chat: false,
-            styles: { Button: ButtonInfinityForge,  },
-          }}
-          theme={themes[process.env.client || "sancla"]}
-        >
-          <AuthFranchisorProvider initialUserAdmin={userAdmin}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <ConfigProvider locale={ptBR}>
-                <AppProvider>
-                  <Head>
-                    <title>{process.env.clientName}</title>
-                    <link
-                      rel="icon"
-                      href={`/images/logo/${process.env.client}.png`}
-                    />
+                  <link rel="preconnect" href="https://fonts.googleapis.com" />
+                  <link
+                    rel="preconnect"
+                    href="https://fonts.gstatic.com"
+                    crossOrigin="anonymous"
+                  />
+                  <link
+                    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+                    rel="stylesheet"
+                  />
+                </Head>
 
-                    <link
-                      rel="preconnect"
-                      href="https://fonts.googleapis.com"
-                    />
-                    <link
-                      rel="preconnect"
-                      href="https://fonts.gstatic.com"
-                      crossOrigin="anonymous"
-                    />
-                    <link
-                      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-                      rel="stylesheet"
-                    />
-                  </Head>
+                <Component {...pageProps} />
 
-                  <Component {...pageProps} />
-
-                  <GlobalStyles host={process.env.clientName} />
-                </AppProvider>
-              </ConfigProvider>
-            </LocalizationProvider>
-          </AuthFranchisorProvider>
-        </InfinityForgeProviders>
-      )}
+                <GlobalStyles host={process.env.clientName} />
+              </AppProvider>
+            </ConfigProvider>
+          </LocalizationProvider>
+      </InfinityForgeProviders>
     </QueryClientProvider>
   );
 }
-
-

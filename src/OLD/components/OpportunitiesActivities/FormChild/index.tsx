@@ -166,10 +166,10 @@ const FormChild = memo(function FormChild({
             <label>Observações conclusão Ativ.</label>
             <TextArea
               disabled={!edit}
-              value={data?.execObservation}
+              value={data?.observation}
               autoSize={{ minRows: 6 }}
               onChange={(e) =>
-                setData({ ...data, execObservation: e.target.value })
+                setData({ ...data, observation: e.target.value })
               }
             />
           </div>

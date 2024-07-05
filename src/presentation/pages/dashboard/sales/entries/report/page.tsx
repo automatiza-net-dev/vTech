@@ -12,7 +12,9 @@ export function EntriesReportsPageComponent() {
   const query = useGetQueryArgumentsTable({
     container,
     Types: TypesAutomatiza,
-    queryKey: 'RemoteReportsEntries' as keyof typeof TypesAutomatiza,
+    queryKey: {
+      remoteName: 'RemoteReportsEntries' as keyof typeof TypesAutomatiza
+    },
     dynamicFiltersFromApi: false,
     requireUser: false,
   })

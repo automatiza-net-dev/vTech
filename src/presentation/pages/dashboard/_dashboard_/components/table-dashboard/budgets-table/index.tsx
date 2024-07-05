@@ -26,7 +26,7 @@ export function BillSalesUserTable({ data, description }: DashboardTableType) {
     total: {
       value: item?.totalValue,
       qtd: item?.totalBudgets,
-      avg: item?.totalValue,
+      avg: item?.avgValue,
     },
   }));
 

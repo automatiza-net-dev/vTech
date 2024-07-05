@@ -33,7 +33,7 @@ export function SubgruposDetalhado(props) {
 
                   <td>{item?.quantity || "-"}</td>
 
-                  <td>R$ {item?.total || "0,00"}</td>
+                  <td>{item?.total || "0,00"}</td>
 
                   <td>
                     {item?.percentage}

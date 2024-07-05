@@ -1,3 +1,4 @@
+import { useDictionary } from "@/presentation";
 import { useState, createContext } from "react";
 
 export const AppContext = createContext<{

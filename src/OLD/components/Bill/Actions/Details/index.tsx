@@ -740,6 +740,7 @@ const Details = memo(function Details({ billId, setVisible }) {
               key={i}
               payments={data?.payments?.filter((item) => item?.block === i + 1)}
               remove={false}
+              bill={data}
             />
           ))}
       </section>

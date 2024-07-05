@@ -39,7 +39,7 @@ export const columns: Column<ScheduleVaccine>[] = [
     width: 200,
     Component: {
       Element: (props) => (
-        <div>{props.vaccine.type === "vaccine" ? "Vacina" : "Vermífugo"}</div>
+        <div>{props?.vaccine?.type === "vaccine" ? "Vacina" : "Vermífugo"}</div>
       ),
       props: {},
       allProps: true,

@@ -9,9 +9,12 @@ import * as S from "./styles";
 
 import moment from "moment";
 import { currencyFormatter } from "..";
+import { useDictionary } from "@/presentation";
 
 export default function PrintScreen({ budget }) {
   const { clinic } = useProfile();
+
+  const {getWord} = useDictionary()
 
   return (
     <S.PrintScreen className="uk-container">
@@ -19,7 +22,7 @@ export default function PrintScreen({ budget }) {
       <PrintHeader unit={clinic} />
       <section className="uk-margin-top uk-flex uk-flex-around">
         <div>
-          <label>Cod. orçamento</label>
+          <label>Cod. {getWord("Orçamento")}</label>
           <p className="ukk-margin-remove">{budget?.tag}</p>
         </div>
         <div>
@@ -28,7 +31,7 @@ export default function PrintScreen({ budget }) {
         </div>
 
         <div>
-          <label>Data orçamento</label>
+          <label>Data  {getWord("Orçamento")}</label>
           <p className="ukk-margin-remove">
             {moment(budget?.budget_date).format("DD/MM/YYYY - HH:mm")}
           </p>

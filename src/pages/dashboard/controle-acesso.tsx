@@ -1,19 +1,19 @@
 import { memo, useEffect, useState, useCallback } from "react";
 
 import {
-    Form,
-    Input,
-    Modal,
-    Table,
-    Button,
-    Switch,
-    Tooltip,
-    Checkbox,
-    Collapse,
-    Skeleton,
-    Popconfirm,
-    notification,
-  } from "antd";
+  Form,
+  Input,
+  Modal,
+  Table,
+  Button,
+  Switch,
+  Tooltip,
+  Checkbox,
+  Collapse,
+  Skeleton,
+  Popconfirm,
+  notification,
+} from "antd";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { BiDuplicate } from "react-icons/bi";
@@ -79,7 +79,11 @@ export default function ControlesDeAcessoPage() {
     name: "",
     externalAccess: false,
   });
-  const [updateRoleData, setUpdateRoleData] = useState<{name?: string, externalAccess?: boolean, active?: boolean}>({});
+  const [updateRoleData, setUpdateRoleData] = useState<{
+    name?: string;
+    externalAccess?: boolean;
+    active?: boolean;
+  }>({});
 
   const [createdRole, setCreatedRole] = useState(false);
   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
@@ -104,17 +108,7 @@ export default function ControlesDeAcessoPage() {
   const canDeleteAccess = useUserHasPermission("ACE03");
   const listAccessControllPermission = useUserHasPermission("ACE00");
 
-  const syncProfileConfig = useCallback(
-    (roleId) => {
-      profileService
-        .syncProfileConfig({
-          roleId,
-          profileAccessIdList: selectedProfiles,
-        })
-        .then(() => setShowRoleId(false));
-    },
-    [selectedProfiles]
-  );
+  // profileAccessIdList: selectedProfiles,
 
   const rolesQuery = useQuery({
     queryKey: ["roles", term],
@@ -183,7 +177,11 @@ export default function ControlesDeAcessoPage() {
   );
 
   const updateRoleMutation = useMutation(
-    (data: any) => adminService.editRole(data.id, data),
+    (data: any) =>
+      adminService.editRole(data.id, {
+        ...data,
+        profileAccessIdList: selectedProfiles,
+      }),
     {
       onSuccess: () => {
         setOpenUpdate(false);
@@ -243,7 +241,6 @@ export default function ControlesDeAcessoPage() {
         });
         setSelectedProfiles([]);
         setRolesConfigVisible(false);
-        syncProfileConfig(showRoleId);
         showRoleMetadataQuery.refetch();
         rolesQuery.refetch();
       },
@@ -305,7 +302,10 @@ export default function ControlesDeAcessoPage() {
                 <CustomButton
                   type="primary"
                   classCallback="uk-margin-left uk-margin-top"
-                  onClick={() => setOpenCreate(true)}
+                  onClick={() => {
+                    setOpenCreate(true);
+                    setSelectedProfiles([]);
+                  }}
                 >
                   Cadastrar
                 </CustomButton>
@@ -418,7 +418,10 @@ export default function ControlesDeAcessoPage() {
               layout="vertical"
               onSubmitCapture={() =>
                 !createdRole
-                  ? createRoleMutation.mutate(createRoleData as any)
+                  ? createRoleMutation.mutate({
+                      ...createRoleData,
+                      profileAccessIdList: selectedProfiles,
+                    } as any)
                   : updateRoleMutation.mutate({
                       ...createRoleData,
                       id: showRoleId,
@@ -454,12 +457,10 @@ export default function ControlesDeAcessoPage() {
                   />
                 </Form.Item>
 
-                {createdRole && (
-                  <SelectProfiles
-                    selectedProfiles={selectedProfiles}
-                    setSelectedProfiles={setSelectedProfiles}
-                  />
-                )}
+                <SelectProfiles
+                  selectedProfiles={selectedProfiles}
+                  setSelectedProfiles={setSelectedProfiles}
+                />
               </div>
 
               {createdRole && (

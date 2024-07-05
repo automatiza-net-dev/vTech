@@ -12,6 +12,7 @@ import { useLoadPatient } from "@/presentation";
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
 import { BillAndBudget } from "@/OLD/components/Attendance/Timeline/BillAndBudget";
 import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/HospitalizationTimeline";
+import { Negotiations } from "./components/negotiations";
 
 import * as S from "./styles";
 
@@ -22,7 +23,7 @@ export function PacientePage() {
     return <>Carregando...</>;
   }
 
-  const tabs: TabItem[] = [
+  const tabs: TabItem[] & { active: boolean }[] = [
     {
       title: "Últimas Atualizações",
       content: (props) => <LastUpdates {...data} {...props} />,
@@ -31,43 +32,51 @@ export function PacientePage() {
     },
     {
       title: "Tutores",
-      content:(props) => <TutorsTable {...data} {...props}/>,
+      content: (props) => <TutorsTable {...data} {...props} />,
       key: "tutors",
       active: process.env.clientName === "Sanclá",
     },
     {
       title: "Vacinas / Vermífugos lançados",
-      content: (props) => <VaccinesTable {...data}  {...props}/>,
+      content: (props) => <VaccinesTable {...data} {...props} />,
       key: "vaccines",
       active: process.env.clientName === "Sanclá",
     },
     {
       title: "Vendas",
-      content: (props) => <BillAndBudget patient={data} {...props}/>,
+      content: (props) => <BillAndBudget patient={data} {...props} />,
       key: "bills",
       active: true,
     },
     {
       title: "Registros de internação",
-      content: (props) => <HospitalizationTimeline patientData={data} modal={false} {...props}/>,
+      content: (props) => (
+        <HospitalizationTimeline patientData={data} modal={false} {...props} />
+      ),
       key: "hospitalization",
       active: process.env.clientName === "Sanclá",
     },
     {
       title: "Histórico agenda",
-      content: (props) => <PatientHistoric id={data?.id} {...props}/>,
+      content: (props) => <PatientHistoric id={data?.id} {...props} />,
       key: "schedule",
       active: true,
+    },
+    {
+      title: "Negociações",
+      content: (props) => <Negotiations />,
+      key: "negotiations",
+      active: process.env.clientName === "LiftOne",
     },
   ].filter((item) => item.active);
 
   return (
-      <S.Paciente>
-        <ProfileInfos patient={data} />
+    <S.Paciente>
+      <ProfileInfos patient={data} />
 
-        <ActionsPatient />
+      <ActionsPatient />
 
-        <Tab tabs={tabs} />
-      </S.Paciente>
+      <Tab tabs={tabs} />
+    </S.Paciente>
   );
 }

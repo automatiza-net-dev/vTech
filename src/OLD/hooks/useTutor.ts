@@ -14,7 +14,9 @@ export const useTutor = (filters = false, reload = false, fetch = true) => {
     setLoading(true);
     petsService
       .getTutors(filters)
-      .then((res) => setTutors(res.data))
+      .then((res) => {
+        setTutors(res.data)
+      })
       .catch((_err) => setLoading(false))
       .finally(() => setLoading(false));
   };

@@ -7,7 +7,10 @@ import * as domain from "@/domain";
 
 @injectable()
 export class RemoteBudget
-  implements domain.LoadAllBudgetsAttendance, domain.CreateBudget
+  implements
+    domain.LoadAllBudgetsAttendance,
+    domain.CreateBudget,
+    domain.LoadOpenNegotiations
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -32,5 +35,14 @@ export class RemoteBudget
     });
 
     return response as domain.CreateBudget.Model;
+  }
+
+  async loadNegotiations(params: domain.LoadOpenNegotiations.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/open/${params.id}`),
+      method: "get",
+    });
+
+    return response as domain.LoadOpenNegotiations.Model;
   }
 }

@@ -141,7 +141,8 @@ export default function FormChild({
           <div className="uk-width-1-1 uk-margin-small-right">
             <FormCreateTutor
               isModal
-              tutorId={data?.contact?.tutor?.id}
+              tutorId={data?.contact?.id}
+              onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
                 <Tooltip
@@ -210,6 +211,9 @@ export default function FormChild({
                   isModal
                   origin="Crm"
                   patientId={data?.clientId}
+                  initialDataForm={{
+                    holders: [{ id: data?.contact?.tutor?.id, main: true }],
+                  }}
                   trigger={<label className="uk-link">Pet</label>}
                 />
 
@@ -414,7 +418,7 @@ export default function FormChild({
                     onChangeSelect={(val) =>
                       setData({ ...data, originDescription: val })
                     }
-                    value={data?.originDescription}
+                    value={data?.originId}
                   />
                 </FormHandler>
               </div>

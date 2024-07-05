@@ -50,8 +50,6 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
     (item) => item._id === timeLineSelected?._id
   );
 
-  console.log(timeLineSelected?.timeline_type?.description, "<<<")
-
   const ComponentSelected =
     timeLine &&
     timeLineSelected &&

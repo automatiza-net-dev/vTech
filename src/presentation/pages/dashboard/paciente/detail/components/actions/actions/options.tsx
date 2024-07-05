@@ -5,7 +5,7 @@ import { Avaliation } from "./avaliation";
 import { TimeLineEvent, TimelineType } from "@/domain";
 
 // temp
-import { AddBudgetNew, AddSale, useLoadPatient } from "@/presentation";
+import { AddBudgetNew, AddSale, useDictionary, useLoadPatient } from "@/presentation";
 import Exams from "@/OLD/components/Attendance/Forms-old/AddExam";
 import Vaccines from "@/OLD/components/Attendance/Forms-old/Vaccines";
 import DeathReport from "@/OLD/components/Attendance/Forms-old/Death";
@@ -33,6 +33,7 @@ export function useActionsPatient(): {
   list: ActionPatient[];
   activeActions: ActionPatient[];
 } {
+  const {getWord} = useDictionary();
   const patient = useLoadPatient();
 
   const listActions = [
@@ -327,8 +328,8 @@ export function useActionsPatient(): {
     },
     {
       active: true,
-      label: "Orçamentos",
-      value: "Orçamentos",
+      label: getWord("Orçamentos"),
+      value: getWord("Orçamentos"),
       Icon: (
         <svg
           stroke="currentColor"

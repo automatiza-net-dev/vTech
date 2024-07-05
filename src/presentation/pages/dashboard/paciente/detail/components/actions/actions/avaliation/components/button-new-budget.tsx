@@ -1,19 +1,25 @@
 import { useState } from "react";
 
 import moment from "moment";
-import { FormHandler, Input, Select, InputCurrency, Button } from "infinity-forge";
+import {
+  FormHandler,
+  Input,
+  Select,
+  InputCurrency,
+  Button,
+} from "infinity-forge";
 
-import { useLoadAllPatientTutor, useLoadPatient, Modal  } from "@/presentation";
+import { useLoadAllPatientTutor, useLoadPatient, Modal, useDictionary } from "@/presentation";
 
 export function ButtonNewBudget() {
   const [modal, setModal] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems] = useState([]);
   const [modalProducts, setModalProducts] = useState(false);
 
   const patient = useLoadPatient();
-  const { data, isFetching } = useLoadAllPatientTutor({
-    needFilterToCallApi: false,
-  });
+  const { data, isFetching } = useLoadAllPatientTutor({ needFilterToCallApi: false });
+
+  const {getWord} = useDictionary()
 
   return (
     <>
@@ -97,42 +103,42 @@ export function ButtonNewBudget() {
             maxwidth="700px"
           >
             <FormHandler button={{ text: "FILTRAR" }}>
-            <div className="row">
+              <div className="row">
                 <Input name="ean" placeholder="EAN" />
 
                 <Input name="description" placeholder="Descrição" />
               </div>
-
             </FormHandler>
 
             <FormHandler onSucess={(data) => {}}>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 20 }}
               >
-                <div
-                  className="PRODUCT"
-                  style={{ background: "#ccc" }}
-                >
+                <div className="PRODUCT" style={{ background: "#ccc" }}>
                   <div className="name">
                     <span>NOME PRODUTO - ean: 123</span>
                   </div>
 
                   <div style={{ display: "flex" }}>
                     {/* Parametro que habilita ou desabilita o valor unitario ver qual é no código antigo */}
-                    <InputCurrency name="valorUnitario" readOnly={false} placeholder="Valor unitario" />
+                    <InputCurrency
+                      name="valorUnitario"
+                      readOnly={false}
+                      placeholder="Valor unitario"
+                    />
 
-                    <InputCurrency name="valorDesconto" placeholder="Valor desconto"/>
+                    <InputCurrency
+                      name="valorDesconto"
+                      placeholder="Valor desconto"
+                    />
 
-                    <Input type="number" name="qtd" placeholder="Quantidade"/>
+                    <Input type="number" name="qtd" placeholder="Quantidade" />
 
                     <Button text="ADICIONAR AO CARRINHO" type="button" />
                   </div>
                 </div>
 
-                <div
-                  className="PRODUCT"
-                  style={{ background: "#ccc" }}
-                >
+                <div className="PRODUCT" style={{ background: "#ccc" }}>
                   <div className="name">
                     <span>NOME PRODUTO - ean: 123</span>
                   </div>
@@ -173,7 +179,7 @@ export function ButtonNewBudget() {
 
       <Button
         type="button"
-        text="NOVO ORÇAMENTO"
+        text={`NOVO ${getWord("Orçamento")}`}
         onClick={() => setModal(true)}
       />
     </>

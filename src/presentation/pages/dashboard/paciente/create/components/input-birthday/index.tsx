@@ -6,16 +6,19 @@ import { Input, InputSwitch, Select } from "infinity-forge";
 
 import * as S from "./styles";
 
-export function InputBirthday() {
+export function InputBirthday({ patientId }) {
   const [datepickerType, setDatepickerType] = useState("normal");
 
   const { values, setFieldValue } = useFormikContext();
 
   useEffect(() => {
-    if(values && values["birthMonths"]) {
-      setDatepickerType("month")
+    if (values && values["birthMonths"]) {
+      setDatepickerType("month");
+      setFieldValue("birthDate_change", true);
+    } else {
+      setFieldValue("birthDate_change", false);
     }
-  }, [])
+  }, []);
 
   return (
     <S.InputBirthday>
@@ -39,22 +42,29 @@ export function InputBirthday() {
             name="birthMonths"
             label="Idade meses"
           />
+
+          <Input type="number" name="birthDays" label="Idade dias" />
         </div>
       )}
+      {!patientId && (
+        <div>
+          <InputSwitch
+            label="Idade"
+            onChangeInput={(ev) => {
+              setDatepickerType(ev ? "month" : "normal");
 
-      <div>
-        <InputSwitch
-          label="Idade"
-          onChangeInput={(ev) => {
-            setDatepickerType(ev ? "month" : "normal");
-
-            if (ev === true) {
-              setFieldValue("birthDate", undefined);
-            }
-          }}
-          name="birthDate_change"
-        />
-      </div>
+              if (ev === true) {
+                setFieldValue("birthDate", undefined);
+              } else {
+                setFieldValue("birthYears", undefined);
+                setFieldValue("birthMonths", undefined);
+                setFieldValue("birthDays", undefined);
+              }
+            }}
+            name="birthDate_change"
+          />
+        </div>
+      )}
     </S.InputBirthday>
   );
 }

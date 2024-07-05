@@ -7,7 +7,6 @@ import { useFormikContext } from "formik";
 
 import * as S from "./styles";
 import { Tutor } from "@/domain";
-import { useQueryClient } from "react-query";
 
 export function Tutors() {
   const [modal, setModal] = useState(false);

@@ -78,7 +78,7 @@ export default function MedicalRecipesListPage() {
             <CustomButton
               disabled={!canCreateMedicalRecipe}
               className="uk-button uk-button-primary"
-              onClick={() => router.push("/dashboard/receita/cadastrar")}
+              onClick={() => router.push("/dashboard/receitas/cadastrar")}
             >
               Cadastrar
             </CustomButton>

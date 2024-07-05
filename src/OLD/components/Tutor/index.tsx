@@ -113,7 +113,10 @@ export function Tutor({
               {router.asPath.includes("crm") ? (
                 <ButtonInfinityForge
                   text="Cadastrar"
-                  onClick={() => setFastCreateVisible(true)}
+                  onClick={() => {
+                    setFastCreateVisible(true);
+                    setVisible(false)
+                  }}
                   type="button"
                 />
               ) : (

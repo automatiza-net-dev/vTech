@@ -30,6 +30,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 
 import InvFunnel from "../InvFunnel";
 import BudgetsTable from "../BudgetsByType";
+import { useDictionary } from "@/presentation";
 
 const Pie = dynamic(() => import("../Pie"), { ssr: false });
 
@@ -85,6 +86,8 @@ function Indicators() {
   const { unconfirmedBudgets } = useUnconfirmedBudgets(filters);
 
   const systemName = process.env.clientName;
+
+  const {getWord} = useDictionary()
 
   return (
     <section className="uk-width-1-1">
@@ -398,7 +401,7 @@ function Indicators() {
                 className="general-box uk-margin-small-top"
                 style={{ fontSize: "0.7em" }}
               >
-                Orçamentos não confirmados
+                {getWord("Orçamentos")} não confirmados
                 <h4 className="uk-margin-remove uk-flex uk-flex-right">
                   <h4 className="uk-margin-remove uk-flex uk-flex-right">
                     {currencyFormatter(unconfirmedBudgets[0]?.total || 0)}
@@ -481,7 +484,7 @@ function Indicators() {
         </div>
         <div className="custom-bordered uk-margin-small-top custom-width custom-margin-left">
           <div className="uk-width-1-1 uk-margin-small-right">
-            <h4 className="uk-margin-remove">Orçamentos por vendedor</h4>
+            <h4 className="uk-margin-remove">{getWord("Orçamentos")} por vendedor</h4>
             <div className="table-container uk-width-1-1">
               <BudgetsTable
                 filters={{
@@ -496,7 +499,7 @@ function Indicators() {
         </div>
         <div className="custom-bordered uk-margin-small-top custom-width custom-margin-left">
           <div className="uk-width-1-1 uk-margin-small-right">
-            <h4 className="uk-margin-remove">Orçamentos por avaliador</h4>
+            <h4 className="uk-margin-remove">{getWord("Orçamentos")} por avaliador</h4>
             <div className="table-container uk-width-1-1">
               <BudgetsTable
                 filters={{

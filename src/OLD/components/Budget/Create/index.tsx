@@ -22,7 +22,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import Masks from "@/OLD/utils/masks";
 import { useBudgetProducts, useCreateBudget } from "@/OLD/hooks/useBudgets";
 import { useDailyMovements } from "@/OLD/hooks/useDailyMovements";
-import { useLoadPatient } from "@/presentation";
+import { useDictionary, useLoadPatient } from "@/presentation";
 
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile } from "@/OLD/hooks/useProfile";
@@ -232,7 +232,7 @@ function CreateBudget({
             setLoading(false);
             setConfirmMissingClientId(false);
             cleanUp();
-            notification.success({ message: "Orçamento criado com sucesso!" });
+            notification.success({ message: `${getWord("Orçamento")} criado com sucesso!` });
             close((prv) => {
               if (prv?.budget) {
                 return { ...prv, budget: false };
@@ -454,9 +454,11 @@ function CreateBudget({
       });
   };
 
+  const {getWord} = useDictionary()
+
   return (
     <div style={{ marginTop: "140px" }}>
-      <h4>Novo orçamento</h4>
+      <h4>Novo {getWord("Orçamento")}</h4>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -856,7 +858,7 @@ function CreateBudget({
 
           <div
             className="uk-width-1-1 uk-flex uk-flex-right"
-            title="Criar orçamento"
+            title={`Criar ${getWord("Orçamento")}`}
             visible={true}
             onClose={() => {}
         

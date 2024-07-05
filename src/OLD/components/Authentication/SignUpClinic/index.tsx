@@ -28,7 +28,7 @@ export function SignUpClinic() {
             description: "Cadastro realizado com sucesso!",
           });
           setLoading(false);
-          signOut();
+          signOut({ roleUser: "user" });
           router.push("/");
         })
         .catch((err) => {

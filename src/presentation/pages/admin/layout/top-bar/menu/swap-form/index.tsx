@@ -1,20 +1,20 @@
 import { useRouter } from "next/router";
 
-import { FormHandler, InputRadio, Error } from "infinity-forge";
+import { FormHandler, InputRadio, Error, useAuthAdmin } from "infinity-forge";
 
 import { Storage } from "@/infra";
 import { RemoteBusinessUnits } from "@/data";
 import { InfraTypes, adminTypes, container } from "@/container";
-import { useAuthFranchisor, useLoadUsersController } from "@/presentation";
+import {  useLoadUsersController } from "@/presentation";
 
 import * as S from "./styles";
+import { User } from "@/domain";
 
 export function SwapForm() {
-  const { user } = useAuthFranchisor();
-
+  const { GetUser } = useAuthAdmin();
   const { data } = useLoadUsersController();
 
-  console.log(user, "??");
+  const user = GetUser<User>();
 
   const userClinicas =
     data && data.length > 0
@@ -36,7 +36,7 @@ export function SwapForm() {
 
     await container
       .get<Storage>(InfraTypes.storage)
-      .set("token", { value: adminUserToken?.value || "" });
+      .set("user", { value: adminUserToken?.value || "" });
 
     router.push("/dashboard");
   }

@@ -23,6 +23,7 @@ import {
   AddBudgetNew,
   PdfPatientAttendance,
   Print,
+  useDictionary,
   useLoadSchedule,
 } from "@/presentation";
 
@@ -36,6 +37,7 @@ export function Avaliation(props: DropdownComponentProps) {
   const [attendance, setAttendance] = useState<TimeLine | null>(null);
 
   const router = useRouter();
+  const {getWord} = useDictionary();
   const { createToast } = useToast();
   const queryClient = useQueryClient();
 
@@ -171,7 +173,7 @@ export function Avaliation(props: DropdownComponentProps) {
                   await handleSubmit(data);
                   setModal(true);
                 },
-                props: { text: "NOVO ORÇAMENTO" },
+                props: { text: `NOVO ${getWord("Orçamento").toUpperCase()}` },
                 active: true,
               },
               {

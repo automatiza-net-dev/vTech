@@ -1,6 +1,9 @@
+import { useDictionary } from "@/presentation/context";
 import * as S from "./styles";
 
 export function ResumeInformations() {
+  const {getWord} = useDictionary()
+
   return (
     <S.ResumeInformations>
       <div className="informations">
@@ -18,7 +21,7 @@ export function ResumeInformations() {
       </div>
 
       <div className="informations">
-        <h4>Orçamentos não confirmados</h4>
+        <h4>{getWord("Orçamentos")} não confirmados</h4>
         <span className="total-price">R$ 0,00 (0)</span>
       </div>
     </S.ResumeInformations>

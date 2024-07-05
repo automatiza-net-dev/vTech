@@ -22,12 +22,7 @@ import PatientHistoric from "./Historic";
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-function Timeline({
-  patient,
-  reload,
-  setReload,
-  reloadExtern
-}) {
+function Timeline({ patient, reload, setReload, reloadExtern }) {
   const [activeTab, setActiveTab] = React.useState("1");
   const [filter, setFilter] = useState("all");
   const { hospitalizations } = useHospitalizations();
@@ -42,58 +37,58 @@ function Timeline({
     {
       key: "1",
       label: "Últimas atualizações",
-      value: "all"
+      value: "all",
     },
     {
       key: "4",
       label: "Atendimentos",
-      value: "Consulta"
+      value: "Consulta",
     },
     {
       key: "2",
       label: "Peso",
-      value: "Peso"
+      value: "Peso",
     },
     {
       key: "3",
       label: "Documentos",
-      value: "Documento"
+      value: "Documento",
     },
     {
       key: "11",
       label: "Exames",
-      value: "Exames"
+      value: "Exames",
     },
     {
       key: "5",
       label: "Fotos e Videos",
-      value: "Fotos"
+      value: "Fotos",
     },
     {
       key: "6",
       label: "Patologias",
-      value: "Patologia"
+      value: "Patologia",
     },
     {
       key: "8",
       label: "Observações",
-      value: "Observação"
+      value: "Observação",
     },
     {
       key: "7",
       label: "Receitas",
-      value: "Formato Receita Médica"
+      value: "Formato Receita Médica",
     },
     {
       key: "9",
       label: "Vacinas",
-      value: "Vacinas"
+      value: "Vacinas",
     },
     {
       key: "10",
       label: "Internação",
-      value: "Hospitalização"
-    }
+      value: "Hospitalização",
+    },
   ];
 
   return (
@@ -181,6 +176,6 @@ function Timeline({
       </Tabs>
     </Container>
   );
-};
+}
 
 export default Timeline;

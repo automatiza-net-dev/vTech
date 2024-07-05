@@ -3,16 +3,19 @@ import { useState } from "react";
 import {
   ButtonEdit,
   ButtonDelete,
-  useAuthFranchisor,
   useDeleteUserController,
 } from "@/presentation";
+import { User } from "@/domain";
 import { FormUserController } from "../../components";
+import { useAuthAdmin } from "infinity-forge";
 
 export function ActionsListUserController(props) {
   const [modal, setModal] = useState(false);
   const { mutateAsync, isLoading } = useDeleteUserController(props.id);
 
-  const { user } = useAuthFranchisor();
+  const {GetUser} = useAuthAdmin()
+
+  const user = GetUser<User>()
 
   const isActualUser = props.id === user?.user?.id;
 

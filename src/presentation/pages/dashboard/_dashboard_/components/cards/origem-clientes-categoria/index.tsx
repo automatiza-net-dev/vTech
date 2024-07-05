@@ -20,7 +20,7 @@ export function OrigemClientesCategoria(props) {
             <tr>
               <th>Descrição</th>
               <th>Fatur.</th>
-              <th>Porcent.</th>
+              <th>%</th>
             </tr>
           </thead>
 
@@ -31,7 +31,7 @@ export function OrigemClientesCategoria(props) {
                   <td>
                     <span>{item?.categoria || "-"}</span>
                   </td>
-                  <td>R$ {item?.faturamento || "0,00"}</td>
+                  <td>R$ {item?.faturamento.toFixed(2) || "0,00"}</td>
                   <td>
                     {item?.porcentagem
                       ? item?.porcentagem.toFixed(2) + "%"
@@ -45,7 +45,7 @@ export function OrigemClientesCategoria(props) {
                       <td>
                         <span>{group?.grupo || "-"}</span>
                       </td>
-                      <td>R$: {group?.total || "0,00"}</td>
+                      <td>R$ {group?.total.toFixed(2) || "0,00"}</td>
                       <td>
                         {item?.porcentagem
                           ? item?.porcentagem.toFixed(2) + "%"
@@ -58,7 +58,7 @@ export function OrigemClientesCategoria(props) {
                         <td>
                           <span>{origin?.origem || "-"}</span>
                         </td>
-                        <td>R$: {origin?.total || "0,00"}</td>
+                        <td>R$ {origin?.total.toFixed(2) || "0,00"}</td>
                         <td>
                           {origin?.porcentagem
                             ? origin?.porcentagem.toFixed(2) + "%"

@@ -10,6 +10,7 @@ const nextConfig = {
     api: process.env.api,
     clientName: process.env.clientName
   },
+  reactStrictMode: false,
   compiler: {
     styledComponents: true,
   },

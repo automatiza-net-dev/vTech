@@ -14,7 +14,11 @@ import {
 
 import { Patient } from "@/domain";
 import { RemotePatient } from "@/data";
-import { FormCreateTutor, useLoadPatient, useVerifyPermissions } from "@/presentation";
+import {
+  FormCreateTutor,
+  useLoadPatient,
+  useVerifyPermissions,
+} from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 import {
@@ -32,17 +36,17 @@ function Form({
   setOpen,
   patientId,
   onSuccess,
-  initialDataForm = {}
+  initialDataForm = {},
 }: {
-  origin?: "Cadastro"  | "Crm" | "Agenda";
+  origin?: "Cadastro" | "Crm" | "Agenda";
   setOpen?: Dispatch<SetStateAction<boolean>>;
   onSuccess?: (data: any) => void;
   patientId?: Patient["id"];
-  initialDataForm?: { [key: string]: any }
+  initialDataForm?: { [key: string]: any };
 }) {
   const { data, refetch, isFetching } = useLoadPatient(patientId);
 
-  const { createToast } = useToast()
+  const { createToast } = useToast();
 
   const initialData = data
     ? {
@@ -75,12 +79,14 @@ function Form({
         initialData={initialData}
         button={{ text: "SALVAR" }}
         disableEnterKeySubmitForm
-        onSucess={async formData => {
+        onSucess={async (formData) => {
           const payload = {
             ...formData,
             origin,
             photo:
-            formData?.photo && Array.isArray(formData?.photo) && formData.photo.find(photo => photo?.file)
+              formData?.photo &&
+              Array.isArray(formData?.photo) &&
+              formData.photo.find((photo) => photo?.file)
                 ? formData?.photo[0]?.file
                 : undefined,
           };
@@ -89,16 +95,14 @@ function Form({
             .get<RemotePatient>(TypesAutomatiza.RemotePatient)
             [data ? "edit" : "create"](payload);
 
-
-          patientId && await refetch();
+          patientId && (await refetch());
 
           createToast({
             status: "success",
             message: patientId ? "Alterado com sucesso" : "Criado com sucesso",
           });
 
-          onSuccess && onSuccess(formData)
-
+          onSuccess && onSuccess(formData);
 
           setOpen && setOpen(false);
 
@@ -110,7 +114,9 @@ function Form({
           // });
         }}
       >
-        <h2 className="font-22-bold">{patientId ? `Editar - ${data?.name}` : "Novo Pet"}</h2>
+        <h2 className="font-22-bold">
+          {patientId ? `Editar - ${data?.name}` : "Novo Pet"}
+        </h2>
 
         <div className="row-1">
           <div className="name">
@@ -133,7 +139,7 @@ function Form({
         </div>
 
         <div className="row-2">
-          <InputBirthday />
+          <InputBirthday patientId={patientId} />
 
           <Select
             label="O paciente é vacinado?"
@@ -200,14 +206,16 @@ export function FormCreatePatient({
   trigger,
   patientId,
   onSuccess,
-  initialDataForm
+  initialDataForm,
 }: {
-  origin?: "Cadastro"  | "Crm" | "Agenda";
+  origin?: "Cadastro" | "Crm" | "Agenda";
   isModal: boolean;
   onSuccess?: (data: any) => void;
   trigger?: JSX.Element;
   patientId?: Patient["id"];
-  initialDataForm?: { [key: string]: any }
+  initialDataForm?: {
+    holders?: { id: string; main: boolean }[];
+  };
 }) {
   const [open, setOpen] = useState(false);
 
@@ -220,7 +228,15 @@ export function FormCreatePatient({
   }
 
   if (process.env.client === "liftone") {
-    return <FormCreateTutor isModal={isModal} onSuccess={onSuccess} trigger={trigger} origin={origin} tutorId={patientId} />
+    return (
+      <FormCreateTutor
+        isModal={isModal}
+        onSuccess={onSuccess}
+        trigger={trigger}
+        origin={origin}
+        tutorId={patientId}
+      />
+    );
   }
 
   if (isModal) {
@@ -231,7 +247,13 @@ export function FormCreatePatient({
           open={open}
           onClose={() => setOpen(false)}
         >
-          <Form origin={origin} setOpen={setOpen} patientId={patientId} initialDataForm={initialDataForm} onSuccess={onSuccess}/>
+          <Form
+            origin={origin}
+            setOpen={setOpen}
+            patientId={patientId}
+            initialDataForm={initialDataForm}
+            onSuccess={onSuccess}
+          />
         </Modal>
 
         {trigger ? (
@@ -253,5 +275,12 @@ export function FormCreatePatient({
     );
   }
 
-  return <Form origin={origin} onSuccess={onSuccess}  patientId={patientId} initialDataForm={initialDataForm}/>;
+  return (
+    <Form
+      origin={origin}
+      onSuccess={onSuccess}
+      patientId={patientId}
+      initialDataForm={initialDataForm}
+    />
+  );
 }

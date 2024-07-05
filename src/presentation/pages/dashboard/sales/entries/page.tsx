@@ -12,7 +12,9 @@ export function EntriesPageComponent() {
   const query = useGetQueryArgumentsTable({
     container,
     Types: TypesAutomatiza,
-    queryKey: 'RemoteEntries' as keyof typeof TypesAutomatiza,
+    queryKey: {
+      remoteName: 'RemoteEntries' as keyof typeof TypesAutomatiza
+    },
     dynamicFiltersFromApi: false,
     requireUser: false,
   })
@@ -26,7 +28,6 @@ export function EntriesPageComponent() {
     columnsConfiguration: {
       columns,
       actions: {
-        
         detail: (tableItem) => `/entrada/` + tableItem.id,
       },
     },

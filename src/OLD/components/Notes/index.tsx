@@ -113,7 +113,7 @@ export function Notes() {
                   <CgDetailsMore
                     className="custom-icon"
                     onClick={() => {
-                      setDetailsVisible(true)
+                      setDetailsVisible(true);
                       setSelectedId(receipt?.id);
                       {
                         /*
@@ -249,10 +249,6 @@ export function Notes() {
             message: err?.response?.data?.message?.split(":")[1],
           });
         }
-
-        return notification.error({
-          message: "Houve um erro ao finalizar a nota de entrada...",
-        });
       });
   };
 
@@ -270,6 +266,11 @@ export function Notes() {
           message: "Houve um erro ao reabrir a nota",
         });
       });
+  };
+
+  const listCreated = (id) => {
+    setFilters({ receipt_id: id });
+    setReload((prv) => !prv);
   };
 
   return !listReceiptsPermission || listReceiptsPermission === "loading" ? (
@@ -314,7 +315,7 @@ export function Notes() {
         title="Nova nota de entrada"
         visible={createVisible}
       >
-        <Create setReload={setReload} setVisible={setCreateVisible} />
+        <Create setReload={setReload} setVisible={setCreateVisible} listCreated={listCreated} />
       </Modal>
       <Modal
         title="Importar XML"

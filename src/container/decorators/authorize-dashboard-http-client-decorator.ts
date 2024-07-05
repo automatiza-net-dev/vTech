@@ -14,12 +14,12 @@ export class AuthorizeDashboardHttpClientDecorator
   ) {}
 
   async request(data: domain.HttpRequest) {
-    const storageToken = await this.storage.get("token");
+    const storageToken = await this.storage.get("user");
 
     Object.assign(data, {
       headers: Object.assign(data.headers || {}, {
         Authorization: `Bearer ${storageToken?.value || ""}`,
-        flag: "token",
+        flag: "user",
         "X-System": process.env.clientName
       }),
     });

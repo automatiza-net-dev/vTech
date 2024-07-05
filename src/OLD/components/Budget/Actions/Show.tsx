@@ -32,6 +32,7 @@ import { useAuthAdmin } from "infinity-forge";
 import { SystemUser } from "@/domain";
 
 import moment from "moment";
+import { useDictionary } from "@/presentation";
 
 const columns = [
   {
@@ -156,9 +157,11 @@ export default function ShowBudget({ budget, setReload }: any) {
     });
   }, [budget]);
 
+  const {getWord} = useDictionary()
+
   return (
     <>
-      <Tooltip title="Detalhes orçamento">
+      <Tooltip title={`Detalhes ${getWord("Orçamento")}`}>
         <CgDetailsMore
           className="icon"
           size={30}
@@ -171,7 +174,7 @@ export default function ShowBudget({ budget, setReload }: any) {
       <Modal
         visible={visible}
         footer={null}
-        title={`Mostrar orçamento - ${budget?.tag}`}
+        title={`Mostrar ${getWord("Orçamento")} - ${budget?.tag}`}
         width={1200}
         onCancel={() => setVisible((prevState) => !prevState)}
       >

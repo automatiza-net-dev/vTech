@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useEffect, useState } from "react";
+import React, { memo } from "react";
 import { useRouter } from "next/router";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -15,11 +15,10 @@ const { Option } = Select;
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
-const TitlesForm = memo(function TitlesForm({
+function TitlesForm({
   plans,
   checkingAccounts,
   paymentMethods,
-  options,
   data,
   setData,
   submit,
@@ -57,6 +56,17 @@ const TitlesForm = memo(function TitlesForm({
           const editFieldsPermission = useUserHasPermission(
             `${accessControlTitles(title?.type)}02`
           );
+
+          const editPaymentMethodPermission = useUserHasPermission(
+            `${accessControlTitles(title?.type)}10`
+          );
+
+          const allowPaymentMethodEdit = () => {
+            if (editFieldsPermission && editPaymentMethodPermission) {
+              return false;
+            }
+            return true;
+          };
 
           return (
             <Container className="uk-padding-small uk-margin-top" key={i}>
@@ -200,7 +210,7 @@ const TitlesForm = memo(function TitlesForm({
                     <label>Forma de pagamento</label>
                     <br />
                     <Select
-                      disabled={!editFieldsPermission}
+                      disabled={allowPaymentMethodEdit()}
                       value={title?.paymentMethodId}
                       className="uk-width-1-1"
                       onChange={(val) => {
@@ -230,7 +240,7 @@ const TitlesForm = memo(function TitlesForm({
                       value={title?.flagId}
                       className="uk-width-1-1"
                       disabled={
-                        editFieldsPermission ? !(flags?.length > 0) : true
+                        !allowPaymentMethodEdit() ? !(flags?.length > 0) : true
                       }
                       onChange={(val) => {
                         const newArr = [...data];
@@ -421,6 +431,6 @@ const TitlesForm = memo(function TitlesForm({
       </footer>
     </form>
   );
-});
+}
 
 export default TitlesForm;

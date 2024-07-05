@@ -1,10 +1,11 @@
 import React from "react";
-import { AccessControlsPage, PrivatePageFranchisor } from "@/presentation";
+import { AccessControlsPage } from "@/presentation";
+import { PrivatePageAdmin } from "infinity-forge";
 
 export default function ListUsuarioPage() {
   return (
-    <PrivatePageFranchisor>
+    <PrivatePageAdmin roleUser="admin">
       <AccessControlsPage />
-    </PrivatePageFranchisor>
+    </PrivatePageAdmin>
   );
 }

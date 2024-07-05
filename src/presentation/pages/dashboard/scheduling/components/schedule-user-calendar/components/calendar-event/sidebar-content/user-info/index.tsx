@@ -34,7 +34,7 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
       text:
         process.env.client === "sancla"
           ? event?.event?.holder?.tutor?.cellphone || "Telefone não informado"
-          : event?.event.patient.cellphone || "Telefone não informado",
+          : event?.event?.patient?.cellphone || "Telefone não informado",
       icon: <Icon name="PhoneIcon" />,
     },
   };
@@ -70,6 +70,7 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
                 return (
                   <FormCreateTutor
                     isModal
+                    origin="Agenda"
                     tutorId={
                       process.env.client === "sancla"
                         ? event?.event?.holder?.id

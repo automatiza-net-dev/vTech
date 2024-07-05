@@ -25,9 +25,10 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 
-
 import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
+import { FormHandler, Select as InfinityForgeSelect } from "infinity-forge";
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -65,10 +66,7 @@ const columns = [
   },
 ];
 
-export default function CompleteBudget({
-  budget,
-  setReload = false,
-}) {
+export default function CompleteBudget({ budget, setReload = false }) {
   const queryClient = useQueryClient();
   const [visible, setVisible] = React.useState(false);
   const [observation, setObservation] = React.useState("Sem observações");
@@ -82,7 +80,9 @@ export default function CompleteBudget({
     finishedAt: moment(),
   });
 
-  const { tutors } = useTutor(false, false, visible);
+ const res = useLoadAllPatientTutor({ needFilterToCallApi: false });
+  const tutors = res.data
+
   const { data } = useCompleteBudget(budget.id, visible);
   const { data: reasons } = useGetAllReasons({
     enabled: visible,
@@ -90,13 +90,13 @@ export default function CompleteBudget({
   });
   const { mutate, isLoading } = useConfirmBudget(budget.id);
 
+  const { getWord } = useDictionary();
 
   const confirmBudgetPermission = useUserHasPermission("ORC03");
   const router = useRouter();
   const validBudget =
-    budget.status === "ABERTO" || budget.status === "Orçamento em aberto";
-
-  sortItems(tutors, "name");
+    budget.status === "ABERTO" ||
+    budget.status === `${getWord("Orçamento")} em aberto`;
 
   const notificationStructure = (bill) => (
     <section>
@@ -149,19 +149,22 @@ export default function CompleteBudget({
           finishedAt: moment(),
         });
         return notification.success({
-          message: "Orçamento confirmado com sucesso!",
+          message: `${getWord("Orçamento")} confirmado com sucesso!`,
           description: notificationStructure(res),
         });
       },
       onError: (err) => {
         if (
           err?.response?.data?.message.includes(
-            "É necessário informar o cliente para confirmar o orçamento"
+            `É necessário informar o cliente para confirmar o ${getWord(
+              "Orçamento"
+            )}`
           )
         ) {
           return notification.warning({
-            message:
-              "Cliente informado não encontrado na base de dados, cadastre um novo cliente ou selecione um cliente já cadastrado para confirmar o orçamento",
+            message: `Cliente informado não encontrado na base de dados, cadastre um novo cliente ou selecione um cliente já cadastrado para confirmar o ${getWord(
+              "Orçamento"
+            )}`,
           });
         }
       },
@@ -234,10 +237,17 @@ export default function CompleteBudget({
     return [];
   }, [data?.items, formData.notConfirmedItems]);
 
+  const tutorsList =
+    tutors?.map((tutor) => ({
+      label: tutor?.name,
+      value: tutor?.id,
+    })) || [];
+
+
   return (
     <>
       {confirmBudgetPermission && (
-        <Tooltip title="Confirmar Orçamento">
+        <Tooltip title={`Confirmar ${getWord("Orçamento")}`}>
           <BsCheckCircle
             className="icon"
             size={20}
@@ -252,7 +262,7 @@ export default function CompleteBudget({
       <Modal
         visible={visible}
         footer={null}
-        title={`Confirmar Orçamento - ${budget?.tag}`}
+        title={`Confirmar ${getWord("Orçamento")} - ${budget?.tag}`}
         width={1300}
         onCancel={() => setVisible((prevState) => !prevState)}
       >
@@ -269,28 +279,24 @@ export default function CompleteBudget({
               <div className="uk-flex uk-flex-column uk-width-1-1 uk-margin-small-right">
                 <span className="uk-text-small">Cliente</span>
                 {data?.client ? (
-                  <span className="uk-text-default">{data?.client_name}</span>
+                  <span className="uk-text-default">{data?.client?.name}</span>
                 ) : (
-                  <AutoComplete
-                    options={tutors?.map((tutor) => ({
-                      ...tutor,
-                      key: tutor?.id,
-                      value: tutor?.name,
-                    }))}
-                    value={client?.name}
-                    onChange={(val) =>
-                      setClient((prv) => ({ ...prv, name: val }))
-                    }
-                    onSelect={(_, opt) => {
-                      updateClient(opt?.id);
-                      setClient({ name: opt?.value, id: opt?.id });
-                    }}
-                    filterOption={(val, opt) =>
-                      normalizeStr(opt?.name.toUpperCase()).includes(
-                        normalizeStr(val.toUpperCase())
-                      )
-                    }
-                  />
+                  <FormHandler initialData={{ tutor: data?.client_name }}>
+                    <InfinityForgeSelect
+                      value={client?.id}
+                      name="tutor"
+                      onlyOneValue
+                      onChangeSelect={(value: string) => {
+                        updateClient(value);
+                        setClient({
+                          name: tutorsList.find((t) => t.value === value)
+                            ?.label,
+                          id: value,
+                        });
+                      }}
+                      options={tutorsList && tutorsList.length > 0 ? [...tutorsList, { label: data?.client_name, value: data?.client_name }] : []}
+                    />
+                  </FormHandler>
                 )}
               </div>
               {process.env.client !== "liftone" && (

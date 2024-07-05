@@ -36,12 +36,23 @@ const Edit = memo(function Edit({
     `${accessControlTitles(data?.type)}02`
   );
 
+  const editPaymentMethodPermission = useUserHasPermission(
+    `${accessControlTitles(data?.type)}10`
+  );
+
   useEffect(() => {
     setFlags(
       paymentMethods.find((method) => method?.id === data?.paymentMethodId)
         ?.flags
     );
   }, [data, paymentMethods]);
+
+  const allowPaymentMethodEdit = () => {
+    if (edit && editPaymentMethodPermission) {
+      return false;
+    }
+    return true;
+  };
 
   return (
     <form
@@ -215,7 +226,7 @@ const Edit = memo(function Edit({
         <div className="uk-margin-small-right uk-width-1-4">
           <label>Forma pagamento</label>
           <AutoComplete
-            disabled={!edit}
+            disabled={allowPaymentMethodEdit()}
             value={
               paymentMethods.find(
                 (method) => method.id === data?.paymentMethodId
@@ -245,7 +256,7 @@ const Edit = memo(function Edit({
           <label>Bandeira</label>
           <br />
           <Select
-            disabled={!edit}
+            disabled={allowPaymentMethodEdit()}
             value={data?.tefFlagId}
             className="uk-width-1-1"
             onChange={(val) => {

@@ -1,9 +1,10 @@
-import { DashboardAdmin, PrivatePageFranchisor } from "@/presentation";
+import { DashboardAdmin } from "@/presentation";
+import { PrivatePageAdmin } from "infinity-forge";
 
 export default function DashboardFranchisorPage() {
   return (
-    <PrivatePageFranchisor>
+    <PrivatePageAdmin  roleUser="admin">
       <DashboardAdmin />
-    </PrivatePageFranchisor>
+    </PrivatePageAdmin>
   );
 }

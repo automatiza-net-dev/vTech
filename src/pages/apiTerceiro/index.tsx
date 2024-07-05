@@ -36,7 +36,7 @@ export default function ValidaTerceiros() {
 
           container
             .get<Storage>(InfraTypes.storage)
-            .set("token", { value: token });
+            .set("user", { value: token });
 
           const responseBusinessUnits = await container
             .get<RemoteBusinessUnits>(adminTypes.RemoteBusinessUnits)
@@ -48,7 +48,7 @@ export default function ValidaTerceiros() {
               .swap({ dashboard: true, unitId: responseBusinessUnits[0].id });
           }
 
-          await loadUser();
+          await loadUser({ roleUser: "user" });
 
           if (router.query.log) {
             return;
@@ -62,7 +62,7 @@ export default function ValidaTerceiros() {
 
           container
             .get<Storage>(InfraTypes.storage)
-            .set("token", { value: token });
+            .set("user", { value: token });
 
           if (router.query.log) {
             return;

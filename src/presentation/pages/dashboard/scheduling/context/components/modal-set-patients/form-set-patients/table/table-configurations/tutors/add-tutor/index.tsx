@@ -109,7 +109,7 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
         )}
       </Modal>
 
-      <S.AddTutor onClick={() => setModal(true)}>
+      <S.AddTutor onClick={() => setModal(true)} data-cy="add_tutor">
         <svg
           viewBox="0 0 16 16"
           height="20"

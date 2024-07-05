@@ -1,7 +1,7 @@
 import { LoaderCircle } from "infinity-forge";
 
 import { LoadAllBudgetsAttendance } from "@/domain";
-import { useLoadAllBudgetAttendances } from "@/presentation";
+import { useDictionary, useLoadAllBudgetAttendances } from "@/presentation";
 
 import { BudgetItem } from "./budget-item";
 
@@ -9,6 +9,7 @@ import * as S from "./styles";
 
 export function AttendanceBudgets(props: LoadAllBudgetsAttendance.Params) {
 
+  const {getWord} = useDictionary();
   const { data, isFetching } = useLoadAllBudgetAttendances(props);
 
   if (!data || data.length === 0) {
@@ -17,7 +18,7 @@ export function AttendanceBudgets(props: LoadAllBudgetsAttendance.Params) {
 
   return (
     <S.AttendanceBudgets>
-      <h3 className="font-18-bold">Orçamentos</h3>
+      <h3 className="font-18-bold">{getWord("Orçamentos")}</h3>
 
       {isFetching && <LoaderCircle size={30} color="#000" />}
 

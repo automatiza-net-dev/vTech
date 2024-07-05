@@ -1,23 +1,25 @@
 import { useState } from "react";
 
 import { MenuItem, TextField } from "@mui/material";
-import { FormHandler, Input } from "infinity-forge";
+import { FormHandler, Input, useAuthAdmin } from "infinity-forge";
 
-import { BusinessUnit } from "@/domain";
+import { BusinessUnit, User } from "@/domain";
 import { LayoutAdmin } from "../../layout";
 import { ResumeInformations } from "./resume-informations";
-import { useAuthFranchisor, useLoadUsersController } from "@/presentation";
+import { useLoadUsersController } from "@/presentation";
 
 import * as S from "./styles";
 
 export function DashboardAdmin() {
   const [value, setValue] = useState<BusinessUnit[]>([]);
 
-  const { user } = useAuthFranchisor();
+  const { GetUser } = useAuthAdmin();
 
   const handleChangeMultiple = (event) => {
     setValue(event.target.value);
   };
+
+  const user = GetUser<User>()
 
   const dataAtual = new Date();
 

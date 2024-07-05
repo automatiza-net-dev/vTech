@@ -17,7 +17,7 @@ import moment from "moment";
 const DetailsSalesReport = React.memo(function DetailsSalesReport() {
   const [filters, setFilters] = React.useState({});
 
-  const { reports } = useDetailedSalesReport(filters);
+  const { reports, loadingReports } = useDetailedSalesReport(filters);
   const { clinic } = useProfile();
 
   const listDetailedSalesReportsPermission = useUserHasPermission("REL04");
@@ -132,7 +132,7 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
 
   return !listDetailedSalesReportsPermission ||
     listDetailedSalesReportsPermission === "loading" ? (
-    <AccessDenied loading={listDetailed} />
+    <AccessDenied loading={loadingReports} />
   ) : (
     <Container className="uk-padding-small">
       <h3 className="uk-margin-remove">Relatório detalhado de vendas</h3>

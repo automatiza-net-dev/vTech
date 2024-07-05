@@ -1,10 +1,9 @@
-
-import { Attendace, Patient, Tutor, ProductCart } from "@/domain";
+import { Attendace, Patient, Tutor, ProductCart, Budget } from "@/domain";
 
 import { DailyMovement } from "../daily-movements";
 
 export type CreateBudget = {
-  create: (params: CreateBudget.Params) => CreateBudget.Model;
+  create: (params: CreateBudget.Params) => Promise<CreateBudget.Model>;
 };
 
 export namespace CreateBudget {
@@ -21,5 +20,5 @@ export namespace CreateBudget {
     dailyMovementId: DailyMovement["id"];
   };
 
-  export type Model = {};
+  export type Model = Budget;
 }

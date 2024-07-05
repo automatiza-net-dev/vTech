@@ -5,6 +5,10 @@ export const Container = styled.div`
     z-index: 21;
   }
 
+  h6 {
+    font-size: 16px;
+  }
+
   .title-header {
     align-items: center;
     background-color: #ffffff;

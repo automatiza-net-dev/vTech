@@ -10,23 +10,21 @@ import {
   useLoadAllDailyMovements,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
-import { CreateBill } from "@/domain";
+import { CreateBill, Bill } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
-import {
-  ErrorSale,
-  SelectClient,
-  SelectPatient,
-} from "./components";
+import { ErrorSale, SelectClient, SelectPatient } from "./components";
 
 import * as S from "./styles";
 
 export function AddSale({
   budgetId,
   setModal,
+  listCreated,
 }: {
   budgetId?: string;
   setModal?: Dispatch<SetStateAction<boolean>>;
+  listCreated: (id: Bill["id"]) => void | undefined;
 }) {
   const patient = useLoadPatient();
   const dailyMovements = useLoadAllDailyMovements();
@@ -69,21 +67,24 @@ export function AddSale({
     <S.AddSale>
       <FormHandler
         isStickyButtons
+        disableEnterKeySubmitForm
         button={{ text: "CRIAR VENDA" }}
         initialData={initialData}
         onSucess={async (data) => {
           const payload = {
             ...data,
             items: formatCart(data.cart),
-            billDate:  new Date().toISOString(),
+            billDate: new Date().toISOString(),
             budgetId,
             // financialResponsibleId: "",
             dailyMovementId: activeDailyMovement?.id,
           } as CreateBill.Params;
 
-          await container
+          const response = await container
             .get<RemoteBills>(TypesAutomatiza.RemoteBills)
             .create(payload);
+
+          listCreated && listCreated(response.id);
 
           createToast({
             status: "success",

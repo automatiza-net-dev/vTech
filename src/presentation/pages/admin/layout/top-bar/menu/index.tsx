@@ -1,12 +1,11 @@
 import { useState } from "react";
 
-import {Error} from "infinity-forge"
+import {Error, useAuthAdmin} from "infinity-forge"
 import { Logout as MuiLogout } from "@mui/icons-material";
 import { MenuItem as MuiMenuItem } from "@mui/material";
 
 import {
   Modal,
-  useAuthFranchisor,
   useIsThirdPartyUser,
 } from "@/presentation";
 import { SwapForm } from "./swap-form";
@@ -19,7 +18,8 @@ const topBarMenuId = "app-menu-side-bar";
 function TopBarMenu({ anchorEl, open, closeMenu }: TopBarMenuProps) {
   const [modal, setModal] = useState(false);
 
-  const { signOut } = useAuthFranchisor();
+  const { signOut } = useAuthAdmin()
+
 
   const { isThirdParty } = useIsThirdPartyUser();
 
@@ -27,7 +27,7 @@ function TopBarMenu({ anchorEl, open, closeMenu }: TopBarMenuProps) {
     if (isThirdParty) {
       window.location.href = "https://portal.liftonefranquias.com.br"
     } else {
-      signOut();
+      signOut({ roleUser: "admin"});
     }
   }
 

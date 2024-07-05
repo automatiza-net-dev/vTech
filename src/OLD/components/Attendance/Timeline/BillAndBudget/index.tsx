@@ -11,6 +11,7 @@ import BillActions from "@/OLD/components/Bill/Actions/Container";
 import { billAndBudgetColumns, billAndBudgetLiftColumns } from "./Columns";
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
+import { useDictionary } from "@/presentation";
 
 const labelControl = (str) => {
   switch (str) {
@@ -26,8 +27,10 @@ export function BillAndBudget({ patient }) {
   const [reload, setReload] = useState(false);
   const [cashierFilters, setCashierFilters] = useState({});
 
-  const { salesMetadata } = usePatientSalesMetadata(patient?.id, reload);
+  const { getWord } = useDictionary();
   const { cashiers } = useDailyCasher(cashierFilters);
+  const { salesMetadata } = usePatientSalesMetadata(patient?.id, reload);
+
 
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export function BillAndBudget({ patient }) {
     setFormatedMetadata(
       salesMetadata.map((item) => {
         return {
-          mov: item._type === "sale" ? "Venda" : "Orçamento",
+          mov: item._type === "sale" ? "Venda" : getWord("Orçamento"),
           code: item?.tag,
           date: moment(item?.date).format("DD/MM/YYYY"),
           totalValue: currencyFormatter(item?.total_value),

@@ -147,7 +147,9 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           className=""
           type="primary"
           onClick={() => {
-            setFilters({ ...filters, noSearch: false });
+            const newObj = { ...filters };
+            delete newObj.receipt_id;
+            setFilters({ ...newObj, noSearch: false });
             setReload((prv) => !prv);
           }}
         >

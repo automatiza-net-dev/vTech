@@ -33,6 +33,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import Masks from "@/OLD/utils/masks";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useDictionary } from "@/presentation";
 
 const columns = [
   {
@@ -93,8 +94,8 @@ export default function AddBudgetItem({
   const { data: products } = useBudgetProducts(
     tableRender ? visible : externVisible
   );
-  const { mutate, isLoading } = useCreateBudgetItem();
-  const { user, clinic } = useProfile();
+  const { isLoading } = useCreateBudgetItem();
+  const { clinic } = useProfile();
 
   const addItemPermission = useUserHasPermission("ORC02");
   const removeItemPermission = useUserHasPermission("ORC07");
@@ -105,8 +106,10 @@ export default function AddBudgetItem({
       setInternalObservation(data?.internal_observation);
   }, [data]);
 
+  const { getWord } = useDictionary()
+
   const validBudget =
-    budget.status === "ABERTO" || budget.status === "Orçamento em aberto";
+    budget.status === "ABERTO" || budget.status === `${getWord("Orçamento")} em aberto`;
 
   const submitObservation = React.useCallback(() => {
     budgetService.updateObservation(data?.id, {
@@ -255,10 +258,10 @@ export default function AddBudgetItem({
         </Tooltip>
       )}
 
-   <Modal
+      <Modal
         visible={tableRender ? visible : externVisible}
         footer={null}
-        title={`Adicionar Item ao Orçamento - ${budget?.tag}`}
+        title={`Adicionar Item ao ${getWord("Orçamento")} - ${budget?.tag}`}
         width={1300}
         onCancel={() => {
           tableRender && setVisible && setVisible(false);

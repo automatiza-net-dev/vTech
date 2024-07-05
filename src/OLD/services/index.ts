@@ -16,7 +16,7 @@ const api = () => {
 
   instance.interceptors.request.use(function (config: any) {
     const session = process.browser
-      ? container.get<Storage>(TypesAutomatiza.storage).get("token")?.value
+      ? container.get<Storage>(TypesAutomatiza.storage).get("user")?.value
       : "";
 
     config.headers.Authorization = "Bearer " + session;

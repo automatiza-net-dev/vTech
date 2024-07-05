@@ -20,7 +20,7 @@ import { SearchIcon } from "@/OLD/common/icons";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FormCreatePatient } from "@/presentation";
 
-import {Button as ButtonInfinityForge} from "infinity-forge"
+import { Button as ButtonInfinityForge } from "infinity-forge";
 
 export function Patient({
   setPayload = false,
@@ -63,7 +63,6 @@ export function Patient({
   }, []);
 
   const listPatientsPermission = useUserHasPermission("PET00");
-
 
   return !listPatientsPermission || listPatientsPermission === "loading" ? (
     <AccessDenied loading={listPatientsPermission} />
@@ -141,7 +140,18 @@ export function Patient({
                 </Input>
                 <div className="uk-flex uk-flex-right">
                   <div className="uk-margin-small-top">
-                    {router.asPath.includes("crm") ? <ButtonInfinityForge type="button" onClick={() => setFastCreateVisible(true)} text="Novo Paciente" /> :   <FormCreatePatient isModal />}
+                    {router.asPath.includes("crm") ? (
+                      <ButtonInfinityForge
+                        type="button"
+                        onClick={() => {
+                          setFastCreateVisible(true);
+                          setVisible(false)
+                        }}
+                        text="Novo Paciente"
+                      />
+                    ) : (
+                      <FormCreatePatient isModal />
+                    )}
                   </div>
                   <div className="uk-margin-small-top">
                     {" "}

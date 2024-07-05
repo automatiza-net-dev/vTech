@@ -93,7 +93,7 @@ const Installments = memo(function Installments({
               });
 
               if (index === 0) {
-                if (type === "parc") {
+                if (type === "rec") {
                   obj = obj?.map((item, i) => {
                     return {
                       ...item,

@@ -7,6 +7,7 @@ export * from "./system";
 export * from "./patient";
 export * from "./subgroups";
 export * from "./dashboard";
+export * from "./configuration";
 export * from "./business-units";
 export * from "./user-controller";
 export * from "./access-controls";

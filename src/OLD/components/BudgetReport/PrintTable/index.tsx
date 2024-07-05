@@ -12,6 +12,7 @@ import ReactToPrint from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
+import { useDictionary } from "@/presentation";
 
 const PrintTable = memo(function PrintTable({ reports }) {
   const { clinic } = useProfile();
@@ -121,13 +122,15 @@ const PrintTable = memo(function PrintTable({ reports }) {
     XLSX.writeFile(wb, "orcamentos" + ".xlsx");
   };
 
+  const {getWord} = useDictionary()
+
   return (
     <>
       <Container ref={componentRef} className="uk-margin-small-top">
         <div className="clinic-header">
           <PrintHeader unit={clinic} />
           <div className="uk-text-center">
-            <h4 className="">Relatório de orçamentos</h4>
+            <h4 className="">Relatório de {getWord("Orçamentos")}</h4>
           </div>
         </div>
         <div className="table-section">

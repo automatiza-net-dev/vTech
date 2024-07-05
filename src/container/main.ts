@@ -14,6 +14,8 @@ import {
   financialServicesContainer,
 } from "./dashboard";
 import { systemContainer } from "./system";
+import { businessUnitsContainer } from "./business-units";
+import { configurationContainer } from "./configuration";
 
 const container = Container.merge(
   infraContainer,
@@ -26,7 +28,9 @@ const container = Container.merge(
   dashboardContainer,
   subgroupContainer,
   systemContainer,
-  financialServicesContainer
+  financialServicesContainer,
+  businessUnitsContainer,
+  configurationContainer
 );
 
 export { container };

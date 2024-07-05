@@ -3,8 +3,14 @@ import styled from "styled-components";
 export const InputBirthday = styled("div")`
 
   .select_year {
-    display: grid;
+    display: flex;
     gap: 18px;
-    grid-template-columns: repeat(2, 1fr);
+
+    > * {
+      width: 31%;
+       > div {
+        width: 100%;
+       }
+    }
   }
 `;

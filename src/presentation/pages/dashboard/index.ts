@@ -1,5 +1,7 @@
 export * from "./sales";
 export * from "./tutor";
+export * from "./goals";
+export * from "./reports";
 export * from "./paciente";
 export * from "./vaccines";
 export * from "./scheduling";

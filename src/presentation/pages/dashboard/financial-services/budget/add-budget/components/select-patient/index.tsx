@@ -3,10 +3,11 @@ import { useFormikContext } from "formik";
 
 import { CreateBudget } from "@/domain";
 import { useLoadAllPatientTutor, useLoadPatient } from "@/presentation";
+import { useEffect } from "react";
 
 export function SelectPatient() {
   const patient = useLoadPatient();
-  const { values } = useFormikContext<CreateBudget.Params>();
+  const { values, setFieldValue } = useFormikContext<CreateBudget.Params>();
   const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
 
   const options =
@@ -17,6 +18,12 @@ export function SelectPatient() {
         value: dependent.id,
       })) || [];
 
+  useEffect(() => {
+    if (options.length === 0) {
+      setFieldValue("patientId", undefined);
+    }
+  }, [options.length]);
+
   return (
     <Select
       loading={patientTutor.isFetching}
@@ -24,7 +31,7 @@ export function SelectPatient() {
       options={options}
       label="Paciente"
       name="patientId"
-      disabled={!!patient.data?.id || !values.clientId}
+      disabled={!!patient.data?.id || !values.clientId || options.length === 0}
     />
   );
 }

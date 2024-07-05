@@ -8,12 +8,10 @@ import { useAuthAdmin } from "infinity-forge";
 import { Button } from "@/OLD/components/mini-components";
 import { sessionService } from "@/OLD/services/session.service";
 
-import { Storage } from "infinity-forge";
-import { adminTypes, container, TypesAutomatiza } from "@/container";
+import { container, TypesAutomatiza } from "@/container";
 
 import { Container } from "./styles";
-import { useLoadAllAvailableUnits } from "@/presentation";
-import { RemoteBusinessUnits } from "@/data";
+import { Storage } from "@/infra";
 
 export function SignIn() {
   const [data, setData] = useState({
@@ -59,9 +57,9 @@ export function SignIn() {
 
         await container
         .get<Storage>(TypesAutomatiza.storage)
-        .set("token", { value: getBusinessUnits?.data?.token || loginResponse?.data?.token });
+        .set("user", { value: getBusinessUnits?.data?.token || loginResponse?.data?.token });
 
-        loadUser();
+        loadUser({ roleUser: "user" });
 
       } catch (err: any) {
         console.log(err);

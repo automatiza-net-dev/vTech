@@ -31,7 +31,7 @@ import moment from "moment/moment";
 
 // Icons
 import { MdOutlineClear } from "react-icons/md";
-import { AddBudgetNew } from "@/presentation";
+import { AddBudgetNew, useDictionary } from "@/presentation";
 
 export const dateFormatter = (date) => {
   return moment(new Date(date)).format("HH:mm DD/MM/YYYY");
@@ -125,11 +125,20 @@ const Budgets = memo(function Budgets() {
     });
   }, []);
 
+  const listCreated = (id) => {
+    setFilters({ budget_id: id });
+    setReload((prv) => !prv);
+  };
+
+  const columns = process.env.client !== "liftone" ? Columns() : LiftColumns()
+
+  const {getWord} = useDictionary()
+
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
   ) : (
     <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Orçamentos</h3>
+      <h3 className="uk-margin-remove">{getWord("Orçamentos")}</h3>
       <section className="uk-margin-top uk-width-1-1">
         <div className="uk-flex uk-flex-middle" style={{ gap: "1rem" }}>
           <Input style={{ width: "100%" }}>
@@ -407,13 +416,13 @@ const Budgets = memo(function Budgets() {
                 }
                 trigger={
                   <Button onClick={() => setOpenCreate((prev) => !prev)}>
-                    Novo orçamento
+                    Novo {getWord("Orçamento")}
                   </Button>
                 }
               />
             )}
 
-            <Button onClick={() => setModalCriar(true)}>Novo orçamento</Button>
+            <Button onClick={() => setModalCriar(true)}>Novo {getWord("Orçamento")}</Button>
 
             <ModalInfinityForge
               styles={{
@@ -430,16 +439,22 @@ const Budgets = memo(function Budgets() {
               open={modalCriar}
               onClose={() => setModalCriar(false)}
             >
-              <AddBudgetNew setModal={setModalCriar} />
+              <AddBudgetNew
+                setModal={setModalCriar}
+                listCreated={listCreated}
+              />
             </ModalInfinityForge>
 
             <Button
-              onClick={() =>
-                setFilters((prv) => {
+              onClick={() => {
+                const newObj = { ...filters };
+                delete newObj?.budget_id;
+
+                setFilters(() => {
                   setReload((prv) => !prv);
-                  return { ...prv, noSearch: false };
-                })
-              }
+                  return { ...newObj, noSearch: false };
+                });
+              }}
             >
               Filtrar
             </Button>
@@ -449,7 +464,7 @@ const Budgets = memo(function Budgets() {
       <hr />
       <div className="uk-margin-top">
         <Table
-          columns={process.env.client !== "liftone" ? Columns : LiftColumns}
+          columns={columns}
           dataSource={mapper(data)}
           footer={() =>
             data?.length > 0 && (

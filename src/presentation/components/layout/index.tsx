@@ -1,21 +1,18 @@
-import {
-  Error,
-  Layout,
-  useAuthAdmin,
-  PrivatePageAdmin,
-} from "infinity-forge";
+import { Error, Layout, useAuthAdmin, PrivatePageAdmin } from "infinity-forge";
 
 import { User } from "@/domain";
 import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { useLoadAllAvailableUnits } from "@/presentation";
+import { DictionaryQueryProvider, useLoadAllAvailableUnits } from "@/presentation";
 
 import * as S from "./styles";
 
 export function LayoutDashboard({ children }) {
   return (
-    <PrivatePageAdmin>
-      <LayoutPage>{children}</LayoutPage>
+    <PrivatePageAdmin roleUser="user">
+      <DictionaryQueryProvider>
+        <LayoutPage>{children}</LayoutPage>
+      </DictionaryQueryProvider>
     </PrivatePageAdmin>
   );
 }
@@ -34,12 +31,14 @@ function LayoutPage({ children }) {
       subtitle: companie.group,
       value: companie.id,
     })),
-    activeWorkspace: avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
-      ?.id,
+    activeWorkspace: avaiableUnits?.data?.find(
+      (companie) => companie?.id === user?.unit?.id
+    )?.id,
     onChangeWorkSpace: async (value: any) => {
       if (
         value.workspace !==
-        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)?.id
+        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
+          ?.id
       ) {
         await container
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
@@ -54,9 +53,6 @@ function LayoutPage({ children }) {
     <Error name="LayoutDashboard">
       <S.Layout>
         <Layout
-          sidebar={{
-            expandedMenu: true
-          }}
           workspaces={workspaces as any}
           logo={{
             src:

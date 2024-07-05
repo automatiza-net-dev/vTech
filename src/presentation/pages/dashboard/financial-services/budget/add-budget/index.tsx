@@ -16,8 +16,9 @@ import {
   useLoadPatient,
   useLoadAllPatientTutor,
   useLoadAllDailyMovements,
+  useDictionary,
 } from "@/presentation";
-import { Attendace } from "@/domain";
+import { Attendace, Budget } from "@/domain";
 import { RemoteBudget } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
@@ -33,14 +34,17 @@ import * as S from "./styles";
 export function AddBudgetNew({
   setModal,
   attendanceId,
+  listCreated,
 }: {
   attendanceId?: Attendace["id"];
   setModal?: Dispatch<SetStateAction<boolean>>;
+  listCreated?: (id: Budget["id"]) => void | undefined;
 }) {
   const patient = useLoadPatient();
   const dailyMovements = useLoadAllDailyMovements();
   const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
 
+  const {getWord} = useDictionary()
   const { createToast } = useToast();
   const queryClient = useQueryClient();
 
@@ -83,7 +87,7 @@ export function AddBudgetNew({
         isStickyButtons
         disableEnterKeySubmitForm
         debugMode
-        button={{ text: "CRIAR ORÇAMENTO" }}
+        button={{ text: `CRIAR ${getWord("Orçamento")}` }}
         initialData={initialData}
         onSucess={async (data) => {
           const verifyClientExist = patientTutor.data?.find(
@@ -102,13 +106,15 @@ export function AddBudgetNew({
             expirationDate: moment(data.expirationDate).format("YYYY-MM-DD"),
           };
 
-          await container
+          const response = await container
             .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
             .create(payload);
 
+          listCreated && listCreated(response.id);
+
           createToast({
             status: "success",
-            message: "Orçamento criado com sucesso",
+            message: `${getWord("Orçamento")} criado com sucesso`,
           });
 
           patientId &&
@@ -121,7 +127,7 @@ export function AddBudgetNew({
         cleanFieldsOnSubmit={false}
       >
         <div className="content_form">
-          <h2 className="font-24-bold">Novo orçamento</h2>
+          <h2 className="font-24-bold">Novo {getWord("Orçamento")}</h2>
 
           <div className="row">
             <div className="expirationDate">

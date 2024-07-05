@@ -59,103 +59,101 @@ export function EndAttendanceButton() {
       });
   }, [selectedAttendance]);
 
-  {
-    return (
-      addLaunchPermission &&
-      patient.data?.openAttendances && (
-        <>
-          <Button
-            svg="IconDoor"
-            text="FINALIZAR ATENDIMENTO"
-            onClick={() => {
-              console.log("opa");
-              if (attendancesToClose?.length > 0) {
-                setShowSelectAttendances(true);
-              } else {
-                Modal.confirm({
-                  title: "Finalizar agendamento",
-                  content:
-                    "Não há atendimentos pendentes para o paciente. Deseja finalizar o agendamento?",
-                  onOk: () => {
-                    if (
-                      schedule?.serviceStatus?.description === "Em atendimento"
-                    ) {
-                      const attendancesToClose = attendances?.find(
-                        (attendance) => !attendance?.end_date
-                      );
+  return (
+    addLaunchPermission &&
+    patient.data?.openAttendances && (
+      <>
+        <Button
+          svg="IconDoor"
+          text="FINALIZAR ATENDIMENTO"
+          onClick={() => {
+            console.log("opa");
+            if (attendancesToClose?.length > 0) {
+              setShowSelectAttendances(true);
+            } else {
+              Modal.confirm({
+                title: "Finalizar agendamento",
+                content:
+                  "Não há atendimentos pendentes para o paciente. Deseja finalizar o agendamento?",
+                onOk: () => {
+                  if (
+                    schedule?.serviceStatus?.description === "Em atendimento"
+                  ) {
+                    const attendancesToClose = attendances?.find(
+                      (attendance) => !attendance?.end_date
+                    );
 
-                      attendancesToClose &&
-                        attendanceService
-                          .closeAttendance(attendancesToClose?.id)
-                          .then((_res) =>
-                            notification.success({
-                              message: "Atendimento finalizado com sucesso!",
-                            })
-                          );
-                    }
-                  },
-                  onCancel: () => {
-                    // Handle the cancel event if needed
-                    // ...
-                  },
-                });
-              }
-            }}
-          />
-          <Modal
-            onCancel={() => setShowSelectAttendances(false)}
-            title="Fechar atendimento"
-            visible={showSelectAttendances}
-            footer={null}
-            width={"60%"}
-          >
-            <div>
-              <label>Selecione o atendimento a ser fechado</label>
-              <Select
-                onChange={(val) => setSelectedAttendance(val)}
-                className="uk-width-1-1"
-                value={selectedAttendance}
-              >
-                {attendancesToClose?.length > 0 &&
-                  attendancesToClose
-                    .slice() // Faz uma cópia do array original para evitar alterações indesejadas
-                    .sort(
-                      (a, b) => new Date(a.start_date) - new Date(b.start_date)
-                    )
-                    .map((attendance) => (
-                      <Option value={attendance?.id}>
-                        {attendance?.scheduleService?.description}
-                        {" - "}
-                        {moment(attendance.start_date).format(
-                          "DD/MM/YYYY - HH:mm"
-                        )}
-                      </Option>
-                    ))}
-              </Select>
-            </div>
-            <hr />
-            <footer className="uk-flex uk-flex-right">
-              <AntButton
-                className="uk-margin-right"
-                type="primary"
-                loading={loading}
-                onClick={() => {
-                  !selectedAttendance
-                    ? notification.warning({
-                        message: "Selecione o atendimento a ser finalizado",
-                      })
-                    : closeAttendances();
-                }}
-              >
-                Confirmar
-              </AntButton>
-              <AntButton onClick={() => setShowSelectAttendances(false)}>
-                Cancelar
-              </AntButton>
-            </footer>
-          </Modal>
-        </>
-      )
-    );
-  }
+                    attendancesToClose &&
+                      attendanceService
+                        .closeAttendance(attendancesToClose?.id)
+                        .then((_res) =>
+                          notification.success({
+                            message: "Atendimento finalizado com sucesso!",
+                          })
+                        );
+                  }
+                },
+                onCancel: () => {
+                  // Handle the cancel event if needed
+                  // ...
+                },
+              });
+            }
+          }}
+        />
+        <Modal
+          onCancel={() => setShowSelectAttendances(false)}
+          title="Fechar atendimento"
+          visible={showSelectAttendances}
+          footer={null}
+          width={"60%"}
+        >
+          <div>
+            <label>Selecione o atendimento a ser fechado</label>
+            <Select
+              onChange={(val) => setSelectedAttendance(val)}
+              className="uk-width-1-1"
+              value={selectedAttendance}
+            >
+              {attendancesToClose?.length > 0 &&
+                attendancesToClose
+                  .slice() // Faz uma cópia do array original para evitar alterações indesejadas
+                  .sort(
+                    (a, b) => new Date(a.start_date) - new Date(b.start_date)
+                  )
+                  .map((attendance) => (
+                    <Option value={attendance?.id}>
+                      {attendance?.scheduleService?.description}
+                      {" - "}
+                      {moment(attendance.start_date).format(
+                        "DD/MM/YYYY - HH:mm"
+                      )}
+                    </Option>
+                  ))}
+            </Select>
+          </div>
+          <hr />
+          <footer className="uk-flex uk-flex-right">
+            <AntButton
+              className="uk-margin-right"
+              type="primary"
+              loading={loading}
+              onClick={() => {
+                !selectedAttendance
+                  ? notification.warning({
+                      message: "Selecione o atendimento a ser finalizado",
+                    })
+                  : closeAttendances();
+              }}
+            >
+              Confirmar
+            </AntButton>
+            <AntButton onClick={() => setShowSelectAttendances(false)}>
+              Cancelar
+            </AntButton>
+          </footer>
+        </Modal>
+      </>
+    )
+  );
 }

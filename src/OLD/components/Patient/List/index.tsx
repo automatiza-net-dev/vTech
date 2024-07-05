@@ -53,7 +53,7 @@ export function PatientList({
   const handleCreateTable = () => {
     patients?.length > 0
       ? setData(
-          patients?.map((patient: any) => {
+          patients?.map((patient: any, index) => {
             return {
               name: (
                 <div
@@ -62,15 +62,27 @@ export function PatientList({
                     alignItems: "center",
                   }}
                 >
-                  <span
-                    className="uk-link"
-                    onClick={() => {
-                      setDetailsVisible(true);
-                      setSelectedId(patient?.id);
-                    }}
-                  >
-                    {patient.name}
-                  </span>
+                  {patient.name ? (
+                    <span
+                      className="uk-link"
+                      onClick={() => {
+                        if (!patient.name) {
+                          return;
+                        }
+                        setDetailsVisible(true);
+                        setSelectedId(patient?.id);
+                      }}
+                    >
+                      {patient.name || "Sem paciente vinculado"}
+                    </span>
+                  ) : (
+                    <FormCreatePatient
+                      isModal
+                      patientId={patient.id !== "-" ? patient.id : ""}
+                      initialDataForm={{ holders: patient.tutors }}
+                      trigger={<span  className="uk-link">{"Sem paciente vinculado"}</span>}
+                    />
+                  )}
                 </div>
               ),
               tag: patient.tag ?? "-",
@@ -82,8 +94,8 @@ export function PatientList({
               birthDate: convertDate(patient.birthDate),
               tutors: (
                 <>
-                  {patient.tutors.length > 0 &&
-                    patient.tutors.map((item) =>
+                  {patient?.tutors?.length > 0 &&
+                    patient?.tutors?.map((item) =>
                       item?.isMain ? (
                         <strong>{item?.name}&nbsp;|&nbsp;</strong>
                       ) : (
@@ -125,18 +137,30 @@ export function PatientList({
                   ? `${patient?.race?.specie?.description} > ${patient?.race?.description}`
                   : "Raça não informado",
               attendance: (
-                <Link href={`/dashboard/paciente/${patient?.id}`}>
-                  <Tag color="gray" style={{ cursor: "pointer" }}>
-                    Ficha paciente
-                  </Tag>
-                </Link>
+                <div>
+                  {patient?.name ? (
+                    <div>
+                      <Link href={`/dashboard/paciente/${patient?.id}`}>
+                        <Tag color="gray" style={{ cursor: "pointer" }}>
+                          Ficha paciente
+                        </Tag>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div>-----</div>
+                  )}
+                </div>
               ),
               community: patient.community ? "Sim" : "Não",
               actions: (
                 <div className="uk-flex" style={{ gap: "20px" }}>
-                  
-                  <FormCreatePatient isModal patientId={patient.id}  trigger={<Icon name="IconEdit"  fill="#000" />} />
-             
+                  {patient?.name && (
+                    <FormCreatePatient
+                      isModal
+                      patientId={patient.id}
+                      trigger={<Icon name="IconEdit" fill="#000" />}
+                    />
+                  )}
                 </div>
               ),
               schedule: (
@@ -195,25 +219,6 @@ export function PatientList({
 
   return (
     <Container>
-      <Modal
-        title="Vincular tutor"
-        visible={newTutorOpen}
-        footer={null}
-        onCancel={() => {
-          setPatient("");
-          setNewTutorOpen(false);
-        }}
-      >
-        <TutorVincForm
-          visible={newTutorOpen}
-          reload={refreshList}
-          setReload={setRefreshList}
-          patient={patientSelected}
-          setVisible={setNewTutorOpen}
-          isButtonCreateTutor={true}
-          querySchedule={querySchedule}
-        />
-      </Modal>
       {modal && (
         <p className="uk-margin-remove">
           {" "}
@@ -238,6 +243,26 @@ export function PatientList({
             ),
         }}
       />
+
+      <Modal
+        title="Vincular tutor"
+        visible={newTutorOpen}
+        footer={null}
+        onCancel={() => {
+          setPatient("");
+          setNewTutorOpen(false);
+        }}
+      >
+        <TutorVincForm
+          visible={newTutorOpen}
+          reload={refreshList}
+          setReload={setRefreshList}
+          patient={patientSelected}
+          setVisible={setNewTutorOpen}
+          isButtonCreateTutor={true}
+          querySchedule={querySchedule}
+        />
+      </Modal>
       <Modal
         title="Selecionar tutor ativo"
         visible={activeTutorOpen}

@@ -162,7 +162,7 @@ export function FormSetClients() {
         </div>
 
         <div className="table-box">
-          <div className="table">
+          <div className="table" data-cy="table_patients">
             {process.env.client === "sancla" && (
               <TableAnimals data={data} isLoading={isFetching} />
             )}

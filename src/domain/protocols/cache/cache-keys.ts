@@ -1,10 +1,10 @@
-export type CacheKeys = "guid" | "token" | "adminUser";
+export type CacheKeys = "guid" | "user" | "adminUser";
 
 export type CacheValues = {
   guid: {
     value: string | null;
   };
-  token: {
+  user: {
     value: string | null;
   };
   adminUser: {

@@ -8,6 +8,7 @@ import { Container } from "./styles";
 import PrintTable from "./PrintTable";
 import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { useDictionary } from "@/presentation";
 
 const BudgetReport = memo(function BudgetReport() {
   const [filters, setFilters] = useState({ noSearch: true });
@@ -16,6 +17,8 @@ const BudgetReport = memo(function BudgetReport() {
 
   const { reports } = useBudgetReport(filters, reload);
 
+  const {getWord} = useDictionary()
+
   const listBudgetsReportPermission = useUserHasPermission("REL05");
 
   return !listBudgetsReportPermission ||
@@ -23,7 +26,7 @@ const BudgetReport = memo(function BudgetReport() {
     <AccessDenied loading={listBudgetsReportPermission} />
   ) : (
     <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Relatório Orçamentos</h3>
+      <h3 className="uk-margin-remove">Relatório {getWord("Orçamentos")}</h3>
       <Filters
         filters={filters}
         setFilters={setFilters}
