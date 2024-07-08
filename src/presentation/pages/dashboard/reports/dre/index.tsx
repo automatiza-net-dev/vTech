@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { FormHandler, DatePickerInput, Select, Button } from "infinity-forge";
+import {
+  FormHandler,
+  DatePickerInput,
+  Select,
+  Button,
+  useToast,
+} from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -12,6 +18,8 @@ export function DreReport() {
 
   const businessUnits = useLoadAllAvailableUnits();
   const reports = useLoadDreReport(filters);
+
+  const { createToast } = useToast();
 
   return (
     <S.DreReport>
@@ -51,6 +59,12 @@ export function DreReport() {
         loading={reports.isLoading}
         text="imprimir"
         onClick={() => {
+          if (filters.unit === "") {
+            return createToast({
+              message: "Selecione uma unidade",
+              status: "error",
+            });
+          }
           if (reports.data) {
             const fileURL = URL.createObjectURL(reports.data as Blob);
             window.open(fileURL);
