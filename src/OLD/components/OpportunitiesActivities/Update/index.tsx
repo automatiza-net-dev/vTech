@@ -32,13 +32,13 @@ const Update = memo(function ({
       ),
       duration: activity?.duration,
       description: activity?.description,
-      execObservation: activity?.observation,
+      observation: activity?.observation,
     });
   }, [activity]);
 
   const submitExecution = () => {
     opportunitiesService
-      .executeActivity(activity?.id, { observation: data?.execObservation })
+      .executeActivity(activity?.id, { observation: data?.observation })
       .then((_res) => {
         setReload((prv) => !prv);
         return notification.success({
