@@ -2,6 +2,8 @@ import React from "react";
 import { Error } from "infinity-forge";
 import { TableLevels } from "../subgrupos-detalhado/styles";
 
+import { currencyFormatter } from "@/OLD/components/Budget";
+
 export function OrigemClientesCategoria(props) {
   if (
     !(props.items as any).categories ||
@@ -31,7 +33,7 @@ export function OrigemClientesCategoria(props) {
                   <td>
                     <span>{item?.categoria || "-"}</span>
                   </td>
-                  <td>R$ {item?.faturamento.toFixed(2) || "0,00"}</td>
+                  <td>{currencyFormatter(item?.faturamento) || "0,00"}</td>
                   <td>
                     {item?.porcentagem
                       ? item?.porcentagem.toFixed(2) + "%"
@@ -45,7 +47,7 @@ export function OrigemClientesCategoria(props) {
                       <td>
                         <span>{group?.grupo || "-"}</span>
                       </td>
-                      <td>R$ {group?.total.toFixed(2) || "0,00"}</td>
+                      <td>{currencyFormatter(group?.total) || "0,00"}</td>
                       <td>
                         {item?.porcentagem
                           ? item?.porcentagem.toFixed(2) + "%"
@@ -58,7 +60,7 @@ export function OrigemClientesCategoria(props) {
                         <td>
                           <span>{origin?.origem || "-"}</span>
                         </td>
-                        <td>R$ {origin?.total.toFixed(2) || "0,00"}</td>
+                        <td>{currencyFormatter(origin?.total) || "0,00"}</td>
                         <td>
                           {origin?.porcentagem
                             ? origin?.porcentagem.toFixed(2) + "%"

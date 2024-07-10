@@ -16,10 +16,10 @@ import moment from "moment";
 export function DreReport() {
   const [filters, setFilters] = useState({ competence: new Date(), unit: "" });
 
+  const { createToast } = useToast();
+
   const businessUnits = useLoadAllAvailableUnits();
   const reports = useLoadDreReport(filters);
-
-  const { createToast } = useToast();
 
   return (
     <S.DreReport>
@@ -59,15 +59,13 @@ export function DreReport() {
         loading={reports.isLoading}
         text="imprimir"
         onClick={() => {
-          if (filters.unit === "") {
-            return createToast({
-              message: "Selecione uma unidade",
+          if (reports?.data?.result) {
+            window.open(reports.data.result);
+          } else {
+            createToast({
+              message: "Unidade não possuí relatório dre",
               status: "error",
             });
-          }
-          if (reports.data) {
-            const fileURL = URL.createObjectURL(reports.data as Blob);
-            window.open(fileURL);
           }
         }}
       />

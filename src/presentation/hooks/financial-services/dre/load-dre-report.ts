@@ -15,9 +15,7 @@ export function useLoadDreReport(params: LoadDreReport.Params) {
       .get<RemoteDre>(TypesAutomatiza.RemoteDre)
       .loadDreReport(params);
 
-    const file = new Blob([response.data], { type: "application/pdf" });
-
-    return file;
+    return response;
   };
 
   return useQuery({

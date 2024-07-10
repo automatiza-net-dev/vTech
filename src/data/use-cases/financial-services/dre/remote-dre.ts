@@ -4,8 +4,6 @@ import * as infra from "@/infra";
 import { InfraTypes } from "@/container/infra/types";
 import { makeApiURL } from "@/container/infra/make-api-url";
 
-import axios from "axios";
-
 import * as domain from "@/domain";
 
 @injectable()
@@ -17,25 +15,11 @@ export class RemoteDre implements domain.LoadDreReport {
     private readonly httpClient: domain.HttpClient
   ) {}
   async loadDreReport(params: domain.LoadDreReport.Params) {
-    const storageToken = await this.storage.get("user");
-
-    const response = await axios(
-      process.env.NEXT_PUBLIC_API +
-        `/dre/spreadsheet/${params.unit}?competence=${params.competence}`,
-      {
-        method: "GET",
-        responseType: "blob",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers":
-            "Origin, X-Requested-With, Content-Type, Accept",
-          "X-System": process.env.clientName as string,
-          Authorization: `Bearer ${storageToken?.value || ""}`,
-        },
-      }
-    );
-
-    // TODO verificar tipagem axios
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`dre/spreadsheet/${params.unit}`),
+      method: "get",
+      body: params,
+    });
 
     return response;
   }

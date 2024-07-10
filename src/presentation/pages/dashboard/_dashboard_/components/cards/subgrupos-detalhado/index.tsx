@@ -48,7 +48,7 @@ export function SubgruposDetalhado(props) {
 
                     <td>{child?.quantity || "-"}</td>
 
-                    <td>R$ {child?.total || "0,00"}</td>
+                    <td>{child?.total || "0,00"}</td>
 
                     <td>
                       {child?.percentage}
