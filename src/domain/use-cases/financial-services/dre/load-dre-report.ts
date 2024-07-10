@@ -10,7 +10,5 @@ export namespace LoadDreReport {
     competence: Date;
   };
 
-  // TODO tipar retorno de pdf da api
-
-  export type Model = any;
+  export type Model = { result: string };
 }

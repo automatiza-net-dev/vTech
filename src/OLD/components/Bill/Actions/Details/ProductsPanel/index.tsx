@@ -27,7 +27,6 @@ const ProductsPanel = memo(function ProductsPanel({
   const formatPayments = () => {
     setFormatedPayments(
       payments?.map((payment, i) => {
-        console.log(payment, "<<<<");
         return {
           date: !editExpirationDate ? (
             moment(payment?.expiration_date).format("DD/MM/YYYY")
@@ -55,8 +54,8 @@ const ProductsPanel = memo(function ProductsPanel({
               ? `${payment?.paymentMethod?.tef} CARTÃO ${payment?.paymentMethod?.type} - ${payment?.flag?.description}`
               : payment?.paymentMethod?.description,
           nsu: payment?.nsu_document,
-          downDate: payment?.finance?.paymentDate
-            ? moment(payment?.finance?.paymentDate).format("DD/MM/YYYY")
+          downDate: payment?.finance?.payment_date
+            ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY")
             : "-",
           print: <Button text="imprimir" />,
         };
