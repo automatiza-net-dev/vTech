@@ -6,7 +6,6 @@ import { useQueryClient } from "react-query";
 
 import { billService } from "@/OLD/services/bills.service";
 
-import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { CgDetailsMore } from "react-icons/cg";
@@ -21,9 +20,6 @@ import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
-
-import { ModalListagemDocumentosVenda } from "./modal-listagem-documentos-venda";
-import { GerarDocumentoVenda } from "./gerar-documento-venda";
 
 const Container = styled.div`
   display: flex;
@@ -172,10 +168,6 @@ const BillActions = React.memo(function BillActions({
       {convertTreatmentPermission && (
         <ConvertBillToTreatment bill={bill} setReload={setReload} />
       )}
-
-      <GerarDocumentoVenda bill={bill} client={client} />
-
-      <ModalListagemDocumentosVenda bill={bill} />
 
       <Tooltip title="Detalhes da nota">
         <CgDetailsMore

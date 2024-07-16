@@ -21,7 +21,6 @@ function Create({ setReload, setVisible, listCreated }) {
     receiptService
       .createReceipt(data)
       .then((res) => {
-        setReload((prv) => !prv);
         setLoading(false);
         setVisible(false);
         setData({ receiptDate: moment(), items: [] });

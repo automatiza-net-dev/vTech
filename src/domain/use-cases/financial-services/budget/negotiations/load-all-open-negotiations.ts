@@ -1,4 +1,36 @@
-import { BusinessUnit, BusinessUser, Event, Tutor, Budget } from "@/domain";
+import {
+  BusinessUnit,
+  BusinessUser,
+  Event,
+  Tutor,
+  Budget,
+  Bill,
+  TimeLine,
+  User,
+} from "@/domain";
+
+export type DocumentTemplate = {
+  id: string;
+  description: string;
+  template: string;
+  type: "text" | "pdf";
+}
+
+export type Document = {
+  id: number;
+  bill_id: Bill["id"];
+  timeline_ref: TimeLine["_id"];
+  printed_at: null;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+  documentTemplate: DocumentTemplate;
+  printUser: {id: string, name: string} | null;
+  generationUser: {
+    id: User["user"]["id"];
+    name: User["user"]["name"];
+  };
+};
 
 export type Negotiation = {
   id: string;
@@ -9,6 +41,14 @@ export type Negotiation = {
   created_at: Date;
   updated_at: Date;
   internal_observation: string | null;
+  bills: {
+    budget_id: Budget["id"];
+    created_at: Bill["created_at"];
+    document_status: Bill["document_status"];
+    id: Bill["id"];
+    tag: Bill["tag"];
+  }[];
+  documents: Document[];
   unit: {
     id: BusinessUnit["id"];
     identification: BusinessUnit["identification"];

@@ -66,6 +66,8 @@ const columns = [
 ];
 
 export const Deposits = memo(() => {
+  const { clinic } = useProfile();
+
   const [searchParams, setSearchParams] = useState({
     description: "",
     type: "",
@@ -74,8 +76,6 @@ export const Deposits = memo(() => {
   });
   const [openCreate, setOpenCreate] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-
-  const { clinic } = useProfile();
 
   const componentRef = useRef();
 

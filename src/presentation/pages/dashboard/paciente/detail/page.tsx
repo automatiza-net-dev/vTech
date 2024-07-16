@@ -3,6 +3,7 @@ import { Tab, TabItem } from "infinity-forge";
 import {
   LastUpdates,
   TutorsTable,
+  Negotiations,
   ProfileInfos,
   VaccinesTable,
   ActionsPatient,
@@ -12,7 +13,6 @@ import { useLoadPatient } from "@/presentation";
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
 import { BillAndBudget } from "@/OLD/components/Attendance/Timeline/BillAndBudget";
 import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/HospitalizationTimeline";
-import { Negotiations } from "./components/negotiations";
 
 import * as S from "./styles";
 
@@ -66,7 +66,7 @@ export function PacientePage() {
       title: "Negociações",
       content: (props) => <Negotiations />,
       key: "negotiations",
-      active: process.env.clientName === "LiftOne",
+      active: process.env.client === "liftone",
     },
   ].filter((item) => item.active);
 

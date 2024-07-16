@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 
 import { Dropdown, Menu } from "antd";
 import { FaFilter, FaChevronRight, FaChevronLeft } from "react-icons/fa";
@@ -7,12 +7,7 @@ import { Container } from "./styles";
 
 import moment from "moment";
 
-export const DateFilter = memo(function DateFilter({
-  state,
-  setState,
-  from = false,
-  to = false,
-}) {
+export function DateFilter({ state, setState, from = false, to = false }: any) {
   const [typeFilter, setTypeFilter] = useState("day");
 
   return (
@@ -76,4 +71,4 @@ export const DateFilter = memo(function DateFilter({
       />
     </Container>
   );
-});
+}

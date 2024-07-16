@@ -5,6 +5,7 @@ import * as React from "react";
 // Hooks
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 import { usePatients } from "@/OLD/hooks/usePatients";
+import { useRouter } from "next/router";
 
 // Utils
 import { Columns, LiftColumns } from "./Columns";
@@ -21,15 +22,15 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Button } from "@/OLD/components/mini-components/Button";
+import { ModalListagemDocumentosVenda } from "./Actions/modal-listagem-documentos-venda";
 
 import { useQuery } from "react-query";
 import { useGetAllBills } from "../../../OLD/hooks/useBills";
 import { petsService } from "../../../OLD/services/patient.service";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
-import CreateBill from "./Create";
 
-import { AddSale, PermissionItem, useVerifyPermissions } from "@/presentation";
+import { AddSale, useVerifyPermissions } from "@/presentation";
 
 export const billStatusFormatter = (status) => {
   switch (status) {
@@ -59,10 +60,9 @@ const mapper = (data = [], cashiers) => {
       total: currencyFormatter(bill?.total_value),
       status: billStatusFormatter(bill?.status),
       missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
+      docActions: <ModalListagemDocumentosVenda bill={bill} />,
       actions: (
-        <>
-          <BillActions bill={bill} cashiers={cashiers} client={bill?.client} />
-        </>
+        <BillActions bill={bill} cashiers={cashiers} client={bill?.client} />
       ),
     };
   });
@@ -90,6 +90,7 @@ export default function Bills() {
 
   const createPermission = useVerifyPermissions("VEN01");
   const listBillsPermission = useVerifyPermissions("VEN00");
+  const router = useRouter();
 
   const { data: tutors } = useQuery(
     ["tutors"],
@@ -101,7 +102,10 @@ export default function Bills() {
     { refetchOnWindowFocus: false }
   );
 
-  const [openCreate, setOpenCreate] = React.useState(false);
+  const listCreated = (id) => {
+    setFilters({ bill_id: id });
+    setReload((prv) => !prv);
+  };
 
   React.useEffect(() => {
     document.addEventListener("keypress", (e) => {
@@ -112,10 +116,11 @@ export default function Bills() {
     });
   }, []);
 
-  const listCreated = (id) => {
-    setFilters({ bill_id: id });
-    setReload((prv) => !prv);
-  };
+  React.useEffect(() => {
+    if (router?.query?.id) {
+      listCreated(router.query.id);
+    }
+  });
 
   return !listBillsPermission || listBillsPermission === "loading" ? (
     <AccessDenied loading={listBillsPermission} />

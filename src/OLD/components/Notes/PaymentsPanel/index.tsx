@@ -32,11 +32,11 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 const PaymentsPanel = memo(function PaymentsPanel({
   payments,
-  reload,
   setReload,
   receipt,
   origin = false,
-  setVisible
+  setVisible,
+  accountPlanId = false,
 }) {
   const [blocks, setBlocks] = useState([]);
   const [data, setData] = useState([]);
@@ -294,7 +294,7 @@ const PaymentsPanel = memo(function PaymentsPanel({
       ?.finishReceipt({ receiptId: receipt?.id })
       .then((res) => {
         setReload((prv) => !prv);
-        setVisible(false)
+        setVisible(false);
         return notification.success({
           message: "Nota de entrada finalizada com sucesso",
         });
@@ -318,7 +318,7 @@ const PaymentsPanel = memo(function PaymentsPanel({
 
   return (
     <>
-      {!origin && <AddPayments receipt={receipt} setReload={setReload} />}
+      {!origin && <AddPayments receipt={receipt} setReload={setReload} accountPlanId={accountPlanId} />}
       {payments?.filter((payment) => payment?.status !== "Excluido")?.length >
         0 &&
         blocks?.map((i) => {

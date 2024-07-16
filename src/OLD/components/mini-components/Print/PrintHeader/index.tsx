@@ -1,22 +1,13 @@
 // @ts-nocheck
-import React, { memo } from "react";
+import React from "react";
 
 import masks from "@/OLD/utils/masks";
 
-import { useAuth } from "@/OLD/hooks/useAuth";
-
 export default function PrintHeader({ unit }) {
-  
-
-  
-
   return (
     <section className="uk-flex uk-flex-between" style={{ fontSize: "1em" }}>
       <div>
-        <img
-            src={`/images/logo/${process.env.client}.png`}
-          width="100"
-        />
+        <img src={`/images/logo/${process.env.client}.png`} width="100" />
       </div>
       <div>
         <p className="uk-margin-remove">{unit?.fantasy_name}</p>

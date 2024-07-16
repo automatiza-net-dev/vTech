@@ -10,7 +10,7 @@ export function useLoadAllBusinessUnits() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllBusinessUnits",
+    queryKey: ["RemoteLoadAllBusinessUnits"],
     queryFn: fetcher,
     ...callApiOneTime,
   });

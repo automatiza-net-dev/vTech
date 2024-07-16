@@ -15,9 +15,6 @@ import * as XLSX from "xlsx/xlsx.mjs";
 
 const PrintTable = memo(function PrintTable({ data = [], loading }) {
   const { clinic } = useProfile();
-  
-
-  
 
   const componentRef = useRef();
 
@@ -133,8 +130,12 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
             <div>cliente_resp</div>
             <div>telefone</div>
             <div>origem_cliente</div>
-            <div>pet</div>
-            <div>rg_pet</div>
+            {process.env.client !== "liftone" && (
+              <>
+                <div>pet</div>
+                <div>rg_pet</div>
+              </>
+            )}
           </section>
           <section className="table-box">
             {loading ? (
@@ -177,8 +178,12 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
                   <div>{item?.client?.name}</div>
                   <div>{item?.client?.cellphone}</div>
                   <div>{item?.client?.origin}</div>
-                  <div>{item?.patient?.name}</div>
-                  <div>{item?.patient?.tag}</div>
+                  {process.env.client === "liftone" && (
+                    <>
+                      <div>{item?.patient?.name}</div>
+                      <div>{item?.patient?.tag}</div>
+                    </>
+                  )}
                 </RowBox>
               ))
             ) : (

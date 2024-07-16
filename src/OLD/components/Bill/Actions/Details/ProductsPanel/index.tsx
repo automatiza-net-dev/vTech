@@ -1,5 +1,6 @@
 // @ts-nocheck
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useRef } from "react";
+import ReactToPrint from "react-to-print";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 
@@ -8,6 +9,11 @@ import { Button } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Panel } = Collapse;
 import RemoveBillPayment from "../../AddBillPayment/RemoveBillPayment";
+import {
+  useBillPaymentsReceipts,
+  useMe,
+  PrintPaymentReceipts,
+} from "@/presentation";
 
 import moment from "moment";
 import { paymentsColumns } from "./columns";
@@ -20,9 +26,19 @@ const ProductsPanel = memo(function ProductsPanel({
   billId,
   bill,
 }) {
+  const componentRef = useRef();
+  const user = useMe();
+
   const [formatedPayments, setFormatedPayments] = useState([]);
   const [editExpirationDate, setEditExpirationDate] = useState(false);
+  const [billPaymentReceiptsFilters, setBillPaymentReceiptsFilters] = useState({
+    fetch: false,
+    businessUnitId: user.data.unit.id,
+    billId: bill?.id,
+  });
   const [data, setData] = useState([]);
+
+  const billReceipts = useBillPaymentsReceipts(billPaymentReceiptsFilters);
 
   const formatPayments = () => {
     setFormatedPayments(
@@ -63,6 +79,8 @@ const ProductsPanel = memo(function ProductsPanel({
     );
   };
 
+  console.log(payments, "<<<")
+
   useEffect(() => {
     setData(
       payments?.map((payment) => ({
@@ -102,7 +120,16 @@ const ProductsPanel = memo(function ProductsPanel({
                 </div>
                 <div>{payments?.length}x</div>
               </div>
-              <Button text="Imprimir recibo" />
+              <ReactToPrint
+                onBeforeGetContent={() => {
+                  setBillPaymentReceiptsFilters((prv) => ({
+                    ...prv,
+                    fetch: true,
+                  }));
+                }}
+                trigger={() => <Button text="Imprimir recibo" />}
+                content={() => (componentRef as any).current}
+              />
             </div>
           }
         >
@@ -123,6 +150,14 @@ const ProductsPanel = memo(function ProductsPanel({
             <Table dataSource={formatedPayments} columns={paymentsColumns} />
           </>
         </Panel>
+        <section style={{ display: "none" }}>
+          <div ref={componentRef as any}>
+            <PrintPaymentReceipts
+              receipts={billReceipts.data}
+              businessUnit={user.data.unit}
+            />
+          </div>
+        </section>
       </Collapse>
     )
   );

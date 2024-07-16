@@ -34,4 +34,10 @@ export const ModalListagem = styled("section")`
   tr:nth-child(odd) {
     color: #000000;
   }
+
+  footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
 `;

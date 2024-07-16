@@ -8,7 +8,7 @@ import { useFormikContext } from "formik";
 import * as S from "./styles";
 import { Tutor } from "@/domain";
 
-export function Tutors() {
+export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
   const [modal, setModal] = useState(false);
   const [modalAddTutor, setModalAddTutor] = useState(false);
 
@@ -139,6 +139,7 @@ export function Tutors() {
 
         <Modal open={modal} onClose={() => setModal(false)}>
           <FormCreateTutor
+            origin={origin}
             isModal={false}
             onSuccess={async (data: Tutor) => {
               await refetch();

@@ -3,19 +3,15 @@
 import React, { memo, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
-// Utils
 import moment from "moment";
 
-// Hooks
 import { usePlans } from "@/OLD/hooks/usePlans";
 import { useCheckingAccounts } from "@/OLD/hooks/useCheckingAccounts";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { useTutor } from "@/OLD/hooks/useTutor";
 
-// Services
 import { bankingService } from "@/OLD/services/banking.service";
 
-// Components
 import { Container } from "./styles";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import {
@@ -30,7 +26,14 @@ const { Group } = Radio;
 const { Option } = Select;
 
 const Create = memo(function FormChild({}) {
-  const [data, setData] = useState({ type: "CREDITO", reconciled: "true" });
+  const [data, setData] = useState({
+    type: "CREDITO",
+    reconciled: "true",
+    feeValue: 0,
+    feePercentage: 0,
+    discountValue: 0,
+    discountPercentage: 0,
+  });
   const [loading, setLoading] = useState(false);
   const [formatedTutors, setFormatedTutors] = useState([]);
   const { plans } = usePlans();
@@ -44,24 +47,12 @@ const Create = memo(function FormChild({}) {
     let error = false;
     bankingService
       .createBanking({
-        clientId: data?.clientId,
-        type: data?.type,
-        accountPlanId: data?.accountPlanId,
-        paymentMethodId: data?.paymentMethodId,
+        ...data,
         checkingAccountId: data?.originAccount,
-        document: data?.document,
-        historic: data?.historic,
         issueDate: moment(data?.issueDate).toISOString(),
-        documentValue: data?.documentValue,
-        feeValue: data?.feeValue,
-        feePercentage: data?.feePercentage,
-        discountValue: data?.discountValue,
-        discountPercentage: data?.discountPercentage,
-        reconciled: data?.reconciled,
         installment: 1,
         originFlag: "BANCARIO",
         competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
-        fiscalNote: data?.fiscalNote,
       })
       .then((_res) =>
         notification.success({ message: "Transação salva com sucesso" })
@@ -86,70 +77,46 @@ const Create = memo(function FormChild({}) {
       });
   }, [data]);
 
-  const createTransaction = useCallback(() => {
+  const createTransaction = useCallback(async () => {
     setLoading(true);
     let error = false;
-    bankingService
-      .createBanking({
-        clientId: data?.clientId,
+
+    try {
+      await bankingService.createBanking({
+        ...data,
         type: "DEBITO",
-        accountPlanId: data?.accountPlanId,
-        paymentMethodId: data?.paymentMethodId,
+        accountPlanId: data?.originId,
         checkingAccountId: data?.originAccount,
-        document: data?.document,
-        historic: data?.historic,
         issueDate: moment(data?.issueDate).toISOString(),
-        documentValue: data?.documentValue,
-        feeValue: data?.feeValue,
-        feePercentage: data?.feePercentage,
-        discountValue: data?.discountValue,
-        discountPercentage: data?.discountPercentage,
-        reconciled: data?.reconciled,
-        installment: data?.installment,
         originFlag: "BANCARIO",
         competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
-        fiscalNote: data?.fiscalNote,
-      })
-      .catch((err) => {
-        error = err?.response?.data?.errors[0].message;
+        reconciled: "true",
       });
 
-    bankingService
-      .createBanking({
-        clientId: data?.clientId,
+      await bankingService.createBanking({
+        ...data,
         type: "CREDITO",
-        accountPlanId: data?.accountPlanId,
-        paymentMethodId: data?.paymentMethodId,
+        accountPlanId: data?.destinyId,
         checkingAccountId: data?.destinyAccount,
-        document: data?.document,
-        historic: data?.historic,
-        issueDate: moment(data?.issueDate).toISOString(),
-        documentValue: data?.documentValue,
-        feeValue: data?.feeValue,
-        feePercentage: data?.feePercentage,
-        discountValue: data?.discountValue,
-        discountPercentage: data?.discountPercentage,
-        reconciled: data?.reconciled,
-        installment: data?.installment,
+        issueDate: moment(data.issueDate).toISOString(),
         originFlag: "BANCARIO",
-        competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
-        fiscalNote: data?.fiscalNote,
-      })
-      .catch((err) => {
-        error = err?.response?.data?.errors[0].message;
+        competenceDate: moment(data.competenceDate).format("MM/YYYY"),
+        reconciled: "true",
       });
 
-    if (error) {
-      return notification.error({ message: error });
-    } else {
       setLoading(false);
       setData({});
       router.back();
-      return notification.success({
+      notification.success({
         message: "Transação salva com sucesso",
       });
+    } catch (err) {
+      const errorMessage =
+        err?.response?.data?.errors[0]?.message || "Erro desconhecido";
+      setLoading(false);
+      notification.error({ message: errorMessage });
     }
-  });
+  }, [data, router]);
 
   const formatTutors = () => {
     setFormatedTutors(
@@ -219,7 +186,13 @@ const Create = memo(function FormChild({}) {
                 className="uk-width-1-1"
                 format="MM/YYYY"
                 picker="month"
-                value={data?.competenceDate ? moment(data?.competenceDate) : ""}
+                value={
+                  data?.competenceDate
+                    ? moment(data?.competenceDate)
+                    : data?.issueDate
+                    ? moment(data.issueDate)
+                    : ""
+                }
                 onChange={(e) => setData({ ...data, competenceDate: e })}
               />
             </div>
@@ -243,7 +216,16 @@ const Create = memo(function FormChild({}) {
               <br />
               <Group
                 defaultValue="CREDITO"
-                onChange={(e) => setData({ ...data, type: e.target.value })}
+                onChange={(e) =>
+                  setData({
+                    reconciled: "true",
+                    feeValue: 0,
+                    feePercentage: 0,
+                    discountValue: 0,
+                    discountPercentage: 0,
+                    type: e.target.value,
+                  })
+                }
               >
                 <Radio value="CREDITO">Crédito</Radio>
                 <Radio value="DEBITO">Débito</Radio>
@@ -274,6 +256,15 @@ const Create = memo(function FormChild({}) {
               <Input
                 onChange={(e) => setData({ ...data, historic: e.target.value })}
                 value={data?.historic}
+              />
+            </div>
+            <div className="uk-margin-left uk-width-1-6">
+              <label>Nota Fiscal</label>
+              <Input
+                value={data?.fiscalNote}
+                onChange={(e) =>
+                  setData({ ...data, fiscalNote: e.target.value })
+                }
               />
             </div>
           </div>
@@ -317,22 +308,30 @@ const Create = memo(function FormChild({}) {
               />
             </div>
           </div>
-          <div className="uk-flex uk-margin-top uk-width-1-1">
-            <div className="uk-margin-right uk-width-1-4">
-              <label>Plano Contas</label>
-              <Select
-                className="uk-width-1-1"
-                value={data?.accountPlanId}
-                onChange={(e) => setData({ ...data, accountPlanId: e })}
-              >
-                {plans?.length > 0 &&
-                  plans?.map((plan, i) => (
-                    <Option key={i} value={plan?.id}>
-                      {plan?.description}
-                    </Option>
-                  ))}
-              </Select>
-            </div>
+          <div
+            className="uk-flex uk-flex-wrap uk-margin-top uk-width-1-1"
+            style={{ gap: 10 }}
+          >
+            {data?.type !== "transaction" && (
+              <div className="uk-margin-right uk-width-1-4">
+                <label>Plano Contas</label>
+                <Select
+                  className="uk-width-1-1"
+                  value={data?.accountPlanId}
+                  onChange={(e) => setData({ ...data, accountPlanId: e })}
+                >
+                  {plans?.length > 0 &&
+                    plans?.map(
+                      (plan, i) =>
+                        plan.type === data.type && (
+                          <Option key={"plans" + i} value={plan?.id}>
+                            {plan?.description}
+                          </Option>
+                        )
+                    )}
+                </Select>
+              </div>
+            )}
             <div className="uk-margin-small-right uk-width-1-4">
               <label>Forma Pagamento</label>
               <Select
@@ -345,12 +344,55 @@ const Create = memo(function FormChild({}) {
               >
                 {paymentMethods.length > 0 &&
                   paymentMethods.map((method, i) => (
-                    <Option key={i} value={method.id}>
+                    <Option key={"paymentMethods" + i} value={method.id}>
                       {method?.description}
                     </Option>
                   ))}
               </Select>
             </div>
+
+            {data?.type === "transaction" && (
+              <>
+                <div className="uk-margin-right uk-width-1-4">
+                  <label>Plano Contas Origem</label>
+                  <Select
+                    className="uk-width-1-1"
+                    value={data?.accountPlanId}
+                    onChange={(e) => setData({ ...data, originId: e })}
+                  >
+                    {plans?.length > 0 &&
+                      plans?.map(
+                        (plan, i) =>
+                          plan.type === "DEBITO" && (
+                            <Option key={"plans-debit-" + i} value={plan?.id}>
+                              {plan?.description}
+                            </Option>
+                          )
+                      )}
+                  </Select>
+                </div>
+
+                <div className="uk-margin-right uk-width-1-4">
+                  <label>Plano Contas Destino</label>
+                  <Select
+                    className="uk-width-1-1"
+                    value={data?.accountPlanId}
+                    onChange={(e) => setData({ ...data, destinyId: e })}
+                  >
+                    {plans?.length > 0 &&
+                      plans?.map(
+                        (plan, i) =>
+                          plan.type === "CREDITO" && (
+                            <Option key={"plans-credit-" + i} value={plan?.id}>
+                              {plan?.description}
+                            </Option>
+                          )
+                      )}
+                  </Select>
+                </div>
+              </>
+            )}
+
             <div className="uk-margin-right uk-width-1-4">
               <label>
                 {data?.type === "transaction"
@@ -364,7 +406,10 @@ const Create = memo(function FormChild({}) {
               >
                 {checkingAccounts?.length > 0 &&
                   checkingAccounts?.map((account, i) => (
-                    <Option key={i} value={account?.id}>
+                    <Option
+                      key={"checkingAccounts-select" + i}
+                      value={account?.id}
+                    >
                       {account?.description}
                     </Option>
                   ))}
@@ -380,20 +425,13 @@ const Create = memo(function FormChild({}) {
                 >
                   {checkingAccounts?.length > 0 &&
                     checkingAccounts?.map((account, i) => (
-                      <Option key={i} value={account?.id}>
+                      <Option key={"checkingAccounts-" + i} value={account?.id}>
                         {account?.description}
                       </Option>
                     ))}
                 </Select>
               </div>
             )}
-          </div>
-          <div className="uk-margin-top uk-width-1-3">
-            <label>Nota Fiscal</label>
-            <Input
-              value={data?.fiscalNote}
-              onChange={(e) => setData({ ...data, fiscalNote: e.target.value })}
-            />
           </div>
         </div>
         <footer className="uk-flex uk-flex-right uk-margin-top ">

@@ -30,11 +30,11 @@ function Form({
   tutorId,
   origin = "Cadastro",
   setOpen,
-  onSuccess}
-: {
-  origin?: "Cadastro"  | "Crm" | "Agenda";
+  onSuccess,
+}: {
+  origin?: "Cadastro" | "Crm" | "Agenda";
   tutorId?: Tutor["id"];
-  onSuccess?: (data: any) => void
+  onSuccess?: (data: any) => void;
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data, isFetching, refetch } = useLoadTutor(tutorId);
@@ -60,7 +60,7 @@ function Form({
         ] as FileSystemType[],
       }
     : {
-        origin: "Cadastro",
+        origin: origin,
         address: {
           cep: "",
           logradouro: "",
@@ -105,7 +105,7 @@ function Form({
             ...formData,
             origin,
             photo:
-            formData?.photo &&
+              formData?.photo &&
               Array.isArray(formData?.photo) &&
               formData.photo.find((photo) => photo?.file)
                 ? formData?.photo[0]?.file
@@ -125,7 +125,7 @@ function Form({
 
           setOpen && setOpen(false);
 
-          onSuccess && onSuccess(formData)
+          onSuccess && onSuccess(formData);
         }}
       >
         <h2 className="font-22-bold">
@@ -214,7 +214,7 @@ function Form({
               logradouro: { label: "Rua" },
               number: { label: "Número" },
               complemento: { label: "Complemento" },
-              ibge: { label: "Cód", readOnly: true }
+              ibge: { label: "Cód", readOnly: true },
             },
             {
               bairro: { label: "Bairro" },
@@ -251,21 +251,21 @@ export function FormCreateTutor({
   origin,
   isModal = false,
   trigger,
-  onSuccess
+  onSuccess,
 }: {
-  origin?:  "Cadastro"  | "Crm" | "Agenda";
+  origin?: "Cadastro" | "Crm" | "Agenda";
   trigger?: JSX.Element;
   tutorId?: Tutor["id"];
   isModal: boolean;
-  onSuccess?: (data: any) => void
+  onSuccess?: (data: any) => void;
 }) {
   const [open, setOpen] = useState(false);
 
   const canCreate = useVerifyPermissions("TUT01");
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const isCRM = router.asPath.includes("crm")
+  const isCRM = router.asPath.includes("crm");
 
   if (!canCreate) {
     return <></>;
@@ -279,7 +279,12 @@ export function FormCreateTutor({
           open={open}
           onClose={() => setOpen(false)}
         >
-          <Form setOpen={setOpen} tutorId={tutorId} onSuccess={onSuccess} origin={isCRM ? "Crm" : origin}/>
+          <Form
+            setOpen={setOpen}
+            tutorId={tutorId}
+            onSuccess={onSuccess}
+            origin={isCRM ? "Crm" : origin}
+          />
         </Modal>
 
         {trigger ? (
@@ -297,7 +302,9 @@ export function FormCreateTutor({
           </button>
         ) : (
           <Button
-            text={process.env.client === "sancla" ? "Novo Tutor" : "Novo Cliente"}
+            text={
+              process.env.client === "sancla" ? "Novo Tutor" : "Novo Cliente"
+            }
             type="button"
             onClick={() => setOpen(true)}
           />
@@ -306,5 +313,5 @@ export function FormCreateTutor({
     );
   }
 
-  return <Form tutorId={tutorId}  onSuccess={onSuccess}  origin={origin}/>;
+  return <Form tutorId={tutorId} onSuccess={onSuccess} origin={origin} />;
 }

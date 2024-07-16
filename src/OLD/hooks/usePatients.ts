@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { petsService } from "@/OLD/services/patient.service";
 
-export const usePatients = (reload = false, filters = false, fetch = true) => {
+export const usePatients = (reload = false, refresh, filters = false, fetch = true) => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,7 @@ export const usePatients = (reload = false, filters = false, fetch = true) => {
 
   useEffect(() => {
     fetchData();
-  }, [reload, fetch]);
+  }, [reload, fetch, refresh]);
 
   return {
     patients,

@@ -4,6 +4,8 @@ import React, { useState, memo, useEffect, useCallback } from "react";
 import { useQueryClient } from "react-query";
 
 // Services
+import { RemoteBills } from "@/data";
+import { container, TypesAutomatiza } from "@/container";
 import { billService } from "@/OLD/services/bills.service";
 
 // Hooks
@@ -11,6 +13,7 @@ import { useCreateBillPayment, useShowBill } from "@/OLD/hooks/useBills";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useLoadAllPatientTutor } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -19,8 +22,9 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
 import { Container } from "./styles";
-import { Table, notification } from "antd";
+import { notification } from "antd";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Select, FormHandler, useToast } from "infinity-forge";
 import ProductsPanel from "../Details/ProductsPanel";
 import CardPanel from "./CardPanel";
 import NonTefPanel from "./NonTefPanel";
@@ -58,15 +62,18 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
   const [formData, setFormData] = useState({
     expirationDate: moment(),
   });
-
-  const { cashiers } = useDailyCasher(false, cashierFilters);
+  const [allowEditFinancialRsp, setAllowEditFinancialRsp] = useState(false);
+  const [financialResponsible, setFinancialResponsible] = useState({});
 
   const queryClient = useQueryClient();
   const endBillPermission = useUserHasPermission("VEN06");
 
+  const { createToast } = useToast();
   const { mutate } = useCreateBillPayment();
   const { data } = useShowBill(billId, true);
+  const users = useLoadAllPatientTutor(false, {});
   const { paymentMethods } = usePaymentMethods(filters);
+  const { cashiers } = useDailyCasher(false, cashierFilters);
 
   const filterMethods = () => {
     setDebitMethods(
@@ -163,11 +170,36 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     closePayment();
   };
 
+  const submitFinancialResponsible = async () => {
+    console.log("aou");
+    try {
+      await container
+        .get<RemoteBills>(TypesAutomatiza.RemoteBills)
+        .updateFinancialResponsible({
+          financialResponsibleId: financialResponsible.id,
+          billId,
+        });
+
+      setAllowEditFinancialRsp(false);
+    } catch (err) {
+      console.log(err);
+      createToast({ message: "Houve um erro ao atualizar o responsável" });
+    } finally {
+      createToast({
+        message: "Responsável financeiro atualizado com sucesso!",
+      });
+    }
+  };
+
   useEffect(() => {
     data?.payments?.map((item) => {
       if (item?.block > higherBlock) {
         setHigherBlock(item?.block);
       }
+    });
+
+    setFinancialResponsible({
+      id: data?.financialResponsible?.id,
     });
   }, [data, reload, higherBlock]);
 
@@ -230,74 +262,131 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
   }, [formData, billId]);
 
   return (
-    <div className="uk-margin-top">
-      <h3 className="uk-margin-remove">
-        Pagamento da venda, código:&nbsp;{data?.tag}
-      </h3>
-      <strong>
-        Data:&nbsp;{moment(new Date()).format("DD/MM/YYYY - HH:mm")}
-        &nbsp;Cliente:&nbsp;
-        {data?.client?.name}
-      </strong>
-      <hr />
-      <Container className="uk-padding uk-shadow-small">
-        <div className="uk-flex">
-          <section className="uk-width-1-5">
-            <CardPanel
-              methods={debitMethods}
-              setFormData={setFormData}
-              formData={formData}
-              bill={data}
-              title="Débito"
-            />
-            <div className="uk-margin-top">
+    <Container>
+      <div className="uk-margin-top">
+        <header>
+          <div>
+            <h3 className="uk-margin-remove">
+              Pagamento da venda, código:&nbsp;{data?.tag}
+            </h3>
+            <strong>
+              Data:&nbsp;{moment(new Date()).format("DD/MM/YYYY - HH:mm")}
+              &nbsp;Cliente:&nbsp;
+              {data?.client?.name}
+            </strong>
+          </div>
+          <div>
+            <label className="uk-margin-right">Resp. financeiro</label>
+            {!allowEditFinancialRsp ? (
+              <label
+                className="uk-link"
+                onClick={() => setAllowEditFinancialRsp(true)}
+              >
+                Alterar
+              </label>
+            ) : (
+              <>
+                <span
+                  className="uk-link uk-margin-right"
+                  onClick={() => submitFinancialResponsible()}
+                >
+                  Salvar
+                </span>
+                <span
+                  className="uk-link"
+                  onClick={() => {
+                    setAllowEditFinancialRsp(false);
+                  }}
+                >
+                  Cancelar
+                </span>
+              </>
+            )}
+
+            {users.data && users.data.length > 0 && (
+              <FormHandler
+                initialData={financialResponsible}
+                onChangeForm={{
+                  callbackResult: (data) => setFinancialResponsible(data),
+                }}
+              >
+                <Select
+                  disabled={!allowEditFinancialRsp}
+                  menuPlacement="bottom"
+                  name="id"
+                  options={users.data?.map((item) => ({
+                    value: item.id,
+                    label: item.name,
+                  }))}
+                  onlyOneValue
+                  value={financialResponsible.id}
+                />
+              </FormHandler>
+            )}
+          </div>
+        </header>
+        <hr />
+        <section classNamme="payment-detail-container uk-padding uk-shadow-small">
+          <div className="uk-flex">
+            <section className="uk-width-1-5">
               <CardPanel
-                methods={creditMethods}
-                title="Crédito"
+                methods={debitMethods}
                 setFormData={setFormData}
                 formData={formData}
                 bill={data}
+                title="Débito"
               />
-            </div>
-          </section>
-          <NonTefPanel
-            methods={nonTefMethods}
-            setFormData={setFormData}
-            formData={formData}
-            bill={data}
-          />
-          <DetailsPanel
-            bill={data}
-            formData={formData}
-            setFormData={setFormData}
-            submit={submitPayment}
-          />
-          <ResumePanel bill={data} formData={formData} />
-        </div>
-      </Container>
-      {blockArr?.length > 0 &&
-        blockArr?.map((i) => (
-          <ProductsPanel
-            key={i}
-            payments={data?.payments?.filter((item) => item?.block === i + 1)}
-            reload={reload}
-            setReload={setReload}
-            remove={data?.status === "BAIXADA" ? false : true}
-            billId={data?.id}
-          />
-        ))}
-      <footer className="uk-margin-top uk-flex uk-flex-right">
-        <CustomButton
-          onClick={() => setVisible(false)}
-          classCallback="uk-margin-right"
-        >
-          Salvar
-        </CustomButton>
-        {endBillPermission && (
-          <CustomButton onClick={() => verifyPayment()}>Finalizar</CustomButton>
-        )}
-      </footer>
-    </div>
+              <div className="uk-margin-top">
+                <CardPanel
+                  methods={creditMethods}
+                  title="Crédito"
+                  setFormData={setFormData}
+                  formData={formData}
+                  bill={data}
+                />
+              </div>
+            </section>
+            <NonTefPanel
+              methods={nonTefMethods}
+              setFormData={setFormData}
+              formData={formData}
+              bill={data}
+            />
+            <DetailsPanel
+              bill={data}
+              formData={formData}
+              setFormData={setFormData}
+              submit={submitPayment}
+            />
+            <ResumePanel bill={data} formData={formData} />
+          </div>
+        </section>
+        {blockArr?.length > 0 &&
+          blockArr?.map((i) => (
+            <ProductsPanel
+              key={i}
+              payments={data?.payments?.filter((item) => item?.block === i + 1)}
+              reload={reload}
+              setReload={setReload}
+              remove={data?.status === "BAIXADA" ? false : true}
+              billId={data?.id}
+            />
+          ))}
+        <footer className="uk-margin-top uk-flex uk-flex-right">
+          <CustomButton
+            onClick={() => setVisible(false)}
+            classCallback="uk-margin-right"
+          >
+            Salvar
+          </CustomButton>
+          {endBillPermission && (
+            <CustomButton onClick={() => verifyPayment()}>
+              Finalizar
+            </CustomButton>
+          )}
+        </footer>
+      </div>
+    </Container>
   );
 });
 

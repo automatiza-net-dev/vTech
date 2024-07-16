@@ -81,8 +81,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: ^0.58.4
-        version: 0.58.4(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1)
+        specifier: ^0.59.3
+        version: 0.59.3(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1)
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -150,8 +150,8 @@ importers:
         specifier: ^0.18.5
         version: 0.18.5
       yup:
-        specifier: ^0.32.11
-        version: 0.32.11
+        specifier: ^1.4.0
+        version: 1.4.0
       zustand:
         specifier: ^4.5.1
         version: 4.5.4(@types/react@18.3.3)(react@18.3.1)
@@ -1186,9 +1186,6 @@ packages:
   '@types/hoist-non-react-statics@3.3.5':
     resolution: {integrity: sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==}
 
-  '@types/lodash@4.17.6':
-    resolution: {integrity: sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==}
-
   '@types/node@16.18.101':
     resolution: {integrity: sha512-AAsx9Rgz2IzG8KJ6tXd6ndNkVcu+GYB6U/SnFAaokSPNx2N7dcIIfnighYUNumvj6YS2q39Dejz5tT0NCV7CWA==}
 
@@ -1971,8 +1968,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@0.58.4:
-    resolution: {integrity: sha512-usS2KyrDOP8jPvl8caBUa7ksT/64VcooO4aZwKNwYQBbSyJ0gXd947BJYwpyHmNgVW0HlBfQCMcs7k3dVPZNjw==}
+  infinity-forge@0.59.3:
+    resolution: {integrity: sha512-KaePi0Gd8fHeP+8HrMoZqgS6rBVP5002ar/JigeuTX7gdRhWHQi95T+jcqNRaBaM01Wt8iQFO2par1yS7yx+MA==}
     peerDependencies:
       react: '>=16'
 
@@ -2274,9 +2271,6 @@ packages:
 
   nano-time@1.0.0:
     resolution: {integrity: sha512-flnngywOoQ0lLQOTRNexn2gGSNuM9bKj9RZAWSzhQ+UJYaAFG9bac4DW9VHjUAzrOaIcajHybCTHe/bkvozQqA==}
-
-  nanoclone@0.2.1:
-    resolution: {integrity: sha512-wynEP02LmIbLpcYw8uBKpcfF6dmg2vcpKqxeH5UcoKEYdExslsdUA4ugFauuaeYdTB76ez6gJW8XAZ6CgkXYxA==}
 
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
@@ -3337,10 +3331,6 @@ packages:
 
   yauzl@2.10.0:
     resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
-
-  yup@0.32.11:
-    resolution: {integrity: sha512-Z2Fe1bn+eLstG8DRR6FTavGD+MeAwyfmouhHsIUgaADz8jvFKbO/fXc2trJKZg+5EBjh4gGm3iU/t3onKlXHIg==}
-    engines: {node: '>=10'}
 
   yup@1.4.0:
     resolution: {integrity: sha512-wPbgkJRCqIf+OHyiTBQoJiP5PFuAXaWiJK6AmYkzQAh5/c2K9hzSApBZG5wV9KoKSePF7sAxmNSvh/13YHkFDg==}
@@ -4518,8 +4508,6 @@ snapshots:
       '@types/react': 18.3.3
       hoist-non-react-statics: 3.3.2
 
-  '@types/lodash@4.17.6': {}
-
   '@types/node@16.18.101': {}
 
   '@types/node@18.19.39':
@@ -5479,7 +5467,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@0.58.4(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1):
+  infinity-forge@0.59.3(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1):
     dependencies:
       '@ckeditor/ckeditor5-react': 7.0.0(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(react@18.3.1)
       '@types/react-slick': 0.23.13
@@ -5793,8 +5781,6 @@ snapshots:
   nano-time@1.0.0:
     dependencies:
       big-integer: 1.6.52
-
-  nanoclone@0.2.1: {}
 
   nanoid@3.3.7: {}
 
@@ -7017,16 +7003,6 @@ snapshots:
     dependencies:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
-
-  yup@0.32.11:
-    dependencies:
-      '@babel/runtime': 7.24.7
-      '@types/lodash': 4.17.6
-      lodash: 4.17.21
-      lodash-es: 4.17.21
-      nanoclone: 0.2.1
-      property-expr: 2.0.6
-      toposort: 2.0.2
 
   yup@1.4.0:
     dependencies:
