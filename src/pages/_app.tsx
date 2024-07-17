@@ -20,6 +20,7 @@ import {
   themes,
   ButtonInfinityForge,
   InfinityForgeInjections,
+  SchedulingContextProvider,
 } from "@/presentation";
 import { RemoteLoadUserDashboard } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -87,7 +88,7 @@ export default function App({ Component, pageProps }) {
           chat: false,
           menu: {
             mode: "expandedMenu",
-            position: "auto"
+            position: "auto",
           },
           styles: { Button: ButtonInfinityForge },
           notification: {
@@ -96,6 +97,7 @@ export default function App({ Component, pageProps }) {
         }}
         theme={themes[process.env.client || "sancla"]}
       >
+        <SchedulingContextProvider>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <ConfigProvider locale={ptBR}>
               <AppProvider>
@@ -124,6 +126,7 @@ export default function App({ Component, pageProps }) {
               </AppProvider>
             </ConfigProvider>
           </LocalizationProvider>
+        </SchedulingContextProvider>
       </InfinityForgeProviders>
     </QueryClientProvider>
   );

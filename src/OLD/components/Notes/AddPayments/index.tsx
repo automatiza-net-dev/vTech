@@ -23,6 +23,7 @@ const AddPayments = memo(function AddPayments({
   setReload,
   origin = "receipts",
   budgetId = false,
+  accountPlanId,
 }) {
   const [flags, setFlags] = useState(false);
   const [data, setData] = useState({});
@@ -130,6 +131,7 @@ const AddPayments = memo(function AddPayments({
             issueDate: moment().toISOString(),
             expirationDate: moment(data?.expirationDate).toISOString(),
             nsuDocument: data?.nsuDocument,
+            accountPlanId,
           },
         ],
       })
@@ -146,7 +148,7 @@ const AddPayments = memo(function AddPayments({
           message: err?.response?.data?.message?.split(":")[1],
         });
       });
-  }, [data]);
+  }, [data, accountPlanId]);
 
   const verifyRender = () => {
     if (origin !== "budgets") {

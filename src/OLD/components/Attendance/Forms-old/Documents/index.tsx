@@ -47,14 +47,16 @@ export default function Documents({
 
   async function registerPrint() {
     try {
-      await container.get<RemotePatient>(patientTypes.RemotePatient).print(
-        updateData?.timeline_info?.$meta?.bill_document_id
-          ? {
-              billDocumentId:
-                updateData?.timeline_info?.$meta?.bill_document_id,
-            }
-          : { timelineId: updateData?._id }
-      );
+      await container
+        .get<RemotePatient>(patientTypes.RemotePatient)
+        .requestPrinting(
+          updateData?.timeline_info?.$meta?.bill_document_id
+            ? {
+                billDocumentId:
+                  updateData?.timeline_info?.$meta?.bill_document_id,
+              }
+            : { timelineId: updateData?._id }
+        );
     } catch (err) {
       console.log(err);
     }

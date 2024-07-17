@@ -3,9 +3,13 @@ import { Error, Layout, useAuthAdmin, PrivatePageAdmin } from "infinity-forge";
 import { User } from "@/domain";
 import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { DictionaryQueryProvider, useLoadAllAvailableUnits } from "@/presentation";
+import {
+  DictionaryQueryProvider,
+  useLoadAllAvailableUnits,
+} from "@/presentation";
 
 import * as S from "./styles";
+import { useRouter } from "next/router";
 
 export function LayoutDashboard({ children }) {
   return (
@@ -18,6 +22,7 @@ export function LayoutDashboard({ children }) {
 }
 
 function LayoutPage({ children }) {
+  const router = useRouter();
   const avaiableUnits = useLoadAllAvailableUnits();
 
   const { GetUser } = useAuthAdmin();
@@ -45,6 +50,7 @@ function LayoutPage({ children }) {
           .swap({ unitId: value?.workspace, dashboard: true });
 
         window.location.reload();
+        router.push("/dashboard");
       }
     },
   };

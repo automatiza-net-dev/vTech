@@ -145,7 +145,7 @@ export function Patient({
                         type="button"
                         onClick={() => {
                           setFastCreateVisible(true);
-                          setVisible(false)
+                          setVisible(false);
                         }}
                         text="Novo Paciente"
                       />

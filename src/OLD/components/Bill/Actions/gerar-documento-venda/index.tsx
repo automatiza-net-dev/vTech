@@ -3,7 +3,17 @@ import api from "@/OLD/services";
 import { useState } from "react";
 import { LoaderCircle, useToast } from "infinity-forge";
 
-export function GerarDocumentoVenda({ bill, client }) {
+export function GerarDocumentoVenda({
+  bill,
+  client,
+  button,
+  onSuccess,
+}: {
+  bill;
+  client;
+  button;
+  onSuccess?: any;
+}) {
   const [loading, setLoading] = useState(false);
 
   const { createToast } = useToast();
@@ -27,7 +37,9 @@ export function GerarDocumentoVenda({ bill, client }) {
                   message: "Documentos gerados com sucesso",
                   status: "success",
                 });
-              } catch(err){
+
+                onSuccess && onSuccess();
+              } catch (err) {
                 createToast({
                   message: "Erro ao gerar documento",
                   status: "error",
@@ -40,6 +52,8 @@ export function GerarDocumentoVenda({ bill, client }) {
           >
             {loading ? (
               <LoaderCircle size={22} color="#000" />
+            ) : button ? (
+              button
             ) : (
               <svg
                 enable-background="new 0 0 512 512"

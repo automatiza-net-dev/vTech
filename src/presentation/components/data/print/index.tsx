@@ -10,7 +10,9 @@ import * as S from "./styles";
 export function Print({
   children,
   PdfContent,
+  onBeforePrint,
 }: {
+  onBeforePrint?: () => void;
   children?: React.ReactNode;
   PdfContent: JSX.Element;
 }) {
@@ -31,7 +33,7 @@ export function Print({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        color: "rgba(0, 0, 0, 0.85)"
+        color: "rgba(0, 0, 0, 0.85)",
       }}
       className="font-14"
     >
@@ -43,6 +45,7 @@ export function Print({
     <>
       <ReactToPrint
         trigger={() => children || item}
+        onBeforePrint={onBeforePrint}
         content={() => printContentRef.current}
       />
 

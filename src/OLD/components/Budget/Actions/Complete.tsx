@@ -8,8 +8,6 @@ import {
   Select,
   Table,
   Tooltip,
-  notification,
-  AutoComplete,
   Tabs,
 } from "antd";
 import moment from "moment";
@@ -20,15 +18,16 @@ import { currencyFormatter } from "..";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { useCompleteBudget, useConfirmBudget } from "@/OLD/hooks/useBudgets";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
-import { useTutor } from "@/OLD/hooks/useTutor";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 
-import { sortItems } from "@/OLD/utils/sortItems";
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
-import { FormHandler, Select as InfinityForgeSelect } from "infinity-forge";
+import {
+  FormHandler,
+  Select as InfinityForgeSelect,
+  useToast,
+} from "infinity-forge";
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -80,9 +79,10 @@ export default function CompleteBudget({ budget, setReload = false }) {
     finishedAt: moment(),
   });
 
- const res = useLoadAllPatientTutor({ needFilterToCallApi: false });
-  const tutors = res.data
+  const res = useLoadAllPatientTutor({ needFilterToCallApi: false });
+  const tutors = res.data;
 
+  const { createToast } = useToast();
   const { data } = useCompleteBudget(budget.id, visible);
   const { data: reasons } = useGetAllReasons({
     enabled: visible,
@@ -106,7 +106,6 @@ export default function CompleteBudget({ budget, setReload = false }) {
           className="uk-link"
           onClick={() => {
             router.push(`/dashboard/vendas/detalhes/${bill?.id}`);
-            notification.destroy();
           }}
         >
           Aqui
@@ -148,12 +147,30 @@ export default function CompleteBudget({ budget, setReload = false }) {
           type: "TOTAL",
           finishedAt: moment(),
         });
-        return notification.success({
-          message: `${getWord("Orçamento")} confirmado com sucesso!`,
-          description: notificationStructure(res),
+        return createToast({
+          message: (
+            <>
+              {getWord("Orçamento")} confirmado com sucesso, para acessar os
+              detalhes da venda, clique{" "}
+              <a
+                onClick={() => {
+                  router.push(`/dashboard/vendas?id=${res?.id}`);
+                }}
+              >
+                aqui
+              </a>
+            </>
+          ),
+          status: "success",
         });
       },
       onError: (err) => {
+        createToast({
+          message:
+            err.response.data.validationErrors.canceledObservation.errors,
+          status: "error",
+        });
+
         if (
           err?.response?.data?.message.includes(
             `É necessário informar o cliente para confirmar o ${getWord(
@@ -161,10 +178,11 @@ export default function CompleteBudget({ budget, setReload = false }) {
             )}`
           )
         ) {
-          return notification.warning({
+          return createToast({
             message: `Cliente informado não encontrado na base de dados, cadastre um novo cliente ou selecione um cliente já cadastrado para confirmar o ${getWord(
               "Orçamento"
             )}`,
+            status: "error",
           });
         }
       },
@@ -243,7 +261,6 @@ export default function CompleteBudget({ budget, setReload = false }) {
       value: tutor?.id,
     })) || [];
 
-
   return (
     <>
       {confirmBudgetPermission && (
@@ -294,7 +311,17 @@ export default function CompleteBudget({ budget, setReload = false }) {
                           id: value,
                         });
                       }}
-                      options={tutorsList && tutorsList.length > 0 ? [...tutorsList, { label: data?.client_name, value: data?.client_name }] : []}
+                      options={
+                        tutorsList && tutorsList.length > 0
+                          ? [
+                              ...tutorsList,
+                              {
+                                label: data?.client_name,
+                                value: data?.client_name,
+                              },
+                            ]
+                          : []
+                      }
                     />
                   </FormHandler>
                 )}

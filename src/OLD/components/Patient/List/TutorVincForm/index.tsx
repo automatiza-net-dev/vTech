@@ -116,7 +116,10 @@ const TutorVincForm = memo(function TutorVincForm({
       <footer className="uk-flex uk-flex-right">
         <Popconfirm
           title="Deseja tornar esse tutor como ativo?"
-          onCancel={() => setVisible(false)}
+          onCancel={() => {
+            setReload(!reload)
+            setVisible(false);
+          }}
           onConfirm={() => submitActiveTutor()}
         >
           <Button
@@ -141,7 +144,6 @@ const TutorVincForm = memo(function TutorVincForm({
           Cancelar{" "}
         </Button>
       </footer>
-      
       <Modal
         visible={createTutorVisible}
         width={1200}

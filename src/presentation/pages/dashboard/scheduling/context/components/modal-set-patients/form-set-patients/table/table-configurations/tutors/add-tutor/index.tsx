@@ -21,7 +21,14 @@ import { ButtonCreateTutor } from "./button-create-tutor";
 
 import * as S from "./styles";
 
-export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
+export function AddTutor({
+  id,
+  origin,
+}: {
+  id: string;
+  tutors: Tutor[];
+  origin?: "Cadastro" | "Crm" | "Agenda";
+}) {
   const [modal, setModal] = useState(false);
   const [initialHolder, setInitialHolder] = useState(null);
 
@@ -64,8 +71,13 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
   return (
     <Error name="AddTutor">
       <Modal
-        styles={{ maxWidth: "600px", width: "100%", paddingBottom: "20px" , overflow: "unset"}}
-      stylesContent={{ overflow: "unset" }}  
+        styles={{
+          maxWidth: "600px",
+          width: "100%",
+          paddingBottom: "20px",
+          overflow: "unset",
+        }}
+        stylesContent={{ overflow: "unset" }}
         open={modal}
         onClose={() => setModal(false)}
       >
@@ -79,7 +91,7 @@ export function AddTutor({ id }: { id: string; tutors: Tutor[] }) {
               button={{ text: "Vincular" }}
               customAction={
                 {
-                  props: { refetch, setInitialHolder },
+                  props: { refetch, setInitialHolder, origin },
                   Component: ButtonCreateTutor,
                 } as any
               }

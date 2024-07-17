@@ -59,14 +59,7 @@ export function DreReport() {
         loading={reports.isLoading}
         text="imprimir"
         onClick={() => {
-          if (reports?.data?.result) {
-            window.open(reports.data.result);
-          } else {
-            createToast({
-              message: "Unidade não possuí relatório dre",
-              status: "error",
-            });
-          }
+          window.open(reports.data.result);
         }}
       />
     </S.DreReport>

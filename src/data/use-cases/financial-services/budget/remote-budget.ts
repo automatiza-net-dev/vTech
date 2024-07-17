@@ -8,9 +8,11 @@ import * as domain from "@/domain";
 @injectable()
 export class RemoteBudget
   implements
-    domain.LoadAllBudgetsAttendance,
-    domain.CreateBudget,
-    domain.LoadOpenNegotiations
+  domain.CancelBudget,
+  domain.CreateBudget,
+  domain.ConfirmBudget,
+  domain.LoadOpenNegotiations,
+  domain.LoadAllBudgetsAttendance
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -44,5 +46,25 @@ export class RemoteBudget
     });
 
     return response as domain.LoadOpenNegotiations.Model;
+  }
+
+  async cancel(params: domain.CancelBudget.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/cancel/${params.id}`),
+      method: "put",
+      body: params,
+    });
+
+    return response;
+  }
+
+  async confirm(params: domain.ConfirmBudget.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/confirm/${params.id}`),
+      method: "put",
+      body: params,
+    });
+
+    return response;
   }
 }

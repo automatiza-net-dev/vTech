@@ -67,7 +67,6 @@ export function EndAttendanceButton() {
           svg="IconDoor"
           text="FINALIZAR ATENDIMENTO"
           onClick={() => {
-            console.log("opa");
             if (attendancesToClose?.length > 0) {
               setShowSelectAttendances(true);
             } else {

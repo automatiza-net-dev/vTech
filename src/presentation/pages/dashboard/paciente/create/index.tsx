@@ -194,7 +194,7 @@ function Form({
           <InputFile label="Foto do pet" name="photo" isLocalFile />
         </div>
 
-        <Tutors />
+        <Tutors origin={origin} />
       </FormHandler>
     </S.Create>
   );

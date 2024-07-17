@@ -2,6 +2,7 @@ import React from "react";
 import { Error } from "infinity-forge";
 import { TableLevels } from "../subgrupos-detalhado/styles";
 
+// TODO função currencyFormatter temporária
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 export function OrigemClientesCategoria(props) {
@@ -47,7 +48,7 @@ export function OrigemClientesCategoria(props) {
                       <td>
                         <span>{group?.grupo || "-"}</span>
                       </td>
-                      <td>{currencyFormatter(group?.total) || "0,00"}</td>
+                      <td>R$ {currencyFormatter(group?.total) || "0,00"}</td>
                       <td>
                         {item?.porcentagem
                           ? item?.porcentagem.toFixed(2) + "%"
@@ -60,7 +61,7 @@ export function OrigemClientesCategoria(props) {
                         <td>
                           <span>{origin?.origem || "-"}</span>
                         </td>
-                        <td>{currencyFormatter(origin?.total) || "0,00"}</td>
+                        <td>R$ {currencyFormatter(origin?.total) || "0,00"}</td>
                         <td>
                           {origin?.porcentagem
                             ? origin?.porcentagem.toFixed(2) + "%"

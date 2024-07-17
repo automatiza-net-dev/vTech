@@ -42,7 +42,12 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       id: 4,
       icon: "IconGender",
       color: "#FF7A00",
-      title: patient?.genderText || "-",
+      title:
+        process.env.client === "sancla"
+          ? patient.gender === "male"
+            ? "Macho"
+            : "Fêmea"
+          : patient.genderText,
       subTitle: "Sexo",
       active: true,
     },
@@ -86,7 +91,6 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
     <Error name="ProfileInfos">
       <S.ProfileInfos>
         <Profile {...patient} />
-
         {details && (
           <div className="details-box">
             {details?.map((detail) => {
@@ -96,7 +100,14 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                     isModal
                     tutorId={patient.tutor.id}
                     trigger={
-                      <span className="custom-link" style={{ width: "100%", display: "block", textAlign: "left" }}>
+                      <span
+                        className="custom-link"
+                        style={{
+                          width: "100%",
+                          display: "block",
+                          textAlign: "left",
+                        }}
+                      >
                         <DetailCard key={detail.id} {...detail} />
                       </span>
                     }

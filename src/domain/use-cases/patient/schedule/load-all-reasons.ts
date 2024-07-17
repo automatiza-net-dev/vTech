@@ -6,7 +6,7 @@ export type Reason = {
   id: string;
   reason: string;
   requires_observation: boolean;
-  type: "CA" | "RA" | "REATIVAR" | "TROCA";
+  type: "CA" | "RA" | "REATIVAR" | "TROCA" | "OR";
 };
 
 export namespace LoadAllReasons {

@@ -269,7 +269,7 @@ export function Notes() {
   };
 
   const listCreated = (id) => {
-    setFilters({ receipt_id: id });
+    setFilters({ receipt_id: id, noSearch: false });
     setReload((prv) => !prv);
   };
 
