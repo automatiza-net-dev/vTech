@@ -35,6 +35,7 @@ const { Option } = Select;
 
 // Utils
 import moment from "moment";
+import { useLoadDashboard } from "@/presentation";
 
 const detectForm = (str) => {
   switch (str) {
@@ -271,11 +272,9 @@ const BaseForm = memo(function BaseForm({
     }
   }, [formType, patientData]);
 
-  const submitOccurrenceFormData = useCallback(() => {
+  const submitOccurrenceFormData = useCallback(async () => {
     setLoading(true);
-    let error = false;
-
-    hospitalizationOccurences
+    await hospitalizationOccurences
       .createOccurrence(formTreatment(formType, data))
       .then((res) => {
         notification.success({
@@ -310,24 +309,15 @@ const BaseForm = memo(function BaseForm({
             ),
           });
         }
-      })
-      .catch((_err) => {
-        error = true;
-        setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao registrar a ocorrência",
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-        if (!error) {
-          setVisible(false);
-          setData({});
-          setBody("");
-          setReload(!reload);
-          setFileList([]);
-        }
       });
+
+    setLoading(false);
+    setVisible(false);
+    setData({});
+    setBody("");
+    setReload(!reload);
+    setFileList([]);
+    setLoading(false);
   }, [data, body, fileList, patientData]);
 
   return (
@@ -338,9 +328,18 @@ const BaseForm = memo(function BaseForm({
       footer={null}
     >
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          submitOccurrenceFormData();
+          try {
+            await submitOccurrenceFormData();
+            notification.success({
+              message: `Ocorrência gerada com sucesso!`,
+            });
+          } catch (error) {
+            notification.error({
+              message: `Ocorreu um erro ao gerar a ocorrência.`,
+            });
+          }
         }}
       >
         <HeaderForm patientData={patient} />
@@ -424,13 +423,25 @@ const BaseForm = memo(function BaseForm({
             )}
             {report === "Relatório médico" && (
               <Print
+                tutor={patient?.tutor}
+                patient={patient?.patient}
                 triggerComponent={
                   <Button className="uk-margin-top">Imprimir</Button>
                 }
                 content={body}
                 title={"Relatório médico"}
                 string={true}
-                onBeforePrint={() => submitOccurrenceFormData()}
+                onBeforePrint={async () => {
+                  try {
+                    await submitOccurrenceFormData();
+                    return true;
+                  } catch (error) {
+                    notification.error({
+                      message: `Preencha todos os campos.`,
+                    });
+                    throw new Error(error?.message);
+                  }
+                }}
               />
             )}
             <FormFooter setVisible={setVisible} />
@@ -444,3 +455,26 @@ const BaseForm = memo(function BaseForm({
 });
 
 export default BaseForm;
+
+
+// crmDashboard=true
+
+// async function GetDashbooad() {
+
+//   switch(type === "crm") {
+
+//     case "crm": return service.crm.dashboard()
+
+//     case "franqueado": return service.franqueado.dashboard()
+
+//     default "dashboard": return service.dashboard.dashboard()
+//   }
+// }
+
+// useLoadDashboard()
+// useLoadDashboard({ type: "crm" })
+
+
+
+
+

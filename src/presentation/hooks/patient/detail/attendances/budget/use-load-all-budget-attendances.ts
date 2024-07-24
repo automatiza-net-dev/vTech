@@ -8,7 +8,6 @@ import { TypesAutomatiza, container } from "@/container";
 export function useLoadAllBudgetAttendances(
   props: LoadAllBudgetsAttendance.Params
 ) {
-  console.log(props)
   return useQuery({
     queryKey: ["LoadAllBudgetAttendances", props.id],
     queryFn: async () => {

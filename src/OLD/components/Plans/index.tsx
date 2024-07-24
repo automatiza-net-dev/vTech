@@ -81,6 +81,7 @@ const Plans = memo(function Plans() {
           description: plan?.description,
           planGroup: plan?.group?.description,
           code: plan?.code,
+          dre: plan?.dre ? "Sim" : "Não",
           type: plan?.type,
           status: plan?.active ? "Ativo" : "Inativo",
           parent: plan?.parent?.description,
@@ -102,31 +103,28 @@ const Plans = memo(function Plans() {
     plans.length > 0 ? formatPlans() : setFormatedPlans([]);
   }, [formatPlans]);
 
-  const submitCreatePlan = useCallback(() => {
+  const submitCreatePlan = useCallback(async () => {
     if (!canCreateAccountPlans) {
       return notification.error({ message: "Ação não permitida" });
     }
 
-    setLoading(true);
-    planService
-      .createAccountPlan(data)
-      .then((res) =>
-        notification.success({
-          message: "Plano de contas cadastrado com sucesso!",
-        })
-      )
-      .catch((err) => {
-        setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao cadastrar o plano...",
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-        setReload(!reload);
-        setCreateVisible(false);
-        setData({ active: true });
+    try {
+      setLoading(true);
+      await planService.createAccountPlan(data);
+
+      setLoading(false);
+      setReload(!reload);
+      setCreateVisible(false);
+      setData({ active: true });
+
+      notification.success({
+        message: "Plano de contas cadastrado com sucesso!",
       });
+    } catch (error) {
+      notification.error({
+        message: "Houve um erro ao cadastrar o plano...",
+      });
+    }
   }, [data]);
 
   return !listAccountPlansPermission ||

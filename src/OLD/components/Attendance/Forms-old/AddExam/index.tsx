@@ -147,11 +147,11 @@ export default function LaunchExam({
         examPatientData
           ? createToast({
               message: "Exame atualizado com sucesso!",
-              status: "error",
+              status: "success",
             })
           : createToast({
               message: "Exame solicitado com sucesso!",
-              status: "error",
+              status: "success",
             });
       });
     },

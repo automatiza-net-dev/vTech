@@ -1,5 +1,11 @@
 import { useRouter } from "next/router";
-import { Error, FormHandler, Input, TextEditor, useToast } from "infinity-forge";
+import {
+  Error,
+  FormHandler,
+  Input,
+  TextEditor,
+  useToast,
+} from "infinity-forge";
 
 import { DropdownComponentProps } from "../dropdown-item";
 
@@ -8,7 +14,7 @@ import * as S from "./styles";
 export function Death({ setModal }: DropdownComponentProps) {
   const router = useRouter();
 
-  const { createToast} = useToast();
+  const { createToast } = useToast();
 
   return (
     <Error name="Death">
@@ -26,7 +32,10 @@ export function Death({ setModal }: DropdownComponentProps) {
             //       : "",
             //   });
 
-            createToast({ message: "Óbito criado com sucesso!", status: "success" })
+            createToast({
+              message: "Óbito criado com sucesso!",
+              status: "success",
+            });
 
             setModal && setModal(false);
           }}

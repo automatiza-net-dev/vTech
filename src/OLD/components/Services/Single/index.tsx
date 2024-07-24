@@ -27,7 +27,11 @@ const verifyErrors = (msg) => {
   }
 };
 
-const Single = memo(function Single({ setVisible, serviceId }) {
+const Single = memo(function Single({
+  setVisible,
+  serviceId,
+  setReloadService,
+}) {
   const [service, setService] = useState({});
   const [loading, setLoading] = useState(false);
   const [formatedServiceUnits, setFormatedServiceUnits] = useState([]);
@@ -42,6 +46,7 @@ const Single = memo(function Single({ setVisible, serviceId }) {
       .then((res) => {
         setService({
           id: res?.data?.id,
+          courtesy: res?.data?.courtesy,
           originalDescription: res.data?.description,
           description: res?.data?.description,
           referenceCode: res?.data?.reference_code,
@@ -114,22 +119,22 @@ const Single = memo(function Single({ setVisible, serviceId }) {
     formatServiceUnits();
   }, [service]);
 
-  const submitUpdate = useCallback(() => {
-    setLoading(true);
-    servicesService
-      .updateService(service?.id, service)
-      .then((res) => {
-        setLoading(false);
-        setReload((prv) => !prv);
-        setVisible(false);
-        return notification.success({
-          message: "Serviço atualizado com sucesso!",
-        });
-      })
-      .catch((err) => {
-        setLoading(false);
-        return verifyErrors(err?.response?.data?.errors);
+  const submitUpdate = useCallback(async () => {
+    try {
+      setLoading(true);
+      await servicesService.updateService(service?.id, service);
+      setLoading(false);
+      setReload((prv) => !prv);
+      setVisible(false);
+      notification.success({
+        message: "Serviço atualizado com sucesso!",
       });
+      setLoading(false);
+      setReloadService && setReloadService((prv) => !prv);
+      return verifyErrors(err?.response?.data?.errors);
+    } catch (error) {
+      setLoading(false);
+    }
   }, [service]);
 
   return (

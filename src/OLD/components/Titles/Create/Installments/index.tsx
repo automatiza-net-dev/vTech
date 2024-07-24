@@ -110,12 +110,6 @@ const Installments = memo(function Installments({
                 }
               }
 
-              console.log(
-                obj?.map((item) =>
-                  moment(item?.competenceDate).format("MM/YYYY")
-                )
-              );
-
               setInstallments(obj);
             }}
           />

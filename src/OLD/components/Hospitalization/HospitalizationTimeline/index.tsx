@@ -42,11 +42,7 @@ export function HospitalizationTimeline({
   );
 
   const { timelineData: completeTimeline } =
-    useCompleteHospitalizationsTimeline(
-      patientData?.id,
-      !modal,
-      reload
-    );
+    useCompleteHospitalizationsTimeline(patientData?.id, !modal, reload);
 
   const componentRef = useRef();
 

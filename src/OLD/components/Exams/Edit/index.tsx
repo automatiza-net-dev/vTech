@@ -66,6 +66,7 @@ const UpdateExam = memo(function UpdateExam() {
       .then((_res) => {
         return notification.success({
           message: "Exame atualizado com sucesso!",
+          type: "success",
         });
       })
       .catch((err) => {

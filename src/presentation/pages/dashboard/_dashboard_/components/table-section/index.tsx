@@ -1,7 +1,7 @@
 import { TableDashboard, useLoadDashboard } from "@/presentation";
 
 export function TablesSection() {
-  const dashboard = useLoadDashboard();
+  const dashboard = useLoadDashboard({});
 
   const TableSalesPerPeriod = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-period"

@@ -21,16 +21,17 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
-import { Container } from "./styles";
 import { notification } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
-import { Select, FormHandler, useToast } from "infinity-forge";
-import ProductsPanel from "../Details/ProductsPanel";
 import CardPanel from "./CardPanel";
+import { Container } from "./styles";
 import NonTefPanel from "./NonTefPanel";
-import DetailsPanel from "./DetailsPanel";
 import ResumePanel from "./ResumePanel";
+import DetailsPanel from "./DetailsPanel";
+import { PaymentsPreviewComponent } from "@/presentation";
 import RemoveBillPayment from "./RemoveBillPayment";
+import ProductsPanel from "../Details/ProductsPanel";
+import { Select, FormHandler, useToast } from "infinity-forge";
+import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 const verifyErrors = (msg) => {
   if (
@@ -168,10 +169,11 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     }
 
     closePayment();
+
+    return totalPayed;
   };
 
   const submitFinancialResponsible = async () => {
-    console.log("aou");
     try {
       await container
         .get<RemoteBills>(TypesAutomatiza.RemoteBills)
@@ -182,7 +184,6 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
 
       setAllowEditFinancialRsp(false);
     } catch (err) {
-      console.log(err);
       createToast({ message: "Houve um erro ao atualizar o responsável" });
     } finally {
       createToast({
@@ -361,6 +362,9 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
             <ResumePanel bill={data} formData={formData} />
           </div>
         </section>
+        <hr />
+        <PaymentsPreviewComponent {...data} setData={setFormData} />
+        <hr />
         {blockArr?.length > 0 &&
           blockArr?.map((i) => (
             <ProductsPanel

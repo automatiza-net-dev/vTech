@@ -32,8 +32,8 @@ const getOneRole = async (id) => {
   return api.get(`/roles/${id}`);
 };
 
-const getRoleMetadata = async (id) => {
-  return api.get(`/roles/metadata/${id}`);
+const getRoleMetadata = async (id, params) => {
+  return api.get(`/roles/metadata/${id}`, { params });
 };
 
 const searchInfo = async (params) => await api.get("/roles/search", { params });
@@ -82,5 +82,5 @@ export const adminService = {
   removePermissionOfRole,
   getRoleMetadata,
   manageRolePermissions,
-  authAdmin
+  authAdmin,
 };

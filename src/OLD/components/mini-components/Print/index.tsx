@@ -20,10 +20,8 @@ export default function Print({
   patient = false,
 }: any) {
   const { clinic, user } = useProfile();
-  
-  const componentRef: any = useRef();
 
-  console.log(patient, "<<<")
+  const componentRef: any = useRef();
 
   return (
     <>

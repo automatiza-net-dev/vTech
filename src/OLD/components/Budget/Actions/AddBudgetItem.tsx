@@ -106,10 +106,11 @@ export default function AddBudgetItem({
       setInternalObservation(data?.internal_observation);
   }, [data]);
 
-  const { getWord } = useDictionary()
+  const { getWord } = useDictionary();
 
   const validBudget =
-    budget.status === "ABERTO" || budget.status === `${getWord("Orçamento")} em aberto`;
+    budget.status === "ABERTO" ||
+    budget.status === `Orçamento em aberto`;
 
   const submitObservation = React.useCallback(() => {
     budgetService.updateObservation(data?.id, {
@@ -541,6 +542,9 @@ export default function AddBudgetItem({
                 </div>
               </footer>
             </div>
+          </TabPane>
+          <TabPane key="2" tab={"Pagamentos"}>
+            <Negotiation budgetId={budget.id} />
           </TabPane>
         </Tabs>
       </Modal>

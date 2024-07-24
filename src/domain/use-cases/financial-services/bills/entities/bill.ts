@@ -1,4 +1,4 @@
-import { BusinessUnit, User, Patient, Tutor, Product } from "@/domain";
+import { BusinessUnit, User, Patient, Tutor, Product, Budget } from "@/domain";
 
 export type Bill = {
   id: string;
@@ -98,4 +98,7 @@ export type Bill = {
   }[];
   client: Tutor;
   items: Product[];
+  budget: {
+    id: Budget["id"];
+  };
 };

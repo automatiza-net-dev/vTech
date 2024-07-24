@@ -1,31 +1,30 @@
 // @ts-nocheck
 // Core
-import { memo, useState } from "react";
+import { useState } from "react";
 
 // Services
 import { clinicService } from "@/OLD/services/clinic.service";
 
 // Components
-import { AutoComplete, Modal, notification } from "antd";
 import Editor from "@/OLD/components/Editor";
-import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
 import { DateTimeField } from "@mui/x-date-pickers";
-import { Select, FormHandler } from "infinity-forge";
+import { Select, FormHandler, useToast } from "infinity-forge";
+import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
 
 // Utils
 import moment from "moment";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { petsService } from "@/OLD/services/patient.service";
 import { useLoadPatient } from "@/presentation";
+import { petsService } from "@/OLD/services/patient.service";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 function DeathForm({ modal = false, setModal = () => ({}) }) {
   const [body, setBody] = useState("");
   const [data, setData] = useState({});
 
+  const { createToast } = useToast();
+
   const patient = useLoadPatient();
-
   const queryClient = useQueryClient();
-
   const vetsQuery = useQuery({
     queryKey: ["allVets"],
     queryFn: () =>
@@ -53,21 +52,41 @@ function DeathForm({ modal = false, setModal = () => ({}) }) {
         close();
       },
       onError: (e) => {
-        notification.error({
-          message: "Erro ao salvar óbito",
+        createToast({
+          message: "houve um erro ao salvar o óbito",
+          status: "error",
         });
       },
     }
   );
 
   const handleSubmittion = () => {
+    if (!data?.selectedVetId) {
+      return createToast({
+        message: "Selecione um veterinário responsável",
+        status: "error",
+      });
+    }
+    if (!data?.executedAt) {
+      return createToast({
+        message: "Selecione a data em que ocorreu o óbito",
+        status: "error",
+      });
+    }
+    if (body === "") {
+      return createToast({
+        message: "Informe o relatório do óbito",
+        status: "error",
+      });
+    }
+
     const technician = vetsQuery.data.find(
       (item) => item.id === data.selectedVetId
     );
 
     const payload = {
       technicianId: technician?.id,
-      deathDate: data.executedAt.toJSON(),
+      deathDate: data?.executedAt?.toJSON(),
       deathObservation: body,
     };
 

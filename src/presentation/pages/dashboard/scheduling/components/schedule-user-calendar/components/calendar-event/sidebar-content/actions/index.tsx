@@ -82,8 +82,6 @@ export function Actions({
     onExecuteAction,
   };
 
-  console.log(isCancelled)
-
   return (
     <Error name="Actions">
       <S.Actions>

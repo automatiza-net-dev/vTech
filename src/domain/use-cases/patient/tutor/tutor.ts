@@ -45,6 +45,7 @@ export type Tutor = {
     cellphone: string;
     telephone: string | null;
     email: string | null;
+    document: string;
     patient_id: string;
   };
   is_main: false;

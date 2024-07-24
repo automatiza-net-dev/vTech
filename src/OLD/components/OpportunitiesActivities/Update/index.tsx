@@ -7,6 +7,8 @@ import { Modal, notification } from "antd";
 import FormChild from "../FormChild";
 
 import moment from "moment";
+import { Button } from "infinity-forge";
+import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
 
 const Update = memo(function ({
   setReload,
@@ -21,6 +23,8 @@ const Update = memo(function ({
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [execution, setExecution] = useState(false);
+  const [showNewActivity, setShowNewActivity] = useState(false);
+  const [newActivityModal, setNewActivityModal] = useState(false);
 
   useEffect(() => {
     setData({
@@ -47,7 +51,8 @@ const Update = memo(function ({
       });
   };
 
-  const submitUpdate = useCallback(() => {
+
+  function Submit(showNewActivity = false) {
     setLoading(true);
     opportunitiesService
       .updateActivityOpportunity({
@@ -77,30 +82,70 @@ const Update = memo(function ({
           message: "Houve um erro ao atualizar a atividade",
         });
       });
+
+      if(showNewActivity) {
+        setNewActivityModal(true);
+      }
+  }
+
+  const submitUpdate = useCallback(() => {
+    Submit();
   }, [data, activity, execution]);
 
   return (
-    <Modal
-      title={edit ? "Atualizar atividade" : "Detalhes atividade"}
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      footer={null}
-      width={1000}
-    >
-      <FormChild
-        colaborators={colaborators}
-        actTypes={actTypes}
-        data={data}
-        setData={setData}
-        submit={submitUpdate}
-        loading={loading}
-        setVisible={setVisible}
-        setExecution={setExecution}
-        edit={edit}
-        type="update"
-        op={op}
-      />
-    </Modal>
+    <>
+      <Modal
+        title={edit ? "Atualizar atividade" : "Detalhes atividade"}
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        footer={null}
+        width={1000}
+      >
+        <FormChild
+          colaborators={colaborators}
+          actTypes={actTypes}
+          data={data}
+          setData={setData}
+          submit={submitUpdate}
+          setExecution={
+            () => Submit(true)
+          }
+
+          loading={loading}
+          setVisible={setVisible}
+          edit={edit}
+          type="update"
+          op={op}
+        />
+      </Modal>
+
+      <Modal
+        title="Cadastrar nova atividade"
+        visible={newActivityModal}
+        onCancel={() => setNewActivityModal(false)}
+        footer={
+          <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
+            <Button text="Sim" onClick={() => setShowNewActivity(true)} />
+            <Button text="Não" onClick={() => setNewActivityModal(false)} />
+          </div>
+        }
+        width={500}
+      >
+        <span>Deseja criar uma nova atividade para esta Oportunidade?</span>
+      </Modal>
+
+      {showNewActivity && (
+        <CreateActivity
+          visible={showNewActivity}
+          setVisible={setShowNewActivity}
+          setReload={setReload}
+          opportunity={op}
+          colaborators={colaborators}
+          actTypes={actTypes}
+          customSubmit={() => setNewActivityModal(false)}
+        />
+      )}
+    </>
   );
 });
 

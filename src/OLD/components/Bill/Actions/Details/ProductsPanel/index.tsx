@@ -17,6 +17,7 @@ import {
 
 import moment from "moment";
 import { paymentsColumns } from "./columns";
+import Print from "@/OLD/components/mini-components/Print";
 
 const ProductsPanel = memo(function ProductsPanel({
   payments,
@@ -25,10 +26,12 @@ const ProductsPanel = memo(function ProductsPanel({
   setReload,
   billId,
   bill,
+  client,
 }) {
   const componentRef = useRef();
+  const SinglecomponentRef = useRef();
   const user = useMe();
-
+  const [singlePayment, setSinglePayment] = useState([]);
   const [formatedPayments, setFormatedPayments] = useState([]);
   const [editExpirationDate, setEditExpirationDate] = useState(false);
   const [billPaymentReceiptsFilters, setBillPaymentReceiptsFilters] = useState({
@@ -71,15 +74,26 @@ const ProductsPanel = memo(function ProductsPanel({
               : payment?.paymentMethod?.description,
           nsu: payment?.nsu_document,
           downDate: payment?.finance?.payment_date
-            ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY")
+            ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY") +
+              ` (${payment?.finance?.paymentMethod?.description})`
             : "-",
-          print: <Button text="imprimir" />,
+          print: (
+            <ReactToPrint
+              trigger={() => <Button text="imprimir" />}
+              content={() => (SinglecomponentRef as any).current}
+              onBeforeGetContent={() => {
+                setBillPaymentReceiptsFilters((prv) => ({
+                  ...prv,
+                  fetch: true,
+                }));
+                setSinglePayment(payment);
+              }}
+            />
+          ),
         };
       })
     );
   };
-
-  console.log(payments, "<<<")
 
   useEffect(() => {
     setData(
@@ -152,10 +166,12 @@ const ProductsPanel = memo(function ProductsPanel({
         </Panel>
         <section style={{ display: "none" }}>
           <div ref={componentRef as any}>
-            <PrintPaymentReceipts
-              receipts={billReceipts.data}
-              businessUnit={user.data.unit}
-            />
+            <PrintPaymentReceipts bill={bill} payements={payments} />
+          </div>
+        </section>
+        <section style={{ display: "none" }}>
+          <div ref={SinglecomponentRef as any}>
+            <PrintPaymentReceipts bill={bill} payements={[singlePayment]} />
           </div>
         </section>
       </Collapse>

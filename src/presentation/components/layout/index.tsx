@@ -1,4 +1,10 @@
-import { Error, Layout, useAuthAdmin, PrivatePageAdmin } from "infinity-forge";
+import {
+  Error,
+  Layout,
+  useAuthAdmin,
+  PrivatePageAdmin,
+  updateRoute,
+} from "infinity-forge";
 
 import { User } from "@/domain";
 import { RemoteBusinessUnits } from "@/data";
@@ -10,6 +16,8 @@ import {
 
 import * as S from "./styles";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useQueryClient } from "react-query";
 
 export function LayoutDashboard({ children }) {
   return (
@@ -49,8 +57,10 @@ function LayoutPage({ children }) {
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
           .swap({ unitId: value?.workspace, dashboard: true });
 
-        window.location.reload();
-        router.push("/dashboard");
+        router.push({
+          pathname: "/dashboard",
+          query: { reload: "true" },
+        });
       }
     },
   };

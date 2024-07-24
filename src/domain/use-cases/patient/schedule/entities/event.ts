@@ -1,4 +1,4 @@
-import { Patient } from "../../detail";
+import { Patient, Race, Specie } from "../../detail";
 
 export type Event = {
   end: string;
@@ -14,6 +14,8 @@ export type Event = {
     }[];
     title?: string;
     id: string;
+    specie: Specie;
+    race: Race;
     week_day: string;
     end_hour: string;
     start_hour: string;

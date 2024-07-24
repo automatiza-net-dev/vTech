@@ -6,7 +6,7 @@ import { servicesService } from "@/OLD/services/services.service";
 import { useSubgroups } from "@/OLD/hooks/useSubgroup";
 
 import { Container } from "./styles";
-import { Input, Select, Button, notification, Form } from "antd";
+import { Input, Select, Button, notification, Form, Switch } from "antd";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import DataForm from "./Data";
 import PriceForm from "./Price";
@@ -133,6 +133,21 @@ const Create = memo(function ({ setVisible }) {
                   <Option value="service">Serviço</Option>
                   <Option value="exam">Exame</Option>
                 </Select>
+              </Form.Item>
+            </div>
+
+            <div className="uk-width-1-1">
+              <Form.Item>
+                <label>Cortesia</label>
+                <Switch
+                  checked={data?.courtesy}
+                  onChange={(val) => {
+                    setData((prv) => ({
+                      ...prv,
+                      courtesy: val,
+                    }));
+                  }}
+                />
               </Form.Item>
             </div>
           </div>

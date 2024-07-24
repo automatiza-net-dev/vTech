@@ -1,10 +1,13 @@
-import { Skeleton } from "infinity-forge";
+import { useEffect } from "react";
 
-import { Chart, useLoadDashboard, useResizeWindowUpdate } from "@/presentation";
+import { useRouter } from "next/router";
+import { updateRoute } from "infinity-forge";
+
+import { useLoadDashboard } from "@/presentation";
 
 import {
-  Cards,
   TablesSection,
+  ChartsSection,
   SchedulesDashboard,
   CashiersResumeCards,
   FinancesResumeCards,
@@ -13,12 +16,9 @@ import {
 
 import * as S from "./styles";
 
-export function DashboardPage() {
-  const dashboard = useLoadDashboard();
-
-  const resize = useResizeWindowUpdate();
-
-  const isFetching = dashboard.isFetching || resize;
+export function DashboardPage({ type }: { type?: "crm" }) {
+  const router = useRouter();
+  const dashboard = useLoadDashboard({ type });
 
   const breakColumns =
     dashboard?.data?.charts && dashboard?.data?.charts?.length <= 4;
@@ -27,42 +27,33 @@ export function DashboardPage() {
     (item) => item?.name === "subgroups"
   );
 
+  useEffect(() => {
+    if (router?.query?.reload === "true") {
+      updateRoute({
+        params: { reload: undefined },
+        router,
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      return;
+    }
+  }, []);
+
   return (
     <>
       <S.Dashboard $breakColumns={breakColumns}>
-        <section className="general-dashboard">
-          {isFetching && (
-            <div className="skeleton">
-              <Skeleton
-                type="line"
-                size={{ height: "600px", width: "100%", margin: "0" }}
-              />
-            </div>
-          )}
-
-          {!isFetching && dashboard.data && (
-            <div className="charts">
-              <div>
-                {dashboard.data?.charts?.map((chart) => (
-                  <Chart key={chart.name} {...chart} />
-                ))}
-
-                {subgroupsDataTable && (
-                  <div className="custom-table">
-                    {(subgroupsDataTable as any)?.data.length > 0 &&
-                      dashboard.data && (
-                        <InvoicingBySubgroupTable
-                          {...(subgroupsDataTable as any)}
-                        />
-                      )}
-                  </div>
+        <ChartsSection type={type}>
+          {subgroupsDataTable && (
+            <div className="custom-table">
+              {(subgroupsDataTable as any)?.data.length > 0 &&
+                dashboard.data && (
+                  <InvoicingBySubgroupTable {...(subgroupsDataTable as any)} />
                 )}
-              </div>
             </div>
           )}
-
-          <Cards {...dashboard.data} isFetching={isFetching} />
-        </section>
+        </ChartsSection>
 
         <TablesSection />
       </S.Dashboard>

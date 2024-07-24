@@ -1,6 +1,15 @@
 import styled from "styled-components";
 
 export const Container = styled.section`
+  .budget-payment-desc {
+    border: 1px #cacaca solid;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+  }
+
   .card-box {
     :hover {
       cursor: pointer;

@@ -13,7 +13,7 @@ const FormChild = memo(function FormChild({
   setVisible,
   plansGroup,
   groupFilters,
-  setGroupFilters = false
+  setGroupFilters = false,
 }) {
   const [filters, setFilters] = useState({});
   const { plans } = usePlans(filters);
@@ -38,13 +38,22 @@ const FormChild = memo(function FormChild({
             <label>Ativo:&nbsp;</label>
             <Switch
               checked={data?.active}
-              onChange={(e) => setData({ ...data, active: e.target.checked })}
+              onChange={(e) => setData({ ...data, active: e })}
+            />
+          </div>
+
+          <div className="uk-width-1-5 uk-flex uk-flex-column uk-flex-middle">
+            <label>Lista DRE:&nbsp;</label>
+            <Switch
+              checked={data?.dre}
+              onChange={(e) => setData({ ...data, dre: e })}
             />
           </div>
         </div>
         <div className="uk-margin-small-top">
           <label>Descrição</label>
           <Input
+            required
             value={data?.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
           />
@@ -52,14 +61,22 @@ const FormChild = memo(function FormChild({
         <div className="uk-margin-small-top">
           <label>Tipo</label>
           <Select
+            required
             className="uk-width-1-1"
             value={data?.type}
             onChange={(val) => {
               setData({ ...data, type: val });
-              setGroupFilters &&
+
+              if (setGroupFilters) {
                 setGroupFilters({ ...groupFilters, type: val });
-              setFilters({ ...filters, type: val });
-              setData({ ...data, accountPlanGroupId: "", parentId: "" });
+                setFilters({ ...filters, type: val });
+                setData({
+                  ...data,
+                  accountPlanGroupId: "",
+                  parentId: "",
+                  type: val,
+                });
+              }
             }}
           >
             <Option value="CREDITO">Crédito</Option>
@@ -69,18 +86,17 @@ const FormChild = memo(function FormChild({
         <div className="uk-margin-small-top">
           <label>Grupo plano de contas</label>
           <Select
+            required
             className="uk-width-1-1"
             onChange={(val) => setData({ ...data, accountPlanGroupId: val })}
             value={data?.accountPlanGroupId}
           >
             {plansGroup?.length > 0 &&
-              plansGroup
-                ?.filter((group) => group?.type === data?.type)
-                .map((group, i) => (
-                  <Option key={i} value={group?.id}>
-                    {group?.description}
-                  </Option>
-                ))}
+              plansGroup.map((group, i) => (
+                <Option key={i} value={group?.id}>
+                  {group?.description}
+                </Option>
+              ))}
           </Select>
         </div>
         <div className="uk-margin-small-top">

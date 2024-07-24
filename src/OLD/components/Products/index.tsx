@@ -33,7 +33,7 @@ import { Container, Input } from "./styles";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 const { Option } = Select;
 import AccessDenied from "@/OLD/components/AccessDenied";
-import ProductivityItems from "@/OLD/components/mini-components/ProductivityItems"; 
+import ProductivityItems from "@/OLD/components/mini-components/ProductivityItems";
 import CreateProduct from "./Create";
 import DetailsProduct from "./Show";
 
@@ -42,6 +42,7 @@ import { sortItems } from "@/OLD/utils/sortItems";
 
 const mapper = ({ data }) => ({
   id: data.id,
+  courtesy: data?.courtesy ? "Sim" : "Não",
   description: data.description,
   type: data.type === "product" ? "Produto" : "Serviço",
   status: data.active ? "Ativo" : "Inativo",
@@ -316,7 +317,11 @@ const Products = memo(function Products() {
           onCancel={() => setDetailsVisible(false)}
           footer={null}
         >
-          <DetailsProduct setVisible={setDetailsVisible} id={selectedId} />
+          <DetailsProduct
+            setVisible={setDetailsVisible}
+            id={selectedId}
+            setReload={setReload}
+          />
         </Modal>
       )}
     </Container>

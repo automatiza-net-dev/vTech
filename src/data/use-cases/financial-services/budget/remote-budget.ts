@@ -8,11 +8,12 @@ import * as domain from "@/domain";
 @injectable()
 export class RemoteBudget
   implements
-  domain.CancelBudget,
-  domain.CreateBudget,
-  domain.ConfirmBudget,
-  domain.LoadOpenNegotiations,
-  domain.LoadAllBudgetsAttendance
+    domain.CancelBudget,
+    domain.CreateBudget,
+    domain.ConfirmBudget,
+    domain.LoadOpenNegotiations,
+    domain.LoadAllBudgetsAttendance,
+    domain.LoadPaymentsPreview
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -63,6 +64,15 @@ export class RemoteBudget
       url: this.makeApiURL.make(`budgets/confirm/${params.id}`),
       method: "put",
       body: params,
+    });
+
+    return response;
+  }
+
+  async loadPaymentsPreview(params: domain.LoadPaymentsPreview.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/payments/${params.budgetId}`),
+      method: "get",
     });
 
     return response;

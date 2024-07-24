@@ -139,31 +139,3 @@ export const useBudgetsFromAttendance = (id, reload) => {
     fetchBudgets: fetchData,
   };
 };
-
-export const useBudgetPayments = (id, reload, fetch = true) => {
-  const [budgetPayments, setBudgetPayments] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    if (!id || !fetch) {
-      return;
-    }
-
-    setLoading(true);
-    budgetService
-      .getBudgetPayments(id)
-      .then((res) => setBudgetPayments(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [id, reload, fetch]);
-
-  return {
-    budgetPayments,
-    loadingPayments: loading,
-    fetchPayments: fetchData,
-  };
-};

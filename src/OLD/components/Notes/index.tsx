@@ -315,7 +315,11 @@ export function Notes() {
         title="Nova nota de entrada"
         visible={createVisible}
       >
-        <Create setReload={setReload} setVisible={setCreateVisible} listCreated={listCreated} />
+        <Create
+          setReload={setReload}
+          setVisible={setCreateVisible}
+          listCreated={listCreated}
+        />
       </Modal>
       <Modal
         title="Importar XML"
@@ -371,18 +375,20 @@ export function Notes() {
       >
         <Details receiptId={selectedId} setVisible={setDetailsVisible} />
       </Modal>
-      <Modal
-        footer={null}
-        title="Adicionar pagamento"
-        width={1200}
-        onCancel={() => setAddPaymentsScreenVisible(false)}
-        visible={addPaymentsScreenVisible}
-      >
-        <AddPaymentsScreen
-          id={selectedId}
-          setVisible={setAddPaymentsScreenVisible}
-        />
-      </Modal>
+      {addPaymentsScreenVisible && (
+        <Modal
+          footer={null}
+          title="Adicionar pagamento"
+          width={1200}
+          onCancel={() => setAddPaymentsScreenVisible(false)}
+          visible={addPaymentsScreenVisible}
+        >
+          <AddPaymentsScreen
+            id={selectedId}
+            setVisible={setAddPaymentsScreenVisible}
+          />
+        </Modal>
+      )}
     </Container>
   );
 }

@@ -54,6 +54,20 @@ const Header = memo(function Header({ service, setService }) {
             onChange={(val) => setService((prv) => ({ ...prv, active: val }))}
           />
         </div>
+
+        <div className="uk-margin-small-right uk-width-1-4">
+          <label>Cortesia</label>
+          <br />
+          <Switch
+            checked={service?.courtesy}
+            onChange={(val) => {
+              setService((prv) => ({
+                ...prv,
+                courtesy: val,
+              }));
+            }}
+          />
+        </div>
       </div>
       <div className="uk-margin-top uk-flex uk-width-1-1">
         <div className="uk-width-1-4 uk-margin-small-right">

@@ -15,7 +15,7 @@ const DetailsPanel = memo(function DetailsPanel({
   formData,
   setFormData,
   submit,
-  bill
+  bill,
 }) {
   let totalPayed = 0;
 
@@ -30,13 +30,13 @@ const DetailsPanel = memo(function DetailsPanel({
       parseFloat(bill?.total_value.toFixed(2))
     ) {
       return notification.warning({
-        message: "Valor pago maior que o valor total"
+        message: "Valor pago maior que o valor total",
       });
     }
 
     if (convertIntlCurrency(formData?.installmentsValue) <= 0) {
       return notification.warning({
-        message: "O valor do pagamento deve ser maior que zero"
+        message: "O valor do pagamento deve ser maior que zero",
       });
     }
 
@@ -63,7 +63,7 @@ const DetailsPanel = memo(function DetailsPanel({
                   ...formData,
                   installmentsValue: currencyFormatter(
                     convertIntlCurrency(e.target.value)
-                  )
+                  ),
                 })
               }
             />
@@ -95,7 +95,7 @@ const DetailsPanel = memo(function DetailsPanel({
                         paymentMethodFlagInstallmentId:
                           formData?.installmentsList?.find(
                             (installment) => installment?.installment === i + 1
-                          ).id
+                          ).id,
                       });
                     }}
                     key={i}

@@ -115,6 +115,7 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
             <h4 className="">Relatório de vendas</h4>
           </div>
         </div>
+
         <div className="table-section">
           <section className="header-table">
             <div>unidade</div>
