@@ -182,6 +182,7 @@ const PatientData = memo(function PatientData({
                       {patient?.name} <VscTriangleDown /> RG: {patient?.tag}
                     </h4>
                   </Dropdown>
+
                   <span className="uk-margin-remove">
                     {patient?.patientAnimal?.race?.description}
                   </span>

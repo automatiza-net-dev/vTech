@@ -10,7 +10,7 @@ export function Cards({ cards, isFetching }: Partial<Dashboard> & { isFetching: 
   return (
     <div className="cards">
       <S.Cards>
-        <FiltersDashboard />
+        <FiltersDashboard  />
 
         {cards?.map((item) => (
           <CardRenderingControl key={item.name} {...item} />

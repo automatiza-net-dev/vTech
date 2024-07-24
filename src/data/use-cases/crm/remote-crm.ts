@@ -7,9 +7,10 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 @injectable()
 export class RemoteCRM
   implements
-    domain.LoadAllOpportunitiesSchedule,
     domain.SyncSchedule,
-    domain.LoadOpportunitiesReport
+    domain.LoadDashboardCRM,
+    domain.LoadOpportunitiesReport,
+    domain.LoadAllOpportunitiesSchedule
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -44,6 +45,16 @@ export class RemoteCRM
       body: params,
     });
 
-    return response as domain.LoadOpportunitiesReport.Model
+    return response as domain.LoadOpportunitiesReport.Model;
+  }
+
+  async loadDashboardCRM(params: domain.LoadDashboardCRM.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make("dashboard-crm"),
+      method: "get",
+      body: params,
+    });
+
+    return response as domain.LoadDashboardCRM.Model;
   }
 }

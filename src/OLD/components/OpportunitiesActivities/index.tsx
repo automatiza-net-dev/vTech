@@ -253,7 +253,6 @@ const OpActivities = memo(function OpActivities({
         colaborators={colaborators}
         actTypes={actTypes}
       />
-      {console.log(opportunitiesData, "<<<")}
     </Container>
   );
 });

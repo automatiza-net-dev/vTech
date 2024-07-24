@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { BadRequestError, useAuthAdmin } from "infinity-forge";
 
-import { RemoteDashboard } from "@/data";
 import { LoadDashboard, User } from "@/domain";
-import { container, dashboardTypes } from "@/container";
+import { RemoteCRM, RemoteDashboard } from "@/data";
+import { container, TypesAutomatiza } from "@/container";
 
-export function useLoadDashboard() {
+export function useLoadDashboard(props: { type?: "crm" }) {
   const { GetUser } = useAuthAdmin();
 
   const router = useRouter();
@@ -16,11 +16,18 @@ export function useLoadDashboard() {
 
   async function fetcher() {
     try {
+      if (props?.type === "crm") {
+        const response = await container
+          .get<RemoteCRM>(TypesAutomatiza.RemoteCRM)
+          .loadDashboardCRM(router.query);
+
+        return response;
+      }
+
       const response = await container
-        .get<RemoteDashboard>(dashboardTypes.RemoteDashboard)
-        .loadAll({
-          ...router.query,
-        });
+        .get<RemoteDashboard>(TypesAutomatiza.RemoteDashboard)
+        .loadAll(router.query);
+
       return response;
     } catch (err) {
       if (err instanceof BadRequestError) {
@@ -41,6 +48,6 @@ export function useLoadDashboard() {
     ],
     queryFn: fetcher,
     refetchOnWindowFocus: false,
-    enabled: !!(router.query.toDate && router.query.fromDate && router.isReady)
+    enabled: !!(router.query.toDate && router.query.fromDate && router.isReady),
   });
 }

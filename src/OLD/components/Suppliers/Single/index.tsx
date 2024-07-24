@@ -17,8 +17,6 @@ const Single = memo(function Single() {
 
   const { supplier } = useSingleSupplier(id);
 
-  console.log(supplier, "<<<<")
-
   useEffect(() => {
     supplier?.photo &&
       setPhotoSrc(process.env.NEXT_PUBLIC_API + supplier?.photo);

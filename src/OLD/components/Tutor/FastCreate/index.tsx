@@ -464,7 +464,6 @@ export default function FastCreateTutor({
         visible={tutorInfoVisible}
         onCancel={() => setTutorInfoVisible(false)}
         onOk={() => {
-          console.log(data, "<<")
           setPayload((prv) => ({
             ...prv,
             tutor_id: selectedTutor?.id,
@@ -473,7 +472,7 @@ export default function FastCreateTutor({
             clientId: selectedTutor?.id,
             originDescription: selectedTutor?.clientOrigin?.description,
             originId: selectedTutor?.clientOrigin?.id,
-            contact: { cellphone: data?.tutorPhone }
+            contact: { cellphone: data?.tutorPhone },
           }));
           setTutorInfoVisible(false);
           setVisible(false);

@@ -21,6 +21,7 @@ import { useGetAllReasons } from "@/OLD/hooks/useReasons";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
+import Negotiation from "@/OLD/components/Budget/Negotiation";
 
 import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
 import {
@@ -96,7 +97,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
   const router = useRouter();
   const validBudget =
     budget.status === "ABERTO" ||
-    budget.status === `${getWord("Orçamento")} em aberto`;
+    budget.status === `Orçamento em aberto`;
 
   const notificationStructure = (bill) => (
     <section>
@@ -517,11 +518,10 @@ export default function CompleteBudget({ budget, setReload = false }) {
               </footer>
             </form>
           </TabPane>
-          {/*
-          <TabPane tab="Negociação" key="1">
+
+          <TabPane tab="Pagamentos" key="1">
             <Negotiation budgetId={budget?.id} />
           </TabPane>
-          */}
         </Tabs>
       </Modal>
     </>

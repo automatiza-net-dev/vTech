@@ -10,13 +10,13 @@ export function formatCart(cart: Cart[]): ProductCart[] {
   return cart
     ?.flatMap((item) => item.variations)
     ?.map((variation) => {
-      console.log(variation.unitaryValue)
       return {
-        discountValue: typeof variation.discountValue === "string"
-        ? Number(
-            (variation?.discountValue as string)?.replaceAll(",", ".") || 0
-          )
-        : Number(variation.discountValue || 0),
+        discountValue:
+          typeof variation.discountValue === "string"
+            ? Number(
+                (variation?.discountValue as string)?.replaceAll(",", ".") || 0
+              )
+            : Number(variation.discountValue || 0),
         productVariationId: variation.productVariationId,
         quantity: Number(variation.quantity),
         saleValue: variation.saleValue,

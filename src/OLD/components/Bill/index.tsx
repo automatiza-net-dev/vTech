@@ -120,7 +120,7 @@ export default function Bills() {
     if (router?.query?.id) {
       listCreated(router.query.id);
     }
-  });
+  }, []);
 
   return !listBillsPermission || listBillsPermission === "loading" ? (
     <AccessDenied loading={listBillsPermission} />

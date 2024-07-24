@@ -61,7 +61,7 @@ export function OrigemClientesCategoria(props) {
                         <td>
                           <span>{origin?.origem || "-"}</span>
                         </td>
-                        <td>R$ {currencyFormatter(origin?.total) || "0,00"}</td>
+                        <td>{currencyFormatter(origin?.total) || "0,00"}</td>
                         <td>
                           {origin?.porcentagem
                             ? origin?.porcentagem.toFixed(2) + "%"

@@ -10,7 +10,6 @@ import { RemoteBusinessUnits } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { InfraTypes, adminTypes, container } from "@/container";
 
-
 export default function ValidaTerceiros() {
   const router = useRouter();
 
@@ -71,7 +70,6 @@ export default function ValidaTerceiros() {
           router.push("/admin");
         }
       } catch (err) {
-        console.log(err)
         if (router.query.log) {
           return;
         }

@@ -1,1 +1,1 @@
-export * from './print-payments-receipts'
+export * from './components';

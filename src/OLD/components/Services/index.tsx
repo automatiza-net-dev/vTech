@@ -35,6 +35,7 @@ const Services = memo(function Services() {
       ? setFormatedServices(
           services.map((service) => {
             return {
+              courtesy: service?.courtesy ? "Sim" : "Não",
               description: service?.description,
               code: service?.referenceCode,
               type: service?.type === "service" ? "Serviço" : service?.type,

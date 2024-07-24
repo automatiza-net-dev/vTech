@@ -49,30 +49,35 @@ const ViewOccurrence = memo(function ViewOccurrence({
     visible && setBody(occurrenceData?.description);
   }, [visible, occurrenceData]);
 
-  const updateMedicalReport = useCallback(() => {
-    setLoading(true);
-    hospitalizationOccurences
-      .updateOccurrence(occurrenceData?.id, {
-        hospitalizationId: patientData?.id,
-        occurrenceId: occurrence?.id,
-        description: body,
-        executedAt: data?.executedAt,
-        resume: data?.resume,
-        active: data?.active,
-        previewedAt: occurrenceData?.previewed_at,
-        userId: data?.userId,
-      })
-      .then((_res) => {
-        setVisible(false);
-        setLoading(false);
-        setReload((prv) => !prv);
-        return notification.success({
-          message: "Relatório atualizado com sucesso!",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+  const updateMedicalReport = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const r = await hospitalizationOccurences.updateOccurrence(
+        occurrenceData?.id,
+        {
+          hospitalizationId: patientData?.id,
+          occurrenceId: occurrence?.id,
+          description: body,
+          executedAt: data?.executedAt,
+          resume: data?.resume,
+          active: data?.active,
+          previewedAt: occurrenceData?.previewed_at,
+          userId: data?.userId,
+        }
+      );
+
+      setVisible(false);
+      setLoading(false);
+      setReload((prv) => !prv);
+      return notification.success({
+        message: "Relatório atualizado com sucesso!",
       });
+    } catch (error) {
+      return notification.error({
+        message: "Houve um erro ao atualizar o relatório.",
+      });
+    }
   }, [body, occurrenceData, patientData?.id, data]);
 
   const verifyEdit = () => {
@@ -176,8 +181,11 @@ const ViewOccurrence = memo(function ViewOccurrence({
             content={body}
             title={"Relatório médico"}
             string={true}
-            onBeforePrint={() => updateMedicalReport()}
+            tutor={patientData?.tutor}
+            patient={patientData?.patient}
+            onBeforePrint={async () => await updateMedicalReport()}
           />
+
           <Button className="uk-margin-left" onClick={() => setVisible(false)}>
             Fechar
           </Button>

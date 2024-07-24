@@ -37,9 +37,9 @@ export namespace LoadOpportunitiesReport {
     contact?: Tutor["id"];
     clients?: Tutor["id"][];
     balances?: Balance["description"][];
-    fromOpening?: Date;
+    fromOpening?: Date | null;
     toOpening?: Date;
-    fromContact?: Date;
+    fromContact?: Date | null;
     toContact?: Date;
   };
 

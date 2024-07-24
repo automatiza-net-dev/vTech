@@ -17,7 +17,7 @@ const BudgetReport = memo(function BudgetReport() {
 
   const { reports } = useBudgetReport(filters, reload);
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
 
   const listBudgetsReportPermission = useUserHasPermission("REL05");
 

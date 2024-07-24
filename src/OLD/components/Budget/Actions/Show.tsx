@@ -1,12 +1,13 @@
+// @ts-nocheck
 import {
   Tabs,
-  Button,
   Checkbox,
   Modal,
   Table,
   Tooltip,
   AutoComplete,
   Collapse,
+  Popconfirm,
 } from "antd";
 const { TabPane } = Tabs;
 import * as React from "react";
@@ -15,11 +16,12 @@ import {
   useCompleteBudget,
   useUpdateBudgetItem,
   useUpdateSellerAndReviewer,
-  useBudgetPayments,
 } from "@/OLD/hooks/useBudgets";
+import { useQueryClient } from "react-query";
+import { useLoadPaymentsPreview } from "@/presentation";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
-
-import { budgetService } from "@/OLD/services/budgets.service";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+const { Panel } = Collapse;
 
 import PrintScreen from "../PrintScreen";
 
@@ -28,7 +30,7 @@ import ReactToPrint from "react-to-print";
 import { CgDetailsMore } from "react-icons/cg";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { useAuthAdmin } from "infinity-forge";
+import { useAuthAdmin, Button } from "infinity-forge";
 import { SystemUser } from "@/domain";
 
 import moment from "moment";
@@ -103,11 +105,16 @@ export default function ShowBudget({ budget, setReload }: any) {
     budget?.id
   );
   const { GetUser } = useAuthAdmin();
+  const { data: budgetPayments } = useLoadPaymentsPreview({
+    budgetId: budget.id,
+  });
   const user = GetUser<SystemUser>();
 
   const { colaborators } = useColaborators(visible);
 
   const componentRef = React.useRef();
+  const queryClient = useQueryClient();
+  const removeBudgetPaymentPermission = useUserHasPermission("ORC10");
 
   const handleFn = (item: any) => {
     mutate(
@@ -157,7 +164,22 @@ export default function ShowBudget({ budget, setReload }: any) {
     });
   }, [budget]);
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
+
+  const removeBudgetPayment = (id) => {
+    budgetService
+      .removeBudgetPayment({ budgetPaymentId: id, origin: "Orçamento" })
+      .then((_res) => {
+        setPaymentsReload((prv) => !prv);
+        queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
+        notification.success({ message: "Pagamento removido com sucesso!" });
+      })
+      .catch((err) => {
+        return notification.error({
+          message: err?.response?.data?.message?.split(":")[1],
+        });
+      });
+  };
 
   return (
     <>
@@ -498,21 +520,20 @@ export default function ShowBudget({ budget, setReload }: any) {
                 >
                   <Button
                     disabled
+                    text="Cancelar"
                     onClick={() => {
                       setVisible((prevState) => !prevState);
                     }}
-                  >
-                    Cancelar
-                  </Button>
+                  />
 
                   <Button
                     disabled
                     onClick={() => {
                       setVisible((prevState) => !prevState);
                     }}
-                  >
-                    Confirmar
-                  </Button>
+                    text="Confirmar"
+                  />
+
                   <div style={{ display: "none" }}>
                     <div ref={componentRef as any}>
                       <PrintScreen budget={data as any} />
@@ -521,7 +542,7 @@ export default function ShowBudget({ budget, setReload }: any) {
 
                   <ReactToPrint
                     content={() => componentRef.current as any}
-                    trigger={() => <Button>Imprimir</Button>}
+                    trigger={() => <Button text="Imprimir" />}
                   />
 
                   <Button
@@ -535,7 +556,6 @@ export default function ShowBudget({ budget, setReload }: any) {
               </footer>
             </div>
           </TabPane>
-          {/*
           <TabPane tab="Negociação" key="1">
             <div>
               {budgetPayments?.length > 0 &&
@@ -548,22 +568,23 @@ export default function ShowBudget({ budget, setReload }: any) {
                         item?.valor_total
                       )}`}
                     >
-                      <div className="uk-flex uk-flex-right">
-                        <Popconfirm
-                          title="Deseja remover este pagamento ?"
-                          onConfirm={() =>
-                            removeBudgetPayment(item?.id_orcamento_pgto)
-                          }
-                        >
-                          <CustomButton>Remover bloco</CustomButton>
-                        </Popconfirm>
-                      </div>
+                      {removeBudgetPaymentPermission && (
+                        <div className="uk-flex uk-flex-right">
+                          <Popconfirm
+                            title="Deseja remover este pagamento ?"
+                            onConfirm={() =>
+                              removeBudgetPayment(item?.id_orcamento_pgto)
+                            }
+                          >
+                            <Button text="Remover bloco" />
+                          </Popconfirm>
+                        </div>
+                      )}
                     </Panel>
                   </Collapse>
                 ))}{" "}
             </div>
           </TabPane>
-        */}
         </Tabs>
       </Modal>
     </>

@@ -1,58 +1,81 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import { useRouter } from "next/router";
 
 import {
-  useLoadOpportunitiesReport,
   useLoadAllAvailableUnits,
   useLoadAllBusinessUsers,
 } from "@/presentation";
-
+import * as XLSX from "xlsx/xlsx.mjs";
 import {
   FormHandler,
   Select,
   Input,
   Button,
-  DatePickerInput,
+  InputDateRange,
 } from "infinity-forge";
-import { PrintScreen } from "./components";
-// import { DateFilter } from "@/OLD/components/mini-components";
-// TODO Verificar possibilidade de implementação do DateFilter futuramente
 
-import ReactToPrint from "react-to-print";
 import moment from "moment";
+import { RemoteCRM } from "@/data";
 
 import * as S from "./styles";
+import { CrmTypes, container } from "@/container";
+import { formatLiftoneArquive, formatSanclaArquive } from "./utils";
 
 export function CrmReports() {
-  const [filters, setFilters] = useState({
-    fromOpening: new Date(),
-    toOpening: new Date(),
-    fromContact: new Date(),
-    toContact: new Date(),
-  });
-
   const router = useRouter();
-  const reports = useLoadOpportunitiesReport(filters);
   const businessUnits = useLoadAllAvailableUnits();
   const users = useLoadAllBusinessUsers();
-  const componentRef = useRef();
+
+  async function handleExport(payload) {
+    const data = {
+      ...payload,
+      fromOpening: payload?.fromOpening
+        ? moment(payload.fromOpening).format("YYYY-MM-DD")
+        : null,
+      toOpening: payload?.toOpening
+        ? moment(payload.toOpening).format("YYYY-MM-DD")
+        : null,
+      fromContact: payload?.fromContact
+        ? moment(payload.fromContact).format("YYYY-MM-DD")
+        : null,
+      toContact: payload?.toContact
+        ? moment(payload.toContact).format("YYYY-MM-DD")
+        : null,
+    };
+
+    const reports = await container
+      .get<RemoteCRM>(CrmTypes.RemoteCRM)
+      .loadOpportunitiesReport(data);
+
+    const formatted =
+      process.env.client === "sancla"
+        ? formatSanclaArquive(reports)
+        : formatLiftoneArquive(reports);
+
+    let wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(formatted);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Pág " + "1");
+
+    XLSX.writeFile(wb, "oportunidades-crm" + ".xlsx");
+  }
+
+  const initialData = {
+    fromOpening: null,
+    toOpening: null,
+    fromContact: null,
+    toContact: null,
+  };
 
   return (
     <S.CrmReports>
       <h2>Relatório CRM</h2>
       <FormHandler
-        initialData={filters}
-        onChangeForm={{
-          callbackResult: (data) =>
-            setFilters({
-              ...data,
-              fromOpening: moment(data.fromOpening).format("YYYY-DD-MM"),
-              toOpening: moment(data.toOpening).format("YYYY-DD-MM"),
-              fromContact: moment(data.fromContact).format("YYYY-DD-MM"),
-              toContact: moment(data.toContact).format("YYYY-DD-MM"),
-            }),
-        }}
+        cleanFieldsOnSubmit={false}
+        initialData={initialData}
+        button={{ text: "Exportar (excel)" }}
+        onSucess={handleExport}
       >
         <section>
           <div>
@@ -64,7 +87,7 @@ export function CrmReports() {
               options={[
                 { label: "Ganho", value: "Ganho" },
                 { label: "Perda", value: "Perda" },
-                { label: "Em aberto", value: "Em aberto" },
+                { label: "Em aberto", value: "Em Aberto" },
               ]}
             />
           </div>
@@ -103,18 +126,18 @@ export function CrmReports() {
               <span>Data Contato</span>
             </div>
             <div className="date-input-container">
-              <DatePickerInput
-                hasIcon
+              <Input
                 name="fromContact"
-                typePicker="normal"
-                maxDate={new Date()}
+                type="date"
+                max={moment().format("YYYY-MM-DD")}
+                placeholder="Selecione uma data"
               />
               <span className="center-elem-margin">à</span>
-              <DatePickerInput
-                hasIcon
+              <Input
                 name="toContact"
-                typePicker="normal"
-                maxDate={new Date()}
+                type="date"
+                max={moment().format("YYYY-MM-DD")}
+                placeholder="Selecione uma data"
               />
             </div>
           </div>
@@ -123,27 +146,24 @@ export function CrmReports() {
               <span>Data Abertura</span>
             </div>
             <div className="date-input-container">
-              <DatePickerInput
-                hasIcon
+              <Input
                 name="fromOpening"
-                typePicker="normal"
-                maxDate={new Date()}
-                value={filters?.fromOpening}
+                type="date"
+                max={moment().format("YYYY-MM-DD")}
+                placeholder="Selecione uma data"
               />
               <span className="center-elem-margin">à</span>
-              <DatePickerInput
-                hasIcon
+              <Input
                 name="toOpening"
-                typePicker="normal"
-                maxDate={new Date()}
-                value={filters?.toOpening}
+                type="date"
+                max={moment().format("YYYY-MM-DD")}
+                placeholder="Selecione uma data"
               />
             </div>
           </div>
         </section>
       </FormHandler>
       <footer>
-        <Button text="Exportar (excel)" />
         <Button text="Voltar" onClick={() => router.back()} />
       </footer>
     </S.CrmReports>

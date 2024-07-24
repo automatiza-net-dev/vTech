@@ -87,7 +87,7 @@ const icmsDescription = [
   },
 ];
 
-const ShowProduct = memo(function ShowProduct({ id, setVisible }) {
+const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
   // const { query, isReady } = useRouter();
 
   const [selectedPrice, setSelectedPrice] = useState(null);
@@ -146,6 +146,7 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible }) {
 
   useEffect(() => {
     setUpdateData({
+      courtesy: data?.courtesy,
       description: data?.description,
       referenceCode: data?.reference_code,
       collectionYear: data?.collection_year,
@@ -199,6 +200,8 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible }) {
       .catch((err) => {
         verifyFields(err.response.data.errors.map((msg) => msg.field));
       });
+
+    setReload((prv) => !prv);
   }, [updateData, data]);
 
   return (
@@ -230,7 +233,7 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible }) {
       {!!data && (
         <div className="uk-margin-small-top">
           <Row gutter={{ xs: 3, sm: 7, md: 10, lg: 15 }}>
-            <Col span={14}>
+            <Col span={12}>
               <div className="uk-flex uk-flex-column">
                 <span>Descrição</span>
                 <Input
@@ -263,6 +266,23 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible }) {
                   value={moment(data?.created_at).format("DD/MM/YYYY - HH:mm")}
                   disabled
                 />
+              </div>
+            </Col>
+            <Col span={2}>
+              <div className="uk-flex ">
+                <div className="">
+                  <span>Cortesia</span>&nbsp;
+                  <br />
+                  <Switch
+                    checked={updateData?.courtesy}
+                    onChange={(val) => {
+                      setUpdateData((prv) => ({
+                        ...prv,
+                        courtesy: val,
+                      }));
+                    }}
+                  />
+                </div>
               </div>
             </Col>
             <Col span={2}>

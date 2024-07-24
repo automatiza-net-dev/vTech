@@ -2,6 +2,14 @@
 import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle<any>`
 
+label {
+    font-size: 14px !important;
+}
+
+input, textarea {
+    font-size: 13px !important;
+}
+
 .form-button.sticky {
     display: flex;
     justify-content: flex-end;
@@ -13,7 +21,7 @@ export const GlobalStyle = createGlobalStyle<any>`
         width: fit-content;
         height: 40px;
         padding: 0 40px !important;
-        background-color: ${props => props.theme.primaryColor} !important;
+        background-color: ${(props) => props.theme.primaryColor} !important;
         font-size: 14px;
         transition: 0.3s;
 

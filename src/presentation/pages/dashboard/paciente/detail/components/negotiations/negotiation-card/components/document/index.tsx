@@ -24,12 +24,12 @@ export function Document(props: IDocument) {
         </span>
 
         <Print
-          onBeforePrint={() => {
-            container
+          onBeforePrint={async () => {
+            await container
               .get<RemoteBills>(TypesAutomatiza.RemoteBills)
               .printDocument({ billDocumentId: props?.id });
 
-            queryClient.invalidateQueries({
+            await queryClient.invalidateQueries({
               queryKey: ["openNegotiations", router?.query?.id as string],
             });
           }}

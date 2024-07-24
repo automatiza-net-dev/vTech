@@ -19,7 +19,7 @@ import Header from "./Header";
 import TitlesForm from "./TitlesForm";
 import { notification } from "antd";
 
-const DownTitles = memo(function ({ setVisible, setReload }) {
+function DownTitles({ setVisible, setReload }: any) {
   const [options, setOptions] = useState(false);
   const [data, setData] = useState([]);
   const [ids, setIds] = useState([]);
@@ -108,7 +108,7 @@ const DownTitles = memo(function ({ setVisible, setReload }) {
       bank: item?.bank,
       agency: item?.agency,
       account: item?.account,
-      tefFlagId: item?.flagId,
+      tefFlagId: item?.flagId === "" ? null : item?.tefFlagId,
       tefAcquirerId: item?.tefAcquirerId,
       increaseValue: 0,
       IncreasePercentage: 0,
@@ -167,6 +167,6 @@ const DownTitles = memo(function ({ setVisible, setReload }) {
       />
     </Container>
   );
-});
+}
 
 export default DownTitles;

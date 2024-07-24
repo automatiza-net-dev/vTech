@@ -12,7 +12,6 @@ export const ScheduleCard = styled("button")`
   z-index: 21;
   align-self: stretch;
   min-height: 380px;
-  
 
   &:hover {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
@@ -32,10 +31,29 @@ export const ScheduleCard = styled("button")`
     gap: 15px;
     margin-bottom: 20px;
 
+    .icon {
+      display: flex;
+      max-width: 16px;
+
+      svg {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
     > div {
       > h4 {
         color: #2b2b2b;
+        display: flex;
+        align-items: center;
         font-size: 16px;
+        gap: 10px;
         font-weight: 700;
         text-align: start;
         line-height: 1;
@@ -139,6 +157,4 @@ export const ScheduleCard = styled("button")`
       text-align: center;
     }
   }
-
-
 `;

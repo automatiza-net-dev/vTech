@@ -4,10 +4,11 @@ import { memo, useEffect, useState, useCallback } from "react";
 import { receiptService } from "@/OLD/services/receipt.service";
 import { budgetService } from "@/OLD/services/budgets.service";
 
-import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
-import { useBudgetPayments } from "@/OLD/hooks/useBudgets";
+import { useQueryClient } from "react-query";
+import { useLoadPaymentsPreview } from "@/presentation";
 import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import { Container } from "./styles";
@@ -29,24 +30,30 @@ const AddPayments = memo(function AddPayments({
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [paymentsReload, setPaymentsReload] = useState(false);
+  const [filters, setFilters] = useState({ active: true });
 
-  const { paymentMethods } = usePaymentMethods();
+  const { paymentMethods } = usePaymentMethods(filters);
   const { data: budget } = useCompleteBudget(budgetId, origin === "budgets");
-  const { budgetPayments } = useBudgetPayments(
-    budgetId,
-    paymentsReload,
-    origin === "budgets"
-  );
+  const { data: budgetPayments } = useLoadPaymentsPreview({
+    budgetId: budgetId,
+  });
 
+  const queryClient = useQueryClient();
   const addBudgetPaymentsPermission = useUserHasPermission("ORC08");
   const removeBudgetPaymentPermission = useUserHasPermission("ORC10");
 
   const formatFlags = () => {
     let arr = [];
     paymentMethods?.map((method) =>
-      method?.flags?.map((flag) =>
-        arr?.push({ ...flag, type: method?.type, paymentMethodId: method?.id })
-      )
+      method?.flags?.map((flag) => {
+        if (method?.tef !== "NAO") {
+          arr?.push({
+            ...flag,
+            type: method?.type,
+            paymentMethodId: method?.id,
+          });
+        }
+      })
     );
     setFlags(arr);
   };
@@ -89,6 +96,7 @@ const AddPayments = memo(function AddPayments({
       .then((res) => {
         setLoading(false);
         setPaymentsReload((prv) => !prv);
+        queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
         return notification.success({
           message: "Pagamento adicionado com sucesso!",
         });
@@ -106,6 +114,7 @@ const AddPayments = memo(function AddPayments({
       .removeBudgetPayment({ budgetPaymentId: id, origin: "Orçamento" })
       .then((_res) => {
         setPaymentsReload((prv) => !prv);
+        queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
         notification.success({ message: "Pagamento removido com sucesso!" });
       })
       .catch((err) => {
@@ -138,6 +147,7 @@ const AddPayments = memo(function AddPayments({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
+        queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
         return notification.success({
           message: "Pagamento adicionado com sucesso!",
         });
@@ -190,7 +200,9 @@ const AddPayments = memo(function AddPayments({
                               flag?.max_installments === 1 &&
                               flag?.installments[0]?.id,
                             installmentValue: currencyFormatter(
-                              origin !== "budgets" ? totalValue - totalPayed : 0
+                              origin !== "budgets"
+                                ? totalValue - totalPayed
+                                : totalBudget - totalBudgetPayed
                             ),
                           })
                         }
@@ -233,7 +245,9 @@ const AddPayments = memo(function AddPayments({
                               flag?.max_installments === 1 &&
                               flag?.installments[0]?.id,
                             installmentValue: currencyFormatter(
-                              origin !== "budgets" ? totalValue - totalPayed : 0
+                              origin !== "budgets"
+                                ? totalValue - totalPayed
+                                : totalBudget - totalBudgetPayed
                             ),
                           })
                         }
@@ -260,7 +274,10 @@ const AddPayments = memo(function AddPayments({
               <hr />
               {paymentMethods?.length > 0 &&
                 paymentMethods
-                  ?.filter((method) => method?.flags?.length === 0)
+                  ?.filter(
+                    (method) =>
+                      method?.flags?.length === 0 && method?.tef === "NAO"
+                  )
                   ?.map((method) => (
                     <div
                       onClick={() =>
@@ -268,7 +285,9 @@ const AddPayments = memo(function AddPayments({
                           installments: 1,
                           paymentMethodId: method?.id,
                           installmentValue: currencyFormatter(
-                            origin !== "budgets" ? totalValue - totalPayed : 0
+                            origin !== "budgets"
+                              ? totalValue - totalPayed
+                              : totalBudget - totalBudgetPayed
                           ),
                         })
                       }
@@ -413,31 +432,29 @@ const AddPayments = memo(function AddPayments({
       )}
       {origin === "budgets" && (
         <div>
-          {" "}
           {budgetPayments?.length > 0 &&
             budgetPayments?.map((item) => (
-              <Collapse className="uk-margin-small-top uk-width-1-1">
-                <Panel
-                  header={`${item?.descricao_forma_pagamento} - ${
+              <div className="budget-payment-desc">
+                <div>
+                  {`${item?.descricao_forma_pagamento} - ${
                     item?.descricao_adquirente_tef
                   } - ${item?.descricao_bandeira_tef} - ${currencyFormatter(
                     item?.valor_total
                   )}`}
-                >
-                  <div className="uk-flex uk-flex-right">
-                    <Popconfirm
-                      title="Deseja remover este pagamento ?"
-                      onConfirm={() =>
-                        removeBudgetPayment(item?.id_orcamento_pgto)
-                      }
-                    >
-                      {removeBudgetPaymentPermission && (
-                        <CustomButton>Remover bloco</CustomButton>
-                      )}
-                    </Popconfirm>
-                  </div>
-                </Panel>
-              </Collapse>
+                </div>
+                <div>
+                  <Popconfirm
+                    title="Deseja remover este pagamento ?"
+                    onConfirm={() =>
+                      removeBudgetPayment(item?.id_orcamento_pgto)
+                    }
+                  >
+                    {removeBudgetPaymentPermission && (
+                      <CustomButton>Remover bloco</CustomButton>
+                    )}
+                  </Popconfirm>
+                </div>
+              </div>
             ))}{" "}
         </div>
       )}

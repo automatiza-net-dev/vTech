@@ -54,6 +54,7 @@ const FormChild = memo(function FormChild({
   colaborators,
   actTypes,
 }) {
+
   return (
     <Container
       onSubmit={(e) => {
@@ -196,11 +197,10 @@ const FormChild = memo(function FormChild({
           {type === "update" && (
             <div className="uk-flex uk-flex-right uk-width-1-2">
               <Button
-                htmlType="submit"
-                onClick={() => setExecution(true)}
+                htmlType="button"
+                onClick={setExecution}
                 type="primary"
               >
-                {" "}
                 Finalizar e salvar
               </Button>
             </div>

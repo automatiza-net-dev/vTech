@@ -2,36 +2,41 @@ export const servicesColumns = [
   {
     title: "Serviço",
     key: "description",
-    dataIndex: "description"
+    dataIndex: "description",
   },
   {
     title: "Código",
     key: "code",
-    dataIndex: "code"
+    dataIndex: "code",
   },
   {
     title: "Subgrupo",
     key: "subgroup",
-    dataIndex: "subgroup"
+    dataIndex: "subgroup",
   },
   {
     title: "Tipo",
     key: "type",
-    dataIndex: "type"
+    dataIndex: "type",
   },
   {
     title: "Status",
     key: "status",
-    dataIndex: "status"
+    dataIndex: "status",
+  },
+  {
+    title: "Cortesia",
+    key: "courtesy",
+    dataIndex: "courtesy",
   },
   {
     title: "Dt. Criação",
     key: "createdAt",
-    dataIndex: "createdAt"
+    dataIndex: "createdAt",
   },
   {
     title: "Ações",
     key: "actions",
-    dataIndex: "actions"
-  }
+    dataIndex: "actions",
+  },
 ];

@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import {
   Form,
@@ -26,7 +26,6 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { EditTwoTone, DeleteOutlined } from "@ant-design/icons";
 import { useExternalProfiles } from "@/OLD/hooks/useExternalProfile";
 import { useSearchProfileInfo } from "@/OLD/hooks/useExternalProfile";
-import { profileService } from "@/OLD/services/External/profileService";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { LayoutDashboard } from "@/presentation";
@@ -85,10 +84,13 @@ export default function ControlesDeAcessoPage() {
     active?: boolean;
   }>({});
 
-  const [createdRole, setCreatedRole] = useState(false);
-  const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
-  const [rolesConfigVisible, setRolesConfigVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [roleMetadataParams, setRoleMetadataParams] = useState<{
+    newItems?: boolean | undefined;
+  }>({});
+  const [createdRole, setCreatedRole] = useState(false);
+  const [rolesConfigVisible, setRolesConfigVisible] = useState(false);
+  const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
 
   const [searchRoleParams, setSearchRoleParams] = useState({});
 
@@ -129,9 +131,11 @@ export default function ControlesDeAcessoPage() {
   });
 
   const showRoleMetadataQuery = useQuery({
-    queryKey: ["role", "metadata", showRoleId],
+    queryKey: ["role", "metadata", showRoleId, roleMetadataParams],
     queryFn: () =>
-      adminService.getRoleMetadata(showRoleId).then(({ data }) => data),
+      adminService
+        .getRoleMetadata(showRoleId, roleMetadataParams)
+        .then(({ data }) => data),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -286,7 +290,6 @@ export default function ControlesDeAcessoPage() {
         <section className="uk-padding">
           <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
             <h3 className="uk-margin-remove">Controle de Acesso</h3>
-
             <div className="uk-flex uk-flex-middle">
               <div>
                 <label>Descrição</label>
@@ -340,22 +343,57 @@ export default function ControlesDeAcessoPage() {
                   />
                     */}
                         {canEditAccess && (
-                          <EditTwoTone
-                            size={15}
-                            onClick={() => {
-                              setUpdateRoleData((prev) => ({
-                                ...prev,
-                                id: elem.id,
-                                name: elem.name,
-                                active: elem.active,
-                                externalAccess: elem.external_access,
-                              }));
-                              setOpenUpdate(true);
-                              setShowRoleId(elem.id);
-                            }}
-                            disabled={isDisabled}
-                          />
+                          <>
+                            <EditTwoTone
+                              size={15}
+                              onClick={() => {
+                                setUpdateRoleData((prev) => ({
+                                  ...prev,
+                                  id: elem.id,
+                                  name: elem.name,
+                                  active: elem.active,
+                                  externalAccess: elem.external_access,
+                                }));
+                                setRoleMetadataParams({});
+                                setOpenUpdate(true);
+                                setShowRoleId(elem.id);
+                              }}
+                              disabled={isDisabled}
+                            />
+                            {elem.newItems && (
+                              <svg
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  setUpdateRoleData((prev) => ({
+                                    ...prev,
+                                    id: elem.id,
+                                    name: elem.name,
+                                    active: elem.active,
+                                    externalAccess: elem.external_access,
+                                  }));
+                                  setShowRoleId(elem.id);
+                                  setRoleMetadataParams({
+                                    newItems: elem.newItems,
+                                  });
+                                  setOpenUpdate(true);
+                                }}
+                                id="Layer_1"
+                                height="20"
+                                viewBox="0 0 512 512"
+                                width="20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g>
+                                  <path d="m272.066 193.462h-56.233c-7.333 0-13.59 5.301-14.796 12.534l-16.067 96.4c-1.525 9.144 5.54 17.466 14.796 17.466h56.234c19.902-.793 19.887-29.215 0-30h-38.526l3.033-18.2h35.493c19.902-.793 19.887-29.215 0-30h-30.493l3.033-18.2h43.526c19.902-.793 19.887-29.215 0-30z" />
+                                  <path d="m162.066 193.666c-8.172-1.36-15.9 4.158-17.262 12.33l-8.483 50.9-27.571-55.142c-2.906-5.811-9.218-9.09-15.647-8.125-6.425.966-11.498 5.959-12.565 12.368l-16.067 96.4c-1.362 8.171 4.158 15.9 12.33 17.262 11.646 1.941 16.565-8.151 17.262-12.33l8.483-50.9 27.571 55.142c2.906 5.812 9.224 9.089 15.647 8.125 6.425-.966 11.498-5.959 12.565-12.368l16.067-96.4c1.362-8.172-4.158-15.9-12.33-17.262z" />
+                                  <path d="m439.441 195.045c-7.41-3.705-16.419-.701-20.124 6.708l-28.649 57.297-7.492-37.464c-1.216-6.077-6.043-10.78-12.148-11.838-6.103-1.055-12.234 1.748-15.423 7.062l-20.338 33.896v-42.246c-.793-19.902-29.215-19.887-30 0v96.4c.118 15.155 19.955 20.66 27.862 7.717l28.238-47.063 8.457 42.288c1.257 6.283 6.366 11.075 12.718 11.925 6.351.855 12.542-2.427 15.407-8.159l48.2-96.4c3.705-7.408.703-16.418-6.708-20.123z" />
+                                  <path d="m256 .662c-141.159 0-256 114.841-256 256 14.062 339.619 497.99 339.52 512-.002 0-141.157-114.841-255.998-256-255.998zm0 482c-124.617 0-226-101.383-226-226 12.414-299.82 439.632-299.733 452 .002 0 124.615-101.383 225.998-226 225.998z" />
+                                </g>
+                              </svg>
+                            )}
+                          </>
                         )}
+
                         <Popconfirm
                           title={`Deseja fazer uma cópia do acesso ${elem?.name}?`}
                           onConfirm={() => submitDuplicatePermission(elem?.id)}

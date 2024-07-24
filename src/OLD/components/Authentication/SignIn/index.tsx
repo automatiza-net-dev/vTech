@@ -49,20 +49,23 @@ export function SignIn() {
           system: process.env.clientName,
         });
 
-        const loginResponse = Array.isArray(getBusinessUnits.data) && getBusinessUnits.data[0].businessUnits && await sessionService.login({
-          ...data,
-          system: process.env.clientName,
-          business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
-        });
+        const loginResponse =
+          Array.isArray(getBusinessUnits.data) &&
+          getBusinessUnits.data[0].businessUnits &&
+          (await sessionService.login({
+            ...data,
+            system: process.env.clientName,
+            business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
+          }));
 
         await container
-        .get<Storage>(TypesAutomatiza.storage)
-        .set("user", { value: getBusinessUnits?.data?.token || loginResponse?.data?.token });
+          .get<Storage>(TypesAutomatiza.storage)
+          .set("user", {
+            value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
+          });
 
         loadUser({ roleUser: "user" });
-
       } catch (err: any) {
-        console.log(err);
         notification.error({
           message: "Erro",
           description:
@@ -98,7 +101,7 @@ export function SignIn() {
               onChange={(e) => setData({ ...data, email: e.target.value })}
             />
 
-            <span style={{ fontSize: "16px"}} >Senha</span>
+            <span style={{ fontSize: "16px" }}>Senha</span>
             <input
               id="password"
               type="password"

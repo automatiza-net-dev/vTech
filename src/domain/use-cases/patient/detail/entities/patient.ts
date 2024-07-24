@@ -36,7 +36,7 @@ export interface PatientHuman {
   email?: string;
   tutor: Tutor;
   community: boolean;
+  patientAnimal: PatientAnimal;
 }
-
 
 export type Patient = PatientHuman & PatientAnimal;

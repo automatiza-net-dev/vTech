@@ -7,10 +7,6 @@ import { TypesAutomatiza, container } from "@/container";
 
 export function useLoadDreReport(params: LoadDreReport.Params) {
   const fetcher = async () => {
-    if (!params.unit) {
-      return [];
-    }
-
     const response = await container
       .get<RemoteDre>(TypesAutomatiza.RemoteDre)
       .loadDreReport(params);
@@ -19,8 +15,9 @@ export function useLoadDreReport(params: LoadDreReport.Params) {
   };
 
   return useQuery({
-    queryKey: ["DreReport", params],
+    queryKey: ["DreReport"],
     queryFn: fetcher,
     ...callApiOneTime,
+    enabled: false,
   });
 }

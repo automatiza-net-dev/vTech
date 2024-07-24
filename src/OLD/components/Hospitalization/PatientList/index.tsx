@@ -18,7 +18,7 @@ const HospitalizationItem = memo(function HospitalizationItem({
   selectedDate,
   selectedPatient,
   reload,
-  setReload
+  setReload,
 }) {
   const [legendVisible, setLegendVisible] = useState(false);
   return (

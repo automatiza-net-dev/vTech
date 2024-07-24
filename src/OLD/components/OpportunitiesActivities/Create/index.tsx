@@ -17,6 +17,7 @@ const Create = memo(function Create({
   opportunity,
   colaborators,
   actTypes,
+  customSubmit,
 }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,8 @@ const Create = memo(function Create({
             "Houve um erro ao cadastrar a atividade, verifique os campos informados",
         });
       });
+
+    customSubmit && customSubmit();
   }, [JSON.stringify(data), opportunity?.id]);
 
   return (

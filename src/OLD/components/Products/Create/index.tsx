@@ -20,6 +20,7 @@ import {
   Form,
   notification,
   AutoComplete,
+  Switch,
 } from "antd";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
@@ -238,12 +239,12 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
             submit();
           }}
         >
-          <div className="uk-width-1-1">
+          <div className="w-100 uk-flex uk-flex-between">
             <Form.Item
               labelAlign="left"
               required={true}
               style={{
-                width: "100%",
+                width: "80%",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -255,6 +256,23 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
                 onChange={(e) =>
                   setData({ ...data, description: e.target.value })
                 }
+              />
+            </Form.Item>
+
+            <Form.Item
+              labelAlign="left"
+              required={true}
+              style={{
+                width: "10%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <label>* Cortesia</label>
+              <Switch
+                value={data?.courtesy}
+                required
+                onChange={(e) => setData({ ...data, courtesy: e })}
               />
             </Form.Item>
           </div>

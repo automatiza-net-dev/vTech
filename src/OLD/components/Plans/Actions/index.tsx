@@ -3,10 +3,11 @@ import React, { useState, useCallback, memo, useEffect } from "react";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
+import { useToast } from "infinity-forge";
 import { planService } from "@/OLD/services/plan.service";
 
-import { Modal, notification, Popconfirm } from "antd";
 import FormChild from "../FormChild";
+import { Modal, notification, Popconfirm } from "antd";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
@@ -14,6 +15,7 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
   const [updateData, setUpdateData] = useState({});
   const [updateVisible, setUpdateVisible] = useState(false);
 
+  const { createToast } = useToast();
   const canEditAccountPlans = useUserHasPermission("PCT02");
   const canDeleteAccountPlans = useUserHasPermission("PCT03");
 
@@ -24,8 +26,8 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
       code: plan?.code,
       active: plan?.active,
       type: plan?.type,
-      accountPlanGroupId: plan?.account_plan_group_id,
-      parentId: plan?.parentId,
+      accountPlanGroupId: plan?.group?.id,
+      parentId: plan?.parent?.id,
     });
   };
 
@@ -35,21 +37,23 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
 
   const removePlan = useCallback(() => {
     if (!canDeleteAccountPlans) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     setLoading(true);
     planService
       .removeAccountPlan(plan.id)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Plano removido com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao remover o plano selecionado...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -60,7 +64,10 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
 
   const submitUpdatePlan = useCallback(() => {
     if (!canEditAccountPlans) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({
+        message: "Ação não permitida",
+        status: "error",
+      });
     }
 
     setLoading(true);
@@ -69,27 +76,36 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
     delete newObj?.id;
     planService
       .updateAccountPlan(plan?.id, updateData)
-      .then((res) =>
-        notification.success({ message: "Plano atualizado com sucesso!" })
-      )
+      .then((res) => {
+        setLoading(false);
+        setReload(!reload);
+        setUpdateVisible(false);
+        return createToast({
+          message: "Plano atualizado com sucesso!",
+          status: "success",
+        });
+      })
       .catch((err) => {
         setLoading(false);
         error = true;
-        return err?.response?.data.errors
-          ? notification.error({
-              message: `houve um erro ao efetuar a atualização de informações do plano, verifique o campo: ${err?.response?.data.errors[0].field}`,
-            })
-          : notification.error({
-              message:
-                "Houve um problema ao efetuar a atualização das informações do plano...",
-            });
-      })
-      .finally(() => {
-        if (!error) {
-          setLoading(false);
-          setReload(!reload);
-          setUpdateVisible(false);
+        if (err?.response?.data?.errors) {
+          return createToast({
+            message: `houve um erro ao efetuar a atualização de informações do plano, verifique o campo: ${err?.response?.data.errors[0].field}`,
+            status: "error",
+          });
         }
+        if (err?.response?.data?.code === "E_NOT_FOUND") {
+          return createToast({
+            message: "Plano base do sistema, usuário não autorizado",
+            status: "error",
+          });
+        }
+
+        return createToast({
+          message:
+            "Houve um problema ao efetuar a atualização das informações do plano...",
+          status: "error",
+        });
       });
   }, [plan?.id, updateData]);
 
@@ -102,7 +118,7 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
         title="Deseja remover este plano?"
         onConfirm={() =>
           !canDeleteAccountPlans
-            ? notification.error({ message: "Ação não permitida" })
+            ? createToast({ message: "Ação não permitida", status: "error" })
             : removePlan()
         }
       >

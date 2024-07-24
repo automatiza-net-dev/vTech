@@ -17,11 +17,7 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import masks from "@/OLD/utils/masks";
 import moment from "moment";
 
-export function CreateTutor({
-  setVisible,
-  onSuccess,
-  isSchedule = false,
-}) {
+export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
   const [data, setData] = React.useState();
   const [photo, setPhoto] = React.useState();
   const [loading, setLoading] = React.useState(false);
@@ -30,7 +26,7 @@ export function CreateTutor({
   const { originConfig, setOriginConfig } = useAuth();
 
   const createTutorPermission = useUserHasPermission("TUT01");
-  
+
   const router = useRouter();
   const petId = router?.query?.innerpage;
 
@@ -239,7 +235,6 @@ export function CreateTutor({
           });
         }
 
-        console.log("????", res.data.id)
         createContacts(res.data.id);
         petId && vincPet(res.data.id);
       })
@@ -316,4 +311,4 @@ export function CreateTutor({
       </Form>
     </Container>
   );
-};
+}

@@ -63,6 +63,7 @@ const Actions = memo(function Actions({ service, setReload }) {
 
   const setUpdateData = () => {
     setData({
+      courtesy: service?.courtesy,
       description: service?.description,
       active: `${service?.active}`,
       referenceCode: service?.referenceCode,
@@ -168,6 +169,7 @@ const Actions = memo(function Actions({ service, setReload }) {
           footer={null}
         >
           <ServiceDetails
+            setReloadService={setReload}
             serviceId={service?.id}
             setVisible={setDetailsVisible}
           />

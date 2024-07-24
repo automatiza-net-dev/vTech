@@ -28,4 +28,9 @@ export const CrmReports = styled("section")`
     display: flex;
     align-items: center;
   }
+
+  button {
+    max-width: 150px;
+    margin: 0 0 5px auto;
+  }
 `;

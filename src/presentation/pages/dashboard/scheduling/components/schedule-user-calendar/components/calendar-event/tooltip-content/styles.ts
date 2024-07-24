@@ -41,7 +41,7 @@ export const ToolTipContent = styled(Typography)`
     margin-top: 6px;
   }
 
-  .content:nth-child(2) {
+  .content:nth-child(3) {
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);

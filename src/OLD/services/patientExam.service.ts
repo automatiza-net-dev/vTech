@@ -1,12 +1,12 @@
 import api from "@/OLD/services";
 
-const launchExam = async (data) => await api.post("patient-exams", data);
+const launchExam = async (data) => await api.post("/patient-exams", data);
 
 const createAttachment = async (id, data) =>
-  await api.post(`patient-exams/attachment/${id}`, data, {
+  await api.post(`/patient-exams/attachment/${id}`, data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 
 const updateExam = async (id, data) =>
@@ -30,5 +30,5 @@ export const patientExamsService = {
   listPatientExams,
   showPatientExam,
   updatePatientExam,
-  removeAttachment
+  removeAttachment,
 };

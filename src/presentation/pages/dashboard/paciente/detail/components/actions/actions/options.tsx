@@ -5,7 +5,13 @@ import { Avaliation } from "./avaliation";
 import { TimeLineEvent, TimelineType } from "@/domain";
 
 // temp
-import { AddBudgetNew, AddSale, useDictionary, useLoadPatient } from "@/presentation";
+import {
+  AddBudgetNew,
+  AddSale,
+  FormCreateTutor,
+  useDictionary,
+  useLoadPatient,
+} from "@/presentation";
 import Exams from "@/OLD/components/Attendance/Forms-old/AddExam";
 import Vaccines from "@/OLD/components/Attendance/Forms-old/Vaccines";
 import DeathReport from "@/OLD/components/Attendance/Forms-old/Death";
@@ -33,7 +39,7 @@ export function useActionsPatient(): {
   list: ActionPatient[];
   activeActions: ActionPatient[];
 } {
-  const {getWord} = useDictionary();
+  const { getWord } = useDictionary();
   const patient = useLoadPatient();
 
   const listActions = [
@@ -413,9 +419,7 @@ export function useActionsPatient(): {
       label: "Tutor",
       value: "Tutores",
       Icon: <Icon name="IconPerson" />,
-      Component: (props) => (
-        <CreateTutor {...props} setVisible={props.setModal} />
-      ),
+      Component: (props) => <FormCreateTutor {...props} />,
     },
   ] as ActionPatient[];
 
