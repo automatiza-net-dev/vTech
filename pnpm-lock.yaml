@@ -81,8 +81,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: ^0.59.3
-        version: 0.59.3(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1)
+        specifier: ^0.60.2
+        version: 0.60.2(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1)
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -1968,8 +1968,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@0.59.3:
-    resolution: {integrity: sha512-KaePi0Gd8fHeP+8HrMoZqgS6rBVP5002ar/JigeuTX7gdRhWHQi95T+jcqNRaBaM01Wt8iQFO2par1yS7yx+MA==}
+  infinity-forge@0.60.2:
+    resolution: {integrity: sha512-6CyjU71iJczkal6lgyEy2+W8YZOc1H0uv/7/Huffn5xQR5T5RP7rzmZYqg2769nRlsL4Ee1Rp+JDLctTKxW7SA==}
     peerDependencies:
       react: '>=16'
 
@@ -5467,7 +5467,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@0.59.3(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1):
+  infinity-forge@0.60.2(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(@emotion/is-prop-valid@1.2.2)(@types/react@18.3.3)(react@18.3.1):
     dependencies:
       '@ckeditor/ckeditor5-react': 7.0.0(@ckeditor/ckeditor5-core@42.0.0)(@ckeditor/ckeditor5-editor-multi-root@42.0.0)(@ckeditor/ckeditor5-engine@42.0.0)(@ckeditor/ckeditor5-utils@42.0.0)(@ckeditor/ckeditor5-watchdog@42.0.0)(react@18.3.1)
       '@types/react-slick': 0.23.13
