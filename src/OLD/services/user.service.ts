@@ -1,7 +1,9 @@
 import api from "@/OLD/services";
+import axios from "axios";
 
 const getUser = async () => {
-  return await api.get(`/auth/me`);
+  const IPAddress = await axios.get("https://api.ipify.org/");
+  return await api.get(`/auth/me?ip=${IPAddress?.data}`);
 };
 
 const getOneUser = async (id) => {
@@ -60,10 +62,8 @@ const editWorkingDay = async (id, data) => {
   return await api.put(`/working-days/${id}`, data);
 };
 
-
 const confirmToken = async (data) =>
   await api.post("/users/confirm-token", data);
-
 
 const startChangePassword = async () =>
   await api.post("/users/start-change-password");
@@ -88,5 +88,5 @@ export const userService = {
   updateLoggedUser,
 
   confirmToken,
-  startChangePassword
+  startChangePassword,
 };

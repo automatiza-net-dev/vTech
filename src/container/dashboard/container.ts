@@ -1,6 +1,11 @@
 import { Container } from "inversify";
 
-import { RemoteDashboard, RemoteFinancesResume, RemoteCashiersResume } from "@/data";
+import {
+  RemoteDashboard,
+  RemoteFinancesResume,
+  RemoteCashiersResume,
+  RemoteIndicators,
+} from "@/data";
 import { infraContainer } from "@/container";
 
 import { dashboardTypes } from "./types";
@@ -13,7 +18,12 @@ const dashboardContainer = new Container({
 dashboardContainer.parent = infraContainer;
 
 dashboardContainer.bind(dashboardTypes.RemoteDashboard).to(RemoteDashboard);
-dashboardContainer.bind(dashboardTypes.RemoteFinancesResume).to(RemoteFinancesResume);
-dashboardContainer.bind(dashboardTypes.RemoteCashiersResume).to(RemoteCashiersResume);
+dashboardContainer.bind(dashboardTypes.RemoteIndicators).to(RemoteIndicators);
+dashboardContainer
+  .bind(dashboardTypes.RemoteFinancesResume)
+  .to(RemoteFinancesResume);
+dashboardContainer
+  .bind(dashboardTypes.RemoteCashiersResume)
+  .to(RemoteCashiersResume);
 
 export { dashboardContainer };

@@ -51,45 +51,65 @@ const Update = memo(function ({
       });
   };
 
-
-  function Submit(showNewActivity = false) {
-    setLoading(true);
-    opportunitiesService
-      .updateActivityOpportunity({
+  async function Submit(showNewActivity = false) {
+    try {
+      setLoading(true);
+      await opportunitiesService.updateActivityOpportunity({
         ...data,
         id: activity?.id,
         executionDate: moment(data?.executionDate).toISOString(),
-      })
-      .then((_res) => {
-        setReload((prv) => !prv);
-        setVisible(false);
-        setLoading(false);
-        if (!execution) {
-          return notification.success({
-            message: "Atividade atualizada com sucesso!",
-          });
-        } else {
-          submitExecution();
-        }
-      })
-      .catch((err) => {
-        if (err?.response?.data?.message) {
-          return notification.error({
-            message: err?.response?.data?.message?.split[":"][1],
-          });
-        }
-        return notification.error({
-          message: "Houve um erro ao atualizar a atividade",
-        });
       });
 
-      if(showNewActivity) {
-        setNewActivityModal(true);
+      await opportunitiesService.executeActivity(activity?.id, data);
+
+      setReload((prv) => !prv);
+      setVisible(false);
+      setLoading(false);
+      setNewActivityModal(true);
+
+      if (!execution) {
+        return notification.success({
+          message: "Atividade atualizada com sucesso!",
+        });
+      } else {
+        submitExecution();
       }
+    } catch (error) {
+      return notification.error({
+        message: "Houve um erro ao atualizar a atividade",
+      });
+    }
+  }
+
+  async function handleSuubmit(showNewActivity = false) {
+    try {
+      setLoading(true);
+      await opportunitiesService.updateActivityOpportunity({
+        ...data,
+        id: activity?.id,
+        executionDate: moment(data?.executionDate).toISOString(),
+      });
+
+      setReload((prv) => !prv);
+      setVisible(false);
+      setLoading(false);
+
+      if (!execution) {
+        return notification.success({
+          message: "Atividade atualizada com sucesso!",
+        });
+      } else {
+        submitExecution();
+      }
+    } catch (error) {
+      return notification.error({
+        message: "Houve um erro ao atualizar a atividade",
+      });
+    }
   }
 
   const submitUpdate = useCallback(() => {
-    Submit();
+    handleSuubmit();
   }, [data, activity, execution]);
 
   return (
@@ -107,10 +127,7 @@ const Update = memo(function ({
           data={data}
           setData={setData}
           submit={submitUpdate}
-          setExecution={
-            () => Submit(true)
-          }
-
+          setExecution={() => Submit(true)}
           loading={loading}
           setVisible={setVisible}
           edit={edit}

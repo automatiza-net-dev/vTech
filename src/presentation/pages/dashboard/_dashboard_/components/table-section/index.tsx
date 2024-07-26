@@ -1,4 +1,5 @@
 import { TableDashboard, useLoadDashboard } from "@/presentation";
+import { IndicatorTable } from "./indicator-table";
 
 export function TablesSection() {
   const dashboard = useLoadDashboard({});
@@ -39,6 +40,8 @@ export function TablesSection() {
             TableBudgets.map((item) => (
               <TableDashboard key={item?.name} {...item} />
             ))}
+
+          <IndicatorTable />
         </section>
       )}
     </>

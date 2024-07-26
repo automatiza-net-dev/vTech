@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
 
@@ -30,13 +30,11 @@ import "moment/locale/pt-br";
 import "antd/dist/antd.css";
 import "@/OLD/styles/uikit.css";
 import "infinity-forge/dist/infinity-forge.css";
-import { useRouter } from "next/router";
+import Link from "next/link";
 
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
-  const router = useRouter();
-
   return (
     <QueryClientProvider client={queryClient}>
       <InfinityForgeProviders
@@ -45,6 +43,7 @@ export default function App({ Component, pageProps }) {
             admin: {},
             user: {
               signInConfig: { Component: SignIn },
+
               loadUserConfig: {
                 queryFn: async (): Promise<any> => {
                   try {
@@ -92,7 +91,15 @@ export default function App({ Component, pageProps }) {
           },
           styles: { Button: ButtonInfinityForge },
           notification: {
-            enable: false,
+            enable: true,
+            CustomComponent: (props) => (
+              <Link href={props?.link}>
+                <div className="top">
+                  <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
+                  <span>{props?.message}</span>
+                </div>
+              </Link>
+            ),
           },
         }}
         theme={themes[process.env.client || "sancla"]}

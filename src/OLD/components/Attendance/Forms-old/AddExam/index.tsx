@@ -236,7 +236,7 @@ export default function LaunchExam({
             ? submitArquives(examPatientData?.timeline_info?.patient_exam?.id)
             : createToast({
                 message: "Exame atualizado com sucesso!",
-                status: "error",
+                status: "success",
               });
         })
         .catch((err) => {

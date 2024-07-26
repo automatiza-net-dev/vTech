@@ -6,8 +6,8 @@ export type EditTutor = {
 
 export namespace EditTutor {
   export type Params = {
-    id: Tutor["id"],
+    id: Tutor["id"];
   };
 
-  export type Model = {}
+  export type Model = Tutor;
 }

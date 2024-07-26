@@ -92,7 +92,7 @@ export function PdfPatientAttendance(
       <div className="row">
         <span className="font-14-regular">
           <strong>Endereço:</strong>
-          {/* <span>{data?.tutor?.address || "-"}</span> */}
+          <span>{data?.tutor?.address || "-"}</span>
         </span>
       </div>
 

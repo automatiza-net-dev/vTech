@@ -16,8 +16,6 @@ import {
 
 import * as S from "./styles";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useQueryClient } from "react-query";
 
 export function LayoutDashboard({ children }) {
   return (

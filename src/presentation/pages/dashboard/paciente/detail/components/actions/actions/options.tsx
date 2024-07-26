@@ -11,6 +11,7 @@ import {
   FormCreateTutor,
   useDictionary,
   useLoadPatient,
+  useAssignTutor,
 } from "@/presentation";
 import Exams from "@/OLD/components/Attendance/Forms-old/AddExam";
 import Vaccines from "@/OLD/components/Attendance/Forms-old/Vaccines";
@@ -41,6 +42,7 @@ export function useActionsPatient(): {
 } {
   const { getWord } = useDictionary();
   const patient = useLoadPatient();
+  const assignutor = useAssignTutor();
 
   const listActions = [
     {
@@ -419,7 +421,22 @@ export function useActionsPatient(): {
       label: "Tutor",
       value: "Tutores",
       Icon: <Icon name="IconPerson" />,
-      Component: (props) => <FormCreateTutor {...props} />,
+      Component: (props) => (
+        <>
+          <FormCreateTutor
+            {...props}
+            onSuccess={async (data) => {
+              patient?.data?.id &&
+                (await assignutor.mutateAsync({
+                  holder: data.id,
+                  patient: patient?.data?.id,
+                }));
+
+              props.setModal(false);
+            }}
+          />
+        </>
+      ),
     },
   ] as ActionPatient[];
 
