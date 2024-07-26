@@ -26,7 +26,6 @@ export function CrmReports() {
   const router = useRouter();
   const businessUnits = useLoadAllAvailableUnits();
   const users = useLoadAllBusinessUsers();
-
   async function handleExport(payload) {
     const data = {
       ...payload,

@@ -112,7 +112,7 @@ function Form({
                 : undefined,
           };
 
-          await container
+          const response = await container
             .get<RemoteTutor>(TypesAutomatiza.RemoteTutor)
             [tutorId ? "update" : "create"](payload);
 
@@ -125,7 +125,7 @@ function Form({
 
           setOpen && setOpen(false);
 
-          onSuccess && onSuccess(formData);
+          onSuccess && onSuccess(response);
         }}
       >
         <h2 className="font-22-bold">

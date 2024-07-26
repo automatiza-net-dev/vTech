@@ -4,14 +4,14 @@ import React from "react";
 import moment from "moment";
 import { convertToAge } from "@/OLD/utils/generalUtils";
 
-export default function PatientHeader({ patient, tutor }) {
+export default function PatientHeader({ patient }) {
   const years = moment(new Date()).diff(patient?.birth_date, "years", true);
 
   return (
     <>
       <hr />
       <div className="uk-flex uk-flex-between uk-text-left">
-        <section>
+        <section style={{ maxWidth: "50%" }}>
           <div>
             Pet: {patient?.tag} - {patient?.name}
           </div>
@@ -29,14 +29,17 @@ export default function PatientHeader({ patient, tutor }) {
             Pelagem:{" "}
             {patient?.hair || patient?.patientAnimal?.hair?.description || "-"}
           </div>
-          <div>Responsável: {tutor?.name || "-"}</div>
-          <div>Endereço: {tutor?.address || tutor?.fullAddress || "-"}</div>
+          <div>Responsável: {patient?.tutor?.name || "-"}</div>
+          <div>
+            Endereço:{" "}
+            {patient?.tutor?.address || patient?.tutor?.fullAddress || "-"}
+          </div>
         </section>
         <section className="uk-text-left uk-width-1-3">
           <div>
             Peso:{" "}
             {patient?.weight
-              ? `${patient?.weight} Em ${moment(patient?.weight_date).format(
+              ? `${patient?.weight}Kg Em ${moment(patient?.weight_date).format(
                   "DD/MM/YYYY"
                 )}`
               : "-"}
@@ -47,7 +50,7 @@ export default function PatientHeader({ patient, tutor }) {
             Chip:{" "}
             {patient?.microchip || patient?.patientAnimal?.microchip || "-"}
           </div>
-          <div>CPF: {tutor?.document || "-"}</div>
+          <div>CPF: {patient.tutor?.document || "-"}</div>
         </section>
       </div>
       <hr />

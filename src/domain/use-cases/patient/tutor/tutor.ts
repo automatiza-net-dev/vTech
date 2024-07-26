@@ -1,7 +1,7 @@
 import { Patient } from "../detail";
 
 export type Tutor = {
-  address: {};
+  address: string;
   isMain: boolean;
   cellphone: string;
   civilStatus: string;

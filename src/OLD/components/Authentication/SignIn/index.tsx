@@ -1,15 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-
 import Link from "next/link";
-
 import { notification } from "antd";
 import { useAuthAdmin } from "infinity-forge";
-
 import { Button } from "@/OLD/components/mini-components";
 import { sessionService } from "@/OLD/services/session.service";
-
 import { container, TypesAutomatiza } from "@/container";
-
 import { Container } from "./styles";
 import { Storage } from "@/infra";
 
@@ -17,10 +12,9 @@ export function SignIn() {
   const [data, setData] = useState({
     email: "",
     password: "",
-    ipAddress: "",
+    ip: "",
   });
   const [saveAccess, setSaveAccess] = useState(false);
-
   const { loadUser } = useAuthAdmin();
 
   useEffect(() => {
@@ -28,7 +22,7 @@ export function SignIn() {
       fetch("https://api.ipify.org/")
         .then((res) => res.text())
         .then((res) => {
-          setData((prev) => ({ ...prev, ipAddress: res }));
+          setData((prev) => ({ ...prev, ip: res }));
         });
     }
   }, []);
@@ -43,6 +37,7 @@ export function SignIn() {
           description: "Por favor, preencha todos os campos",
         });
       }
+
       try {
         const getBusinessUnits = await sessionService.login({
           ...data,
@@ -58,20 +53,26 @@ export function SignIn() {
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
           }));
 
-        await container
-          .get<Storage>(TypesAutomatiza.storage)
-          .set("user", {
-            value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
+        await container.get<Storage>(TypesAutomatiza.storage).set("user", {
+          value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
+        });
+
+        if (loginResponse?.message) {
+          return notification.error({
+            message: "Erro",
+            description: loginResponse.message,
           });
+        }
 
         loadUser({ roleUser: "user" });
       } catch (err: any) {
         notification.error({
           message: "Erro",
           description:
-            err?.response?.status === 422
+            err?.response?.data?.message ||
+            (err?.response?.status === 422
               ? "Usuário ou senha não existe"
-              : "Erro ao logar. Por favor, tente novamente mais tarde.",
+              : "Erro ao logar. Por favor, tente novamente mais tarde."),
         });
       }
     },

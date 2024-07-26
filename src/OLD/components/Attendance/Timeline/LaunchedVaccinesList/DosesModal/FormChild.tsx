@@ -2,9 +2,9 @@ import React, { memo, useEffect } from "react";
 
 import { TbVaccine } from "react-icons/tb";
 
-import { Icon } from "infinity-forge";
+import { Icon, useToast } from "infinity-forge";
 
-import { Input, DatePicker, Button, notification } from "antd";
+import { Input, DatePicker, Button } from "antd";
 
 import moment from "moment";
 
@@ -22,6 +22,8 @@ export default function FormChild({
   setCalendars,
   modal,
 }: any) {
+  const { createToast } = useToast();
+
   useEffect(() => {
     calendars
       .sort((a, b) => a.dose - b.dose)
@@ -219,9 +221,10 @@ export default function FormChild({
                           !actualData?.applicationDate ||
                           !actualData?.laboratory
                         ) {
-                          return notification.error({
+                          return createToast({
                             message:
                               "verifique se os campos estão preenchidos corretamente",
+                            status: "error",
                           });
                         }
 

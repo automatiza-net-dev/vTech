@@ -5,9 +5,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { vaccinesService } from "@/OLD/services/vaccine-service";
 
 // Components
-import { notification } from "antd";
-import { Container } from "./styles";
 import FormChild from "./FormChild";
+import { Container } from "./styles";
+import { useToast } from "infinity-forge";
 
 // Utils
 import moment from "moment";
@@ -31,6 +31,8 @@ export function DosesModal({
   const [changes, setChanges] = useState(false);
 
   const VaccineProps = vaccine || TabVacinaItem;
+
+  const { createToast } = useToast();
 
   const getPatientVaccines = useCallback(() => {
     setLoading(true);
@@ -64,9 +66,10 @@ export function DosesModal({
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro ao buscar as informações de agendamento da vacina",
+          status: "error",
         });
       })
       .finally(() => {
@@ -124,9 +127,7 @@ export function DosesModal({
     vaccinesService
       .updateApplicationDate(data?.id, obj)
       .catch((err) => {
-        return notification.error({
-          message: err.message,
-        });
+        return createToast({ message: err.message, status: "error" });
       })
       .finally(() => {
         setChanges(true);

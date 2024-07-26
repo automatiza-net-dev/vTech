@@ -195,7 +195,7 @@ export default function FormChild({
                 <div className="editor-container uk-width-1-1">
                   <Editor editorState={report} setEditorState={setReport} />
                   <Print
-                    patient={patient}
+                    patient={patient.data}
                     triggerComponent={
                       <Button
                         className="uk-margin-right uk-margin-top"

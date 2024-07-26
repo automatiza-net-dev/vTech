@@ -1,3 +1,4 @@
+import axios from "axios";
 import { inject, injectable } from "inversify";
 
 import { User } from "@/domain";
@@ -7,6 +8,8 @@ import { InfraTypes } from "@/container/infra/types";
 
 @injectable()
 export class RemoteLoadUserDashboard {
+  private ip: string = "";
+
   constructor(
     @inject(InfraTypes.makeApiURL)
     private readonly makeApiURL: domain.makeApiURL,
@@ -18,8 +21,13 @@ export class RemoteLoadUserDashboard {
   async load(params: { admin?: boolean }) {
     const HTTP = params?.admin ? this.httpClientAdmin : this.httpClient;
 
+    if (!this.ip) {
+      const IPAddress = await axios.get("https://api.ipify.org/");
+      this.ip = IPAddress?.data;
+    }
+
     const response = await HTTP.request({
-      url: this.makeApiURL.make("auth/me"),
+      url: this.makeApiURL.make(`auth/me?ip=${this.ip}`),
       method: "get",
     });
 

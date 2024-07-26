@@ -30,6 +30,7 @@ function FormChild({
   patient,
   remove,
 }) {
+
   return (
     <form
       onSubmit={(e) => {
@@ -109,7 +110,7 @@ function FormChild({
       <div>
         <footer className="uk-flex uk-flex-center">
           <Print
-            patient={patient}
+            patient={patient.data}
             triggerComponent={
               <Button className="uk-margin-top uk-margin-small-right">
                 Imprimir
