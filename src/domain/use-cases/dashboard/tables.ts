@@ -2,7 +2,8 @@ export type DashboardTableTypes =
   | "sales-per-period"
   | "sales-per-user"
   | "budgets"
-  | "subgroups";
+  | "subgroups"
+  | "budgetsAvaliadorConsolidado";
 
 export type DashboardTable<T = any> = {
   type: string;

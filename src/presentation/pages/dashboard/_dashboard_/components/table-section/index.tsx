@@ -16,6 +16,10 @@ export function TablesSection() {
     (table) => table.name === "budgets"
   );
 
+  const IndicatorTableData = dashboard?.data?.tables?.find(
+    (table) => table.name === "budgetsAvaliadorConsolidado"
+  );
+
   return (
     <>
       {dashboard.data?.tables && dashboard.data?.tables?.length > 0 && (
@@ -41,7 +45,13 @@ export function TablesSection() {
               <TableDashboard key={item?.name} {...item} />
             ))}
 
-          <IndicatorTable />
+          {IndicatorTableData && (
+            <IndicatorTable
+              indicator={dashboard.data.tables.find(
+                (item) => item.name === "budgetsAvaliadorConsolidado"
+              )}
+            />
+          )}
         </section>
       )}
     </>
