@@ -386,7 +386,7 @@ export const useProductTypesReports = (filters, reload) => {
   };
 };
 
-export const useDetailedSalesReport = (filters) => {
+export const useDetailedSalesReport = (filters, reload) => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -413,7 +413,7 @@ export const useDetailedSalesReport = (filters) => {
 
   useEffect(() => {
     fetchData();
-  }, [filters]);
+  }, [reload]);
 
   return {
     reports,

@@ -10,14 +10,14 @@ import Filters from "./Filters";
 import PrintScreen from "./PrintScreen";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
-
 import * as XLSX from "xlsx/xlsx.mjs";
 import moment from "moment";
 
 const DetailsSalesReport = React.memo(function DetailsSalesReport() {
   const [filters, setFilters] = React.useState({});
+  const [reload, setReload] = React.useState(false);
 
-  const { reports, loadingReports } = useDetailedSalesReport(filters);
+  const { reports, loadingReports } = useDetailedSalesReport(filters, reload);
   const { clinic } = useProfile();
 
   const listDetailedSalesReportsPermission = useUserHasPermission("REL04");
@@ -30,7 +30,7 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
 
   const handleExport = () => {
     const formatted =
-    process.env.client !== "liftone"
+      process.env.client !== "liftone"
         ? reports?.map((item) => ({
             sistema: item?.sistema,
             grupo: item?.grupo,
@@ -142,7 +142,16 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
           trigger={() => <Button>Imprimir</Button>}
           content={() => componentRef?.current}
   /> */}
-        <Button onClick={() => handleExport()}>Exportar (Excel)</Button>
+        <Button
+          onMouseOver={() => {
+            setReload((prv) => !prv);
+          }}
+          onClick={() => {
+            handleExport();
+          }}
+        >
+          Exportar (Excel)
+        </Button>
       </div>
       <div style={{ display: "none" }}>
         <div ref={componentRef}>
