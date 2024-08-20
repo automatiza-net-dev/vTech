@@ -11,7 +11,7 @@ import ReactToPrint from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 
-const PrintTable = memo(function PrintTable({ reports, filters, values }) {
+function PrintTable({ reports, filters, values }) {
   const { clinic } = useProfile();
 
   const componentRef = useRef();
@@ -125,6 +125,6 @@ const PrintTable = memo(function PrintTable({ reports, filters, values }) {
       </div>
     </>
   );
-});
+};
 
 export default PrintTable;

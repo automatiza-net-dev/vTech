@@ -8,7 +8,7 @@ import { DateFilter } from "@/OLD/components/mini-components";
 import { Select, DatePicker, Button } from "antd";
 const { Option } = Select;
 
-const Filters = memo(function Filters({
+function Filters({
   filters,
   setFilters,
   setReload,
@@ -76,6 +76,6 @@ const Filters = memo(function Filters({
       </div>
     </section>
   );
-});
+};
 
 export default Filters;
