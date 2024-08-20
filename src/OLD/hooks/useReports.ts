@@ -36,6 +36,13 @@ export const useFlowReports = (filters, reload) => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
+    if (filters?.noSearch) {
+      return {
+        flowReports,
+        fetchFlowReports: fetchData,
+        loadingFlowReports: loading,
+      };
+    }
     setLoading(true);
     const keys = Object.keys(filters);
     let newObj = { ...filters };
@@ -56,13 +63,6 @@ export const useFlowReports = (filters, reload) => {
   };
 
   useEffect(() => {
-    if (filters?.noSearch) {
-      return {
-        flowReports,
-        fetchFlowReports: fetchData,
-        loadingFlowReports: loading,
-      };
-    }
     fetchData();
   }, [reload]);
 
@@ -78,6 +78,13 @@ export const useCheckingAccountReports = (filters, reload) => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
+    if (filters?.noSearch) {
+      return {
+        checkingAccountReports,
+        fetchCheckingAccountReports: fetchData,
+        loadingCheckingAccountReports: loading,
+      };
+    }
     setLoading(true);
 
     reportsService
@@ -88,14 +95,6 @@ export const useCheckingAccountReports = (filters, reload) => {
   };
 
   useEffect(() => {
-    if (filters?.noSearch) {
-      return {
-        checkingAccountReports,
-        fetchCheckingAccountReports: fetchData,
-        loadingCheckingAccountReports: loading,
-      };
-    }
-
     fetchData();
   }, [reload]);
 
@@ -111,6 +110,13 @@ export const useExpiredReports = (filters, reload) => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
+    if (filters?.noSearch) {
+      return {
+        expiredReports,
+        loadingExpiredReports: loading,
+        fetchExpiredReports: fetchData,
+      };
+    }
     setLoading(true);
 
     reportsService
@@ -121,13 +127,6 @@ export const useExpiredReports = (filters, reload) => {
   };
 
   useEffect(() => {
-    if (filters?.noSearch) {
-      return {
-        expiredReports,
-        loadingExpiredReports: loading,
-        fetchExpiredReports: fetchData,
-      };
-    }
     fetchData();
   }, [reload]);
 

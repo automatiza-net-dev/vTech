@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { memo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import {
   useFlowReports,
@@ -16,7 +16,7 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 
 import moment from "moment";
 
-const FinancesReport = memo(function FinancesReport() {
+function FinancesReport() {
   const { clinic } = useProfile();
 
   const [filters, setFilters] = useState({
@@ -83,6 +83,6 @@ const FinancesReport = memo(function FinancesReport() {
       />
     </Container>
   );
-});
+};
 
 export default FinancesReport;
