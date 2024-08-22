@@ -28,7 +28,7 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-const Single = memo(function Single() {
+function Single() {
   const [data, setData] = useState({});
   const [reload, setReload] = useState(false);
   const [ids, setIds] = useState({});
@@ -50,8 +50,8 @@ const Single = memo(function Single() {
   sortItems(products, "description");
 
   useEffect(() => {
-    setIds({ ids: [router.query.innerpage], status: "PendenteXml" });
-  }, [JSON.stringify(router.query.innerpage)]);
+    setIds({ ids: [router.query.id], status: "PendenteXml" });
+  }, [JSON.stringify(router.query.id)]);
 
   useEffect(() => {
     receipt?.length > 0 &&
@@ -370,6 +370,6 @@ const Single = memo(function Single() {
       </Tabs>
     </Container>
   );
-});
+}
 
 export default Single;
