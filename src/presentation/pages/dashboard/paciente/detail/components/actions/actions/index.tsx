@@ -1,5 +1,4 @@
-import { Error } from "infinity-forge";
-import { Button } from "infinity-forge";
+import { Error, Button } from "infinity-forge";
 
 import { useActionsPatient } from "./options";
 import { DropdownItemAction } from "./dropdown-item";

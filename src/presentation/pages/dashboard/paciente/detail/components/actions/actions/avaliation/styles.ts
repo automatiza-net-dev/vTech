@@ -1,8 +1,17 @@
 import styled from "styled-components";
 
 export const Avaliation = styled("div")`
-  .custom-editor {
-    min-height: 500px;
+  #text-editor {
+    overflow: hidden;
+    div[class*="RichTextEditor__"] {
+      min-height: 500px;
+      overflow: hidden;
+      z-index: 2;
+    }
+  }
+
+  .form-button.sticky {
+    z-index: 9;
   }
 
   .form-button {

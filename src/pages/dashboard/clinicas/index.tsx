@@ -13,14 +13,10 @@ import { SearchIcon } from "@/OLD/common/icons";
 import { Button } from "@/OLD/components/mini-components";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { clinicService } from "@/OLD/services/clinic.service";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function ClinicasPage() {
-  return (
-    <PrivatePageAdmin>
-      <Page />
-    </PrivatePageAdmin>
-  );
+  return <Page />;
 }
 
 function Page() {

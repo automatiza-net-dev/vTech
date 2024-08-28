@@ -38,7 +38,14 @@ const AnalyticalReport = memo(function () {
       <div className="uk-flex uk-flex-around">
         <ReactToPrint
           trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
+            <Button
+              className="uk-margin-small-right"
+              onMouseOver={() => {
+                setReload((prv) => !prv);
+              }}
+            >
+              Imprimir
+            </Button>
           )}
           content={() => componentRef.current}
           onBeforePrint={() => setReload(!reload)}

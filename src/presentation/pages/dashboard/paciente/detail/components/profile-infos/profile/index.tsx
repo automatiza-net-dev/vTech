@@ -1,9 +1,31 @@
 import { Error, HighlightText, Icon } from "infinity-forge";
 
+import { useQueryClient } from "react-query";
+
 import { Patient } from "@/domain";
 import { FormCreatePatient } from "../../../../create";
 
 import * as S from "./styles";
+import { useState } from "react";
+
+export function ProfileImage({ src }: { src: string | null }) {
+  const [imgError, setImgError] = useState(false);
+
+  const DEFAULT_AVATAR =
+    process?.env?.client === "sancla"
+      ? "/images/pages/patient/pet.jpg"
+      : "/images/pages/patient/humano.jpg";
+
+  return (
+    <img
+      src={imgError ? DEFAULT_AVATAR : src || DEFAULT_AVATAR}
+      onError={() => {
+        setImgError(true);
+      }}
+      className="avatar-image"
+    />
+  );
+}
 
 export function Profile(props: Patient) {
   const {
@@ -19,21 +41,19 @@ export function Profile(props: Patient) {
     community,
   } = props;
 
-  const DEFAULT_AVATAR =
-    process?.env?.client === "sancla"
-      ? "/images/pages/patient/pet.jpg"
-      : "/images/pages/patient/humano.jpg";
+  const queryClient = useQueryClient();
 
   return (
     <Error name="Profile">
       <S.Profile>
         <div className="avatar">
-          <img src={photo || DEFAULT_AVATAR} />
+          <ProfileImage src={photo} />
         </div>
 
         <div>
           {name && (
             <FormCreatePatient
+              onSuccess={() => queryClient.invalidateQueries(["RemotePatient"])}
               trigger={
                 <h1>
                   <span>{name}</span>

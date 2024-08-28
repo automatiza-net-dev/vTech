@@ -46,16 +46,23 @@ export function CardTimeLine({
     }
   };
 
+  const labelControl = (str) => {
+    switch (str) {
+      case "OBITO":
+        return <span>Óbito</span>;
+      case "TROCA_TUTOR_PRINCIPAL":
+        return <span>Troca tutor principal</span>;
+      default:
+        return <span>{timeline?.timeline_type.description}</span>;
+    }
+  };
+
   return (
     <S.CardTimeLine
       $isTimeLineSelected={isTimeLineSelected}
       type="button"
       className="time_line"
       onClick={() => {
-        if (isChangeTutor) {
-          return;
-        }
-
         setTimeLineSelected(timeline);
       }}
     >
@@ -65,7 +72,7 @@ export function CardTimeLine({
             {moment(timeline.createdAt).format("DD/MM/YYYY")}
             <strong> às {moment(timeline.createdAt).format("HH:mm")}</strong>
           </h3>
-          {timeline?.timeline_type.description}
+          {labelControl(timeline?.timeline_info.event)}
           {timeline?.timeline_info?.technician?.name && (
             <span>{timeline.timeline_info.technician.name}</span>
           )}

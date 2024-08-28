@@ -34,6 +34,7 @@ export function BudgetsList({ hasOpenedBudget }: { hasOpenedBudget: boolean }) {
                   Orçamento {budget.tag} ({status})
                   {hasOpenedBudget && (
                     <Tooltip
+                      idTooltip="EditarToolTip"
                       enableHover
                       content={"EDITAR"}
                       trigger={
@@ -52,7 +53,7 @@ export function BudgetsList({ hasOpenedBudget }: { hasOpenedBudget: boolean }) {
               {budget?.items?.map((item) => (
                 <div key={item.id} className="content">
                   <div>
-                    {item.quantity}x {item.productVariation.product.description}
+                    {item.quantity}x {item?.productVariation?.product.description}
                   </div>
                   
                   <div>

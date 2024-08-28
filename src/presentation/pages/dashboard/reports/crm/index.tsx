@@ -7,13 +7,7 @@ import {
   useLoadAllBusinessUsers,
 } from "@/presentation";
 import * as XLSX from "xlsx/xlsx.mjs";
-import {
-  FormHandler,
-  Select,
-  Input,
-  Button,
-  InputDateRange,
-} from "infinity-forge";
+import { FormHandler, Select, Input, Button } from "infinity-forge";
 
 import moment from "moment";
 import { RemoteCRM } from "@/data";
@@ -75,6 +69,11 @@ export function CrmReports() {
         initialData={initialData}
         button={{ text: "Exportar (excel)" }}
         onSucess={handleExport}
+        customAction={{
+          Component: () => (
+            <Button text="Voltar" onClick={() => router.back()} />
+          ),
+        }}
       >
         <section>
           <div>
@@ -162,9 +161,6 @@ export function CrmReports() {
           </div>
         </section>
       </FormHandler>
-      <footer>
-        <Button text="Voltar" onClick={() => router.back()} />
-      </footer>
     </S.CrmReports>
   );
 }

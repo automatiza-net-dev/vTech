@@ -12,7 +12,6 @@ import { BsPaperclip } from "react-icons/bs";
 
 // Components
 import {
-  Button,
   Input,
   DatePicker,
   Upload,
@@ -21,10 +20,9 @@ import {
   notification,
 } from "antd";
 import { Container } from "./styles";
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
-import { Select, FormHandler } from "infinity-forge";
+import { Select, FormHandler, Button } from "infinity-forge";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 
@@ -78,59 +76,38 @@ export default function FormChild({
 
   return (
     <Container>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          examPatientData ? submitUpdatePatientExam() : submitExamLauching();
-        }}
-      >
-        {!modal && (
-          <div className="uk-flex uk-flex-right">
-            <Button
-              loading={loading}
-              type="primary"
-              htmlType="submit"
-              className="uk-margin-small-right"
-            >
-              Atualizar
-            </Button>
-            <Popconfirm
-              title="Tem certeza que deseja remover este registro?"
-              onConfirm={() => remove(examPatientData?.timelineId)}
-            >
-              <Button loading={loading} type="primary" htmlType="button">
-                Excluir
-              </Button>
-            </Popconfirm>
-          </div>
-        )}
+      <FormHandler isStickyButtons>
         <div>
-          <label>Exame</label>
-          <br />
-          {allExams && allExams.length > 0 && (
-            <FormHandler>
-              <Select
-                menuPlacement="bottom"
-                name="exam"
-                options={allExams.map((exam) => ({
-                  label: exam?.name,
-                  value: exam?.id,
-                }))}
-                disabled={!modal}
-                onlyOneValue
-                onChangeSelect={async (value) => {
-                  const optionSelected = allExams?.find(
-                    (exam) => exam.id === value
-                  );
+          {modal ? (
+            <>
+              <label>Exame</label>
+              <br />
+              {allExams && allExams.length > 0 && (
+                <Select
+                  menuPlacement="bottom"
+                  name="exam"
+                  options={allExams.map((exam) => ({
+                    label: exam?.name,
+                    value: exam?.id,
+                  }))}
+                  disabled={!modal}
+                  onlyOneValue
+                  onChangeSelect={async (value) => {
+                    const optionSelected = allExams?.find(
+                      (exam) => exam.id === value
+                    );
 
-                  await replaceText(optionSelected?.description, setRequest);
+                    await replaceText(optionSelected?.description, setRequest);
 
-                  setSelectedExam(optionSelected);
-                  setExamSearch(optionSelected?.name);
-                  setData({ ...data, examId: optionSelected?.id });
-                }}
-              />
-            </FormHandler>
+                    setSelectedExam(optionSelected);
+                    setExamSearch(optionSelected?.name);
+                    setData({ ...data, examId: optionSelected?.id });
+                  }}
+                />
+              )}
+            </>
+          ) : (
+            <h2>{examSearch}</h2>
           )}
 
           <div>
@@ -170,18 +147,20 @@ export default function FormChild({
               <div className="uk-width-1-1 uk-margin-small-right">
                 <Editor editorState={request} setEditorState={setRequest} />
                 <Print
+                  title="Solicitação de Exame"
                   patient={patient.data}
                   triggerComponent={
                     <Button
                       className="uk-margin-right uk-margin-top"
-                      type="primary"
-                    >
-                      Imprimir Solicitação
-                    </Button>
+                      text="Imprimir solicitação"
+                    />
                   }
                   content={typeof request === "string" ? request : ""}
                   title={
-                    allExams.find((item) => item?.id === data?.examId)?.name
+                    <>
+                      <h1>Solicitação de Exame</h1>
+                      {allExams.find((item) => item?.id === data?.examId)?.name}
+                    </>
                   }
                   string={true}
                   onBeforePrint={() =>
@@ -199,14 +178,18 @@ export default function FormChild({
                     triggerComponent={
                       <Button
                         className="uk-margin-right uk-margin-top"
-                        type="primary"
-                      >
-                        Imprimir Laudo
-                      </Button>
+                        text="Imprimir laudo"
+                      />
                     }
                     content={typeof report === "string" ? report : ""}
                     title={
-                      allExams.find((item) => item?.id === data?.examId)?.name
+                      <>
+                        <h1>Laudo Exame</h1>
+                        {
+                          allExams.find((item) => item?.id === data?.examId)
+                            ?.name
+                        }
+                      </>
                     }
                     string={true}
                     onBeforePrint={() =>
@@ -231,18 +214,57 @@ export default function FormChild({
                     setFileList(info.fileList);
                   }}
                 >
-                  <ButtonA>
-                    <PlusOutline size={15} className="upload-icon" /> Adicionar
-                    anexos
-                  </ButtonA>
+                  <Button
+                    style={{ marginRight: "10px" }}
+                    text={
+                      <>
+                        <PlusOutline size={15} className="upload-icon" />{" "}
+                        Adicionar Anexos
+                      </>
+                    }
+                  />
                 </Upload>
               </div>
+
               <div className="">
-                <ButtonA onClick={() => setPhotosOpen(true)}>
-                  <BsPaperclip size={15} /> Visualizar Arquivos anexados{" "}
-                </ButtonA>
+                <Button
+                  onClick={() => setPhotosOpen(true)}
+                  text={
+                    <>
+                      <BsPaperclip size={15} /> Visualizar Arquivos anexados{" "}
+                    </>
+                  }
+                />
               </div>
             </div>
+            {!modal && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "10px",
+                }}
+              >
+                <Button
+                  loading={loading}
+                  onClick={submitUpdatePatientExam}
+                  text="Atualizar"
+                  style={{ marginRight: "10px" }}
+                />
+
+                <Popconfirm
+                  title="Tem certeza que deseja remover este registro?"
+                  onConfirm={() => remove(examPatientData?.timelineId)}
+                >
+                  <Button
+                    loading={loading}
+                    text="Excluir"
+                    type="button"
+                    style={{ backgroundColor: "#ff7b5a" }}
+                  />
+                </Popconfirm>
+              </div>
+            )}
           </div>
         </div>
         {modal && (
@@ -250,14 +272,15 @@ export default function FormChild({
             <hr />
             <div className="uk-flex uk-flex-right">
               <Button
-                type="primary"
-                htmlType="submit"
-                className="uk-margin-small-right"
+                onClick={submitExamLauching}
                 loading={loading}
-              >
-                Salvar
-              </Button>
+                text="Salvar"
+                style={{ marginRight: "10px" }}
+              />
+
               <Button
+                style={{ backgroundColor: "#ff7b5a" }}
+                text="Cancelar"
                 onClick={() => {
                   setVisible(false);
                   setSelectedExam({});
@@ -267,14 +290,11 @@ export default function FormChild({
                   setReport("");
                   setRequest("");
                 }}
-              >
-                {" "}
-                Cancelar{" "}
-              </Button>
+              />
             </div>
           </footer>
         )}
-      </form>
+      </FormHandler>
     </Container>
   );
 }

@@ -191,7 +191,7 @@ const Filters = memo(function Filters({
             >
               {businessUnits.length > 0 &&
                 businessUnits.map((unit) => (
-                  <Option value={unit?.id}>{unit?.fantasyName}</Option>
+                  <Option value={unit?.id}>{unit?.identification}</Option>
                 ))}
             </Select>
           </InputBox>

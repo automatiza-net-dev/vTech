@@ -7,7 +7,7 @@ import * as S from "./styles";
 export function CommercialIndicatorAccomplishedTable(props) {
   const { Table } = useTable<any>({
     columnsConfiguration: {
-      columns,
+      columns: columns(props.name !== "billsReviewer"),
     },
     configs: {
       disablePagination: true,

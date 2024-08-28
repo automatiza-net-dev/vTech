@@ -3,3 +3,4 @@ export * from "./entities";
 export * from "./print-document";
 export * from "./load-bill-payments-receipts";
 export * from "./update-financial-responsible";
+export * from "./auth-discount-pendency-selling-bill";

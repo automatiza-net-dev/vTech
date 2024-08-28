@@ -64,7 +64,20 @@ export function useActionsPatient(): {
         </svg>
       ),
       Component: Avaliation,
-      SingleComponent: Avaliation,
+      SingleComponent: (props) => {
+        return props.timeline_info.event === "TROCA_TUTOR_PRINCIPAL" ? (
+          <div>
+            <h3>Troca de tutor principal</h3>
+            <span>
+              <strong>Troca</strong> {props?.timeline_info?.old_tutor.name}{" "}
+              <br /> <strong>Para</strong>:{" "}
+              {props?.timeline_info?.new_tutor.name}
+            </span>
+          </div>
+        ) : (
+          <Avaliation {...props} />
+        );
+      },
     },
     {
       active: true,

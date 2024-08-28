@@ -24,8 +24,8 @@ import {
 import AccessDenied from "@/OLD/components/AccessDenied";
 import Details from "./Single";
 
-import { receiptsColumns } from "./columns";
 import moment from "moment";
+import { receiptsColumns } from "./columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { DeleteTwoTone } from "@ant-design/icons";
@@ -38,7 +38,11 @@ import AddPaymentsScreen from "./AddPayments/AddPaymentsScreen";
 export function Notes() {
   const [createVisible, setCreateVisible] = useState(false);
   const [reload, setReload] = useState(false);
-  const [filters, setFilters] = useState({ noSearch: true });
+  const [filters, setFilters] = useState({
+    noSearch: true,
+    from: moment(),
+    to: moment(),
+  });
   const [formattedReceipts, setFormattedReceipts] = useState([]);
   const [xmlModalVisible, setXmlModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,17 +84,6 @@ export function Notes() {
                   />
                 )}
                 {/* TODO CHAMAR MODAL EM TESE PARA ELIMINAR PAGINA... */}
-                {receipt?.status !== "Baixada" && addPaymentsPermission && (
-                  <Tooltip title="Adicionar pagamento">
-                    <MdMonetizationOn
-                      className="custom-icon"
-                      onClick={() => {
-                        setSelectedId(receipt?.id);
-                        setAddPaymentsScreenVisible(true);
-                      }}
-                    />
-                  </Tooltip>
-                )}
                 {receipt?.status === "PendenteXml" && (
                   <Tooltip title="Continuar a importação do xml">
                     <MdOutlineChecklist
@@ -101,6 +94,17 @@ export function Notes() {
                           `/dashboard/notas-entrada/xml/${receipt?.id}`
                         )
                       }
+                    />
+                  </Tooltip>
+                )}
+                {receipt?.status !== "Baixada" && addPaymentsPermission && (
+                  <Tooltip title="Adicionar pagamento">
+                    <MdMonetizationOn
+                      className="custom-icon"
+                      onClick={() => {
+                        setSelectedId(receipt?.id);
+                        setAddPaymentsScreenVisible(true);
+                      }}
                     />
                   </Tooltip>
                 )}
@@ -269,7 +273,7 @@ export function Notes() {
   };
 
   const listCreated = (id) => {
-    setFilters({ receipt_id: id, noSearch: false });
+    setFilters((prv) => ({ ...prv, receipt_id: id, noSearch: false }));
     setReload((prv) => !prv);
   };
 
@@ -337,7 +341,7 @@ export function Notes() {
             onChange={verifyFile}
             showUploadList={false}
           >
-            <Button>Selcionar</Button>
+            <Button>Selecionar</Button>
           </Upload>
           {xml && (
             <div className="uk-margin-small-top">

@@ -23,21 +23,14 @@ import moment from "moment";
 
 export const Edit = ({ item }) => {
   const queryClient = useQueryClient();
-  const id = useRouter().query.innerpage;
+  const router = useRouter();
+  const id = router.query.innerpage;
+
   const [isVisible, setIsVisible] = useState(false);
   const [frequency, setFrequency] = useState(item?.frequency);
   const [allChecked, setAllChecked] = useState(false);
   const { Option } = Select;
-  const [payload, setPayload] = useState({
-    userId: id,
-    active: item.active,
-    frequency: item.frequency,
-    startHour: moment(item.start_hour, "HH:mm"),
-    endHour: moment(item.end_hour, "HH:mm"),
-    startDate: moment(item.start_date, "YYYY-MM-DD[T]HH:mm:ss"),
-    endDate: moment(item.end_date, "YYYY-MM-DD[T]HH:mm:ss"),
-    title: item.title,
-  });
+  const [payload, setPayload] = useState({});
 
   const schema = yup
     .object({
@@ -108,6 +101,19 @@ export const Edit = ({ item }) => {
     },
     [payload, frequency]
   );
+
+  useEffect(() => {
+    setPayload({
+      userId: id,
+      active: item.active,
+      frequency: item.frequency,
+      startHour: moment(item.start_hour, "HH:mm"),
+      endHour: moment(item.end_hour, "HH:mm"),
+      startDate: moment(item.start_date, "YYYY-MM-DD[T]HH:mm:ss"),
+      endDate: moment(item.end_date, "YYYY-MM-DD[T]HH:mm:ss"),
+      title: item.title,
+    });
+  }, [item]);
 
   return (
     <div>

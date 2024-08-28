@@ -19,16 +19,16 @@ import * as S from "./styles";
 export function Weight(props: DropdownComponentProps) {
   const router = useRouter();
 
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const { createToast } = useToast();
   const queryClient = useQueryClient();
 
-  const user = GetUser<User>();
 
   const patientId = router.query.id as string;
 
   return (
     <Error name="Weight">
+      <h2>Registro de peso</h2>
       <S.Weight>
         <FormHandler
           isStickyButtons

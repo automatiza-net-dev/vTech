@@ -10,9 +10,10 @@ import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import { Container } from "./styles";
+import { useToast } from "infinity-forge";
 import { Input, notification, Collapse, Popconfirm } from "antd";
+import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 const { Panel } = Collapse;
 
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -32,10 +33,12 @@ const AddPayments = memo(function AddPayments({
   const [paymentsReload, setPaymentsReload] = useState(false);
   const [filters, setFilters] = useState({ active: true });
 
+  const { createToast } = useToast();
   const { paymentMethods } = usePaymentMethods(filters);
   const { data: budget } = useCompleteBudget(budgetId, origin === "budgets");
   const { data: budgetPayments } = useLoadPaymentsPreview({
-    budgetId: budgetId,
+    budgetId: budget?.id,
+    fetch: origin !== "receipts",
   });
 
   const queryClient = useQueryClient();
@@ -154,8 +157,14 @@ const AddPayments = memo(function AddPayments({
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: err?.response?.data?.message?.split(":")[1],
+        err?.response?.data?.errors?.forEach((item) => {
+          createToast({ message: item?.message, status: "error" });
+          if (item?.field?.includes("accountPlanId")) {
+            createToast({
+              message: "Selecione um plano de contas",
+              status: "error",
+            });
+          }
         });
       });
   }, [data, accountPlanId]);
@@ -438,9 +447,15 @@ const AddPayments = memo(function AddPayments({
                 <div>
                   {`${item?.descricao_forma_pagamento} - ${
                     item?.descricao_adquirente_tef
-                  } - ${item?.descricao_bandeira_tef} - ${currencyFormatter(
-                    item?.valor_total
-                  )}`}
+                      ? item?.descricao_adquirente_tef + " - "
+                      : ""
+                  }  ${
+                    item?.descricao_bandeira_tef
+                      ? item?.descricao_bandeira_tef + " - "
+                      : ""
+                  } ${currencyFormatter(item?.valor_total)} (${
+                    item?.qtd_parcelas_bloco_pgto
+                  }x)`}
                 </div>
                 <div>
                   <Popconfirm

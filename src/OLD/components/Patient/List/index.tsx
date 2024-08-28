@@ -197,14 +197,9 @@ export function PatientList({
               opportunity: (
                 <CustomButton
                   onClick={() => {
-                    const tutor = patient.tutors.find((item) => item?.isMain);
-
-                    if (!tutor) {
-                      return createToast({
-                        message: "Selecione um tutor ativo (principal)",
-                        status: "error",
-                      });
-                    }
+                    const tutor =
+                      patient.tutors.find((item) => item?.isMain) ||
+                      patient.tutors[0];
 
                     setPayload((prv) => ({
                       ...prv,

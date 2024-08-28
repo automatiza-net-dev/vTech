@@ -31,7 +31,7 @@ export function FormSetClients() {
     <S.FormSetClients>
       <FormHandler
         isStickyButtons
-        onSucess={setPatientsFilters}
+        onSucess={async (data) => setPatientsFilters(data)}
         button={{ text: "Filtrar" }}
         customAction={{
           Component: () => <FormCreatePatient isModal origin="Agenda" />,

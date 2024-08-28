@@ -12,7 +12,7 @@ export function useLoadAllVaccinesProtocols(
     if (params.fetch) {
       const response = await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
-        .loadAll(params);
+        .loadAllProtocols(params);
 
       return response;
     }

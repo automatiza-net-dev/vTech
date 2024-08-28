@@ -2,9 +2,9 @@ import React, { memo, useEffect } from "react";
 
 import { TbVaccine } from "react-icons/tb";
 
-import { Icon, useToast } from "infinity-forge";
+import { Icon, useToast, Button } from "infinity-forge";
 
-import { Input, DatePicker, Button } from "antd";
+import { Input } from "antd";
 
 import moment from "moment";
 
@@ -284,12 +284,10 @@ export default function FormChild({
       {!modal && changeTab && (
         <div className="uk-margin-top uk-flex uk-flex-right">
           <Button
-            type="primary"
-            htmlType="button"
+            type="button"
             onClick={() => changeTab("vaccines")}
-          >
-            Ir para vacinas / Vermífugos
-          </Button>
+            text=" Ir para vacinas / Vermífugos"
+          />
         </div>
       )}
     </form>

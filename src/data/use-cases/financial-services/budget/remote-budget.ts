@@ -13,7 +13,8 @@ export class RemoteBudget
     domain.ConfirmBudget,
     domain.LoadOpenNegotiations,
     domain.LoadAllBudgetsAttendance,
-    domain.LoadPaymentsPreview
+    domain.LoadPaymentsPreview,
+    domain.DeletePaymentPreview
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -34,6 +35,16 @@ export class RemoteBudget
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(`budgets/create`),
       method: "post",
+      body: params,
+    });
+
+    return response as domain.CreateBudget.Model;
+  }
+
+  async update(params: domain.CreateBudget.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/update`),
+      method: "put",
       body: params,
     });
 
@@ -76,5 +87,35 @@ export class RemoteBudget
     });
 
     return response;
+  }
+
+  async deletePaymentPreview(params: domain.DeletePaymentPreview.Params) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/exclude-payment`),
+      method: "put",
+      body: params,
+    });
+  }
+
+  async load(params: domain.LoadBudget.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/${params.id}`),
+      method: "get",
+      body: params,
+    });
+
+    return response as domain.LoadBudget.Model;
+  }
+
+  async authDiscountPendencySellingBudget(
+    params: domain.AuthDiscountPendencySellingBudget.Params
+  ) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/approve`),
+      method: "post",
+      body: params,
+    });
+
+    return {};
   }
 }

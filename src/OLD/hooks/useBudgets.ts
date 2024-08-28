@@ -93,7 +93,7 @@ export const useCreateBudgetItem = () => {
 };
 
 export const useUpdateBudgetItem = () => {
-  return useMutation((data) => budgetService.updateBudgetItem(data.id, data));
+  return useMutation((data) => budgetService.updateBudgetItem(data));
 };
 
 export const useUpdateSellerAndReviewer = (id) => {

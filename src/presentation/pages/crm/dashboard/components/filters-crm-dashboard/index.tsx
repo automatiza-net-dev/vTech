@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import moment from "moment";
-import { FormHandler, updateRoute, DatePickerInput } from "infinity-forge";
+import { FormHandler, updateRoute, InputDatePicker } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -37,11 +37,11 @@ export function FiltersCrm() {
           },
         }}
       >
-        <DatePickerInput
-          hasIcon
+        <InputDatePicker
           name="period"
-          typePicker="month"
-          maxDate={new Date()}
+          mode="month"
+          date={{ maxDate: new Date() }}
+          language="pt"
         />
       </FormHandler>
     </S.FiltersCrm>

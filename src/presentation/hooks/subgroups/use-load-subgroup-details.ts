@@ -9,10 +9,9 @@ import { LoadSubgroupDetails, User } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
 export function useLoadSubgroupDetails(params: LoadSubgroupDetails.Params) {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const router = useRouter();
 
-  const user = GetUser<User>();
   const userID = user?.user?.id;
 
   async function fetcher() {

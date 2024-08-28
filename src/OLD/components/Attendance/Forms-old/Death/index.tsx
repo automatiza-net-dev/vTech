@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Services
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -8,7 +8,7 @@ import { clinicService } from "@/OLD/services/clinic.service";
 // Components
 import Editor from "@/OLD/components/Editor";
 import { DateTimeField } from "@mui/x-date-pickers";
-import { Select, FormHandler, useToast } from "infinity-forge";
+import { Select, FormHandler, useToast, Button } from "infinity-forge";
 import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
 
 // Utils
@@ -17,9 +17,10 @@ import { useLoadPatient } from "@/presentation";
 import { petsService } from "@/OLD/services/patient.service";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
-function DeathForm({ modal = false, setModal = () => ({}) }) {
+function DeathForm({ modal = false, setModal = () => ({}), timeline_info }) {
   const [body, setBody] = useState("");
   const [data, setData] = useState({});
+  const [selectedVet, setSelectedVet] = useState({ user: null });
 
   const { createToast } = useToast();
 
@@ -93,47 +94,58 @@ function DeathForm({ modal = false, setModal = () => ({}) }) {
     deathMutation.mutate(payload);
   };
 
+  useEffect(() => {
+    if (!modal) {
+      setSelectedVet({ user: timeline_info?.technician?.id });
+      setData({
+        executedAt: moment(timeline_info?.realized),
+      });
+      setBody(timeline_info?.deathObservation);
+    } else {
+      setSelectedVet({ user: "" });
+    }
+  }, [timeline_info, modal]);
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmittion();
-      }}
-    >
+    <FormHandler isStickyButtons>
       <>
         <div className="uk-width-1-1">
           <label>Veterinário responsável</label>
-          {vetsQuery?.data && vetsQuery?.data?.length > 0 && (
-            <FormHandler>
-              <Select
-                menuPlacement="bottom"
-                name="user"
-                options={vetsQuery.data.map((user) => ({
-                  label: user?.value,
-                  value: user?.id,
-                }))}
-                disabled={!modal}
-                onlyOneValue
-                onChangeSelect={async (value) => {
-                  const selectedUser = vetsQuery.data.find(
-                    (user) => user.id === value
-                  );
 
-                  setData({
-                    ...data,
-                    user: selectedUser.value,
-                    selectedVetId: value,
-                  });
-                }}
-              />
-            </FormHandler>
-          )}
+          {vetsQuery?.data &&
+            vetsQuery?.data?.length > 0 &&
+            selectedVet.user !== null && (
+              <FormHandler initialData={selectedVet}>
+                <Select
+                  menuPlacement="bottom"
+                  name="user"
+                  options={vetsQuery.data.map((user) => ({
+                    label: user?.value,
+                    value: user?.id,
+                  }))}
+                  disabled={!modal}
+                  onlyOneValue
+                  onChangeSelect={async (value) => {
+                    const selectedUser = vetsQuery.data.find(
+                      (user) => user.id === value
+                    );
+
+                    setData({
+                      ...data,
+                      user: selectedUser.value,
+                      selectedVetId: value,
+                    });
+                  }}
+                />
+              </FormHandler>
+            )}
         </div>
         <div className="uk-margin-top uk-flex uk-flex-between">
           <div className="uk-width-1-1">
             <label>Data</label>
             <br />
             <DateTimeField
+              disabled={!modal}
               onChange={(val) => setData({ ...data, executedAt: val })}
               slotProps={{ textField: { variant: "standard" } }}
               value={
@@ -148,12 +160,33 @@ function DeathForm({ modal = false, setModal = () => ({}) }) {
 
         <div className="uk-margin-top">
           <label>Relatório do Óbito</label>
-          <Editor editorState={body} setEditorState={setBody} value={body} />
+          <Editor
+            editorState={body}
+            setEditorState={setBody}
+            value={body}
+            readOnly={!modal}
+          />
         </div>
 
-        <FormFooter setVisible={setModal} />
+        {modal && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              onClick={handleSubmittion}
+              text="Salvar"
+              style={{ marginRight: "10px" }}
+            />
+
+            <Button
+              onClick={() => {
+                setModal(false);
+              }}
+              style={{ backgroundColor: "#ff7b5a" }}
+              text="Cancelar"
+            />
+          </div>
+        )}
       </>
-    </form>
+    </FormHandler>
   );
 }
 

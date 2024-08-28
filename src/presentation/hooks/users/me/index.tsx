@@ -6,10 +6,7 @@ import { RemoteLoadUserDashboard } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
 export function useMe() {
-
-  const { GetUser } = useAuthAdmin()
-
-  const user = GetUser<User>()
+  const { user } = useAuthAdmin();
 
   return useSWR(
     "Me" + user?.user?.id,

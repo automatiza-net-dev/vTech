@@ -1,12 +1,12 @@
 import { Vaccine } from "@/domain";
 
-export type LoadAllVaccines = {
-  loadAllVaccines: (
-    params: LoadAllVaccines.Params
-  ) => Promise<LoadAllVaccines.Model>;
+export type LoadAllPatientVaccines = {
+  loadAllPatientVaccines: (
+    params: LoadAllPatientVaccines.Params
+  ) => Promise<LoadAllPatientVaccines.Model>;
 };
 
-export namespace LoadAllVaccines {
+export namespace LoadAllPatientVaccines {
   export type Params = {
     patient?: string;
   };

@@ -143,7 +143,6 @@ export const DepositMovements = memo(() => {
 
   const depositsQuery = useDeposits("movements", {
     unitId: clinic?.id,
-    type: "Venda",
   });
   const depositMovementsQuery = useDepositMovements(searchParams, reload);
 
@@ -303,11 +302,14 @@ export const DepositMovements = memo(() => {
                 }
               >
                 <Option value=""> Todos </Option>
-                {depositsQuery.data?.map((elem) => (
-                  <Option value={elem.id}>
-                    {elem.description} - ({elem.id})
-                  </Option>
-                ))}
+                {depositsQuery.data?.map(
+                  (elem) =>
+                    elem.type === "Venda" && (
+                      <Option value={elem.id}>
+                        {elem.description} - ({elem.id})
+                      </Option>
+                    )
+                )}
               </Select>
             </InputBox>
           </Col>
@@ -576,11 +578,14 @@ export const DepositMovements = memo(() => {
                   }))
                 }
               >
-                {depositsQuery.data?.map((elem) => (
-                  <Option value={elem.id}>
-                    {elem.description} - ({elem.id})
-                  </Option>
-                ))}
+                {depositsQuery.data?.map(
+                  (elem) =>
+                    elem?.type === "Venda" && (
+                      <Option value={elem.id}>
+                        {elem.description} - ({elem.id})
+                      </Option>
+                    )
+                )}
               </Select>
             </Form.Item>
 

@@ -26,7 +26,8 @@ import { userService } from "@/OLD/services/user.service";
 import { sessionService } from "@/OLD/services/session.service";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
-import { useAuthAdmin } from "infinity-forge";
+import { InfraTypes, container } from "@/container";
+import { useAuthAdmin, useQuery, useQueryClient } from "infinity-forge";
 
 const icons = [
   {
@@ -62,15 +63,19 @@ export const Navbar = React.memo(function Navbar({
   const [notificationsOpen, setNotificationsOpen] = React.useState(false);
   const [data, setData] = React.useState({});
 
-  
   const router = useRouter();
 
-  const { signOut } = useAuthAdmin()
+  const { signOut } = useAuthAdmin();
 
   React.useEffect(() => {
-    userService.getUser().then((res) => {
-      setData(res);
-    });
+    async () => {
+      const storage = container.get<Storate>(TypesAutomatiza.storage);
+      const ipAddres = storage.get<"ip">("ip");
+
+      console.log("foifofififo");
+
+      return await api.get(`/auth/me?ip=${ipAddres.value}`);
+    };
   }, []);
 
   return (
@@ -113,7 +118,10 @@ export const Navbar = React.memo(function Navbar({
           <div className="profile uk-margin-large-left">
             <div className="profile-img">
               <img
-                     src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+                src={
+                  process.env.NEXT_PUBLIC_API +
+                  `/assets/logo-${process.env.client}.png`
+                }
                 width="30px"
                 height="30px"
               />
@@ -146,7 +154,7 @@ export const Navbar = React.memo(function Navbar({
                   </option>
                   <option
                     onClick={() => {
-                      signOut()
+                      signOut();
                       router.push("/");
                     }}
                   >

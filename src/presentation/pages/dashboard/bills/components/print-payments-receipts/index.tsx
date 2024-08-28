@@ -1,28 +1,29 @@
 import moment from "moment";
-import { Bill, Payment } from "@/domain";
+import { Bill, Payment, PaymentReceipt } from "@/domain";
 import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
 
 import * as S from "./styles";
 
 export function PrintPaymentReceipts({
   bill,
-  payements,
+  payments,
+  billReceipts,
 }: {
   bill: Bill;
-  payements: Payment[];
+  payments: Payment[];
+  billReceipts: PaymentReceipt;
 }) {
   return (
     <S.PrintPaymentReceipts>
       <PrintHeader unit={bill?.businessUnit} />
       <section className="print-section">
         <h2>Recibo de pagamento</h2>
-
         <div>
           <span>
-            Recebi de {bill?.client?.name}, inscrito no CPF/CNJP{" "}
-            {bill?.client?.tutor?.document} os valores listados abaixo,
-            referentes à venda {bill?.tag} realizada no dia{" "}
-            {moment(bill?.bill_date).format("DD/MM/YYYY")}:
+            Recebi de {billReceipts?.client?.name}, inscrito no CPF/CNJP{" "}
+            {billReceipts?.client?.tutor?.document} os valores listados abaixo,
+            referentes à venda {billReceipts?.tag} realizada no dia{" "}
+            {moment(billReceipts?.bill_date).format("DD/MM/YYYY")}:
           </span>
 
           <table>
@@ -35,20 +36,21 @@ export function PrintPaymentReceipts({
               </tr>
             </thead>
             <tbody>
-              {payements.map((payment) => (
-                <tr key={payment?.id}>
-                  <td>
-                    {moment(payment?.expiration_date).format("DD/MM/YYYY")}
-                  </td>
-                  <td>
-                    {moment(payment?.finance?.payment_date).format(
-                      "DD/MM/YYYY"
-                    )}
-                  </td>
-                  <td>{payment?.total_value}</td>
-                  <td>{payment?.finance?.paymentMethod.description}</td>
-                </tr>
-              ))}
+              {billReceipts?.payments?.length > 0 &&
+                billReceipts?.payments?.map((payment) => (
+                  <tr key={payment?.id}>
+                    <td>
+                      {moment(payment?.expiration_date).format("DD/MM/YYYY")}
+                    </td>
+                    <td>
+                      {moment(payment?.finance?.payment_date).format(
+                        "DD/MM/YYYY"
+                      )}
+                    </td>
+                    <td>{payment?.total_value}</td>
+                    <td>{payment?.finance?.paymentMethod.description}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 

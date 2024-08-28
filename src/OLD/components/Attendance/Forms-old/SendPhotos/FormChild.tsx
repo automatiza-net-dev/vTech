@@ -6,10 +6,12 @@ import React from "react";
 import { PlusOutline } from "styled-icons/evaicons-outline";
 
 // Components
-import { Button, Upload, Input, Select, Popconfirm } from "antd";
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
-const { TextArea } = Input;
+import { Button, FormHandler } from "infinity-forge";
+import { NewAttachments } from "@/presentation";
+import { Upload, Input, Select, Popconfirm } from "antd";
+
 const { Option } = Select;
+const { TextArea } = Input;
 
 function FormChild({
   data,
@@ -22,18 +24,12 @@ function FormChild({
   setVisible,
   modal,
   setPhotosVisible,
-  remove
+  remove,
 }) {
-
   const systemName = process.env.clientName;
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit();
-      }}
-    >
+    <FormHandler isStickyButtons>
       {systemName !== "LiftOne" ? (
         <div>
           <label>Titulo</label>
@@ -78,21 +74,48 @@ function FormChild({
                 setFileList(info.fileList);
               }}
             >
-              <ButtonA>
-                <PlusOutline size={15} className="upload-icon" /> Adicionar
-                anexos
-              </ButtonA>
+              <Button
+                type="button"
+                style={{ marginRight: "10px", marginBottom: "5px" }}
+                text={
+                  <>
+                    {" "}
+                    <PlusOutline size={15} className="upload-icon" /> Adicionar
+                    anexos
+                  </>
+                }
+              />
             </Upload>
           )}
-          <div>
-            <ButtonA onClick={() => setPhotosVisible(true)}>
-              Visualizar arquivos anexados
-            </ButtonA>
+          <div style={{ display: "flex" }}>
+            <Button
+              type="button"
+              style={{ marginRight: "10px", marginBottom: "5px" }}
+              onClick={() => setPhotosVisible(true)}
+              text={"Visualizar arquivos anexados"}
+            />
+            {!modal && <NewAttachments setFileList={setFileList} />}
           </div>
         </div>
       </div>
+      <hr />
       <footer className="uk-flex uk-flex-right">
         <div className="uk-margin-top uk-flex">
+          <Button
+            onClick={submit}
+            loading={loading}
+            className="uk-margin-small-right"
+            text={"salvar"}
+          />
+
+          {modal && (
+            <Button
+              onClick={() => setVisible(false)}
+              text={"Cancelar"}
+              style={{ marginRight: "10px", backgroundColor: "#ff7b5a" }}
+            />
+          )}
+
           {!modal && (
             <Popconfirm
               title="Deseja remover este registro?"
@@ -100,27 +123,16 @@ function FormChild({
               loading={loading}
             >
               <Button
-                htmlType="button"
-                type="danger"
-                className="uk-margin-small-right"
-              >
-                Excluir
-              </Button>
+                text={"Excluir"}
+                type="button"
+                style={{ backgroundColor: "#ff7b5a" }}
+              />
             </Popconfirm>
           )}
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            className="uk-margin-small-right"
-          >
-            salvar
-          </Button>
-          <Button onClick={() => setVisible(false)}> Cancelar </Button>
         </div>
       </footer>
-    </form>
+    </FormHandler>
   );
-};
+}
 
 export default FormChild;

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { memo, useState, useEffect } from "react";
 
 import {
   useFlowReports,

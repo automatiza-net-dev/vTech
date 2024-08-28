@@ -18,7 +18,7 @@ const Maintenance = memo(function Maintenance() {
 
   const router = useRouter();
 
-  const { treatment } = useTreatment(router.query.innerpage, reload);
+  const { treatment } = useTreatment(router.query.id, reload);
 
   return (
     <Container className="uk-padding">

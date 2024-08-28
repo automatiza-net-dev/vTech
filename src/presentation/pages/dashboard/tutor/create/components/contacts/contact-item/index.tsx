@@ -12,8 +12,8 @@ export function ContactItem({
 }: Contact & { index: number }) {
   const { values, setFieldValue } = useFormikContext<{ contacts: Contact[] }>();
   const types = [
-    { value: "email", label: "Email" },
-    { value: "celular", label: "Celular" },
+    { value: "email", label: "Email*" },
+    { value: "celular", label: "Celular*" },
     { value: "residencial", label: "Tel. Residencial" },
     { value: "comercial", label: "Tel. Comercial" },
     { value: "recado", label: "Tel. Recado" },
@@ -41,7 +41,7 @@ export function ContactItem({
       {type === "email" ? (
         <Input
           name={`contacts[${index}].contact`}
-          label="Email"
+          label="Email*"
           readOnly={notGiven}
         />
       ) : (

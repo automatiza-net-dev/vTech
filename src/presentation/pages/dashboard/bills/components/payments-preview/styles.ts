@@ -12,5 +12,9 @@ export const PaymentsPreview = styled("section")`
     div {
       display: flex;
     }
+
+    button {
+      margin-right: 10px;
+    }
   }
 `;

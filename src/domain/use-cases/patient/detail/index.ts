@@ -6,6 +6,7 @@ export * from "./entities";
 export * from "./vaccines";
 export * from "./attendace";
 export * from "./load-beds";
+export * from "./attachments";
 export * from "./change-weight";
 export * from "./hospitalization";
 export * from "./request-printing";

@@ -3,7 +3,7 @@
 import React, { memo } from "react";
 
 // Components
-import { Button } from "antd";
+import { Button } from "infinity-forge";
 
 // Utils
 import { Print } from "@/OLD/utils/generalUtils";
@@ -17,29 +17,22 @@ const FooterForm = memo(function FooterForm({
     <footer className="uk-margin-top">
       <hr />
       <div className="uk-flex uk-flex-right">
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="uk-margin-small-right"
-        >
-          Salvar
-        </Button>
+        <Button type="submit" text="Salvar" style={{ marginRight: "10px" }} />
+
         {print && (
           <Button
-            className="uk-margin-small-right"
             onClick={() => Print(Print(toPrint))}
-          >
-            {" "}
-            Imprimir{" "}
-          </Button>
+            text="Imprimir"
+            style={{ marginRight: "10px" }}
+          />
         )}
         <Button
           onClick={() => {
             setVisible(false);
           }}
-        >
-          Cancelar
-        </Button>
+          style={{ backgroundColor: "#ff7b5a" }}
+          text="Cancelar"
+        />
       </div>
     </footer>
   );

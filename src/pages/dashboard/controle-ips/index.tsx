@@ -11,13 +11,10 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function IpAccessControlPage() {
-
-  return <PrivatePageAdmin>
-    <Page />
-  </PrivatePageAdmin>
+  return <Page />;
 }
 
 function Page() {
@@ -30,7 +27,8 @@ function Page() {
 
   const ipsQuery = useQuery({
     queryKey: ["ip-access"],
-    queryFn: async () =>  await api.get("/ip-access/search", {}).then(({ data }) => data),
+    queryFn: async () =>
+      await api.get("/ip-access/search", {}).then(({ data }) => data),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

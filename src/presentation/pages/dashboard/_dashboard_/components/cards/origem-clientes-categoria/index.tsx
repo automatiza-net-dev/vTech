@@ -6,14 +6,24 @@ import { TableLevels } from "../subgrupos-detalhado/styles";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 export function OrigemClientesCategoria(props) {
+  const dynamicKeys = {
+    data:
+      props.name === "OrigemClientesOportunidades"
+        ? props.items
+        : props.items.categories,
+    field:
+      props.name === "OrigemClientesOportunidades" ? "total" : "faturamento",
+    label: props.name === "OrigemClientesOportunidades" ? "Qtd" : "Fatur.",
+  };
+
   if (
-    !(props.items as any).categories ||
-    !Array.isArray((props.items as any).categories) ||
-    (props.items as any).categories.length === 0
+    !dynamicKeys.data ||
+    !Array.isArray(dynamicKeys.data) ||
+    dynamicKeys.data.length === 0
   ) {
     return <></>;
   }
-
+  console.log(dynamicKeys);
   return (
     <Error name="OrigemClientesCategoria">
       <TableLevels>
@@ -22,24 +32,20 @@ export function OrigemClientesCategoria(props) {
           <thead>
             <tr>
               <th>Descrição</th>
-              <th>Fatur.</th>
+              <th>{dynamicKeys.label}</th>
               <th>%</th>
             </tr>
           </thead>
 
           <tbody>
-            {(props.items as any).categories.map((item) => (
+            {dynamicKeys.data.map((item) => (
               <React.Fragment key={item.id}>
                 <tr className="primary">
                   <td>
                     <span>{item?.categoria || "-"}</span>
                   </td>
-                  <td>{currencyFormatter(item?.faturamento) || "0,00"}</td>
-                  <td>
-                    {item?.porcentagem
-                      ? item?.porcentagem.toFixed(2) + "%"
-                      : "-"}
-                  </td>
+                  <td>{item[dynamicKeys.field] || "0,00"}</td>
+                  <td>{item?.porcentagem}</td>
                 </tr>
 
                 {item?.grupos.map((group) => (
@@ -48,12 +54,8 @@ export function OrigemClientesCategoria(props) {
                       <td>
                         <span>{group?.grupo || "-"}</span>
                       </td>
-                      <td>{currencyFormatter(group?.total) || "0,00"}</td>
-                      <td>
-                        {item?.porcentagem
-                          ? item?.porcentagem.toFixed(2) + "%"
-                          : "-"}
-                      </td>
+                      <td>{group?.total || "0,00"}</td>
+                      <td>{group?.porcentagem}</td>
                     </tr>
 
                     {group?.origem_clientes.map((origin) => (
@@ -61,12 +63,8 @@ export function OrigemClientesCategoria(props) {
                         <td>
                           <span>{origin?.origem || "-"}</span>
                         </td>
-                        <td>{currencyFormatter(origin?.total) || "0,00"}</td>
-                        <td>
-                          {origin?.porcentagem
-                            ? origin?.porcentagem.toFixed(2) + "%"
-                            : "-"}
-                        </td>
+                        <td>{origin?.total || "0,00"}</td>
+                        <td>{origin?.porcentagem}</td>
                       </tr>
                     ))}
                   </React.Fragment>

@@ -1,9 +1,9 @@
+import { container, TypesAutomatiza } from "@/container";
 import api from "@/OLD/services";
-import axios from "axios";
 
 const getUser = async () => {
-  const IPAddress = await axios.get("https://api.ipify.org/");
-  return await api.get(`/auth/me?ip=${IPAddress?.data}`);
+  const ip = await container.get<any>(TypesAutomatiza.storage).get("ip")
+  return await api.get(`/auth/me?ip=${ip?.value}`);
 };
 
 const getOneUser = async (id) => {

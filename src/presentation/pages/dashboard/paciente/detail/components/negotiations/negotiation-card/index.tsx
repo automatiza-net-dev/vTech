@@ -14,11 +14,13 @@ import { GerarDocumentoVenda } from "@/OLD/components/Bill/Actions/gerar-documen
 import { NegotiationCardProps } from "./interfaces";
 
 import * as S from "./styles";
+import { ItemsExecutions } from "./components/itens-executions";
 
 export function NegotiationCard(props: NegotiationCardProps) {
   const { confirmBill, queryClient, router, createToast } = useNegotiation();
 
-  const { id, budgets, negotiation, bills, isFetching, documents } = props;
+  const { id, budgets, negotiation, bills, isFetching, documents, treatments } =
+    props;
 
   const open = negotiation?.id === id;
 
@@ -79,7 +81,7 @@ export function NegotiationCard(props: NegotiationCardProps) {
           />
         )}
 
-        <div className="document_list">
+        <div className="list">
           <div className="head">
             <h3>Documentos</h3>
             <h3 className="dados">Dados impressão</h3>
@@ -93,6 +95,26 @@ export function NegotiationCard(props: NegotiationCardProps) {
               ))}
           </div>
         </div>
+
+        {treatments && treatments.length > 0 && (
+          <div className="list">
+            <div className="head">
+              <h3>Itens e Execuções</h3>
+              <div></div>
+            </div>
+
+            <div className="body">
+              {treatments.map((treatment) =>
+                treatment?.executions.map((execution) => (
+                  <ItemsExecutions
+                    execution={execution}
+                    key={"treatment-card" + execution?.schedule_id}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </NegotiationInfos>
     </S.NegotiationCard>
   );

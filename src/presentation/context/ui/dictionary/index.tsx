@@ -1,6 +1,6 @@
-import { useAuthAdmin,   } from "infinity-forge";
+import { useAuthAdmin } from "infinity-forge";
 
-import { callApiOneTime, remote } from "@/presentation";
+import { callApiOneTime } from "@/presentation";
 import { RemoteConfiguration } from "@/data";
 import { dictionaryStore } from "./store";
 import { useQuery } from "react-query";
@@ -13,46 +13,51 @@ export function useDictionary() {
       ? "cliente-veterinaria"
       : "cliente-estetica";
 
-      const dictionary = dictionaryStore(state => state.dictionary)
+  const dictionary = dictionaryStore((state) => state.dictionary);
 
   function getWord(word) {
-    if(dictionary && dictionary[lang] && dictionary[lang][word] && dictionary[lang][word][client]) {
+    if (
+      dictionary &&
+      dictionary[lang] &&
+      dictionary[lang][word] &&
+      dictionary[lang][word][client]
+    ) {
       return dictionary[lang][word][client] as string;
     }
 
-    return ""
+    return "";
   }
 
   return { getWord, isFetching: false };
 }
 
-
 export function DictionaryQueryProvider({ children }) {
-  const {user} = useAuthAdmin()
+  const { user } = useAuthAdmin();
 
- useQuery({
+  useQuery({
     queryKey: "Dictionary",
     queryFn: async () => {
       try {
-        const t = await container.get<RemoteConfiguration>(TypesAutomatiza.RemoteConfiguration).loadAllDictionary()
+        const t = await container
+          .get<RemoteConfiguration>(TypesAutomatiza.RemoteConfiguration)
+          .loadAllDictionary();
 
         dictionaryStore.setState({ dictionary: t });
-  
+
         return t;
-      }catch(err) {
+      } catch (err) {
         dictionaryStore.setState({ dictionary: {} });
-        return {}
+        return {};
       }
-    
     },
-    enabled: !!(user["user"].user),
-    ...callApiOneTime
+    enabled: !!user,
+    ...callApiOneTime,
   });
 
-  const dictionary = dictionaryStore(state => state.dictionary)
+  const dictionary = dictionaryStore((state) => state.dictionary);
 
-  if(dictionary) {
-    return children
+  if (dictionary) {
+    return children;
   }
 
   return <></>;

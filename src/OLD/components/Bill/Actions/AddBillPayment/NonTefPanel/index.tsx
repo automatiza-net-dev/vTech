@@ -33,6 +33,7 @@ const NonTefPanel = memo(function NonTefPanel({
             }`}
             onClick={() => {
               setFormData({
+                budgetPaymentId: null,
                 installmentsList: method?.flags[0]?.installments,
                 expirationDate: formData?.expirationDate,
                 paymentMethodId: method?.id,

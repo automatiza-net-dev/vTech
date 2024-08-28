@@ -4,7 +4,6 @@ import { MenuItem, TextField } from "@mui/material";
 import { FormHandler, Input, useAuthAdmin } from "infinity-forge";
 
 import { BusinessUnit, User } from "@/domain";
-import { LayoutAdmin } from "../../layout";
 import { ResumeInformations } from "./resume-informations";
 import { useLoadUsersController } from "@/presentation";
 
@@ -13,13 +12,11 @@ import * as S from "./styles";
 export function DashboardAdmin() {
   const [value, setValue] = useState<BusinessUnit[]>([]);
 
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
 
   const handleChangeMultiple = (event) => {
     setValue(event.target.value);
   };
-
-  const user = GetUser<User>()
 
   const dataAtual = new Date();
 
@@ -50,56 +47,52 @@ export function DashboardAdmin() {
 
   return (
     <S.DashboardAdmin>
-      <LayoutAdmin disableBreadcrumb>
-        <div className="top">
-          <div className="form">
-            <FormHandler
-              initialData={{ de: formatoData, ate: formatoDataFinal }}
-            >
-              <div>
-                <h5>Clinicas</h5>
+      <div className="top">
+        <div className="form">
+          <FormHandler initialData={{ de: formatoData, ate: formatoDataFinal }}>
+            <div>
+              <h5>Clinicas</h5>
 
-                <div className="row">
-                  <div className="clinicas">
-                    <TextField
-                      classes={{ root: "" }}
-                      select
-                      name="userRoles"
-                      id="userRoles"
-                      variant="outlined"
-                      SelectProps={{
-                        multiple: true,
-                        value,
-                        onChange: handleChangeMultiple,
-                      }}
-                    >
-                      {userClinicas?.map((buisness, index) => (
-                        <MenuItem key={buisness.id + index} value={buisness.id}>
-                          {buisness.identification}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
+              <div className="row">
+                <div className="clinicas">
+                  <TextField
+                    classes={{ root: "" }}
+                    select
+                    name="userRoles"
+                    id="userRoles"
+                    variant="outlined"
+                    SelectProps={{
+                      multiple: true,
+                      value,
+                      onChange: handleChangeMultiple,
+                    }}
+                  >
+                    {userClinicas?.map((buisness, index) => (
+                      <MenuItem key={buisness.id + index} value={buisness.id}>
+                        {buisness.identification}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </div>
               </div>
+            </div>
 
-              <div>
-                <h5>Periodo</h5>
+            <div>
+              <h5>Periodo</h5>
 
-                <div className="row">
-                  <Input type="date" name="de" />
-                  á
-                  <Input type="date" name="ate" />
-                </div>
+              <div className="row">
+                <Input type="date" name="de" />
+                á
+                <Input type="date" name="ate" />
               </div>
-            </FormHandler>
+            </div>
+          </FormHandler>
 
-            <div className="charts-box"></div>
-          </div>
-
-          <ResumeInformations />
+          <div className="charts-box"></div>
         </div>
-      </LayoutAdmin>
+
+        <ResumeInformations />
+      </div>
     </S.DashboardAdmin>
   );
 }

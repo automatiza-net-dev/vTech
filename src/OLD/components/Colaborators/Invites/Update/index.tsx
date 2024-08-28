@@ -3,7 +3,8 @@
 import React, { useEffect, useState, memo, useCallback } from "react";
 
 // Components
-import { Modal, notification } from "antd";
+import { useToast } from "infinity-forge";
+import { Modal } from "antd";
 import { Button } from "@/OLD/components/mini-components/Button";
 
 //Services
@@ -22,15 +23,20 @@ const EditInvite = memo(function EditInvite({
   const [roles, setRoles] = useState([]);
   const [clinics, setClinics] = useState([]);
 
+  const { createToast } = useToast();
+
   const getInvite = useCallback(() => {
     setLoading(true);
     clinicService
       .getInvites(false, id)
-      .then((res) => setData(res.data))
+      .then((res) => {
+        setData(res.data);
+      })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um problema ao exibir as informações do convite",
+          status: "error",
         });
       })
       .finally(() => {
@@ -42,28 +48,33 @@ const EditInvite = memo(function EditInvite({
     setLoading(true);
     adminService
       .getAllRoles()
-      .then((res) => setRoles(res.data))
+      .then((res) => {
+        setRoles(res.data);
+        setLoading(false);
+      })
       .catch((_err) => {
         setLoading(false);
-        notification.error({
+        return createToast({
           message: "Houve um problema ao buscar os cargos disponíveis",
+          status: "error",
         });
-      })
-      .finally(() => setLoading(false));
+      });
   }, []);
 
   const getUnits = useCallback(() => {
     setLoading(true);
     clinicService
       .getClinicsByUser()
-      .then((res) => setClinics(res.data))
-      .catch(() => {
-        return notification.error({
-          message: "Houve um problema ao buscar as unidades disponíveis...",
-        });
-      })
-      .finally(() => {
+      .then((res) => {
         setLoading(false);
+        setClinics(res.data);
+      })
+      .catch(() => {
+        setLoading(false);
+        return createToast({
+          message: "Houve um problema ao buscar as unidades disponíveis...",
+          status: "error",
+        });
       });
   }, []);
 
@@ -74,25 +85,26 @@ const EditInvite = memo(function EditInvite({
     delete data?.created_at;
     delete data?.id;
     delete data?.updated_at;
-    delete data?.user_id;
+    delete data?.userId;
 
     clinicService
       .updateInvite(id, data)
       .then((_res) => {
-        return notification.success({
-          message: "Convite atualizado com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao atualizar o convite...",
-        });
-      })
-      .finally(() => {
         setLoading(false);
         setReload(!reload);
         setVisible(false);
+        return createToast({
+          message: "Convite atualizado com sucesso!",
+          status: "success",
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+
+        return createToast({
+          message: "Houve um erro ao atualizar o convite...",
+          status: "error",
+        });
       });
   }, [id, data]);
 
@@ -113,6 +125,7 @@ const EditInvite = memo(function EditInvite({
         <div className="uk-margin">
           <label htmlFor="email">Email</label>
           <input
+            disabled
             className="uk-input"
             id="email"
             required
@@ -128,7 +141,7 @@ const EditInvite = memo(function EditInvite({
             id="role"
             required
             onChange={(e) => {
-              setData({ ...data, role_id: e.target.value });
+              setData({ ...data, roleId: e.target.value });
             }}
           >
             {roles?.map((role, key) => {
@@ -147,15 +160,13 @@ const EditInvite = memo(function EditInvite({
             id="clinic"
             required
             onChange={(e) => {
-              setData({ ...data, business_unit_id: e.target.value });
+              setData({ ...data, businessUnitId: e.target.value });
             }}
           >
             {(clinics || []).map((clinic, key) => {
               return (
                 <option className="uk-option" key={key} value={clinic.id}>
-                  {clinic.fantasy_name === ""
-                    ? "Sem nome"
-                    : clinic.fantasy_name}
+                  {clinic.fantasyName === "" ? "Sem nome" : clinic.fantasyName}
                 </option>
               );
             })}

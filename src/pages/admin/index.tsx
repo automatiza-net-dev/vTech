@@ -1,10 +1,9 @@
-import { DashboardAdmin } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { DashboardAdmin, LayoutAdmin } from "@/presentation";
 
 export default function DashboardFranchisorPage() {
   return (
-    <PrivatePageAdmin  roleUser="admin">
+    <LayoutAdmin disableBreadcrumb>
       <DashboardAdmin />
-    </PrivatePageAdmin>
+    </LayoutAdmin>
   );
 }

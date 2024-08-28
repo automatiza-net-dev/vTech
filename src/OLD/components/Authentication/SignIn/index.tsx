@@ -19,11 +19,14 @@ export function SignIn() {
 
   useEffect(() => {
     if (process.browser) {
-      fetch("https://api.ipify.org/")
-        .then((res) => res.text())
-        .then((res) => {
-          setData((prev) => ({ ...prev, ip: res }));
-        });
+      async () => {
+        const storage = container.get<Storage>(TypesAutomatiza.storage);
+        const ipStorage = await storage.get<"ip">("ip");
+        const ip = ipStorage?.value;
+        if (ip) {
+          setData((prev) => ({ ...prev, ip }));
+        }
+      };
     }
   }, []);
 
@@ -53,7 +56,7 @@ export function SignIn() {
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
           }));
 
-        await container.get<Storage>(TypesAutomatiza.storage).set("user", {
+        await container.get<Storage>(TypesAutomatiza.storage).set("token", {
           value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
         });
 
@@ -64,7 +67,7 @@ export function SignIn() {
           });
         }
 
-        loadUser({ roleUser: "user" });
+        loadUser();
       } catch (err: any) {
         notification.error({
           message: "Erro",

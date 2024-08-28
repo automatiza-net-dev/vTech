@@ -15,7 +15,7 @@ import { dataTeste } from "./mockData";
 import { Container } from "./styles";
 import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
-export const Absence = memo(({ edit }) => {
+export const Absence = ({ edit }) => {
   const router = useRouter();
   const userId = router?.query?.id;
   const { colaborator } = useColaborator(userId, false);
@@ -98,4 +98,4 @@ export const Absence = memo(({ edit }) => {
       )}
     </>
   );
-});
+};

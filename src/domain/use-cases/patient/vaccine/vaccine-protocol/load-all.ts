@@ -1,7 +1,7 @@
 import { VaccineProtocol } from "@/domain";
 
 export type LoadVaccineProtocols = {
-  loadAll: (params: LoadVaccineProtocols.Params) => Promise<LoadVaccineProtocols.Model>;
+  loadAllProtocols: (params: LoadVaccineProtocols.Params) => Promise<LoadVaccineProtocols.Model>;
 };
 
 export namespace LoadVaccineProtocols {

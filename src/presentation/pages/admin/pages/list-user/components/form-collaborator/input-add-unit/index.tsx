@@ -1,10 +1,11 @@
 import { useFormikContext } from "formik";
-import { Select, Tooltip, Icon } from "infinity-forge";
+import { Select, Icon } from "infinity-forge";
 
 import { Unit } from "./unit";
 import { useLoadAllBusinessUnits } from "@/presentation";
 
 import * as S from "./styles";
+import { Tooltip } from "antd";
 
 export function InputAddUnit() {
   const { values, setFieldValue, setFieldError } = useFormikContext<any>();
@@ -57,8 +58,8 @@ export function InputAddUnit() {
         )}
 
         <Tooltip
-          content="Adicionar"
-          trigger={
+          title="Adicionar"
+          children={
             <button
               type="button"
               onClick={addUnit}
@@ -67,7 +68,6 @@ export function InputAddUnit() {
               <Icon name="IconPlusSharp" fill="#000" />
             </button>
           }
-          // isOpen={!select}
         />
       </div>
 

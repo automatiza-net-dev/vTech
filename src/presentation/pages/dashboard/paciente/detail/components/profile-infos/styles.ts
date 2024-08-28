@@ -11,5 +11,10 @@ export const ProfileInfos = styled("div")`
     gap: 15px;
     width: 100%;
     margin-left: 42px;
+
+    > div {
+      border-radius: 5px;
+      border: 1px solid rgb(225, 225, 225);
+    }
   }
 `;

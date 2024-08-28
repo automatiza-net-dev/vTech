@@ -12,11 +12,14 @@ import {
   useToast,
 } from "infinity-forge";
 
+import { useQueryClient } from "react-query";
+
 import { Patient } from "@/domain";
 import { RemotePatient } from "@/data";
 import {
   FormCreateTutor,
   useLoadPatient,
+  useScheduling,
   useVerifyPermissions,
 } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
@@ -30,6 +33,9 @@ import {
 } from "./components";
 
 import * as S from "./styles";
+import { InputPhoto } from "../../tutor/create/components/form/input-photo";
+import { defineRequireFields } from "../../tutor/create/components/form/utils/define-required-fields";
+import moment from "moment";
 
 function Form({
   origin = "Cadastro",
@@ -48,6 +54,8 @@ function Form({
 
   const { createToast } = useToast();
 
+  const isRegister = origin === "Cadastro";
+
   const initialData = data
     ? {
         ...data,
@@ -55,7 +63,7 @@ function Form({
         death: String(data.death),
         castrated: String(data.castrated),
         holderId: data?.tutor?.id,
-        deathDate: data.death_date,
+        deathDate: new Date(data?.deathDate),
         photo: [
           {
             id: 1,
@@ -72,6 +80,34 @@ function Form({
     return <></>;
   }
 
+  async function handleSubmit(formData) {
+    const payload = {
+      ...formData,
+      origin,
+      photo:
+        formData?.photo &&
+        Array.isArray(formData?.photo) &&
+        formData.photo.find((photo) => photo?.file)
+          ? formData?.photo[0]?.file
+          : undefined,
+    };
+
+    const response = await container
+      .get<RemotePatient>(TypesAutomatiza.RemotePatient)
+      [data ? "edit" : "create"](payload);
+
+    patientId && (await refetch());
+
+    onSuccess && (await onSuccess(response));
+
+    createToast({
+      status: "success",
+      message: patientId ? "Alterado com sucesso" : "Criado com sucesso",
+    });
+
+    setOpen && setOpen(false);
+  }
+
   return (
     <S.Create>
       <FormHandler
@@ -79,68 +115,45 @@ function Form({
         initialData={initialData}
         button={{ text: "SALVAR" }}
         disableEnterKeySubmitForm
-        onSucess={async (formData) => {
-          const payload = {
-            ...formData,
-            origin,
-            photo:
-              formData?.photo &&
-              Array.isArray(formData?.photo) &&
-              formData.photo.find((photo) => photo?.file)
-                ? formData?.photo[0]?.file
-                : undefined,
-          };
-
-          await container
-            .get<RemotePatient>(TypesAutomatiza.RemotePatient)
-            [data ? "edit" : "create"](payload);
-
-          patientId && (await refetch());
-
-          createToast({
-            status: "success",
-            message: patientId ? "Alterado com sucesso" : "Criado com sucesso",
-          });
-
-          onSuccess && onSuccess(formData);
-
-          setOpen && setOpen(false);
-
-          // queryClient.invalidateQueries({
-          //   queryKey: ["RemoteLoadAllPatientTutor", patientFilters],
-          // });
-          // queryClient.invalidateQueries({
-          //   queryKey: ["RemoteLoadSchedulesPatients", patientFilters],
-          // });
-        }}
+        onSucess={handleSubmit}
       >
         <h2 className="font-22-bold">
           {patientId ? `Editar - ${data?.name}` : "Novo Pet"}
         </h2>
 
-        <div className="row-1">
-          <div className="name">
-            <Input name="name" label="Nome" />
+        <div className="row-main">
+          <InputPhoto name="photo" isLocalFile multiple />
+
+          <div>
+            <div className="row">
+              <Input name="name" label="Nome*" />
+
+              <InputBirthday patientId={patientId} />
+
+              <InputSwitch label="Comunidade Sanclá" name="community" />
+
+              {data && <InputSwitch label="Ativo" name="active" />}
+            </div>
+
+            <div className="row">
+              <SelectRace isRegister={isRegister} />
+
+              <Select
+                label={isRegister ? "Gênero" : "Gênero*"}
+                name="gender"
+                options={[
+                  { label: "Fêmea", value: "female" },
+                  { value: "male", label: "Macho" },
+                ]}
+                onlyOneValue
+              />
+
+              <SelectHair />
+            </div>
           </div>
-
-          <SelectRace />
-
-          <Select
-            label="Gênero"
-            name="gender"
-            options={[
-              { label: "Fêmea", value: "female" },
-              { value: "male", label: "Macho" },
-            ]}
-            onlyOneValue
-          />
-
-          <SelectHair />
         </div>
 
-        <div className="row-2">
-          <InputBirthday patientId={patientId} />
-
+        <div className="row">
           <Select
             label="O paciente é vacinado?"
             name="vaccineOrigin"
@@ -177,22 +190,12 @@ function Form({
             onlyOneValue
           />
 
-          <InputSwitch label="Comunidade Sanclá" name="community" />
-        </div>
-
-        <div className="row-3">
-          {data && <InputDeath />}
-
-          <Input name="tags" label="Tag" />
-
           <Input label="Microchip" name="microchip" />
 
-          <div>{data && <InputSwitch label="Ativo" name="active" />}</div>
+          <Input name="tags" label="Tag" />
         </div>
 
-        <div className="file">
-          <InputFile label="Foto do pet" name="photo" isLocalFile />
-        </div>
+        {data && <InputDeath />}
 
         <Tutors origin={origin} />
       </FormHandler>
@@ -206,6 +209,7 @@ export function FormCreatePatient({
   trigger,
   patientId,
   onSuccess,
+  buttonText,
   initialDataForm,
 }: {
   origin?: "Cadastro" | "Crm" | "Agenda";
@@ -213,6 +217,7 @@ export function FormCreatePatient({
   onSuccess?: (data: any) => void;
   trigger?: JSX.Element;
   patientId?: Patient["id"];
+  buttonText?: string;
   initialDataForm?: {
     holders?: { id: string; main: boolean }[];
   };
@@ -266,7 +271,7 @@ export function FormCreatePatient({
           </button>
         ) : (
           <Button
-            text="Novo Paciente"
+            text={buttonText || "Novo Paciente"}
             type="button"
             onClick={() => setOpen(true)}
           />

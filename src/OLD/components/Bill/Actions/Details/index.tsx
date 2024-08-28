@@ -41,6 +41,9 @@ import { MdOutlineCancel, MdOutlineSyncDisabled } from "react-icons/md";
 import { TbAlertTriangle } from "react-icons/tb";
 import { RiPrinterCloudLine } from "react-icons/ri";
 import { fiscalDocumentService } from "../../../../../OLD/services/fiscal-document.service";
+import moment from "moment";
+import { Icon } from "infinity-forge";
+import { CheckIcon, CloseIcon } from "./icons";
 
 const verifyErrors = (message) => {
   if (!message) {
@@ -346,29 +349,112 @@ const Details = memo(function Details({ billId, setVisible }) {
     }
   );
 
+  const getAuthData = (item) => {
+    if (!item) return;
+
+    const {
+      courtesyApprovedUser,
+      approved,
+      courtesy,
+      max_discount,
+      courtesyIssuedUser,
+      courtesy_approved_at,
+      created_at,
+    } = item;
+
+    const approvalDate = moment(courtesy_approved_at).format("DD/MM/YYYY");
+
+    if (approved) {
+      return (
+        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <CheckIcon />
+          Aprovado por {courtesyApprovedUser.name} em {approvalDate}
+        </span>
+      );
+    }
+
+    if ((courtesy || max_discount) && courtesy_approved_at) {
+      return (
+        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <CloseIcon />
+          Não Aprovado por {courtesyApprovedUser.name} em {approvalDate}
+        </span>
+      );
+    }
+
+    if ((courtesy || max_discount) && courtesy_approved_at === null) {
+      return (
+        <>
+          {" "}
+          <svg
+            version="1.1"
+            id="Layer_1"
+            width={20}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            fill="red"
+          >
+            <g>
+              <g>
+                <path
+                  d="M493.297,159.693c-12.477-30.878-31.231-59.828-56.199-84.792c-24.965-24.969-53.917-43.723-84.795-56.2
+C321.421,6.22,288.611,0,255.816,0c-32.747,0-65.495,6.249-96.311,18.744c-30.813,12.491-59.693,31.244-84.603,56.158
+c-24.915,24.911-43.668,53.792-56.158,84.607C6.249,190.324,0,223.072,0,255.822c0,32.794,6.222,65.602,18.701,96.485
+c12.477,30.877,31.231,59.828,56.2,84.792c24.964,24.967,53.914,43.722,84.792,56.199c30.882,12.48,63.69,18.701,96.484,18.703
+c32.748,0,65.497-6.249,96.315-18.743c30.814-12.49,59.695-31.242,84.607-56.158c24.915-24.912,43.668-53.793,56.158-84.608
+c12.494-30.817,18.743-63.565,18.744-96.315C512,223.383,505.778,190.575,493.297,159.693z M461.611,339.66
+c-10.821,26.683-27.018,51.648-48.659,73.292c-21.643,21.64-46.608,37.837-73.291,48.659
+c-26.679,10.818-55.078,16.241-83.484,16.241c-28.477,0-56.947-5.406-83.688-16.214c-26.744-10.813-51.76-27.008-73.441-48.685
+C77.37,391.27,61.174,366.255,50.363,339.51c-10.808-26.741-16.214-55.212-16.213-83.689c-0.001-28.405,5.423-56.802,16.24-83.482
+c10.821-26.683,27.018-51.648,48.659-73.291c21.643-21.64,46.607-37.837,73.289-48.659c26.678-10.818,55.075-16.242,83.48-16.242
+c28.478,0,56.95,5.405,83.691,16.213c26.745,10.811,51.762,27.007,73.445,48.686c21.678,21.682,37.873,46.697,48.685,73.441
+c10.808,26.741,16.214,55.211,16.214,83.688C477.852,284.582,472.429,312.98,461.611,339.66z"
+                />
+              </g>
+            </g>
+            <g>
+              <g>
+                <path
+                  d="M279.627,256.001l82.693-82.693c6.525-6.525,6.525-17.102,0-23.627c-6.524-6.524-17.102-6.524-23.627,0L256,232.375
+l-82.693-82.693c-6.525-6.524-17.102-6.524-23.627,0c-6.524,6.524-6.524,17.102,0,23.627l82.693,82.693l-82.693,82.693
+c-6.524,6.523-6.524,17.102,0,23.627c6.525,6.524,17.102,6.524,23.627,0L256,279.628l82.693,82.693
+c6.525,6.524,17.102,6.524,23.627,0c6.525-6.524,6.525-17.102,0-23.627L279.627,256.001z"
+                />
+              </g>
+            </g>
+          </svg>
+          Pendente de liberação;
+        </>
+      );
+    }
+  };
+
   const formatProducts = () => {
     setFormatedProducts(
       data?.items
         ?.map((item) => {
-          return (
-            item?.status !== "INATIVA" && {
-              quantity: item?.quantity,
-              productCode: item?.productVariation?.product?.reference_code,
-              description: item?.productVariation?.product?.description,
-              unitPrice: currencyFormatter(item?.unitary_value),
-              discount: currencyFormatter(item?.discount_value),
-              total: currencyFormatter(item?.total_value),
-              delete: () =>
-                data?.status !== "BAIXADA" && (
-                  <Popconfirm
-                    title="Deseja remover este item?"
-                    onConfirm={() => removeBillItem(item?.id)}
-                  >
-                    <DeleteTwoTone twoToneColor="red" />
-                  </Popconfirm>
-                ),
-            }
-          );
+          if (item?.status === "INATIVA") return null;
+
+          return {
+            quantity: item?.quantity,
+            productCode: item?.productVariation?.product?.reference_code,
+            description: item?.productVariation?.product?.description,
+            unitPrice: currencyFormatter(item?.unitary_value),
+            discount: currencyFormatter(item?.discount_value),
+            total: currencyFormatter(item?.total_value),
+            courtesy: item?.courtesy ? "Sim" : "Não",
+            max_discount: item?.max_discount ? "Sim" : "Não",
+            auth_data: getAuthData(item),
+            delete: () =>
+              data?.status !== "BAIXADA" && (
+                <Popconfirm
+                  title="Deseja remover este item?"
+                  onConfirm={() => removeBillItem(item?.id)}
+                >
+                  <DeleteTwoTone twoToneColor="red" />
+                </Popconfirm>
+              ),
+          };
         })
         .filter((item) => !!item)
     );
@@ -421,8 +507,14 @@ const Details = memo(function Details({ billId, setVisible }) {
           accessKey: item.access_key ?? "-",
           recibo: item.authorization_receipt ?? "-",
           status: item.sefaz_status ?? "-",
-          reciboCancelamento: item.cancellation_receipt ?? "-",
-          cancelamentDate: item.cancellation_date ?? "-",
+          reciboCancelamento:
+            item.sefaz_status === "Cancelado"
+              ? item.cancellation_receipt || ""
+              : item.disabling_receipt || "",
+          cancelamentDate:
+            item.sefaz_status === "Cancelado"
+              ? item.cancellation_receipt_date || "-"
+              : item.disabling_receipt_date || "",
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (

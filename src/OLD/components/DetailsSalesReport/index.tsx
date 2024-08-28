@@ -143,11 +143,9 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
           content={() => componentRef?.current}
   /> */}
         <Button
+          onClick={() => handleExport()}
           onMouseOver={() => {
             setReload((prv) => !prv);
-          }}
-          onClick={() => {
-            handleExport();
           }}
         >
           Exportar (Excel)

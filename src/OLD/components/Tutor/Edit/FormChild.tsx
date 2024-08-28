@@ -361,24 +361,23 @@ export function FormChild({
                 requried
               >
                 <FormHandler>
-              <Select
-                menuPlacement="bottom"
-                name="houseType"
-                options={tutorOrigins?.map((origin) => ({
-                  label: origin.description,
-                  value: origin.id
-                }))}
-                onlyOneValue
-                value={data?.clientOriginId}
-                onChangeSelect={async (value) => {
-                  setData({ ...data, clientOriginId: value });
-                    setSelectedOrigin(
-                      tutorOrigins?.find((item) => item?.id === value)
-                    );
-                }}
-              />
-            </FormHandler>
-               
+                  <Select
+                    menuPlacement="bottom"
+                    name="houseType"
+                    options={tutorOrigins?.map((origin) => ({
+                      label: origin.description,
+                      value: origin.id,
+                    }))}
+                    onlyOneValue
+                    value={data?.clientOriginId}
+                    onChangeSelect={async (value) => {
+                      setData({ ...data, clientOriginId: value });
+                      setSelectedOrigin(
+                        tutorOrigins?.find((item) => item?.id === value)
+                      );
+                    }}
+                  />
+                </FormHandler>
               </Form.Item>
               {selectedOrigin?.default && (
                 <Form.Item label="Campanha Mídia" className="uk-width-1-4">

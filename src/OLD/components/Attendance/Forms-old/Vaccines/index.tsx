@@ -9,9 +9,9 @@ import { useLoadPatient } from "@/presentation";
 import moment from "moment";
 import "moment/locale/pt-br";
 
-import { Input, DatePicker, notification, Button } from "antd";
+import { Input, DatePicker } from "antd";
 import { useQueryClient } from "react-query";
-import { Select, FormHandler } from "infinity-forge";
+import { Select, FormHandler, Button, useToast } from "infinity-forge";
 import { Container } from "./styles";
 
 function Vaccines({ modal, setModal, value }) {
@@ -20,6 +20,9 @@ function Vaccines({ modal, setModal, value }) {
   const [allProtocols, setAllProtocols] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState({});
   const [applications, setApplications] = useState([]);
+
+  const { createToast } = useToast();
+
   const patient = useLoadPatient();
   const router = useRouter();
   const eventId = router.query.innerpage;
@@ -48,8 +51,9 @@ function Vaccines({ modal, setModal, value }) {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Não foi possível recuperar os protocolos disponíveis...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -78,28 +82,27 @@ function Vaccines({ modal, setModal, value }) {
         applications: applicationsData,
       })
       .then((_res) => {
+        setLoading(false);
+        setModal(false);
+        setData({});
+        setApplications([]);
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", patient.data?.id],
         });
         queryClient.invalidateQueries({
           queryKey: ["LoadAllVaccines", patient.data?.id],
         });
-
-        return notification.success({
+        return createToast({
           message: "Vacina lançada com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: `${err.response.data.errors[0].message}`,
+          status: "error",
         });
-      })
-      .finally(() => {
-        setLoading(false);
-        setModal(false);
-        setData({});
-        setApplications([]);
       });
   }, [data, selectedProtocol, applications, eventId, patient]);
 
@@ -203,18 +206,22 @@ function Vaccines({ modal, setModal, value }) {
             </section>
           </div>
         )}
-
+        <hr />
         <div className="uk-flex uk-flex-right">
           <div className="uk-margin-top uk-flex uk-width-1-2 uk-flex-right">
             <Button
-              type="primary"
-              className="uk-margin-small-right"
-              htmlType="submit"
+              type="submit"
               loading={loading}
-            >
-              Salvar
-            </Button>
-            <Button onClick={() => setModal(false)}>Cancelar</Button>
+              text="Salvar"
+              style={{ marginRight: "10px" }}
+            />
+
+            <Button
+              onClick={() => setModal(false)}
+              text="Cancelar"
+              type="button"
+              style={{ backgroundColor: "#ff7b5a" }}
+            />
           </div>
         </div>
       </form>

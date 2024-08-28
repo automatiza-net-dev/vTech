@@ -1,12 +1,11 @@
 import React from "react";
-import { SchedulingPage } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { SchedulingPage, LayoutDashboard } from "@/presentation";
+import { PrivatePage } from "infinity-forge";
 
 export default function AgendaPage() {
-  
   return (
-    <PrivatePageAdmin>
+    <LayoutDashboard>
       <SchedulingPage />
-    </PrivatePageAdmin>
+    </LayoutDashboard>
   );
 }

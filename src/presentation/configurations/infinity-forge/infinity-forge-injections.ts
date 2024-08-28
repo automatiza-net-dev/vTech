@@ -10,6 +10,7 @@ export const InfinityForgeInjections: InfraInjectionContextType["InjectedRemotes
       ) as any,
     },
     users: {
+      getRole: async () => ({ role: "user", user: null }),
       loadUserAdmin: container.get<RemoteLoadUserAdmin>(
         TypesAutomatiza.RemoteLoadUserDashboard
       ),

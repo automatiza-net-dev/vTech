@@ -13,9 +13,7 @@ export function ActionsListUserController(props) {
   const [modal, setModal] = useState(false);
   const { mutateAsync, isLoading } = useDeleteUserController(props.id);
 
-  const {GetUser} = useAuthAdmin()
-
-  const user = GetUser<User>()
+  const { user } = useAuthAdmin();
 
   const isActualUser = props.id === user?.user?.id;
 

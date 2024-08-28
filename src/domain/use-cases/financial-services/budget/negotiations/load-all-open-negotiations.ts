@@ -14,7 +14,7 @@ export type DocumentTemplate = {
   description: string;
   template: string;
   type: "text" | "pdf";
-}
+};
 
 export type Document = {
   id: number;
@@ -25,11 +25,42 @@ export type Document = {
   created_at: Date;
   updated_at: Date;
   documentTemplate: DocumentTemplate;
-  printUser: {id: string, name: string} | null;
+  printUser: { id: string; name: string } | null;
   generationUser: {
     id: User["user"]["id"];
     name: User["user"]["name"];
   };
+};
+
+export type Treatments = {
+  id: number;
+  emission_date: string;
+  observations: string | null;
+  status: "Confirmado";
+  cancellation_date: string | null;
+  cancellation_observations: string | null;
+  items: {
+    description: string;
+    quantity: number;
+    quantity_executed: number | null;
+    scheduled_quantity: number;
+    observations: string | null;
+    status: "Ativo";
+  }[];
+  executions: {
+    schedule_id: Event["event"]["id"];
+    schedule_date: string | null;
+    scheduled_quantity: number;
+    quantity_executed: number;
+    execution_date: string | null;
+    observations: string | null;
+    status: "Ativo";
+    user: string | null;
+    productivitItem: {
+      id: number;
+      description: string;
+    };
+  }[];
 };
 
 export type Negotiation = {
@@ -67,6 +98,7 @@ export type Negotiation = {
     name: Tutor["name"];
   };
   budgets: Budget[];
+  treatments: Treatments[];
 };
 
 export type LoadOpenNegotiations = {

@@ -2,7 +2,6 @@ import { useQuery } from "react-query";
 import { userService } from "@/OLD/services/user.service";
 
 export const useProfile = (type = false, reload = false) => {
-
   const { data, isLoading } = useQuery({
     queryKey: ["profile", type, reload],
     queryFn: async () => {

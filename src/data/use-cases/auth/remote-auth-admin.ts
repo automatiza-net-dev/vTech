@@ -18,7 +18,7 @@ export class RemoteAuthAdmin implements domainVtech.AuthAdmin {
       body: params,
     });
 
-    this.storage.set("adminUser", { value: response?.token?.token });
+    this.storage.set("token", { value: response?.token?.token });
 
     return response as domainVtech.AuthAdmin.Model;
   }

@@ -5,6 +5,7 @@ import { Modal, notification, AutoComplete, Select } from "antd";
 const { Option } = Select;
 import { petsService } from "@/OLD/services/patient.service";
 
+import { Button } from "infinity-forge";
 import { useRaces } from "@/OLD/hooks/useRaces";
 import { useTutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
@@ -238,7 +239,7 @@ export default function FastCreateTutor({
         visible={visible}
         confirmLoading={loading}
         onCancel={() => setVisible(false)}
-        onOk={() => submitButton.current.click()}
+        footer={null}
         title={
           process.env.client === "liftone"
             ? "Cadastro rápido de Clientes"
@@ -247,7 +248,6 @@ export default function FastCreateTutor({
         width={900}
       >
         <form
-          className="uk-flex uk-flex-around"
           onSubmit={(e) => {
             e.preventDefault();
             !patientSubmit || process.env.client === "liftone"
@@ -255,209 +255,221 @@ export default function FastCreateTutor({
               : fastCreate();
           }}
         >
-          <section className="uk-width-1-3">
-            {process.env.client !== "liftone" && (
-              <>
-                Tutor
-                <hr />
-              </>
-            )}
-            <div className="uk-margin-small">
-              <label>Nome</label>
-              <input
-                className="uk-input"
-                type="text"
-                placeholder="Digite o nome completo"
-                value={data?.tutorName}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    tutorName: e.target.value,
-                  })
-                }
-              />
-            </div>
-            <div className="uk-margin-small">
-              <label>Telefone</label>
-              <input
-                className="uk-input"
-                type="text"
-                required
-                minLength="14"
-                maxLength="15"
-                value={data?.tutorPhone}
-                onBlur={() => {
-                  if (data?.tutorPhone?.length < 15) {
-                    notification.warning({
-                      message: "O telefone precisa ter 11 digitos",
-                    });
-                  }
-                }}
-                onChange={(e) => {
-                  e.target.value.length >= 14 &&
-                    checkPhone(masks?.noPhone(e.target.value));
-                  setData({
-                    ...data,
-                    tutorPhone: masks.phone(e.target.value),
-                  });
-                }}
-                placeholder="(00) 90000-0000"
-              />
-            </div>
-            <div className="uk-margin-small">
-              <label>Como conheceu a clinica</label>
-              <AutoComplete
-                className="uk-width-1-1"
-                options={tutorOrigins?.map((origin) => ({
-                  ...origin,
-                  value: origin?.description,
-                  key: origin?.id,
-                }))}
-                value={data?.originDescription}
-                onChange={(val) => setData({ ...data, originDescription: val })}
-                onSelect={(_, opt) => {
-                  setData({
-                    ...data,
-                    tutorOriginId: opt?.id,
-                    originDescription: opt?.value,
-                  });
-                  setSelectedOrigin(opt);
-                }}
-                filterOption={(val, opt) =>
-                  normalizeStr(opt?.value.toUpperCase()).includes(
-                    normalizeStr(val?.toUpperCase())
-                  )
-                }
-              />
-            </div>
-            {selectedOrigin?.default && (
-              <div>
-                <label>Campanha mídia</label>
-                <AutoComplete
-                  className="uk-width-1-1"
-                  options={uniqueOrigins?.sort().map((item) => ({
-                    value: item,
-                    key: item,
-                  }))}
-                  value={data?.clientOriginItemDescription}
-                  onChange={(val) =>
-                    setData({ ...data, clientOriginItemDescription: val })
-                  }
-                  onSelect={(_, opt) =>
-                    setData({
-                      ...data,
-                      clientOriginItemDescription: opt?.value,
-                    })
-                  }
-                  filterOption={(inputValue, option) =>
-                    option.value
-                      .toUpperCase()
-                      .includes(inputValue.toUpperCase())
-                      ? option
-                      : null
-                  }
-                />
-              </div>
-            )}
-          </section>
-
-          {process.env.client !== "liftone" && (
+          <div className="uk-flex uk-flex-around">
             <section className="uk-width-1-3">
-              Paciente
-              <hr />
+              {process.env.client !== "liftone" && (
+                <>
+                  Tutor
+                  <hr />
+                </>
+              )}
               <div className="uk-margin-small">
                 <label>Nome</label>
-                <br />
-                <AutoComplete
-                  options={[
-                    ...(!!allPatients
-                      ? allPatients.map((item) => ({
-                          value: item.id,
-                          label: item.name,
-                        }))
-                      : []),
-                  ]}
+                <input
+                  className="uk-input"
                   type="text"
-                  placeholder="Selecione ou informe o nome do novo paciente"
-                  className="uk-width-1-1"
-                  value={
-                    patientData?.patientName
-                      ? patientData?.patientName
-                      : patientData?.name
-                  }
-                  onSelect={(e) => {
-                    setPatientSubmit(false);
-                    setPatientData(allPatients.find((item) => item?.id === e));
-                    setPayload({ ...payload, patient_id: e });
-                  }}
-                  onChange={(e) => {
-                    setPatientSubmit(true);
-                    setPatientData({
-                      ...patientData,
-                      patientName: e,
-                    });
-                    if (e === "") {
-                      setPatientData({ ...payload, patientName: "" });
-                    }
-                  }}
-                  filterOption={(input, option) =>
-                    option?.label?.toLowerCase().includes(input.toLowerCase())
+                  placeholder="Digite o nome completo"
+                  value={data?.tutorName}
+                  onChange={(e) =>
+                    setData({
+                      ...data,
+                      tutorName: e.target.value,
+                    })
                   }
                 />
               </div>
-              <div className="uk-margin-small uk-width-1-1">
-                <label>Raça</label>
-                <select
-                  disabled={!patientSubmit}
-                  className="uk-select uk-width-1-1"
-                  value={
-                    patientData?.patientRaceId
-                      ? patientData?.patientRaceId
-                      : patientData?.patientAnimal?.race?.id
-                  }
-                  onChange={(e) =>
-                    setPatientData({
-                      ...patientData,
-                      patientRaceId: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Selecione uma opção</option>
-                  {(races || []).map((item, i) => (
-                    <option value={item.id}>{item.description}</option>
-                  ))}
-                </select>
+              <div className="uk-margin-small">
+                <label>Telefone</label>
+                <input
+                  className="uk-input"
+                  type="text"
+                  required
+                  minLength="14"
+                  maxLength="15"
+                  value={data?.tutorPhone}
+                  onBlur={() => {
+                    if (data?.tutorPhone?.length < 15) {
+                      notification.warning({
+                        message: "O telefone precisa ter 11 digitos",
+                      });
+                    }
+                  }}
+                  onChange={(e) => {
+                    e.target.value.length >= 14 &&
+                      checkPhone(masks?.noPhone(e.target.value));
+                    setData({
+                      ...data,
+                      tutorPhone: masks.phone(e.target.value),
+                    });
+                  }}
+                  placeholder="(00) 90000-0000"
+                />
               </div>
               <div className="uk-margin-small">
-                <label>Gênero</label>
-                <select
-                  id={"gender"}
-                  className="uk-select uk-width-1-1"
-                  disabled={!patientSubmit}
-                  value={
-                    patientData?.patientGender
-                      ? patientData?.patientGender
-                      : patientData?.gender
+                <label>Como conheceu a clinica</label>
+                <AutoComplete
+                  className="uk-width-1-1"
+                  options={tutorOrigins?.map((origin) => ({
+                    ...origin,
+                    value: origin?.description,
+                    key: origin?.id,
+                  }))}
+                  value={data?.originDescription}
+                  onChange={(val) =>
+                    setData({ ...data, originDescription: val })
                   }
-                  onChange={(e) =>
-                    setPatientData({
-                      ...patientData,
-                      patientGender: e.target.value,
-                    })
+                  onSelect={(_, opt) => {
+                    setData({
+                      ...data,
+                      tutorOriginId: opt?.id,
+                      originDescription: opt?.value,
+                    });
+                    setSelectedOrigin(opt);
+                  }}
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.value.toUpperCase()).includes(
+                      normalizeStr(val?.toUpperCase())
+                    )
                   }
-                >
-                  <option>Selecione</option>
-                  <option value="male">Macho</option>
-                  <option value="female">Fêmea</option>
-                </select>
+                />
               </div>
+              {selectedOrigin?.default && (
+                <div>
+                  <label>Campanha mídia</label>
+                  <AutoComplete
+                    className="uk-width-1-1"
+                    options={uniqueOrigins?.sort().map((item) => ({
+                      value: item,
+                      key: item,
+                    }))}
+                    value={data?.clientOriginItemDescription}
+                    onChange={(val) =>
+                      setData({ ...data, clientOriginItemDescription: val })
+                    }
+                    onSelect={(_, opt) =>
+                      setData({
+                        ...data,
+                        clientOriginItemDescription: opt?.value,
+                      })
+                    }
+                    filterOption={(inputValue, option) =>
+                      option.value
+                        .toUpperCase()
+                        .includes(inputValue.toUpperCase())
+                        ? option
+                        : null
+                    }
+                  />
+                </div>
+              )}
             </section>
-          )}
-          <button
-            className="uk-hidden"
-            type="submit"
-            ref={submitButton}
-          ></button>
+
+            {process.env.client !== "liftone" && (
+              <section className="uk-width-1-3">
+                Paciente
+                <hr />
+                <div className="uk-margin-small">
+                  <label>Nome</label>
+                  <br />
+                  <AutoComplete
+                    options={[
+                      ...(!!allPatients
+                        ? allPatients.map((item) => ({
+                            value: item.id,
+                            label: item.name,
+                          }))
+                        : []),
+                    ]}
+                    type="text"
+                    placeholder="Selecione ou informe o nome do novo paciente"
+                    className="uk-width-1-1"
+                    value={
+                      patientData?.patientName
+                        ? patientData?.patientName
+                        : patientData?.name
+                    }
+                    onSelect={(e) => {
+                      setPatientSubmit(false);
+                      setPatientData(
+                        allPatients.find((item) => item?.id === e)
+                      );
+                      setPayload({ ...payload, patient_id: e });
+                    }}
+                    onChange={(e) => {
+                      setPatientSubmit(true);
+                      setPatientData({
+                        ...patientData,
+                        patientName: e,
+                      });
+                      if (e === "") {
+                        setPatientData({ ...payload, patientName: "" });
+                      }
+                    }}
+                    filterOption={(input, option) =>
+                      option?.label?.toLowerCase().includes(input.toLowerCase())
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small uk-width-1-1">
+                  <label>Raça</label>
+                  <select
+                    disabled={!patientSubmit}
+                    className="uk-select uk-width-1-1"
+                    value={
+                      patientData?.patientRaceId
+                        ? patientData?.patientRaceId
+                        : patientData?.patientAnimal?.race?.id
+                    }
+                    onChange={(e) =>
+                      setPatientData({
+                        ...patientData,
+                        patientRaceId: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Selecione uma opção</option>
+                    {(races || []).map((item, i) => (
+                      <option value={item.id}>{item.description}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="uk-margin-small">
+                  <label>Gênero</label>
+                  <select
+                    id={"gender"}
+                    className="uk-select uk-width-1-1"
+                    disabled={!patientSubmit}
+                    value={
+                      patientData?.patientGender
+                        ? patientData?.patientGender
+                        : patientData?.gender
+                    }
+                    onChange={(e) =>
+                      setPatientData({
+                        ...patientData,
+                        patientGender: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Selecione</option>
+                    <option value="male">Macho</option>
+                    <option value="female">Fêmea</option>
+                  </select>
+                </div>
+              </section>
+            )}
+          </div>
+          <hr />
+          <footer
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <Button text="salvar" loading={loading} type="submit" />
+            <Button
+              text="cancelar"
+              onClick={() => setVisible(false)}
+              style={{ backgroundColor: "#ff7b5a" }}
+            />
+          </footer>
         </form>
       </Modal>
       <Modal

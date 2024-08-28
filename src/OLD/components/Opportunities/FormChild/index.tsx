@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 
 import { animalServices } from "@/OLD/services/animal.service";
 
-import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 
 import { FormHandler, Select } from "infinity-forge";
@@ -30,8 +29,11 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { FormCreatePatient, FormCreateTutor } from "@/presentation";
+import { container, TypesAutomatiza } from "@/container";
+import { RemoteCRM } from "@/data";
 
 export default function FormChild({
+  op,
   clients,
   colaborators,
   crmStatus,
@@ -46,23 +48,16 @@ export default function FormChild({
   footer = true,
   edit,
   setEdit,
-  reload,
   setReload,
 }: any) {
-  const [selectedPatients, setSelectedPatients] = useState([]);
-  const [scheduleDetailsVisible, setScheduleDetailsVisible] = useState(false);
-  const [scheduleId, setScheduleId] = useState(false);
-  const [refreshAutoComplete, setRefreshAutoComplete] = useState(false);
+  const [selectedPatients] = useState([]);
+  const [refreshAutoComplete] = useState(false);
   const [races, setRaces] = useState([]);
   const [selectedOrigin, setSelectedOrigin] = useState<any>({});
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
-  const { setOriginConfig, setCrmData } = useAuth();
-  // const { tutors } = useTutor(false, reload);
   const { uniqueOrigins } = useUniquetutorOrigins(data?.tutorOriginId);
-
-  // sortItems(tutors, "name");
 
   const router = useRouter();
 
@@ -132,16 +127,17 @@ export default function FormChild({
     <Container
       onSubmit={(e) => {
         e.preventDefault();
-        type === "create" ? verifyFields() === "ok" && submit() : submit();
+        verifyFields() === "ok" && submit();
         setEdit && setEdit(false);
       }}
     >
+      {console.log(data, "<<<")}
       <div className="body-form uk-padding-small">
         <div className="uk-flex uk-flex-between">
           <div className="uk-width-1-1 uk-margin-small-right">
             <FormCreateTutor
               isModal
-              tutorId={data?.contact?.id}
+              tutorId={data?.contact?.id|| data.clientId}
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
@@ -203,19 +199,71 @@ export default function FormChild({
             )}
           </div>
         </div>
-        {process.env.client !== "liftone" && (
+
+        {process.env.client === "sancla" && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">
-                <FormCreatePatient
-                  isModal
-                  origin="Crm"
-                  patientId={data?.clientId}
-                  initialDataForm={{
-                    holders: [{ id: data?.contact?.tutor?.id, main: true }],
-                  }}
-                  trigger={<label className="uk-link">Pet</label>}
-                />
+                {type === "create" ? (
+                  <label
+                    style={{ display: "flex", alignItems: "center", gap: 5 }}
+                  >
+                    Pet
+                  </label>
+                ) : !!((!data.patient?.id && !data.clientId) && (data?.tutor_id  || data?.contact?.id) && op?.id) ? (
+                  <label
+                    style={{ display: "flex", alignItems: "center", gap: 5 }}
+                  >
+                    Pet
+                    <FormCreateTutor
+                      isModal
+                      tutorId={data?.contact?.id || data?.tutor_id || data.clientId}
+                      addPet={{
+                        onInitOpenModalAddPet: true,
+                        onLinkPet: async ({ patientId, handleSuccess }) => {
+                          await handleSuccess();
+
+                          await container
+                            .get<RemoteCRM>(TypesAutomatiza.RemoteCRM)
+                            .createOpportunitiePatient({
+                              patientId,
+                              opportunityId: op.id,
+                            });
+
+                          (await setReload) && setReload((prv) => !prv);
+                        },
+                      }}
+                      onSuccess={() => setReload && setReload((prv) => !prv)}
+                      origin="Crm"
+                      trigger={
+                        <button
+                          type="button"
+                          style={{
+                            height: 20,
+                            width: 20,
+                            background: "#000",
+                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          +
+                        </button>
+                      }
+                    />
+                  </label>
+                ) : (
+                  <FormCreatePatient
+                    isModal
+                    origin="Crm"
+                    patientId={data?.clientId}
+                    initialDataForm={{
+                      holders: [{ id: data?.contact?.tutor?.id, main: true }],
+                    }}
+                    trigger={<label className="uk-link">Pet</label>}
+                  />
+                )}
 
                 <AutoComplete
                   disabled={
@@ -296,7 +344,7 @@ export default function FormChild({
               <SelectAnt
                 disabled={!footer ? !edit : false}
                 className="uk-width-1-1"
-                value={data?.castrated}
+                value={data?.castrated !== "undefined" && data?.castrated}
                 onChange={(val) => setData({ ...data, castrated: val })}
               >
                 <Option value="true">Sim</Option>
@@ -415,9 +463,9 @@ export default function FormChild({
                       value: client?.id,
                     }))}
                     onlyOneValue
-                    onChangeSelect={(val) =>
-                      setData({ ...data, originDescription: val })
-                    }
+                    onChangeSelect={(val) => {
+                      setData({ ...data, originId: val });
+                    }}
                     value={data?.originId}
                   />
                 </FormHandler>

@@ -1,12 +1,12 @@
 import { useTable } from "infinity-forge";
 
 import { Patient, ScheduleVaccine } from "@/domain";
-import { useLoadAllVaccines } from "@/presentation";
+import { useLoadAllPatientVaccines } from "@/presentation";
 
 import { columns } from "./columns";
 
 export function VaccinesTable(props: Patient) {
-  const { data, isFetching } = useLoadAllVaccines(props);
+  const { data, isFetching } = useLoadAllPatientVaccines(props);
 
   const { Table } = useTable<ScheduleVaccine>({
     

@@ -6,8 +6,17 @@ export const TableChart = styled("div")`
 
   table {
     width: 100%;
-    * {
+    tbody {
       font-size: 14px;
+    }
+
+    thead {
+      font-size: 12px;
+    }
+
+    th:not(:nth-child(1)) {
+      text-align: right;
+      padding-right: 20px !important;
     }
 
     td:not(:nth-child(1)) {
@@ -67,8 +76,12 @@ export const TableChart = styled("div")`
     height: 220px;
 
     table {
-      * {
+      tbody {
         font-size: 13px;
+      }
+
+      thead {
+        font-size: 11px;
       }
 
       .name {
@@ -101,8 +114,12 @@ export const TableChart = styled("div")`
     height: 210px;
 
     table {
-      * {
+      tbody {
         font-size: 12px;
+      }
+
+      thead {
+        font-size: 10px;
       }
 
       .name {

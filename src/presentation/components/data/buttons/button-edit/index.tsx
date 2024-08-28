@@ -1,11 +1,12 @@
 import { ButtonHTMLAttributes } from "react";
-import { Tooltip, Icon } from "infinity-forge";
+import { Icon } from "infinity-forge";
+import { Tooltip } from "antd";
 
 export function ButtonEdit(props: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <Tooltip
-      content="Editar"
-      trigger={
+      title="Editar"
+      children={
         <button
           style={{ background: "transparent", border: 0 }}
           type="button"
@@ -14,7 +15,6 @@ export function ButtonEdit(props: ButtonHTMLAttributes<HTMLButtonElement>) {
           <Icon name="IconEdit" fill="#000" />
         </button>
       }
-      position="top-left"
     />
   );
 }

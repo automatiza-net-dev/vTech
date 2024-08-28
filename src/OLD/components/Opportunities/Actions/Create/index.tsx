@@ -19,7 +19,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-export default  function Create({
+export default function Create({
   clients,
   colaborators,
   crmStatus,
@@ -36,15 +36,21 @@ export default  function Create({
   const router = useRouter();
 
   const createOpportunity = useCallback(() => {
+    const newObj = {
+      ...data,
+      contactId: data?.contactId,
+      businessUnitId: clinic?.id,
+      contactDate: moment(data?.contactDate).toISOString(),
+      value: convertIntlCurrency(data?.value),
+    };
+
+    if (newObj.clientId === "-") {
+      delete newObj.clientId;
+      delete newObj.castrated;
+    }
 
     opportunitiesService
-      .create({
-        ...data,
-        contactId: data?.contactId,
-        businessUnitId: clinic?.id,
-        contactDate: moment(data?.contactDate).toISOString(),
-        value: convertIntlCurrency(data?.value),
-      })
+      .create(newObj)
       .then((_res) => {
         router.back();
         return notification.success({

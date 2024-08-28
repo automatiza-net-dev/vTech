@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
 import moment from "moment";
-import {  add, sub } from "date-fns";
+import { add, sub } from "date-fns";
 import { useFormikContext } from "formik";
-import { DatePickerInput, FormHandler } from "infinity-forge";
+import { InputDatePicker, FormHandler } from "infinity-forge";
 
 import { useScheduling } from "@/presentation";
 import { LeftArrow, RightArrow } from "./icons";
@@ -62,9 +62,16 @@ function DatePickerSchedule() {
     const selectedDateMilliseconds = selectedDate?.getTime();
 
     if (formikDate !== selectedDateMilliseconds) {
-      setFieldValue("date", moment(selectedDate).toISOString());
+      setFieldValue("date", moment(selectedDate).toDate());
     }
   }, [selectedDate]);
 
-  return <DatePickerInput hasIcon name="date" typePicker="normal" />;
+  return (
+    <InputDatePicker
+      language="pt"
+      name="date"
+      mode="date"
+      date={{ maxDate: new Date() }}
+    />
+  );
 }

@@ -7,9 +7,7 @@ import { useAuthAdmin } from "infinity-forge";
 import { User } from "@/domain";
 
 export function useLoadAllAvailableUnits() {
-  const { GetUser } = useAuthAdmin();
-
-  const user = GetUser<User>();
+  const { user } = useAuthAdmin();
 
   async function fetcher() {
     const response = await container

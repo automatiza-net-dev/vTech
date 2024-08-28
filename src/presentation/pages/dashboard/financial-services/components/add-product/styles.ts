@@ -75,31 +75,37 @@ export const AddProduct = styled("div")`
       > div {
         width: calc(100% - 55px);
       }
+    }
+  }
 
-      .delete {
-        margin-top: 5px;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        background-color: #e1e1e1;
-        border: 0;
-        border-radius: 5px;
+  .cortesia {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+    div {
+      width: 100px;
+    }
+    .delete {
+      margin-top: 5px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      background-color: #e1e1e1;
+      border: 0;
+      border-radius: 5px;
 
-        svg {
-          width: 16px;
-          height: auto;
-          fill: #828282;
+      svg {
+        width: 16px;
+        height: auto;
+        fill: #828282;
 
-          &:hover {
-            fill: red;
-          }
+        &:hover {
+          fill: red;
         }
       }
     }
   }
-
- 
 `;

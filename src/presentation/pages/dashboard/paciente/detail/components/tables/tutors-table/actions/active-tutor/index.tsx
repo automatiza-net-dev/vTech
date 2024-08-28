@@ -18,7 +18,7 @@ export function ActiveTutor(props: Tutor) {
   const queryClient = useQueryClient();
 
   const patientId = patient.data?.id;
-  const isTutorActive = patient.data?.tutor.id === props.id;
+  const isTutorActive = patient?.data?.tutor?.id === props.id;
 
   async function handleSuccess() {
     if (isTutorActive) {
@@ -45,7 +45,9 @@ export function ActiveTutor(props: Tutor) {
       } as Patient;
     });
 
-    await queryClient.invalidateQueries({ queryKey: ["LastUpdates", patientId] });
+    await queryClient.invalidateQueries({
+      queryKey: ["LastUpdates", patientId],
+    });
 
     setLoading(false);
   }
@@ -53,6 +55,7 @@ export function ActiveTutor(props: Tutor) {
   return (
     <S.ActiveTutor>
       <Tooltip
+        idTooltip="ActiveTutor"
         content="Definir tutor ativo"
         trigger={
           <button

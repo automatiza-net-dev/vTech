@@ -1,125 +1,98 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState } from "react";
 
-import Link from "next/link";
 import { useRouter } from "next/router";
 
-import cep from "cep-promise";
 import {
   Form,
   Input,
   Select,
-  AutoComplete,
   Switch,
-  notification,
   Skeleton,
+  notification,
+  AutoComplete,
 } from "antd";
+import cep from "cep-promise";
 
-import Masks from "@/OLD/utils/masks";
 import { places } from "@/OLD/utils/places";
-import { Clinica } from "@/OLD/hooks/useClinics";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Button } from "@/OLD/components/mini-components";
-import { clinicService } from "@/OLD/services/clinic.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { clinicService } from "@/OLD/services/clinic.service";
 
-import { LayoutDashboard } from "@/presentation";
+import {
+  formatPhone,
+  LayoutDashboard,
+  useLoadBusinessUnits,
+} from "@/presentation";
+import { BusinessUnit } from "@/domain";
 
 const { Option } = Select;
 
 export default function EditarClinicaPage() {
-  return <Page />
+  return <Page />;
 }
 
-
- function Page() {
-  const [data, setData] = useState<Clinica | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [states, setStates] = useState<any[] | undefined>([]);
-  const [cities, setCities] = useState<any[] | undefined>([]);
+function Page() {
+  const [formData, setFormData] = useState<Partial<BusinessUnit>>({});
 
   const router = useRouter();
-
+  const { data, isLoading } = useLoadBusinessUnits();
   const editPermission = useUserHasPermission("CLI02");
 
-  const getClinic = useCallback(() => {
-    setLoading(true);
-    clinicService
-      .getClinicById(router.query.id)
-      .then((res) =>
-        setData({
-          ...res.data,
-          postalCode: res.data.postal_code,
-          companyName: res?.data?.company_name,
-          fantasyName: res?.data?.fantasy_name,
-          simple: res.data.simple,
-        })
-      )
-      .catch((_err) => {
-        notification.error({
-          message: "Houve um erro ao buscar a clinica solicitada...",
-        });
-        setLoading(false);
-      })
-      .finally(() => setLoading(false));
-  }, [router]);
+  if (!data) {
+    return <></>;
+  }
 
-  const handleSubmit = useCallback(() => {
-    const phoneFormated = data?.phone
-      ?.replace("(", "")
-      .replace(")", "")
-      .replace("-", "")
-      .replace(" ", "");
+  function handleInputValue(event: React.ChangeEvent<HTMLInputElement>) {
+    const target = event.target;
+    setFormData((prev) => ({ ...prev, [target.id]: target.value }));
+  }
 
-    if (data !== null) {
-      clinicService
-        .upDateClinic(data?.id, { ...data, phone: phoneFormated })
-        .then((res) => {
-          notification.success({
-            message: "Sucesso!",
-            description: "Clinica editada com sucesso",
-          });
-          router.push(`/dashboard/clinicas/${data.id}`);
-        })
-        .catch((err) => {
-          notification.error({
-            message: "Erro!",
-            description:
-              "Erro ao editar a clinica. Tente novamente mais tarde.",
-          });
-        });
+  async function handleSubmit() {
+    if (!data) {
+      return;
     }
-  }, [data]);
 
-  const getAddress = (cepData) => {
-    setLoading(true);
-    cep(cepData)
-      .then((res) => {
-        setData({
-          ...data,
-          postalCode: res.cep,
-          address: res.street,
-          district: res.neighborhood,
-          state: res?.state,
-          city: res?.city,
-        });
-      })
-      .catch((_err) => {
+    try {
+      const clinicId = router?.query?.id as string;
+      const phone = formatPhone(data.phone);
+      const payload = { ...data, ...formData };
+      await clinicService.upDateClinic(clinicId, { ...payload, phone });
+
+      notification.success({
+        message: "Sucesso!",
+        description: "Clinica editada com sucesso",
+      });
+      router.push(`/dashboard/clinicas/${clinicId}`);
+    } catch (error) {
+      notification.error({
+        message: "Erro!",
+        description: "Erro ao editar a clinica. Tente novamente mais tarde.",
+      });
+    }
+  }
+
+  async function getAddress(cepData: BusinessUnit["postalCode"]) {
+    if (cepData.length === 8) {
+      try {
+        const result = await cep(cepData);
+        setFormData((prev) => ({
+          ...prev,
+          postalCode: result.cep,
+          address: result?.street,
+          district: result?.neighborhood,
+          state: result?.state,
+          city: result?.city,
+        }));
+      } catch (e: any) {
+        console.log(e);
+
         return notification.error({
           message: "Houve um erro ao buscar o cep informado",
         });
-      });
-  };
-
-  useEffect(() => {
-    getClinic();
-  }, [getClinic]);
-
-  useEffect(() => {
-    setStates(places);
-    if (data?.state) {
-      setCities(places?.find((item) => item.value === data.state)?.cities);
+      }
     }
-  }, [places, data]);
+  }
 
   return (
     <LayoutDashboard>
@@ -136,7 +109,8 @@ export default function EditarClinicaPage() {
               <Button onClick={() => router.back()}>Voltar</Button>
             </div>
           </div>
-          {loading ? (
+
+          {isLoading ? (
             <Skeleton active />
           ) : (
             <Form layout="vertical">
@@ -162,36 +136,27 @@ export default function EditarClinicaPage() {
                   >
                     <Form.Item label="Identificação" className="uk-width-2-5">
                       <Input
-                        id={"identification"}
+                        id="identification"
                         type="text"
-                        value={data?.identification}
-                        onChange={(e) =>
-                          setData({ ...data, identification: e.target.value })
-                        }
+                        value={formData?.identification || data?.identification}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="Email" className="uk-width-2-5">
                       <Input
-                        id={"email"}
+                        id="email"
                         type="email"
-                        value={data?.email}
+                        value={formData?.email || data?.email}
                         required
-                        onChange={(e) =>
-                          setData({ ...data, email: e.target.value })
-                        }
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="Telefone">
                       <Input
-                        id={"phone"}
-                        value={data?.phone}
+                        id="phone"
+                        value={formData?.phone || data?.phone}
                         required
-                        onChange={(e) =>
-                          setData({
-                            ...data,
-                            phone: Masks.phone(e.target.value),
-                          })
-                        }
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                   </div>
@@ -203,38 +168,37 @@ export default function EditarClinicaPage() {
                   >
                     <Form.Item label="Nome fantasia" className="uk-width-2-5">
                       <Input
-                        id={"fantasyName"}
+                        id="fantasyName"
                         type="text"
-                        value={data?.fantasyName}
-                        onChange={(e) =>
-                          setData({ ...data, fantasyName: e.target.value })
-                        }
+                        value={formData?.fantasyName || data?.fantasyName}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="Razão social" className="uk-width-2-5">
                       <Input
-                        id={"companyName"}
+                        id="companyName"
                         type="text"
-                        value={data?.companyName}
-                        onChange={(e) =>
-                          setData({ ...data, companyName: e.target.value })
-                        }
+                        value={formData?.companyName || data?.companyName}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="CNPJ">
                       <Input
-                        id={"document"}
+                        id="document"
                         type="text"
-                        value={data?.document}
-                        onChange={(e) =>
-                          setData({ ...data, document: e.target.value })
-                        }
+                        value={formData?.document || data?.document}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="Simples">
                       <Switch
-                        checked={data?.simple}
-                        onChange={(e) => setData({ ...data, simple: e })}
+                        checked={formData?.simple ?? data?.simple}
+                        onChange={(checked) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            simple: checked,
+                          }));
+                        }}
                       />
                     </Form.Item>
                   </div>
@@ -252,44 +216,34 @@ export default function EditarClinicaPage() {
                   >
                     <Form.Item label="CEP" className="uk-width-1-5">
                       <Input
-                        id={"postalCode"}
+                        id="postalCode"
                         type="number"
-                        value={data?.postalCode}
-                        onChange={(e) => {
-                          e.target.value.length === 8 &&
-                            getAddress(e.target.value);
-                          setData({ ...data, postalCode: e.target.value });
-                        }}
+                        min={0}
+                        max={8}
+                        onChange={(e) => getAddress(e.target.value)}
                       />
                     </Form.Item>
                     <Form.Item label="Rua" className="uk-width-2-5">
                       <Input
-                        id={"address"}
+                        id="address"
                         type="text"
-                        value={data?.address}
-                        onChange={(e) =>
-                          setData({ ...data, address: e.target.value })
-                        }
+                        value={formData?.address || data?.address}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="Número">
                       <Input
-                        id={"number"}
+                        id="number"
                         type="text"
-                        value={data?.number}
-                        onChange={(e) =>
-                          setData({ ...data, number: e.target.value })
-                        }
+                        value={formData?.number || data?.number}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                     <Form.Item label="Complemento" className="uk-width-2-5">
                       <Input
-                        id={"complement"}
+                        id="complement"
                         type="text"
-                        value={data?.complement}
-                        onChange={(e) =>
-                          setData({ ...data, complement: e.target.value })
-                        }
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
                   </div>
@@ -301,23 +255,25 @@ export default function EditarClinicaPage() {
                   >
                     <Form.Item label="Bairro" className="uk-width-1-3">
                       <Input
-                        id={"district"}
+                        id="district"
                         type="text"
-                        value={data?.district}
-                        onChange={(e) =>
-                          setData({ ...data, district: e.target.value })
-                        }
+                        value={formData?.district || data?.district}
+                        onChange={handleInputValue}
                       />
                     </Form.Item>
 
                     <Form.Item label="Estado" className="uk-width-1-3">
                       <Select
-                        onChange={(e) => setData({ ...data, state: e })}
-                        value={data?.state}
+                        onChange={(value) =>
+                          handleInputValue({
+                            target: { value, id: "state" },
+                          } as any)
+                        }
+                        value={formData?.state || data?.state}
                       >
-                        {states &&
-                          states?.length > 0 &&
-                          states.map((item, i) => (
+                        {places &&
+                          places?.length > 0 &&
+                          places.map((item, i) => (
                             <Option value={item.value} key={i}>
                               {item.value}
                             </Option>
@@ -327,15 +283,25 @@ export default function EditarClinicaPage() {
                     <Form.Item label="Cidade" className="uk-width-1-3">
                       <AutoComplete
                         className="uk-width-1-1"
-                        options={cities}
-                        value={data?.city}
-                        onSelect={(e) => setData({ ...data, city: e })}
+                        options={
+                          (formData?.state &&
+                            places?.find(
+                              (item) => item.value === formData.state
+                            )?.cities) ||
+                          []
+                        }
+                        value={formData?.city || data?.city}
+                        onChange={(value) =>
+                          handleInputValue({
+                            target: { value, id: "city" },
+                          } as any)
+                        }
                         filterOption={(inputValue, option) =>
-                          option.label
+                          option?.label
                             .toUpperCase()
                             .includes(inputValue.toUpperCase())
                             ? option
-                            : null
+                            : (null as any)
                         }
                       />
                     </Form.Item>

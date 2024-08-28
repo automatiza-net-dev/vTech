@@ -179,6 +179,7 @@ const OpActivities = memo(function OpActivities({
       <h3 className="uk-margin-remove">Atividades oportunidade</h3>
       <hr />
       <OpportunitiesForm
+        op={op}
         clients={clients}
         colaborators={colaborators}
         crmStatus={crmStatus}

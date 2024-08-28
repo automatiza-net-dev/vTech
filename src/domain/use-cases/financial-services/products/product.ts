@@ -1,3 +1,5 @@
+import { Budget } from "../budget";
+
 export type BusinessUnitProduct = {
   id: string;
   businness_unit_id: string;
@@ -35,6 +37,7 @@ export type Product = {
   id: string;
   economic_group_id: string;
   description: string;
+  quantity: string;
   type: "product";
   reference_code: string;
   collection_year: null;
@@ -53,6 +56,12 @@ export type Product = {
   service_type: null;
   fractioned: boolean;
   fraction_value: number;
+  sale_value: number;
+  unitary_value: number;
+  discount_value: number;
+  courtesy: boolean;
+  total_value: number;
+  productVariation: Variation;
   unit: {
     id: string;
     name: string;
@@ -66,9 +75,10 @@ export type Product = {
 };
 
 export type ProductCart = {
-  quantity: number,
-  discountValue: number,
-  productVariationId: Variation["id"],
-  saleValue: BusinessUnitProduct["price"],
-  unitaryValue: BusinessUnitProduct["price"],
-}
+  quantity: number;
+  discountValue: number;
+  budgetItemId: string;
+  productVariationId: Variation["id"];
+  saleValue: BusinessUnitProduct["price"];
+  unitaryValue: BusinessUnitProduct["price"];
+};

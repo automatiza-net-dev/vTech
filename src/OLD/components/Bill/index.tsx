@@ -16,7 +16,13 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { MdOutlineClear } from "react-icons/md";
 
 // Components
-import { Input as AntInput, Select, Table, AutoComplete } from "antd";
+import {
+  Input as AntInput,
+  Select,
+  Table,
+  AutoComplete,
+  Modal as ModalANTD,
+} from "antd";
 import { Modal } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
@@ -30,43 +36,10 @@ import { petsService } from "../../../OLD/services/patient.service";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 
-import { AddSale, useVerifyPermissions } from "@/presentation";
-
-export const billStatusFormatter = (status) => {
-  switch (status) {
-    case "ABERTA":
-      return <span style={{ color: "red" }}>Aberta</span>;
-    case "EXTORNADA":
-      return "Extornada";
-    case "BAIXADA":
-      return <span style={{ color: "green" }}>Baixada</span>;
-    default:
-      return status;
-  }
-};
-
-const mapper = (data = [], cashiers) => {
-  data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
-
-  return data.map((bill) => {
-    return {
-      id: bill?.id,
-      fn: bill?.hasDocuments ? "Sim" : "Não",
-      bill_date: dateFormatter(bill?.bill_date),
-      code: bill?.tag ?? "-",
-      client: bill?.client?.name || "-",
-      patient: bill.patient?.name ?? "-",
-      user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
-      total: currencyFormatter(bill?.total_value),
-      status: billStatusFormatter(bill?.status),
-      missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
-      docActions: <ModalListagemDocumentosVenda bill={bill} />,
-      actions: (
-        <BillActions bill={bill} cashiers={cashiers} client={bill?.client} />
-      ),
-    };
-  });
-};
+import { AddSale, TriggerModal, useVerifyPermissions } from "@/presentation";
+import Link from "next/link";
+import { AuthorizationSell } from "./authorization-sell";
+import { billStatusFormatter } from "./utils/status-formater";
 
 export default function Bills() {
   const [visible, setVisible] = React.useState(false);
@@ -102,8 +75,36 @@ export default function Bills() {
     { refetchOnWindowFocus: false }
   );
 
+  const mapper = (data = [], cashiers) => {
+    data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
+
+    return data.map((bill) => {
+      return {
+        id: bill?.id,
+        fn: bill?.hasDocuments ? "Sim" : "Não",
+        bill_date: dateFormatter(bill?.bill_date),
+        code: bill?.tag ?? "-",
+        client: bill?.client?.name || "-",
+        patient: bill.patient?.name ?? "-",
+        user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
+        total: currencyFormatter(bill?.total_value),
+        status: billStatusFormatter(bill, setReload),
+        missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
+        docActions: (
+          <ModalListagemDocumentosVenda
+            bill={bill}
+            refresh={() => setReload((prv) => !prv)}
+          />
+        ),
+        actions: (
+          <BillActions bill={bill} cashiers={cashiers} client={bill?.client} />
+        ),
+      };
+    });
+  };
+
   const listCreated = (id) => {
-    setFilters({ bill_id: id });
+    setFilters((prv) => ({ ...prv, bill_id: id }));
     setReload((prv) => !prv);
   };
 
@@ -158,21 +159,6 @@ export default function Bills() {
                 }}
                 value={filters?.toBill}
               />
-              {/*
-            <DatePicker.RangePicker
-              showTime
-              value={[moment(filters?.fromBill), moment(filters?.toBill)]}
-              allowEmpty={[true, true]}
-              format="DD/MM/YYYY"
-              onChange={([from, to]) => {
-                setFilters((prev) => ({
-                  ...prev,
-                  fromBill: from?.startOf("day").toISOString(),
-                  toBill: to?.endOf("day").toISOString()
-                }));
-              }}
-            />
-            */}
               <MdOutlineClear
                 size={40}
                 style={{ cursor: "pointer" }}
@@ -280,6 +266,29 @@ export default function Bills() {
                   setFilters({ ...filters, tag: e.target.value })
                 }
               />
+            </Input>
+
+            <Input style={{ width: "100%" }}>
+              <Label>Pendências</Label>
+              <Select
+                allowClear
+                defaultValue={"Todos"}
+                placeholder="Pendências"
+                className="uk-width-1-1"
+                value={filters.pending}
+                onChange={(e) => {
+                  if (e === "all") {
+                    const newObj = { ...filters };
+                    delete newObj?.pending;
+                    return setFilters(newObj);
+                  }
+                  setFilters({ ...filters, pending: e });
+                }}
+              >
+                <Select.Option value="">Todos</Select.Option>
+                <Select.Option value={true}>Sim</Select.Option>
+                <Select.Option value={false}>Não</Select.Option>
+              </Select>
             </Input>
             <div
               style={{

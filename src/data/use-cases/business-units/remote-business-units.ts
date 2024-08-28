@@ -28,6 +28,15 @@ export class RemoteBusinessUnits
     return response as domain.LoadAllBusinessUnits.Model;
   }
 
+  async load(params: domain.LoadBusinessUnits.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`business-units/${params.id}`),
+      method: "get",
+    });
+
+    return response as domain.LoadBusinessUnits.Model;
+  }
+
   async loadAllUsers() {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("business-units/users"),

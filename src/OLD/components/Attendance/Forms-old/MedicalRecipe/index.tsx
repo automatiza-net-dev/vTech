@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import { notification } from "antd";
 import FormChild from "./FormChild";
+import { useToast } from "infinity-forge";
 
 import { recipeServices } from "@/OLD/services/recipes.service";
 import { timelineService } from "@/OLD/services/timeline.service";
@@ -26,6 +26,7 @@ function AddMedicalRecipe({
   const [recipeId, setRecipeId] = useState(false);
   const [recipeSearch, setRecipeSearch] = useState("");
   const { user, clinic } = useProfile();
+  const { createToast } = useToast();
   const patient = useLoadPatient();
 
   const systemName = process.env.clientName;
@@ -56,8 +57,9 @@ function AddMedicalRecipe({
       .then((res) => setAllRecipes(res.data))
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao buscar os modelos de receitas",
+          status: "error",
         });
       })
       .finally(() => {
@@ -82,9 +84,7 @@ function AddMedicalRecipe({
 
   const submit = useCallback(() => {
     if (!recipeId) {
-      return notification.error({
-        message: "Selecione uma receita",
-      });
+      return createToast({ message: "Selecione uma receita", status: "error" });
     }
 
     setLoading(true);
@@ -97,26 +97,25 @@ function AddMedicalRecipe({
         technicianId: user?.id,
       })
       .then((_res) => {
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data?.id],
-        });
-
-        notification.success({
-          message: "Receita salva com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        setLoading(false);
-        return notification.error({
-          message: "houve um erro ao salvar a receita...",
-        });
-      })
-      .finally(() => {
         setModal(false);
         setLoading(false);
         setBody("");
         setRecipeId(false);
         setRecipeSearch("");
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patient.data?.id],
+        });
+        return createToast({
+          message: "Receita salva com sucesso!",
+          status: "success",
+        });
+      })
+      .catch((_err) => {
+        setLoading(false);
+        return createToast({
+          message: "houve um erro ao salvar a receita...",
+          status: "error",
+        });
       });
   }, [patient?.data?.id, recipeId, user?.id, body]);
 
@@ -134,15 +133,16 @@ function AddMedicalRecipe({
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", patient.data?.id],
         });
-
-        notification.success({
+        return createToast({
           message: "Receita atualizada com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar a receita...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -164,20 +164,19 @@ function AddMedicalRecipe({
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", patient.data?.id],
         });
-
-        notification.success({
+        setLoading(false);
+        setModal && setModal(false);
+        return createToast({
           message: "Receita atualizada com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar a receita...",
+          status: "error",
         });
-      })
-      .finally(() => {
-        setLoading(false);
-        setModal && setModal(false);
       });
   }, [updateData, patient?.data?.id, recipeId, user?.id, body]);
 
@@ -191,9 +190,9 @@ function AddMedicalRecipe({
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", patient.data?.id],
         });
-
-        return notification.success({
+        return createToast({
           message: "Registro removido com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {

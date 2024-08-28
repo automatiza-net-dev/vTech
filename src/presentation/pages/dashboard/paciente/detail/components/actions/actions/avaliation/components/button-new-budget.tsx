@@ -32,7 +32,7 @@ export function ButtonNewBudget() {
             clientId: patient.data?.tutor.id,
           }}
           button={{ text: "Salvar" }}
-          onSucess={(data) => {
+          onSucess={async (data) => {
             const payload = {
               ...data,
               patientId: patient.data?.id,
@@ -110,7 +110,7 @@ export function ButtonNewBudget() {
               </div>
             </FormHandler>
 
-            <FormHandler onSucess={(data) => {}}>
+            <FormHandler onSucess={async (data) => {}}>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 20 }}
               >

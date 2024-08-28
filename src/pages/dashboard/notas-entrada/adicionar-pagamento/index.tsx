@@ -1,11 +1,11 @@
 import AddPayments from "@/OLD/components/Notes/AddPayments/AddPaymentsScreen";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function AddPaymentsPage() {
-  <PrivatePageAdmin>
+  return (
     <LayoutDashboard>
       <AddPayments />
     </LayoutDashboard>
-  </PrivatePageAdmin>;
+  );
 }

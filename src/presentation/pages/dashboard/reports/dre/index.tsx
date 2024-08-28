@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { FormHandler, DatePickerInput, Select, Button } from "infinity-forge";
+import { FormHandler, Select, Button, InputDatePicker } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -30,12 +30,12 @@ export function DreReport() {
         }}
       >
         <div className="filters-container">
-          <DatePickerInput
-            hasIcon
+          <InputDatePicker
+            language="pt"
             label="Competencia"
             name="competence"
-            typePicker="month"
-            maxDate={new Date()}
+            mode="month"
+            date={{ maxDate: new Date() }}
           />
           {businessUnits.data && (
             <Select

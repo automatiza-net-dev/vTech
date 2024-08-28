@@ -17,6 +17,6 @@ export const columns = [
   {
     title: "Ficha paciente",
     dataIndex: "patientRec",
-    key: "patientRec"
-  }
+    key: "patientRec",
+  },
 ];

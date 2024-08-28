@@ -1,11 +1,11 @@
 import NoteDetails from "@/OLD/components/Notes/Single";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function NoteDetailsPage() {
-  <PrivatePageAdmin>
+  return (
     <LayoutDashboard>
       <NoteDetails />
     </LayoutDashboard>
-  </PrivatePageAdmin>;
+  );
 }

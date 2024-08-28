@@ -1,13 +1,11 @@
 import DocumentsCreate from "@/OLD/components/Document/Create";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function DocumentsCreatePage() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <DocumentsCreate />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <DocumentsCreate />
+    </LayoutDashboard>
   );
 }

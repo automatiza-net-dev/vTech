@@ -3,7 +3,7 @@ import { DashboardChart } from "@/domain";
 import * as S from "./styles";
 
 export function TableChart({ data }: { data: DashboardChart["legend"] }) {
-  if (!data || data.length === 0) {
+  if (!data) {
     return <>Nenhum dado até o momento</>;
   }
 
@@ -11,45 +11,41 @@ export function TableChart({ data }: { data: DashboardChart["legend"] }) {
     <S.TableChart>
       <table>
         <thead>
-          {data.map((item) => (
-            <tr key={item.name}>
-              {item?.name && <th className="name"></th>}
-
-              {item.percentage !== undefined && <th className="percent"></th>}
-
-              {item.value !== undefined && <th className="value"></th>}
+          {data.map((list, listIndex) => (
+            <tr key={listIndex}>
+              {list.map(
+                (item, itemIndex) =>
+                  listIndex === 0 &&
+                  item.value !== "" &&
+                  item?.title && (
+                    <th className="name" key={itemIndex}>
+                      <span>{item.title}</span>
+                    </th>
+                  )
+              )}
             </tr>
           ))}
         </thead>
 
         <tbody>
-          {data.map((item) => (
-            <tr key={item.name}>
-              {item?.name && (
-                <td className="name">
-                  <div>
-                    {item?.itemStyle?.color && (
-                      <div
-                        className="color"
-                        style={{ backgroundColor: item?.itemStyle?.color }}
-                      ></div>
-                    )}
+          {data.map((list, listIndex) => (
+            <tr key={listIndex}>
+              {list.map(
+                (item, itemIndex) =>
+                  item?.value && (
+                    <td className="name" key={itemIndex}>
+                      <div>
+                        {item?.itemStyle?.color && (
+                          <div
+                            className="color"
+                            style={{ backgroundColor: item?.itemStyle?.color }}
+                          ></div>
+                        )}
 
-                    <span>{item?.name}</span>
-                  </div>
-                </td>
-              )}
-
-              {item?.percentage !== undefined && (
-                <td className="percent">
-                  <span> {item.percentage}</span>
-                </td>
-              )}
-
-              {item?.value !== undefined && (
-                <td className="value">
-                  <span>{item?.value}</span>
-                </td>
+                        <span>{item?.value}</span>
+                      </div>
+                    </td>
+                  )
               )}
             </tr>
           ))}

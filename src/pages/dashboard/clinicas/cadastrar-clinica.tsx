@@ -15,20 +15,15 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { clinicService } from "@/OLD/services/clinic.service";
 import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
 import { Clinica } from "@/OLD/hooks/useClinics";
-import { PrivatePageAdmin } from "infinity-forge";
-
+import { PrivatePage } from "infinity-forge";
 
 const { Option } = Select;
 
 export default function CadastrarClinicaPage() {
- 
-  return <PrivatePageAdmin>
-    <Page />
-  </PrivatePageAdmin>
+  return <Page />;
 }
 
-
- function Page() {
+function Page() {
   const [loading, setLoading] = useState(false);
   const [states, setStates] = useState<any[]>([]);
   const [cities, setCities] = useState<any[] | undefined>([]);
@@ -58,7 +53,7 @@ export default function CadastrarClinicaPage() {
         })
       );
   };
-  
+
   const handleSubmit = React.useCallback(async () => {
     const phoneFormated = data?.phone
       ?.replace("(", "")

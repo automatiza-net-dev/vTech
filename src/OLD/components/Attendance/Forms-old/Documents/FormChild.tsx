@@ -6,7 +6,8 @@ import { documentServices } from "@/OLD/services/document.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Components
-import { Button, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
+import { Button } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
 
@@ -52,51 +53,42 @@ function FormChild({
   sortItems(allDocuments, "title");
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit();
-      }}
-    >
+    <FormHandler isStickyButtons>
       <div>
         <label>Documento</label>
         {allDocuments && allDocuments.length > 0 && (
-          <FormHandler>
-            <Select
-              menuPlacement="bottom"
-              name="document"
-              options={allDocuments.map((document) => ({
-                label: document?.title,
-                value: document?.title,
-              }))}
-              value={document?.title}
-              disabled={!modal}
-              onlyOneValue
-              onChangeSelect={async (value) => {
-                const optionSelected = allDocuments?.find(
-                  (document) => document.title === value
-                );
+          <Select
+            menuPlacement="bottom"
+            name="document"
+            options={allDocuments.map((document) => ({
+              label: document?.title,
+              value: document?.title,
+            }))}
+            value={document?.title}
+            disabled={!modal}
+            onlyOneValue
+            onChangeSelect={async (value) => {
+              const optionSelected = allDocuments?.find(
+                (document) => document.title === value
+              );
 
-                await replaceText(
-                  optionSelected?.id,
-                  optionSelected?.description
-                );
+              await replaceText(
+                optionSelected?.id,
+                optionSelected?.description
+              );
 
-                setDocument(optionSelected);
-                if (optionSelected?.type === "pdf") {
-                  documentServices
-                    .renderPdf(optionSelected?.id)
-                    .then((res) =>
-                      setPdfUrl(
-                        process.env.NEXT_PUBLIC_API +
-                          "/uploads/" +
-                          res?.data?.url
-                      )
-                    );
-                }
-              }}
-            />
-          </FormHandler>
+              setDocument(optionSelected);
+              if (optionSelected?.type === "pdf") {
+                documentServices
+                  .renderPdf(optionSelected?.id)
+                  .then((res) =>
+                    setPdfUrl(
+                      process.env.NEXT_PUBLIC_API + "/uploads/" + res?.data?.url
+                    )
+                  );
+              }
+            }}
+          />
         )}
       </div>
       {document?.type === "pdf" ? (
@@ -113,10 +105,19 @@ function FormChild({
           <Editor editorState={body} setEditorState={setBody} value={body} />
         </div>
       )}
-      <div className="uk-flex uk-flex-around uk-margin-top">
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "10px",
+        }}
+      >
         {document?.type !== "pdf" && (
           <Print
-            triggerComponent={<Button>Imprimir</Button>}
+            triggerComponent={
+              <Button text="Imprimir" style={{ marginRight: "10px" }} />
+            }
             content={body}
             title={
               allDocuments?.find((item) => item.id === document?.id)?.title
@@ -131,31 +132,43 @@ function FormChild({
         )}
         {modal ? (
           <>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Salvar
-            </Button>
-            <Button onClick={() => setVisible(false)}>Cancelar</Button>
+            <Button
+              onClick={submit}
+              loading={loading}
+              text="Salvar"
+              style={{ marginRight: "10px" }}
+            />
+
+            <Button
+              onClick={() => setVisible(false)}
+              text="Cancelar"
+              type="button"
+              style={{ backgroundColor: "#ff7b5a" }}
+            />
           </>
         ) : (
-          <div className="uk-flex uk-flex-right">
+          <>
+            <Button
+              loading={loading}
+              onClick={submit}
+              text="Atualizar"
+              style={{ marginRight: "10px" }}
+            />
             <Popconfirm
               title="Deseja remover este registro?"
               onConfirm={() => remove()}
             >
               <Button
                 loading={loading}
-                htmlType="button"
-                className="uk-margin-small-right"
-              >
-                Excluir
-              </Button>
+                type="button"
+                text="Excluir"
+                style={{ backgroundColor: "#ff7b5a" }}
+              />
             </Popconfirm>
-            <Button loading={loading} htmlType="submit" type="primary">
-              Atualizar
-            </Button>
-          </div>
+          </>
         )}
       </div>
+
       {updateData?.timeline_info?.print && (
         <div style={{ marginTop: "20px" }}>
           <strong>
@@ -164,7 +177,7 @@ function FormChild({
           </strong>
         </div>
       )}
-    </form>
+    </FormHandler>
   );
 }
 

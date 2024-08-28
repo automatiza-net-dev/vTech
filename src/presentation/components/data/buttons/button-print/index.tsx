@@ -72,7 +72,6 @@ export function ButtonPrint() {
   //             : { timelineId: updateData?._id }
   //         );
   //     } catch (err) {
-  //       console.log(err);
   //     }
   //   }
 

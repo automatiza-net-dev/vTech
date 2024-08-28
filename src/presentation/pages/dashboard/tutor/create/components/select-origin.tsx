@@ -7,14 +7,13 @@ export function SelectOrigin() {
   const [showMidia, setShowMidia] = useState(false);
   const { data, isFetching } = useLoadTutorOrigins();
 
-  const { values, setFieldValue } = useFormikContext()
-
+  const { values, setFieldValue } = useFormikContext();
 
   useEffect(() => {
-    if(values && values["clientOriginId"]) {
-      setShowMidia(true)
+    if (values && values["clientOriginId"]) {
+      setShowMidia(true);
     }
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -22,7 +21,7 @@ export function SelectOrigin() {
         onlyOneValue
         menuPlacement="bottom"
         name="clientOriginId"
-        label="Como conheceu a clínica?"
+        label="Como conheceu a clínica?*"
         loading={isFetching}
         options={
           data?.map((origin) => ({
@@ -33,15 +32,17 @@ export function SelectOrigin() {
         onChangeSelect={(value) => {
           const originSelected = data?.find((origin) => origin.id === value);
 
-          if(!originSelected?.default) {
-            setFieldValue("default", "")
+          if (!originSelected?.default) {
+            setFieldValue("default", "");
           }
 
           setShowMidia(originSelected?.default || false);
         }}
       />
 
-      {showMidia && <Input name="clientOriginItemDescription" label="Campanha/Midia" />}
+      {showMidia && (
+        <Input name="clientOriginItemDescription" label="Campanha/Midia" />
+      )}
     </div>
   );
 }
