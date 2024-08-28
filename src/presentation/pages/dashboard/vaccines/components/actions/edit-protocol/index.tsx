@@ -56,6 +56,7 @@ export function EditProtocol(props: VaccineProtocol) {
   return (
     <S.EditProtocol>
       <Tooltip
+        idTooltip="EditProtocol"
         content="Editar Protocolo"
         trigger={
           <button onClick={() => setOpen(true)}>

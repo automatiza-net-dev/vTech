@@ -18,7 +18,7 @@ export function VideoPhoto({ setModal }: DropdownComponentProps) {
   const { createToast } = useToast();
 
   const router = useRouter();
-  const userId = useAuthAdmin().GetUser<User>().user.id;
+  const userId = useAuthAdmin().user.id;
 
   const patientId = router.query.id as string;
 

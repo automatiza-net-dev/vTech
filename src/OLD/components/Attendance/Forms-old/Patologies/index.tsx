@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 
 import moment from "moment";
 
-import { notification } from "antd";
 import FormChild from "./FormChild";
 
 import { pathologiesServices } from "@/OLD/services/pathologies.service";
@@ -12,6 +11,8 @@ import { useLoadPatient } from "@/presentation/hooks";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
+
+import { useToast } from "infinity-forge";
 
 function Patologies({
   modal,
@@ -24,6 +25,7 @@ function Patologies({
   const [loading, setLoading] = useState(true);
   const [defaultProtocol, setDefaultProtocol] = useState("");
   const { user } = useProfile();
+  const { createToast } = useToast();
 
   const patient = useLoadPatient();
 
@@ -37,8 +39,9 @@ function Patologies({
       .then((res) => setAllPathologies(res.data))
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Não foi possível buscar as patologias cadastradas...",
+          status: "error",
         });
       })
       .finally(() => setLoading(false));
@@ -59,8 +62,9 @@ function Patologies({
 
   const submit = useCallback(() => {
     if (!data?.pathology) {
-      return notification.error({
+      return createToast({
         message: "Selecione uma patologia",
+        status: "error",
       });
     }
 
@@ -78,13 +82,16 @@ function Patologies({
         await queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-
-        notification.success({ message: "Patologia salva com sucesso!" });
+        createToast({
+          message: "Patologia salva com sucesso!",
+          status: "success",
+        });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao salvar a patologia...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -109,15 +116,16 @@ function Patologies({
         await queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-
-        notification.success({
+        return createToast({
           message: "Patologia atualizada com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar o registro de patologia",
+          status: "error",
         });
       })
       .finally(() => {
@@ -134,8 +142,9 @@ function Patologies({
         await queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-        return notification.success({
+        return createToast({
           message: "Registro removido com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {

@@ -60,4 +60,16 @@ export class RemoteBills
 
     return {};
   }
+
+  async authDiscountPendencySellingBill(
+    params: domain.AuthDiscountPendencySellingBill.Params
+  ) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`bills/approve`),
+      method: "post",
+      body: params,
+    });
+
+    return {};
+  }
 }

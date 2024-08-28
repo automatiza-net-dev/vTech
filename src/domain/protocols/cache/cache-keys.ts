@@ -1,6 +1,9 @@
-export type CacheKeys = "guid" | "user" | "adminUser";
+export type CacheKeys = "token" | "guid" | "ip";
 
 export type CacheValues = {
+  ip: {
+    value: string | null;
+  };
   guid: {
     value: string | null;
   };
@@ -10,5 +13,7 @@ export type CacheValues = {
   adminUser: {
     value: string | null;
   };
+  token: {
+    value: string | null;
+  };
 };
-

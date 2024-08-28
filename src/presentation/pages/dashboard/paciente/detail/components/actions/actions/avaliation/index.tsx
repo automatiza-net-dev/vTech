@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/router";
+import { useReactToPrint } from "react-to-print";
 
 import {
   Error,
@@ -36,14 +37,15 @@ export function Avaliation(props: DropdownComponentProps) {
   const [modal, setModal] = useState(false);
   const [attendance, setAttendance] = useState<TimeLine | null>(null);
 
+  const componentRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
-  const {getWord} = useDictionary();
+  const { getWord } = useDictionary();
   const { createToast } = useToast();
   const queryClient = useQueryClient();
+  const handlePrint = useReactToPrint({ content: () => componentRef.current });
 
-  const { GetUser } = useAuthAdmin();
-
-  const user = GetUser<User>();
+  const { user } = useAuthAdmin();
 
   const timeLine = attendance || props;
   const patientId = router.query.id as string;
@@ -119,6 +121,7 @@ export function Avaliation(props: DropdownComponentProps) {
 
   const initialData = {
     ...timeLine.timeline_info,
+
     internalObservations: timeLine?.timeline_info?.internalObservation
       ? timeLine?.timeline_info?.internalObservation
       : schedule?.data
@@ -141,6 +144,15 @@ export function Avaliation(props: DropdownComponentProps) {
             cleanFieldsOnSubmit={false}
             initialData={initialData}
             customSubmit={[
+              {
+                action: async () => {
+                  handlePrint();
+                },
+                props: {
+                  text: "Imprimir",
+                },
+                active: !!props.timeline_id,
+              },
               {
                 action: async () => {
                   await container
@@ -196,7 +208,7 @@ export function Avaliation(props: DropdownComponentProps) {
               <Input label="Resumo" name="resume" placeholder="Resumo" />
             </div>
 
-            <TextEditor name="protocol" className="custom-editor" />
+            <TextEditor name="protocol" />
 
             <div className="internal_observations">
               {props.timeline_info?.protocol ? (
@@ -218,14 +230,6 @@ export function Avaliation(props: DropdownComponentProps) {
             {process.env.client === "liftone" && (
               <InputFile name="photos" isLocalFile multiple />
             )}
-
-            {props.timeline_info?.attendance?.id && (
-              <Print
-                PdfContent={
-                  <PdfPatientAttendance {...timeLine?.timeline_info} />
-                }
-              />
-            )}
           </FormHandler>
         )}
 
@@ -246,6 +250,11 @@ export function Avaliation(props: DropdownComponentProps) {
         {props?.timeline_info?.attendance?.id && (
           <AttendanceBudgets id={props.timeline_info?.attendance.id} />
         )}
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PdfPatientAttendance {...timeLine?.timeline_info} />
+          </div>
+        </div>
       </S.Avaliation>
     </Error>
   );

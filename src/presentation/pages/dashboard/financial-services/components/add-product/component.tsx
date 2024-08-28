@@ -7,17 +7,24 @@ import { DiscountPercentage, SelectProduct, Total } from "./components";
 import { Cart } from "./interfaces";
 
 import * as S from "./styles";
+import { useEffect } from "react";
 
 export function AddProduct() {
-  const { values, setFieldValue, setFieldError } = useFormikContext<{
-    cart: Cart[];
-    product_selected: string | undefined;
-  }>();
+  const { values, initialValues, setFieldValue, setFieldError } =
+    useFormikContext<{
+      cart: Cart[];
+      product_selected: string | undefined;
+    }>();
 
-  const { GetUser } = useAuthAdmin();
+  // useEffect(() => {
+  //   if(initialValues && Array.isArray(initialValues["items"])) {
+  //     s
+  //   }
+  // }, [initialValues])
+
+  const { user } = useAuthAdmin();
 
   const cart = values["cart"];
-  const user = GetUser<User>();
   const isPossibleChangePricesProducs = user.unit.unitConfig?.alter_prices;
 
   function handleInputChange({
@@ -30,42 +37,50 @@ export function AddProduct() {
     pathName: string;
     fieldName: string;
     indexProduct: number;
-    value: string | number;
+    value: string | number | boolean;
     indexVariation: number;
   }) {
+
     try {
       const product = cart[indexProduct];
       const variation = product.variations[indexVariation];
 
       setFieldValue(`${pathName}.${fieldName}`, value);
 
-      const quantity = fieldName === "quantity" ? value : variation.quantity;
-      const unitaryValue =
-        fieldName === "unitaryValue" ? value : variation.unitaryValue;
-      const discountValue =
-        fieldName === "discountValue" ? value : variation.discountValue;
+      if (typeof value !== "boolean") {
 
-      const formattedUnitaryValue =
-        typeof unitaryValue === "number"
-          ? unitaryValue
-          : Number(unitaryValue?.replaceAll(",", ".") || 0);
+        const quantity = fieldName === "quantity" ? value : variation.quantity;
+        const unitaryValue =
+          fieldName === "unitaryValue" ? value : variation.unitaryValue;
+        const discountValue =
+          fieldName === "discountValue" ? value : variation.discountValue;
 
-      const formattedDiscountValue =
-        typeof discountValue === "number"
-          ? discountValue
-          : Number(discountValue?.replaceAll(",", ".") || 0);
+        const formattedUnitaryValue =
+          typeof unitaryValue === "number"
+            ? unitaryValue
+            : Number(unitaryValue?.replaceAll(",", ".") || 0);
 
-      const total =
-        Number(quantity || 1) * formattedUnitaryValue - formattedDiscountValue;
+        const formattedDiscountValue =
+          typeof discountValue === "number"
+            ? discountValue
+            : Number(discountValue?.replaceAll(",", ".") || 0);
 
-      setFieldValue(`${pathName}.total`, total.toFixed(2));
+        const total =
+          Number(quantity || 1) * formattedUnitaryValue -
+          formattedDiscountValue;
+
+        setFieldValue(`${pathName}.total`, total.toFixed(2));
+      }
+      setFieldValue(`${pathName}.${fieldName}`, value);
     } catch (err) {
       console.log(err);
     }
   }
 
   return (
-    <S.AddProduct style={{ minHeight: !cart || cart.length < 4 ? 335 : "unset" }}>
+    <S.AddProduct
+      style={{ minHeight: !cart || cart.length < 4 ? 335 : "unset" }}
+    >
       <SelectProduct />
 
       {cart && (
@@ -88,6 +103,9 @@ export function AddProduct() {
 
           <div>
             <h3 className="font-12-bold">TOTAL</h3>
+          </div>
+          <div>
+            <h3 className="font-12-bold">CORTESIA</h3>
           </div>
         </div>
       )}
@@ -165,8 +183,30 @@ export function AddProduct() {
                           indexProduct,
                           fieldName: "discountValue",
                           value:
-                            Number(value) > maxDiscount ? maxDiscount : value as string,
+                            Number(value) > maxDiscount
+                              ? maxDiscount
+                              : (value as string),
                         });
+
+                        if (
+                          Number(value) > variation.maximum_discount_percentage
+                        ) {
+                          handleInputChange({
+                            indexVariation,
+                            pathName,
+                            indexProduct,
+                            fieldName: "exceedDiscount",
+                            value: true,
+                          });
+                        } else {
+                          handleInputChange({
+                            indexVariation,
+                            pathName,
+                            indexProduct,
+                            fieldName: "exceedDiscount",
+                            value: false,
+                          });
+                        }
 
                         if (Number(value) > maxDiscount) {
                           setTimeout(() => {
@@ -189,14 +229,51 @@ export function AddProduct() {
 
                         {!!variation.discountValue && (
                           <DiscountPercentage
-                            percentageDiscount={Number(percentageDiscount.replaceAll(",", "."))}
+                            percentageDiscount={Number(
+                              percentageDiscount.replaceAll(",", ".")
+                            )}
                             maximum_discount_percentage={
                               variation.maximum_discount_percentage
                             }
                           />
                         )}
                       </div>
+                    </div>
+                    <div className="cortesia">
+                      <div>
+                        <input
+                          type="checkbox"
+                          disabled={!product?.courtesy}
+                          checked={product?.variations?.[0]?.courtesy}
+                          onChange={(e) => {
+                            handleInputChange({
+                              value: e.target.checked as boolean,
+                              pathName,
+                              indexProduct,
+                              indexVariation,
+                              fieldName: "courtesy",
+                            });
 
+                            if (e.target.checked) {
+                              handleInputChange({
+                                value: 0,
+                                pathName,
+                                indexProduct,
+                                indexVariation,
+                                fieldName: "unitaryValue",
+                              });
+                            } else {
+                              handleInputChange({
+                                value: variation?.saleValue,
+                                pathName,
+                                indexProduct,
+                                indexVariation,
+                                fieldName: "unitaryValue",
+                              });
+                            }
+                          }}
+                        />
+                      </div>
                       <button
                         type="button"
                         className="delete"

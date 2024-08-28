@@ -11,11 +11,12 @@ export class RemotePatient
     domain.LoadPatient,
     domain.LoadBeds,
     domain.CreateHospitalization,
-    domain.LoadAllVaccines,
+    domain.LoadAllPatientVaccines,
     domain.LoadLastUpdates,
     domain.ChangeWeight,
     domain.CreatePatient,
-    domain.RequestPrinting
+    domain.RequestPrinting,
+    domain.LoadAllVaccines
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -78,6 +79,14 @@ export class RemotePatient
   }
 
   async loadAllVaccines(params: domain.LoadAllVaccines.Params) {
+    return await this.httpClient.request({
+      url: this.makeApiURL.make("vaccines"),
+      method: "get",
+      body: params,
+    });
+  }
+
+  async loadAllPatientVaccines(params: domain.LoadAllPatientVaccines.Params) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("patient-vaccines"),
       method: "get",

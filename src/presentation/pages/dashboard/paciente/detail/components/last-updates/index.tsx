@@ -11,7 +11,7 @@ import { useQuery } from "react-query";
 import { RemotePatient } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
-import { Patient, TimeLine, TimelineType } from "@/domain";
+import { Patient, TimeLine, TimelineType, TimeLineEvent } from "@/domain";
 
 import { CardTimeLine } from "./card-time-line";
 import { useActionsPatient } from "../actions/actions/options";
@@ -19,7 +19,9 @@ import { useActionsPatient } from "../actions/actions/options";
 import * as S from "./styles";
 
 export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
-  const [timeLineType, setTimeLineType] = useState<TimelineType[]>([]);
+  const [timeLineType, setTimeLineType] = useState<
+    TimelineType[] & TimeLineEvent[]
+  >([]);
   const [timeLineSelected, setTimeLineSelected] = useState<TimeLine | null>(
     null
   );
@@ -40,7 +42,10 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
   const listTimeLine = data?.filter((item) => {
     if (timeLineType.length > 0) {
-      return timeLineType.includes(item.timeline_type.description);
+      return (
+        timeLineType.includes(item.timeline_type.description) ||
+        timeLineType.includes(item.timeline_info.event)
+      );
     }
 
     return true;
@@ -55,7 +60,9 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
     timeLineSelected &&
     timeLine?.updatedAt === timeLineSelected?.updatedAt &&
     actionsPatient.list?.find(
-      (action) => action.value === timeLineSelected.timeline_type.description
+      (action) =>
+        action.value === timeLineSelected.timeline_type.description ||
+        action.value === timeLineSelected.timeline_info.event
     )?.SingleComponent;
 
   useEffect(() => {

@@ -15,7 +15,6 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
-import { notification } from "antd";
 import FormChild from "./FormChild";
 import { useToast } from "infinity-forge";
 
@@ -41,9 +40,9 @@ export default function Documents({
 
   const { createToast } = useToast();
 
+  const router = useRouter();
   const patient = useLoadPatient();
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   async function registerPrint() {
     try {
@@ -94,9 +93,10 @@ export default function Documents({
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro ao recuperar os templates de documentos cadastrados",
+          status: "error",
         });
       })
       .finally(() => {
@@ -121,8 +121,9 @@ export default function Documents({
 
   function submit() {
     if (!document?.id)
-      return notification.error({
+      return createToast({
         message: "Selecione o tipo do documento",
+        status: "error",
       });
 
     setLoading(true);
@@ -135,17 +136,8 @@ export default function Documents({
         realizedAt: moment(new Date()),
         message: ".",
       })
-      .then((_res) =>
-        notification.success({ message: "Documento salvo com sucesso!" })
-      )
-      .catch((_err) => {
-        setLoading(false);
-        return notification.error({
-          message: "Não foi possível salvar o documento...",
-        });
-      })
-      .finally(async () => {
-        await queryClient.invalidateQueries({
+      .then((_res) => {
+        queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
         setLoading(false);
@@ -153,6 +145,17 @@ export default function Documents({
         setData({});
         setBody("");
         setDocument(false);
+        return createToast({
+          message: "Documento salvo com sucesso!",
+          status: "succes",
+        });
+      })
+      .catch((_err) => {
+        setLoading(false);
+        return createToast({
+          message: "Não foi possível salvar o documento...",
+          status: "error",
+        });
       });
   }
 
@@ -171,22 +174,21 @@ export default function Documents({
           queryClient.invalidateQueries({
             queryKey: ["LastUpdates", router.query.id],
           });
-          notification.success({
-            message: "Documento atualizado com sucesso!",
-          });
-        })
-        .catch((_err) => {
-          setLoading(false);
-          return notification.error({
-            message: "Não foi possível atualizar o documento...",
-          });
-        })
-        .finally(() => {
           setSelectedUpdate && setSelectedUpdate(false);
           if (!visible) {
             setLoading(false);
             setData({});
           }
+          return createToast({
+            message: "Documento atualizado com sucesso!",
+            status: "success",
+          });
+        })
+        .catch((_err) => {
+          setLoading(false);
+          return createToast({
+            message: "Não foi possível atualizar o documento...",
+          });
         });
     },
     [data, patient, updateData?.id, allDocuments, body, user]
@@ -202,9 +204,9 @@ export default function Documents({
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-
-        return notification.success({
+        return createToast({
           message: "Registro removido com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {

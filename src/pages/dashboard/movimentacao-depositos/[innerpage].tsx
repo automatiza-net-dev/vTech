@@ -1,13 +1,11 @@
 import { ShowDepositMovement } from "@/OLD/components/DepositMovement/show";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function ShowDepositMovementPage() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <ShowDepositMovement />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <ShowDepositMovement />
+    </LayoutDashboard>
   );
 }

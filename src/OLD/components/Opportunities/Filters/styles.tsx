@@ -10,8 +10,9 @@ export const InputBox = styled.div`
   border-radius: 40px;
   padding: 0 20px;
 
-  input, .date-component, .select-component {
-    border: none;
+  input,
+  .date-component,
+  .select-component {
     width: 100%;
   }
 `;

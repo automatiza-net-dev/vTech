@@ -1,13 +1,11 @@
 import FinancialStatementDetails from "@/OLD/components/FinancialStatement/Details";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function FinancialStatementDetailsPage() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <FinancialStatementDetails />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <FinancialStatementDetails />
+    </LayoutDashboard>
   );
 }

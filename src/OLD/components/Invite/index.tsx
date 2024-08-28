@@ -6,24 +6,34 @@ import { Container, Body } from "./styles";
 import ExistentUser from "./ExistentUser";
 import NewUser from "./NewUser";
 
-function Invites() {
+function Invites({ type }: { type: "accept" | "new" }) {
   const router = useRouter();
+
+  const verifyImage = () => {
+    return {
+      backgroundImage:
+        process.env.client === "sancla"
+          ? `/assets/pet-sancla.jpeg`
+          : `/assets/invite-liftone.jpeg`,
+
+      logo:
+        process.env.client === "sancla"
+          ? process.env.api + `/assets/logo-sancla.png`
+          : "/images/logo/lo-logo-green.png",
+    };
+  };
 
   return (
     <Container>
-      <Body>
-        <section>
-          <img
-            className="logo"
-            src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
-          />
-          {router.query.page === "aceitar" && <ExistentUser />}
-          {router.query.page === "novo-usuario" && <NewUser />}
-        </section>
+      <section>
         <div className="img-container">
-          <img src="/svg/undraw_friends_r511.svg" />
+          <img src={process.env.api + verifyImage().backgroundImage} />
         </div>
-      </Body>
+      </section>
+      <section>
+        <img className="logo" src={verifyImage().logo} />
+        {type === "accept" ? <ExistentUser /> : <NewUser />}
+      </section>
     </Container>
   );
 }

@@ -9,6 +9,7 @@ import {
   LoaderCircle,
   InputCurrency,
   Input,
+  Tooltip,
 } from "infinity-forge";
 
 import { RemoteMeta } from "@/data";
@@ -17,6 +18,7 @@ import { CreateGoal, LoadGoal, User } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
 import * as S from "./styles";
+import { CopyPastMonth } from "./copy-past-month";
 
 export function Goals() {
   const list = Array.from({ length: 12 }).map((_, index) => {
@@ -25,11 +27,15 @@ export function Goals() {
 
   return (
     <>
-      <h3 className="font-20-bold">Últimos meses:</h3>
+      <h3 className="font-20-bold">Últimos meses/anos:</h3>
 
       <S.Goals>
-        {list.map((period) => (
-          <CardGoal key={period} period={period} />
+        {list.map((period, index) => (
+          <CardGoal
+            key={period}
+            period={period}
+            previousPeriod={list[index + 1] || null}
+          />
         ))}
       </S.Goals>
 
@@ -40,7 +46,13 @@ export function Goals() {
   );
 }
 
-function CardGoal({ period }: { period: LoadGoal.Params["period"] }) {
+function CardGoal({
+  period,
+  previousPeriod,
+}: {
+  period: LoadGoal.Params["period"];
+  previousPeriod: LoadGoal.Params["period"] | null;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -50,7 +62,11 @@ function CardGoal({ period }: { period: LoadGoal.Params["period"] }) {
         open={open}
         onClose={() => setOpen(false)}
       >
-        <FormGoal setOpen={setOpen} period={period} />
+        <FormGoal
+          setOpen={setOpen}
+          period={period}
+          previousPeriod={previousPeriod}
+        />
       </Modal>
 
       <div className="item" onClick={() => setOpen(true)}>
@@ -63,16 +79,16 @@ function CardGoal({ period }: { period: LoadGoal.Params["period"] }) {
 function FormGoal({
   period,
   setOpen,
+  previousPeriod,
 }: {
   period: LoadGoal.Params["period"];
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  previousPeriod: LoadGoal.Params["period"] | null;
 }) {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const { data, isFetching } = useLoadGoal(period);
 
   const { createToast } = useToast();
-
-  const user = GetUser<User>();
 
   if (isFetching) {
     return <LoaderCircle size={30} />;
@@ -85,47 +101,55 @@ function FormGoal({
   const metas = data[0].metas;
 
   return (
-    <FormHandler
-      initialData={
-        {
+    <>
+      <h4 style={{ marginBottom: 20 }} className="font-20-bold">
+        {period}
+      </h4>
+      <FormHandler
+        initialData={{
           items: metas.map((meta) => ({
             period,
             metaId: String(meta.id),
             unitMetaId: meta.unitMetaId,
-            value: meta.value || "0",
+            value: String(meta?.value) || "0",
             businessUnitId: String(user.unit.id),
           })),
-        } as CreateGoal.Params
-      }
-      isStickyButtons
-      button={{ text: "Salvar" }}
-      onSucess={async (data) => {
-        await container
-          .get<RemoteMeta>(TypesAutomatiza.RemoteMeta)
-          .create(data);
+        }}
+        isStickyButtons
+        button={{ text: "Salvar" }}
+        onSucess={async (data) => {
+          await container
+            .get<RemoteMeta>(TypesAutomatiza.RemoteMeta)
+            .create(data);
 
-        createToast({ message: "Meta criada com sucesso", status: "success" });
+          createToast({
+            message: "Meta criada com sucesso",
+            status: "success",
+          });
 
-        setOpen && setOpen(false);
-      }}
-    >
-      {metas.map((meta, index) => {
-        const name = `items[${index}].value`;
+          setOpen && setOpen(false);
+        }}
+      >
+        {previousPeriod && <CopyPastMonth period={previousPeriod} />}
 
-        if (meta.type === "R$") {
+        {metas.map((meta, index) => {
+          const name = `items[${index}].value`;
+
+          if (meta.type === "R$") {
+            return (
+              <div key={meta.id}>
+                <InputCurrency name={name} label={meta.description} />
+              </div>
+            );
+          }
+
           return (
             <div key={meta.id}>
-              <InputCurrency name={name} label={meta.description} />
+              <Input type="number" name={name} label={meta.description} />
             </div>
           );
-        }
-
-        return (
-          <div key={meta.id}>
-            <Input type="number" name={name} label={meta.description} />
-          </div>
-        );
-      })}
-    </FormHandler>
+        })}
+      </FormHandler>
+    </>
   );
 }

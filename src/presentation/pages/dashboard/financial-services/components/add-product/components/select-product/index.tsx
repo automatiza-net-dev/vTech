@@ -29,6 +29,7 @@ export function SelectProduct() {
 
     const cartItem = {
       id: findProduct?.id,
+      courtesy: findProduct?.courtesy,
       variations: findProduct?.variations?.map(
         ({
           id,

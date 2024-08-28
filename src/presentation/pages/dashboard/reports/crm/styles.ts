@@ -33,4 +33,16 @@ export const CrmReports = styled("section")`
     max-width: 150px;
     margin: 0 0 5px auto;
   }
+
+  .form-button {
+    margin-left: auto;
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+
+    button {
+      max-width: 195px;
+      background-color: ${(props) => props.theme.primaryColor};
+    }
+  }
 `;

@@ -38,7 +38,7 @@ const MultipleExecution = memo(function MultipleExecution() {
 
   const router = useRouter();
 
-  const { treatment } = useTreatment(router.query.innerpage, reload);
+  const { treatment } = useTreatment(router.query.id, reload);
   const { executions } = useSearchDateExecutions(filters);
   const { colaborators } = useColaborators();
 
@@ -46,7 +46,7 @@ const MultipleExecution = memo(function MultipleExecution() {
 
   useEffect(() => {
     setFilters({
-      treatment: router.query.innerpage,
+      treatment: router.query.id,
       date: moment(new Date()).startOf("day").toISOString(),
     });
   }, []);
@@ -80,7 +80,7 @@ const MultipleExecution = memo(function MultipleExecution() {
     setLoading(true);
     treatmentService
       .batchCompleteExecution({
-        treatmentId: router?.query?.innerpage,
+        treatmentId: router?.query?.id,
         observations: data?.observations,
         executionUser: data?.executionUser,
         executionList: formattedExecutions

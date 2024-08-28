@@ -14,8 +14,10 @@ import {
   Tabs,
 } from "antd";
 const { TextArea } = Input;
+import { Modal as ModalInfinityForge } from "infinity-forge";
 import * as React from "react";
 import { GrAddCircle } from "react-icons/gr";
+import { MdMonetizationOn } from "react-icons/md";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { useQueryClient } from "react-query";
 import { currencyFormatter } from "..";
@@ -26,6 +28,7 @@ import {
   useBudgetProducts,
   useCompleteBudget,
   useCreateBudgetItem,
+  useUpdateBudgetItem,
 } from "@/OLD/hooks/useBudgets";
 import { useUserHasPermission, useProfile } from "@/OLD/hooks/useProfile";
 
@@ -33,7 +36,13 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import Masks from "@/OLD/utils/masks";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
-import { useDictionary } from "@/presentation";
+import {
+  useDictionary,
+  DiscountConfirmation,
+  AddBudgetNew,
+} from "@/presentation";
+
+import * as S from "./styles";
 
 const columns = [
   {
@@ -62,6 +71,11 @@ const columns = [
     key: "total",
   },
   {
+    title: "Cortesia",
+    dataIndex: "courtesy",
+    key: "courtesy",
+  },
+  {
     title: "Remover",
     dataIndex: "remove",
     key: "remove",
@@ -76,6 +90,8 @@ export default function AddBudgetItem({
   setExternVisible,
 }) {
   const queryClient = useQueryClient();
+  const [discountConfirmVisible, setDiscountConfirmVisible] =
+    React.useState(false);
   const [visible, setVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [observation, setObservation] = React.useState("Sem observações");
@@ -86,6 +102,7 @@ export default function AddBudgetItem({
   const [loading, setLoading] = React.useState(false);
   const [productType, setProductType] = React.useState("");
   const [activeTab, setActiveTab] = React.useState("0");
+  const [itemData, setItemData] = React.useState([]);
 
   const { data, refetch } = useCompleteBudget(
     budget.id,
@@ -94,8 +111,9 @@ export default function AddBudgetItem({
   const { data: products } = useBudgetProducts(
     tableRender ? visible : externVisible
   );
-  const { isLoading } = useCreateBudgetItem();
   const { clinic } = useProfile();
+  const { mutate } = useUpdateBudgetItem();
+  const { isLoading } = useCreateBudgetItem();
 
   const addItemPermission = useUserHasPermission("ORC02");
   const removeItemPermission = useUserHasPermission("ORC07");
@@ -106,53 +124,89 @@ export default function AddBudgetItem({
       setInternalObservation(data?.internal_observation);
   }, [data]);
 
+  React.useEffect(() => {
+    data &&
+      setItemData(
+        data.items.map((item) => {
+          return {
+            product: [
+              item?.productVariation?.product?.description,
+              `(${item?.productVariation?.product?.reference_code})`,
+              ...item?.productVariation?.variationOptions.map(
+                (option) => option?.description
+              ),
+              item?.productVariation?.barcode,
+            ].join(" - "),
+            discountValue: item?.discount_value,
+            budgetId: item?.id,
+            courtesy: item.courtesy,
+            quantity: item.quantity,
+            unitaryValue: item.unitary_value,
+            status: item.status,
+            saleValue: item.sale_value,
+            totalValue: item.total_value,
+            maximumDiscountPercentage:
+              item?.productVariation?.businessUnitProducts?.[0]
+                ?.maximum_discount_percentage,
+          };
+        })
+      );
+  }, [data]);
+
   const { getWord } = useDictionary();
 
   const validBudget =
-    budget.status === "ABERTO" ||
-    budget.status === `Orçamento em aberto`;
+    budget.status === "ABERTO" || budget.status === `Orçamento em aberto`;
 
   const submitObservation = React.useCallback(() => {
-    budgetService.updateObservation(data?.id, {
+    budgetService.updateObservation(budget.id, {
       observation,
       internalObservation,
     });
   }, [observation, internalObservation]);
 
-  const submit = React.useCallback(() => {
-    if (!validBudget) {
-      return;
-    }
+  const submit = React.useCallback(
+    (maxDiscount = false) => {
+      if (!validBudget) {
+        return;
+      }
 
-    setLoading(true);
+      setLoading(true);
 
-    budgetService
-      .createMultipleBudgetItems({
-        items: multipleProducts.map((item: any) => ({
-          ...item,
-          unitaryValue: convertIntlCurrency(item?.unitaryValue),
-          discountValue: convertIntlCurrency(item?.discountValue),
-          budgetId: budget?.id,
-        })),
-      })
-      .then((_res) => {
-        setLoading(false);
-        setFormData({});
-        setReload && setReload((prv) => !prv);
-        queryClient.invalidateQueries(["budgets", "show", budget.id]);
-        setMultipleProducts([]);
-        setValues({});
-        return notification.success({
-          message: "Produtos adicionados com sucesso!",
+      budgetService
+        .createMultipleBudgetItems({
+          items: multipleProducts.map((item: any) => ({
+            ...item,
+            unitaryValue: convertIntlCurrency(item?.unitaryValue),
+            discountValue: convertIntlCurrency(item?.discountValue),
+            maxDiscount,
+            budgetId: budget?.id,
+          })),
+        })
+        .then((_res) => {
+          setLoading(false);
+          setFormData({});
+          setReload && setReload((prv) => !prv);
+          queryClient.invalidateQueries(["budgets", "show", budget.id]);
+          setMultipleProducts([]);
+          setValues({});
+          setDiscountConfirmVisible(false);
+          return notification.success({
+            message: "Produtos adicionados com sucesso!",
+          });
+        })
+        .catch((err) => {
+          if (err.response.data.message === "Desconto máximo foi excedido") {
+            setDiscountConfirmVisible(true);
+          }
+          setLoading(false);
+          return notification.error({
+            message: "Houve um erro ao salvar os produtos selecionados",
+          });
         });
-      })
-      .catch((err) => {
-        setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao salvar os produtos selecionados",
-        });
-      });
-  }, [validBudget, formData, multipleProducts, budget]);
+    },
+    [validBudget, formData, multipleProducts, budget]
+  );
 
   const removeItem = (id) => {
     budgetService
@@ -188,30 +242,45 @@ export default function AddBudgetItem({
       });
   };
 
-  const productData = React.useMemo(() => {
+  const productData = () => {
     if (!data?.items) {
       return [];
     }
 
-    return data.items.map((item) => ({
+    return itemData.map((item, i) => ({
       key: item.id,
-      product: [
-        item?.productVariation?.product?.description,
-        `(${item?.productVariation?.product?.reference_code})`,
-        ...item?.productVariation?.variationOptions.map(
-          (option) => option?.description
-        ),
-        item?.productVariation?.barcode,
-      ].join(" - "),
+      product: <div style={{ width: "150px" }}>{item.product}</div>,
+      saleValue: item.saleValue,
       quantity: item.quantity,
-      value: currencyFormatter(item.unitary_value.toString()),
-      discount: currencyFormatter(item?.discount_value),
-      total: currencyFormatter(item.total_value.toString()),
+      value: currencyFormatter(item?.unitaryValue),
+      discount: currencyFormatter(item?.discountValue),
+      totalValue: currencyFormatter(item?.totalValue),
+      courtesy: (
+        <input
+          type="checkbox"
+          checked={item?.courtesy}
+          disabled={!item?.productVariation?.product?.courtesy}
+          onChange={(e) => {
+            const arr = [...itemData];
+
+            arr.splice(i, 1, {
+              ...itemData[i],
+              courtesy: e.target.checked,
+              unitaryValue: e.target.checked ? 0 : item?.saleValue,
+              totalValue: e.target.checked
+                ? 0
+                : item?.saleValue * item?.quantity - item?.discountValue,
+              update: true,
+            });
+            setItemData(arr);
+          }}
+        />
+      ),
       remove: removeItemPermission ? (
         <Popconfirm
           title="Deseja remover este item?"
           onConfirm={() => {
-            removeItem(item?.id);
+            removeItem(item?.budgetId);
           }}
         >
           <DeleteTwoTone twoToneColor="red" />
@@ -220,7 +289,7 @@ export default function AddBudgetItem({
         "-"
       ),
     }));
-  }, [data]);
+  };
 
   const productOptions = products?.map((product) => {
     return {
@@ -240,24 +309,65 @@ export default function AddBudgetItem({
 
   sortItems(productOptions, "value");
 
+  const updateItems = (items) => {
+    mutate(
+      {
+        items: items.map((item) => ({
+          budgetItemId: item.budgetId,
+          quantity: item.quantity,
+          unitaryValue: item.unitaryValue,
+          discountValue: item.discountValue,
+          courtesy: item.courtesy,
+          saleValue: item.saleValue,
+          status: item?.status,
+          maximumDiscountPercentage: item?.maximumDiscountPercentage,
+        })),
+      },
+      {
+        onSuccess: () => {
+          refetch();
+          setReload && setReload((prv) => !prv);
+          queryClient.invalidateQueries(["budgets", "show"]);
+        },
+      }
+    );
+  };
+
+  const [open, setOpen] = React.useState(false);
+
   return (
     <>
+      <ModalInfinityForge open={open} onClose={() => setOpen(false)}>
+        {open && <AddBudgetNew budgetId={budget.id} setModal={setOpen} />}
+      </ModalInfinityForge>
+
       {addItemPermission && tableRender && (
         <Tooltip title="Adicionar Item">
           <GrAddCircle
             className="icon"
             size={20}
-            onClick={() =>
-              validBudget
-                ? tableRender
-                  ? setVisible((prevState) => !prevState)
-                  : setExternVisible((prv) => !prv)
-                : null
-            }
+            onClick={() => setOpen(true)}
             style={{ opacity: validBudget ? 1 : 0.5 }}
           />
         </Tooltip>
       )}
+
+      <Tooltip title="Adicionar prévia pagamento">
+        <MdMonetizationOn
+          size={20}
+          className="icon"
+          size={20}
+          onClick={() => {
+            setActiveTab("1");
+            validBudget
+              ? tableRender
+                ? setVisible((prevState) => !prevState)
+                : setExternVisible((prv) => !prv)
+              : null;
+          }}
+          style={{ opacity: validBudget ? 1 : 0.5 }}
+        />
+      </Tooltip>
 
       <Modal
         visible={tableRender ? visible : externVisible}
@@ -274,7 +384,7 @@ export default function AddBudgetItem({
           activeKey={activeTab}
           onChange={(key) => setActiveTab(key)}
         >
-          <TabPane tab={"Adicionar item"} key={0}>
+          <TabPane tab={"Adicionar item"} key={"0"}>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -434,52 +544,47 @@ export default function AddBudgetItem({
             <div className="uk-flex uk-flex-column">
               <Table
                 columns={columns}
-                dataSource={productData}
+                dataSource={productData()}
                 pagination={false}
                 style={{ maxHeight: "300px", overflowY: "auto" }}
               />
-              <div
-                className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small uk-flex-around"
-                style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-              >
-                <div className="uk-width-1-3">
+              <S.TotalBox>
+                <div>
                   <strong>Totais:</strong>
                 </div>
                 <div>
-                  {productData
-                    .reduce((acc, current) => acc + current.quantity, 0)
+                  {productData()
+                    .reduce((acc, current) => acc + current?.quantity, 0)
                     .toFixed(1)}
                 </div>
                 <div>
                   {currencyFormatter(
-                    productData.reduce(
+                    productData().reduce(
                       (acc, current) =>
-                        acc +
-                        (convertIntlCurrency(current.total) +
-                          convertIntlCurrency(current?.discount)),
+                        acc + current?.saleValue * current?.quantity,
                       0
                     )
                   )}
                 </div>
                 <div>
                   {currencyFormatter(
-                    productData.reduce(
+                    productData().reduce(
                       (acc, current) =>
-                        acc + convertIntlCurrency(current.discount),
+                        acc + convertIntlCurrency(current?.discount),
                       0
                     )
                   )}
                 </div>
                 <div>
                   {currencyFormatter(
-                    productData.reduce(
+                    productData().reduce(
                       (acc, current) =>
-                        acc + convertIntlCurrency(current.total),
+                        acc + convertIntlCurrency(current?.totalValue),
                       0
                     )
                   )}
                 </div>
-              </div>
+              </S.TotalBox>
               <hr />
               <footer className="uk-flex uk-flex-right">
                 <div
@@ -532,6 +637,7 @@ export default function AddBudgetItem({
                       }
                       setFormData({});
                       submitObservation();
+                      updateItems(itemData);
                       tableRender
                         ? setVisible((prevState) => !prevState)
                         : setExternVisible((prv) => !prv);
@@ -543,10 +649,21 @@ export default function AddBudgetItem({
               </footer>
             </div>
           </TabPane>
-          <TabPane key="2" tab={"Pagamentos"}>
+          <TabPane key="1" tab={"Pagamentos"}>
             <Negotiation budgetId={budget.id} />
           </TabPane>
         </Tabs>
+        <ModalInfinityForge
+          open={discountConfirmVisible}
+          onClose={() => setDiscountConfirmVisible(false)}
+          children={
+            <DiscountConfirmation
+              onCancel={() => setDiscountConfirmVisible(false)}
+              onConfirm={() => submit(true)}
+              origin="Orçamento"
+            />
+          }
+        />
       </Modal>
     </>
   );

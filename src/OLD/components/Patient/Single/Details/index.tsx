@@ -10,13 +10,13 @@ import { convertDate } from "@/OLD/utils/convertDate";
 import TutorVincForm from "./TutorVincForm";
 
 // Utils
-import { Columns } from "./tutorsColumns";
 import moment from "moment";
 
 // Icons
 import { BiPlusMedical } from "react-icons/bi";
 import { GiConfirmed } from "react-icons/gi";
-import { FormCreatePatient } from "@/presentation";
+import { FormCreatePatient, useVerifyPermissions } from "@/presentation";
+import { Unlink } from "@/OLD/components/Tutor/unlink";
 
 const Details = React.memo(function Single({
   selectedId,
@@ -28,6 +28,8 @@ const Details = React.memo(function Single({
   const [photoSrc, setPhotoSrc] = useState();
   const [newTutorOpen, setNewTutorOpen] = useState(false);
   const [reload, setReload] = useState(false);
+
+  const router = useRouter();
 
   const setActiveTutor = (tutorId) => {
     petsService
@@ -51,6 +53,13 @@ const Details = React.memo(function Single({
             tutors: res?.data?.tutors?.map((tutor) => {
               return {
                 ...tutor,
+                unlinkTutorPet: (
+                  <Unlink
+                    patientId={selectedId}
+                    tutorId={tutor?.id}
+                    customSubmit={() => setReload((prev) => !prev)}
+                  />
+                ),
                 activeTutor: !tutor?.is_main ? (
                   <Tooltip title="Definir tutor ativo">
                     <GiConfirmed
@@ -77,6 +86,39 @@ const Details = React.memo(function Single({
     },
     [selectedId]
   );
+
+  const hasPermission = useVerifyPermissions("PET04");
+  const Columns = [
+    {
+      title: "Tutor",
+      key: "name",
+      dataIndex: "name",
+      render: (_, data) =>
+        data?.is_main ? `${data?.name} - Ativo` : data?.name,
+    },
+    {
+      title: "Telefone",
+      key: "cellphone",
+      dataIndex: "cellphone",
+      render: (_, data) => data?.tutor?.cellphone,
+    },
+    {
+      title: "Email",
+      key: "email",
+      dataIndex: "email",
+      render: (_, data) => data?.tutor?.email,
+    },
+    {
+      title: "Tutor ativo",
+      key: "activeTutor",
+      dataIndex: "activeTutor",
+    },
+    hasPermission && {
+      title: "Desvincular Tutor/Pet",
+      dataIndex: "unlinkTutorPet",
+      key: "unlinkTutorPet",
+    },
+  ].filter(Boolean);
 
   useEffect(() => {
     handleGetSinglePatient(selectedId);
@@ -123,26 +165,30 @@ const Details = React.memo(function Single({
               style={{
                 position: "absolute",
                 right: 40,
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              <div>
-                <Button
-                  onClick={() =>
-                    router.push(`/dashboard/paciente/${patient?.id}`)
-                  }
-                  classCallback="uk-margin-small-right"
-                >
-                  Ficha paciente
-                </Button>
-                <Button
-                  onClick={() => setVisible(false)}
-                  classCallback="uk-margin-small-right"
-                >
-                  Voltar
-                </Button>
+              <Button
+                onClick={() =>
+                  router.push(`/dashboard/paciente/${patient?.id}`)
+                }
+                classCallback="uk-margin-small-right"
+              >
+                Ficha paciente
+              </Button>
+              <Button
+                onClick={() => setVisible(false)}
+                classCallback="uk-margin-small-right"
+              >
+                Voltar
+              </Button>
 
-                <FormCreatePatient isModal patientId={patient?.id} trigger={ <Button>Editar</Button>} />
-              </div>
+              <FormCreatePatient
+                isModal
+                patientId={patient?.id}
+                trigger={<Button>Editar</Button>}
+              />
             </div>
           </div>
           <br />

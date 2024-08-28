@@ -6,8 +6,8 @@ import React, { memo } from "react";
 import { PlusOutline } from "styled-icons/evaicons-outline";
 
 // Components
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
-import { Upload, Button, Input, Popconfirm } from "antd";
+import { Button, FormHandler } from "infinity-forge";
+import { Upload, Input, Popconfirm } from "antd";
 import Print from "@/OLD/components/mini-components/Print";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 const { TextArea } = Input;
@@ -30,14 +30,8 @@ function FormChild({
   patient,
   remove,
 }) {
-
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit();
-      }}
-    >
+    <FormHandler isStickyButtons>
       <div>
         <div>
           <div className="uk-flex uk-flex-between">
@@ -96,72 +90,89 @@ function FormChild({
                 setFileList(info.fileList);
               }}
             >
-              <ButtonA>
-                <PlusOutline size={15} className="upload-icon" /> Adicionar
-                anexos
-              </ButtonA>
+              <Button
+                type="button"
+                style={{ marginRight: "10px" }}
+                text={
+                  <>
+                    <PlusOutline size={15} className="upload-icon" />
+                    Adicionar anexos
+                  </>
+                }
+              />
             </Upload>
-            <ButtonA className="uk-link" onClick={() => setPhotosOpen(true)}>
-              Visualizar fotos anexadas
-            </ButtonA>
+            <Button
+              type="button"
+              onClick={() => setPhotosOpen(true)}
+              text="Visualizar fotos anexadas"
+            />
           </div>
         </div>
       </div>
       <div>
-        <footer className="uk-flex uk-flex-center">
-          <Print
-            patient={patient.data}
-            triggerComponent={
-              <Button className="uk-margin-top uk-margin-small-right">
-                Imprimir
-              </Button>
-            }
-            content={data?.observations}
-            title={"Observações"}
-            string={true}
-            onBeforePrint={() => print()}
-          />
-          {modal ? (
-            <div className="uk-margin-top uk-flex uk-flex-between">
-              <Button
-                onClick={() => setVisible(false)}
-                className="uk-margin-small-right"
-              >
-                {" "}
-                Cancelar{" "}
-              </Button>
-              <Button
-                loading={loading}
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-              >
-                salvar
-              </Button>
-            </div>
-          ) : (
-            <div className="uk-flex uk-flex-right uk-margin-top">
-              <Button htmlType="submit" type="primary" loading={loading}>
-                Atualizar
-              </Button>
-              <Popconfirm
-                title="Deseja remover este registro?"
-                onConfirm={() => remove()}
-              >
+        <footer>
+          <div
+            style={{
+              marginTop: "10px",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Print
+              patient={patient.data}
+              triggerComponent={
                 <Button
-                  htmlType="button"
-                  type="danger"
-                  className="uk-margin-small-left"
+                  style={{ marginRight: "10px" }}
+                  text="Imprimir"
+                  type="button"
+                />
+              }
+              content={data?.observations}
+              title={"Observações"}
+              string={true}
+              onBeforePrint={() => print()}
+            />
+            {modal ? (
+              <>
+                <Button
+                  onClick={submit}
                   loading={loading}
+                  text="Salvar"
+                  style={{ marginRight: "10px" }}
+                />
+
+                <Button
+                  onClick={() => setVisible(false)}
+                  style={{ backgroundColor: "#ff7b5a" }}
+                  text="Cancelar"
+                />
+              </>
+            ) : (
+              <div className="uk-flex uk-flex-right">
+                <Button
+                  onClick={submit}
+                  loading={loading}
+                  text="Atualizar"
+                  style={{ marginRight: "10px" }}
+                />
+
+                <Popconfirm
+                  title="Deseja remover este registro?"
+                  onConfirm={() => remove()}
                 >
-                  Excluir
-                </Button>
-              </Popconfirm>
-            </div>
-          )}
+                  <Button
+                    type="button"
+                    style={{ backgroundColor: "#ff7b5a" }}
+                    loading={loading}
+                    text="Excluir"
+                  />
+                </Popconfirm>
+              </div>
+            )}
+          </div>
         </footer>
       </div>
-    </form>
+    </FormHandler>
   );
 }
 

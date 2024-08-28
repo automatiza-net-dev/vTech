@@ -1,18 +1,13 @@
 import { useState } from "react";
 
-import {
-  HighlightText,
-  SideBar,
-  NextImage,
-  Error,
-  Tooltip,
-} from "infinity-forge";
+import { HighlightText, SideBar, NextImage, Error } from "infinity-forge";
 
 import { Event } from "@/domain";
 import { IconCalendar } from "./icon";
 import { SideBarContent } from "@/presentation";
 
 import * as S from "./styles";
+import { Tooltip } from "antd";
 
 export function ScheduleCard(props: Event) {
   const [open, setOpen] = useState(false);
@@ -98,13 +93,13 @@ export function ScheduleCard(props: Event) {
 
           {isLongDescription ? (
             <Tooltip
-              trigger={
+              children={
                 <div
                   className="description"
                   dangerouslySetInnerHTML={{ __html: serviceType?.description }}
                 />
               }
-              content={serviceType?.description}
+              title={serviceType?.description}
             />
           ) : (
             <div

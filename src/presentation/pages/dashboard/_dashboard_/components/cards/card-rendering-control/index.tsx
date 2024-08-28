@@ -13,9 +13,15 @@ export function CardRenderingControl(props: DashboardCard) {
     case "OrigemClientesporCategoria": {
       return <OrigemClientesCategoria {...props} />;
     }
+
+    case "OrigemClientesOportunidades": {
+      return <OrigemClientesCategoria {...props} />;
+    }
+
     case "SubgruposDetalhado": {
       return <SubgruposDetalhado {...props} />;
     }
-    default: return <PrecoCard {...props} />;
+    default:
+      return <PrecoCard {...props} />;
   }
 }

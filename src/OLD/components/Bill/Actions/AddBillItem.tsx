@@ -16,6 +16,7 @@ import {
   Tooltip,
   notification,
 } from "antd";
+import { Modal as ModalInfinityForge } from "infinity-forge";
 import {
   useCreateBillItem,
   useGetBillProducts,
@@ -34,6 +35,8 @@ const { Group } = Radio;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+
+import { useDictionary, DiscountConfirmation } from "@/presentation";
 
 const columns = [
   {
@@ -62,6 +65,11 @@ const columns = [
     key: "total",
   },
   {
+    title: "Cortesia",
+    dataIndex: "courtesy",
+    key: "courtesy",
+  },
+  {
     title: "Remover",
     dataIndex: "delete",
     key: "delete",
@@ -73,12 +81,15 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
   const [visible, setVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({});
   const [itemData, setItemData] = React.useState([]);
+  const [submitData, setSubmitData] = React.useState({});
   const [editDiscount, setEditDiscount] = React.useState(false);
   const [discountType, setDiscountType] = React.useState("value");
   const [reload, setReload] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [multipleProducts, setMultipleProducts] = React.useState([]);
   const [productType, setProductType] = React.useState("");
+  const [discountConfirmVisible, setDiscountConfirmVisible] =
+    React.useState(false);
   const [generalDiscount, setGeneralDiscount] = React.useState(
     currencyFormatter(0)
   );
@@ -93,24 +104,46 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
 
   sortItems(products, "description");
 
-  const submitDiscount = React.useCallback(() => {
-    setLoading(true);
-    const items = itemData?.map((item) => {
-      return {
-        ...item,
-        discountValue: convertIntlCurrency(item?.discountValue),
-      };
-    });
+  const submitDiscount = React.useCallback(
+    (maxDiscount = false) => {
+      const items = itemData?.map((item) => {
+        const verifyMaxDiscount =
+          !!maxDiscount && !!item?.exceedDiscount ? true : false;
 
-    billService
-      .updateBillItem({ items })
-      .then((_res) => {
-        queryClient.invalidateQueries(["bills"]);
-        setLoading(false);
-        setReload(!reload);
-      })
-      .catch((_err) => setLoading(false));
-  }, [itemData]);
+        return {
+          ...item,
+          discountValue: convertIntlCurrency(item?.discountValue),
+          maxDiscount: verifyMaxDiscount,
+        };
+      });
+
+      billService
+        .updateBillItem({ items })
+        .then((_res) => {
+          setFormData({});
+          setDiscountConfirmVisible(false);
+          queryClient.invalidateQueries(["bills"]);
+          setLoading(false);
+          setReload(!reload);
+          setTimeout(() => setVisible(false), 200);
+        })
+        .catch((errorList) => {
+          setLoading(false);
+          if (Array.isArray(errorList?.response?.data)) {
+            errorList?.response?.data?.forEach((err) => {
+              if (err?.rule === "DescontoMaximo") {
+                return setDiscountConfirmVisible(true);
+              }
+              notification.error({
+                message: err.message,
+              });
+            });
+            return;
+          }
+        });
+    },
+    [itemData]
+  );
 
   React.useEffect(() => {
     data &&
@@ -119,12 +152,24 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
           return {
             discountValue: currencyFormatter(item?.discount_value),
             billItemId: item?.id,
+            quantity: item?.quantity,
+            maximumDiscountPercentage:
+              item?.productVariation?.businessUnitProducts?.[0]
+                ?.maximum_discount_percentage,
+            courtesy: item.courtesy,
+            unitaryValue: item.unitary_value,
+            shouldValidateDiscount: item?.courtesy_approved_at ? false : true,
+            saleValue: item?.sale_value,
+            exceedDiscount:
+              item.discount_value >
+              item?.productVariation?.businessUnitProducts?.[0]
+                ?.maximum_discount_percentage,
           };
         })
       );
   }, [data, reload]);
 
-  const productData = React.useMemo(() => {
+  const productData = () => {
     if (!data?.items || !itemData?.length || itemData?.length === 0) {
       return [];
     }
@@ -142,8 +187,8 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
             item?.productVariation?.barcode,
           ].join(" - "),
           quantity: item.quantity,
-          value: currencyFormatter(item.unitary_value.toString()),
-          total: currencyFormatter(item.total_value.toString()),
+          value: currencyFormatter(itemData[i]?.unitaryValue),
+          total: currencyFormatter(item.quantity * itemData[i]?.unitaryValue),
           delete: removeItemPermission && (
             <Popconfirm
               title="Deseja remover este item?"
@@ -151,6 +196,22 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
             >
               <DeleteTwoTone twoToneColor="red" />
             </Popconfirm>
+          ),
+          courtesy: (
+            <input
+              type="checkbox"
+              disabled={!item.productVariation.product.courtesy}
+              checked={itemData[i]?.courtesy}
+              onChange={(e) => {
+                const arr = [...itemData];
+                arr.splice(i, 1, {
+                  ...itemData?.[i],
+                  courtesy: e.target.checked,
+                  unitaryValue: e.target.checked ? 0 : item.sale_value,
+                });
+                setItemData(arr);
+              }}
+            />
           ),
           discount: (
             <Input
@@ -161,6 +222,10 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
                 const arr = [...itemData];
                 arr.splice(i, 1, {
                   ...itemData[i],
+                  exceedDiscount:
+                    convertIntlCurrency(e.target.value) >
+                    item?.productVariation?.businessUnitProducts?.[0]
+                      ?.maximum_discount_percentage,
                   discountValue: currencyFormatter(
                     convertIntlCurrency(e.target.value)
                   ),
@@ -172,7 +237,7 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
         }
       );
     });
-  }, [data, itemData, reload]);
+  };
 
   const setDiscountValue = (value) => {
     setEditDiscount(true);
@@ -268,56 +333,63 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
       });
   };
 
-  const submitKit = React.useCallback(() => {
-    setLoading(true);
-    billService
-      .createMultipleItems({
-        items: multipleProducts.map((item) => ({
-          ...item,
-          billId: bill?.id,
-          quantity:
-            typeof item?.quantity === "string"
-              ? parseFloat(item?.quantity.replaceAll(",", "."))
-              : item?.quantity,
-          unitaryValue: convertIntlCurrency(item?.unitaryValue),
-          discountValue: convertIntlCurrency(item?.discountValue),
-        })),
-      })
-      .then((_res) => {
-        setLoading(false);
-        setFormData({});
-        queryClient.invalidateQueries(["bills"]);
-        setReload((prv) => !prv);
-        setMultipleProducts([]);
-        return notification.success({
-          message: "Produtos adicionados com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        setLoading(false);
-
-        if (Array.isArray(_err?.response?.data)) {
-          _err?.response?.data?.forEach((err) => {
-            notification.error({
-              message: err.message,
+  const submitKit = React.useCallback(
+    (maxDiscount = false) => {
+      setLoading(true);
+      billService
+        .createMultipleItems({
+          items: multipleProducts.map((item) => ({
+            ...item,
+            billId: bill?.id,
+            maxDiscount,
+            quantity:
+              typeof item?.quantity === "string"
+                ? parseFloat(item?.quantity.replaceAll(",", "."))
+                : item?.quantity,
+            unitaryValue: convertIntlCurrency(item?.unitaryValue),
+            discountValue: convertIntlCurrency(item?.discountValue),
+          })),
+        })
+        .then((_res) => {
+          setLoading(false);
+          setDiscountConfirmVisible(false);
+          setFormData({});
+          queryClient.invalidateQueries(["bills"]);
+          setReload((prv) => !prv);
+          setMultipleProducts([]);
+          return notification.success({
+            message: "Produtos adicionados com sucesso!",
+          });
+        })
+        .catch((errorList) => {
+          setLoading(false);
+          if (Array.isArray(errorList?.response?.data)) {
+            errorList?.response?.data?.forEach((err) => {
+              if (err?.rule === "DescontoMaximo") {
+                return setDiscountConfirmVisible(true);
+              }
+              notification.error({
+                message: err.message,
+              });
             });
-          });
-          return;
-        }
+            return;
+          }
 
-        if (_err?.response?.data?.message) {
+          if (err?.response?.data?.message) {
+            notification.error({
+              message: err?.response?.data?.message,
+            });
+            return;
+          }
+
           notification.error({
-            message: _err?.response?.data?.message,
+            message: "Houve um erro ao salvar os produtos selecionados",
           });
           return;
-        }
-
-        notification.error({
-          message: "Houve um erro ao salvar os produtos selecionados",
         });
-        return;
-      });
-  }, [multipleProducts, bill]);
+    },
+    [multipleProducts, bill]
+  );
 
   return (
     <>
@@ -345,6 +417,7 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
       >
         <form
           onSubmit={(e) => {
+            setSubmitData({ submitFunction: submitKit });
             e.preventDefault();
             submitKit();
           }}
@@ -457,6 +530,9 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
                       productsArr.splice(i, 1, {
                         ...multipleProducts[i],
                         discountValue: Masks.money(e.target.value),
+                        exceedDiscount:
+                          Number(e.target.value) >
+                          product.maximum_discount_percentage,
                       });
                       setMultipleProducts(productsArr);
                     }}
@@ -549,6 +625,7 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
               <div className="">
                 <Button
                   onClick={() => {
+                    setSubmitData({ submitFunction: submitDiscount });
                     submitDiscount();
                     setEditDiscount(false);
                   }}
@@ -562,7 +639,7 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
           <div className="uk-margin-small-top">
             <Table
               columns={columns}
-              dataSource={productData}
+              dataSource={productData()}
               pagination={false}
               style={{ maxHeight: "300px", overflowY: "auto" }}
             />
@@ -592,6 +669,7 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
           <Button
             type="primary"
             onClick={() => {
+              setSubmitData({ submitFunction: submitDiscount });
               if (multipleProducts?.length > 0) {
                 return notification.warning({
                   message: (
@@ -629,13 +707,24 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
                 });
               }
               submitDiscount();
-              setFormData({});
-              setVisible((prevState) => !prevState);
             }}
           >
             Salvar
           </Button>
         </div>
+        {discountConfirmVisible && (
+          <ModalInfinityForge
+            open={discountConfirmVisible}
+            onClose={() => setDiscountConfirmVisible(false)}
+            children={
+              <DiscountConfirmation
+                onCancel={() => setDiscountConfirmVisible(false)}
+                onConfirm={() => submitData.submitFunction(true)}
+                origin="Venda"
+              />
+            }
+          />
+        )}
       </Modal>
     </>
   );

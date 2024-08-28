@@ -107,12 +107,12 @@ export const productFiscalDocumentsColumns = [
     dataIndex: "status"
   },
   {
-    title: "Recibo Cancelamento",
+    title:  "Rec. Canc. / Inut.",
     key: "reciboCancelamento",
     dataIndex: "reciboCancelamento"
   },
   {
-    title: "Data Cancelamento",
+    title: "Dt. Canc. / Inut.",
     key: "cancellationtDate",
     dataIndex: "cancellationDate"
   },

@@ -1,6 +1,8 @@
 import moment from "moment";
 import { DetailCard, Error, IDetailCard } from "infinity-forge";
 
+import { useQueryClient } from "react-query";
+
 import { Patient } from "@/domain";
 import { FormCreateTutor } from "@/presentation";
 
@@ -13,6 +15,8 @@ export type DetailCard = {
 } & IDetailCard;
 
 export function ProfileInfos({ patient }: { patient: Patient }) {
+  const queryClient = useQueryClient();
+
   const details: DetailCard[] = [
     {
       id: 1,
@@ -57,7 +61,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: patient.death ? "#E02F2F" : "#36A2EB",
       title: patient?.age,
       subTitle: patient.death
-        ? `Óbito em ${moment(patient.death_date).format("DD/MM/YYYY")}`
+        ? `Óbito em ${moment(patient.deathDate).format("DD/MM/YYYY")}`
         : "Idade",
       active: true,
     },
@@ -99,6 +103,9 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                   <FormCreateTutor
                     isModal
                     tutorId={patient.tutor.id}
+                    onSuccess={() =>
+                      queryClient.invalidateQueries(["RemotePatient"])
+                    }
                     trigger={
                       <span
                         className="custom-link"

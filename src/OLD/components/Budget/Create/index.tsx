@@ -69,7 +69,7 @@ const columns = [
 function CreateBudget({
   setReloadExtern = false,
   attendanceId = false,
-  setAttendance
+  setAttendance,
 }: any) {
   const [data, setData] = React.useState({
     budgetDate: moment(),
@@ -90,7 +90,9 @@ function CreateBudget({
   const { user, clinic } = useProfile();
   const clientData = useLoadPatient();
 
-  const close = () => {setModal(false)};
+  const close = () => {
+    setModal(false);
+  };
 
   const cleanUp = () => {
     setData({
@@ -101,14 +103,11 @@ function CreateBudget({
     setValues({});
   };
 
-  const { data: tutors } = useQuery(
-    ["tutors"],
-    async () => {
-      const { data } = await petsService.getTutors();
+  const { data: tutors } = useQuery(["tutors"], async () => {
+    const { data } = await petsService.getTutors();
 
-      return data ?? [];
-    },
-  );
+    return data ?? [];
+  });
   const { movements } = useDailyMovements();
   const { data: products } = useBudgetProducts(true);
   const { mutate, isLoading } = useCreateBudget();
@@ -232,7 +231,9 @@ function CreateBudget({
             setLoading(false);
             setConfirmMissingClientId(false);
             cleanUp();
-            notification.success({ message: `${getWord("Orçamento")} criado com sucesso!` });
+            notification.success({
+              message: `${getWord("Orçamento")} criado com sucesso!`,
+            });
             close((prv) => {
               if (prv?.budget) {
                 return { ...prv, budget: false };
@@ -454,7 +455,7 @@ function CreateBudget({
       });
   };
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
 
   return (
     <div style={{ marginTop: "140px" }}>
@@ -860,9 +861,7 @@ function CreateBudget({
             className="uk-width-1-1 uk-flex uk-flex-right"
             title={`Criar ${getWord("Orçamento")}`}
             visible={true}
-            onClose={() => {}
-        
-            }
+            onClose={() => {}}
             width={800}
             footer={null}
             style={{ gap: "1rem" }}

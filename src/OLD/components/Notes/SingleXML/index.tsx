@@ -51,7 +51,7 @@ function Single() {
 
   useEffect(() => {
     setIds({ ids: [router.query.id], status: "PendenteXml" });
-  }, [JSON.stringify(router.query.id)]);
+  }, [router.query.id]);
 
   useEffect(() => {
     receipt?.length > 0 &&
@@ -266,11 +266,11 @@ function Single() {
                         <AutoComplete
                           className="uk-width-1-1"
                           disabled={item?.newProduct}
-                          onChange={() => {
+                          onChange={(val) => {
                             let newArr = [...data?.items];
                             newArr.splice(i, 1, {
                               ...data?.items[i],
-                              existingProduct: true,
+                              existingProduct: val !== "" ? true : false,
                             });
                             setData({ ...data, items: newArr });
                           }}
@@ -286,6 +286,7 @@ function Single() {
                           options={products?.map((product) => ({
                             ...product,
                             value: product?.description,
+                            key: product?.id,
                           }))}
                           filterOption={(val, opt) =>
                             normalizeStr(opt?.value.toUpperCase()).includes(

@@ -1,53 +1,81 @@
-import { Icon, useTable } from "infinity-forge";
-
+import { Icon, Tooltip, useTable } from "infinity-forge";
+import { useQueryClient } from "react-query";
 import { Patient, Tutor } from "@/domain";
-import { FormCreateTutor, useLoadSchedulesPatients } from "@/presentation";
-
+import { Unlink } from "@/OLD/components/Tutor/unlink";
+import {
+  FormCreateTutor,
+  useLoadSchedulesPatients,
+  useVerifyPermissions,
+} from "@/presentation";
 import { columns } from "./columns";
-import { DeleteTutor, ActiveTutor } from "./actions";
-
+import { ActiveTutor } from "./actions";
 import * as S from "./styles";
 
 export function TutorsTable(props: Patient) {
   const { data } = useLoadSchedulesPatients({
     patientFilters: { tag: props.tag },
   });
+  const queryClient = useQueryClient();
+
+  const hasPermission = useVerifyPermissions("PET04");
+
+  const customActions = [
+    ActiveTutor,
+    (props) => {
+      return (
+        <FormCreateTutor
+          trigger={
+            <div
+              style={{
+                height: "30px",
+                width: "30px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 0,
+                borderRadius: "5px",
+                border: 0,
+                marginRight: "10px",
+                backgroundColor: "#E1E1E1",
+              }}
+            >
+              <Icon name="IconEdit" fill="#828282" />
+            </div>
+          }
+          isModal
+          origin="Cadastro"
+          tutorId={props.id}
+        />
+      );
+    },
+  ];
+
+  if (hasPermission) {
+    customActions.push((p) => (
+      <Tooltip
+        enableHover
+        idTooltip="unlink"
+        content="Desvincular Tutor/Pet"
+        trigger={
+          <Unlink
+            patientId={props.id}
+            tutorId={p.id}
+            customSubmit={async () =>
+              await queryClient.invalidateQueries({
+                queryKey: ["RemoteLoadSchedulesPatients"],
+              })
+            }
+          />
+        }
+      />
+    ));
+  }
 
   const { Table } = useTable<Tutor>({
     columnsConfiguration: {
       columns,
       actions: {
-        custom: [
-          ActiveTutor,
-          (props) => {
-            return (
-              <FormCreateTutor
-                trigger={
-                  <div
-                    style={{
-                      height: "30px",
-                      width: "30px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: 0,
-                      borderRadius: "5px",
-                      border: 0,
-                      marginRight: "10px",
-                      backgroundColor: "#E1E1E1"
-                    }}
-                  >
-                    <Icon name="IconEdit" fill="#828282" />
-                  </div>
-                }
-                isModal
-                origin="Cadastro"
-                tutorId={props.id}
-              />
-            );
-          },
-          DeleteTutor,
-        ],
+        custom: customActions,
       },
     },
     configs: {

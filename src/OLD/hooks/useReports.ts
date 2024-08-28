@@ -233,7 +233,7 @@ export const useSalesAnalyticsReport = (filters, reload) => {
 
   useEffect(() => {
     fetchData();
-  }, [reload, filters]);
+  }, [reload]);
 
   return {
     loadingReports: loading,
@@ -376,7 +376,7 @@ export const useProductTypesReports = (filters, reload) => {
 
   useEffect(() => {
     fetchData();
-  }, [filters]);
+  }, [reload]);
 
   return {
     reports,

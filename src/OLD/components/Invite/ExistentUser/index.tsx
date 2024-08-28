@@ -8,72 +8,78 @@ import { useSingleClinic } from "@/OLD/hooks/useClinics";
 
 import { clinicService } from "@/OLD/services/clinic.service";
 
-import { Input, notification } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Input } from "antd";
+import { useToast, Button } from "infinity-forge";
+import { Container } from "../styles";
 
 const ExistentUser = memo(function ExistentUser() {
   const [password, setPassword] = useState("");
 
   const router = useRouter();
 
+  const { createToast } = useToast();
   const { invite } = useSingleInvite(router.query.subpage);
-  const { clinic } = useSingleClinic(invite?.business_unit_id);
+
   const { user } = useSingleUser(invite?.user_id);
+  const { clinic } = useSingleClinic(invite?.business_unit_id);
 
   const acceptInvite = useCallback(() => {
-    let err = false;
     clinicService
-      .acceptInvite({ idd: router.query.subpage })
+      .acceptInvite({ id: router.query.subpage })
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Convite aceito com sucesso!",
+          status: "success",
         })
       )
-      .catch((_err) => {
-        err = true;
-        return notification.error({
+      .catch((err) => {
+        router.push("/");
+        if (
+          err?.response?.data?.code &&
+          err?.response?.data?.code === "E_BAD_REQUEST"
+        ) {
+          return createToast({
+            message: err?.response?.data?.message.split(":")[1],
+            status: "error",
+          });
+        }
+
+        return createToast({
           message:
             "Houve um erro ao aceitar o convite, verifique se o convite ainda é válido",
+          status: "error",
         });
-      })
-      .finally(() => {
-        if (!err) {
-          router.push("/");
-        }
       });
   }, [router?.query?.subpage, password]);
 
   return (
-    <section className="uk-width-2-3">
+    <section style={{ marginLeft: "50px", width: "80%" }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           acceptInvite();
         }}
       >
-        <div>
-          <h3>
+        <div className="header-section custom-margin-top">
+          <h2>
             Olá <strong>{user?.name}</strong>, você já é usuário em nosso
             sistema Vetech!
-          </h3>
-          <h3>
+          </h2>
+          <p className="custom-margin-top">
             Para aceitar ao convite para ser colaborador na clinica:&nbsp;
             <strong>{clinic?.fantasy_name}</strong>, informe sua senha e clique
             em aceitar
-          </h3>
+          </p>
         </div>
-        <div className="uk-flex uk-flex-column uk-flex-middle">
-          <div className="uk-width-1-2">
-            <label>Senha</label>
-            <Input
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-            />
-          </div>
-          <CustomButton classCallback="uk-margin-top" type="submit">
-            Aceitar
-          </CustomButton>
+
+        <div>
+          <label>Senha</label>
+          <Input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+          />
         </div>
+        <Button text="Aceitar" type="submit" />
       </form>
     </section>
   );

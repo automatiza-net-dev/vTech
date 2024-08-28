@@ -2,7 +2,7 @@ import { ProductCart } from "@/domain";
 
 import { Cart } from "../interfaces";
 
-export function formatCart(cart: Cart[]): ProductCart[] {
+export function formatCart(cart: Cart[], maxDiscount: boolean): ProductCart[] {
   if (!cart || cart.length === 0) {
     return [];
   }
@@ -10,7 +10,13 @@ export function formatCart(cart: Cart[]): ProductCart[] {
   return cart
     ?.flatMap((item) => item.variations)
     ?.map((variation) => {
+      const verifyMaxDiscount =
+        !!maxDiscount && !!variation?.exceedDiscount ? true : false;
+
       return {
+        budgetItemId: variation.budgetItemId || "",
+        maxDiscount: verifyMaxDiscount,
+        courtesy: variation?.courtesy,
         discountValue:
           typeof variation.discountValue === "string"
             ? Number(

@@ -109,5 +109,5 @@ export const billService = {
   updateConferencePayment,
   updateExpirationDate,
   updateBillSeller,
-  updateFinancialResponsible
+  updateFinancialResponsible,
 };

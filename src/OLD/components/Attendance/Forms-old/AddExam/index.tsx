@@ -63,7 +63,7 @@ export default function LaunchExam({
         businessUnitId: clinic?.id,
         userId: user?.id,
         tutorId:
-          systemName !== "LiftOne" ? patient.data?.tutor.id : patient.data?.id,
+          systemName !== "LiftOne" ? patient.data?.tutor?.id : patient.data?.id,
         dependentId: patient.data?.id,
       })
       .then((res) => setState(res.data.result))
@@ -268,15 +268,22 @@ export default function LaunchExam({
     (attachmentId) => {
       setLoading(true);
       patientExamsService
-        .removeAttachment(examPatientData?._id, attachmentId)
+        .removeAttachment(
+          examPatientData?.timeline_info.patient_exam.id,
+          attachmentId
+        )
         .then((_res) => {
           setLoading(false);
-          return toast({ message: "Anexo removido!", status: "success" });
+          queryClient.invalidateQueries({
+            queryKey: ["LastUpdates", router.query.id],
+          });
+          return createToast({ message: "Anexo removido!", status: "success" });
         })
         .catch((err) => {
           setLoading(false);
           return createToast({
             message: "Houve um problema ao remover o anexo",
+            status: "error",
           });
         });
     },
@@ -333,7 +340,11 @@ export default function LaunchExam({
         remove={removeData}
       />
 
-      <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
+      <Modal
+        open={photosOpen}
+        onClose={() => setPhotosOpen(false)}
+        styles={{ minWidth: "800px", padding: "10px" }}
+      >
         <div>
           {fileList?.length > 0 &&
             fileList.map((item, i) => {
@@ -352,44 +363,44 @@ export default function LaunchExam({
                   });
 
               return item?.attachment ? (
-                <div className="uk-flex uk-flex-between">
+                <div style={{ marginTop: "10px" }}>
                   <img
                     src={process.env.NEXT_PUBLIC_API + item.attachment}
                     width={150}
                     className="uk-margin-small-right"
                   />
+
                   <a
+                    style={{ marginRight: "20px" }}
                     target="_blank"
                     className="uk-link"
                     href={process.env.NEXT_PUBLIC_API + item.attachment}
                   >
                     {item?.filename}
                   </a>
-                  <Popconfirm
-                    title="Deseja realmete excluir essa permissão?"
-                    onConfirm={() => removeAttachment(item?.id)}
-                    okText="Sim"
-                    cancelText="Não"
-                    placement="left"
-                  >
-                    <FaRegTrashAlt
-                      size={15}
-                      color="red"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </Popconfirm>
+
+                  <FaRegTrashAlt
+                    onClick={() => {
+                      removeAttachment(item?.id);
+                    }}
+                    size={20}
+                    color="red"
+                    style={{ cursor: "pointer", marginRight: "20px" }}
+                  />
+
                   <a download={`${item?.filename}`} id={`custom-download-${i}`}>
-                    <MdDownload />
+                    <MdDownload size={20} />
                   </a>
+                  <hr />
                 </div>
               ) : (
-                <div className="uk-flex uk-flex-between uk-flex-middle">
+                <div style={{ marginTop: "10px" }}>
                   <img
                     src={window.URL.createObjectURL(item.originFileObj)}
                     width={150}
                     className="uk-margin-small-right"
                   />
-                  <div>{item?.originFileObj?.name}</div>
+                  <span>{item?.originFileObj?.name}</span>
                   <span className="uk-text-muted">(Envio pendente)</span>
                   <FaRegTrashAlt
                     onClick={() =>
@@ -397,17 +408,18 @@ export default function LaunchExam({
                         fileList.filter((file) => item.uid !== file.uid)
                       )
                     }
-                    size={15}
+                    size={20}
                     color="red"
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", marginRight: "20px" }}
                   />
                   <a
                     className=""
                     href={window.URL.createObjectURL(item.originFileObj)}
                     download={`${item?.filename}`}
                   >
-                    <MdDownload size={30} />
+                    <MdDownload size={25} />
                   </a>
+                  <hr />
                 </div>
               );
             })}

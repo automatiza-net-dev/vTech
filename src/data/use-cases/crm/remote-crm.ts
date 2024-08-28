@@ -10,6 +10,7 @@ export class RemoteCRM
     domain.SyncSchedule,
     domain.LoadDashboardCRM,
     domain.LoadOpportunitiesReport,
+    domain.CreateOpportunitiePatient,
     domain.LoadAllOpportunitiesSchedule
 {
   constructor(
@@ -56,5 +57,17 @@ export class RemoteCRM
     });
 
     return response as domain.LoadDashboardCRM.Model;
+  }
+
+  async createOpportunitiePatient(
+    params: domain.CreateOpportunitiePatient.Params
+  ) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make("opportunities/patient"),
+      method: "put",
+      body: params,
+    });
+
+    return {};
   }
 }

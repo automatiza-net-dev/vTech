@@ -5,16 +5,13 @@ import { FormHandler, InputRadio, Error, useAuthAdmin } from "infinity-forge";
 import { Storage } from "@/infra";
 import { RemoteBusinessUnits } from "@/data";
 import { InfraTypes, adminTypes, container } from "@/container";
-import {  useLoadUsersController } from "@/presentation";
+import { useLoadUsersController } from "@/presentation";
 
 import * as S from "./styles";
-import { User } from "@/domain";
 
 export function SwapForm() {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const { data } = useLoadUsersController();
-
-  const user = GetUser<User>();
 
   const userClinicas =
     data && data.length > 0
@@ -29,14 +26,6 @@ export function SwapForm() {
     await container
       .get<RemoteBusinessUnits>(adminTypes.RemoteBusinessUnits)
       .swap({ unitId: data.id });
-
-    const adminUserToken = await container
-      .get<Storage>(InfraTypes.storage)
-      .get("adminUser");
-
-    await container
-      .get<Storage>(InfraTypes.storage)
-      .set("user", { value: adminUserToken?.value || "" });
 
     router.push("/dashboard");
   }

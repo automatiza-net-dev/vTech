@@ -6,7 +6,6 @@ import { RemoteTutor } from "@/data";
 import { container, patientTypes } from "@/container";
 import { useLoadTutorOrigins, useAssignTutor } from "@/presentation";
 
-
 import { InputPhone } from "./input-phone";
 import { SelectPatient } from "./select-patient";
 
@@ -20,17 +19,18 @@ export function FormCreateClient({
   const { data } = useLoadTutorOrigins();
 
   const queryClient = useQueryClient();
-  const { createToast} = useToast();
+  const { createToast } = useToast();
 
   const assignTutor = useAssignTutor();
 
   async function handleOnSuccess(params) {
-    const originId = data?.find(
-      (item) => item.id === params.como_conheceu[0]
-    )?.id || "";
+    const originId =
+      data?.find((item) => item.id === params.como_conheceu[0])?.id || "";
 
     try {
-      const response = await container.get<RemoteTutor>(patientTypes.RemoteTutor).create({
+      const response = await container
+        .get<RemoteTutor>(patientTypes.RemoteTutor)
+        .create({
           name: params.name,
           cellphone: params.cellphone,
           clientOriginId: originId,
@@ -44,7 +44,7 @@ export function FormCreateClient({
 
       queryClient.invalidateQueries("RemoteLoadAllPatientTutor");
 
-      createToast({ message:"Tutor criado com sucesso!", status: "success" });
+      createToast({ message: "Tutor criado com sucesso!", status: "success" });
 
       setModal(false);
     } catch (err) {

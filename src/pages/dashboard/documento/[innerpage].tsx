@@ -1,13 +1,11 @@
 import DocumentsEdit from "@/OLD/components/Document/Edit";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function DocumentsEditPage() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <DocumentsEdit />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <DocumentsEdit />
+    </LayoutDashboard>
   );
 }

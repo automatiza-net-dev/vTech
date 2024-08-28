@@ -53,20 +53,23 @@ const BillActions = React.memo(function BillActions({
   const closeBill = React.useCallback(() => {
     billService
       .closeBillPayment(bill?.id)
-      .then((_res) =>
-        notification.success({ message: "Venda finalizada com sucesso!" })
-      )
+      .then((_res) => {
+        notification.success({ message: "Venda finalizada com sucesso!" });
+      })
       .catch((err) => {
+        const errorMessage =
+          err?.response?.data?.message ||
+          "Houve um erro ao finalizar a venda, verifique se ainda há valores pendentes";
+
         notification.error({
-          message:
-            "houve um erro ao finalizar a venda, verifique se ainda há valores pendentes",
+          message: errorMessage,
         });
       })
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
         setReload && setReload((prv) => !prv);
       });
-  }, [bill?.id]);
+  }, [bill?.id, queryClient, setReload]);
 
   const reopenBillPayment = React.useCallback(() => {
     billService

@@ -8,11 +8,10 @@ import { RemoteCRM, RemoteDashboard } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 
 export function useLoadDashboard(props: { type?: "crm" }) {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
 
   const router = useRouter();
 
-  const user = GetUser<User>();
 
   async function fetcher() {
     try {

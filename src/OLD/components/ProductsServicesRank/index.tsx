@@ -45,7 +45,7 @@ const ProductsServicesRank = memo(function ProductsServicesRank() {
       qtd_vendas: item?.sales,
       qtd_clientes: item?.clients,
       valor_vendido_R$: item?.totalValue,
-      participacao: `${item?.percentage?.toFixed(2)}%`
+      participacao: `${item?.percentage?.toFixed(2)}%`,
     }));
 
     let wb = XLSX.utils.book_new(),
@@ -102,7 +102,7 @@ const ProductsServicesRank = memo(function ProductsServicesRank() {
             mode="multiple"
             className="uk-width-1-1"
             value={filters?.businessUnits}
-            onChange={(val) => filters({ ...filters, businessUnits: val })}
+            onChange={(val) => setFilters({ ...filters, businessUnits: val })}
           >
             {businessUnits?.map((unit) => (
               <Option value={unit?.id}>{unit?.identification}</Option>
@@ -180,10 +180,26 @@ const ProductsServicesRank = memo(function ProductsServicesRank() {
       </div>
       <div className="uk-flex-around uk-flex">
         <ReactToPrint
-          trigger={() => <Button className="">Imprimir</Button>}
+          trigger={() => (
+            <Button
+              className=""
+              onMouseOver={() => {
+                setReload((prv) => !prv);
+              }}
+            >
+              Imprimir
+            </Button>
+          )}
           content={() => componentRef.current}
         />
-        <Button onClick={handleExport}>Exportar (Excel)</Button>
+        <Button
+          onClick={handleExport}
+          onMouseOver={() => {
+            setReload((prv) => !prv);
+          }}
+        >
+          Exportar (Excel)
+        </Button>
       </div>
     </Container>
   );

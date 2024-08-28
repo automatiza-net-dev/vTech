@@ -1,10 +1,10 @@
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 import { Goals, LayoutDashboard } from "@/presentation";
 
 export default function LancamentoMetas() {
-    return  <PrivatePageAdmin>
+  return (
     <LayoutDashboard>
       <Goals />
     </LayoutDashboard>
-  </PrivatePageAdmin>
+  );
 }

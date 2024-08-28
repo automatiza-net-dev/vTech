@@ -1,13 +1,15 @@
 // @ts-nocheck
 import { useState, memo } from "react";
 
-import { useAuth } from "@/OLD/hooks/useAuth";
+import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useAuth } from "@/OLD/hooks/useAuth";
 
-import { Container, InputBox } from "./styles";
 import { DateFilter } from "@/OLD/components/mini-components";
-import { Input, Button, AutoComplete, Select } from "antd";
+import { Input, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
+import { Container, InputBox } from "./styles";
+import { Button } from "infinity-forge";
 const { Option } = Select;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
@@ -15,30 +17,24 @@ import { sortItems } from "@/OLD/utils/sortItems";
 
 import { MdOutlineClear } from "react-icons/md";
 
-const Filters = memo(function Filters({
-  filters,
-  setFilters,
-  setReload,
-  actTypes,
-  colaborators,
-}) {
+function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
   const [values, setValues] = useState({});
+
+  const allBusinessUnits = useBusinessUnitsByUser();
 
   const viewAllActivitiesPermission = useUserHasPermission("CRM09");
 
   return (
-    <Container className="uk-margin-top">
-      <section className="uk-flex uk-flex-around">
+    <Container>
+      <section>
         <div>
-          <div className="uk-flex uk-flex-center">
-            <label>Data Atividade</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromDate"}
-              to={"toDate"}
-            />
-          </div>
+          <label>Data Atividade</label>
+          <DateFilter
+            state={filters}
+            setState={setFilters}
+            from={"fromDate"}
+            to={"toDate"}
+          />
           <InputBox>
             <DatePicker
               format="DD/MM/YYYY"
@@ -47,9 +43,9 @@ const Filters = memo(function Filters({
               value={filters?.fromDate}
               onChange={(val) => setFilters({ ...filters, fromDate: val })}
             />
-            &nbsp;à&nbsp;
+            <p>à</p>
             <DatePicker
-              className="uk-margin-right custom-date-component"
+              className="custom-date-component"
               slotProps={{ textField: { variant: "standard" } }}
               format="DD/MM/YYYY"
               value={filters?.toDate}
@@ -57,7 +53,11 @@ const Filters = memo(function Filters({
             />
             <MdOutlineClear
               size={25}
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+                marginBottom: "5px",
+                marginLeft: "5px",
+              }}
               onClick={() => {
                 setFilters((prv) => ({
                   ...prv,
@@ -68,11 +68,11 @@ const Filters = memo(function Filters({
             />
           </InputBox>
         </div>
-        <div className="uk-width-1-4">
+        <div>
           <label>Atividade</label>
           <InputBox>
             <AutoComplete
-              className="uk-width-1-1"
+              style={{ width: "100%" }}
               allowClear
               onClear={() => {
                 const newObj = { ...filters };
@@ -97,11 +97,11 @@ const Filters = memo(function Filters({
             />
           </InputBox>
         </div>
-        <div className="uk-width-1-4">
+        <div>
           <label>Status</label>
           <InputBox>
             <Select
-              className="uk-width-1-1"
+              style={{ width: "100%" }}
               value={filters?.status}
               onChange={(val) => {
                 setFilters({ ...filters, status: val });
@@ -114,14 +114,13 @@ const Filters = memo(function Filters({
             </Select>
           </InputBox>
         </div>
-      </section>
-      <section className="uk-flex uk-flex-around uk-margin-top">
+
         {viewAllActivitiesPermission && (
-          <div className="uk-width-1-3 uk-margin-small-right">
+          <div>
             <label>Profissional Responsável</label>
-            <InputBox className="uk-width-1-1">
+            <InputBox>
               <AutoComplete
-                className="uk-width-1-1"
+                style={{ width: "100%" }}
                 allowClear
                 onClear={() => {
                   const newObj = { ...filters };
@@ -155,7 +154,7 @@ const Filters = memo(function Filters({
             </InputBox>
           </div>
         )}
-        <div className="uk-width-1-3 uk-margin-small-right">
+        <div>
           <label>
             Nome {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
           </label>
@@ -166,56 +165,22 @@ const Filters = memo(function Filters({
                 setFilters((prv) => ({ ...prv, contactName: e.target.value }))
               }
             />
-            {/*
-            className="uk-width-1-1"
-            allowClear
-              onClear={() => {
-                const newObj = { ...filters };
-                delete newObj?.contactName;
-                setFilters(newObj);
-              }}
-              value={values?.contactName}
-              placeholder={`Nome do ${
-                process.env.client !== "liftone" ? "Tutor" : "Cliente"
-              }`}
-              options={tutors?.map((tutor) => ({
-                ...tutor,
-                value: tutor?.name,
-                key: tutor?.id
-              }))}
-              onChange={(val) => {
-                const newObj = { ...filters };
-                setValues({ ...values, contactName: val });
-                delete newObj?.contactName;
-                setFilters(newObj);
-              }}
-              onSelect={(_val, opt) => {
-                setValues({ ...values, contactName: opt?.value });
-                setFilters({ ...filters, contactName: opt?.value });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                  )
-                }
-              */}
           </InputBox>
         </div>
-        {/*
         <div>
-          <label>Fone Contato</label>
+          <label>
+            Telefone {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
+          </label>
           <InputBox>
             <Input
-              value={filters?.contactPhone}
               onChange={(e) =>
-                setFilters({ ...filters, contactPhone: e.target.value })
+                setFilters((prv) => ({ ...prv, contactPhone: e.target.value }))
               }
             />
           </InputBox>
         </div>
-        */}
         {process.env.client !== "liftone" && (
-          <div className="uk-width-1-3">
+          <div>
             <label>Nome pet</label>
             <InputBox>
               <Input
@@ -224,54 +189,42 @@ const Filters = memo(function Filters({
                   setFilters({ ...filters, patientName: e.target.value })
                 }
               />
-              {/*
-              className="uk-width-1-1"
-              allowClear
-              onClear={() => {
-                  const newObj = { ...filters };
-                  delete newObj?.patientName;
-                  setFilters(newObj);
-                }}
-                value={values?.patientName}
-                placeholder="Nome do pet"
-                options={patients?.map((patient) => ({
-                  ...patient,
-                  value: patient?.name,
-                  key: patient?.id
-                }))}
-                onChange={(val) => {
-                  const newObj = { ...filters };
-                  setValues({ ...values, patientName: val });
-                  delete newObj?.patientName;
-                  setFilters(newObj);
-                }}
-                onSelect={(_val, opt) => {
-                  setValues({ ...values, patientName: opt?.value });
-                  setFilters({ ...filters, patientName: opt?.value });
-                }}
-                filterOption={(val, opt) =>
-                  normalizeStr(opt?.value.toUpperCase()).includes(
-                    normalizeStr(val.toUpperCase())
-                    )
-                  }
-                */}
             </InputBox>
           </div>
         )}
-        <div className="uk-flex uk-flex-right uk-flex-bottom" type="primary">
-          <Button
-            onClick={() => {
-              setFilters((prv) => ({ ...prv, noSearch: false }));
-              setReload((prv) => !prv);
-            }}
-            type="primary"
-          >
-            Filtrar
-          </Button>
-        </div>
+        {allBusinessUnits?.businessUnits && (
+          <div>
+            <label>Unidade</label>
+            <InputBox className="uk-width-1-1">
+              <Select
+                style={{ width: "100%" }}
+                mode="multiple"
+                className="uk-width-1-1"
+                value={filters?.unit}
+                onChange={(val) => {
+                  setFilters({ ...filters, unit: val });
+                  setReload((prv) => !prv);
+                }}
+              >
+                {allBusinessUnits?.businessUnits?.map((unit) => (
+                  <Option value={unit?.id}>{unit?.identification}</Option>
+                ))}
+              </Select>
+            </InputBox>
+          </div>
+        )}
       </section>
+      <div className="button-container">
+        <Button
+          onClick={() => {
+            setFilters((prv) => ({ ...prv, noSearch: false }));
+            setReload((prv) => !prv);
+          }}
+          text="Filtrar"
+        />
+      </div>
     </Container>
   );
-});
+}
 
 export default Filters;

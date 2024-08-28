@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-import { Input, Button, AutoComplete, Popconfirm, notification } from "antd";
-import { Select, FormHandler } from "infinity-forge";
+import { Input, AutoComplete, Popconfirm } from "antd";
+import { Select, FormHandler, createToast, Button } from "infinity-forge";
 const { TextArea } = Input;
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
@@ -33,46 +33,42 @@ function FormChild({
   sortItems(allPathologies, "description");
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (defaultProtocol === "") {
-          return notification.warning({
-            message: "Campo protocolo obrigatório",
-          });
-        }
-        submit();
-      }}
-    >
-      <div>
-        <label>Patologia</label>
-        {allPathologies && allPathologies.length > 0 && (
-          <FormHandler>
-            <Select
-              menuPlacement="bottom"
-              name="exam"
-              options={allPathologies.map((pathology) => ({
-                label: pathology?.description,
-                value: pathology?.id,
-              }))}
-              disabled={!modal}
-              onlyOneValue
-              onChangeSelect={async (value) => {
-                const selectedPathology = allPathologies.find(
-                  (pathology) => pathology.id === value
-                );
+    <FormHandler isStickyButtons>
+      {modal ? (
+        <>
+          <div>
+            <label>Patologia</label>
+            {allPathologies && allPathologies.length > 0 && (
+              <FormHandler>
+                <Select
+                  menuPlacement="bottom"
+                  name="exam"
+                  options={allPathologies.map((pathology) => ({
+                    label: pathology?.description,
+                    value: pathology?.id,
+                  }))}
+                  disabled={!modal}
+                  onlyOneValue
+                  onChangeSelect={async (value) => {
+                    const selectedPathology = allPathologies.find(
+                      (pathology) => pathology.id === value
+                    );
 
-                setData({
-                  ...data,
-                  pathology: selectedPathology?.description,
-                  description: selectedPathology?.definition,
-                });
-                setDefaultProtocol(selectedPathology?.template);
-              }}
-            />
-          </FormHandler>
-        )}
-      </div>
+                    setData({
+                      ...data,
+                      pathology: selectedPathology?.description,
+                      description: selectedPathology?.definition,
+                    });
+                    setDefaultProtocol(selectedPathology?.template);
+                  }}
+                />
+              </FormHandler>
+            )}
+          </div>
+        </>
+      ) : (
+        <h3>{pathologySearch}</h3>
+      )}
       <div className="uk-margin-top">
         <label>Descrição</label>
         <TextArea
@@ -91,61 +87,76 @@ function FormChild({
       </div>
       <hr />
       <footer className="uk-flex uk-flex-right">
-        {modal ? (
-          <>
-            <div className="uk-margin-top">
-              <Button
-                className="uk-margin-right"
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-              >
-                salvar
-              </Button>
-              <Button
-                onClick={() => setVisible(false)}
-                className="uk-margin-right"
-              >
-                {" "}
-                Cancelar{" "}
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="uk-margin-top uk-flex uk-flex-right">
-            <Popconfirm
-              title="Deseja remover este registro?"
-              onConfirm={() => remove()}
-            >
-              <Button
-                htmlType="button"
-                type="danger"
-                className="uk-margin-small-right"
-              >
-                Excluir
-              </Button>
-            </Popconfirm>
-            <Button
-              htmlType="submit"
-              type="primary"
-              className="uk-margin-small-right"
-            >
-              Atualizar
-            </Button>
-          </div>
-        )}
         <Print
           patient={patient}
           triggerComponent={
-            <Button className="uk-margin-top">Imprimir Laudo</Button>
+            <Button
+              text="Imprimir Laudo"
+              type="button"
+              style={{ marginRight: "10px" }}
+              loading={loading}
+            />
           }
           content={defaultProtocol}
           title={data?.description}
           string={true}
           onBeforePrint={() => print()}
         />
+        {modal ? (
+          <>
+            <Button
+              onClick={() => {
+                if (defaultProtocol === "") {
+                  return createToast({
+                    message: "Campo protocolo obrigatório",
+                    status: "error",
+                  });
+                }
+                submit();
+              }}
+              loading={loading}
+              text="Salvar"
+              style={{ marginRight: "10px" }}
+            />
+
+            <Button
+              onClick={() => setVisible(false)}
+              type="button"
+              text="Cancelar"
+              style={{ backgroundColor: "#ff7b5a", marginRight: "10px" }}
+            />
+          </>
+        ) : (
+          <>
+            <Button
+              loading={loading}
+              onClick={() => {
+                if (defaultProtocol === "") {
+                  return createToast({
+                    message: "Campo protocolo obrigatório",
+                    status: "error",
+                  });
+                }
+                submit();
+              }}
+              text="Atualizar"
+              style={{ marginRight: "10px" }}
+            />
+
+            <Popconfirm
+              title="Deseja remover este registro?"
+              onConfirm={() => remove()}
+            >
+              <Button
+                type="button"
+                style={{ backgroundColor: "#ff7b5a" }}
+                text="Excluir"
+              />
+            </Popconfirm>
+          </>
+        )}
       </footer>
-    </form>
+    </FormHandler>
   );
 }
 

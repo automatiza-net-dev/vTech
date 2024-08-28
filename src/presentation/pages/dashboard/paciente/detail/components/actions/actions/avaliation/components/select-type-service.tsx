@@ -22,11 +22,10 @@ export function SelectTypeService({
   const scheduleId = router.query?.scheduleId as string | undefined;
 
   const patient = useLoadPatient();
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const schedule = useLoadSchedule(scheduleId);
   const { setFieldValue } = useFormikContext();
 
-  const user = GetUser<User>();
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups();
 

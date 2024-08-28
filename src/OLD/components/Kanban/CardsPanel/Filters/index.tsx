@@ -48,12 +48,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
   sortItems(businessUnits, "fantasyName");
 
   return (
-    <section className="uk-flex">
+    <section style={{ display: 'flex', gap: '10px' }}>
       <div className="uk-margin-right uk-width-1-4">
+        <label>{process.env.client === "liftone" ? "Cliente" : "Tutor"}</label>
         <InputBox>
-          <label>
-            {process.env.client === "liftone" ? "Cliente" : "Tutor"}
-          </label>
           <Input
             value={filters?.contactName}
             onChange={(e) =>
@@ -61,8 +59,8 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             }
           />
         </InputBox>
+        <label>Dt Interação:&nbsp;</label>
         <InputBox className="uk-width-1-1 uk-margin-small-top">
-          <label>Dt Interação:&nbsp;</label>
           <DatePicker
             style={{ fontSize: "14px" }}
             className="custom-datepicker"
@@ -106,44 +104,46 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
       </div>
       <div className="uk-width-1-4 uk-margin-right">
         {viewAllOpportunitiesPermission && (
-          <InputBox className="">
+          <>
             <label>Prof. resp.</label>
-            <AutoComplete
-              allowClear
-              onClear={() => {
-                const newObj = { ...filters };
-                delete newObj?.technician;
-                setFilters(newObj);
-              }}
-              className="uk-width-1-1"
-              placeholder="Prof. resp."
-              value={values?.techName}
-              options={colaborators?.map((colab) => ({
-                ...colab,
-                value: colab?.name,
-                key: colab?.id,
-              }))}
-              onChange={(val) => {
-                const newObj = { ...filters };
-                setValues({ ...values, techName: val });
-                delete newObj?.technician;
-                setFilters(newObj);
-              }}
-              onSelect={(_val, opt) => {
-                setValues({ ...values, techName: opt?.value });
-                setFilters({ ...filters, technician: opt?.id });
-                return setReload((prv) => !prv);
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                )
-              }
-            />
-          </InputBox>
+            <InputBox className="">
+              <AutoComplete
+                allowClear
+                onClear={() => {
+                  const newObj = { ...filters };
+                  delete newObj?.technician;
+                  setFilters(newObj);
+                }}
+                className="uk-width-1-1"
+                placeholder="Prof. resp."
+                value={values?.techName}
+                options={colaborators?.map((colab) => ({
+                  ...colab,
+                  value: colab?.name,
+                  key: colab?.id,
+                }))}
+                onChange={(val) => {
+                  const newObj = { ...filters };
+                  setValues({ ...values, techName: val });
+                  delete newObj?.technician;
+                  setFilters(newObj);
+                }}
+                onSelect={(_val, opt) => {
+                  setValues({ ...values, techName: opt?.value });
+                  setFilters({ ...filters, technician: opt?.id });
+                  return setReload((prv) => !prv);
+                }}
+                filterOption={(val, opt) =>
+                  normalizeStr(opt?.value.toUpperCase()).includes(
+                    normalizeStr(val.toUpperCase())
+                  )
+                }
+              />
+            </InputBox>
+          </>
         )}
+        <label>Dt Abertura:&nbsp;</label>
         <InputBox className="uk-width-1-1 uk-margin-small-top">
-          <label>Dt Abertura:&nbsp;</label>
           <DatePicker
             format={"DD/MM/YYYY"}
             className="custom-datepicker"
@@ -183,8 +183,8 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
         </InputBox>
       </div>
       <div className="uk-width-1-4">
+        <label>Unidade</label>
         <InputBox className="uk-width-1-1">
-          <label>Unidade</label>
           <Select
             placeholder="Unidade"
             allowClear
@@ -204,12 +204,12 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             <Option value="all">Todos</Option>
             {businessUnits.length > 0 &&
               businessUnits.map((unit) => (
-                <Option value={unit?.id}>{unit?.fantasyName}</Option>
+                <Option value={unit?.id}>{unit?.identification}</Option>
               ))}
           </Select>
         </InputBox>
+        <label>Dt. contato:&nbsp;</label>
         <InputBox className="uk-margin-small-top uk-width-1-1">
-          <label>Dt. contato:&nbsp;</label>
           <DatePicker
             className="custom-datepicker"
             format={"DD/MM/YYYY"}
@@ -251,51 +251,20 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
       </div>
       <div className="uk-width-1-4 uk-margin-left">
         {process.env.client !== "liftone" && (
-          <InputBox className="">
+          <>
             <label>Paciente</label>
-            <Input
-              value={filters?.patientName}
-              onChange={(e) =>
-                setFilters((prv) => ({ ...prv, patientName: e.target.value }))
-              }
-            />
-            {/*
-            <AutoComplete
-              allowClear
-              onClear={() => {
-                const newObj = { ...filters };
-                delete newObj?.patientName;
-                setFilters(newObj);
-              }}
-              className="uk-width-1-1"
-              value={values?.patientName}
-              placeholder="Nome do pet"
-              options={patients?.map((patient) => ({
-                ...patient,
-                value: patient?.name,
-                key: patient?.id
-              }))}
-              onChange={(val) => {
-                const newObj = { ...filters };
-                setValues({ ...values, patientName: val });
-                delete newObj?.patientName;
-                setFilters(newObj);
-              }}
-              onSelect={(_val, opt) => {
-                setValues({ ...values, patientName: opt?.value });
-                setFilters({ ...filters, patientName: opt?.value });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                )
-              }
-            />
-                */}
-          </InputBox>
+            <InputBox className="">
+              <Input
+                value={filters?.patientName}
+                onChange={(e) =>
+                  setFilters((prv) => ({ ...prv, patientName: e.target.value }))
+                }
+              />
+            </InputBox>
+          </>
         )}
+        <label>Ordenar por:</label>
         <InputBox className="uk-margin-small-top">
-          <label>Ordenar por:</label>
           <Select
             placeholder="Ordenar Por"
             className="uk-width-1-1"

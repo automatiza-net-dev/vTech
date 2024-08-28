@@ -43,10 +43,11 @@ export const ShowDeposit = memo(() => {
   const canDeleteDeposit = true;
   const componentRef = useRef();
 
+  const innerPage = router?.query?.innerpage as string;
+
   const showDepositQuery = useQuery({
-    queryKey: ["deposit", router.query.subpage],
-    queryFn: () =>
-      depositService.getDeposit(router.query.subpage).then((res) => res.data),
+    queryKey: ["deposit", innerPage],
+    queryFn: () => depositService.getDeposit(innerPage).then((res) => res.data),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,

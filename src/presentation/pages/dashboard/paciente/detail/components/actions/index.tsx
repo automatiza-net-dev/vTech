@@ -1,5 +1,4 @@
-import { Error } from "infinity-forge";
-import { Button } from "infinity-forge";
+import { Error, Button } from "infinity-forge";
 
 import { Actions } from "./actions";
 import { FinishService } from "./finish-service";

@@ -58,6 +58,8 @@ const Opportunities = memo(function Opportunities({
       moment(b.openingDate).diff(moment(a.openingDate))
     );
 
+    console.log(opportunities, "<<<")
+
     setFormattedOpportunities(
       opportunities.map((opp) => ({
         patientName: opp?.client?.name,
@@ -68,7 +70,7 @@ const Opportunities = memo(function Opportunities({
         user: opp?.user?.name,
         status: opp?.status?.description,
         balance: opp?.balance ? opp?.balance : "Em Aberto",
-        unit: opp?.unit?.fantasyName,
+        unit: opp?.unit?.identification,
         value: opp?.value ? currencyFormatter(opp?.value) : "-",
         date: opp?.contactDate
           ? moment(opp?.contactDate).format("DD/MM/YYYY - HH:mm")

@@ -37,6 +37,7 @@ export function DeleteVaccine(props: VaccineProtocol) {
   return (
     <S.DeleteVaccine>
       <Tooltip
+        idTooltip="DeleteVaccine"
         content="Deletar"
         trigger={
           <button onClick={() => deleteVaccine()}>

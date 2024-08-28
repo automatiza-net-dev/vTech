@@ -1,6 +1,5 @@
-import { Tooltip } from "infinity-forge";
-
 import { BusinessUnitProduct } from "@/domain";
+import { Tooltip } from "antd";
 
 export function DiscountPercentage({
   percentageDiscount,
@@ -16,11 +15,9 @@ export function DiscountPercentage({
   return (
     <div className="discount_percentage">
       <Tooltip
-        position="top-center"
-        enableHover
-        trigger={
+        children={
           <h4 className="font-12-bold">
-            Desconto: {" "}
+            Desconto:{" "}
             <span
               style={{
                 color:
@@ -33,7 +30,7 @@ export function DiscountPercentage({
             </span>
           </h4>
         }
-        content={
+        title={
           Number(percentageDiscount) > maximum_discount_percentage
             ? "O valor do desconto é superior ao permitido"
             : "Desconto proporcional ao valor digitado"

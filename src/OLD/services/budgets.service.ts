@@ -14,8 +14,8 @@ const createMultipleBudgetItems = async (data) =>
   await api.post("/budgets/create-items", data);
 
 // PUT
-const updateBudgetItem = async (id, data) =>
-  await api.put(`/budgets/update-item/${id}`, data);
+const updateBudgetItem = async (data) =>
+  await api.put(`/budgets/update-items`, data);
 
 const cancelBudget = async (id, data) =>
   await api.put(`/budgets/cancel/${id}`, data);

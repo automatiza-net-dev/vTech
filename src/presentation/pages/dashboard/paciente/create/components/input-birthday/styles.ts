@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const InputBirthday = styled("div")`
+  display: flex;
+  align-items: center;
 
   .select_year {
     display: flex;
@@ -8,9 +10,9 @@ export const InputBirthday = styled("div")`
 
     > * {
       width: 31%;
-       > div {
+      > div {
         width: 100%;
-       }
+      }
     }
   }
 `;

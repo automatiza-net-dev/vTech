@@ -5,9 +5,9 @@ import { RemoteBills } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
-import { Modal, Tooltip, useToast, Button, useAuthAdmin } from "infinity-forge";
+import { Modal, useToast, Button, useAuthAdmin } from "infinity-forge";
 import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
 
 import api from "@/OLD/services";
@@ -16,9 +16,10 @@ import * as S from "./styles";
 
 import moment from "moment";
 import ReactToPrint from "react-to-print";
+import { Tooltip } from "antd";
 
 function ModalListagem({ bill }) {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const { createToast } = useToast();
   const { data } = useQuery({
     queryKey: ["LoadDocuments"],
@@ -33,8 +34,8 @@ function ModalListagem({ bill }) {
 
   const [template, setTemplate] = useState("");
 
-  const user = GetUser<User>();
   const componentRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   return (
     <S.ModalListagem>
@@ -105,7 +106,9 @@ function ModalListagem({ bill }) {
                 patientId: bill.client.id,
               });
 
-              createToast({
+              queryClient.invalidateQueries(["LoadDocuments"]);
+
+              return createToast({
                 message: "Documentos gerados com sucesso",
                 status: "success",
               });
@@ -134,33 +137,31 @@ function ModalListagem({ bill }) {
   );
 }
 
-export function ModalListagemDocumentosVenda({ bill }) {
+export function ModalListagemDocumentosVenda({ bill, refresh }) {
   const [modal, setModal] = useState(false);
 
   return (
     <>
       <Modal
         open={modal}
-        onClose={() => setModal(false)}
+        onClose={() => {
+          setModal(false);
+          refresh();
+        }}
         styles={{ minWidth: "800px" }}
       >
         <ModalListagem bill={bill} />
       </Modal>
 
-      <Tooltip
-        position="top-center"
-        content="Listagem Documentos Venda"
-        enableHover
-        trigger={
-          <button
-            type="button"
-            onClick={async () => setModal(true)}
-            style={{ background: "transparent", border: "0", padding: "0" }}
-          >
-            <a>{bill?.document_status}</a>
-          </button>
-        }
-      />
+      <Tooltip title="Listagem Documentos Venda">
+        <button
+          type="button"
+          onClick={async () => setModal(true)}
+          style={{ background: "transparent", border: "0", padding: "0" }}
+        >
+          <a>{bill?.document_status}</a>
+        </button>
+      </Tooltip>
     </>
   );
 }

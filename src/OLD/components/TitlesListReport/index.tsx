@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
 import TitlesFilterReport from "./TitlesFilterReport";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -23,7 +23,7 @@ import { Columns } from "./Columns";
 
 import * as XLSX from "xlsx/xlsx.mjs";
 
-const TitlesListReport = memo(() => {
+const TitlesListReport = () => {
   const [filters, setFilters] = useState({});
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
@@ -184,6 +184,6 @@ const TitlesListReport = memo(() => {
       </div>
     </div>
   );
-});
+};
 
 export default TitlesListReport;

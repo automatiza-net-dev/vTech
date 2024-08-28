@@ -9,6 +9,7 @@ import {
   RemoteVaccine,
   RemoteSchedule,
   RemoteAttendances,
+  RemoteAttachments,
   RemoteChangeStatus,
   RemotePatientAnimal,
   RemoteLoadAllReasons,
@@ -33,6 +34,7 @@ patientContainer.bind(patientTypes.RemotePatient).to(RemotePatient);
 patientContainer.bind(patientTypes.RemoteVaccine).to(RemoteVaccine);
 patientContainer.bind(patientTypes.RemoteSchedule).to(RemoteSchedule);
 patientContainer.bind(patientTypes.RemoteAttendances).to(RemoteAttendances);
+patientContainer.bind(patientTypes.RemoteAttachments).to(RemoteAttachments);
 patientContainer.bind(patientTypes.RemoteChangeStatus).to(RemoteChangeStatus);
 patientContainer.bind(patientTypes.RemotePatientAnimal).to(RemotePatientAnimal);
 patientContainer.bind(patientTypes.RemoteLoadAllReasons).to(RemoteLoadAllReasons);

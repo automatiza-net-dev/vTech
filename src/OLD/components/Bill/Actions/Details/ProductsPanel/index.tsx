@@ -2,6 +2,8 @@
 import React, { memo, useState, useEffect, useRef } from "react";
 import ReactToPrint from "react-to-print";
 
+import { useQueryClient } from "react-query";
+
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Collapse, Table } from "antd";
@@ -17,7 +19,6 @@ import {
 
 import moment from "moment";
 import { paymentsColumns } from "./columns";
-import Print from "@/OLD/components/mini-components/Print";
 
 const ProductsPanel = memo(function ProductsPanel({
   payments,
@@ -42,6 +43,7 @@ const ProductsPanel = memo(function ProductsPanel({
   const [data, setData] = useState([]);
 
   const billReceipts = useBillPaymentsReceipts(billPaymentReceiptsFilters);
+  const queryClient = useQueryClient();
 
   const formatPayments = () => {
     setFormatedPayments(
@@ -77,18 +79,23 @@ const ProductsPanel = memo(function ProductsPanel({
             ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY") +
               ` (${payment?.finance?.paymentMethod?.description})`
             : "-",
-          print: (
-            <ReactToPrint
-              trigger={() => <Button text="imprimir" />}
-              content={() => (SinglecomponentRef as any).current}
-              onBeforeGetContent={() => {
+          print: payment?.finance?.payment_date && (
+            <div
+              onMouseOver={() => {
+                queryClient.invalidateQueries(["billPaymentsReceipts"]);
                 setBillPaymentReceiptsFilters((prv) => ({
                   ...prv,
+                  block: payment.block,
+                  billPayment: payment.id,
                   fetch: true,
                 }));
-                setSinglePayment(payment);
               }}
-            />
+            >
+              <ReactToPrint
+                trigger={() => <Button text="imprimir" />}
+                content={() => (SinglecomponentRef as any).current}
+              />
+            </div>
           ),
         };
       })
@@ -102,7 +109,7 @@ const ProductsPanel = memo(function ProductsPanel({
         expirationDate: moment(payment?.expiration_date),
       }))
     );
-  }, []);
+  }, [payments]);
 
   useEffect(() => {
     payments?.length > 0 && formatPayments();
@@ -117,7 +124,7 @@ const ProductsPanel = memo(function ProductsPanel({
               <div style={{ display: "flex" }}>
                 <div className="uk-margin-right">
                   {payments[0]?.paymentMethod?.description}&nbsp;
-                  {payments[0]?.qty_installments > 0 ? "(Parcelado)" : ""}&nbsp;
+                  {payments[0]?.qty_installments > 1 ? "(Parcelado)" : ""}&nbsp;
                   {payments[0]?.flag?.description
                     ? payments[0]?.flag?.description
                     : ""}
@@ -134,16 +141,25 @@ const ProductsPanel = memo(function ProductsPanel({
                 </div>
                 <div>{payments?.length}x</div>
               </div>
-              <ReactToPrint
-                onBeforeGetContent={() => {
-                  setBillPaymentReceiptsFilters((prv) => ({
-                    ...prv,
-                    fetch: true,
-                  }));
-                }}
-                trigger={() => <Button text="Imprimir recibo" />}
-                content={() => (componentRef as any).current}
-              />
+              {payments.filter((pay) => !pay?.finance?.payment_date).length !==
+                payments.length && (
+                <div
+                  onMouseOver={() => {
+                    queryClient.invalidateQueries(["billPaymentsReceipts"]);
+                    setBillPaymentReceiptsFilters((prv) => ({
+                      fetch: true,
+                      businessUnitId: user.data.unit.id,
+                      billId: bill?.id,
+                      block: payments[0]?.block,
+                    }));
+                  }}
+                >
+                  <ReactToPrint
+                    trigger={() => <Button text="Imprimir recibo" />}
+                    content={() => (componentRef as any).current}
+                  />
+                </div>
+              )}
             </div>
           }
         >
@@ -166,12 +182,20 @@ const ProductsPanel = memo(function ProductsPanel({
         </Panel>
         <section style={{ display: "none" }}>
           <div ref={componentRef as any}>
-            <PrintPaymentReceipts bill={bill} payements={payments} />
+            <PrintPaymentReceipts
+              bill={bill}
+              payments={payments}
+              billReceipts={billReceipts.data}
+            />
           </div>
         </section>
         <section style={{ display: "none" }}>
           <div ref={SinglecomponentRef as any}>
-            <PrintPaymentReceipts bill={bill} payements={[singlePayment]} />
+            <PrintPaymentReceipts
+              bill={bill}
+              payments={[singlePayment]}
+              billReceipts={billReceipts.data}
+            />
           </div>
         </section>
       </Collapse>

@@ -18,7 +18,7 @@ const liftone: DefaultThemeInfinityForge = {
 
 const sancla: DefaultThemeInfinityForge = {
   ...generalTheme,
-  primaryColor: "#FA972B",
+  primaryColor: "#ec8f24", //#FA972B
   cardsColor: "#FFCD56",
 };
 

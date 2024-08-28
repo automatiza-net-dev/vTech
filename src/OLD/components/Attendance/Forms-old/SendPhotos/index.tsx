@@ -1,15 +1,17 @@
 // @ts-nocheck
 // Core
-import React, { memo, useState, useCallback, useEffect } from "react";
-import { useProfile } from "@/OLD/hooks/useProfile";
 import { useLoadPatient } from "@/presentation";
+import { useProfile } from "@/OLD/hooks/useProfile";
+import React, { memo, useState, useCallback, useEffect } from "react";
 
 // Services
 import { timelineService } from "@/OLD/services/timeline.service";
+import { RemoteAttachments } from "@/data";
+import { TypesAutomatiza, container } from "@/container";
 
 // Components
-import { notification, Button } from "antd";
-import { Modal } from "infinity-forge";
+import { Button } from "antd";
+import { Modal, useToast } from "infinity-forge";
 import { Container } from "./styles";
 import FormChild from "./FormChild";
 
@@ -30,6 +32,7 @@ export default function SendPhotos({
   const [loading, setLoading] = useState(false);
   const [photosVisible, setPhotosVisible] = useState(false);
   const { user } = useProfile();
+  const { createToast } = useToast();
 
   const patient = useLoadPatient();
   const router = useRouter();
@@ -39,8 +42,9 @@ export default function SendPhotos({
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return notification.error({
+        createToast({
           message: "Você só pode upar imagens até 2MB!",
+          status: "error",
         });
       }
     }
@@ -73,26 +77,33 @@ export default function SendPhotos({
     timelineService
       .insertArquive(formData)
       .then((_res) => {
+        !modal && submitAddAttachment();
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
 
-        notification.success({
-          message: "Arquivo salvo com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao salvar o arquivo...",
-        });
-      })
-      .finally(() => {
         setData({});
         setLoading(false);
         setModal && setModal(false);
         setFileList([]);
         setSelectedUpdate && setSelectedUpdate(false);
+        return createToast({
+          message: "Arquivo salvo com sucesso!",
+          status: "success",
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        if (err?.response?.data?.validationErrors?.photos) {
+          return createToast({
+            message: "Por favor selecione as fotos/videos a serem salvos",
+            status: "error",
+          });
+        }
+        createToast({
+          message: "Houve um erro ao salvar o arquivo...",
+          status: "error",
+        });
       });
   }, [patient?.data?.id, data?.note, user?.id, fileList]);
 
@@ -102,20 +113,17 @@ export default function SendPhotos({
       .updatePhotos(updateData?._id, {
         title: data?.title,
         observation: data?.note,
+        // files: fileList.filter((item) => item?.status === "pending"),
       })
       .then((res) => {
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+        submitAddAttachment();
         setLoading(false);
-        notification.success({
-          message: "Informações atualizadas com sucesso!",
-        });
       })
       .catch((err) => {
         setLoading(false);
-        notification.error({
+        createToast({
           message: "Houve um erro ao atualizar as informações",
+          status: "error",
         });
       })
       .finally(() => {
@@ -125,7 +133,32 @@ export default function SendPhotos({
         setFileList([]);
         setSelectedUpdate && setSelectedUpdate(false);
       });
-  }, [data, updateData?._id]);
+  }, [data, updateData?._id, fileList]);
+
+  const submitAddAttachment = async () => {
+    try {
+      await container
+        .get<RemoteAttachments>(TypesAutomatiza.RemoteAttachments)
+        .addAttachment({
+          attachmentId: updateData?._id,
+          files: fileList.map((file) => file.status === "pending" && file.file),
+        });
+
+      createToast({
+        message: "Informações atualizadas com sucesso!",
+        status: "succes",
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["LastUpdates", router.query.id],
+      });
+    } catch (err) {
+      createToast({
+        message: "Verifique o arquivo selecionado",
+        status: "error",
+      });
+    }
+  };
 
   const removePhoto = (idx) => {
     setLoading(true);
@@ -136,7 +169,10 @@ export default function SendPhotos({
           queryKey: ["LastUpdates", router.query.id],
         });
 
-        notification.success({ message: "Foto removida com sucesso!" });
+        createToast({
+          message: "Foto removida com sucesso!",
+          status: "success",
+        });
       })
       .finally(() => setLoading(false));
   };
@@ -150,9 +186,9 @@ export default function SendPhotos({
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-
-        return notification.success({
+        return createToast({
           message: "Registro removido com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
@@ -178,7 +214,11 @@ export default function SendPhotos({
           setPhotosVisible={setPhotosVisible}
         />
       </Container>
-      <Modal onClose={() => setPhotosVisible(false)} open={photosVisible} styles={{ width: '500px' }}>
+      <Modal
+        onClose={() => setPhotosVisible(false)}
+        open={photosVisible}
+        styles={{ width: "500px" }}
+      >
         <div>
           {fileList?.map((item, idx) => {
             return (
@@ -229,10 +269,15 @@ export default function SendPhotos({
         setPhotosVisible={setPhotosVisible}
         remove={() => removeData(updateData?._id)}
       />
-      <Modal onClose={() => setPhotosVisible(false)} open={photosVisible} styles={{ width: '500px' }}>
+      <Modal
+        onClose={() => setPhotosVisible(false)}
+        open={photosVisible}
+        styles={{ width: "500px" }}
+      >
         <div>
           {fileList?.map((item, idx) => {
             item?.url &&
+              item.status !== "pending" &&
               timelineService
                 .getArquivesDownload(item?.url.replace("/uploads/", ""))
                 .then((res) => {
@@ -243,7 +288,7 @@ export default function SendPhotos({
                 })
                 .catch((err) => console.log(err, "<"));
 
-            return (
+            return item.status !== "pending" ? (
               <p className="uk-margin-remove uk-flex uk-flex-between uk-flex-middle uk-margin-small-top">
                 <img
                   src={process.env.NEXT_PUBLIC_API + item?.url}
@@ -257,15 +302,39 @@ export default function SendPhotos({
                 >
                   {item?.filename}
                 </a>
+
                 <FaRegTrashAlt
                   onClick={() => removePhoto(idx)}
-                  size={15}
-                  className="uk-margin-bottom"
+                  size={20}
                   color="red"
                   style={{ cursor: "pointer" }}
                 />
                 <a download={`${item?.filename}`} id={`custom-download-${idx}`}>
-                  <MdDownload />
+                  <MdDownload size={25} />
+                </a>
+              </p>
+            ) : (
+              <p className="uk-margin-remove uk-flex uk-flex-between uk-flex-middle uk-margin-small-top">
+                <img
+                  src={item?.url}
+                  width={150}
+                  className="uk-margin-small-right"
+                />
+                <a className="uk-link" target="_blank" href={item?.url}>
+                  {item?.filename}
+                </a>
+                <span>Envio pendente</span>
+                <FaRegTrashAlt
+                  onClick={() => {
+                    const newArr = fileList.filter((_file, i) => i !== idx);
+                    setFileList(newArr);
+                  }}
+                  size={20}
+                  color="red"
+                  style={{ cursor: "pointer" }}
+                />
+                <a download={`${item?.filename}`} href={item.url}>
+                  <MdDownload size={20} />
                 </a>
               </p>
             );

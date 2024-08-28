@@ -10,6 +10,7 @@ export type Tutor = {
     description: string;
   };
   dependents: Patient[];
+  patients: Patient[];
   diabetes: boolean;
   document: string;
   email: string;

@@ -16,9 +16,8 @@ export function Print({
   children?: React.ReactNode;
   PdfContent: JSX.Element;
 }) {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
 
-  const user = GetUser<User>();
 
   const printContentRef = useRef<HTMLDivElement>(null);
 

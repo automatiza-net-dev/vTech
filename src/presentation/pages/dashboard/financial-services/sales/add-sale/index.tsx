@@ -1,6 +1,12 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-import { Input, useToast, FormHandler, LoaderCircle } from "infinity-forge";
+import {
+  Input,
+  useToast,
+  FormHandler,
+  LoaderCircle,
+  Modal,
+} from "infinity-forge";
 
 import {
   AddProduct,
@@ -13,6 +19,7 @@ import { RemoteBills } from "@/data";
 import { CreateBill, Bill } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
+import { DiscountConfirmation } from "@/presentation";
 import { ErrorSale, SelectClient, SelectPatient } from "./components";
 
 import * as S from "./styles";
@@ -26,6 +33,9 @@ export function AddSale({
   setModal?: Dispatch<SetStateAction<boolean>>;
   listCreated: (id: Bill["id"]) => void | undefined;
 }) {
+  const [storeData, setStoreData] = useState({});
+  const [discountConfirmVisible, setDiscountConfirmVisible] = useState<boolean>(false);
+
   const patient = useLoadPatient();
   const dailyMovements = useLoadAllDailyMovements();
   const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
@@ -61,6 +71,31 @@ export function AddSale({
   const initialData = {
     clientId,
     patientId: process.env.client === "sancla" ? patientId : undefined,
+    maxDiscount: false,
+  };
+
+  const handleSubmit = async (data) => {
+    const payload = {
+      ...data,
+      items: formatCart(data.cart, data?.maxDiscount),
+      billDate: new Date().toISOString(),
+      budgetId,
+      // financialResponsibleId: "",
+      dailyMovementId: activeDailyMovement?.id,
+    } as CreateBill.Params;
+
+    const response = await container
+      .get<RemoteBills>(TypesAutomatiza.RemoteBills)
+      .create(payload);
+
+    listCreated && listCreated(response.id);
+
+    createToast({
+      status: "success",
+      message: "Venda criada com sucesso",
+    });
+
+    setModal && setModal(false);
   };
 
   return (
@@ -71,27 +106,14 @@ export function AddSale({
         button={{ text: "CRIAR VENDA" }}
         initialData={initialData}
         onSucess={async (data) => {
-          const payload = {
-            ...data,
-            items: formatCart(data.cart),
-            billDate: new Date().toISOString(),
-            budgetId,
-            // financialResponsibleId: "",
-            dailyMovementId: activeDailyMovement?.id,
-          } as CreateBill.Params;
-
-          const response = await container
-            .get<RemoteBills>(TypesAutomatiza.RemoteBills)
-            .create(payload);
-
-          listCreated && listCreated(response.id);
-
-          createToast({
-            status: "success",
-            message: "Venda criada com sucesso",
-          });
-
-          setModal && setModal(false);
+          try {
+            await handleSubmit(data);
+          } catch (response: any) {
+            if (response?.error?.message === "Desconto máximo foi excedido") {
+              setStoreData(data);
+              setDiscountConfirmVisible(true);
+            }
+          }
         }}
         cleanFieldsOnSubmit={false}
       >
@@ -111,6 +133,17 @@ export function AddSale({
 
         <AddProduct />
       </FormHandler>
+      <Modal
+        open={discountConfirmVisible}
+        onClose={() => setDiscountConfirmVisible(false)}
+        children={
+          <DiscountConfirmation
+            onConfirm={() => handleSubmit({ ...storeData, maxDiscount: true })}
+            onCancel={() => setDiscountConfirmVisible(false)}
+            origin="Venda"
+          />
+        }
+      />
     </S.AddSale>
   );
 }

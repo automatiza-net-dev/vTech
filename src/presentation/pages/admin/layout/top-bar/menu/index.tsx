@@ -27,7 +27,7 @@ function TopBarMenu({ anchorEl, open, closeMenu }: TopBarMenuProps) {
     if (isThirdParty) {
       window.location.href = "https://portal.liftonefranquias.com.br"
     } else {
-      signOut({ roleUser: "admin"});
+      signOut();
     }
   }
 

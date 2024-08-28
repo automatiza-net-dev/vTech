@@ -1,13 +1,11 @@
 import HospitalizationConsult from "@/OLD/components/HospitalizationConsult";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function HospitalizationConsultPage() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <HospitalizationConsult />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <HospitalizationConsult />
+    </LayoutDashboard>
   );
 }

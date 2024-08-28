@@ -6,7 +6,6 @@ import {
   dateToDayName,
   useScheduling,
   DateToYYYYMMDD,
-  LayoutDashboard,
   useLoadAllSchedulesUser,
   SchedulingContextProvider,
 } from "@/presentation";
@@ -154,10 +153,8 @@ function Scheduling() {
 
 export function SchedulingPage() {
   return (
-    <LayoutDashboard>
-      <SchedulingContextProvider>
-        <Scheduling />
-      </SchedulingContextProvider>
-    </LayoutDashboard>
+    <SchedulingContextProvider>
+      <Scheduling />
+    </SchedulingContextProvider>
   );
 }

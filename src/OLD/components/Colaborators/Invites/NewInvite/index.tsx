@@ -1,12 +1,13 @@
 // @ts-nocheck
-import React, { useRef, useCallback } from "react";
+import React, { useCallback } from "react";
 
-import { Modal, notification, Button as AntdButton } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Modal, Button as AntdButton } from "antd";
+import { Button, useToast } from "infinity-forge";
 
-import { useProfile } from "@/OLD/hooks/useProfile";
 import { adminService } from "@/OLD/services/admin.service";
 import { clinicService } from "@/OLD/services/clinic.service";
+
+import * as S from "./styles";
 
 export const NewInvite = React.memo(function Colaborators({
   reload,
@@ -18,6 +19,8 @@ export const NewInvite = React.memo(function Colaborators({
   const [roles, setRoles] = React.useState([]);
   const [clinics, setClinics] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+
+  const { createToast } = useToast();
 
   const handleGetRoles = React.useCallback(async () => {
     try {
@@ -35,7 +38,7 @@ export const NewInvite = React.memo(function Colaborators({
     try {
       const res = await clinicService.getClinicsByUser();
       setClinics(res.data);
-      if (res.data.length === 1) setData({ business_unit_id: res.data[0].id });
+      if (res.data.length === 1) setData({ businessUnitId: res.data[0].id });
     } catch (err) {
       notification.error({
         message: "Erro",
@@ -84,17 +87,15 @@ export const NewInvite = React.memo(function Colaborators({
         .then((res) =>
           notification.success({ description: "Convite reenviado!" })
         )
-        .catch((_err) =>
-          notification.error({
-            description: "Houve um erro ao reenviar o convite",
-          })
-        )
-        .finally(() => {
+        .catch((_err) => {
           setData({});
           setReload(!reload);
           notification.destroy();
           setLoading(false);
           setVisible(false);
+          notification.error({
+            description: "Houve um erro ao reenviar o convite",
+          });
         });
     },
     [data?.email]
@@ -106,121 +107,130 @@ export const NewInvite = React.memo(function Colaborators({
     clinicService
       .createInvite(data)
       .then(() => {
-        notification.success({
-          message: "Sucesso",
-          description: "Convite enviado com sucesso",
+        setLoading(false);
+
+        setReload(!reload);
+        setVisible(false);
+        setData({});
+        return createToast({
+          message: "Convite enviado com sucesso",
+          status: "success",
         });
       })
       .catch((err) => {
-        error = true;
-        const message = err.response?.data?.message.split(":")[1];
+        setLoading(false);
+        if (err?.response?.data?.message) {
+          const message = err.response?.data?.message.split(":")[1];
 
-        if (message.includes("Convite já existe para o usuário")) {
-          return notification.warning({
-            duration: null,
-            message: "Usuário já convidado",
-            description: resendInviteStructure(),
+          if (message?.includes("Convite já existe para o usuário")) {
+            return createToast({
+              message: "Usuário já convidado!",
+              status: "error",
+            });
+          }
+        }
+
+        if (err?.response?.data?.errors?.length > 0) {
+          return createToast({
+            message: err.response.data.errors[0].message,
+            status: "error",
           });
         }
 
-        return notification.error({
-          message: "Erro",
-          description: "Erro ao criar convite, tente novamente mais tarde",
+        return createToast({
+          message: "Erro ao criar convite, tente novamente mais tarde",
+          status: "error",
         });
-      })
-      .finally(() => {
-        if (!error) {
-          setReload(!reload);
-          setVisible(false);
-          setData({});
-        }
       });
-    setLoading(false);
   }, [data]);
 
   return (
     <div>
-      <Button onClick={() => setVisible(true)}>Novo</Button>
-
+      <Button text="Novo" onClick={() => setVisible(true)} />
       <Modal
-        loading={loading}
         title="Enviar convite"
-        okText="Enviar"
-        cancelText="Cancelar"
+        footer={null}
         visible={visible}
-        onOk={() => {
-          document.getElementById("submit-button").click();
-        }}
-        onCancel={() => {
-          setData({});
-          setVisible(false);
-        }}
-        confirmLoading={loading}
+        onCancel={() => setVisible(false)}
       >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-        >
-          <div className="uk-margin">
-            <label htmlFor="email">Email</label>
-            <input
-              className="uk-input"
-              id="email"
-              type="email"
-              required
-              value={data?.email || ""}
-              placeholder="exemplo@proverdor.com"
-              onChange={(e) => setData({ ...data, email: e.target.value })}
-            />
-          </div>
-          <div className="uk-margin">
-            <label htmlFor="role">Selecione o cargo</label>
-            <select
-              className="uk-select"
-              id="role"
-              required
-              value={data?.role_id || ""}
-              onChange={(e) => {
-                setData({ ...data, role_id: e.target.value });
-              }}
-            >
-              <option value="">Selecione</option>
-              {roles?.map((role, key) => {
-                return (
-                  <option className="uk-option" key={key} value={role.id}>
-                    {role.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className="uk-margin">
-            <label htmlFor="clinic">Selecione a clinica</label>
-            <select
-              className="uk-select"
-              value={data?.business_unit_id || ""}
-              id="clinic"
-              required
-              onChange={(e) => {
-                setData({ ...data, business_unit_id: e.target.value });
-              }}
-            >
-              <option value="">Selecione</option>
-              {(clinics || []).map((clinic, key) => {
-                return (
-                  <option className="uk-option" key={key} value={clinic.id}>
-                    {clinic.fantasy_name === ""
-                      ? "Sem nome"
-                      : clinic.fantasy_name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <input id="submit-button" type="submit" style={{ display: "none" }} />
-        </form>
+        <S.NewInvite>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setLoading(true);
+              handleSubmit();
+            }}
+          >
+            <div className="uk-margin">
+              <label htmlFor="email">Email</label>
+              <input
+                className="uk-input"
+                id="email"
+                type="email"
+                required
+                value={data?.email || ""}
+                placeholder="exemplo@proverdor.com"
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+              />
+            </div>
+            <div className="uk-margin">
+              <label htmlFor="role">Selecione o cargo</label>
+              <select
+                className="uk-select"
+                id="role"
+                required
+                value={data?.roleId || ""}
+                onChange={(e) => {
+                  setData({ ...data, roleId: e.target.value });
+                }}
+              >
+                <option value="">Selecione</option>
+                {roles?.map((role, key) => {
+                  return (
+                    <option className="uk-option" key={key} value={role.id}>
+                      {role.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="uk-margin">
+              <label htmlFor="clinic">Selecione a clinica</label>
+
+              <select
+                className="uk-select"
+                value={data?.businessUnitId || ""}
+                id="clinic"
+                required
+                onChange={(e) => {
+                  setData({ ...data, businessUnitId: e.target.value });
+                }}
+              >
+                <option value="">Selecione</option>
+                {(clinics || []).map((clinic, key) => {
+                  return (
+                    <option className="uk-option" key={key} value={clinic.id}>
+                      {clinic.fantasyName === ""
+                        ? "Sem nome"
+                        : clinic.fantasyName}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <footer className="custom-footer">
+              <Button
+                text="Cancelar"
+                onClick={() => {
+                  setData({});
+                  setVisible(false);
+                }}
+              />
+
+              <Button text="Enviar" loading={loading} type="submit" />
+            </footer>
+          </form>
+        </S.NewInvite>
       </Modal>
     </div>
   );

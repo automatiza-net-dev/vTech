@@ -56,6 +56,7 @@ const CardPanel = memo(function DebitPanel({
                 onClick={() => {
                   setFormData({
                     ...formData,
+                    budgetPaymentId: null,
                     paymentMethodId: flag?.paymentMethodId,
                     acquirerId: flag?.acquirer?.id,
                     flagId: flag?.flag?.id,

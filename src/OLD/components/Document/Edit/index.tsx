@@ -35,8 +35,9 @@ const DocumentCreate = React.memo(function DocumentCreate() {
 
   const fetchData = useCallback(() => {
     setStartPage(true);
+
     documentServices
-      .getById(router.query.subpage)
+      .getById(router.query.innerpage)
       .then((res) => {
         setData({
           description: res.data.description,
@@ -66,7 +67,7 @@ const DocumentCreate = React.memo(function DocumentCreate() {
   useEffect(() => {
     if (data?.type === "pdf") {
       documentServices
-        .renderPdf(router.query.subpage)
+        .renderPdf(router.query.innerpage)
         .then((res) =>
           setUrl(process.env.NEXT_PUBLIC_API + "/uploads/" + res?.data?.url)
         );
@@ -125,7 +126,7 @@ const DocumentCreate = React.memo(function DocumentCreate() {
 
     if (data?.type !== "pdf") {
       documentServices
-        .update(router.query.subpage, {
+        .update(router.query.innerpage, {
           header: "header",
           ...data,
           template: body,
@@ -153,7 +154,7 @@ const DocumentCreate = React.memo(function DocumentCreate() {
       formData.append("type", data?.type);
 
       documentServices
-        .updateWithDoc(router.query.subpage, formData)
+        .updateWithDoc(router.query.innerpage, formData)
         .then((res) => {
           setLoading(false);
           notification.success({

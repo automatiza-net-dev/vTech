@@ -9,16 +9,16 @@ import * as S from "./styles";
 export function PdfPatientAttendance(
   props: Partial<TimeLine["timeline_info"]>
 ) {
-  const { GetUser } = useAuthAdmin();
+  const { user } = useAuthAdmin();
   const { data } = useLoadPatient();
-
-  const user = GetUser<User>();
 
   return (
     <S.PdfPatientAttendance>
       <div className="row">
         <span className="font-14-regular">
-          <strong>{process.env.client === "sancla" ? "Pet:" : "Paciente:"}:</strong>
+          <strong>
+            {process.env.client === "sancla" ? "Pet:" : "Paciente:"}:
+          </strong>
           <span>{data?.name || "-"}</span>
         </span>
 

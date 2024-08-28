@@ -140,13 +140,16 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     let error = false;
     billService
       .closeBillPayment(data?.id)
-      .then((_res) =>
-        notification.success({ message: "Venda finalizada com sucesso!" })
-      )
+      .then((_res) => {
+        notification.success({ message: "Venda finalizada com sucesso!" });
+      })
       .catch((err) => {
-        err = true;
-        return notification.error({
+        error = true;
+        console.log(err);
+
+        notification.error({
           message:
+            err?.response?.data?.message ||
             "Houve um erro ao finalizar a venda, verifique se há valores pendentes",
         });
       })
@@ -232,6 +235,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
 
     mutate(
       {
+        budgetPaymentId: formData?.budgetPaymentId,
         installments: formData?.installments,
         installmentsValue: convertIntlCurrency(formData?.installmentsValue),
         billId,
@@ -246,6 +250,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["bills"]);
+          queryClient.invalidateQueries(["paymentsPreview"]);
           setFormData({
             expirationDate: moment(),
           });

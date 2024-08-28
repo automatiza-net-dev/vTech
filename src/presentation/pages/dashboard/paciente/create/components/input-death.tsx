@@ -1,14 +1,21 @@
 import { useState } from "react";
 
-import { useFormikContext } from "formik";
-import { DatePickerInput, Select } from "infinity-forge";
+import { useFormikContext, useField } from "formik";
+import { InputDatePicker, Select } from "infinity-forge";
 
 export function InputDeath() {
+  const [field] = useField("deathDate");
   const { setFieldValue } = useFormikContext();
   const [deathDate, setDeathDate] = useState(false);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "18px" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: "18px",
+      }}
+    >
       <Select
         label="O paciente veio a óbito?"
         name="death"
@@ -33,8 +40,15 @@ export function InputDeath() {
         }}
       />
 
-      {deathDate && (
-        <DatePickerInput hasIcon name="deathDate" label="Data do óbito" typePicker="normal" />
+      {(field.value || deathDate) && (
+        <InputDatePicker
+          name="deathDate"
+          label="Data do óbito"
+          mode="date"
+          language="pt"
+          readOnly
+          date={{}}
+        />
       )}
     </div>
   );

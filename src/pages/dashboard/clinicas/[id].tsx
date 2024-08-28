@@ -6,19 +6,15 @@ import styled from "styled-components";
 import { LayoutDashboard } from "@/presentation";
 import { useSingleClinic } from "@/OLD/hooks/useClinics";
 import { Button } from "@/OLD/components/mini-components/Button";
-import { PrivatePageAdmin } from "infinity-forge";
 
 export default function DetailClinic() {
- 
-  return <PrivatePageAdmin>
-    <Page />
-  </PrivatePageAdmin>
+  return <Page />;
 }
 
 function Page() {
   const router = useRouter();
 
-  const { clinic } = useSingleClinic(router.query.id);
+  const { clinic } = useSingleClinic(router?.query?.id);
 
   return (
     <LayoutDashboard>
@@ -152,4 +148,3 @@ export const Container = styled.div`
     background-color: #fff;
   }
 `;
- 

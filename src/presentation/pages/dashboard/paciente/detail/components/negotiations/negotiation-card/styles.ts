@@ -127,7 +127,7 @@ export const NegotiationCard = styled("div")`
     }
   }
 
-  .document_list {
+  .list {
     margin-top: 40px;
     border-top: 1px solid #444;
     padding-top: 10px;

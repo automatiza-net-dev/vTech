@@ -1,21 +1,21 @@
 import { useQuery } from "react-query";
 
-import { RemotePatient } from "@/data";
-import { Patient } from "@/domain";
+import { RemoteVaccine } from "@/data";
+import { LoadAllVaccines } from "@/domain";
 import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
-export function useLoadAllVaccines(patient: Patient) {
+export function useLoadAllVaccines(params: LoadAllVaccines.Params) {
   async function fetcher() {
     const response = await container
-      .get<RemotePatient>(TypesAutomatiza.RemotePatient)
-      .loadAllVaccines({ patient: patient.id });
+      .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
+      .loadAllVaccines(params);
 
     return response;
   }
 
   return useQuery({
-    queryKey: ["LoadAllVaccines", patient.id],
+    queryKey: ["LoadAllVaccines", params],
     queryFn: fetcher,
     ...callApiOneTime,
   });

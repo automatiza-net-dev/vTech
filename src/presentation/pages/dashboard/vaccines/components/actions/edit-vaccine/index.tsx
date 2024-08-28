@@ -56,13 +56,13 @@ export function EditVaccine(props: VaccineProtocol) {
     submit: () => updateVaccine(),
     created: false,
     edit: true,
-    type: props?.vaccine?.type
+    type: props?.vaccine?.type,
   };
 
   const protocolsTableProps = {
     data: vaccinesProtocols.data,
     actions: [EditProtocol],
-    type: props?.vaccine?.type
+    type: props?.vaccine?.type,
   };
 
   useEffect(() => {
@@ -79,6 +79,7 @@ export function EditVaccine(props: VaccineProtocol) {
   return (
     <S.EditVaccine>
       <Tooltip
+        idTooltip="EditVaccine"
         content={
           props?.vaccine?.type === "vaccine"
             ? "Editar vacina"

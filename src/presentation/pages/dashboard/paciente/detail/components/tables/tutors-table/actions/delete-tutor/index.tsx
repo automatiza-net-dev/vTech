@@ -17,6 +17,7 @@ export function DeleteTutor(props: Tutor) {
   return (
     <S.DeleteTutor>
       <Tooltip
+        idTooltip="DeleteTutor"
         content="Deletar"
         trigger={
           <button onClick={() => console.log("delete")}>

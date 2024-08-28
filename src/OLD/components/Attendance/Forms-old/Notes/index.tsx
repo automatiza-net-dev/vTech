@@ -10,10 +10,10 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { useLoadPatient } from "@/presentation";
 
 // Components
-import { notification, Button, Popconfirm } from "antd";
-import { Modal } from "infinity-forge";
-import { Container } from "./styles";
+import { Popconfirm } from "antd";
 import FormChild from "./FormChild";
+import { Container } from "./styles";
+import { Modal, Button, useToast, Icon } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -32,6 +32,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
 
   const { user } = useProfile();
   const patient = useLoadPatient();
+  const { createToast } = useToast();
 
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -41,7 +42,8 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return notification.error({
+        return useToast({
+          status: "error",
           message: "Você só pode upar imagens até 2MB!",
         });
       }
@@ -91,22 +93,21 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         await queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-
-        notification.success({
-          message: "Observação registrada com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao registrar a observação...",
-        });
-      })
-      .finally(() => {
         setLoading(false);
         setModal(false);
         setFileList([]);
         setData({});
+        return createToast({
+          message: "Observação registrada com sucesso!",
+          status: "success",
+        });
+      })
+      .catch((_err) => {
+        setLoading(false);
+        return createToast({
+          message: "Houve um erro ao registrar a observação...",
+          status: "error",
+        });
       });
   }, [data, patient?.data?.id, data, user?.id, fileList]);
 
@@ -132,15 +133,16 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         await queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-
-        notification.success({
+        return createToast({
+          status: "success",
           message: "Observação atualizada com sucesso!",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar a observação...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -155,18 +157,22 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     (idx) => {
       setLoading(true);
       timelineService
-        .removeObservationMedia(updateData?.id, idx)
+        .removeObservationMedia(updateData?._id, idx)
         .then(async (_res) => {
           setLoading(false);
-
-          return notification.success({
-            messge: "Anexo removido com sucesso!",
+          await queryClient.invalidateQueries({
+            queryKey: ["LastUpdates", router.query.id],
+          });
+          return createToast({
+            message: "Anexo removido com sucesso!",
+            status: "success",
           });
         })
         .catch((_err) => {
           setLoading(false);
-          return notification.error({
+          return createToast({
             message: "Houve um erro ao remvoer o anexo selecionado",
+            status: "error",
           });
         });
     },
@@ -182,8 +188,9 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         await queryClient.invalidateQueries({
           queryKey: ["LastUpdates", router.query.id],
         });
-        return notification.success({
+        return createToast({
           message: "Registro removido com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
@@ -267,7 +274,11 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         remove={() => removeData(updateData?._id)}
       />
       {!modal && (
-        <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
+        <Modal
+          open={photosOpen}
+          onClose={() => setPhotosOpen(false)}
+          styles={{ minWidth: "500px", padding: "20px" }}
+        >
           {fileList?.length > 0 &&
             fileList.map((item, idx) => {
               item?.url &&
@@ -282,13 +293,24 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
                     }
                   });
 
+              const extension = item?.url?.split(".")?.[1];
+
               return item?.url ? (
-                <div className="uk-flex uk-flex-between">
-                  <img
-                    src={process.env.NEXT_PUBLIC_API + item?.url}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
+                <div
+                  className="uk-flex uk-flex-between"
+                  style={{ marginTop: "10px" }}
+                >
+                  {extension !== "pdf" ? (
+                    <img
+                      src={process.env.NEXT_PUBLIC_API + item?.url}
+                      width={150}
+                      className="uk-margin-small-right"
+                    />
+                  ) : (
+                    <div style={{ width: "70px" }}>
+                      <Icon fill="#000" name="IconClip" />
+                    </div>
+                  )}
                   <a
                     target="_blank"
                     className="uk-link"
@@ -308,12 +330,13 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
                       size={15}
                       color="red"
                       style={{ cursor: "pointer" }}
+                      onClick={() => removeMedia(idx)}
                     />
                     <a
                       download={`${item?.filename}`}
                       id={`custom-download-${idx}`}
                     >
-                      <MdDownload />
+                      <MdDownload size={30} />
                     </a>
                   </Popconfirm>
                 </div>
@@ -348,7 +371,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
             })}
           <hr />
           <footer className="uk-flex uk-flex-right">
-            <Button onClick={() => setPhotosOpen(false)}>Fechar</Button>
+            <Button onClick={() => setPhotosOpen(false)} text="Fechar" />
           </footer>
         </Modal>
       )}

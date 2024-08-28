@@ -9,6 +9,8 @@ export namespace ConfirmBudget {
     id: Budget["id"];
     type: "TOTAL";
     notConfirmedItems: [];
-    finishedAt: Date
+    finishedAt: Date;
+    observation?: string;
+    internalObservation?: string;
   };
 }

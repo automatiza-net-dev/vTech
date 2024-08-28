@@ -1,6 +1,5 @@
 import { useLoadUsersController, useTable } from "@/presentation";
 
-import { LayoutAdmin } from "../../layout";
 import { ButtonNewCollaborator } from "./components";
 import { tableListCollaboratorsConfig } from "./table-configs";
 
@@ -26,24 +25,22 @@ export function ListUserPage() {
   });
 
   return (
-      <LayoutAdmin>
-        <S.ListUser>
-          <div className="top">
-            <div className="box-left">
-              <h2>Colaboradores</h2>
-            </div>
+    <S.ListUser>
+      <div className="top">
+        <div className="box-left">
+          <h2>Colaboradores</h2>
+        </div>
 
-            <div className="box-right">
-              {SearchBar}
+        <div className="box-right">
+          {SearchBar}
 
-              <div>
-                <ButtonNewCollaborator />
-              </div>
-            </div>
+          <div>
+            <ButtonNewCollaborator />
           </div>
+        </div>
+      </div>
 
-          {Table}
-        </S.ListUser>
-      </LayoutAdmin>
+      {Table}
+    </S.ListUser>
   );
 }

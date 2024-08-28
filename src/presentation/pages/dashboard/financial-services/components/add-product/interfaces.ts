@@ -1,10 +1,14 @@
-import { BusinessUnitProduct, Product, Variation } from "@/domain";
+import { Budget, BusinessUnitProduct, Product, Variation } from "@/domain";
 
 export type Cart = {
   id: Product["id"];
+  courtesy: boolean;
   variations: {
+    budgetItemId?: Budget["items"][0]["id"]
+    exceedDiscount?: boolean;
     total: number;
     quantity: number;
+    courtesy: boolean;
     description: string;
     discountValue: number;
     productVariationId: Variation["id"];
@@ -13,3 +17,7 @@ export type Cart = {
     maximum_discount_percentage: BusinessUnitProduct["maximum_discount_percentage"];
   }[];
 };
+
+
+
+

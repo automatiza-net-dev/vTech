@@ -6,9 +6,10 @@ export function DeleteProtocol() {
   return (
     <S.DeleteProtocol>
       <Tooltip
+        idTooltip="DeleteProtocol"
         content="Deletar"
         trigger={
-          <button onClick={() => console.log("alou")}>
+          <button>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

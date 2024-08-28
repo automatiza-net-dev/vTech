@@ -31,7 +31,9 @@ import moment from "moment/moment";
 
 // Icons
 import { MdOutlineClear } from "react-icons/md";
-import { AddBudgetNew, useDictionary } from "@/presentation";
+import { AddBudgetNew, TriggerModal, useDictionary } from "@/presentation";
+import Link from "next/link";
+import { AuthorizationBudget } from "./authorization-budget";
 
 export const dateFormatter = (date) => {
   return moment(new Date(date)).format("HH:mm DD/MM/YYYY");
@@ -44,24 +46,41 @@ export const currencyFormatter = (value) => {
   }).format(value);
 };
 
-export const budgetStatusFormatter = (status) => {
-  switch (status) {
-    case "ABERTO":
-      return "Aberto";
-    case "CONFIRMADO":
-      return "Confirmado";
-    case "NAO_CONFIRMADO__CANCELADO":
-      return "Não confirmado";
-    case "CONFIRMADO_PARCIAL":
-    default:
-      return "Confirmado parcial";
+export const budgetStatusFormatter = (budget, setReload) => {
+  if (!budget) {
+    return;
   }
+
+  if (budget?.status === "ABERTO" && budget?.pending) {
+    return (
+      <TriggerModal
+        title="Autorização de Orçamento"
+        triggerContent="Pendente"
+        content={
+          <AuthorizationBudget budgetId={budget?.id} setReload={setReload} />
+        }
+        width={1400}
+        footer={null}
+      />
+    );
+  }
+
+  const statusStyles = {
+    ABERTO: <span style={{ color: "red" }}>Aberta</span>,
+    EXTORNADA: "Extornada",
+    CONFIRMADO: "Confirmado",
+    NAO_CONFIRMADO__CANCELADO: "Não confirmado",
+    CONFIRMADO_PARCIAL: "Confirmado parcial",
+    BAIXADA: <span style={{ color: "green" }}>Baixada</span>,
+  };
+
+  return statusStyles[budget?.status] || budget?.status;
 };
 
-const mapper = (data = []) => {
-  return data.map((budget) => {
+const mapper = (data = [], setReload) => {
+  return data?.map((budget) => {
     return {
-      id: budget.id,
+      id: budget?.id,
       evaluator: budget?.reviewer?.name || "-",
       budget_date: dateFormatter(budget.budget_date),
       expiration_date: dateFormatter(budget.expiration_date),
@@ -71,7 +90,7 @@ const mapper = (data = []) => {
       pet_name: budget.patient?.name ?? "-",
       seller_name: budget?.seller?.name,
       total_value: currencyFormatter(budget.total_value),
-      status: budgetStatusFormatter(budget.status),
+      status: budgetStatusFormatter(budget, setReload),
       actions: (
         <>
           <BudgetActions key={budget.id} budget={budget} />
@@ -126,13 +145,13 @@ const Budgets = memo(function Budgets() {
   }, []);
 
   const listCreated = (id) => {
-    setFilters({ budget_id: id });
+    setFilters((prv) => ({ ...prv, budget_id: id, noSearch: false }));
     setReload((prv) => !prv);
   };
 
-  const columns = process.env.client !== "liftone" ? Columns() : LiftColumns()
+  const columns = process.env.client !== "liftone" ? Columns() : LiftColumns();
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
 
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
@@ -164,30 +183,6 @@ const Budgets = memo(function Budgets() {
               }}
               value={filters?.toCreation}
             />
-            {/*
-            <DatePicker.RangePicker
-              allowEmpty={[true, true]}
-              format="DD/MM/YYYY"
-              onChange={(d) => {
-                const result = handleDateInput(d);
-                if (!result) {
-                  setFilters((prev) => ({
-                    ...prev,
-                    fromCreation: null,
-                    toCreation: null
-                  }));
-                  return;
-                }
-
-                const [from, to] = result;
-                setFilters((prev) => ({
-                  ...prev,
-                  fromCreation: from?.toISOString(),
-                  toCreation: to?.toISOString()
-                }));
-              }}
-            />
-            */}
             <MdOutlineClear
               size={40}
               style={{ cursor: "pointer" }}
@@ -224,30 +219,6 @@ const Budgets = memo(function Budgets() {
               }}
               value={filters?.toExpiration}
             />
-            {/*
-            <DatePicker.RangePicker
-              allowEmpty={[true, true]}
-              format="DD/MM/YYYY"
-              onChange={(d) => {
-                const result = handleDateInput(d);
-                if (!result) {
-                  setFilters((prev) => ({
-                    ...prev,
-                    fromExpiration: null,
-                    toExpiration: null
-                  }));
-                  return;
-                }
-
-                const [from, to] = result;
-                setFilters((prev) => ({
-                  ...prev,
-                  fromExpiration: from?.toISOString(),
-                  toExpiration: to?.toISOString()
-                }));
-              }}
-            />
-            */}
             <MdOutlineClear
               size={40}
               style={{ cursor: "pointer" }}
@@ -399,6 +370,22 @@ const Budgets = memo(function Budgets() {
               }
             />
           </Input>
+
+          <Input style={{ width: "max-content" }}>
+            <Label>Pendências</Label>
+            <Select
+              className="uk-width-1-1"
+              placeholder="Pendências"
+              value={filters.pending}
+              onChange={(e) => {
+                setFilters({ ...filters, pending: e });
+              }}
+            >
+              <Select.Option value="">Todos</Select.Option>
+              <Select.Option value={true}>Sim</Select.Option>
+              <Select.Option value={false}>Não</Select.Option>
+            </Select>
+          </Input>
           <div
             style={{ width: "70%", display: "flex", justifyContent: "right" }}
           >
@@ -422,7 +409,9 @@ const Budgets = memo(function Budgets() {
               />
             )}
 
-            <Button onClick={() => setModalCriar(true)}>Novo {getWord("Orçamento")}</Button>
+            <Button onClick={() => setModalCriar(true)}>
+              Novo {getWord("Orçamento")}
+            </Button>
 
             <ModalInfinityForge
               styles={{
@@ -465,7 +454,7 @@ const Budgets = memo(function Budgets() {
       <div className="uk-margin-top">
         <Table
           columns={columns}
-          dataSource={mapper(data)}
+          dataSource={mapper(data, setReload)}
           footer={() =>
             data?.length > 0 && (
               <section className="uk-flex uk-flex-right footer-box">

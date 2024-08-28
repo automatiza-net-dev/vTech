@@ -10,25 +10,17 @@ import { CommercialIndicatorAccomplishedTable } from "./commercial-indicator-acc
 import * as S from "./styles";
 
 export function IndicatorTable({ indicator }) {
-  const { GetUser } = useAuthAdmin();
-  const user: UserAdmin & {
-    unit: {
-      id: string;
-    };
-  } = GetUser();
+  const { user } = useAuthAdmin();
+
 
   /* const { indicators, isLoading } = useLoadIndicators(user?.unit?.id);
-
   if (isLoading) {
     return <LoaderCircle size={30} color="#444" />;
   }
     */
-
-  {console.log(indicator, "<<<")}
-
   return (
     <S.IndicatorTable>
-      <h2>{indicator?.description}</h2>
+     <h2>{indicator?.description}</h2>
 
       <div className="tables">
         <CommercialIndicatorAccomplishedTable {...indicator} />

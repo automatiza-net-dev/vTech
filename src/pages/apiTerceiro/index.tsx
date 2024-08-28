@@ -29,13 +29,10 @@ export default function ValidaTerceiros() {
         );
 
         if (response.data.user.type === "user") {
-          container
-            .get<Storage>(InfraTypes.storage)
-            .set("adminUser", { value: null });
 
           container
             .get<Storage>(InfraTypes.storage)
-            .set("user", { value: token });
+            .set("token", { value: token });
 
           const responseBusinessUnits = await container
             .get<RemoteBusinessUnits>(adminTypes.RemoteBusinessUnits)
@@ -47,7 +44,7 @@ export default function ValidaTerceiros() {
               .swap({ dashboard: true, unitId: responseBusinessUnits[0].id });
           }
 
-          await loadUser({ roleUser: "user" });
+          await loadUser();
 
           if (router.query.log) {
             return;
@@ -55,13 +52,10 @@ export default function ValidaTerceiros() {
 
           router.push("/dashboard");
         } else {
-          container
-            .get<Storage>(InfraTypes.storage)
-            .set("adminUser", { value: null });
 
           container
             .get<Storage>(InfraTypes.storage)
-            .set("user", { value: token });
+            .set("token", { value: token });
 
           if (router.query.log) {
             return;

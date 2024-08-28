@@ -21,7 +21,6 @@ export function Chart(props: DashboardChart) {
             );
           }
         }
-
         default:
           return <PieChart {...props} />;
       }

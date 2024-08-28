@@ -7,9 +7,9 @@ import { notification, Table } from "antd";
 import { Button, LoadingSkeleton } from "@/OLD/components/mini-components";
 import Link from "next/link";
 import { convertDate } from "@/OLD/utils/convertDate";
-import { columns } from "./columns";
 import { AddPatient } from "./AddPatient";
-import { FormCreateTutor } from "@/presentation";
+import { FormCreateTutor, useVerifyPermissions } from "@/presentation";
+import { Unlink } from "../unlink";
 
 export function Single({
   selectedId,
@@ -25,6 +25,35 @@ export function Single({
   const [reload, setReload] = useState(false);
 
   const router = useRouter();
+  const hasPermission = useVerifyPermissions("PET04");
+
+  const columns = [
+    {
+      title: "Nome",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Gênero",
+      dataIndex: "gender",
+      key: "gender",
+    },
+    {
+      title: "Data de nascimento",
+      dataIndex: "birthDate",
+      key: "birthDate",
+    },
+    {
+      title: "Ficha paciente",
+      dataIndex: "patientRec",
+      key: "patientRec",
+    },
+    hasPermission && {
+      title: "Desvincular Tutor/Pet",
+      dataIndex: "unlinkTutorPet",
+      key: "unlinkTutorPet",
+    },
+  ].filter(Boolean);
 
   const handleCreateTable = useCallback(
     (data) => {
@@ -75,6 +104,13 @@ export function Single({
               >
                 Ficha paciente
               </Button>
+            ),
+            unlinkTutorPet: (
+              <Unlink
+                tutorId={selectedId}
+                patientId={patient?.id}
+                customSubmit={() => setReload((prev) => !prev)}
+              />
             ),
           };
         })
@@ -148,6 +184,8 @@ export function Single({
               style={{
                 position: "absolute",
                 right: 40,
+                display: "flex",
+                alignItems: "center",
               }}
             >
               {process.env.client === "liftone" && (

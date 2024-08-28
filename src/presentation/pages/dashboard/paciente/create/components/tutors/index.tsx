@@ -1,22 +1,31 @@
 import { useState } from "react";
 
-import { Button, InputControl, Modal, Select, useToast } from "infinity-forge";
+import {
+  Button,
+  Modal,
+  Select,
+  useToast,
+  InputSwitch,
+  InputControl,
+} from "infinity-forge";
+import { useField, useFormikContext } from "formik";
 
+import { Tutor } from "@/domain";
 import { FormCreateTutor, useLoadAllPatientTutor } from "@/presentation";
-import { useFormikContext } from "formik";
 
 import * as S from "./styles";
-import { Tutor } from "@/domain";
 
 export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
+  const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
   const [modalAddTutor, setModalAddTutor] = useState(false);
-
   const { data, refetch } = useLoadAllPatientTutor({});
 
   const { values, setFieldValue } = useFormikContext<{
     holders: { id: string; main: boolean }[];
   }>();
+
+  const [tutorField] = useField("holderId");
 
   const options = data?.map((tutor) => {
     return { label: tutor.name, value: tutor.id };
@@ -26,41 +35,32 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
 
   const { createToast } = useToast();
 
+  const handleSwitchChange = (index: number) => {
+    const newHolders = holders.map((holder, i) => ({
+      ...holder,
+      main: i === index,
+    }));
+    setFieldValue("holders", newHolders);
+  };
+
   return (
     <InputControl name="holders">
       <S.Tutors>
         <h4 className="font-18-bold">Tutores</h4>
 
-        {holders?.map((holder) => {
+        {holders?.map((holder, index) => {
           return (
             <div key={holder.id} className="tutor-item">
               <p className="font-16-bold">
                 {data?.find((tutor) => tutor.id === holder.id)?.name}
               </p>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setFieldValue(
-                    "holders",
-                    holders.filter((tutor) => tutor.id !== holder.id)
-                  )
-                }
-              >
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 30 30"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect width="30" height="30" rx="5" fill="#E1E1E1" />
-                  <path
-                    d="M18.3333 10.9999H21.6666V12.3333H20.3333V20.9999C20.3333 21.3681 20.0348 21.6666 19.6666 21.6666H10.3333C9.96513 21.6666 9.66665 21.3681 9.66665 20.9999V12.3333H8.33331V10.9999H11.6666V8.99992C11.6666 8.63173 11.9651 8.33325 12.3333 8.33325H17.6666C18.0348 8.33325 18.3333 8.63173 18.3333 8.99992V10.9999ZM19 12.3333H11V20.3333H19V12.3333ZM13 14.3333H14.3333V18.3333H13V14.3333ZM15.6666 14.3333H17V18.3333H15.6666V14.3333ZM13 9.66659V10.9999H17V9.66659H13Z"
-                    fill="#828282"
-                  />
-                </svg>
-              </button>
+              <InputSwitch
+                name={`holders[${index}].main`}
+                label="Ativo"
+                checked={holder.main}
+                onChangeInput={() => handleSwitchChange(index)}
+              />
             </div>
           );
         })}
@@ -101,14 +101,24 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
               menuPlacement="top"
               placeholder="Selecionar tutor"
               options={options || []}
-              addButton={{ onClick: () => setModal(true) }}
               onlyOneValue
             />
 
+            {error && (
+              <span className="font-14" style={{ color: "red" }}>
+                {error}
+              </span>
+            )}
+
             <div className="form-button sticky">
               <Button
-                text="Adicionar"
+                text="Vincular Tutor"
                 onClick={() => {
+                  if (!tutorField?.value) {
+                    setError("Selecione um tutor.");
+                    return;
+                  }
+                  setError("");
                   const value = values["holderId"];
 
                   if (holders.find((holder) => holder.id === value)) {
@@ -133,6 +143,8 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
                   }
                 }}
               />
+
+              <Button text="Novo Tutor" onClick={() => setModal(true)} />
             </div>
           </S.ModalAddTutor>
         </Modal>

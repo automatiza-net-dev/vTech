@@ -10,36 +10,42 @@ const columns = [
   {
     title: "Qtd",
     dataIndex: "quantity",
-    key: "quantity"
+    key: "quantity",
   },
   {
     title: "Descrição",
     dataIndex: "description",
-    key: "description"
+    key: "description",
   },
   {
     title: "Status",
     dataIndex: "status",
-    key: "status"
+    key: "status",
   },
   {
     title: "Valor Unitário",
     dataIndex: "unitary_value",
     key: "unitary_value",
-    render: (value) => (value !== "-" ? currencyFormatter(value) : "-")
+    render: (value) => (value !== "-" ? currencyFormatter(value) : "-"),
   },
   {
     title: "Desconto",
     dataIndex: "discount_value",
     key: "discount_value",
-    render: (value) => (value !== "-" ? currencyFormatter(value) : "-")
+    render: (value) => (value !== "-" ? currencyFormatter(value) : "-"),
+  },
+  {
+    title: "Cortesia",
+    dataIndex: "courtesy",
+    key: "courtesy",
+    render: (value) => <input checked={value} />,
   },
   {
     title: "Valor Total",
     dataIndex: "total_value",
     key: "total_value",
-    render: (value) => currencyFormatter(value)
-  }
+    render: (value) => currencyFormatter(value),
+  },
 ];
 
 const mapper = (data = []) => {
@@ -49,7 +55,7 @@ const mapper = (data = []) => {
     status: billStatusFormatter(item.status),
     unitary_value: item.unitary_value,
     discount_value: item.discount_value,
-    total_value: item.total_value
+    total_value: item.total_value,
   }));
 
   mapped.push({
@@ -58,7 +64,7 @@ const mapper = (data = []) => {
     status: "-",
     unitary_value: "-", //data.reduce((acc, item) => acc + item.unitary_value, 0),
     discount_value: "-", //data.reduce((acc, item) => acc + item.discount_value, 0),
-    total_value: data.reduce((acc, item) => acc + item.total_value, 0)
+    total_value: data.reduce((acc, item) => acc + item.total_value, 0),
   });
 
   return mapped;

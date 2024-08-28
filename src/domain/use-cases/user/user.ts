@@ -1,8 +1,10 @@
+import { Tutor } from "@/domain";
 import * as InfinityForge from "infinity-forge";
 
 export type SystemUser = {
-  isThirdParty?: boolean,
+  isThirdParty?: boolean;
   cl: string[];
+  name: string;
   unit: {
     id: string;
     unitConfig: {
@@ -20,6 +22,7 @@ export type SystemUser = {
     economicGroup: { id: string };
   };
   user: {
+    tutor?: Tutor;
     id: string;
     name: string;
     email: string;
@@ -40,6 +43,5 @@ export type SystemUser = {
     type: "user" | "controller";
   };
 };
-
 
 export type User = SystemUser & InfinityForge.UserAdmin;

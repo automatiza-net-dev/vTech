@@ -1,13 +1,11 @@
 import { Collaborators } from "@/OLD/components/Colaborators";
 import { LayoutDashboard } from "@/presentation";
-import { PrivatePageAdmin } from "infinity-forge";
+import { PrivatePage } from "infinity-forge";
 
 export default function CollaboratorsPage() {
   return (
-    <PrivatePageAdmin>
-      <LayoutDashboard>
-        <Collaborators />
-      </LayoutDashboard>
-    </PrivatePageAdmin>
+    <LayoutDashboard>
+      <Collaborators />
+    </LayoutDashboard>
   );
 }

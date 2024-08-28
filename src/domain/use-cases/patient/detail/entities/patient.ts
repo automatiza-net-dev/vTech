@@ -25,7 +25,7 @@ export interface PatientHuman {
   missingBills: string;
   openAttendances: boolean;
   death: boolean;
-  death_date: string;
+  deathDate: Date;
   microchip: string;
   castrated: boolean;
   hair: string;

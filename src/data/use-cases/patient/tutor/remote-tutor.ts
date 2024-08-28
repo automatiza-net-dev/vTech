@@ -25,6 +25,16 @@ export class RemoteTutor
     private readonly httpClient: domain.HttpClient<any>
   ) {}
 
+  async unlink(params: domain.UnlinkPetTutor.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`patients/unlink`),
+      method: "put",
+      body: params,
+    });
+
+    return response as domain.UnlinkPetTutor.Model;
+  }
+
   async load(params: domain.LoadTutor.Params) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(`patient-tutors/display/${params.id}`),
