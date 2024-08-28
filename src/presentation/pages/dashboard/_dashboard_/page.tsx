@@ -44,7 +44,7 @@ export function DashboardPage({ type }: { type?: "crm" }) {
   return (
     <>
       <S.Dashboard $breakColumns={breakColumns}>
-        <ChartsSection type={type}>
+        {/*<ChartsSection type={type}>
           {subgroupsDataTable && (
             <div className="custom-table">
               {(subgroupsDataTable as any)?.data.length > 0 &&
@@ -53,7 +53,7 @@ export function DashboardPage({ type }: { type?: "crm" }) {
                 )}
             </div>
           )}
-        </ChartsSection>
+        </ChartsSection>*/}
 
         <TablesSection />
       </S.Dashboard>
