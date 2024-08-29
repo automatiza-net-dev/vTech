@@ -58,7 +58,7 @@ export function DashboardPage({ type }: { type?: "crm" }) {
         <TablesSection />
       </S.Dashboard>
 
-      {/* <SchedulesDashboard /> */}
+      <SchedulesDashboard />
 
       <FinancesResumeCards />
 

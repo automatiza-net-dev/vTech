@@ -89,7 +89,7 @@ export function AddBudgetNew({
     ? budgetDetail?.data?.client?.id
     : process.env.client === "sancla"
     ? patient.data?.tutor?.id
-    : patientId;
+    : patient?.data?.id;
   const expirationDate = budgetId
     ? moment(budgetDetail.data.expiration_date).toDate()
     : moment(new Date()).add({ day: 1 }).toDate();

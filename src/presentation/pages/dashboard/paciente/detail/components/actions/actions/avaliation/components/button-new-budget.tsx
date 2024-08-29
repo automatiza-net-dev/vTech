@@ -9,7 +9,12 @@ import {
   Button,
 } from "infinity-forge";
 
-import { useLoadAllPatientTutor, useLoadPatient, Modal, useDictionary } from "@/presentation";
+import {
+  useLoadAllPatientTutor,
+  useLoadPatient,
+  Modal,
+  useDictionary,
+} from "@/presentation";
 
 export function ButtonNewBudget() {
   const [modal, setModal] = useState(false);
@@ -17,9 +22,11 @@ export function ButtonNewBudget() {
   const [modalProducts, setModalProducts] = useState(false);
 
   const patient = useLoadPatient();
-  const { data, isFetching } = useLoadAllPatientTutor({ needFilterToCallApi: false });
+  const { data, isFetching } = useLoadAllPatientTutor({
+    needFilterToCallApi: false,
+  });
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
 
   return (
     <>
