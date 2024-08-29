@@ -23,6 +23,8 @@ import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 import Negotiation from "@/OLD/components/Budget/Negotiation";
 
+import CloseIcon from "@mui/icons-material/Close";
+
 import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
 import {
   FormHandler,
