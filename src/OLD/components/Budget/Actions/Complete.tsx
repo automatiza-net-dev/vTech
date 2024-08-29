@@ -22,8 +22,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 import Negotiation from "@/OLD/components/Budget/Negotiation";
-
-import CloseIcon from "@mui/icons-material/Close";
+import { CheckIcon } from "../../Bill/Actions/Details/icons";
 
 import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
 import {
