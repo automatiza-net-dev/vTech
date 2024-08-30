@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
 
@@ -27,6 +27,7 @@ import {
   useDictionary,
   useLoadSchedule,
 } from "@/presentation";
+import Editor from "@/OLD/components/Editor";
 
 import { DropdownComponentProps } from "../dropdown-item";
 import { AttendanceBudgets, SelectTypeService } from "./components";
@@ -36,6 +37,7 @@ import * as S from "./styles";
 export function Avaliation(props: DropdownComponentProps) {
   const [modal, setModal] = useState(false);
   const [attendance, setAttendance] = useState<TimeLine | null>(null);
+  const [body, setBody] = useState("");
 
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -55,10 +57,11 @@ export function Avaliation(props: DropdownComponentProps) {
 
   const schedule = useLoadSchedule(scheduleId);
 
-  async function handleSubmit(data) {
+  async function handleSubmit(data, onSuccess: () => void) {
     const payload = {
       ...data,
       scheduleId,
+      protocol: body,
       realizedAt: moment().toDate(),
       technicianId: user?.user?.id as string,
       scheduleServiceId: data.scheduleServiceId
@@ -81,25 +84,28 @@ export function Avaliation(props: DropdownComponentProps) {
 
     setAttendance(attendanceResponse);
 
-    queryClient.setQueryData(["LastUpdates", patientId], (state) => {
-      const lastUpdates = state as TimeLine[];
+    onSuccess && onSuccess();
 
-      const itemAlredyExist = lastUpdates.find((timeline) => {
-        return timeline._id === attendanceResponse._id;
-      });
+    // TODO verificar trecho de código
+    // queryClient.setQueryData(["LastUpdates", patientId], (state) => {
+    //   const lastUpdates = state as TimeLine[];
 
-      if (itemAlredyExist) {
-        return lastUpdates.map((timeline) => {
-          if (timeline._id === attendanceResponse._id) {
-            return { ...attendanceResponse, updatedAt: timeline.updatedAt };
-          }
+    //   const itemAlredyExist = lastUpdates.find((timeline) => {
+    //     return timeline._id === attendanceResponse._id;
+    //   });
 
-          return timeline;
-        });
-      }
+    //   if (itemAlredyExist) {
+    //     return lastUpdates.map((timeline) => {
+    //       if (timeline._id === attendanceResponse._id) {
+    //         return { ...attendanceResponse, updatedAt: timeline.updatedAt };
+    //       }
 
-      return [attendanceResponse, ...lastUpdates] as TimeLine[];
-    });
+    //       return timeline;
+    //     });
+    //   }
+
+    //   return [attendanceResponse, ...lastUpdates] as TimeLine[];
+    // });
 
     if (scheduleDate) {
       queryClient.invalidateQueries({
@@ -133,6 +139,10 @@ export function Avaliation(props: DropdownComponentProps) {
       ? [schedule?.data?.serviceType?.id]
       : [],
   };
+
+  useEffect(() => {
+    timeLine?.timeline_info && setBody(timeLine?.timeline_info?.protocol);
+  }, [timeLine]);
 
   return (
     <Error name="Avaliation">
@@ -182,17 +192,19 @@ export function Avaliation(props: DropdownComponentProps) {
               },
               {
                 action: async (data) => {
-                  await handleSubmit(data);
-                  setModal(true);
+                  await handleSubmit(data, () => {
+                    setModal(true);
+                  });
                 },
                 props: { text: `NOVO ${getWord("Orçamento").toUpperCase()}` },
                 active: true,
               },
               {
                 action: async (data) => {
-                  await handleSubmit(data);
-
-                  props?.setModal && props.setModal(false);
+                  await handleSubmit(data, () => {
+                    props?.setModal && props.setModal(false);
+                    queryClient.invalidateQueries(["LastUpdates"]);
+                  });
                 },
                 props: { text: "SALVAR" },
                 active: true,
@@ -207,8 +219,18 @@ export function Avaliation(props: DropdownComponentProps) {
 
               <Input label="Resumo" name="resume" placeholder="Resumo" />
             </div>
+            <div
+              className="uk-margin-top"
+              style={{ maxHeight: "500px", overflowY: "auto" }}
+            >
+              <Editor
+                editorState={body}
+                setEditorState={setBody}
+                value={body}
+              />
+            </div>
 
-            <TextEditor name="protocol" />
+            {/* <TextEditor name="protocol" /> */}
 
             <div className="internal_observations">
               {props.timeline_info?.protocol ? (
@@ -239,7 +261,10 @@ export function Avaliation(props: DropdownComponentProps) {
             width: "calc(100% - 30px)",
           }}
           open={modal}
-          onClose={() => setModal(false)}
+          onClose={() => {
+            setModal(false);
+            queryClient.invalidateQueries(["LastUpdates"]);
+          }}
         >
           <AddBudgetNew
             attendanceId={timeLine?.timeline_info?.attendance?.id}

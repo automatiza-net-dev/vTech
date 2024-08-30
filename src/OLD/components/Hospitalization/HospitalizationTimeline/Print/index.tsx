@@ -47,9 +47,7 @@ const PrintContent = ({ obj, patient }) => {
     <Container>
       <div className="uk-text-center uk-margin-top">
         <PrintHeader unit={clinic} />
-        <PatientHeader
-          patient={{ ...patient?.patient, tutorData: { ...patient?.tutor } }}
-        />
+        <PatientHeader tutor={patient?.tutor} patient={patient?.patient} />
       </div>
       {obj.map((item) => {
         return (

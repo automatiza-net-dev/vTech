@@ -23,7 +23,6 @@ export function OrigemClientesCategoria(props) {
   ) {
     return <></>;
   }
-  console.log(dynamicKeys);
   return (
     <Error name="OrigemClientesCategoria">
       <TableLevels>

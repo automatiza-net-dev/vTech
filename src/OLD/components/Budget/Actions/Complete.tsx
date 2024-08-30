@@ -22,7 +22,11 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 import Negotiation from "@/OLD/components/Budget/Negotiation";
-import { CheckIcon } from "../../Bill/Actions/Details/icons";
+
+import {
+  CheckIcon,
+  CloseIcon,
+} from "@/OLD/components/Bill/Actions/Details/icons";
 
 import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
 import {
@@ -180,7 +184,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
             detalhes da venda, clique{" "}
             <a
               onClick={() => {
-                router.push(`/dashboard/vendas?id=${res?.id}`);
+                router.push(`/dashboard/vendas?id=${result?.id}`);
               }}
             >
               aqui

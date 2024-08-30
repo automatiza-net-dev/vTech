@@ -71,9 +71,6 @@ export const Navbar = React.memo(function Navbar({
     async () => {
       const storage = container.get<Storate>(TypesAutomatiza.storage);
       const ipAddres = storage.get<"ip">("ip");
-
-      console.log("foifofififo");
-
       return await api.get(`/auth/me?ip=${ipAddres.value}`);
     };
   }, []);

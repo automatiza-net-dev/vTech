@@ -63,7 +63,7 @@ function Form({
         death: String(data.death),
         castrated: String(data.castrated),
         holderId: data?.tutor?.id,
-        deathDate: new Date(data?.deathDate),
+        deathDate: data?.deathDate ? new Date(data?.deathDate) : null,
         photo: [
           {
             id: 1,

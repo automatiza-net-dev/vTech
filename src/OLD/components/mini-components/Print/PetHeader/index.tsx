@@ -4,7 +4,7 @@ import React from "react";
 import moment from "moment";
 import { convertToAge } from "@/OLD/utils/generalUtils";
 
-export default function PatientHeader({ patient }) {
+export default function PatientHeader({ patient, tutor }) {
   const years = moment(new Date()).diff(patient?.birth_date, "years", true);
 
   return (
@@ -29,11 +29,8 @@ export default function PatientHeader({ patient }) {
             Pelagem:{" "}
             {patient?.hair || patient?.patientAnimal?.hair?.description || "-"}
           </div>
-          <div>Responsável: {patient?.tutor?.name || "-"}</div>
-          <div>
-            Endereço:{" "}
-            {patient?.tutor?.address || patient?.tutor?.fullAddress || "-"}
-          </div>
+          <div>Responsável: {tutor?.name || "-"}</div>
+          <div>Endereço: {tutor?.address || tutor?.fullAddress || "-"}</div>
         </section>
         <section className="uk-text-left uk-width-1-3">
           <div>
@@ -50,7 +47,7 @@ export default function PatientHeader({ patient }) {
             Chip:{" "}
             {patient?.microchip || patient?.patientAnimal?.microchip || "-"}
           </div>
-          <div>CPF: {patient.tutor?.document || "-"}</div>
+          <div>CPF: {tutor?.document || "-"}</div>
         </section>
       </div>
       <hr />

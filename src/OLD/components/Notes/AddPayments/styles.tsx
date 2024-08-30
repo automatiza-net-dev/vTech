@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.section`
+  margin-top: 20px;
   .budget-payment-desc {
     border: 1px #cacaca solid;
     padding: 10px;
