@@ -1,14 +1,18 @@
 // @ts-nocheck
-import { memo, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { receiptService } from "@/OLD/services/receipt.service";
 
-import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
+import { useRouter } from "next/router";
+import { useMe } from "@/presentation/hooks";
+import { usePlans } from "@/OLD/hooks/usePlans";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 
 import AddPayments from "../AddPayments";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { FormHandler } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
+import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import {
   Collapse,
   Table,
@@ -30,7 +34,7 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
-const PaymentsPanel = memo(function PaymentsPanel({
+function PaymentsPanel({
   payments,
   setReload,
   receipt,
@@ -38,17 +42,24 @@ const PaymentsPanel = memo(function PaymentsPanel({
   setVisible,
   accountPlanId = false,
 }) {
-  const [blocks, setBlocks] = useState([]);
   const [data, setData] = useState([]);
-  const [formattedPayments, setFormattedPayments] = useState([]);
-  const [editBlock, setEditBlock] = useState(false);
+  const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editBlock, setEditBlock] = useState(false);
+  const [selectedAccountPlanId, setSelectedAccountPlanId] = useState("");
+  const [formattedPayments, setFormattedPayments] = useState([]);
+  const [plansFilters, setPlansFilter] = useState({ type: "DEBITO" });
 
+  const me = useMe();
+  const { plans } = usePlans(plansFilters);
   const { paymentMethods } = usePaymentMethods();
 
+  const router = useRouter();
+  const finishReceiptPermission = useUserHasPermission("ENT07");
   const updatePaymentsPermission = useUserHasPermission("ENT05");
   const removePaymentsPermission = useUserHasPermission("ENT06");
-  const finishReceiptPermission = useUserHasPermission("ENT07");
+  const generatesFinancesOnReceiptsFinish =
+    me?.data?.unit?.unitConfig?.generates_finances_on_receipts_finish;
 
   sortItems(paymentMethods, "description");
 
@@ -60,6 +71,7 @@ const PaymentsPanel = memo(function PaymentsPanel({
       }
     });
     setBlocks(arr);
+    setSelectedAccountPlanId(accountPlanId);
   }, [payments]);
 
   const formatPayments = () => {
@@ -318,7 +330,41 @@ const PaymentsPanel = memo(function PaymentsPanel({
 
   return (
     <>
-      {!origin && <AddPayments receipt={receipt} setReload={setReload} accountPlanId={accountPlanId} />}
+      {plans.length > 0 &&
+        !generatesFinancesOnReceiptsFinish &&
+        accountPlanId !== null && (
+          <FormHandler initialData={{ accountPlanId: selectedAccountPlanId }}>
+            <section style={{ display: "flex", justifyContent: "right" }}>
+              <div>
+                <label>Plano de contas para geração dos tributos</label>
+
+                <Select
+                  onChangeSelect={(val) => setSelectedAccountPlanId(val)}
+                  onlyOneValue
+                  style={{ width: "100%" }}
+                  isMultiple={false}
+                  menuPlacement="bottom"
+                  name="accountPlanId"
+                  placeholder="Selecionar"
+                  options={[
+                    ...plans.map((plan) => ({
+                      value: plan.id,
+                      label: plan.description,
+                    })),
+                  ]}
+                />
+              </div>
+            </section>
+          </FormHandler>
+        )}
+      {!origin && (
+        <AddPayments
+          receipt={receipt}
+          setReload={setReload}
+          accountPlanId={selectedAccountPlanId}
+        />
+      )}
+
       {payments?.filter((payment) => payment?.status !== "Excluido")?.length >
         0 &&
         blocks?.map((i) => {
@@ -411,7 +457,7 @@ const PaymentsPanel = memo(function PaymentsPanel({
       <div className="uk-margin-small-top uk-flex uk-flex-right">
         <CustomButton
           classCallback="uk-margin-small-right"
-          onClick={() => setVisible(false)}
+          onClick={() => (setVisible ? setVisible(false) : router.back())}
         >
           Voltar
         </CustomButton>
@@ -423,6 +469,6 @@ const PaymentsPanel = memo(function PaymentsPanel({
       </div>
     </>
   );
-});
+}
 
 export default PaymentsPanel;

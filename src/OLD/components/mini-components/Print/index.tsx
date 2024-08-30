@@ -17,6 +17,7 @@ export default function Print({
   title = false,
   string = true,
   onBeforePrint = false,
+  tutor = false,
   patient = false,
 }: any) {
   const { clinic, user } = useProfile();
@@ -36,7 +37,7 @@ export default function Print({
             <PrintHeader unit={clinic} />
           </div>
           {process.env.client !== "liftone" && patient && (
-            <PatientHeader patient={patient} />
+            <PatientHeader patient={patient} tutor={tutor} />
           )}
           {title && (
             <div className="uk-text-center uk-margin-top">

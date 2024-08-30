@@ -104,7 +104,7 @@ export default function Bills() {
   };
 
   const listCreated = (id) => {
-    setFilters((prv) => ({ ...prv, bill_id: id }));
+    setFilters((prv) => ({ ...prv, bill_id: id, noSearch: false }));
     setReload((prv) => !prv);
   };
 
@@ -121,7 +121,7 @@ export default function Bills() {
     if (router?.query?.id) {
       listCreated(router.query.id);
     }
-  }, []);
+  }, [router.query]);
 
   return !listBillsPermission || listBillsPermission === "loading" ? (
     <AccessDenied loading={listBillsPermission} />

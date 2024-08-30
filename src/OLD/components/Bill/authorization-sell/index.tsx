@@ -51,8 +51,6 @@ export function AuthorizationSell({
       (item.courtesy || item.max_discount)
   );
 
-  console.log(showForm);
-
   const tableDataSource =
     data?.items?.map((item) => ({
       quantity: item?.quantity,
