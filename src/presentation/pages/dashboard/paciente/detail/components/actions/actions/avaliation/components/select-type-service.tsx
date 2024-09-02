@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/router";
 
 import { useFormikContext } from "formik";
@@ -15,8 +15,10 @@ import { TypesAutomatiza, container } from "@/container";
 
 export function SelectTypeService({
   initialService,
+  setBody,
 }: {
   initialService?: string;
+  setBody?: Dispatch<SetStateAction<string>>;
 }) {
   const router = useRouter();
   const scheduleId = router.query?.scheduleId as string | undefined;
@@ -25,7 +27,6 @@ export function SelectTypeService({
   const { user } = useAuthAdmin();
   const schedule = useLoadSchedule(scheduleId);
   const { setFieldValue } = useFormikContext();
-
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups();
 
@@ -48,7 +49,7 @@ export function SelectTypeService({
         base: resume,
       });
 
-    setFieldValue("protocol", response.result);
+    setBody && setBody(response.result);
   }
 
   useEffect(() => {

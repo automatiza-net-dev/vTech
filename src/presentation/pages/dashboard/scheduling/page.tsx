@@ -93,49 +93,47 @@ function Scheduling() {
               return;
             }
 
-            if (scheduleUser.onDuty) {
-              if (scheduleUser.events.length === 0) {
-                return;
-              }
-
-              return (
-                <div
-                  key={scheduleUser.id + selectedDate?.toISOString()}
-                  className="schedule_avulse"
-                >
-                  <div className="top-name">
-                    <h3>{scheduleUser.name}</h3>
-                  </div>
-
-                  <div className="schedule_content">
-                    {scheduleUser.events
-                      .sort(
-                        (a, b) =>
-                          new Date(a.start).getTime() -
-                          new Date(b.start).getTime()
-                      )
-                      .map((event) => {
-                        if (event.type === "unavailable") {
-                          return;
-                        }
-
-                        return (
-                          <div
-                            key={event.event.id + selectedDate?.toISOString()}
-                            style={{ marginBottom: "10px" }}
-                          >
-                            <CalendarEvent
-                              event={event}
-                              viewCalendar={viewCalendar}
-                              scheduleUser={scheduleUser}
-                            />
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              );
+            if (scheduleUser.events.length === 0) {
+              return;
             }
+
+            return (
+              <div
+                key={scheduleUser.id + selectedDate?.toISOString()}
+                className="schedule_avulse"
+              >
+                <div className="top-name">
+                  <h3>{scheduleUser.name}</h3>
+                </div>
+
+                <div className="schedule_content">
+                  {scheduleUser.events
+                    .sort(
+                      (a, b) =>
+                        new Date(a.start).getTime() -
+                        new Date(b.start).getTime()
+                    )
+                    .map((event) => {
+                      if (event.type === "unavailable") {
+                        return;
+                      }
+
+                      return (
+                        <div
+                          key={event.event.id + selectedDate?.toISOString()}
+                          style={{ marginBottom: "10px" }}
+                        >
+                          <CalendarEvent
+                            event={event}
+                            viewCalendar={viewCalendar}
+                            scheduleUser={scheduleUser}
+                          />
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            );
           }
 
           return (

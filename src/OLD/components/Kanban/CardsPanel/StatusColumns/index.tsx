@@ -241,8 +241,9 @@ const StatusColumns = memo(function StatusColumns({
                 }}
               >
                 <strong>
-                  {op?.contact?.name}
-                  {process.env.client !== "liftone" && `(${op?.client?.name})`}
+                  {op?.contact?.name || ""}
+                  {process.env.client !== "liftone" &&
+                    `(${op?.client?.name || "pac. não vinculado"})`}
                 </strong>
                 <div className="uk-flex uk-flex-between uk-width-1-1">
                   <div>

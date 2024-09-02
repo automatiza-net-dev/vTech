@@ -36,6 +36,7 @@ export function ChangeDayInCalendar() {
       </button>
 
       <FormHandler
+        cleanFieldsOnSubmit={false}
         onChangeForm={{
           callbackResult: (data) => {
             if (data.date) changeDate(data.date);
@@ -66,12 +67,5 @@ function DatePickerSchedule() {
     }
   }, [selectedDate]);
 
-  return (
-    <InputDatePicker
-      language="pt"
-      name="date"
-      mode="date"
-      date={{ maxDate: new Date() }}
-    />
-  );
+  return <InputDatePicker language="pt" name="date" mode="year" date={{}} />;
 }

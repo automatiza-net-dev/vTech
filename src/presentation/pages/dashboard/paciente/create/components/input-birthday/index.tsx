@@ -43,7 +43,7 @@ export function InputBirthday({ patientId }) {
             label="Idade meses"
           />
 
-          <Input type="number" name="birthDays" label="Idade dias" />
+          <Input type="number" name="birthDays" label="Idade dias" min={0} />
         </div>
       )}
       {!patientId && (

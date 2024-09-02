@@ -131,13 +131,12 @@ export default function FormChild({
         setEdit && setEdit(false);
       }}
     >
-      {console.log(data, "<<<")}
       <div className="body-form uk-padding-small">
         <div className="uk-flex uk-flex-between">
           <div className="uk-width-1-1 uk-margin-small-right">
             <FormCreateTutor
               isModal
-              tutorId={data?.contact?.id|| data.clientId}
+              tutorId={data?.contact?.id || data.clientId}
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
@@ -210,14 +209,21 @@ export default function FormChild({
                   >
                     Pet
                   </label>
-                ) : !!((!data.patient?.id && !data.clientId) && (data?.tutor_id  || data?.contact?.id) && op?.id) ? (
+                ) : !!(
+                    !data.patient?.id &&
+                    !data.clientId &&
+                    (data?.tutor_id || data?.contact?.id) &&
+                    op?.id
+                  ) ? (
                   <label
                     style={{ display: "flex", alignItems: "center", gap: 5 }}
                   >
                     Pet
                     <FormCreateTutor
                       isModal
-                      tutorId={data?.contact?.id || data?.tutor_id || data.clientId}
+                      tutorId={
+                        data?.contact?.id || data?.tutor_id || data.clientId
+                      }
                       addPet={{
                         onInitOpenModalAddPet: true,
                         onLinkPet: async ({ patientId, handleSuccess }) => {
@@ -266,9 +272,7 @@ export default function FormChild({
                 )}
 
                 <AutoComplete
-                  disabled={
-                    !footer ? !edit : false || selectedPatients.length === 0
-                  }
+                  disabled={true}
                   className="uk-width-1-1"
                   options={selectedPatients?.map((patient: any) => ({
                     ...patient,
@@ -296,7 +300,7 @@ export default function FormChild({
               <div className="uk-width-1-1">
                 <label>{`Espécie > Raça do pet`}</label>
                 <AutoComplete
-                  value={data?.raceDescription}
+                  value={data?.raceDescription || ""}
                   disabled={!footer ? !edit : false}
                   className="uk-width-1-1"
                   onChange={(e: any) => {
@@ -344,7 +348,7 @@ export default function FormChild({
               <SelectAnt
                 disabled={!footer ? !edit : false}
                 className="uk-width-1-1"
-                value={data?.castrated !== "undefined" && data?.castrated}
+                value={data?.castrated || false}
                 onChange={(val) => setData({ ...data, castrated: val })}
               >
                 <Option value="true">Sim</Option>

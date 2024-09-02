@@ -86,27 +86,6 @@ export function Avaliation(props: DropdownComponentProps) {
 
     onSuccess && onSuccess();
 
-    // TODO verificar trecho de código
-    // queryClient.setQueryData(["LastUpdates", patientId], (state) => {
-    //   const lastUpdates = state as TimeLine[];
-
-    //   const itemAlredyExist = lastUpdates.find((timeline) => {
-    //     return timeline._id === attendanceResponse._id;
-    //   });
-
-    //   if (itemAlredyExist) {
-    //     return lastUpdates.map((timeline) => {
-    //       if (timeline._id === attendanceResponse._id) {
-    //         return { ...attendanceResponse, updatedAt: timeline.updatedAt };
-    //       }
-
-    //       return timeline;
-    //     });
-    //   }
-
-    //   return [attendanceResponse, ...lastUpdates] as TimeLine[];
-    // });
-
     if (scheduleDate) {
       queryClient.invalidateQueries({
         queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "true",
@@ -215,6 +194,7 @@ export function Avaliation(props: DropdownComponentProps) {
             <div className="row">
               <SelectTypeService
                 initialService={timeLine?.timeline_info?.service?.id}
+                setBody={setBody}
               />
 
               <Input label="Resumo" name="resume" placeholder="Resumo" />
