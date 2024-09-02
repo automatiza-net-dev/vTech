@@ -85,7 +85,6 @@ function Page() {
           city: result?.city,
         }));
       } catch (e: any) {
-        console.log(e);
 
         return notification.error({
           message: "Houve um erro ao buscar o cep informado",

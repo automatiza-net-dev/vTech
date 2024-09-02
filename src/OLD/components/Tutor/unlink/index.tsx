@@ -15,8 +15,6 @@ interface IUnlinkProps {
 
 export function Unlink({ patientId, tutorId, customSubmit }: IUnlinkProps) {
   const [loading, setLoading] = useState(false);
-  console.log(patientId);
-  console.log(tutorId);
 
   async function unlinkTutorPet() {
     try {
@@ -28,7 +26,6 @@ export function Unlink({ patientId, tutorId, customSubmit }: IUnlinkProps) {
       customSubmit && customSubmit();
       setLoading(false);
     } catch (e: any) {
-      console.log(e?.message);
       setLoading(false);
     }
   }
