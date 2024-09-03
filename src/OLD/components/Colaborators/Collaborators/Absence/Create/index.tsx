@@ -1,13 +1,6 @@
 // @ts-nocheck
-import {
-  Form,
-  Modal,
-  notification,
-  Select,
-  Checkbox,
-  DatePicker,
-  Space,
-} from "antd";
+import { Form, Modal, Select, Checkbox, DatePicker, Space } from "antd";
+import { useToast } from "infinity-forge";
 import { Button } from "@/OLD/components/mini-components";
 import { useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
@@ -28,8 +21,8 @@ export const Create = memo(() => {
 
   const schema = yup
     .object({
-      startHour: yup.string().required("Compo obrigatório!"),
-      endHour: yup.string().required("Compo obrigatório!"),
+      // startHour: yup.string().required("Compo obrigatório!"),
+      // endHour: yup.string().required("Compo obrigatório!"),
       // startDate: yup.string().required("Compo obrigatório!"),
       // endDate: yup.string().required("Compo obrigatório!"),
     })
@@ -45,22 +38,22 @@ export const Create = memo(() => {
 
   const [isVisible, setIsVisible] = useState(false);
   const { Option } = Select;
+  const { createToast } = useToast();
   const [payload, setPayload] = useState({
     userId: router.query.id,
   });
   const { mutate, loading } = useMutation(
     (data) => calendarService.createAbsence({ ...data, ...payload }),
     {
-      onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao cadastrar indisponibilidade",
-        });
+      onError: (error) => {
+        error?.response?.data?.errors?.forEach((err) =>
+          createToast({ message: err?.message, status: "error" })
+        );
       },
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Sucesso ao cadastrar indisponibilidade",
+        createToast({
+          message: "Sucesso ao cadastrar indisponibilidade",
+          status: "success",
         });
         setIsVisible(false);
         queryClient.invalidateQueries("getAbsences");
@@ -79,10 +72,7 @@ export const Create = memo(() => {
       }
 
       if (frequency.length === 0) {
-        notification.error({
-          message: "Frequência",
-          description: "Marque pelo menos um dia para",
-        });
+        createToast({ message: "Marque pelo menos um dia", status: "error" });
       } else {
         mutate({ ...payload, frequency });
       }
