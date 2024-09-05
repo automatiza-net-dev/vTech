@@ -49,18 +49,18 @@ export function TablesSection() {
               <TableDashboard key={item?.name} {...item} />
             ))}
 
-          {IndicatorTableData && (
-            <IndicatorTable
-              indicator={dashboard.data.tables.find(
-                (item) => item.name === "budgetsAvaliadorConsolidado"
-              )}
-            />
-          )}
-
           {BillsReviewerTableData && (
             <IndicatorTable
               indicator={dashboard.data.tables.find(
                 (item) => item.name === "billsReviewer"
+              )}
+            />
+          )}
+
+          {IndicatorTableData && (
+            <IndicatorTable
+              indicator={dashboard.data.tables.find(
+                (item) => item.name === "budgetsAvaliadorConsolidado"
               )}
             />
           )}
