@@ -37,7 +37,7 @@ export default function Print({
             <PrintHeader unit={clinic} />
           </div>
           {process.env.client !== "liftone" && patient && (
-            <PatientHeader patient={patient} tutor={tutor} />
+            <PatientHeader patient={patient} tutor={patient.tutor} />
           )}
           {title && (
             <div className="uk-text-center uk-margin-top">
