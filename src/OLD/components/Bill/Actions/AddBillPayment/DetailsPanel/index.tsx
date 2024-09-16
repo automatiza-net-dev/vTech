@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 
 // Utils
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -8,8 +8,8 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 // Components
 import { Container } from "./styles";
-import { Input, notification } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
+import { Input, Modal, notification } from "antd";
 
 const DetailsPanel = memo(function DetailsPanel({
   formData,
@@ -17,6 +17,7 @@ const DetailsPanel = memo(function DetailsPanel({
   submit,
   bill,
 }) {
+  const [confirmModal, setConfirmModal] = useState(false);
   let totalPayed = 0;
 
   for (let i = 0; i < bill?.payments?.length; i += 1) {
@@ -42,6 +43,15 @@ const DetailsPanel = memo(function DetailsPanel({
 
     return submit();
   };
+
+  const someRequiresConfirmation = Array.from(
+    Array(formData?.maxInstallments)
+  ).some((_, i) => {
+    const requiresConfirmation =
+      i + 1 > formData?.installments_without_password;
+
+    return requiresConfirmation;
+  });
 
   return (
     <Container className="uk-width-1-4 uk-margin-left uk-text-center uk-box-shadow-small uk-padding-small">
@@ -86,33 +96,54 @@ const DetailsPanel = memo(function DetailsPanel({
               <label>Escolha a quantidade de parcelas</label>
               <br />
               <div className="uk-flex uk-flex-center uk-margin-small-top uk-flex-wrap">
-                {Array.from(Array(formData?.maxInstallments)).map((_, i) => (
-                  <div
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        installments: i + 1,
-                        paymentMethodFlagInstallmentId:
-                          formData?.installmentsList?.find(
-                            (installment) => installment?.installment === i + 1
-                          ).id,
-                      });
-                    }}
-                    key={i}
-                    className={`uk-margin-right uk-margin-small-top uk-box-shadow-small installment-button  ${
-                      formData?.installments === i + 1 &&
-                      "selected-installments"
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
-                ))}
+                {Array.from(Array(formData?.maxInstallments)).map((_, i) => {
+                  const requiresConfirmation =
+                    i + 1 > formData?.installments_without_password;
+
+                  const handleClick = () => {
+                    setFormData({
+                      ...formData,
+                      installments: i + 1,
+                      paymentMethodFlagInstallmentId:
+                        formData?.installmentsList?.find(
+                          (installment) => installment?.installment === i + 1
+                        ).id,
+                    });
+                  };
+
+                  return (
+                    <div
+                      style={{
+                        background: requiresConfirmation ? "#EFEC63" : "",
+                      }}
+                      onClick={handleClick}
+                      key={i}
+                      className={`uk-margin-right uk-margin-small-top uk-box-shadow-small installment-button ${
+                        formData?.installments === i + 1
+                          ? "selected-installments"
+                          : ""
+                      } `}
+                    >
+                      {i + 1}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </>
         )}
         <footer className="uk-margin-top">
-          <CustomButton type="submit">Confirmar</CustomButton>
+          <Button type="submit" text="Confirmar" />
+
+          {someRequiresConfirmation && (
+            <p
+              style={{ marginTop: 5, textAlign: "start" }}
+              className="font-14-regular"
+            >
+              Parcelas marcadas em <strong>amarelo</strong> precisarão de
+              autorização do supervisor para finalização da venda
+            </p>
+          )}
         </footer>
       </form>
     </Container>

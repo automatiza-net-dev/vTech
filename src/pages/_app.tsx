@@ -22,6 +22,7 @@ import {
   ButtonInfinityForge,
   InfinityForgeInjections,
   SchedulingContextProvider,
+  LoaderOnRouteChange,
 } from "@/presentation";
 import { RemoteLoadUserDashboard } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -82,6 +83,7 @@ export default function App({ Component, pageProps }) {
               },
             },
           }}
+          loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
           InjectedRemotes={InfinityForgeInjections}
           Configurations={{
             chat: false,

@@ -21,7 +21,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
-import { notification } from "antd";
+import { Modal, notification } from "antd";
 import CardPanel from "./CardPanel";
 import { Container } from "./styles";
 import NonTefPanel from "./NonTefPanel";
@@ -30,8 +30,9 @@ import DetailsPanel from "./DetailsPanel";
 import { PaymentsPreviewComponent } from "@/presentation";
 import RemoveBillPayment from "./RemoveBillPayment";
 import ProductsPanel from "../Details/ProductsPanel";
-import { Select, FormHandler, useToast } from "infinity-forge";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Select, FormHandler, useToast, BadRequestError } from "infinity-forge";
+import { Button } from "infinity-forge";
+import { AxiosError } from "axios";
 
 const verifyErrors = (msg) => {
   if (
@@ -55,6 +56,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     to: moment(new Date()).endOf("day"),
     status: "ABERTO",
   });
+
   const [debitMethods, setDebitMethods] = useState([]);
   const [creditMethods, setCreditMethods] = useState([]);
   const [nonTefMethods, setNonTefMethods] = useState([]);
@@ -145,7 +147,6 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       })
       .catch((err) => {
         error = true;
-        console.log(err);
 
         notification.error({
           message:
@@ -233,38 +234,49 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       });
     }
 
-    mutate(
-      {
-        budgetPaymentId: formData?.budgetPaymentId,
-        installments: formData?.installments,
-        installmentsValue: convertIntlCurrency(formData?.installmentsValue),
-        billId,
-        expirationDate: formData.expirationDate,
-        paymentMethodId: formData.paymentMethodId,
-        acquirerId: formData?.acquirerId,
-        flagId: formData?.flagId,
-        nsuDocument: formData?.nsuDocument,
-        paymentMethodFlagInstallmentId:
-          formData?.paymentMethodFlagInstallmentId,
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["bills"]);
-          queryClient.invalidateQueries(["paymentsPreview"]);
-          setFormData({
-            expirationDate: moment(),
-          });
-          return notification.success({
-            message: "Pagamento adicionado com sucesso!",
-          });
-        },
-        onError: (err) => {
-          verifyErrors(err.response.data.message);
+    const paylaod = {
+      budgetPaymentId: formData?.budgetPaymentId,
+      installments: formData?.installments,
+      installmentsValue: convertIntlCurrency(formData?.installmentsValue),
+      billId,
+      expirationDate: formData.expirationDate,
+      paymentMethodId: formData.paymentMethodId,
+      acquirerId: formData?.acquirerId,
+      installments_without_password: formData?.installments_without_password,
+      flagId: formData?.flagId,
+      paymentMethodFlagId: formData?.paymentMethodFlagId,
+      nsuDocument: formData?.nsuDocument,
+      paymentMethodFlagInstallmentId: formData?.paymentMethodFlagInstallmentId,
+    };
 
-          queryClient.invalidateQueries(["bills"]);
-        },
-      }
-    );
+    mutate(paylaod, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bills"]);
+        queryClient.invalidateQueries(["paymentsPreview"]);
+        setFormData({
+          expirationDate: moment(),
+        });
+        return notification.success({
+          message: "Pagamento adicionado com sucesso!",
+        });
+      },
+      onError: (err) => {
+        if (err instanceof AxiosError) {
+          if (window.confirm(err.response.data.message)) {
+            mutate({ ...paylaod, maxParcelas: true });
+            setFormData({
+              expirationDate: moment(),
+            });
+          }
+
+          return;
+        }
+
+        verifyErrors(err.response.data.message);
+
+        queryClient.invalidateQueries(["bills"]);
+      },
+    });
   }, [formData, billId]);
 
   return (
@@ -382,16 +394,10 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
             />
           ))}
         <footer className="uk-margin-top uk-flex uk-flex-right">
-          <CustomButton
-            onClick={() => setVisible(false)}
-            classCallback="uk-margin-right"
-          >
-            Salvar
-          </CustomButton>
+          <Button onClick={() => setVisible(false)} text="Salvar" />
+
           {endBillPermission && (
-            <CustomButton onClick={() => verifyPayment()}>
-              Finalizar
-            </CustomButton>
+            <Button onClick={() => verifyPayment()} text="Finalizar" />
           )}
         </footer>
       </div>

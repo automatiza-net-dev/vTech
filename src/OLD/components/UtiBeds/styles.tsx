@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const Container = styled.div``
+export const Container = styled.div``;
 
 export const Input = styled.div`
   display: flex;
@@ -11,6 +11,8 @@ export const Input = styled.div`
   border-radius: 40px;
   padding: 0 20px;
   margin: 10px;
+  border: 0.5px solid #cacaca;
+  width: 25%;
 
   input {
     margin-left: 10px;
@@ -19,6 +21,5 @@ export const Input = styled.div`
     height: 30px;
     margin-right: 2px;
     border-radius: 5px;
-    border: solid 1px #E1E1E1;
   }
 `;

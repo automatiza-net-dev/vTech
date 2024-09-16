@@ -1,13 +1,19 @@
-import {  Variation, Patient, Product } from "@/domain";
+import { Patient, Payment, Product } from "@/domain";
 
 export type Budget = {
   id: string;
   tag: string;
-  status: "CONFIRMADO" | "ABERTO" | "NAO_CONFIRMADO__CANCELADO";
+  budget_date?: string;
+  status:
+    | "CONFIRMADO"
+    | "ABERTO"
+    | "NAO_CONFIRMADO__CANCELADO"
+    | "Nao Aprovada";
   client: {
     id: string;
     name: string;
   };
+  payments: Payment[];
   total_value: number;
   expiration_date: string;
   internalObservation: string;
@@ -16,22 +22,10 @@ export type Budget = {
   reviewer: {
     id: string;
     name: string;
-  },
+  };
   seller: {
     id: string;
     name: string;
-  }
-  items: {
-    saleValue?: number;
-    sale_value?: number;
-    courtesy?: boolean;
-    unitaryValue?: number;
-    unitary_value?: number;
-    discount_value: number;
-    id: string;
-    total_value: number;
-    quantity: number;
-    max_discount: boolean;
-    productVariation?: Variation
-  }[];
+  };
+  items: Product[];
 };

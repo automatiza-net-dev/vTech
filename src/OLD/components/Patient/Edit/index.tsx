@@ -2,7 +2,7 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
 
 import { Form, notification } from "antd";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { LoadingSpin } from "@/OLD/components/mini-components";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { petsService } from "@/OLD/services/patient.service";
@@ -205,11 +205,13 @@ export function Edit({ id, setVisible }) {
         />
         <hr />
         <div className="uk-flex uk-flex-between uk-width-1-5">
-          <Button type="button" onClick={() => setVisible(false)}>
-            {" "}
-            Voltar{" "}
-          </Button>
-          <Button type="submit">{loading ? <LoadingSpin /> : "Salvar"}</Button>
+          <Button
+            type="button"
+            onClick={() => setVisible(false)}
+            text="Voltar"
+          />
+
+          <Button type="submit" text={loading ? "Carregando..." : "Salvar"} />
         </div>
       </Form>
     </Container>

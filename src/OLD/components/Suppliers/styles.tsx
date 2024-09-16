@@ -13,7 +13,7 @@ export const InputBox = styled.div`
   input,
   .date-component,
   .select-component {
-    border: none;
     width: 100%;
+    border-radius: 5px;
   }
 `;

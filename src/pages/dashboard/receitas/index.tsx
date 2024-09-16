@@ -6,12 +6,11 @@ import styled from "styled-components";
 import { Table, Tag, notification, Popconfirm } from "antd";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 
-import { SearchIcon } from "@/OLD/common/icons";
+import { Button, PageWrapper } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { recipeServices } from "@/OLD/services/recipes.service";
 import { useMedicalRecipes } from "@/OLD/hooks/useMedicalRecipes";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { LayoutDashboard } from "@/presentation";
 
@@ -52,97 +51,98 @@ export default function MedicalRecipesListPage() {
       listMedicalRecipesPermission === "loading" ? (
         <AccessDenied loading={listMedicalRecipesPermission} />
       ) : (
-        <div className="uk-container uk-padding">
-          <h3 className="uk-margin-remove">Receitas médicas</h3>
-          <div className="uk-flex uk-flex-around uk-margin-top">
-            <InputBox>
-              <input
-                type="search"
-                placeholder="Busque por título"
-                onChange={(e) =>
-                  setFilters({ ...filters, title: e.target.value })
-                }
+        <PageWrapper title="Receitas médicas">
+          <div>
+            <div className="uk-flex uk-flex-around uk-margin-top">
+              <InputBox>
+                <input
+                  type="search"
+                  placeholder="Busque por título"
+                  onChange={(e) =>
+                    setFilters({ ...filters, title: e.target.value })
+                  }
+                />
+  
+              </InputBox>
+              <InputBox>
+                <input
+                  type="search"
+                  placeholder="Busque por descrição"
+                  onChange={(e) =>
+                    setFilters({ ...filters, description: e.target.value })
+                  }
+                />
+
+              </InputBox>
+              <Button
+                disabled={!canCreateMedicalRecipe}
+                onClick={() => router.push("/dashboard/receitas/cadastrar")}
+                text="Cadastrar"
               />
-              <SearchIcon />
-            </InputBox>
-            <InputBox>
-              <input
-                type="search"
-                placeholder="Busque por descrição"
-                onChange={(e) =>
-                  setFilters({ ...filters, description: e.target.value })
-                }
-              />
-              <SearchIcon />
-            </InputBox>
-            <CustomButton
-              disabled={!canCreateMedicalRecipe}
-              className="uk-button uk-button-primary"
-              onClick={() => router.push("/dashboard/receitas/cadastrar")}
-            >
-              Cadastrar
-            </CustomButton>
-          </div>
-          <hr />
-          <Table
-            onRow={(record) => {
-              return {};
-            }}
-            className="uk-margin-top"
-            columns={[
-              {
-                title: "Ativo",
-                dataIndex: "active",
-                key: "active",
-                render: (status) => (
-                  <Tag color={status ? "green" : "red"}>
-                    {status ? "Ativo" : "Inativo"}
-                  </Tag>
-                ),
-              },
-              {
-                title: "Título",
-                key: "title",
-                dataIndex: "title",
-              },
-              {
-                title: "Descrição",
-                key: "description",
-                dataIndex: "description",
-              },
-              {
-                title: "Ações",
-                render: (record) => (
-                  <div className="uk-flex uk-flex-around">
-                    {canEditMedicalRecipe && (
-                      <EditTwoTone
-                        onClick={() => {
-                          router.push(`/dashboard/receitas/editar/${record.id}`);
-                        }}
-                      />
-                    )}
-                    <Popconfirm
-                      title="Deseja remover este modelo de receita?"
-                      onConfirm={() => removeMedicalRecipe(record?.id)}
-                      okText="Sim"
-                      cancelText="Não"
-                      placement="left"
-                    >
-                      {canDeleteMedicalRecipe && (
-                        <DeleteTwoTone
-                          className="uk-link"
-                          twoToneColor={"red"}
+            </div>
+            <hr />
+            <Table
+              onRow={(record) => {
+                return {};
+              }}
+              className="uk-margin-top"
+              columns={[
+                {
+                  title: "Ativo",
+                  dataIndex: "active",
+                  key: "active",
+                  render: (status) => (
+                    <Tag color={status ? "green" : "red"}>
+                      {status ? "Ativo" : "Inativo"}
+                    </Tag>
+                  ),
+                },
+                {
+                  title: "Título",
+                  key: "title",
+                  dataIndex: "title",
+                },
+                {
+                  title: "Descrição",
+                  key: "description",
+                  dataIndex: "description",
+                },
+                {
+                  title: "Ações",
+                  render: (record) => (
+                    <div className="uk-flex uk-flex-around">
+                      {canEditMedicalRecipe && (
+                        <EditTwoTone
+                          onClick={() => {
+                            router.push(
+                              `/dashboard/receitas/editar/${record.id}`
+                            );
+                          }}
                         />
                       )}
-                    </Popconfirm>
-                  </div>
-                ),
-              },
-            ]}
-            dataSource={documents}
-            loading={loadingDocuments}
-          />
-        </div>
+                      <Popconfirm
+                        title="Deseja remover este modelo de receita?"
+                        onConfirm={() => removeMedicalRecipe(record?.id)}
+                        okText="Sim"
+                        cancelText="Não"
+                        placement="left"
+                      >
+                        {canDeleteMedicalRecipe && (
+                          <DeleteTwoTone
+                            className="uk-link"
+                            twoToneColor={"red"}
+                          />
+                        )}
+                      </Popconfirm>
+                    </div>
+                  ),
+                },
+              ]}
+              dataSource={documents}
+              loading={loadingDocuments}
+            />
+          </div>
+        </PageWrapper>
       )}
     </LayoutDashboard>
   );
@@ -157,6 +157,7 @@ export const InputBox = styled.div`
   border-radius: 40px;
   padding: 0 20px;
   margin: 2px;
+  border: 0.5px solid #cacaca;
 
   input {
     margin-left: 10px;

@@ -9,23 +9,29 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 const Filters = memo(function Filters({ filters, setFilters }) {
   return (
     <section className="uk-margin-top">
-      <section className="uk-flex">
-        <InputBox className="uk-width-1-4 uk-margin-right">
-          <Input
-            placeholder="Razão social / Nome fantasia"
-            onChange={(e) =>
-              setFilters({ ...filters, name: normalizeStr(e.target.value) })
-            }
-          />
-        </InputBox>
-        <InputBox className="uk-width-1-4">
-          <Input
-            placeholder="CNPJ"
-            onChange={(e) =>
-              setFilters({ ...filters, document: e.target.value })
-            }
-          />
-        </InputBox>
+      <section style={{ display: "flex", width: "100%" }}>
+        <div style={{ width: "25%" }}>
+          <label>Razão social / Nome Fantasia</label>
+          <InputBox>
+            <Input
+              placeholder="Razão social / Nome fantasia"
+              onChange={(e) =>
+                setFilters({ ...filters, name: normalizeStr(e.target.value) })
+              }
+            />
+          </InputBox>
+        </div>
+        <div style={{ width: "25%" }}>
+          <label>Cnpj</label>
+          <InputBox>
+            <Input
+              placeholder="CNPJ"
+              onChange={(e) =>
+                setFilters({ ...filters, document: e.target.value })
+              }
+            />
+          </InputBox>
+        </div>
       </section>
     </section>
   );

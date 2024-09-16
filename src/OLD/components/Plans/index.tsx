@@ -9,7 +9,7 @@ import { plansColumns } from "./Columns/Plans";
 import { planService } from "@/OLD/services/plan.service";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Table, Modal, notification } from "antd";
 import FormChild from "./FormChild";
 import Filters from "./Filters";
@@ -131,42 +131,42 @@ const Plans = memo(function Plans() {
     listAccountPlansPermission === "loading" ? (
     <AccessDenied loading={listAccountPlansPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Plano de contas</h3>
-      <section className="uk-flex uk-flex-middle uk-flex-between">
-        <Filters
-          filters={filters}
-          setFilters={setFilters}
-          plansGroup={plansGroup}
-        />
-        <div>
-          <CustomButton
-            onClick={() => setCreateVisible(true)}
-            disabled={!canCreateAccountPlans}
-          >
-            Cadastrar
-          </CustomButton>
-        </div>
-      </section>
-      <hr />
-      <Table columns={plansColumns} dataSource={formatedPlans} />
-      <Modal
-        visible={createVisible}
-        title="Criar plano de contas"
-        onCancel={() => setCreateVisible(false)}
-        footer={null}
-      >
-        <FormChild
-          data={data}
-          setData={setData}
-          submit={submitCreatePlan}
-          setVisible={setCreateVisible}
-          plansGroup={plansGroup}
-          setGroupFilters={setGroupFilters}
-          groupFilters={groupFilters}
-        />
-      </Modal>
-    </Container>
+    <PageWrapper title="Plano de contas">
+      <Container>
+        <section className="uk-flex uk-flex-middle uk-flex-between">
+          <Filters
+            filters={filters}
+            setFilters={setFilters}
+            plansGroup={plansGroup}
+          />
+          <div>
+            <Button
+              onClick={() => setCreateVisible(true)}
+              disabled={!canCreateAccountPlans}
+              text="Cadastrar"
+            />
+          </div>
+        </section>
+        <hr />
+        <Table columns={plansColumns} dataSource={formatedPlans} />
+        <Modal
+          visible={createVisible}
+          title="Criar plano de contas"
+          onCancel={() => setCreateVisible(false)}
+          footer={null}
+        >
+          <FormChild
+            data={data}
+            setData={setData}
+            submit={submitCreatePlan}
+            setVisible={setCreateVisible}
+            plansGroup={plansGroup}
+            setGroupFilters={setGroupFilters}
+            groupFilters={groupFilters}
+          />
+        </Modal>
+      </Container>
+    </PageWrapper>
   );
 });
 

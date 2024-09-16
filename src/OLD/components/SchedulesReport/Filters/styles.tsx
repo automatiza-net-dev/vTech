@@ -7,6 +7,7 @@ export const InputBox = styled.div`
   display: flex;
   height: 40px;
   padding: 0 20px;
+  border: 0.5px solid #cacaca;
 
   input,
   .date-component,

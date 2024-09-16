@@ -16,7 +16,7 @@ export function SchedulesCarousel({
   const { Carousel, Next, Prev } = useCarousel<Event>({
     items: event,
     Component: ScheduleCard,
-    id: "ScheduleDashboard",
+    id: confirmed ? "ConfirmedScheduleDashboard" : "ScheduleDashboard",
     config: {
       slidesPerView: 5,
       loop: false,
@@ -26,13 +26,13 @@ export function SchedulesCarousel({
           slidesPerView: 4,
         },
         1200: {
-          slidesPerView: 3,
+          slidesPerView: 4,
         },
         1024: {
-          slidesPerView: 2,
+          slidesPerView: 3,
         },
         768: {
-          slidesPerView: 1,
+          slidesPerView: 2,
         },
       },
     },
@@ -49,16 +49,16 @@ export function SchedulesCarousel({
           {confirmed ? "Consultas a confirmar" : "Consultas já confirmadas"}
         </h3>
 
-          <Carousel />
+        <Carousel />
 
-          <div className="navigation">
-            <Prev>
-              <Icon name="NavLeftIcon" />
-            </Prev>
+        <div className="navigation">
+          <Prev>
+            <Icon name="NavLeftIcon" />
+          </Prev>
 
-            <Next>
-              <Icon name="NavRightIcon" />
-            </Next>
+          <Next>
+            <Icon name="NavRightIcon" />
+          </Next>
         </div>
       </S.SchedulesCarousel>
     </Error>

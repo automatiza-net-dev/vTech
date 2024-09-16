@@ -9,7 +9,7 @@ import { usePlans } from "@/OLD/hooks/usePlans";
 import { financesService } from "@/OLD/services/finances.service";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { notification } from "antd";
 import Edit from "../Actions/Edit";
 
@@ -112,7 +112,7 @@ const Details = memo(function Details() {
       <h3 className="uk-margin-remove">Detalhes do título</h3>
       <hr />
       <div className="uk-flex uk-flex-right">
-        <CustomButton onClick={() => setEdit(true)}>Editar</CustomButton>
+        <Button onClick={() => setEdit(true)} text="Editar" />
       </div>
       <section className="body-page uk-padding uk-margin-top">
         <Edit
@@ -126,9 +126,7 @@ const Details = memo(function Details() {
           setEdit={setEdit}
         />
       </section>
-      <CustomButton classCallback="uk-margin-top" onClick={() => router.back()}>
-        Voltar
-      </CustomButton>
+      <Button onClick={() => router.back()} text="Voltar" />
     </Container>
   );
 });

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 // Components
 import { Container } from "./styles";
 import { notification } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 // Services
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -47,26 +47,22 @@ export function AccessData() {
         <div>
           <h2>Colaborador: {data?.name}</h2>
         </div>
-        <div className="uk-flex">
+        <div style={{ display: "flex", gap: "10px" }}>
           <div>
-            <CustomButton
-              classCallback="uk-margin-small-right"
+            <Button
               onClick={() => router.back()}
-            >
-              Voltar
-            </CustomButton>
+              text="Voltar"
+            />
           </div>
           <div>
-            <CustomButton
+            <Button
               onClick={() =>
                 router.push(
                   `/dashboard/colaborador/editar-colaborador/${data?.id}`
                 )
               }
-            >
-              {" "}
-              Editar colaborador{" "}
-            </CustomButton>
+              text="Editar Colaborador"
+            />
           </div>
         </div>
       </div>
@@ -109,6 +105,6 @@ export function AccessData() {
       </Container>
     </>
   );
-};
+}
 
 export default AccessData;

@@ -3,9 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
+import { Button } from "infinity-forge";
 import { LayoutDashboard } from "@/presentation";
 import { useSingleClinic } from "@/OLD/hooks/useClinics";
-import { Button } from "@/OLD/components/mini-components/Button";
 
 export default function DetailClinic() {
   return <Page />;
@@ -25,10 +25,10 @@ function Page() {
             <h2>{clinic?.fantasyName}</h2>
             <div className="uk-flex uk-flex-left" style={{ gap: "10px" }}>
               <Link href={"/dashboard/clinicas"}>
-                <Button theme="secondary">Voltar</Button>
+                <Button text="Voltar" />
               </Link>
               <Link href={`/dashboard/clinicas/editar-clinica/${clinic?.id}`}>
-                <Button>Editar clinica</Button>
+                <Button text="Editar Clinica" />
               </Link>
             </div>
           </div>

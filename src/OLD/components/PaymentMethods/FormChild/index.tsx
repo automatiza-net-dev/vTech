@@ -21,7 +21,7 @@ import {
 const { Option } = Select;
 import FlagsTable from "./FlagsTable";
 
-const FormChild = memo(function FormChild({
+function FormChild({
   submit,
   data,
   setData,
@@ -271,6 +271,6 @@ const FormChild = memo(function FormChild({
       </Modal>
     </Container>
   );
-});
+};
 
 export default FormChild;

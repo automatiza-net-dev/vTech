@@ -12,11 +12,12 @@ import { Select, Button } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import PrintTable from "./PrintScreen";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { PageWrapper } from "infinity-forge";
 
 import ReactToPrint from "react-to-print";
 import * as XLSX from "xlsx/xlsx.mjs";
 
-const ProductsServicesRank = memo(function ProductsServicesRank() {
+function ProductsServicesRank() {
   const [filters, setFilters] = useState({});
   const [reload, setReload] = useState(false);
   const [cities, setCities] = useState([]);
@@ -60,58 +61,58 @@ const ProductsServicesRank = memo(function ProductsServicesRank() {
     listProductsRankingReportPermission === "loading" ? (
     <AccessDenied loading={listProductsRankingReportPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Ranking de produtos / serviços</h3>
-      <section className="uk-margin-small-top uk-flex uk-flex-around">
-        <InputBox className="uk-width-1-3">
-          <label>Período de venda:</label>
-          <DatePicker
-            value={filters?.fromDate}
-            onChange={(val) => setFilters({ ...filters, fromDate: val })}
-            slotProps={{ textField: { variant: "standard" } }}
-          />{" "}
-          à{" "}
-          <DatePicker
-            slotProps={{ textField: { variant: "standard" } }}
-            value={filters?.toDate}
-            onChange={(val) => setFilters({ ...filters, toDate: val })}
-          />
-        </InputBox>
-        <InputBox className="uk-width-1-4">
-          <label>Status: </label>
-          <Select
-            className="uk-width-1-1"
-            value={filters?.status}
-            onChange={(val) => {
-              if (val === "all") {
-                const newObj = { ...filters };
-                delete newObj?.status;
-                return setFilters(newObj);
-              }
-              setFilters({ ...filters, status: val });
-            }}
-          >
-            <Option value="all">Todas</Option>
-            <Option value="ABERTAS">Abertas</Option>
-            <Option value="BAIXADAS">Baixadas</Option>
-          </Select>
-        </InputBox>
-        <InputBox className="uk-width-1-5">
-          <label>Unidade:</label>
-          <Select
-            mode="multiple"
-            className="uk-width-1-1"
-            value={filters?.businessUnits}
-            onChange={(val) => setFilters({ ...filters, businessUnits: val })}
-          >
-            {businessUnits?.map((unit) => (
-              <Option value={unit?.id}>{unit?.identification}</Option>
-            ))}
-          </Select>
-        </InputBox>
-      </section>
-      <section className="uk-margin-small-top uk-flex uk-flex-around">
-        {/*
+    <PageWrapper title="Ranking de Produtos/Serviços">
+      <Container>
+        <section className="uk-margin-small-top uk-flex uk-flex-around">
+          <InputBox className="uk-width-1-3">
+            <label>Período de venda:</label>
+            <DatePicker
+              value={filters?.fromDate}
+              onChange={(val) => setFilters({ ...filters, fromDate: val })}
+              slotProps={{ textField: { variant: "standard" } }}
+            />{" "}
+            à{" "}
+            <DatePicker
+              slotProps={{ textField: { variant: "standard" } }}
+              value={filters?.toDate}
+              onChange={(val) => setFilters({ ...filters, toDate: val })}
+            />
+          </InputBox>
+          <InputBox className="uk-width-1-4">
+            <label>Status: </label>
+            <Select
+              className="uk-width-1-1"
+              value={filters?.status}
+              onChange={(val) => {
+                if (val === "all") {
+                  const newObj = { ...filters };
+                  delete newObj?.status;
+                  return setFilters(newObj);
+                }
+                setFilters({ ...filters, status: val });
+              }}
+            >
+              <Option value="all">Todas</Option>
+              <Option value="ABERTAS">Abertas</Option>
+              <Option value="BAIXADAS">Baixadas</Option>
+            </Select>
+          </InputBox>
+          <InputBox className="uk-width-1-5">
+            <label>Unidade:</label>
+            <Select
+              mode="multiple"
+              className="uk-width-1-1"
+              value={filters?.businessUnits}
+              onChange={(val) => setFilters({ ...filters, businessUnits: val })}
+            >
+              {businessUnits?.map((unit) => (
+                <Option value={unit?.id}>{unit?.identification}</Option>
+              ))}
+            </Select>
+          </InputBox>
+        </section>
+        <section className="uk-margin-small-top uk-flex uk-flex-around">
+          {/*
         <InputBox className="uk-width-1-5">
           <label>Grupo de negócios</label>
           <Select
@@ -152,57 +153,58 @@ const ProductsServicesRank = memo(function ProductsServicesRank() {
           </Select>
         </InputBox>
             */}
-        <InputBox className="uk-width-1-5">
-          <label>Tipo</label>
-          <Select
-            className="uk-width-1-1"
-            value={filters?.type}
-            onChange={(val) => {
-              if (val === "all") {
-                const newObj = { ...filters };
-                delete newObj?.type;
-                return setFilters(newObj);
-              }
-              setFilters({ ...filters, type: val });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="Produto">Produto</Option>
-            <Option value="Servico">Serviço</Option>
-          </Select>
-        </InputBox>
-      </section>
-      <hr className="" />
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <PrintTable data={reports} loading={loadingReports} />
-        </div>
-      </div>
-      <div className="uk-flex-around uk-flex">
-        <ReactToPrint
-          trigger={() => (
-            <Button
-              className=""
-              onMouseOver={() => {
-                setReload((prv) => !prv);
+          <InputBox className="uk-width-1-5">
+            <label>Tipo</label>
+            <Select
+              className="uk-width-1-1"
+              value={filters?.type}
+              onChange={(val) => {
+                if (val === "all") {
+                  const newObj = { ...filters };
+                  delete newObj?.type;
+                  return setFilters(newObj);
+                }
+                setFilters({ ...filters, type: val });
               }}
             >
-              Imprimir
-            </Button>
-          )}
-          content={() => componentRef.current}
-        />
-        <Button
-          onClick={handleExport}
-          onMouseOver={() => {
-            setReload((prv) => !prv);
-          }}
-        >
-          Exportar (Excel)
-        </Button>
-      </div>
-    </Container>
+              <Option value="all">Todos</Option>
+              <Option value="Produto">Produto</Option>
+              <Option value="Servico">Serviço</Option>
+            </Select>
+          </InputBox>
+        </section>
+        <hr className="" />
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintTable data={reports} loading={loadingReports} />
+          </div>
+        </div>
+        <div className="uk-flex-around uk-flex">
+          <ReactToPrint
+            trigger={() => (
+              <Button
+                className=""
+                onMouseOver={() => {
+                  setReload((prv) => !prv);
+                }}
+              >
+                Imprimir
+              </Button>
+            )}
+            content={() => componentRef.current}
+          />
+          <Button
+            onClick={handleExport}
+            onMouseOver={() => {
+              setReload((prv) => !prv);
+            }}
+          >
+            Exportar (Excel)
+          </Button>
+        </div>
+      </Container>
+    </PageWrapper>
   );
-});
+}
 
 export default ProductsServicesRank;

@@ -1,13 +1,14 @@
 // @ts-nocheck
-import { Button, LoadingSkeleton } from "@/OLD/components/mini-components";
+import { LoadingSkeleton } from "@/OLD/components/mini-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { memo, useCallback, useEffect, useState } from "react";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { convertDate } from "@/OLD/utils/convertDate";
+import { Button, PageWrapper } from "infinity-forge";
 import { Edit } from "../Edit";
 
-export const Single = memo(() => {
+export const Single = () => {
   const router = useRouter();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -51,57 +52,63 @@ export const Single = memo(() => {
   return loading ? (
     <LoadingSkeleton />
   ) : (
-    <div>
-      <div className="uk-flex uk-flex-between uk-margin-bottom">
-        <h3 className="uk-margin-remove">Categorias de agendamento</h3>
-        <Link href="/dashboard/categorias-agendamento">
-          <Button>Voltar</Button>
-        </Link>
-      </div>
-      <div
-        className="uk-card uk-card-body uk-margin-bottom"
-        style={{ background: "#fff", borderRadius: "20px", marginTop: "50px" }}
-      >
-        <>
-          <div className="uk-flex uk-flex-between uk-margin-bottom">
-            <h3 className="uk-heading-line uk-margin-remove">
-              <span>Dados</span>
-            </h3>
-            <Edit reload={reload} setReload={setReload} />
-          </div>
+    <PageWrapper title="Categoria de agendamento">
+      <div>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Link href="/dashboard/categorias-agendamento">
+            <Button text="Voltar" />
+          </Link>
+        </div>
+        <div
+          className="uk-card uk-card-body uk-margin-bottom"
+          style={{
+            background: "#fff",
+            borderRadius: "20px",
+            marginTop: "50px",
+            border: "0.5px solid #cacaca",
+          }}
+        >
+          <>
+            <div className="uk-flex uk-flex-between uk-margin-bottom">
+              <h3 className="uk-heading-line uk-margin-remove">
+                <span>Dados</span>
+              </h3>
+              <Edit reload={reload} setReload={setReload} />
+            </div>
 
-          <div className="uk-flex ">
-            <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
-              <span>
-                Tipo de agendamento:
-                {` ${data?.description}`}
-              </span>
-              <span>
-                Criado em:
-                {` ${convertDate(data?.created_at)}`}
-              </span>
-              <span>
-                Status:
-                {data?.active ? " Ativo" : " Inativo"}
-              </span>
+            <div className="uk-flex ">
+              <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
+                <span>
+                  Tipo de agendamento:
+                  {` ${data?.description}`}
+                </span>
+                <span>
+                  Criado em:
+                  {` ${convertDate(data?.created_at)}`}
+                </span>
+                <span>
+                  Status:
+                  {data?.active ? " Ativo" : " Inativo"}
+                </span>
+              </div>
+              <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
+                <span>
+                  Tipo de serviço:
+                  {` ${serviceType?.description}`}
+                </span>
+                <span>
+                  Criado em:
+                  {` ${convertDate(serviceType?.created_at)}`}
+                </span>
+                <span>
+                  Status:
+                  {serviceType?.active ? " Ativo" : " Inativo"}
+                </span>
+              </div>
             </div>
-            <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
-              <span>
-                Tipo de serviço:
-                {` ${serviceType?.description}`}
-              </span>
-              <span>
-                Criado em:
-                {` ${convertDate(serviceType?.created_at)}`}
-              </span>
-              <span>
-                Status:
-                {serviceType?.active ? " Ativo" : " Inativo"}
-              </span>
-            </div>
-          </div>
-        </>
+          </>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
-});
+};

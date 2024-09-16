@@ -9,6 +9,7 @@ import PrintTable from "./PrintTable";
 import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useDictionary } from "@/presentation";
+import { PageWrapper } from "infinity-forge";
 
 const BudgetReport = memo(function BudgetReport() {
   const [filters, setFilters] = useState({ noSearch: true });
@@ -25,17 +26,18 @@ const BudgetReport = memo(function BudgetReport() {
     listBudgetsReportPermission === "loading" ? (
     <AccessDenied loading={listBudgetsReportPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Relatório {getWord("Orçamentos")}</h3>
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        values={values}
-        setValues={setValues}
-        setReload={setReload}
-      />
-      <PrintTable reports={reports} filters={filters} values={values} />
-    </Container>
+    <PageWrapper title={`Relatório ${getWord("Orçamentos")}`}>
+      <Container>
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          values={values}
+          setValues={setValues}
+          setReload={setReload}
+        />
+        <PrintTable reports={reports} filters={filters} values={values} />
+      </Container>
+    </PageWrapper>
   );
 });
 

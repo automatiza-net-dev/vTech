@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { Checkbox, notification } from "antd";
 
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 
 import styled from "styled-components";
 
 export function Step4(props) {
-  const [inputs, setInputs] = useState<{title?: string, value?: boolean}[]>([]);
+  const [inputs, setInputs] = useState<{ title?: string; value?: boolean }[]>(
+    []
+  );
 
   const handleChangeChecked = useCallback(
     (e, text) => {
@@ -46,7 +48,6 @@ export function Step4(props) {
   }, [inputs]);
 
   useEffect(() => {
-
     if (process.env.client === "liftone") {
       setInputs([
         {
@@ -121,14 +122,11 @@ export function Step4(props) {
             </InputContainer>
           ))}
         </div>
-        <Button theme="primary" width="1-4" type="submit">
-          Avançar
-        </Button>
+        <Button type="submit" text="Avançar" />
       </form>
     </div>
   );
 }
-
 
 export const InputContainer = styled.div`
   padding: 5px 0;

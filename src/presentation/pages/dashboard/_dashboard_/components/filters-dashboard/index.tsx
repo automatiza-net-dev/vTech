@@ -28,15 +28,15 @@ export function FiltersDashboard() {
         }}
         onChangeForm={{
           callbackResult: ({ fromDate }: FiltersDashboardParams) => {
-            if (
-              moment(fromDate).format("YYYY-MM-DD") !==
-              (router.query as any).fromDate
-            ) {
+            const fromDateStartMonth = moment(fromDate)
+              .startOf("month")
+              .format("YYYY-MM-DD");
+
+            if (fromDateStartMonth !== (router.query as any).fromDate) {
+           
               updateRoute({
                 params: {
-                  fromDate: moment(fromDate)
-                    .startOf("month")
-                    .format("YYYY-MM-DD"),
+                  fromDate: fromDateStartMonth,
                   toDate: moment(fromDate).endOf("month").format("YYYY-MM-DD"),
                 },
                 router,
@@ -48,9 +48,7 @@ export function FiltersDashboard() {
         <InputDatePicker
           name="fromDate"
           mode="month"
-          date={{
-            maxDate: new Date(),
-          }}
+          date={{}}
           language="pt"
         />
       </FormHandler>

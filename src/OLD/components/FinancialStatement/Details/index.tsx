@@ -8,16 +8,8 @@ import { usePaymentGroup } from "@/OLD/hooks/useFinances";
 import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
-import {
-  Input,
-  Table,
-  Tooltip,
-  notification,
-  Modal,
-  Button,
-  Popconfirm,
-} from "antd";
+import { Button } from "infinity-forge";
+import { Input, Table, Tooltip, notification, Modal, Popconfirm } from "antd";
 import FinancesActions from "../Actions";
 import DownFormChild from "../Actions/FormChild";
 
@@ -246,7 +238,7 @@ const FinancialStatementDetails = memo(function BorderoDetails({
                       : downSelectedTitles();
                   }}
                 >
-                  <CustomButton>Baixar títulos</CustomButton>
+                  <Button text="Baixar títulos" />
                 </Popconfirm>
               </Tooltip>
             )}
@@ -260,9 +252,8 @@ const FinancialStatementDetails = memo(function BorderoDetails({
             setVisible(false);
             setTitles([]);
           }}
-        >
-          Fechar
-        </Button>
+          text="Fechar"
+        />
       </footer>
       {downVisible && (
         <Modal

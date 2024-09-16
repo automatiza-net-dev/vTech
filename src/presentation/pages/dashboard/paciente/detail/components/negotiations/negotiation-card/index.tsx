@@ -24,7 +24,9 @@ export function NegotiationCard(props: NegotiationCardProps) {
 
   const open = negotiation?.id === id;
 
-  const hasOpenedBudget = budgets.some((budget) => budget.status === "ABERTO");
+  const hasOpenedBudget = budgets.some(
+    (budget) => budget.status === "ABERTO" || budget.status === "Nao Aprovada"
+  );
 
   const confirmedBudget = budgets.find(
     (budget) => budget.status === "CONFIRMADO"

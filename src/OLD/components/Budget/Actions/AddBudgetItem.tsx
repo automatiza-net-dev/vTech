@@ -156,7 +156,9 @@ export default function AddBudgetItem({
   const { getWord } = useDictionary();
 
   const validBudget =
-    budget.status === "ABERTO" || budget.status === `Orçamento em aberto`;
+    budget.status === "ABERTO" ||
+    budget.status === `Orçamento em aberto` ||
+    "Nao Aprovada";
 
   const submitObservation = React.useCallback(() => {
     budgetService.updateObservation(budget.id, {

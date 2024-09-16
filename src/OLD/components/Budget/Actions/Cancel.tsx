@@ -32,7 +32,7 @@ const CancelBudget = React.memo(function CancelBudget({
 
 
   const validBudget =
-    budget.status === "ABERTO" || budget.status === `Orçamento em aberto`;
+    budget.status === "ABERTO" || budget.status === `Orçamento em aberto` || budget.status === "Nao Aprovada";
 
   const submit = React.useCallback(() => {
     if (!validBudget) {

@@ -26,8 +26,22 @@ export function ChartsSection({
   const breakColumns =
     dashboard?.data?.charts && dashboard?.data?.charts?.length <= 4;
 
+  function handleGridStyle() {
+    switch (type) {
+      case "crm":
+        return "grid-3";
+
+      default:
+        return "";
+    }
+  }
+
   return (
-    <S.ChartsSection $breakColumns={breakColumns} className="general-dashboard">
+    <S.ChartsSection
+      $gridStyle={handleGridStyle()}
+      $breakColumns={breakColumns}
+      className="general-dashboard"
+    >
       {isFetching && (
         <div className="skeleton">
           <Skeleton

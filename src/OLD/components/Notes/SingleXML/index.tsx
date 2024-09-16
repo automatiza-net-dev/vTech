@@ -11,7 +11,7 @@ import { usePlans } from "@/OLD/hooks/usePlans";
 
 import PaymentsPanel from "../PaymentsPanel";
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import {
   AutoComplete,
@@ -318,19 +318,14 @@ function Single() {
             </div>
           ))}
           <footer className="uk-flex uk-flex-right">
-            <CustomButton
-              classCallback="uk-margin-small-right"
-              onClick={() => router.back()}
-            >
-              Voltar
-            </CustomButton>
-            <CustomButton
-              classCallback="uk-margin-small-right"
+            <Button text="Voltar" onClick={() => router.back()} />
+
+            <Button
+              text="Finalizar Entrada"
               onClick={() => submitFinishReceipt()}
-            >
-              Finalizar Entrada
-            </CustomButton>
-            <CustomButton
+            />
+
+            <Button
               onClick={() => {
                 data?.items?.filter((product) => product?.existingProduct)
                   ?.length > 0
@@ -348,9 +343,8 @@ function Single() {
                       createReceiptProduct: true,
                     }));
               }}
-            >
-              Salvar
-            </CustomButton>
+              text="Salvar"
+            />
           </footer>
         </TabPane>
         <TabPane

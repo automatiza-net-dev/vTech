@@ -17,7 +17,7 @@ export function Total() {
       description: "Total",
       quantity:
         (reducer.quantity || 0) +
-        cartItem.variations.reduce(
+        cartItem?.variations?.reduce(
           (reducer, variation) => reducer + Number(variation.quantity),
           0
         ),

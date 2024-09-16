@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 
 import { notification } from "antd";
 
+import { Button } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { pathologiesServices } from "@/OLD/services/pathologies.service";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { LayoutDashboard } from "@/presentation";
 
@@ -107,14 +107,13 @@ export default function PathologyCreatePaage() {
               <Editor editorState={body} setEditorState={setBody} />
             </div>
             <div className="uk-margin-top">
-              <CustomButton
+              <Button
                 className="uk-button uk-button-primary"
                 onClick={submitData}
-                classCallback="uk-margin-right"
-              >
-                {loading ? "Salvando..." : "Salvar"}
-              </CustomButton>
-              <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
+                text={loading ? "Salvando..." : "Salvar"}
+              />
+
+              <Button onClick={() => router.back()} text="Voltar" />
             </div>
           </div>
         </div>

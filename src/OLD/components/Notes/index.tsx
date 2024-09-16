@@ -8,19 +8,11 @@ import { useRouter } from "next/router";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import Create from "./Actions/Create";
 import Filters from "./Filters";
 import AddOrRemoveItem from "./Actions/AddOrRemoveItem";
-import {
-  Modal,
-  Table,
-  Upload,
-  Button,
-  notification,
-  Tooltip,
-  Popconfirm,
-} from "antd";
+import { Modal, Table, Upload, notification, Tooltip, Popconfirm } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import Details from "./Single";
 
@@ -280,119 +272,118 @@ export function Notes() {
   return !listReceiptsPermission || listReceiptsPermission === "loading" ? (
     <AccessDenied loading={listReceiptsPermission} />
   ) : (
-    <Container className="uk-padding-small">
-      <h3 className="uk-margin-remove">Notas de Entrada</h3>
-      <section className="uk-flex uk-flex-right">
-        {pendingProductsPermission && (
-          <CustomButton
-            onClick={() => router.push("/dashboard/produtos-pendentes")}
-            classCallback="uk-margin-small-right"
-          >
-            Produtos Pendentes
-          </CustomButton>
-        )}
-        {importXmlPermission && (
-          <CustomButton
-            classCallback="uk-margin-small-right"
-            onClick={() => setXmlModalVisible(true)}
-          >
-            importar XML
-          </CustomButton>
-        )}
-        {createReceiptPermission && (
-          <CustomButton onClick={() => setCreateVisible(true)}>
-            Nova nota entrada
-          </CustomButton>
-        )}
-      </section>
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        setReload={setReload}
-      />
-      <hr />
-      <Table columns={receiptsColumns} dataSource={formattedReceipts} />
-      <Modal
-        onCancel={() => setCreateVisible(false)}
-        width={1000}
-        footer={null}
-        title="Nova nota de entrada"
-        visible={createVisible}
-      >
-        <Create
-          setReload={setReload}
-          setVisible={setCreateVisible}
-          listCreated={listCreated}
-        />
-      </Modal>
-      <Modal
-        title="Importar XML"
-        visible={xmlModalVisible}
-        onCancel={() => setXmlModalVisible(false)}
-        footer={null}
-      >
-        <div className="uk-flex uk-flex-column uk-flex-middle">
-          <label>Selecione o arquivo XML a ser importado</label>
-          <br />
-          <Upload
-            multiple={false}
-            value={xml}
-            name="xml-file"
-            onChange={verifyFile}
-            showUploadList={false}
-          >
-            <Button>Selecionar</Button>
-          </Upload>
-          {xml && (
-            <div className="uk-margin-small-top">
-              <span className="uk-link">{xml?.name}</span>
-
-              <DeleteTwoTone
-                twoToneColor={"red"}
-                onClick={() => setXml(false)}
-              />
-            </div>
-          )}
-        </div>
-        <hr />
-        <footer className="uk-flex uk-flex-right">
-          <Button
-            className="uk-margin-right"
-            onClick={() => {
-              setXmlModalVisible(false);
-              setXml(false);
-            }}
-          >
-            Cancelar
-          </Button>
-          <Button onClick={submitXml} type="primary" loading={loading}>
-            Continuar
-          </Button>
-        </footer>
-      </Modal>
-      <Modal
-        title="Detalhes da nota"
-        width={1200}
-        footer={null}
-        visible={detailsVisible}
-        onCancel={() => setDetailsVisible(false)}
-      >
-        <Details receiptId={selectedId} setVisible={setDetailsVisible} />
-      </Modal>
-      {addPaymentsScreenVisible && (
-        <Modal
-          footer={null}
-          title="Adicionar pagamento"
-          width={1200}
-          onCancel={() => setAddPaymentsScreenVisible(false)}
-          visible={addPaymentsScreenVisible}
+    <PageWrapper title="Notas de Entrada">
+      <Container>
+        <section
+          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
         >
-          <AddPaymentsScreen
-            id={selectedId}
-            setVisible={setAddPaymentsScreenVisible}
+          {pendingProductsPermission && (
+            <Button
+              onClick={() => router.push("/dashboard/produtos-pendentes")}
+              text="Produtos pendentes"
+            />
+          )}
+          {importXmlPermission && (
+            <Button
+              text="Importar XML"
+              onClick={() => setXmlModalVisible(true)}
+            />
+          )}
+          {createReceiptPermission && (
+            <Button
+              onClick={() => setCreateVisible(true)}
+              text="Nova nota de entrada"
+            />
+          )}
+        </section>
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          setReload={setReload}
+        />
+        <hr />
+        <Table columns={receiptsColumns} dataSource={formattedReceipts} />
+        <Modal
+          onCancel={() => setCreateVisible(false)}
+          width={1000}
+          footer={null}
+          title="Nova nota de entrada"
+          visible={createVisible}
+        >
+          <Create
+            setReload={setReload}
+            setVisible={setCreateVisible}
+            listCreated={listCreated}
           />
         </Modal>
-      )}
-    </Container>
+        <Modal
+          title="Importar XML"
+          visible={xmlModalVisible}
+          onCancel={() => setXmlModalVisible(false)}
+          footer={null}
+        >
+          <div className="uk-flex uk-flex-column uk-flex-middle">
+            <label>Selecione o arquivo XML a ser importado</label>
+            <br />
+            <Upload
+              multiple={false}
+              value={xml}
+              name="xml-file"
+              onChange={verifyFile}
+              showUploadList={false}
+            >
+              <Button text="Selecionar" />
+            </Upload>
+            {xml && (
+              <div className="uk-margin-small-top">
+                <span className="uk-link">{xml?.name}</span>
+
+                <DeleteTwoTone
+                  twoToneColor={"red"}
+                  onClick={() => setXml(false)}
+                />
+              </div>
+            )}
+          </div>
+          <hr />
+          <footer
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <Button
+              text="Cancelar"
+              onClick={() => {
+                setXmlModalVisible(false);
+                setXml(false);
+              }}
+            />
+
+            <Button onClick={submitXml} loading={loading} text="Continuar" />
+          </footer>
+        </Modal>
+        <Modal
+          title="Detalhes da nota"
+          width={1200}
+          footer={null}
+          visible={detailsVisible}
+          onCancel={() => setDetailsVisible(false)}
+        >
+          <Details receiptId={selectedId} setVisible={setDetailsVisible} />
+        </Modal>
+        {addPaymentsScreenVisible && (
+          <Modal
+            footer={null}
+            title="Adicionar pagamento"
+            width={1200}
+            onCancel={() => setAddPaymentsScreenVisible(false)}
+            visible={addPaymentsScreenVisible}
+          >
+            <AddPaymentsScreen
+              id={selectedId}
+              setVisible={setAddPaymentsScreenVisible}
+            />
+          </Modal>
+        )}
+      </Container>
+    </PageWrapper>
   );
 }

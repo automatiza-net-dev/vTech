@@ -13,6 +13,9 @@ import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { useDictionary } from "@/presentation";
 
+import { billStatusFormatter } from "@/OLD/components/Bill/utils/status-formater";
+import { budgetStatusFormatter } from "@/OLD/components/Budget";
+
 const labelControl = (str) => {
   switch (str) {
     case "ABERTO":
@@ -31,8 +34,6 @@ export function BillAndBudget({ patient }) {
   const { cashiers } = useDailyCasher(cashierFilters);
   const { salesMetadata } = usePatientSalesMetadata(patient?.id, reload);
 
-
-
   useEffect(() => {
     setCashierFilters({
       from: moment(new Date()).startOf("day"),
@@ -50,7 +51,10 @@ export function BillAndBudget({ patient }) {
           date: moment(item?.date).format("DD/MM/YYYY"),
           totalValue: currencyFormatter(item?.total_value),
           missingValue: currencyFormatter(item?.missing_value),
-          status: item?.status,
+          status:
+            item?._type === "sale"
+              ? billStatusFormatter(item, setReload)
+              : budgetStatusFormatter(item, setReload),
           client: item?.client,
           actions:
             item?._type === "sale" ? (

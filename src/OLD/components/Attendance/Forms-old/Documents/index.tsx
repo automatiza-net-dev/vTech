@@ -56,7 +56,7 @@ export default function Documents({
               }
             : { timelineId: updateData?._id }
         );
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
     }
   }

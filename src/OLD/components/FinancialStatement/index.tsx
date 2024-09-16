@@ -36,8 +36,8 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
-import { Table, Tooltip, Button, Modal, notification } from "antd";
+import { Button } from "infinity-forge";
+import { Table, Tooltip, Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "@/OLD/components/Titles/Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -426,19 +426,16 @@ const FinancialSteatment = memo(function Titles({ type }) {
       <div className="uk-flex uk-flex-between">
         <h3 className="uk-margin-remove">Controle financeiro</h3>
         <div>
-          <CustomButton
-            type="primary"
+          <Button
             onClick={() => {
               setFilters({ ...filters, noSearch: false });
               setTitles([]);
               setReload(!reload);
             }}
-            classCallback="uk-margin-right"
-          >
-            Filtrar
-          </CustomButton>
+            text="Filtrar"
+          />
           {createTitlePermission && (
-            <CustomButton
+            <Button
               onClick={() => {
                 setCreateTitleVisible(true);
                 {
@@ -454,9 +451,8 @@ const FinancialSteatment = memo(function Titles({ type }) {
                 */
                 }
               }}
-            >
-              Novo Título
-            </CustomButton>
+              text="Novo Título"
+            />
           )}
         </div>
       </div>
@@ -571,16 +567,10 @@ const FinancialSteatment = memo(function Titles({ type }) {
         </div>
       </div>
       <div className="uk-flex uk-flex-right uk-margin-small-top">
-        <Button
-          className="uk-margin-small-right"
-          onClick={() => handleExport()}
-        >
-          Exportar (Excel)
-        </Button>
+        <Button text="Exportar (Excel)" onClick={() => handleExport()} />
+
         <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
+          trigger={() => <Button text="Imprimir" />}
           content={() => componentRef.current}
         />
       </div>

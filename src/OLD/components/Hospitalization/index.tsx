@@ -10,12 +10,14 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
 import { Container } from "./styles";
-import { Menu, notification, Popconfirm, Button } from "antd";
+import { Menu, notification, Popconfirm } from "antd";
+import { Button } from "infinity-forge";
 import BaseForm from "./BaseForm";
 import HeaderControl from "./Date";
 import PatientList from "./PatientList";
 import { HospitalizationTimeline } from "./HospitalizationTimeline";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { PageWrapper } from "infinity-forge";
 
 // Utils
 import moment from "moment";
@@ -47,17 +49,17 @@ const menu = (
           <p className="uk-margin-remvoe">Deseja finalizar a internação ?</p>
           <div className="uk-flex uk-flex-around">
             <Button
-              type="primary"
+              text="Sim"
               onClick={() => {
                 (finalizeHospitalization as any)();
                 (notification as any).destroy({ key: "discharge" });
               }}
-            >
-              Sim
-            </Button>
-            <Button onClick={() => notification.destroy({ key: "discharge" })}>
-              Não
-            </Button>
+            />
+
+            <Button
+              onClick={() => notification.destroy({ key: "discharge" })}
+              text="Não"
+            />
           </div>
         </div>
       ),
@@ -221,40 +223,41 @@ export default function HospitalizationTable() {
     showHospitalizationsPermission === "loading" ? (
     <AccessDenied loading={showHospitalizationsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Agenda de internação</h3>
-      <BaseForm
-        reload={reload}
-        setReload={setReload}
-        patientData={selectedPatient}
-        visible={formsVisible?.visible}
-        title={formsVisible?.formTitle}
-        setVisible={setFormsVisible}
-        report={formsVisible?.report}
-        formType={formsVisible?.formType}
-        selectedHour={formsVisible?.selectedHour}
-      />
-      <HeaderControl
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        classCallback="uk-margin-top"
-      />
-      <PatientList
-        reload={reload}
-        setReload={setReload}
-        selectedPatient={selectedPatient}
-        setSelectedPatient={setSelectedPatient}
-        patientData={allHospitalizations}
-        menu={menu}
-        setFormsVisible={setFormsVisible}
-        selectedDate={moment(selectedDate).format("DD/MM/YYYY")}
-      />
-      <HospitalizationTimeline
-        visible={formsVisible.timeline}
-        setVisible={setFormsVisible}
-        modal={true}
-        patientData={selectedPatient}
-      />
-    </Container>
+    <PageWrapper title="Agenda de internação">
+      <Container>
+        <BaseForm
+          reload={reload}
+          setReload={setReload}
+          patientData={selectedPatient}
+          visible={formsVisible?.visible}
+          title={formsVisible?.formTitle}
+          setVisible={setFormsVisible}
+          report={formsVisible?.report}
+          formType={formsVisible?.formType}
+          selectedHour={formsVisible?.selectedHour}
+        />
+        <HeaderControl
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          classCallback="uk-margin-top"
+        />
+        <PatientList
+          reload={reload}
+          setReload={setReload}
+          selectedPatient={selectedPatient}
+          setSelectedPatient={setSelectedPatient}
+          patientData={allHospitalizations}
+          menu={menu}
+          setFormsVisible={setFormsVisible}
+          selectedDate={moment(selectedDate).format("DD/MM/YYYY")}
+        />
+        <HospitalizationTimeline
+          visible={formsVisible.timeline}
+          setVisible={setFormsVisible}
+          modal={true}
+          patientData={selectedPatient}
+        />
+      </Container>
+    </PageWrapper>
   );
 }

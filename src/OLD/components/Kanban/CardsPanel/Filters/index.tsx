@@ -8,7 +8,8 @@ import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import { Checkbox, AutoComplete, Button, Select, Input } from "antd";
+import { Checkbox, AutoComplete, Select, Input } from "antd";
+import { Button } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { InputBox } from "./styles";
 const { Option } = Select;
@@ -48,7 +49,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
   sortItems(businessUnits, "fantasyName");
 
   return (
-    <section style={{ display: 'flex', gap: '10px' }}>
+    <section style={{ display: "flex", gap: "10px" }}>
       <div className="uk-margin-right uk-width-1-4">
         <label>{process.env.client === "liftone" ? "Cliente" : "Tutor"}</label>
         <InputBox>
@@ -294,17 +295,17 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           </div>
         */}
         </div>
-        <div className="uk-flex uk-flex-bottom uk-flex-right uk-width-1-1">
+        <div
+          style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        >
           <Button
-            type="primary"
             className=""
             onClick={() => {
               setFilters((prv) => ({ ...prv, noSearch: false }));
               setReload((prv) => !prv);
             }}
-          >
-            Filtrar
-          </Button>
+            text="Filtrar"
+          />
         </div>
       </div>
     </section>

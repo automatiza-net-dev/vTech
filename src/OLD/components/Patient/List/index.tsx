@@ -11,7 +11,7 @@ import { usePatients } from "@/OLD/hooks/usePatients";
 
 // Components
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import PatientDetails from "../Single/Details";
 import { Edit } from "../Edit";
 
@@ -174,7 +174,7 @@ export function PatientList({
                 </div>
               ),
               schedule: (
-                <CustomButton
+                <Button
                   onClick={() => {
                     setPayload((prv) => {
                       return {
@@ -190,12 +190,11 @@ export function PatientList({
                     setDrawerIsOpen(patientListVisible);
                     setVisible(false);
                   }}
-                >
-                  Agendar
-                </CustomButton>
+                  text="Agendar"
+                />
               ),
               opportunity: (
-                <CustomButton
+                <Button
                   onClick={() => {
                     const tutor =
                       patient.tutors.find((item) => item?.isMain) ||
@@ -216,9 +215,8 @@ export function PatientList({
                     }));
                     setVisible(false);
                   }}
-                >
-                  criar oportunidade
-                </CustomButton>
+                  text="Criar oportunidade"
+                />
               ),
             };
           })

@@ -9,6 +9,7 @@ import Filters from "./Filters";
 import { Table } from "antd";
 import Actions from "./Actions";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { PageWrapper } from "infinity-forge";
 
 import { treatmentsColumns } from "./Columns";
 import moment from "moment";
@@ -42,12 +43,13 @@ const Treatments = memo(function Treatments() {
   return !listTreatmentsPermission || listTreatmentsPermission === "loading" ? (
     <AccessDenied loading={listTreatmentsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Tratamentos</h3>
-      <Filters filters={filters} setFilters={setFilters} />
-      <hr />
-      <Table columns={treatmentsColumns} dataSource={formattedTreatments} />
-    </Container>
+    <PageWrapper title="Tratamentos">
+      <Container>
+        <Filters filters={filters} setFilters={setFilters} />
+        <hr />
+        <Table columns={treatmentsColumns} dataSource={formattedTreatments} />
+      </Container>
+    </PageWrapper>
   );
 });
 

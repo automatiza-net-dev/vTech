@@ -11,6 +11,7 @@ import Filters from "./Filters";
 import PrintScreen from "./PrintScreen";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Button } from "antd";
+import { PageWrapper } from "infinity-forge";
 
 const AnalyticalReport = memo(function () {
   const [filters, setFilters] = useState({});
@@ -31,32 +32,33 @@ const AnalyticalReport = memo(function () {
     listAnalyticsReportsPermission === "loading" ? (
     <AccessDenied loading={listAnalyticsReportsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Relatório de vendas analítico</h3>
-      <Filters filters={filters} setFilters={setFilters} />
-      <hr />
-      <div className="uk-flex uk-flex-around">
-        <ReactToPrint
-          trigger={() => (
-            <Button
-              className="uk-margin-small-right"
-              onMouseOver={() => {
-                setReload((prv) => !prv);
-              }}
-            >
-              Imprimir
-            </Button>
-          )}
-          content={() => componentRef.current}
-          onBeforePrint={() => setReload(!reload)}
-        />
-      </div>
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          {reports?.length > 0 && <PrintScreen data={reports} />}
+    <PageWrapper title="Relatório de vendas analítico">
+      <Container>
+        <Filters filters={filters} setFilters={setFilters} />
+        <hr />
+        <div className="uk-flex uk-flex-around">
+          <ReactToPrint
+            trigger={() => (
+              <Button
+                className="uk-margin-small-right"
+                onMouseOver={() => {
+                  setReload((prv) => !prv);
+                }}
+              >
+                Imprimir
+              </Button>
+            )}
+            content={() => componentRef.current}
+            onBeforePrint={() => setReload(!reload)}
+          />
         </div>
-      </div>
-    </Container>
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            {reports?.length > 0 && <PrintScreen data={reports} />}
+          </div>
+        </div>
+      </Container>
+    </PageWrapper>
   );
 });
 

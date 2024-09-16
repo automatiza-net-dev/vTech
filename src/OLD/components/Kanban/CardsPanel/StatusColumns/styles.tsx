@@ -1,6 +1,15 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  .cards-qty {
+    background: ${(props) => props.theme.primaryColor};
+    border-radius: 25px;
+    color: #ffffff;
+    width: 20px;
+    text-align: center;
+    margin-left: 10%;
+  }
+
   .side-bar-section {
     z-index: 21;
   }
@@ -17,6 +26,7 @@ export const Container = styled.div`
     justify-content: center;
     margin: 2px;
     height: 25px;
+    display: flex;
   }
 
   .cards-container {

@@ -5,7 +5,6 @@ import {
   Input,
   Modal,
   Table,
-  Button,
   Switch,
   Tooltip,
   Checkbox,
@@ -19,6 +18,7 @@ import "moment/locale/pt-br";
 import { BiDuplicate } from "react-icons/bi";
 import { useMutation, useQuery } from "react-query";
 
+import { Button, PageWrapper } from "infinity-forge";
 import { sortItems } from "@/OLD/utils/sortItems";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { adminService } from "@/OLD/services/admin.service";
@@ -26,7 +26,6 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { EditTwoTone, DeleteOutlined } from "@ant-design/icons";
 import { useExternalProfiles } from "@/OLD/hooks/useExternalProfile";
 import { useSearchProfileInfo } from "@/OLD/hooks/useExternalProfile";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { LayoutDashboard } from "@/presentation";
 
@@ -283,56 +282,61 @@ export default function ControlesDeAcessoPage() {
 
   return (
     <LayoutDashboard>
-      {!listAccessControllPermission ||
-      listAccessControllPermission === "loading" ? (
-        <AccessDenied loading={listAccessControllPermission} />
-      ) : (
-        <section className="uk-padding">
-          <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
-            <h3 className="uk-margin-remove">Controle de Acesso</h3>
-            <div className="uk-flex uk-flex-middle">
+      <PageWrapper title="Controle de Acesso">
+        {!listAccessControllPermission ||
+        listAccessControllPermission === "loading" ? (
+          <AccessDenied loading={listAccessControllPermission} />
+        ) : (
+          <section className="uk-padding">
+            <div>
               <div>
-                <label>Descrição</label>
-                <br />
-                <Input
-                  placeholder="Pesquisar"
-                  value={term}
-                  onChange={(e) => setTerm(e.target.value)}
-                  style={{ width: 300 }}
-                />
+                <div>
+                  <label>Descrição</label>
+                  <br />
+                  <Input
+                    placeholder="Pesquisar"
+                    value={term}
+                    onChange={(e) => setTerm(e.target.value)}
+                    style={{ width: 300 }}
+                  />
+                </div>
               </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: "10px",
+              }}
+            >
               {canCreateAccess && (
-                <CustomButton
-                  type="primary"
-                  classCallback="uk-margin-left uk-margin-top"
+                <Button
                   onClick={() => {
                     setOpenCreate(true);
                     setSelectedProfiles([]);
                   }}
-                >
-                  Cadastrar
-                </CustomButton>
+                  text="Cadastrar"
+                />
               )}
             </div>
-          </div>
 
-          {rolesQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
-          {rolesQuery.data && (
-            <div>
-              <Table
-                columns={columns}
-                dataSource={(rolesQuery.data ?? [])
-                  .map((elem) => ({
-                    id: elem.id,
-                    description: elem.name,
-                    externalAccess: elem.external_access ? "Sim" : "Não",
-                    status: elem.active ? "Ativo" : "Desativado",
-                    createdAt: elem.created_at
-                      ? moment(elem.created_at).format("DD/MM/YYYY - HH:mm")
-                      : "-",
-                    actions: (
-                      <div className="uk-flex" style={{ gap: "1rem" }}>
-                        {/*
+            {rolesQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
+            {rolesQuery.data && (
+              <div>
+                <Table
+                  columns={columns}
+                  dataSource={(rolesQuery.data ?? [])
+                    .map((elem) => ({
+                      id: elem.id,
+                      description: elem.name,
+                      externalAccess: elem.external_access ? "Sim" : "Não",
+                      status: elem.active ? "Ativo" : "Desativado",
+                      createdAt: elem.created_at
+                        ? moment(elem.created_at).format("DD/MM/YYYY - HH:mm")
+                        : "-",
+                      actions: (
+                        <div className="uk-flex" style={{ gap: "1rem" }}>
+                          {/*
                   <CopyOutlined
                     size={15}
                     onClick={() => {
@@ -342,27 +346,10 @@ export default function ControlesDeAcessoPage() {
                     disabled={isDisabled}
                   />
                     */}
-                        {canEditAccess && (
-                          <>
-                            <EditTwoTone
-                              size={15}
-                              onClick={() => {
-                                setUpdateRoleData((prev) => ({
-                                  ...prev,
-                                  id: elem.id,
-                                  name: elem.name,
-                                  active: elem.active,
-                                  externalAccess: elem.external_access,
-                                }));
-                                setRoleMetadataParams({});
-                                setOpenUpdate(true);
-                                setShowRoleId(elem.id);
-                              }}
-                              disabled={isDisabled}
-                            />
-                            {elem.newItems && (
-                              <svg
-                                style={{ cursor: "pointer" }}
+                          {canEditAccess && (
+                            <>
+                              <EditTwoTone
+                                size={15}
                                 onClick={() => {
                                   setUpdateRoleData((prev) => ({
                                     ...prev,
@@ -371,137 +358,322 @@ export default function ControlesDeAcessoPage() {
                                     active: elem.active,
                                     externalAccess: elem.external_access,
                                   }));
-                                  setShowRoleId(elem.id);
-                                  setRoleMetadataParams({
-                                    newItems: elem.newItems,
-                                  });
+                                  setRoleMetadataParams({});
                                   setOpenUpdate(true);
+                                  setShowRoleId(elem.id);
                                 }}
-                                id="Layer_1"
-                                height="20"
-                                viewBox="0 0 512 512"
-                                width="20"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g>
-                                  <path d="m272.066 193.462h-56.233c-7.333 0-13.59 5.301-14.796 12.534l-16.067 96.4c-1.525 9.144 5.54 17.466 14.796 17.466h56.234c19.902-.793 19.887-29.215 0-30h-38.526l3.033-18.2h35.493c19.902-.793 19.887-29.215 0-30h-30.493l3.033-18.2h43.526c19.902-.793 19.887-29.215 0-30z" />
-                                  <path d="m162.066 193.666c-8.172-1.36-15.9 4.158-17.262 12.33l-8.483 50.9-27.571-55.142c-2.906-5.811-9.218-9.09-15.647-8.125-6.425.966-11.498 5.959-12.565 12.368l-16.067 96.4c-1.362 8.171 4.158 15.9 12.33 17.262 11.646 1.941 16.565-8.151 17.262-12.33l8.483-50.9 27.571 55.142c2.906 5.812 9.224 9.089 15.647 8.125 6.425-.966 11.498-5.959 12.565-12.368l16.067-96.4c1.362-8.172-4.158-15.9-12.33-17.262z" />
-                                  <path d="m439.441 195.045c-7.41-3.705-16.419-.701-20.124 6.708l-28.649 57.297-7.492-37.464c-1.216-6.077-6.043-10.78-12.148-11.838-6.103-1.055-12.234 1.748-15.423 7.062l-20.338 33.896v-42.246c-.793-19.902-29.215-19.887-30 0v96.4c.118 15.155 19.955 20.66 27.862 7.717l28.238-47.063 8.457 42.288c1.257 6.283 6.366 11.075 12.718 11.925 6.351.855 12.542-2.427 15.407-8.159l48.2-96.4c3.705-7.408.703-16.418-6.708-20.123z" />
-                                  <path d="m256 .662c-141.159 0-256 114.841-256 256 14.062 339.619 497.99 339.52 512-.002 0-141.157-114.841-255.998-256-255.998zm0 482c-124.617 0-226-101.383-226-226 12.414-299.82 439.632-299.733 452 .002 0 124.615-101.383 225.998-226 225.998z" />
-                                </g>
-                              </svg>
-                            )}
-                          </>
-                        )}
-
-                        <Popconfirm
-                          title={`Deseja fazer uma cópia do acesso ${elem?.name}?`}
-                          onConfirm={() => submitDuplicatePermission(elem?.id)}
-                        >
-                          <Tooltip title="Duplicar controle">
-                            <BiDuplicate
-                              color="var(--darkBlue)"
-                              size={15}
-                              style={{ cursor: "pointer" }}
-                            />
-                          </Tooltip>
-                        </Popconfirm>
-                        <Popconfirm
-                          title="Tem certeza que deseja deletar?"
-                          onConfirm={() => {
-                            deleteRoleMutation.mutate(elem.id);
-                          }}
-                        >
-                          {canDeleteAccess && (
-                            <DeleteOutlined size={15} disabled={isDisabled} />
+                                disabled={isDisabled}
+                              />
+                              {elem.newItems && (
+                                <svg
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    setUpdateRoleData((prev) => ({
+                                      ...prev,
+                                      id: elem.id,
+                                      name: elem.name,
+                                      active: elem.active,
+                                      externalAccess: elem.external_access,
+                                    }));
+                                    setShowRoleId(elem.id);
+                                    setRoleMetadataParams({
+                                      newItems: elem.newItems,
+                                    });
+                                    setOpenUpdate(true);
+                                  }}
+                                  id="Layer_1"
+                                  height="20"
+                                  viewBox="0 0 512 512"
+                                  width="20"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <g>
+                                    <path d="m272.066 193.462h-56.233c-7.333 0-13.59 5.301-14.796 12.534l-16.067 96.4c-1.525 9.144 5.54 17.466 14.796 17.466h56.234c19.902-.793 19.887-29.215 0-30h-38.526l3.033-18.2h35.493c19.902-.793 19.887-29.215 0-30h-30.493l3.033-18.2h43.526c19.902-.793 19.887-29.215 0-30z" />
+                                    <path d="m162.066 193.666c-8.172-1.36-15.9 4.158-17.262 12.33l-8.483 50.9-27.571-55.142c-2.906-5.811-9.218-9.09-15.647-8.125-6.425.966-11.498 5.959-12.565 12.368l-16.067 96.4c-1.362 8.171 4.158 15.9 12.33 17.262 11.646 1.941 16.565-8.151 17.262-12.33l8.483-50.9 27.571 55.142c2.906 5.812 9.224 9.089 15.647 8.125 6.425-.966 11.498-5.959 12.565-12.368l16.067-96.4c1.362-8.172-4.158-15.9-12.33-17.262z" />
+                                    <path d="m439.441 195.045c-7.41-3.705-16.419-.701-20.124 6.708l-28.649 57.297-7.492-37.464c-1.216-6.077-6.043-10.78-12.148-11.838-6.103-1.055-12.234 1.748-15.423 7.062l-20.338 33.896v-42.246c-.793-19.902-29.215-19.887-30 0v96.4c.118 15.155 19.955 20.66 27.862 7.717l28.238-47.063 8.457 42.288c1.257 6.283 6.366 11.075 12.718 11.925 6.351.855 12.542-2.427 15.407-8.159l48.2-96.4c3.705-7.408.703-16.418-6.708-20.123z" />
+                                    <path d="m256 .662c-141.159 0-256 114.841-256 256 14.062 339.619 497.99 339.52 512-.002 0-141.157-114.841-255.998-256-255.998zm0 482c-124.617 0-226-101.383-226-226 12.414-299.82 439.632-299.733 452 .002 0 124.615-101.383 225.998-226 225.998z" />
+                                  </g>
+                                </svg>
+                              )}
+                            </>
                           )}
-                        </Popconfirm>
-                      </div>
-                    ),
-                  }))
-                  .sort((a, b) => {
-                    if (
-                      a?.description?.toLowerCase() <
-                      b.description?.toLowerCase()
-                    ) {
-                      return -1;
-                    }
 
-                    if (a.description?.toLowerCase() > b.name?.toLowerCase()) {
-                      return 1;
-                    }
+                          <Popconfirm
+                            title={`Deseja fazer uma cópia do acesso ${elem?.name}?`}
+                            onConfirm={() =>
+                              submitDuplicatePermission(elem?.id)
+                            }
+                          >
+                            <Tooltip title="Duplicar controle">
+                              <BiDuplicate
+                                color="var(--darkBlue)"
+                                size={15}
+                                style={{ cursor: "pointer" }}
+                              />
+                            </Tooltip>
+                          </Popconfirm>
+                          <Popconfirm
+                            title="Tem certeza que deseja deletar?"
+                            onConfirm={() => {
+                              deleteRoleMutation.mutate(elem.id);
+                            }}
+                          >
+                            {canDeleteAccess && (
+                              <DeleteOutlined size={15} disabled={isDisabled} />
+                            )}
+                          </Popconfirm>
+                        </div>
+                      ),
+                    }))
+                    .sort((a, b) => {
+                      if (
+                        a?.description?.toLowerCase() <
+                        b.description?.toLowerCase()
+                      ) {
+                        return -1;
+                      }
 
-                    return 0;
-                  })}
-              />
-            </div>
-          )}
+                      if (
+                        a.description?.toLowerCase() > b.name?.toLowerCase()
+                      ) {
+                        return 1;
+                      }
 
-          <Modal
-            title="Cadastrar controle de acesso"
-            visible={openCreate}
-            footer={null}
-            width={1000}
-            onCancel={() => {
-              setOpenCreate(false);
-              setCreatedRole(false);
-              setCreateRoleData({
-                name: "",
-                externalAccess: false,
-              });
-              rolesQuery.refetch();
-            }}
-          >
-            <Form
-              layout="vertical"
-              onSubmitCapture={() =>
-                !createdRole
-                  ? createRoleMutation.mutate({
-                      ...createRoleData,
-                      profileAccessIdList: selectedProfiles,
-                    } as any)
-                  : updateRoleMutation.mutate({
-                      ...createRoleData,
-                      id: showRoleId,
-                      active: true,
-                    })
-              }
-            >
-              <div className="uk-flex uk-flex-between">
-                <Form.Item label="Descrição" required>
-                  <Input
-                    required
-                    placeholder=""
-                    value={createRoleData?.name}
-                    onChange={(e) =>
-                      setCreateRoleData((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                  />
-                </Form.Item>
-
-                <Form.Item label="Acesso Externo" required>
-                  <Switch
-                    checked={createRoleData?.externalAccess}
-                    onChange={(e) =>
-                      setCreateRoleData((prev) => ({
-                        ...prev,
-                        externalAccess: e,
-                      }))
-                    }
-                    title="Acesso Externo"
-                  />
-                </Form.Item>
-
-                <SelectProfiles
-                  selectedProfiles={selectedProfiles}
-                  setSelectedProfiles={setSelectedProfiles}
+                      return 0;
+                    })}
                 />
               </div>
+            )}
 
-              {createdRole && (
+            <Modal
+              title="Cadastrar controle de acesso"
+              visible={openCreate}
+              footer={null}
+              width={1000}
+              onCancel={() => {
+                setOpenCreate(false);
+                setCreatedRole(false);
+                setCreateRoleData({
+                  name: "",
+                  externalAccess: false,
+                });
+                rolesQuery.refetch();
+              }}
+            >
+              <Form
+                layout="vertical"
+                onSubmitCapture={() =>
+                  !createdRole
+                    ? createRoleMutation.mutate({
+                        ...createRoleData,
+                        profileAccessIdList: selectedProfiles,
+                      } as any)
+                    : updateRoleMutation.mutate({
+                        ...createRoleData,
+                        id: showRoleId,
+                        active: true,
+                      })
+                }
+              >
+                <div className="uk-flex uk-flex-between">
+                  <Form.Item label="Descrição" required>
+                    <Input
+                      required
+                      placeholder=""
+                      value={createRoleData?.name}
+                      onChange={(e) =>
+                        setCreateRoleData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                    />
+                  </Form.Item>
+
+                  <Form.Item label="Acesso Externo" required>
+                    <Switch
+                      checked={createRoleData?.externalAccess}
+                      onChange={(e) =>
+                        setCreateRoleData((prev) => ({
+                          ...prev,
+                          externalAccess: e,
+                        }))
+                      }
+                      title="Acesso Externo"
+                    />
+                  </Form.Item>
+
+                  <SelectProfiles
+                    selectedProfiles={selectedProfiles}
+                    setSelectedProfiles={setSelectedProfiles}
+                  />
+                </div>
+
+                {createdRole && (
+                  <div className="uk-margin-small-top">
+                    <hr />
+                    {showRoleMetadataQuery.data && (
+                      <div style={{ maxHeight: "370px", overflow: "auto" }}>
+                        <Collapse>
+                          {(
+                            showRoleMetadataQuery.data.sort((a, b) =>
+                              a.name.localeCompare(b.name)
+                            ) ?? []
+                          ).map((elem) => (
+                            <Collapse.Panel
+                              showArrow={false}
+                              header={elem.name}
+                              key={elem.id}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  rowGap: "0.75rem",
+                                }}
+                              >
+                                {elem.permissions
+                                  .sort((a, b) =>
+                                    a.controlId.localeCompare(b.controlId)
+                                  )
+                                  .map((permission) => (
+                                    <div
+                                      key={permission.id}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "start",
+                                        columnGap: "1rem",
+                                      }}
+                                    >
+                                      <Switch
+                                        checked={
+                                          managePermissionsData.find(
+                                            (p) => p.id === permission.id
+                                          )?.active
+                                        }
+                                        onChange={(e) => {
+                                          setManagePermissionsData((prev) => {
+                                            const index = prev.findIndex(
+                                              (p) => p.id === permission.id
+                                            );
+                                            if (index !== -1) {
+                                              prev[index].active = e;
+                                            } else {
+                                              prev.push({
+                                                id: permission.id,
+                                                active: e,
+                                              });
+                                            }
+                                            return [...prev];
+                                          });
+                                        }}
+                                        title={permission.description}
+                                      />
+                                      <span className="">
+                                        {permission.description}
+                                      </span>
+                                    </div>
+                                  ))}
+                              </div>
+                            </Collapse.Panel>
+                          ))}
+                        </Collapse>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <hr />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "end",
+                    columnGap: "1rem",
+                    width: "100%",
+                  }}
+                >
+                  <Button
+                    onClick={() => {
+                      setOpenCreate(false);
+                      setCreateRoleData({
+                        name: "",
+                        externalAccess: false,
+                      });
+                      setCreatedRole(false);
+                      rolesQuery.refetch();
+                    }}
+                    text="Cancelar"
+                  />
+
+                  <Button type="submit" text="Salvar" />
+                </div>
+              </Form>
+            </Modal>
+
+            <Modal
+              title="Atualizar Controle de acessos"
+              onCancel={() => setOpenUpdate(false)}
+              visible={openUpdate}
+              footer={null}
+              width={1000}
+            >
+              <Form
+                layout="vertical"
+                onSubmitCapture={() =>
+                  updateRoleMutation.mutate(updateRoleData)
+                }
+              >
+                <div className="uk-flex uk-flex-between">
+                  <Form.Item
+                    label="Descrição"
+                    required
+                    className="uk-width-1-4"
+                  >
+                    <Input
+                      required
+                      className="uk-width-1-1"
+                      placeholder=""
+                      value={updateRoleData?.name}
+                      onChange={(e) =>
+                        setUpdateRoleData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Acesso Externo"
+                    className="uk-margin-right"
+                    required
+                  >
+                    <Switch
+                      checked={updateRoleData?.externalAccess}
+                      onChange={(e) =>
+                        setUpdateRoleData((prev) => ({
+                          ...prev,
+                          externalAccess: e,
+                        }))
+                      }
+                      title="Acesso Externo"
+                    />
+                  </Form.Item>
+                  <Form.Item label="Ativo" className="uk-margin-right" required>
+                    <Switch
+                      checked={updateRoleData?.active}
+                      onChange={(e) =>
+                        setUpdateRoleData((prev) => ({ ...prev, active: e }))
+                      }
+                      title="Ativo"
+                    />
+                  </Form.Item>
+                  <SelectProfiles
+                    selectedProfiles={selectedProfiles}
+                    setSelectedProfiles={setSelectedProfiles}
+                  />
+                </div>
+
                 <div className="uk-margin-small-top">
                   <hr />
                   {showRoleMetadataQuery.data && (
@@ -574,192 +746,30 @@ export default function ControlesDeAcessoPage() {
                     </div>
                   )}
                 </div>
-              )}
-              <hr />
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "end",
-                  columnGap: "1rem",
-                  width: "100%",
-                }}
-              >
-                <Button
-                  type="ghost"
-                  onClick={() => {
-                    setOpenCreate(false);
-                    setCreateRoleData({
-                      name: "",
-                      externalAccess: false,
-                    });
-                    setCreatedRole(false);
-                    rolesQuery.refetch();
+
+                <hr />
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "end",
+                    columnGap: "1rem",
+                    width: "100%",
                   }}
                 >
-                  Cancelar
-                </Button>
-
-                <Button type="primary" htmlType="submit">
-                  Salvar
-                </Button>
-              </div>
-            </Form>
-          </Modal>
-
-          <Modal
-            title="Atualizar Controle de acessos"
-            onCancel={() => setOpenUpdate(false)}
-            visible={openUpdate}
-            footer={null}
-            width={1000}
-          >
-            <Form
-              layout="vertical"
-              onSubmitCapture={() => updateRoleMutation.mutate(updateRoleData)}
-            >
-              <div className="uk-flex uk-flex-between">
-                <Form.Item label="Descrição" required className="uk-width-1-4">
-                  <Input
-                    required
-                    className="uk-width-1-1"
-                    placeholder=""
-                    value={updateRoleData?.name}
-                    onChange={(e) =>
-                      setUpdateRoleData((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
+                  <Button
+                    onClick={() => setOpenUpdate(false)}
+                    text="Cancelar"
                   />
-                </Form.Item>
-                <Form.Item
-                  label="Acesso Externo"
-                  className="uk-margin-right"
-                  required
-                >
-                  <Switch
-                    checked={updateRoleData?.externalAccess}
-                    onChange={(e) =>
-                      setUpdateRoleData((prev) => ({
-                        ...prev,
-                        externalAccess: e,
-                      }))
-                    }
-                    title="Acesso Externo"
-                  />
-                </Form.Item>
-                <Form.Item label="Ativo" className="uk-margin-right" required>
-                  <Switch
-                    checked={updateRoleData?.active}
-                    onChange={(e) =>
-                      setUpdateRoleData((prev) => ({ ...prev, active: e }))
-                    }
-                    title="Ativo"
-                  />
-                </Form.Item>
-                <SelectProfiles
-                  selectedProfiles={selectedProfiles}
-                  setSelectedProfiles={setSelectedProfiles}
-                />
-              </div>
 
-              <div className="uk-margin-small-top">
-                <hr />
-                {showRoleMetadataQuery.data && (
-                  <div style={{ maxHeight: "370px", overflow: "auto" }}>
-                    <Collapse>
-                      {(
-                        showRoleMetadataQuery.data.sort((a, b) =>
-                          a.name.localeCompare(b.name)
-                        ) ?? []
-                      ).map((elem) => (
-                        <Collapse.Panel
-                          showArrow={false}
-                          header={elem.name}
-                          key={elem.id}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              rowGap: "0.75rem",
-                            }}
-                          >
-                            {elem.permissions
-                              .sort((a, b) =>
-                                a.controlId.localeCompare(b.controlId)
-                              )
-                              .map((permission) => (
-                                <div
-                                  key={permission.id}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "start",
-                                    columnGap: "1rem",
-                                  }}
-                                >
-                                  <Switch
-                                    checked={
-                                      managePermissionsData.find(
-                                        (p) => p.id === permission.id
-                                      )?.active
-                                    }
-                                    onChange={(e) => {
-                                      setManagePermissionsData((prev) => {
-                                        const index = prev.findIndex(
-                                          (p) => p.id === permission.id
-                                        );
-                                        if (index !== -1) {
-                                          prev[index].active = e;
-                                        } else {
-                                          prev.push({
-                                            id: permission.id,
-                                            active: e,
-                                          });
-                                        }
-                                        return [...prev];
-                                      });
-                                    }}
-                                    title={permission.description}
-                                  />
-                                  <span className="">
-                                    {permission.description}
-                                  </span>
-                                </div>
-                              ))}
-                          </div>
-                        </Collapse.Panel>
-                      ))}
-                    </Collapse>
-                  </div>
-                )}
-              </div>
-
-              <hr />
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "end",
-                  columnGap: "1rem",
-                  width: "100%",
-                }}
-              >
-                <Button type="ghost" onClick={() => setOpenUpdate(false)}>
-                  Cancelar
-                </Button>
-
-                <Button type="primary" htmlType="submit">
-                  Salvar
-                </Button>
-              </div>
-            </Form>
-          </Modal>
-        </section>
-      )}
+                  <Button type="submit" text="Salvar" />
+                </div>
+              </Form>
+            </Modal>
+          </section>
+        )}
+      </PageWrapper>
     </LayoutDashboard>
   );
 }

@@ -39,7 +39,7 @@ export function DashboardPage({ type }: { type?: "crm" }) {
       }, 1000);
       return;
     }
-  }, []);
+  }, [router.query?.reload]);
 
   return (
     <>
@@ -58,7 +58,7 @@ export function DashboardPage({ type }: { type?: "crm" }) {
         <TablesSection />
       </S.Dashboard>
 
-      {/* <SchedulesDashboard /> */}
+      <SchedulesDashboard />
 
       <FinancesResumeCards />
 

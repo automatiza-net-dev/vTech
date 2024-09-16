@@ -23,6 +23,8 @@ import SendPhotos from "@/OLD/components/Attendance/Forms-old/SendPhotos";
 import Pathologies from "@/OLD/components/Attendance/Forms-old/Patologies";
 import MedicalRecipes from "@/OLD/components/Attendance/Forms-old/MedicalRecipe";
 import DosesModal from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesList/DosesModal";
+import { HospitalizationForm } from "./hospitalization";
+import { DischargeForm } from "./discharge";
 import { Icon } from "infinity-forge";
 import { CreateTutor } from "@/OLD/components/Tutor/Create";
 import { Pathologie } from "./pathologie";
@@ -65,18 +67,25 @@ export function useActionsPatient(): {
       ),
       Component: Avaliation,
       SingleComponent: (props) => {
-        return props.timeline_info.event === "TROCA_TUTOR_PRINCIPAL" ? (
-          <div>
-            <h3>Troca de tutor principal</h3>
-            <span>
-              <strong>Troca</strong> {props?.timeline_info?.old_tutor.name}{" "}
-              <br /> <strong>Para</strong>:{" "}
-              {props?.timeline_info?.new_tutor.name}
-            </span>
-          </div>
-        ) : (
-          <Avaliation {...props} />
-        );
+        switch (props.timeline_info.event) {
+          case "TROCA_TUTOR_PRINCIPAL":
+            return (
+              <div>
+                <h3>Troca de tutor principal</h3>
+                <span>
+                  <strong>Troca</strong> {props?.timeline_info?.old_tutor.name}{" "}
+                  <br /> <strong>Para</strong>:{" "}
+                  {props?.timeline_info?.new_tutor.name}
+                </span>
+              </div>
+            );
+          case "INTERNACAO":
+            return <HospitalizationForm {...props?.timeline_info} />;
+          case "ALTA":
+            return <DischargeForm {...props?.timeline_info} />;
+          default:
+            return <Avaliation {...props} />;
+        }
       },
     },
     {

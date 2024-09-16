@@ -10,9 +10,9 @@ import { useSingleBanking } from "@/OLD/hooks/useBankings";
 import moment from "moment";
 
 // Components
-import { Container } from "./styles";
-import { Button as CustomButtom } from "@/OLD/components/mini-components/Button";
 import { Input } from "antd";
+import { Container } from "./styles";
+import { Button } from "infinity-forge";
 
 const Single = memo(function Single() {
   const [reload, setReload] = useState(false);

@@ -9,7 +9,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { DatePicker, Input, Select, notification } from "antd";
 const { Option } = Select;
 
@@ -419,15 +419,15 @@ function TitlesForm({
       <hr />
       <footer className="uk-flex uk-margin-top uk-flex-right">
         {!loading ? (
-          <CustomButton classCallback="uk-margin-right" type="submit">
-            Salvar
-          </CustomButton>
+          <Button type="submit" text="salvar" />
         ) : (
-          <CustomButton>Carregando ...</CustomButton>
+          <Button text="Carregando" />
         )}
-        <CustomButton type="button" onClick={() => setVisible(false)}>
-          Cancelar
-        </CustomButton>
+        <Button
+          type="button"
+          onClick={() => setVisible(false)}
+          text="Cancelar"
+        />
       </footer>
     </form>
   );

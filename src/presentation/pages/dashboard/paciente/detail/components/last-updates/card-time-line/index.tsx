@@ -46,14 +46,34 @@ export function CardTimeLine({
     }
   };
 
-  const labelControl = (str) => {
-    switch (str) {
+  const labelControl = (info) => {
+    switch (info.event) {
       case "OBITO":
         return <span>Óbito</span>;
       case "TROCA_TUTOR_PRINCIPAL":
         return <span>Troca tutor principal</span>;
+      case "INTERNACAO":
+        return <span>Internação</span>;
+      case "ALTA":
+        return (
+          <>
+            <div>
+              <span>Alta Internação</span>
+            </div>
+            <div>
+              <span>{info.resume}</span>
+            </div>
+          </>
+        );
       default:
-        return <span>{timeline?.timeline_type.description}</span>;
+        return (
+          <div>
+            <span>{timeline?.timeline_type.description}</span>;
+            {timeline?.timeline_type.description === "Consulta" && (
+              <span>{timeline?.timeline_info?.service?.description}</span>
+            )}
+          </div>
+        );
     }
   };
 
@@ -72,7 +92,7 @@ export function CardTimeLine({
             {moment(timeline.createdAt).format("DD/MM/YYYY")}
             <strong> às {moment(timeline.createdAt).format("HH:mm")}</strong>
           </h3>
-          {labelControl(timeline?.timeline_info.event)}
+          {labelControl(timeline?.timeline_info)}
           {timeline?.timeline_info?.technician?.name && (
             <span>{timeline.timeline_info.technician.name}</span>
           )}

@@ -12,11 +12,10 @@ import "moment/locale/pt-br";
 
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
-import { SearchIcon } from "@/OLD/common/icons";
 
 // Components
 import { Select, Table } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import { useQuery } from "react-query";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -62,156 +61,157 @@ const TaxationGroupRules = memo(function TaxationGroupRules() {
     listTaxationGroupPermission === "loading" ? (
     <AccessDenied loading={listTaxationGroupPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de grupos de imposto</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <div
-          className="uk-flex uk-width-1-1 uk-margin-right"
-          style={{ gap: "0.5rem", alignItems: "center" }}
-        >
-          <Input>
-            <input
-              type="search"
-              placeholder="Nome"
-              onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-            />
-            <SearchIcon />
-          </Input>
-
-          <Select
-            placeholder={"Tipo de Empresa"}
-            value={filters?.type}
-            onChange={(value) => {
-              setFilters({ ...filters, type: value });
-            }}
-            options={[
-              { label: "Todos", value: null },
-              { label: "Simples", value: "SIMPLES" },
-              { label: "Não Simples", value: "NAO_SIMPLES" },
-            ]}
-            style={{ width: "200px" }}
-          />
-
-          <Select
-            placeholder={"Tipo de Movimento"}
-            value={filters?.movement}
-            onChange={(value) => {
-              setFilters({ ...filters, movement: value });
-            }}
-            options={[
-              { label: "Todos", value: null },
-              { label: "Entrada", value: "ENTRADA" },
-              { label: "Saída", value: "SAIDA" },
-            ]}
-            style={{ width: "200px" }}
-          />
-          <Select
-            placeholder={"UF Origem"}
-            value={filters?.fromUf}
-            onChange={(value) => {
-              setFilters({ ...filters, fromUf: value });
-            }}
-            options={[
-              {
-                label: "Todos",
-                value: "",
-              },
-              ...BR_STATES.map((_state) => ({
-                label: _state,
-                value: _state,
-              })),
-            ]}
-            style={{ width: "200px" }}
-          />
-
-          <Select
-            placeholder={"UF Destino"}
-            value={filters?.toUf}
-            onChange={(value) => {
-              setFilters({ ...filters, toUf: value });
-            }}
-            options={[
-              {
-                label: "Todos",
-                value: "",
-              },
-              ...BR_STATES.map((_state) => ({
-                label: _state,
-                value: _state,
-              })),
-            ]}
-            style={{ width: "200px" }}
-          />
-
-          <Select
-            placeholder={"Status"}
-            value={filters?.active}
-            onChange={(value) => {
-              setFilters({ ...filters, active: value });
-            }}
-            options={[
-              { label: "Todos", value: null },
-              { label: "Ativos", value: "true" },
-              { label: "Desativados", value: "false" },
-            ]}
-            style={{ width: "200px" }}
-          />
-        </div>
-
-        <div className="uk-margin-small-top">
-          <Button
-            onClick={() => setVisible(true)}
-            disabled={!canCreateTaxationGroup}
+    <PageWrapper title="Controle de grupos de imposto">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <div
+            className="uk-flex uk-width-1-1 uk-margin-right"
+            style={{ gap: "0.5rem", alignItems: "center" }}
           >
-            {" "}
-            Cadastro{" "}
-          </Button>
+            <Input>
+              <input
+                type="search"
+                placeholder="Nome"
+                onChange={(e) =>
+                  setFilters({ ...filters, name: e.target.value })
+                }
+              />
+             
+            </Input>
+
+            <Select
+              placeholder={"Tipo de Empresa"}
+              value={filters?.type}
+              onChange={(value) => {
+                setFilters({ ...filters, type: value });
+              }}
+              options={[
+                { label: "Todos", value: null },
+                { label: "Simples", value: "SIMPLES" },
+                { label: "Não Simples", value: "NAO_SIMPLES" },
+              ]}
+              style={{ width: "200px" }}
+            />
+
+            <Select
+              placeholder={"Tipo de Movimento"}
+              value={filters?.movement}
+              onChange={(value) => {
+                setFilters({ ...filters, movement: value });
+              }}
+              options={[
+                { label: "Todos", value: null },
+                { label: "Entrada", value: "ENTRADA" },
+                { label: "Saída", value: "SAIDA" },
+              ]}
+              style={{ width: "200px" }}
+            />
+            <Select
+              placeholder={"UF Origem"}
+              value={filters?.fromUf}
+              onChange={(value) => {
+                setFilters({ ...filters, fromUf: value });
+              }}
+              options={[
+                {
+                  label: "Todos",
+                  value: "",
+                },
+                ...BR_STATES.map((_state) => ({
+                  label: _state,
+                  value: _state,
+                })),
+              ]}
+              style={{ width: "200px" }}
+            />
+
+            <Select
+              placeholder={"UF Destino"}
+              value={filters?.toUf}
+              onChange={(value) => {
+                setFilters({ ...filters, toUf: value });
+              }}
+              options={[
+                {
+                  label: "Todos",
+                  value: "",
+                },
+                ...BR_STATES.map((_state) => ({
+                  label: _state,
+                  value: _state,
+                })),
+              ]}
+              style={{ width: "200px" }}
+            />
+
+            <Select
+              placeholder={"Status"}
+              value={filters?.active}
+              onChange={(value) => {
+                setFilters({ ...filters, active: value });
+              }}
+              options={[
+                { label: "Todos", value: null },
+                { label: "Ativos", value: "true" },
+                { label: "Desativados", value: "false" },
+              ]}
+              style={{ width: "200px" }}
+            />
+          </div>
+
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => setVisible(true)}
+              disabled={!canCreateTaxationGroup}
+              text="Cadastro"
+            />
+          </div>
         </div>
-      </div>
-      <hr />
-      <Table
-        className="uk-margin-top"
-        dataSource={data?.map((item) => ({
-          group: item?.taxationGroup.name,
-          company_type: item?.company_type,
-          movement_type: item?.movement_type,
-          movement_category: item?.movement_category,
-          from_to: [item?.from_uf, item?.to_uf].join(" -> "),
-          active: item?.active ? "Ativo" : "Inativo",
-          createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
-          actions: (
-            <div className="uk-flex uk-flex-around">
-              {canEditTaxationGroup && (
-                <EditTwoTone
-                  size={15}
-                  onClick={() => {
-                    setSelectedRule({ id: item.id });
-                  }}
-                />
-              )}
-              {canDeleteTaxationGroup && (
-                <DeleteTaxationGroup
-                  id={item?.id}
-                  close={() => setSelectedRule(null)}
-                />
-              )}
-            </div>
-          ),
-        }))}
-        columns={columns}
-      />
-      <CreateTaxationGroup
-        visible={visible}
-        hide={() => {
-          setVisible(false);
-        }}
-      />
-      <UpdateTaxationGroup
-        visible={!!selectedRule}
-        hide={() => setSelectedRule(null)}
-        initialData={selectedRule}
-      />
-    </Container>
+        <hr />
+        <Table
+          className="uk-margin-top"
+          dataSource={data?.map((item) => ({
+            group: item?.taxationGroup.name,
+            company_type: item?.company_type,
+            movement_type: item?.movement_type,
+            movement_category: item?.movement_category,
+            from_to: [item?.from_uf, item?.to_uf].join(" -> "),
+            active: item?.active ? "Ativo" : "Inativo",
+            createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
+            actions: (
+              <div className="uk-flex uk-flex-around">
+                {canEditTaxationGroup && (
+                  <EditTwoTone
+                    size={15}
+                    onClick={() => {
+                      setSelectedRule({ id: item.id });
+                    }}
+                  />
+                )}
+                {canDeleteTaxationGroup && (
+                  <DeleteTaxationGroup
+                    id={item?.id}
+                    close={() => setSelectedRule(null)}
+                  />
+                )}
+              </div>
+            ),
+          }))}
+          columns={columns}
+        />
+        <CreateTaxationGroup
+          visible={visible}
+          hide={() => {
+            setVisible(false);
+          }}
+        />
+        <UpdateTaxationGroup
+          visible={!!selectedRule}
+          hide={() => setSelectedRule(null)}
+          initialData={selectedRule}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

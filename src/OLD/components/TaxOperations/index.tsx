@@ -11,11 +11,10 @@ import "moment/locale/pt-br";
 
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
-import { SearchIcon } from "@/OLD/common/icons";
 
 // Components
 import { Table, notification } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import { useQuery } from "react-query";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -46,81 +45,81 @@ const TaxOperations = memo(function TaxOperations() {
     }
   );
 
+  const editPermission = useUserHasPermission("OPF2");
+
   return !listTaxOperationsPermission ||
     listTaxOperationsPermission === "loading" ? (
     <AccessDenied loading={listTaxOperationsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de Operações Fiscais</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <Input>
-          <input
-            type="search"
-            placeholder="Descrição"
-            onChange={(e) =>
-              setFilters({ ...filters, description: e.target.value })
-            }
-          />
-          <SearchIcon />
-        </Input>
-        <div className="uk-margin-small-top">
-          <Button
-            onClick={() => setVisible(true)}
-            disabled={!canCreateTaxOperationService}
-          >
-            {" "}
-            Cadastro{" "}
-          </Button>
+    <PageWrapper title="Controle de operações fiscais">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <Input>
+            <input
+              type="search"
+              placeholder="Descrição"
+              onChange={(e) =>
+                setFilters({ ...filters, description: e.target.value })
+              }
+            />
+          </Input>
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => setVisible(true)}
+              disabled={!canCreateTaxOperationService}
+              text="Cadastro"
+            />
+          </div>
         </div>
-      </div>
-      <hr />
-      <Table
-        className="uk-margin-top"
-        dataSource={data?.map((item) => ({
-          code: item?.code,
-          movement_type: item?.movement_type,
-          movement_category: taxOperationService.mapLabel(
-            item?.movement_category
-          ),
-          generates_financial: item?.generates_financial ? "Sim" : "Não",
-          accounting_result: item?.accounting_result ? "Sim" : "Não",
-          active: item?.active ? "Ativo" : "Inativo",
-          createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
-          actions: (
-            <div className="uk-flex uk-flex-around">
-              {canEditTaxOperationService && (
-                <EditTwoTone
-                  size={15}
-                  onClick={() => {
-                    !permissions?.OPF2
-                      ? notification.error({ message: "Ação não permitida" })
-                      : setSelectedTax(item);
-                  }}
-                />
-              )}
-              {canDeleteTaxOperationService && (
-                <DeleteTaxOperation
-                  id={item?.id}
-                  close={() => setSelectedTax(null)}
-                />
-              )}
-            </div>
-          ),
-        }))}
-        columns={columns}
-      />
-      <CreateTaxOperation
-        visible={visible}
-        hide={() => {
-          setVisible(false);
-        }}
-      />
-      <UpdateTaxOperation
-        visible={!!selectedTax}
-        hide={() => setSelectedTax(null)}
-        initialData={selectedTax}
-      />
-    </Container>
+        <hr />
+        <Table
+          className="uk-margin-top"
+          dataSource={data?.map((item) => ({
+            code: item?.code,
+            movement_type: item?.movement_type,
+            movement_category: taxOperationService.mapLabel(
+              item?.movement_category
+            ),
+            generates_financial: item?.generates_financial ? "Sim" : "Não",
+            accounting_result: item?.accounting_result ? "Sim" : "Não",
+            active: item?.active ? "Ativo" : "Inativo",
+            createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
+            actions: (
+              <div className="uk-flex uk-flex-around">
+                {canEditTaxOperationService && (
+                  <EditTwoTone
+                    size={15}
+                    onClick={() => {
+                      !editPermission
+                        ? notification.error({ message: "Ação não permitida" })
+                        : setSelectedTax(item);
+                    }}
+                  />
+                )}
+                {canDeleteTaxOperationService && (
+                  <DeleteTaxOperation
+                    id={item?.id}
+                    close={() => setSelectedTax(null)}
+                  />
+                )}
+              </div>
+            ),
+          }))}
+          columns={columns}
+        />
+        <CreateTaxOperation
+          visible={visible}
+          hide={() => {
+            setVisible(false);
+          }}
+        />
+        <UpdateTaxOperation
+          visible={!!selectedTax}
+          hide={() => setSelectedTax(null)}
+          initialData={selectedTax}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

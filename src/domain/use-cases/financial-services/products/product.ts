@@ -35,10 +35,18 @@ export type Variation = {
 
 export type Product = {
   id: string;
+  approved?: boolean;
+  approvalDate?: string;
+  courtesy_approved_at?: string;
+  max_discount?: boolean;
   economic_group_id: string;
   description: string;
-  quantity: string;
+  quantity: string | number;
   type: "product";
+  courtesyApprovedUser?: {
+    id: string;
+    name: string;
+  };
   reference_code: string;
   collection_year: null;
   ncm: string;
@@ -77,7 +85,8 @@ export type Product = {
 export type ProductCart = {
   quantity: number;
   discountValue: number;
-  budgetItemId: string;
+  budgetItemId?: string;
+  billItemId?: string;
   productVariationId: Variation["id"];
   saleValue: BusinessUnitProduct["price"];
   unitaryValue: BusinessUnitProduct["price"];

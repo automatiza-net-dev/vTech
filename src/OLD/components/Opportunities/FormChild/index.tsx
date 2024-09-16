@@ -5,7 +5,7 @@ import { animalServices } from "@/OLD/services/animal.service";
 
 import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 
-import { FormHandler, Select } from "infinity-forge";
+import { FormHandler, Select, Button } from "infinity-forge";
 import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
 
 import {
@@ -14,7 +14,6 @@ import {
   Popconfirm,
   Switch,
   notification,
-  Button,
   Select as SelectAnt,
   Tooltip,
   Modal,
@@ -23,7 +22,6 @@ import { DatePicker } from "@mui/x-date-pickers";
 const { TextArea } = Input;
 const { Option } = SelectAnt;
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -179,18 +177,11 @@ export default function FormChild({
                   <>
                     {data?.closingDate === "-" && !data?.balance && (
                       <div>
-                        <CustomButton
-                          classCallback="uk-margin-right"
-                          onClick={() => setEdit(true)}
-                        >
-                          Editar
-                        </CustomButton>
+                        <Button onClick={() => setEdit(true)} text="Editar" />
                       </div>
                     )}
                     <div>
-                      <CustomButton onClick={() => router.back()}>
-                        Voltar
-                      </CustomButton>
+                      <Button onClick={() => router.back()} text="Voltar" />
                     </div>
                   </>
                 )}
@@ -597,36 +588,34 @@ export default function FormChild({
       {(footer || edit) && (
         <>
           {type === "create" ? (
-            <footer className="uk-flex uk-margin-top">
-              <CustomButton type="submit">Salvar</CustomButton>
+            <footer
+              style={{
+                display: "flex",
+                gap: "10px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button type="submit" text="Salvar" />
               <Popconfirm
                 title="Deseja descartar alterações ?"
                 onConfirm={() => router.back()}
               >
-                <CustomButton classCallback="uk-margin-left">
-                  Cancelar
-                </CustomButton>
+                <Button text="Cancelar" />
               </Popconfirm>
             </footer>
           ) : (
             <>
               <hr />
               <footer className="uk-flex uk-flex-right">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="uk-margin-small-right"
-                >
-                  Salvar
-                </Button>
+                <Button type="submit" text="Salvar" />
+
                 <Button
                   onClick={() => {
                     footer ? setVisible(false) : setEdit(false);
                     setReload((prv) => !prv);
                   }}
-                >
-                  Cancelar
-                </Button>
+                  text="Cancelar"
+                />
               </footer>
             </>
           )}

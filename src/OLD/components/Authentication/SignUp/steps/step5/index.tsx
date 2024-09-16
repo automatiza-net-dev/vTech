@@ -1,11 +1,9 @@
 import React, { useCallback, useState } from "react";
 
 import { notification } from "antd";
-import { useAuthAdmin } from "infinity-forge";
+import { useAuthAdmin, Button } from "infinity-forge";
 
 import api from "@/OLD/services";
-
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
 
 export const signUpUser = [
   {
@@ -34,7 +32,7 @@ export function Step5(props) {
   });
   const [loading, setLoading] = useState(false);
 
-  const { signIn } = useAuthAdmin()
+  const { signIn } = useAuthAdmin();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -57,7 +55,10 @@ export function Step5(props) {
               systemName: process.env.clientName,
             });
 
-           await signIn({ emailAddress: props.data?.email, password: data.password || "" })
+            await signIn({
+              emailAddress: props.data?.email,
+              password: data.password || "",
+            });
 
             props.setData({
               ...props.data,
@@ -110,14 +111,7 @@ export function Step5(props) {
             />
           </div>
         ))}
-        <Button
-          className="uk-margin-top"
-          theme="primary"
-          width="1-4"
-          type="subimit"
-        >
-          {loading ? <LoadingSpin /> : "Cadastrar"}
-        </Button>
+        <Button text={loading ? "Carregando..." : "Cadastrar"} type="submit" />
       </form>
     </div>
   );

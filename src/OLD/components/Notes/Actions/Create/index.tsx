@@ -6,15 +6,29 @@ import { receiptService } from "@/OLD/services/receipt.service";
 import FormChild from "@/OLD/components/Notes/FormChild";
 
 import moment from "moment";
-import { notification } from "antd";
-
-const verifyErrors = (err) => {
-  return notification.error({ message: "Houve um erro ao cadastrar a nota" });
-};
+import { useToast } from "infinity-forge";
 
 function Create({ setReload, setVisible, listCreated }) {
   const [data, setData] = useState({ receiptDate: moment(), items: [] });
   const [loading, setLoading] = useState(false);
+
+  const { createToast } = useToast();
+
+  const verifyErrors = (err) => {
+    err?.response?.data?.errors.forEach((err) => {
+      if (err?.field === "supplierId") {
+        return createToast({
+          message: "Selecione o fornecedor",
+          status: "error",
+        });
+      } else {
+        return createToast({
+          message: err?.message,
+          status: "error",
+        });
+      }
+    });
+  };
 
   const submit = useCallback(() => {
     setLoading(true);
@@ -25,8 +39,9 @@ function Create({ setReload, setVisible, listCreated }) {
         setVisible(false);
         setData({ receiptDate: moment(), items: [] });
         listCreated(res.data.id);
-        return notification.success({
+        return createToast({
           message: "Nota de entrada criada com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {

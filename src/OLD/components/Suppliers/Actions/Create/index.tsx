@@ -8,6 +8,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { notification } from "antd";
 import FormChild from "../FormChild";
+import { PageWrapper } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 const CreateSupplier = memo(function CreateSupplier() {
@@ -54,15 +55,16 @@ const CreateSupplier = memo(function CreateSupplier() {
   return !createSupplierPermission || createSupplierPermission === "loading" ? (
     <AccessDenied loading={createSupplierPermission} />
   ) : (
-    <div className="uk-padding">
-      <h3 className="uk-margin-remove">Cadastrar novo Fornecedor</h3>
+    <PageWrapper title="Cadastrar novo fornecedor">
+
       <FormChild
         submit={submit}
         setPhoto={setPhoto}
         data={data}
         setData={setData}
       />
-    </div>
+
+      </PageWrapper>
   );
 });
 

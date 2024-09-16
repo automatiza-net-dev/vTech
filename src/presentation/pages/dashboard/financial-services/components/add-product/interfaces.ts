@@ -1,13 +1,28 @@
-import { Budget, BusinessUnitProduct, Product, Variation } from "@/domain";
+import {
+  Bill,
+  Budget,
+  BusinessUnitProduct,
+  Product,
+  Variation,
+} from "@/domain";
 
 export type Cart = {
   id: Product["id"];
   courtesy: boolean;
+  toSubmit?: boolean;
+  authData?: JSX.Element;
+  approved?: Product["approved"];
+  approvalDate?: Product["approvalDate"];
+  max_discount?: Product["max_discount"];
+  courtesyApprovedUser?: Product["courtesyApprovedUser"];
+  courtesy_approved_at?: Product["courtesy_approved_at"];
   variations: {
-    budgetItemId?: Budget["items"][0]["id"]
+    id: string;
+    billItemId?:  Bill["items"][0]["id"];
+    budgetItemId?: Budget["items"][0]["id"];
     exceedDiscount?: boolean;
     total: number;
-    quantity: number;
+    quantity: number | string;
     courtesy: boolean;
     description: string;
     discountValue: number;
@@ -17,7 +32,3 @@ export type Cart = {
     maximum_discount_percentage: BusinessUnitProduct["maximum_discount_percentage"];
   }[];
 };
-
-
-
-

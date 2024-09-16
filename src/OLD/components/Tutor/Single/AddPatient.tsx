@@ -1,12 +1,12 @@
 // @ts-nocheck
 import { memo, useCallback, useState } from "react";
-import { AutoComplete, Button, Form, Modal, notification } from "antd";
-import { Button as ButtonC } from "@/OLD/components/mini-components";
+import { AutoComplete, Form, Modal, notification } from "antd";
 import { NewPatient } from "./NewPatient";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { petsService } from "@/OLD/services/patient.service";
 import { useRouter } from "next/router";
 import { Container } from "./styles";
+import { Button } from "infinity-forge";
 
 export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
   const id = useRouter()?.query?.innerpage;
@@ -56,13 +56,13 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
 
   return (
     <Container>
-      <ButtonC
+      <Button
         classCallback="uk-margin-small-right"
         onClick={() => setCreatePetVisible(true)}
-      >
-        Adicionar pet
-      </ButtonC>
-      <ButtonC onClick={() => setIsVisible(true)}>Vincular pet</ButtonC>
+        text="Adicionar pet"
+      />
+
+      <Button onClick={() => setIsVisible(true)} text="Vincular pet" />
       <Modal
         visible={isVisible}
         onCancel={() => setIsVisible(false)}
@@ -98,14 +98,9 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
               })}
               <Option value="Criar novo paciente +">
                 <Button
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
                   onClick={() => setNewPatientVisible(true)}
-                >
-                  Criar novo paciente +
-                </Button>
+                  text="Criar novo paciente +"
+                />
               </Option>
             </AutoComplete>
           </Form.Item>

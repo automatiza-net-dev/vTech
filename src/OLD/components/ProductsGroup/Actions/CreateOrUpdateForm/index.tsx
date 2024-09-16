@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Container, InputBox } from "./styles";
 import { Input, notification, Switch } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 const FormChild = memo(function FormChild({ data, setData, submit, action }) {
   const router = useRouter();
@@ -59,9 +59,11 @@ const FormChild = memo(function FormChild({ data, setData, submit, action }) {
           </div>
         )}
         {action !== "update" && (
-          <div className="uk-flex">
-            <CustomButton onClick={() => catchFields()}>Cadastrar</CustomButton>
-            <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
+          <div
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <Button onClick={() => catchFields()} text="Cadastrar" />
+            <Button onClick={() => router.back()} text="Salvar" />
           </div>
         )}
       </Container>

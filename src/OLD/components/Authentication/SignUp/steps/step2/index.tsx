@@ -6,7 +6,7 @@ import { notification } from "antd";
 
 import api from "@/OLD/services";
 import Masks from "@/OLD/utils/masks";
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 
 export function Step2(props) {
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,8 @@ export function Step2(props) {
   const router = useRouter();
 
   const sendToken = useCallback(async () => {
-    await api?.post("/users/send-confirmation", {
+    await api
+      ?.post("/users/send-confirmation", {
         email: props?.data?.email,
         phone: data?.phone,
         name: data?.name,
@@ -106,13 +107,13 @@ export function Step2(props) {
           <div>
             <Button
               onClick={() => props.setStep((prev) => prev - 1)}
-              classCallback="uk-margin-small-right"
-            >
-              Voltar
-            </Button>
-            <Button theme="primary" width="1-4" type="submit">
-              {loading ? "Carregando..." : "Próximo"}
-            </Button>
+              text="Voltar"
+            />
+
+            <Button
+              type="submit"
+              text={loading ? "Carregando..." : "Próximo"}
+            />
           </div>
           <div className="uk-margin-top">
             <span className="uk-link" onClick={() => router.push("/")}>

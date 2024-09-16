@@ -14,7 +14,7 @@ import {
   AutoComplete,
   notification,
 } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 const { Option } = Select;
 
 const ImgCrop = dynamic(() => import("antd-img-crop"), { ssr: false });
@@ -324,14 +324,14 @@ const FormChild = memo(function ({ data, setData, submit, setPhoto }) {
           </div>
         </div>
       </Container>
-      <footer className="uk-margin-top">
-        <CustomButton
+      <footer style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
           onClick={() => router.back()}
-          classCallback="uk-margin-right"
-        >
-          Voltar
-        </CustomButton>
-        <CustomButton type="submit">Salvar</CustomButton>
+          text="Voltar"
+          style={{ marginRight: "10px" }}
+        />
+
+        <Button type="submit" text="Salvar" />
       </footer>
     </form>
   );

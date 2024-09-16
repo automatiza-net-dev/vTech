@@ -1,28 +1,13 @@
-// @ts-nocheck
-import {
-  Error,
-  Input,
-  useToast,
-  Textarea,
-  FormHandler,
-  LoaderCircle,
-} from "infinity-forge";
 import moment from "moment";
 import { Table } from "antd";
 import { useQueryClient } from "react-query";
+import { Error, LoaderCircle } from "infinity-forge";
 
-import { schema } from "./schema";
 import { useLoadBudget } from "./hook";
 import { authorizationFormater } from "./utils/formater";
+import { AuthorizationPaymentForm } from "@/presentation";
 
-import { RemoteBudget } from "@/data";
 import { AUTH_COLUMNS } from "./columns";
-import { PermissionItem } from "@/presentation";
-
-import {
-  financialServicesTypes,
-  financialServicesContainer,
-} from "@/container";
 
 import * as S from "./styles";
 
@@ -33,9 +18,8 @@ export function AuthorizationBudget({
   budgetId: string;
   setReload;
 }) {
-  const { data, isLoading } = useLoadBudget({ id: budgetId });
-  const { createToast } = useToast();
   const queryClient = useQueryClient();
+  const { data, isLoading } = useLoadBudget({ id: budgetId });
 
   if (isLoading) {
     return <LoaderCircle size={30} color="#ccc" />;
@@ -44,13 +28,6 @@ export function AuthorizationBudget({
   if (!data) {
     return <></>;
   }
-
-  const showForm = data?.items?.some(
-    (item: any) =>
-      !item.approved &&
-      item.courtesy_approved_at === null &&
-      (item.courtesy || item.max_discount)
-  );
 
   const tableDataSource =
     data?.items?.map((item: any) => ({
@@ -67,49 +44,6 @@ export function AuthorizationBudget({
       totalItem: item?.total_value,
       authorization: authorizationFormater(item),
     })) || [];
-
-  async function sendBudgetAuthorization(approved: boolean, payload) {
-    const itemsIdList = data?.items
-      ?.filter(
-        (item) =>
-          !item.approved &&
-          item.courtesy_approved_at === null &&
-          (item.courtesy || item.max_discount)
-      )
-      .map((item) => item.id);
-
-    if (itemsIdList.length === 0) {
-      createToast({ message: "Nenhum item selecionado", status: "error" });
-      return;
-    }
-
-    try {
-      await financialServicesContainer
-        .get<RemoteBudget>(financialServicesTypes.RemoteBudget)
-        .authDiscountPendencySellingBudget({
-          approved,
-          itemsIdList,
-          budgetId,
-          email: payload.email,
-          password: payload.password,
-          reason: payload.description,
-        });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["RemoteLoadBudget", budgetId],
-      });
-
-      setReload && setReload((prv) => !prv);
-      document?.querySelector<any>(".ant-modal-close")?.click();
-
-      createToast({ message: "Alterado com sucesso!", status: "success" });
-    } catch (err: any) {
-      createToast({
-        message: err?.error?.message || "Ocorreu um erro ao enviar",
-        status: "error",
-      });
-    }
-  }
 
   return (
     <Error name="AuthorizationSell">
@@ -141,32 +75,17 @@ export function AuthorizationBudget({
 
         <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
 
-        {showForm && (
-          <PermissionItem hash="VEN16">
-            <FormHandler
-              schema={schema}
-              onSucess={(payload) => sendBudgetAuthorization(true, payload)}
-              button={{
-                text: "Autorizar",
-              }}
-              customSubmit={[
-                {
-                  action: (payload) => sendBudgetAuthorization(false, payload),
-                  active: true,
-                  props: {
-                    text: "Não Autorizar",
-                  },
-                },
-              ]}
-            >
-              <Input name="email" label="Email Usuário" />
+        <AuthorizationPaymentForm
+          budget={data}
+          onSuccess={async () => {
+            await queryClient.invalidateQueries({
+              queryKey: ["RemoteLoadBudget", budgetId],
+            });
 
-              <Input label="Senha" name="password" type="password" />
-
-              <Textarea label="Descrição" name="description" />
-            </FormHandler>
-          </PermissionItem>
-        )}
+            setReload && setReload((prv) => !prv);
+            document?.querySelector<any>(".ant-modal-close")?.click();
+          }}
+        />
       </S.AuthorizationSell>
     </Error>
   );

@@ -1,11 +1,10 @@
 import React from "react";
 
 import { notification } from "antd";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
+import { useRouter } from "next/router";
 import { Container } from "../ForgotPassword/styles";
 import { userService } from "@/OLD/services/user.service";
-import { useRouter } from "next/router";
-
 
 export function AdditionalLicence() {
   const router = useRouter();
@@ -38,14 +37,18 @@ export function AdditionalLicence() {
       <img src="/svg/cautious_dog.svg" width="60%" />
       <div className="form-side">
         <img
-          src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+          src={
+            process.env.NEXT_PUBLIC_API +
+            `/assets/logo-${process.env.client}.png`
+          }
         />
         <h4 style={{ textAlign: "center" }}>
           Sua licença de teste expirou. Deseja adicionar uma licença adicional?
         </h4>
-        <Button onClick={handleAddLicence}>
-          {loading ? <LoadingSpin /> : "Adicionar licença"}
-        </Button>
+        <Button
+          onClick={handleAddLicence}
+          text={loading ? "Carregando..." : "Adicionar licença"}
+        />
       </div>
     </Container>
   );

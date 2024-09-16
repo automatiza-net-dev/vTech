@@ -3,9 +3,6 @@
 // Core
 import React, { useState, useCallback, useEffect, memo } from "react";
 
-// Icons
-import { SearchIcon } from "@/OLD/common/icons";
-
 // Hooks
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 
@@ -17,7 +14,7 @@ import { Columns } from "./Colums";
 
 // Components
 import { BodyPage, Input as InputBox } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Table, Select, Modal, notification } from "antd";
 import FormChild from "./FormChild";
 import Actions from "./Actions";
@@ -148,138 +145,137 @@ const PaymentMethods = memo(function () {
     listPaymentMethodsPermission === "loading" ? (
     <AccessDenied loading={listPaymentMethodsPermission} />
   ) : (
-    <BodyPage className="uk-padding">
-      <h3 className="uk-margin-remove">Formas de pagamento</h3>
-      <div className="uk-margin-right uk-flex uk-flex-around uk-flex-middle">
-        <InputBox className="uk-margin-top">
-          <input
-            type="search"
-            placeholder="Forma de pagamento"
-            onChange={(e) =>
-              setFilters({ ...filters, description: e.target.value })
-            }
+    <PageWrapper title="Formas de pagamento">
+      <BodyPage>
+        <div className="uk-margin-right uk-flex uk-flex-around uk-flex-middle">
+          <InputBox className="uk-margin-top">
+            <input
+              type="search"
+              placeholder="Forma de pagamento"
+              onChange={(e) =>
+                setFilters({ ...filters, description: e.target.value })
+              }
+            />
+          </InputBox>
+          <div className="uk-width-1-2 uk-margin-small-top uk-margin-small-right">
+            <Select
+              placeholder="TEF"
+              className="uk-width-1-1"
+              onChange={(e) => {
+                if (e === "all") {
+                  return setFilters({ ...filters, tef: false });
+                }
+                setFilters({ ...filters, tef: e });
+              }}
+            >
+              <Option value="all">Todos</Option>
+              <Option value="TEF">TEF</Option>
+              <Option value="POS">POS</Option>
+              <Option value="NAO">NÃO</Option>
+            </Select>
+          </div>
+          <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
+            <Select
+              placeholder="Tipo operação"
+              className="uk-width-1-1"
+              onChange={(e) => {
+                if (e === "all") {
+                  return setFilters({ ...filters, type: false });
+                }
+                setFilters({ ...filters, type: e });
+              }}
+            >
+              <Option value="all">Todos</Option>
+              <Option value="CREDITO">Credito</Option>
+              <Option value="DEBITO">Debito</Option>
+            </Select>
+          </div>
+          <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
+            <Select
+              placeholder="Baixa automática"
+              className="uk-width-1-1"
+              onChange={(e) => {
+                if (e === "all") {
+                  const newObj = { ...filters };
+                  delete newObj?.cancellation;
+                  return setFilters(newObj);
+                }
+                setFilters({ ...filters, cancellation: e });
+              }}
+            >
+              <Option value="all">Todos</Option>
+              <Option value="true">Sim</Option>
+              <Option value="false">Não</Option>
+            </Select>
+          </div>
+          <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
+            <Select
+              placeholder="Tipo de conta"
+              className="uk-width-1-1"
+              onChange={(e) => {
+                if (e === "all") {
+                  return setFilters({ ...filters, account: false });
+                }
+                return setFilters({ ...filters, account: e });
+              }}
+            >
+              <Option value="all">Todos</Option>
+              <Option value="CONTA_CORRENTE">Conta corrente</Option>
+              <Option value="CONTA_POUPANCA">Conta pupança</Option>
+              <Option value="CONTA_INVESTIMENTO">Conta investimento</Option>
+              <Option value="CONTA_CAIXA_UNIDADE_NEGOCIO">
+                Conta caixa/Cofre unidade negócio
+              </Option>
+            </Select>
+          </div>
+          <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
+            <Select
+              placeholder="Status"
+              className="uk-width-1-1"
+              onChange={(e) => {
+                if (e === "all") {
+                  const newObj = { ...filters };
+                  delete newObj?.active;
+                  return setFilters(newObj);
+                }
+                return setFilters({ ...filters, active: e });
+              }}
+            >
+              <Option value="all">Todos</Option>
+              <Option value="true">Ativo</Option>
+              <Option value="false">Inativo</Option>
+            </Select>
+          </div>
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => setNewPaymentMethod(true)}
+              disabled={!canCreatePaymentMethods}
+              text="Cadastrar"
+            />
+          </div>
+        </div>
+        <hr />
+        <div className="uk-margin-top">
+          <Table columns={Columns} dataSource={formatedPaymentMethods} />
+        </div>
+        <Modal
+          title="Cadastro de forma de pagamento"
+          visible={newPaymentMethod}
+          onCancel={() => setNewPaymentMethod(false)}
+          footer={null}
+          width={800}
+        >
+          <FormChild
+            data={data}
+            setData={setData}
+            submit={submitPaymentMethod}
+            setVisible={setNewPaymentMethod}
+            reload={reload}
+            setReload={setReload}
           />
-          <SearchIcon />
-        </InputBox>
-        <div className="uk-width-1-2 uk-margin-small-top uk-margin-small-right">
-          <Select
-            placeholder="TEF"
-            className="uk-width-1-1"
-            onChange={(e) => {
-              if (e === "all") {
-                return setFilters({ ...filters, tef: false });
-              }
-              setFilters({ ...filters, tef: e });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="TEF">TEF</Option>
-            <Option value="POS">POS</Option>
-            <Option value="NAO">NÃO</Option>
-          </Select>
-        </div>
-        <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
-          <Select
-            placeholder="Tipo operação"
-            className="uk-width-1-1"
-            onChange={(e) => {
-              if (e === "all") {
-                return setFilters({ ...filters, type: false });
-              }
-              setFilters({ ...filters, type: e });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="CREDITO">Credito</Option>
-            <Option value="DEBITO">Debito</Option>
-          </Select>
-        </div>
-        <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
-          <Select
-            placeholder="Baixa automática"
-            className="uk-width-1-1"
-            onChange={(e) => {
-              if (e === "all") {
-                const newObj = { ...filters };
-                delete newObj?.cancellation;
-                return setFilters(newObj);
-              }
-              setFilters({ ...filters, cancellation: e });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="true">Sim</Option>
-            <Option value="false">Não</Option>
-          </Select>
-        </div>
-        <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
-          <Select
-            placeholder="Tipo de conta"
-            className="uk-width-1-1"
-            onChange={(e) => {
-              if (e === "all") {
-                return setFilters({ ...filters, account: false });
-              }
-              return setFilters({ ...filters, account: e });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="CONTA_CORRENTE">Conta corrente</Option>
-            <Option value="CONTA_POUPANCA">Conta pupança</Option>
-            <Option value="CONTA_INVESTIMENTO">Conta investimento</Option>
-            <Option value="CONTA_CAIXA_UNIDADE_NEGOCIO">
-              Conta caixa/Cofre unidade negócio
-            </Option>
-          </Select>
-        </div>
-        <div className="uk-width-1-2 uk-margin-small-right uk-margin-small-top">
-          <Select
-            placeholder="Status"
-            className="uk-width-1-1"
-            onChange={(e) => {
-              if (e === "all") {
-                const newObj = { ...filters };
-                delete newObj?.active;
-                return setFilters(newObj);
-              }
-              return setFilters({ ...filters, active: e });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="true">Ativo</Option>
-            <Option value="false">Inativo</Option>
-          </Select>
-        </div>
-        <div className="uk-margin-small-top">
-          <CustomButton
-            onClick={() => setNewPaymentMethod(true)}
-            disabled={!canCreatePaymentMethods}
-          >
-            Cadastrar
-          </CustomButton>
-        </div>
-      </div>
-      <hr />
-      <div className="uk-margin-top">
-        <Table columns={Columns} dataSource={formatedPaymentMethods} />
-      </div>
-      <Modal
-        title="Cadastro de forma de pagamento"
-        visible={newPaymentMethod}
-        onCancel={() => setNewPaymentMethod(false)}
-        footer={null}
-        width={800}
-      >
-        <FormChild
-          data={data}
-          setData={setData}
-          submit={submitPaymentMethod}
-          setVisible={setNewPaymentMethod}
-          reload={reload}
-          setReload={setReload}
-        />
-      </Modal>
-    </BodyPage>
+        </Modal>
+      </BodyPage>
+    </PageWrapper>
   );
 });
 

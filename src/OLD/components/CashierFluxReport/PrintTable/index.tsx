@@ -18,6 +18,12 @@ function PrintTable({ reports, filters, values }) {
 
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactToPrint
+          trigger={() => <Button>Imprimir</Button>}
+          content={() => componentRef.current}
+        />
+      </div>
       <Container ref={componentRef}>
         <div className="clinic-header">
           <PrintHeader unit={clinic} />
@@ -33,6 +39,59 @@ function PrintTable({ reports, filters, values }) {
               </div>
             )}
           </div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <section style={{ margin: "10px", width: "25%" }}>
+            <div>
+              <div className="header-table">Resumo</div>
+              <div className="uk-flex uk-flex-between">
+                <div>Valores a recuperar:&nbsp;</div>
+                <div>
+                  {currencyFormatter(
+                    reports?.expiredReports[0]?.total?.credit || 0
+                  )}
+                </div>
+              </div>
+              <div className="uk-flex uk-flex-between">
+                <div>Valores vencidos a pagar:&nbsp;</div>
+                <div>
+                  {currencyFormatter(
+                    reports?.expiredReports[0]?.total?.debit || 0
+                  )}
+                </div>
+              </div>
+              <div className="uk-flex uk-flex-between">
+                <div>Saldo inicial do período:</div>
+                <div>
+                  {currencyFormatter(
+                    reports?.checkingAccountReports[0]?.total || 0
+                  )}
+                </div>
+              </div>
+              <div className="uk-flex uk-flex-between">
+                <div>Total de entradas:</div>
+                <div>
+                  {currencyFormatter(
+                    reports?.flowReports?.reduce(
+                      (acc, current) => acc + current?.credit,
+                      0
+                    )
+                  )}
+                </div>
+              </div>
+              <div className="uk-flex uk-flex-between">
+                <div>Total de saídas:</div>
+                <div>
+                  {currencyFormatter(
+                    reports?.flowReports?.reduce(
+                      (acc, current) => acc + current?.debit,
+                      0
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
         <div className="table-section">
           <section className="header-table">
@@ -63,68 +122,9 @@ function PrintTable({ reports, filters, values }) {
             </div>
           )}
         </div>
-        <section className="uk-margin-top uk-flex uk-flex-center">
-          <div>
-            <div className="header-table">Resumo</div>
-            <div className="uk-flex uk-flex-between">
-              <div>Valores a recuperar:&nbsp;</div>
-              <div>
-                {currencyFormatter(
-                  reports?.expiredReports[0]?.total?.credit || 0
-                )}
-              </div>
-            </div>
-            <div className="uk-flex uk-flex-between">
-              <div>Valores vencidos a pagar:&nbsp;</div>
-              <div>
-                {currencyFormatter(
-                  reports?.expiredReports[0]?.total?.debit || 0
-                )}
-              </div>
-            </div>
-            <div className="uk-flex uk-flex-between">
-              <div>Saldo inicial do período:</div>
-              <div>
-                {currencyFormatter(
-                  reports?.checkingAccountReports[0]?.total || 0
-                )}
-              </div>
-            </div>
-            <div className="uk-flex uk-flex-between">
-              <div>Total de entradas:</div>
-              <div>
-                {currencyFormatter(
-                  reports?.flowReports?.reduce(
-                    (acc, current) => acc + current?.credit,
-                    0
-                  )
-                )}
-              </div>
-            </div>
-            <div className="uk-flex uk-flex-between">
-              <div>Total de saídas:</div>
-              <div>
-                {currencyFormatter(
-                  reports?.flowReports?.reduce(
-                    (acc, current) => acc + current?.debit,
-                    0
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
       </Container>
-      <div className="uk-margin-top uk-flex uk-flex-right">
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => componentRef.current}
-        />
-      </div>
     </>
   );
-};
+}
 
 export default PrintTable;

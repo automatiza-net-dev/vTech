@@ -4,7 +4,8 @@ import {
   useTimeline,
   useCompleteHospitalizationsTimeline,
 } from "@/OLD/hooks/useTimeline";
-import { Button, DatePicker, Modal, Select } from "antd";
+import { DatePicker, Modal, Select } from "antd";
+import { Button } from "infinity-forge";
 import Timeline from "./Timeline";
 import ReactToPrint from "react-to-print";
 import PrintContent from "../HospitalizationTimeline/Print";
@@ -113,7 +114,7 @@ export function HospitalizationTimeline({
           />
           <ReactToPrint
             trigger={() => (
-              <Button style={{ marginTop: "00px" }}>Imprimir</Button>
+              <Button style={{ marginTop: "00px" }} text="Imprimir" />
             )}
             content={() => componentRef.current}
           />
@@ -136,7 +137,7 @@ export function HospitalizationTimeline({
           </div>
         </div>
         <footer className="uk-flex uk-flex-right">
-          <Button onClick={() => setVisible(false)}>Fechar</Button>
+          <Button onClick={() => setVisible(false)} text="Fechar" />
         </footer>
       </Modal>
     </div>

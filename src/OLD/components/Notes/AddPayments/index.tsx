@@ -13,7 +13,7 @@ import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { Container } from "./styles";
 import { useToast } from "infinity-forge";
 import { Input, notification, Collapse, Popconfirm } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 const { Panel } = Collapse;
 
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -360,14 +360,13 @@ const AddPayments = memo(function AddPayments({
               ))}
             </div>
             <div>
-              <CustomButton
+              <Button
                 onClick={() =>
                   origin !== "budgets" ? submitPayment() : submitBudgetPayment()
                 }
                 classCallback="uk-margin-top"
-              >
-                Confirmar
-              </CustomButton>
+                text="Confirmar"
+              />
             </div>
           </div>
           <div className="uk-width-1-4 uk-text-center uk-margin-small-left">
@@ -465,7 +464,7 @@ const AddPayments = memo(function AddPayments({
                     }
                   >
                     {removeBudgetPaymentPermission && (
-                      <CustomButton>Remover bloco</CustomButton>
+                      <Button text="Remover Bloco" />
                     )}
                   </Popconfirm>
                 </div>

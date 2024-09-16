@@ -1,6 +1,6 @@
 import CardTitleToPay from "@/OLD/components/mini-components/CardTitleToPay";
 import CardTitleToReceive from "@/OLD/components/mini-components/CardTitleToReceive";
-import CardCheckingAccount from "@/OLD/components/mini-components/CardCheckingAccount";
+
 import CardFinancialAnalyze from "@/OLD/components/mini-components/CardFinancialAnalyze";
 
 import { Container } from "./styles";
@@ -13,7 +13,6 @@ const CardsFinances = () => {
         <CardTitleToPay />
         <CardTitleToReceive />
         <CardFinancialAnalyze />
-        <CardCheckingAccount />
       </div>
     </Container>
   );

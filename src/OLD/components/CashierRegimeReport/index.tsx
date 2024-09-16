@@ -6,6 +6,7 @@ import { useCashierRegimeReports } from "@/OLD/hooks/useReports";
 import { Container } from "./styles";
 import Filters from "./Filters";
 import PrintTable from "./PrintTable";
+import { PageWrapper } from "infinity-forge";
 
 const CashierRegimeReport = memo(function () {
   const [filters, setFilters] = useState({ noSearch: true });
@@ -14,16 +15,17 @@ const CashierRegimeReport = memo(function () {
   const { reports, loadingReports } = useCashierRegimeReports(filters, reload);
 
   return (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Regime de caixa</h3>
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        setReload={setReload}
-      />
-      <hr />
-      <PrintTable data={reports} loading={loadingReports} />
-    </Container>
+    <PageWrapper title="Regime de Caixa">
+      <Container>
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          setReload={setReload}
+        />
+        <hr />
+        <PrintTable data={reports} loading={loadingReports} />
+      </Container>
+    </PageWrapper>
   );
 });
 

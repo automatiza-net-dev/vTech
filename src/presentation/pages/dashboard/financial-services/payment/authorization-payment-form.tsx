@@ -1,0 +1,129 @@
+import { FormHandler, Input, Textarea, useToast } from "infinity-forge";
+
+import { Bill, Budget } from "@/domain";
+import { PermissionItem } from "@/presentation";
+import { RemoteBills, RemoteBudget } from "@/data";
+import { financialServicesContainer, financialServicesTypes } from "@/container";
+
+import * as yup from "yup"
+
+export function AuthorizationPaymentForm({
+    bill,
+    budget,
+    onSuccess,
+  }: {
+    bill?: Bill;
+    budget?: Budget;
+    onSuccess: () => void;
+  }) {
+    const { createToast } = useToast();
+  
+    const entitie = bill || budget as Budget & Bill;
+  
+  
+    async function sendAuthorization(approved: boolean, data: any) {
+      const itemsIdList = entitie?.items
+        ?.filter(
+          (item) =>
+            !item.approved &&
+            item.courtesy_approved_at === null &&
+            (item.courtesy || item.max_discount)
+        )
+        .map((item) => item.id);
+  
+      const paymentsIdList = entitie?.payments
+        ?.filter((item) => item?.pending)
+        .map((item) => item.id);
+  
+      if (
+        (!itemsIdList || itemsIdList.length === 0) &&
+        (!paymentsIdList || paymentsIdList.length === 0)
+      ) {
+        createToast({ message: "Nenhum item selecionado", status: "error" });
+        return;
+      }
+  
+      try {
+        const payload = {
+          ...data,
+          approved,
+          itemsIdList,
+          paymentsIdList,
+          reason: data.description,
+        };
+  
+        if (budget) {
+          await financialServicesContainer
+            .get<RemoteBudget>(financialServicesTypes.RemoteBudget)
+            .authDiscountPendencySellingBudget({
+              ...payload,
+              budgetId: budget?.id,
+            });
+        }
+  
+        if(bill) {
+          await financialServicesContainer
+          .get<RemoteBills>(financialServicesTypes.RemoteBills)
+          .authDiscountPendencySellingBill({
+            ...payload,
+            billId: bill.id,
+          });
+        }
+  
+        createToast({ message: "Alterado com sucesso!", status: "success" });
+  
+        onSuccess();
+      } catch (err: any) {
+        createToast({
+          message: err?.error?.message || "Ocorreu um erro ao enviar",
+          status: "error",
+        });
+      }
+    }
+  
+    const hasCourtesyOrMaxDiscountPending = entitie.items?.some(
+      (item) =>
+        !item.approved &&
+        item.courtesy_approved_at === null &&
+        (item.courtesy || item.max_discount)
+    )
+    const hasPaymentPending = entitie.payments?.some((item) => item.pending);
+  
+    const showAuthorizationForm = hasCourtesyOrMaxDiscountPending || hasPaymentPending;
+    
+    if (!showAuthorizationForm) {
+      return <></>;
+    }
+  
+    return (
+      <PermissionItem hash="VEN16">
+        <FormHandler
+          schema={{
+            email: yup.string().required("E-mail é obrigatório"),
+            password: yup.string().required("Senha é obrigatório"),
+            description: yup.string().required("Descrição é obrigatório"),
+          }}
+          onSucess={(payload) => sendAuthorization(true, payload)}
+          button={{
+            text: "Autorizar",
+          }}
+          customSubmit={[
+            {
+              action: (payload) => sendAuthorization(false, payload),
+              active: true,
+              props: {
+                text: "Não Autorizar",
+              },
+            },
+          ]}
+        >
+          <Input name="email" label="Email Usuário" />
+  
+          <Input label="Senha" name="password" type="password" />
+  
+          <Textarea label="Descrição" name="description" />
+        </FormHandler>
+      </PermissionItem>
+    );
+  }
+  

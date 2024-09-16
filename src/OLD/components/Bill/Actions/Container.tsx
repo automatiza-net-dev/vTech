@@ -17,6 +17,7 @@ import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
+import { PageWrapper } from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
@@ -121,7 +122,9 @@ const BillActions = React.memo(function BillActions({
 
   return (
     <Container className="uk-flex uk-flex-around uk-flex-middle">
-      {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") && (
+      {(bill?.status === "ABERTA" ||
+        bill?.status === "Venda em Aberto" ||
+        bill?.status === "Nao Aprovada") && (
         <>
           <AddBillItem bill={bill} />
           {addPaymentPermission && (
@@ -193,7 +196,6 @@ const BillActions = React.memo(function BillActions({
       )}
       {detailsVisible && (
         <Modal
-          title="Detalhes da venda"
           visible={detailsVisible}
           footer={null}
           width={1400}
@@ -202,9 +204,12 @@ const BillActions = React.memo(function BillActions({
             setDetailsVisible(false);
           }}
         >
-          <Details billId={selectedId} setVisible={setDetailsVisible} />
+          <PageWrapper title="Detalhes da Venda">
+            <Details billId={selectedId} setVisible={setDetailsVisible} />
+          </PageWrapper>
         </Modal>
       )}
+
       {paymentsVisible && (
         <Modal
           width={1500}
@@ -212,7 +217,7 @@ const BillActions = React.memo(function BillActions({
           footer={null}
           onCancel={() => setPaymentsVisible(false)}
         >
-          <AddBillPayment billId={selectedId} setVisible={setPaymentsVisible} />
+          <AddBillPayment billId={bill?.id} setVisible={setPaymentsVisible} />
         </Modal>
       )}
     </Container>

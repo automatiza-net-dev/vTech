@@ -12,7 +12,7 @@ import Filters from "./Filters";
 
 import { suppliersColumns } from "./Columns";
 
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -83,22 +83,22 @@ const Suppliers = memo(function Suppliers() {
   return !listSuppliersPermission || listSuppliersPermission === "loading" ? (
     <AccessDenied loading={listSuppliersPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-line uk-margin-remove">Fornecedores</h3>
-      <Filters filters={filters} setFilters={setFilters} />
-      <div className="uk-flex uk-flex-right">
-        <Tooltip title={canCreateSuppliers ? "-" : "Você não tem acesso"}>
-          <Button
-            disabled={!canCreateSuppliers}
-            onClick={() => router.push("/dashboard/fornecedores/novo")}
-          >
-            Cadastrar
-          </Button>
-        </Tooltip>
-      </div>
-      <hr />
-      <Table columns={suppliersColumns} dataSource={formattedSuppliers} />
-    </Container>
+    <PageWrapper title="Fornecedores">
+      <Container>
+        <Filters filters={filters} setFilters={setFilters} />
+        <div className="uk-flex uk-flex-right">
+          <Tooltip title={canCreateSuppliers ? "-" : "Você não tem acesso"}>
+            <Button
+              disabled={!canCreateSuppliers}
+              onClick={() => router.push("/dashboard/fornecedores/novo")}
+              text="Cadastrar"
+            />
+          </Tooltip>
+        </div>
+        <hr />
+        <Table columns={suppliersColumns} dataSource={formattedSuppliers} />
+      </Container>
+    </PageWrapper>
   );
 });
 

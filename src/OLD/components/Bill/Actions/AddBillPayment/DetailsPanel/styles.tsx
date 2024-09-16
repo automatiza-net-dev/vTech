@@ -11,6 +11,6 @@ export const Container = styled.div`
   }
 
   .selected-installments {
-    background-color: var(--blue);
+    background-color: var(--blue) !important;
   }
 `;

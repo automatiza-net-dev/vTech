@@ -26,7 +26,6 @@ const FormChild = memo(function FormChild({
   addItemSubmit = false,
   removeItemSubmit = false,
 }) {
-  const [values, setValues] = useState({});
   const [items, setItems] = useState([]);
   const [productType, setProductType] = useState("");
 
@@ -59,7 +58,7 @@ const FormChild = memo(function FormChild({
         ],
       }));
 
-      setValues((prv) => ({ ...prv, productDescription: null }));
+      setData((prv) => ({ ...prv, productDescription: null }));
     });
   }, [items]);
 
@@ -184,7 +183,7 @@ const FormChild = memo(function FormChild({
 
   useEffect(() => {
     if (type === "update") {
-      setValues({ supName: data?.supName });
+      setData((prv) => ({ ...prv, supName: data?.supName }));
     }
   }, [data]);
 
@@ -196,7 +195,7 @@ const FormChild = memo(function FormChild({
           <AutoComplete
             disabled={type === "update"}
             className="uk-width-1-1"
-            value={values?.supName}
+            value={data?.supName}
             options={
               suppliers &&
               suppliers?.map((sup) => ({
@@ -205,10 +204,9 @@ const FormChild = memo(function FormChild({
                 key: sup?.id,
               }))
             }
-            onChange={(val) => setValues((prv) => ({ ...prv, supName: val }))}
+            onChange={(val) => setData((prv) => ({ ...prv, supName: val }))}
             onSelect={(_, opt) => {
-              setValues((prv) => ({ ...prv, supName: opt?.value }));
-              setData({ ...data, supplierId: opt?.id });
+              setData({ ...data, supplierId: opt?.id, supName: opt?.value });
             }}
             filterOption={(val, opt) =>
               normalizeStr(opt?.name.toUpperCase()).includes(
@@ -242,9 +240,9 @@ const FormChild = memo(function FormChild({
                     normalizeStr(val.toUpperCase())
                   )
                 }
-                value={values?.productDescription}
+                value={data?.productDescription}
                 onChange={(val) =>
-                  setValues({ ...values, productDescription: val })
+                  setData((prv) => ({ ...prv, productDescription: val }))
                 }
                 onSelect={(_, opt) => {
                   setProductType(opt?.type);

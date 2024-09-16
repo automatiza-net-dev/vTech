@@ -1,8 +1,8 @@
 import { TableDashboard, useLoadDashboard } from "@/presentation";
 import { IndicatorTable } from "./indicator-table";
 
-export function TablesSection() {
-  const dashboard = useLoadDashboard({});
+export function TablesSection({ type }: { type?: "crm" }) {
+  const dashboard = useLoadDashboard({ type });
 
   const TableSalesPerPeriod = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-period"
@@ -22,6 +22,10 @@ export function TablesSection() {
 
   const BillsReviewerTableData = dashboard?.data?.tables?.find(
     (table) => table.name === "billsReviewer"
+  );
+
+  const ActivitiesTableData = dashboard?.data?.tables?.find(
+    (table) => table.name === "activities"
   );
 
   return (
@@ -48,6 +52,13 @@ export function TablesSection() {
             TableBudgets.map((item) => (
               <TableDashboard key={item?.name} {...item} />
             ))}
+
+          {ActivitiesTableData && ActivitiesTableData?.hasData && (
+            <TableDashboard
+              key={ActivitiesTableData.name}
+              {...ActivitiesTableData}
+            />
+          )}
 
           {BillsReviewerTableData && (
             <IndicatorTable

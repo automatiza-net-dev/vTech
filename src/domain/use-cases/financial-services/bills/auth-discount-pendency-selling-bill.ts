@@ -10,6 +10,7 @@ export namespace AuthDiscountPendencySellingBill {
   export type Params = {
     billId: Bill["id"];
     itemsIdList: Bill["items"][0]["id"][];
+    paymentsIdList: Bill["payments"][0]["id"][];
     email: UserController["email"];
     password: UserController["password"];
     reason: string;

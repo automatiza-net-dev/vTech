@@ -4,7 +4,6 @@
 
 import React, { memo, useState, useCallback } from "react";
 
-
 // Hooks
 import { useTefFlags } from "@/OLD/hooks/useTefFlags";
 import { useTefAcquirers } from "@/OLD/hooks/useTefAquirers";
@@ -20,13 +19,7 @@ const { Option } = Select;
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 
-const CardFlags = memo(function CardFlags({
-  method,
-  reload,
-  setReload,
-  setVisible,
-  methodId,
-}) {
+function CardFlags({ method, reload, setReload, setVisible, methodId }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const { acquirers } = useTefAcquirers();
@@ -101,29 +94,33 @@ const CardFlags = memo(function CardFlags({
             })}
         </div>
       </div>
-      <div className="uk-margin-top uk-flex">
-        <div className="uk-width-1-2 uk-margin-small-right">
-          <label>Adquirente</label>
-          <Select
-            className="uk-width-1-1"
-            onChange={(e) => setData({ ...data, tefAcquirerId: e })}
-            value={data?.tefAcquirerId}
-          >
-            {acquirers?.length > 0 &&
-              acquirers.map((acquirer) => (
-                <Option value={acquirer?.id}>{acquirer?.description}</Option>
-              ))}
-          </Select>
-        </div>
-        <div className="uk-width-1-3 uk-margin-small-right">
-          <label>Limite Max. Parcelas</label>
-          <Input
-            type="number"
-            onChange={(e) =>
-              setData({ ...data, maxInstallments: e.target.value })
-            }
-            value={data?.maxInstallments}
-          />
+      <div>
+        <div style={{ display: "flex", gap: "5px" }}>
+          <div style={{ width: "70%" }}>
+            <label>Adquirente</label>
+            <Select
+              style={{ width: "100%" }}
+              onChange={(e) => setData({ ...data, tefAcquirerId: e })}
+              value={data?.tefAcquirerId}
+            >
+              {acquirers?.length > 0 &&
+                acquirers.map((acquirer) => (
+                  <Option value={acquirer?.id}>{acquirer?.description}</Option>
+                ))}
+            </Select>
+          </div>
+          <div style={{ width: "30%" }}>
+            <label>Dias Repasse adm. cartão</label>
+            <Input
+              type="number"
+              onChange={(e) =>
+                setData((prv) => ({
+                  ...prv,
+                  daysUntilTransfer: e.target.value,
+                }))
+              }
+            />
+          </div>
         </div>
         {/*
         <div className="uk-width-1-3">
@@ -135,6 +132,28 @@ const CardFlags = memo(function CardFlags({
         </div>
         */}
       </div>
+      <div style={{ display: "flex", gap: "5px", marginTop: "10px" }}>
+        <div style={{ width: "30%" }}>
+          <label>N° Maximo parcelas</label>
+          <Input
+            type="number"
+            onChange={(e) =>
+              setData({ ...data, maxInstallments: e.target.value })
+            }
+            value={data?.maxInstallments}
+          />
+        </div>
+        <div style={{ width: "30%" }}>
+          <label>N° Max parcelas sem senha</label>
+          <Input
+            type="number"
+            onChange={(e) =>
+              setData({ ...data, installmentsWithoutPassword: e.target.value })
+            }
+            value={data?.installmentsWithoutPassword}
+          />
+        </div>
+      </div>
       <hr />
       <footer>
         <Button type="primary" htmlType="submit">
@@ -144,6 +163,6 @@ const CardFlags = memo(function CardFlags({
       </footer>
     </CustomForm>
   );
-});
+}
 
 export default CardFlags;

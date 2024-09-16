@@ -1,4 +1,3 @@
-
 // @ts-nocheck
 import React, { memo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -9,7 +8,7 @@ import { useProductsGroup } from "@/OLD/hooks/useProductGroup";
 
 import { Container } from "./styles";
 import { Table, Modal, notification, Popconfirm } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -99,27 +98,25 @@ const ProductsGroup = memo(function ProductsGroup() {
   return !listKitsPermission || listKitsPermission === "loading" ? (
     <AccessDenied loading={listKitsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <section>
-        <h3 className="uk-margin-remove">Kits de produtos/serviços</h3>
-      </section>
-      <Filters filters={filters} setFilters={setFilters} />
-      <div className="uk-flex uk-flex-right">
-        <CustomButton
-          onClick={() => router.push("/dashboard/kits/criar")}
-          disabled={!canCreateKit}
-        >
-          Cadastrar
-        </CustomButton>
-      </div>
-      <hr />
-      <div className="uk-margin-top">
-        <Table
-          columns={productsGroupColumns}
-          dataSource={formattedProductsGroup}
-        />
-      </div>
-    </Container>
+    <PageWrapper title="Kits de produtos/Serviços">
+      <Container>
+        <Filters filters={filters} setFilters={setFilters} />
+        <div className="uk-flex uk-flex-right">
+          <Button
+            onClick={() => router.push("/dashboard/kits/criar")}
+            disabled={!canCreateKit}
+            text="Cadastrar"
+          />
+        </div>
+        <hr />
+        <div className="uk-margin-top">
+          <Table
+            columns={productsGroupColumns}
+            dataSource={formattedProductsGroup}
+          />
+        </div>
+      </Container>
+    </PageWrapper>
   );
 });
 

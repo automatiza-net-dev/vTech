@@ -20,7 +20,7 @@ export function Pets({
   handleSuccess,
 }: {
   tutor?: Tutor;
-  handleSuccess(data: any): Promise<void>;
+  handleSuccess?(data: any): Promise<void>;
 } & ICreateTutorFormProps) {
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
@@ -29,7 +29,7 @@ export function Pets({
   );
 
   const { createToast } = useToast();
-  const { values, setFieldValue, submitForm } = useFormikContext<Tutor>();
+  const { values, setFieldValue } = useFormikContext<Tutor>();
   const { data, isLoading, refetch } = useLoadSchedulesPatients({});
 
   const options = data?.map((tutor) => {
@@ -43,9 +43,11 @@ export function Pets({
     <ClientPermission client="sancla">
       <InputControl name="holders">
         <S.Pets>
-          <h4 className="font-18-bold">Pets</h4>
+          {values.patients && values.patients.length > 0 && (
+            <h4 className="font-18-bold">Pets</h4>
+          )}
 
-          {values.patients?.map((pet: any) => {
+          {values?.patients?.map((pet: any) => {
             return (
               <div key={pet.id} className="item">
                 <p className="font-16-bold">{pet.name}</p>
@@ -119,32 +121,35 @@ export function Pets({
                       return;
                     }
 
-                    setFieldValue("patients", [
-                      ...pets,
-                      {
-                        id: value,
-                        name: data?.find((pet) => pet.id === value)?.name,
-                      },
-                    ]);
+                    handleSuccess &&
+                      setFieldValue("patients", [
+                        ...pets,
+                        {
+                          id: value,
+                          name: data?.find((pet) => pet.id === value)?.name,
+                        },
+                      ]);
 
                     setFieldValue("petId", "");
 
                     addPet?.onLinkPet &&
                       (await addPet.onLinkPet({
                         patientId: value,
-                        handleSuccess: () =>
-                          handleSuccess({
-                            ...values,
-                            petId: undefined,
-                            patients: [
-                              ...pets,
-                              {
-                                id: value,
-                                name: data?.find((pet) => pet.id === value)
-                                  ?.name,
-                              },
-                            ],
-                          }),
+                        handleSuccess: async () => {
+                          if (handleSuccess)
+                            await handleSuccess({
+                              ...values,
+                              petId: undefined,
+                              patients: [
+                                ...pets,
+                                {
+                                  id: value,
+                                  name: data?.find((pet) => pet.id === value)
+                                    ?.name,
+                                },
+                              ],
+                            });
+                        },
                       }));
 
                     setModalAddPet(false);

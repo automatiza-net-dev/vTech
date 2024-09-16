@@ -6,9 +6,9 @@ import { useRouter } from "next/router";
 
 import { Container, PatientBox } from "./styles";
 import Filters from "./Filters";
-import { Dropdown, Menu, Modal, Button, Input } from "antd";
+import { Dropdown, Menu, Modal, Input } from "antd";
 import HospitalizationTimeline from "@/OLD/components/Hospitalization/HospitalizationTimeline";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import HospitalizationControl from "@/OLD/components/Hospitalization/Control";
 import HeaderForm from "@/OLD/components/Hospitalization/HeaderForm";
 
@@ -42,208 +42,210 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
   const router = useRouter();
 
   return (
-    <Container className="uk-padding">
-      <div className="uk-flex uk-flex-between">
-        <h3>Consulta de internações</h3>
-        <div className="">
-          <CustomButton onClick={() => setReload((prv) => !prv)}>
-            Filtrar
-          </CustomButton>
+    <PageWrapper title="Consulta de internações">
+      <Container>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={() => setReload((prv) => !prv)} text="Filtrar" />
         </div>
-      </div>
-      <Filters filters={filters} setFilters={setFilters} />
-      <hr />
-      <div className="uk-flex uk-flex-wrap">
-        {hospitalizations?.length > 0 &&
-          hospitalizations?.map((hospitalization) => (
-            <PatientBox
-              className=""
-              backgroundNameColor={
-                risks.find((risk) => risk?.id === hospitalization?.risk)?.color
-              }
-              textColor={
-                risks.find((risk) => risk?.id === hospitalization?.risk)
-                  ?.textColor
-              }
-            >
-              <Dropdown
-                trigger="click"
-                overlay={
-                  <Menu
-                    items={[
-                      {
-                        key: "hospitalizationData",
-                        label: "Dados da internação",
-                        onClick: () => setHospitalizationData(hospitalization),
-                      },
-                      {
-                        key: "medicalPrescription",
-                        label: "Prescrições médicas",
-                        onClick: () => {
-                          setSelectedHospitalization(hospitalization);
-                          setControlVisible(true);
-                        },
-                      },
-                      {
-                        key: "hospitalization",
-                        label: "Registros de internação",
-                        onClick: () => {
-                          setTlVisible(true);
-                          setSelectedHospitalization(hospitalization);
-                        },
-                      },
-                      {
-                        key: "patientAttendances",
-                        label: "Ficha do patiente",
-                        onClick: () =>
-                          router.push(
-                            `/dashboard/paciente/${hospitalization?.patient?.id}`
-                          ),
-                      },
-                      {
-                        key: "hospitalizationSchedules",
-                        label: "Agenda internações",
-                        onClick: () => {
-                          window.alert("Verificar tela");
-                          router.push("/dashboard/internacao");
-                        },
-                      },
-                    ]}
-                  />
+        <Filters filters={filters} setFilters={setFilters} />
+        <hr />
+        <div className="uk-flex uk-flex-wrap">
+          {hospitalizations?.length > 0 &&
+            hospitalizations?.map((hospitalization) => (
+              <PatientBox
+                className=""
+                backgroundNameColor={
+                  risks.find((risk) => risk?.id === hospitalization?.risk)
+                    ?.color
+                }
+                textColor={
+                  risks.find((risk) => risk?.id === hospitalization?.risk)
+                    ?.textColor
                 }
               >
-                <h4 className="patient-oc uk-margin-remove uk-flex uk-flex-between uk-flex-middle">
-                  <span>
-                    {hospitalization?.patient?.name}&nbsp;-&nbsp;RG:&nbsp;
-                    {hospitalization?.patient?.tag}
-                  </span>
-                  <VscTriangleDown className="uk-margin-small-bottom" />
-                </h4>
-              </Dropdown>
-              <span className="uk-margin-remove">
-                {hospitalization?.patient?.patientAnimal?.race?.description}
-              </span>
-              <div className="uk-flex uk-flex-between uk-margin-small-top">
-                <div>
-                  <p className="uk-text-muted uk-margin-remove">
-                    Tutor: {hospitalization?.tutor?.name}
-                  </p>
-                  <p className="uk-text-muted uk-margin-remove">
-                    Data internação:{" "}
-                    {moment(
-                      hospitalization?.createdAt,
-                      "YYYY-MM-DD[T]HH:mm:ss"
-                    ).format("DD/MM/YYYY")}
-                  </p>
-                  <p className="uk-text-muted uk-margin-remove">
-                    Data da previsão de alta:{" "}
-                    {moment(
-                      hospitalization?.expectedDischarge,
-                      "YYYY-MM-DD[T]HH:mm:ss"
-                    ).format("DD/MM/YYYY")}
-                  </p>
-                  {hospitalization?.releasedAt && (
+                <Dropdown
+                  trigger="click"
+                  overlay={
+                    <Menu
+                      items={[
+                        {
+                          key: "hospitalizationData",
+                          label: "Dados da internação",
+                          onClick: () =>
+                            setHospitalizationData(hospitalization),
+                        },
+                        {
+                          key: "medicalPrescription",
+                          label: "Prescrições médicas",
+                          onClick: () => {
+                            setSelectedHospitalization(hospitalization);
+                            setControlVisible(true);
+                          },
+                        },
+                        {
+                          key: "hospitalization",
+                          label: "Registros de internação",
+                          onClick: () => {
+                            setTlVisible(true);
+                            setSelectedHospitalization(hospitalization);
+                          },
+                        },
+                        {
+                          key: "patientAttendances",
+                          label: "Ficha do patiente",
+                          onClick: () =>
+                            router.push(
+                              `/dashboard/paciente/${hospitalization?.patient?.id}`
+                            ),
+                        },
+                        {
+                          key: "hospitalizationSchedules",
+                          label: "Agenda internações",
+                          onClick: () => {
+                            window.alert("Verificar tela");
+                            router.push("/dashboard/internacao");
+                          },
+                        },
+                      ]}
+                    />
+                  }
+                >
+                  <h4 className="patient-oc uk-margin-remove uk-flex uk-flex-between uk-flex-middle">
+                    <span>
+                      {hospitalization?.patient?.name}&nbsp;-&nbsp;RG:&nbsp;
+                      {hospitalization?.patient?.tag}
+                    </span>
+                    <VscTriangleDown className="uk-margin-small-bottom" />
+                  </h4>
+                </Dropdown>
+                <span className="uk-margin-remove">
+                  {hospitalization?.patient?.patientAnimal?.race?.description}
+                </span>
+                <div className="uk-flex uk-flex-between uk-margin-small-top">
+                  <div>
                     <p className="uk-text-muted uk-margin-remove">
-                      Data da alta:&nbsp;
-                      {hospitalization?.releasedAt
-                        ? moment(
-                            hospitalization?.releasedAt,
-                            "YYYY-MM-DD[T]HH:mm:ss"
-                          ).format("DD/MM/YYYY")
-                        : "-"}
+                      Tutor: {hospitalization?.tutor?.name}
                     </p>
-                  )}
-                  {hospitalization?.deathAt && (
+                    <p className="uk-text-muted uk-margin-remove">
+                      Data internação:{" "}
+                      {moment(
+                        hospitalization?.createdAt,
+                        "YYYY-MM-DD[T]HH:mm:ss"
+                      ).format("DD/MM/YYYY")}
+                    </p>
+                    <p className="uk-text-muted uk-margin-remove">
+                      Data da previsão de alta:{" "}
+                      {moment(
+                        hospitalization?.expectedDischarge,
+                        "YYYY-MM-DD[T]HH:mm:ss"
+                      ).format("DD/MM/YYYY")}
+                    </p>
+                    {hospitalization?.releasedAt && (
+                      <p className="uk-text-muted uk-margin-remove">
+                        Data da alta:&nbsp;
+                        {hospitalization?.releasedAt
+                          ? moment(
+                              hospitalization?.releasedAt,
+                              "YYYY-MM-DD[T]HH:mm:ss"
+                            ).format("DD/MM/YYYY")
+                          : "-"}
+                      </p>
+                    )}
+                    {hospitalization?.deathAt && (
+                      <p className="uk-margin-remove">
+                        <span>
+                          Data óbito:&nbsp;
+                          {moment(hospitalization?.deathAt).format(
+                            "DD/MM/YYYY"
+                          )}
+                        </span>
+                      </p>
+                    )}
                     <p className="uk-margin-remove">
-                      <span>
-                        Data óbito:&nbsp;
-                        {moment(hospitalization?.deathAt).format("DD/MM/YYYY")}
+                      <span className="uk-margin-remove">
+                        Dias Internado:&nbsp;
+                        {!hospitalization?.releasedAt
+                          ? moment(new Date()).diff(
+                              moment(hospitalization.createdAt),
+                              "days"
+                            )
+                          : moment(hospitalization?.releasedAt).diff(
+                              moment(hospitalization.createdAt),
+                              "days"
+                            ) > 0
+                          ? moment(hospitalization?.releasedAt).diff(
+                              moment(hospitalization.createdAt),
+                              "days"
+                            )
+                          : 1}
+                        &nbsp;dias
                       </span>
                     </p>
-                  )}
-                  <p className="uk-margin-remove">
-                    <span className="uk-margin-remove">
-                      Dias Internado:&nbsp;
-                      {!hospitalization?.releasedAt
-                        ? moment(new Date()).diff(
-                            moment(hospitalization.createdAt),
-                            "days"
-                          )
-                        : moment(hospitalization?.releasedAt).diff(
-                            moment(hospitalization.createdAt),
-                            "days"
-                          ) > 0
-                        ? moment(hospitalization?.releasedAt).diff(
-                            moment(hospitalization.createdAt),
-                            "days"
-                          )
-                        : 1}
-                      &nbsp;dias
-                    </span>
-                  </p>
+                  </div>
                 </div>
-              </div>
-            </PatientBox>
-          ))}
-      </div>
-      {tlVisible && (
-        <HospitalizationTimeline
-          visible={tlVisible}
-          setVisible={setTlVisible}
-          modal={true}
-          patientData={selectedHospitalization}
-        />
-      )}
-      {controlVisible && (
-        <HospitalizationControl
-          id={selectedHospitalization?.id}
-          visible={controlVisible}
-          origin={"consult"}
-          close={() => setControlVisible(false)}
-        />
-      )}
-      {hospitalizationData && (
-        <Modal
-          title="Dados da internação"
-          visible={!!hospitalizationData}
-          footer={
-            <footer>
-              <Button onClick={() => setHospitalizationData(false)}>
-                Fechar
-              </Button>
-            </footer>
-          }
-        >
-          <HeaderForm patientData={hospitalizationData} />
-          <div>
-            <label>Queixa</label>
-            <Input disabled value={hospitalizationData?.complaint} />
-          </div>
-          <div className="uk-margin-small-top">
-            <label>Diagnóstico até o momento</label>
-            <Input disabled value={hospitalizationData?.diagnosis || "-"} />
-          </div>
-          <div className="uk-margin-small-top">
-            <label>Veterinário responsável</label>
-            <Input disabled value={hospitalizationData?.technician} />
-          </div>
-          <div className="uk-margin-small-top">
-            <label>Tutor</label>
-            <Input disabled value={hospitalizationData?.tutor?.name} />
-          </div>
-          <div className="uk-margin-small-top">
-            <label>Gravidade</label>
-            <Input
-              disabled
-              value={
-                risks.find((item) => item?.id === hospitalizationData?.risk)
-                  ?.value
-              }
-            />
-          </div>
-        </Modal>
-      )}
-    </Container>
+              </PatientBox>
+            ))}
+        </div>
+        {tlVisible && (
+          <HospitalizationTimeline
+            visible={tlVisible}
+            setVisible={setTlVisible}
+            modal={true}
+            patientData={selectedHospitalization}
+          />
+        )}
+        {controlVisible && (
+          <HospitalizationControl
+            id={selectedHospitalization?.id}
+            visible={controlVisible}
+            origin={"consult"}
+            close={() => setControlVisible(false)}
+          />
+        )}
+        {hospitalizationData && (
+          <Modal
+            title="Dados da internação"
+            visible={!!hospitalizationData}
+            footer={
+              <footer>
+                <Button
+                  onClick={() => setHospitalizationData(false)}
+                  text="Fechar"
+                />
+              </footer>
+            }
+          >
+            <HeaderForm patientData={hospitalizationData} />
+            <div>
+              <label>Queixa</label>
+              <Input disabled value={hospitalizationData?.complaint} />
+            </div>
+            <div className="uk-margin-small-top">
+              <label>Diagnóstico até o momento</label>
+              <Input disabled value={hospitalizationData?.diagnosis || "-"} />
+            </div>
+            <div className="uk-margin-small-top">
+              <label>Veterinário responsável</label>
+              <Input disabled value={hospitalizationData?.technician} />
+            </div>
+            <div className="uk-margin-small-top">
+              <label>Tutor</label>
+              <Input disabled value={hospitalizationData?.tutor?.name} />
+            </div>
+            <div className="uk-margin-small-top">
+              <label>Gravidade</label>
+              <Input
+                disabled
+                value={
+                  risks.find((item) => item?.id === hospitalizationData?.risk)
+                    ?.value
+                }
+              />
+            </div>
+          </Modal>
+        )}
+      </Container>
+    </PageWrapper>
   );
 });
 

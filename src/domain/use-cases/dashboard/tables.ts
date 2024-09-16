@@ -4,7 +4,8 @@ export type DashboardTableTypes =
   | "budgets"
   | "subgroups"
   | "budgetsAvaliadorConsolidado"
-  | "billsReviewer";
+  | "billsReviewer"
+  | "activities";
 
 export type DashboardTable<T = any> = {
   type: string;
@@ -12,6 +13,7 @@ export type DashboardTable<T = any> = {
   data: T[];
   description?: string;
   configs: T[];
+  hasData?: boolean;
 };
 
 export type Period = {

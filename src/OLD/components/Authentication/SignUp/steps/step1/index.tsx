@@ -1,10 +1,9 @@
-
 import React, { useCallback, useState } from "react";
 
 import { useRouter } from "next/router";
 
 import api from "@/OLD/services";
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 
 export function Step1(props) {
   const [error, setError] = useState(false);
@@ -13,11 +12,13 @@ export function Step1(props) {
 
   const router = useRouter();
 
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = useCallback(
+    async (e) => {
       e.preventDefault();
       setLoading(true);
 
-      await api?.get(`/users/check-email/${data.email}`)
+      await api
+        ?.get(`/users/check-email/${data.email}`)
         .then((res) => {
           if (res.data?.inUse) {
             setError(true);
@@ -48,9 +49,10 @@ export function Step1(props) {
           <h3 className="uk-margin-medium-bottom">
             Acesse sua clinica fazendo login no sistema
           </h3>
-          <Button theme="primary" width="1-4" onClick={() => router.push("/")}>
-            {loading ? "Carregando..." : "Logar"}
-          </Button>
+          <Button
+            text={loading ? "Carregando..." : "Logar"}
+            onClick={() => router.push("/")}
+          />
         </>
       ) : (
         <>
@@ -58,10 +60,7 @@ export function Step1(props) {
             Ótimo! Agora conte um pouco sobre você. Utilizaremos estas
             informações para entrar em contato.
           </h3>
-          <form
-            onSubmit={handleSubmit}
-            className={"uk-flex uk-flex-column"}
-          >
+          <form onSubmit={handleSubmit} className={"uk-flex uk-flex-column"}>
             <label htmlFor="email">Email</label>
             <input
               className={`uk-input ${
@@ -70,15 +69,18 @@ export function Step1(props) {
               type="email"
               id="email"
               value={data?.email}
-              onChange={(e) => setData(state => ({ ...state, email: e.target.value }))}
+              onChange={(e) =>
+                setData((state) => ({ ...state, email: e.target.value }))
+              }
               required
             />
 
             <footer>
               <div>
-                <Button theme="primary" width="1-4" type="submit">
-                  {loading ? "Carregando..." : "Próximo"}
-                </Button>
+                <Button
+                  text={loading ? "Carregando..." : "Próximo"}
+                  type="submit"
+                />
               </div>
               <div className="uk-margin-top uk-text-center uk-width-1-4">
                 <span className="uk-link" onClick={() => router.push("/")}>

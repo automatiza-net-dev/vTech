@@ -11,11 +11,10 @@ import "moment/locale/pt-br";
 
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
-import { SearchIcon } from "@/OLD/common/icons";
 
 // Components
 import { Select, Table, notification } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import { useQuery } from "react-query";
 import columns from "./Columns";
 import CreateSubgroup from "./Create";
@@ -52,8 +51,9 @@ const Subgroups = memo(function Subgroups() {
   return !listSubgroupsPermission || listSubgroupsPermission === "loading" ? (
     <AccessDenied loading={listSubgroupsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de subgrupos</h3>
+    <PageWrapper title="Controle de subgrupos">
+
+    <Container>
       <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
         <Input>
           <input
@@ -63,16 +63,14 @@ const Subgroups = memo(function Subgroups() {
               setFilters({ ...filters, description: e.target.value })
             }
           />
-          <SearchIcon />
+         
         </Input>
         <div className="uk-margin-small-top">
           <Button
             onClick={() => setVisible(true)}
             disabled={!canCreateSubGroup}
-          >
-            {" "}
-            Cadastro{" "}
-          </Button>
+            text="Cadastro"
+          />
         </div>
       </div>
       <hr />
@@ -87,10 +85,10 @@ const Subgroups = memo(function Subgroups() {
             <div className="uk-flex uk-flex-around">
               {canEditSubGroup && (
                 <EditTwoTone
-                  size={15}
-                  onClick={() => {
-                    if (!permissions?.SBG2) {
-                      return notification.error({
+                size={15}
+                onClick={() => {
+                  if (!permissions?.SBG2) {
+                    return notification.error({
                         message: "Ação não permitida",
                       });
                     }
@@ -124,6 +122,7 @@ const Subgroups = memo(function Subgroups() {
         subgroups={data ?? []}
       />
     </Container>
+          </PageWrapper>
   );
 });
 

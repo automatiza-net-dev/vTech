@@ -6,10 +6,10 @@ import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { Container, InputBox } from "./styles";
 import { DateFilter } from "@/OLD/components/mini-components";
-import { Input, AutoComplete, Select, Button } from "antd";
+import { Input, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Option } = Select;
 
@@ -29,9 +29,7 @@ const Filters = memo(function Filters({
   const [values, setValues] = useState({});
 
   const { businessUnits } = useBusinessUnitsByUser(false);
-  
 
-  
   const router = useRouter();
   const newOpportunityPermission = useUserHasPermission("CRM01");
   const viewAllOpportunitiesPermission = useUserHasPermission("CRM09");
@@ -341,23 +339,22 @@ const Filters = memo(function Filters({
             </InputBox>
           </div>
         )}
-        <div className="uk-flex uk-flex-right uk-width-1-5 uk-margin-top">
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+        >
           <Button
             onClick={() => {
               setFilters((prv) => ({ ...prv, noSearch: false }));
               setReload((prv) => !prv);
             }}
-            type="primary"
-            className="uk-margin-right uk-margin-small-top"
-          >
-            Filtrar
-          </Button>
+            text="Filtrar"
+          />
+
           <div style={{ display: "block" }}>
-            <CustomButton
+            <Button
+              text="Nova oportunidade"
               onClick={() => router.push("/crm/oportunidades/nova")}
-            >
-              Nova oportunidade
-            </CustomButton>
+            />
           </div>
         </div>
       </section>

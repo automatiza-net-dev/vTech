@@ -1,4 +1,6 @@
-import { BusinessUnit, User, Patient, Tutor, Product, Budget } from "@/domain";
+import { BusinessUnit, User, Patient, Tutor, Product, Budget, Payment } from "@/domain";
+
+export type BillItem = Product & {};
 
 export type Bill = {
   id: string;
@@ -28,7 +30,7 @@ export type Bill = {
   icms_uf_origin_value: number;
   icms_uf_destination_value: number;
   other_value: number;
-  additional_information: number;
+  additionalInformation: number;
   cancelled_at: Date | null;
   cancellation_observation: null | string;
   status: "BAIXADA" | "ABERTA";
@@ -46,58 +48,9 @@ export type Bill = {
   seller: User;
   user: User["user"];
   patient: Patient;
-  payments: {
-    id: string;
-    block: number;
-    expiration_date: Date;
-    fee_type: "SEM_JUROS";
-    fee_value: number;
-    fee_percentage: number;
-    installment_value: number;
-    total_value: number;
-    status: null;
-    created_at: Date;
-    updated_at: Date;
-    installments: number;
-    nsu_document: 1;
-    payment_method_discount_percentage: 0;
-    payment_method_discount_value: 0;
-    conference_date: null;
-    qty_installments: 1;
-    acquirer: {
-      id: string;
-      description: string;
-    };
-    flag: {
-      id: string;
-      description: string;
-      code: string;
-      type: "D" | "C" | "A";
-    };
-    paymentMethod: {
-      id: string;
-      description: string;
-      requires_document: boolean;
-      tef: "POS";
-      type: "DEBITO" | "CREDITO";
-      fee: number;
-      automatic_cancellation: boolean;
-      days_first_installment: number;
-      days_between_installments: number;
-      days_until_transfer: number;
-      installments_without_password: number;
-      max_installments: number;
-      allow_change_expiration_date: boolean;
-      minimum_installment_value: number;
-      active: boolean;
-      created_at: Date;
-      updated_at: Date;
-      usage: "RECEBER";
-      nfe_code: string;
-    };
-  }[];
+  payments: Payment[];
   client: Tutor;
-  items: Product[];
+  items: BillItem[];
   budget: {
     id: Budget["id"];
   };

@@ -17,7 +17,7 @@ const Container = styled.div`
   }
 `;
 
-const BudgetActions = React.memo(function BudgetActions({
+function BudgetActions({
   budget,
   setReload = false,
 }) {
@@ -32,6 +32,6 @@ const BudgetActions = React.memo(function BudgetActions({
       <ShowBudget budget={budget} setReload={setReload} />
     </Container>
   );
-});
+};
 
 export default BudgetActions;

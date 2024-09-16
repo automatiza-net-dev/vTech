@@ -14,7 +14,8 @@ export class RemoteBudget
     domain.LoadOpenNegotiations,
     domain.LoadAllBudgetsAttendance,
     domain.LoadPaymentsPreview,
-    domain.DeletePaymentPreview
+    domain.DeletePaymentPreview,
+    domain.DeleteBudgetItem
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -117,5 +118,12 @@ export class RemoteBudget
     });
 
     return {};
+  }
+
+  async deleteBudgetItem(params: domain.DeleteBudgetItem.Params) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/delete-item/${params.id}`),
+      method: "delete",
+    });
   }
 }

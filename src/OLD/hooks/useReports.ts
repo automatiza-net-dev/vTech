@@ -50,8 +50,8 @@ export const useFlowReports = (filters, reload) => {
     if (keys.includes("fromDate")) {
       newObj = {
         ...newObj,
-        fromDate: moment(filters?.fromDate).toISOString(),
-        toDate: moment(filters.toDate).toISOString(),
+        fromDate: moment(filters?.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(filters.toDate).format("YYYY-MM-DD"),
       };
     }
 

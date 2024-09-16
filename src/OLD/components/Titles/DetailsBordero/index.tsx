@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import { useShowBordero } from "@/OLD/hooks/useFinances";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
-import { Input, Table, notification, Modal, Button } from "antd";
+import { Button } from "infinity-forge";
+import { Input, Table, notification, Modal } from "antd";
 import FormChild from "@/OLD/components/Titles/Actions/BorderoActions/FormChild";
 import Actions from "./Actions";
 
@@ -226,26 +226,27 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
       <Table columns={columns} dataSource={formattedTitles} />
       <footer className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
         {bordero?.status === "Aberto" && (
-          <CustomButton onClick={closeBordero}>Fechar borderô</CustomButton>
+          <Button onClick={closeBordero} text="Fechar borderô" />
         )}
         {bordero?.status === "Fechado" && (
-          <CustomButton onClick={reopenBordero}>Reabrir Borderô</CustomButton>
+          <Button onClick={reopenBordero} text="Reabrir borderô" />
         )}
         {bordero?.status === "Fechado" && (
-          <CustomButton onClick={() => setDownModalVisible(true)}>
-            Baixar Borderô
-          </CustomButton>
+          <Button
+            onClick={() => setDownModalVisible(true)}
+            text="Baixar borderô"
+          />
         )}
         {bordero?.status === "Baixado" && (
-          <CustomButton onClick={() => setRevertModalVisible(true)}>
-            Estornar Borderô
-          </CustomButton>
+          <Button
+            onClick={() => setRevertModalVisible(true)}
+            text="Extornar borderô"
+          />
         )}
-        {/*<CustomButton onClick={() => router.back()}>Voltar</CustomButton>*/}
       </footer>
       <hr />
       <footer className="uk-flex uk-flex-right">
-        <Button onClick={() => setVisible(false)}>Fechar</Button>
+        <Button onClick={() => setVisible(false)} text="Fechar" />
       </footer>
       <Modal
         title={`Baixar Borderô - ${bordero?.document}`}

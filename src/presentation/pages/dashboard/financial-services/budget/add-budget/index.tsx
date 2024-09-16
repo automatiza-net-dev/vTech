@@ -1,12 +1,12 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   Input,
-  Modal,
   useToast,
   FormHandler,
   LoaderCircle,
   InputDatePicker,
+  BadRequestError,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
@@ -14,23 +14,21 @@ import { useQueryClient } from "react-query";
 import {
   AddProduct,
   formatCart,
-  useDictionary,
-  useLoadPatient,
-  useLoadAllPatientTutor,
-  useLoadAllDailyMovements,
-  useLoadBudget,
-} from "@/presentation";
-import { RemoteBudget } from "@/data";
-import { Attendace, Budget } from "@/domain";
-import { DiscountConfirmation } from "@/presentation";
-import { TypesAutomatiza, container } from "@/container";
-
-import {
-  ErrorBudget,
   SelectSeller,
   SelectClient,
   SelectPatient,
-} from "./components";
+  useDictionary,
+  useLoadBudget,
+  ErrorDailyBox,
+  useLoadPatient,
+  useLoadAllPatientTutor,
+  useLoadAllDailyMovements,
+} from "@/presentation";
+import { RemoteBudget } from "@/data";
+import { Attendace, Budget } from "@/domain";
+import { TypesAutomatiza, container } from "@/container";
+
+import { DeleteCartItems } from "../../utils/delete-cart-items";
 
 import * as S from "./styles";
 
@@ -45,10 +43,6 @@ export function AddBudgetNew({
   setModal?: Dispatch<SetStateAction<boolean>>;
   listCreated?: (id: Budget["id"]) => void | undefined;
 }) {
-  const [storeData, setStoreData] = useState({});
-  const [discountConfirmVisible, setDiscountConfirmVisible] =
-    useState<boolean>(false);
-
   const patient = useLoadPatient();
   const budgetDetail = useLoadBudget({ id: budgetId || "" });
   const dailyMovements = useLoadAllDailyMovements();
@@ -78,7 +72,7 @@ export function AddBudgetNew({
   }
 
   if ((!activeDailyMovement && !isFetching) || budgetDetail.error) {
-    return <ErrorBudget />;
+    return <ErrorDailyBox />;
   }
 
   const patientId =
@@ -102,49 +96,64 @@ export function AddBudgetNew({
     clientName:
       budgetDetail?.data?.client?.name ||
       patientTutor?.data?.find((tutor) => tutor.id === clientId)?.name,
-    cart: budgetDetail?.data?.items,
+    cart: budgetDetail?.data?.items || [],
     sellerId: budgetDetail?.data?.seller?.id,
     reviewerId: budgetDetail?.data?.reviewer?.id,
     observation: budgetDetail?.data?.observation,
     internalObservation: budgetDetail?.data?.internalObservation,
   };
 
-  async function handleSubmit(data) {
-    const verifyClientExist = patientTutor.data?.find(
-      (tutor) => tutor.id === data.clientId
-    );
+  async function handleSubmit(data, _, initialValues) {
+    try {
+      const verifyClientExist = patientTutor.data?.find(
+        (tutor) => tutor.id === data.clientId
+      );
+  
+      const formatItemsCart = formatCart(data.cart, data.maxDiscount);
+  
+      const payload = {
+        ...data,
+        id: budgetId,
+        clientId: verifyClientExist ? data.clientId : "",
+        clientName: data.clientName || verifyClientExist ? "" : data.clientId,
+        attendanceId,
+        items: formatItemsCart,
+        budgetDate: new Date().toISOString(),
+        dailyMovementId: activeDailyMovement?.id,
+        expirationDate: moment(data.expirationDate).format("YYYY-MM-DD"),
+      };
+  
+      const response = await container
+        .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
+        [budgetId ? "update" : "create"](payload);
 
-    const payload = {
-      ...data,
-      id: budgetId,
-      clientId: verifyClientExist ? data.clientId : "",
-      clientName: data.clientName || verifyClientExist ? "" : data.clientId,
-      attendanceId,
-      items: formatCart(data.cart, data.maxDiscount),
-      budgetDate: new Date().toISOString(),
-      dailyMovementId: activeDailyMovement?.id,
-      expirationDate: moment(data.expirationDate).format("YYYY-MM-DD"),
-    };
-
-    const response = await container
-      .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
-      [budgetId ? "update" : "create"](payload);
-
-    listCreated && listCreated(response.id);
-
-    createToast({
-      status: "success",
-      message: `${getWord("Orçamento")} ${
-        budgetId ? "atualizado" : "criado"
-      } com sucesso`,
-    });
-
-    patientId &&
-      queryClient.invalidateQueries({
-        queryKey: ["LastUpdates", patientId],
+      await DeleteCartItems(initialValues?.cart, data.cart);
+  
+      listCreated && listCreated(response.id);
+  
+      createToast({
+        status: "success",
+        message: `${getWord("Orçamento")} ${
+          budgetId ? "atualizado" : "criado"
+        } com sucesso`,
       });
-
-    setModal && setModal(false);
+  
+      patientId &&
+        queryClient.invalidateQueries({
+          queryKey: ["LastUpdates", patientId],
+        });
+      setModal && setModal(false);
+    }catch(err) {
+      if (err instanceof BadRequestError && err?.error?.message === "Desconto máximo foi excedido") {
+        if (
+          window.confirm(
+            `Desconto máximo foi excedido, O orçamento possui itens com desconto acima do permitido, deseja gravar e enviar o orçamento para aprovação ?`
+          )
+        ) {
+          handleSubmit({ ...data, maxDiscount: true }, _, initialValues);
+        }
+      }
+    }
   }
 
   return (
@@ -154,16 +163,7 @@ export function AddBudgetNew({
         disableEnterKeySubmitForm
         button={{ text: `Salvar` }}
         initialData={initialData}
-        onSucess={async (data) => {
-          try {
-            await handleSubmit(data);
-          } catch (response: any) {
-            if (response?.error?.message === "Desconto máximo foi excedido") {
-              setStoreData(data);
-              setDiscountConfirmVisible(true);
-            }
-          }
-        }}
+        onSucess={handleSubmit}
         cleanFieldsOnSubmit={false}
       >
         <div className="content_form">
@@ -197,19 +197,8 @@ export function AddBudgetNew({
         </div>
 
         <AddProduct />
+        
       </FormHandler>
-
-      <Modal
-        open={discountConfirmVisible}
-        onClose={() => setDiscountConfirmVisible(false)}
-        children={
-          <DiscountConfirmation
-            onConfirm={() => handleSubmit({ ...storeData, maxDiscount: true })}
-            onCancel={() => setDiscountConfirmVisible(false)}
-            origin="Orçamento"
-          />
-        }
-      />
     </S.AddBudget>
   );
 }

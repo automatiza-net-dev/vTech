@@ -106,7 +106,7 @@ const menu = (setFormData, op, permissions, renderGain) => {
   );
 };
 
-const StatusColumns = memo(function StatusColumns({
+function StatusColumns({
   column,
   opportunities,
   setReload,
@@ -195,7 +195,7 @@ const StatusColumns = memo(function StatusColumns({
     <Container className="uk-width-1-5">
       <div className="title-header uk-box-shadow-medium">
         <h6 className="uk-margin-remove">
-          {column.label}{" "}
+          {column.label}
           {column?.title === "Nova Oportunidade" &&
             newOpportunityPermission && (
               <Tooltip title="Adicionar oportunidade">
@@ -207,6 +207,7 @@ const StatusColumns = memo(function StatusColumns({
               </Tooltip>
             )}
         </h6>
+        <div className="cards-qty">{sortedOpportunities?.length || 0}</div>
       </div>
       <div className="uk-margin-small-top">
         {sortedOpportunities?.map((op) => (
@@ -463,6 +464,6 @@ const StatusColumns = memo(function StatusColumns({
       )}
     </Container>
   );
-});
+}
 
 export default StatusColumns;

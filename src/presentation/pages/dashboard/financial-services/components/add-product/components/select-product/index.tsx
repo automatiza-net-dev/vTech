@@ -50,6 +50,7 @@ export function SelectProduct() {
             productVariationId: id,
             maximum_discount_percentage:
               businessUnitProducts[0].maximum_discount_percentage,
+            toSubmit: true,
           };
         }
       ),

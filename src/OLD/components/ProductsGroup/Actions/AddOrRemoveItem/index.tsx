@@ -12,11 +12,10 @@ import {
   notification,
   Input,
   Modal,
-  Button,
   Switch,
   Popconfirm,
 } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { Container } from "./styles";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
@@ -311,7 +310,7 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
                 />
               </div>
               <div className="uk-margin-top">
-                <CustomButton onClick={() => addItem()}>Adicionar</CustomButton>
+                <Button onClick={() => addItem()} text="Adicionar" />
               </div>
             </>
           )}
@@ -420,28 +419,25 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
           <hr />
           <footer className="uk-flex uk-flex-right">
             <div className="uk-flex uk-width-1-2 uk-flex-right uk-flex-around">
-              <Button type="primary" htmlType="submit">
-                Salvar
-              </Button>
-              <Button onClick={() => setUpdateVisible(false)}>Fechar</Button>
+              <Button type="submit" text="Salvar" />
+
+              <Button onClick={() => setUpdateVisible(false)} text="Fechar" />
             </div>
           </footer>
         </form>
       </Modal>
-      <CustomButton
-        classCallback={"uk-margin-top uk-margin-right"}
-        onClick={() => router.back()}
+      <footer
+        style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
       >
-        Voltar
-      </CustomButton>
-      {action === "update" && (
-        <CustomButton
-          classCallback={"uk-margin-top"}
-          onClick={() => !loadingUpdate && update()}
-        >
-          {loadingUpdate ? "Carregando..." : "Salvar"}
-        </CustomButton>
-      )}
+        <Button text="Voltar" onClick={() => router.back()} />
+
+        {action === "update" && (
+          <Button
+            text={loadingUpdate ? "Carregando..." : "Salvar"}
+            onClick={() => !loadingUpdate && update()}
+          />
+        )}
+      </footer>
     </Container>
   );
 });

@@ -12,10 +12,10 @@ import { examService } from "@/OLD/services/exams.service";
 import { groupsService } from "@/OLD/services/groups.service";
 
 // Components
-import { Input, notification, Switch, Button, Select } from "antd";
+import { Input, notification, Switch, Select } from "antd";
 import Editor from "@/OLD/components/Editor";
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -132,13 +132,8 @@ const UpdateExam = memo(function UpdateExam() {
             <hr />
             <footer className="uk-flex uk-flex-right">
               <div className="uk-width-1-2 uk-flex uk-flex-around">
-                <CustomButton htmlType="submit" type="primary">
-                  Salvar
-                </CustomButton>
-                <CustomButton onClick={() => router.back()}>
-                  {" "}
-                  Voltar{" "}
-                </CustomButton>
+                <Button type="submit" text="Salvar" />
+                <Button onClick={() => router.back()} text="Voltar" />
               </div>
             </footer>
           </form>

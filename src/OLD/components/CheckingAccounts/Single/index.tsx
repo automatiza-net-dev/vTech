@@ -12,7 +12,7 @@ import { checkingAccountService } from "@/OLD/services/checkingAccount.service";
 // Components
 import { Container } from "./styles";
 import FormChild from "../FormChild";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Descriptions, Modal, notification } from "antd";
 const { Item } = Descriptions;
 
@@ -72,51 +72,46 @@ const Single = memo(function Single() {
   }, [data, checkingAccount?.id]);
 
   return (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Detalhes da conta bancária</h3>
-      <div className="uk-flex uk-flex-right">
-        <CustomButton
-          classCallback="uk-margin-right"
-          onClick={() => router.back()}
+    <PageWrapper title="Detalhes da conta bancária">
+      <Container>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+          <Button onClick={() => router.back()} text="Voltar" />
+
+          <Button onClick={() => setUpdateVisible(true)} text="Editar" />
+        </div>
+        <section className="body-page uk-margin-top uk-padding">
+          <Descriptions title="Detalhes">
+            <Item label="Nome da conta">{data?.description}</Item>
+            <Item label="Agência">{data?.agency}</Item>
+            <Item label="Código banco">{data?.bankCode}</Item>
+            <Item label="Telefone agência">{data?.agencyPhone}</Item>
+            <Item label="Nome do banco">{data?.bankName}</Item>
+            <Item label="Limite">{data?.limit}</Item>
+            <Item label="Email gerente">{data?.managerEmail}</Item>
+            <Item label="Nome do gerente">{data?.managerName}</Item>
+            <Item label="Telefone gerente">{data?.managerPhone}</Item>
+            <Item label="Tipo">
+              {data?.type?.toLowerCase().replace("_", " ")}
+            </Item>
+            <Item label="Unidade">{checkingAccount?.unit?.identification}</Item>
+          </Descriptions>
+        </section>
+        <Modal
+          title="Atualizar dados da conta"
+          footer={null}
+          width={800}
+          onCancel={() => setUpdateVisible(false)}
+          visible={updateVisible}
         >
-          Voltar
-        </CustomButton>
-        <CustomButton onClick={() => setUpdateVisible(true)}>
-          Editar
-        </CustomButton>
-      </div>
-      <section className="body-page uk-margin-top uk-padding">
-        <Descriptions title="Detalhes">
-          <Item label="Nome da conta">{data?.description}</Item>
-          <Item label="Agência">{data?.agency}</Item>
-          <Item label="Código banco">{data?.bankCode}</Item>
-          <Item label="Telefone agência">{data?.agencyPhone}</Item>
-          <Item label="Nome do banco">{data?.bankName}</Item>
-          <Item label="Limite">{data?.limit}</Item>
-          <Item label="Email gerente">{data?.managerEmail}</Item>
-          <Item label="Nome do gerente">{data?.managerName}</Item>
-          <Item label="Telefone gerente">{data?.managerPhone}</Item>
-          <Item label="Tipo">
-            {data?.type?.toLowerCase().replace("_", " ")}
-          </Item>
-          <Item label="Unidade">{checkingAccount?.unit?.identification}</Item>
-        </Descriptions>
-      </section>
-      <Modal
-        title="Atualizar dados da conta"
-        footer={null}
-        width={800}
-        onCancel={() => setUpdateVisible(false)}
-        visible={updateVisible}
-      >
-        <FormChild
-          data={data}
-          setData={setData}
-          setVisible={setUpdateVisible}
-          submit={submitUpdate}
-        />
-      </Modal>
-    </Container>
+          <FormChild
+            data={data}
+            setData={setData}
+            setVisible={setUpdateVisible}
+            submit={submitUpdate}
+          />
+        </Modal>
+      </Container>
+    </PageWrapper>
   );
 });
 

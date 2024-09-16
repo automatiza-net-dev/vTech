@@ -11,11 +11,10 @@ import "moment/locale/pt-br";
 
 // Icons
 import { EditTwoTone, ExpandOutlined } from "@ant-design/icons";
-import { SearchIcon } from "@/OLD/common/icons";
 
 // Components
 import { Table } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import { useQuery } from "react-query";
 import columns from "./Columns";
 import CreateVariation from "./Create";
@@ -50,88 +49,87 @@ const Variations = memo(function Variations() {
   return !listVariationsPermission || listVariationsPermission === "loading" ? (
     <AccessDenied loading={listVariationsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de variações</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <Input>
-          <input
-            type="search"
-            placeholder="Descrição"
-            onChange={(e) =>
-              setFilters({ ...filters, description: e.target.value })
-            }
-          />
-          <SearchIcon />
-        </Input>
-        <div className="uk-margin-small-top">
-          <Button
-            onClick={() => setVisible(true)}
-            disabled={!canCreateVariations}
-          >
-            {" "}
-            Cadastro{" "}
-          </Button>
+    <PageWrapper title="Controle de variações">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <Input>
+            <input
+              type="search"
+              placeholder="Descrição"
+              onChange={(e) =>
+                setFilters({ ...filters, description: e.target.value })
+              }
+            />
+
+          </Input>
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => setVisible(true)}
+              disabled={!canCreateVariations}
+              text="Cadastro"
+            />
+          </div>
         </div>
-      </div>
-      <hr />
-      <Table
-        className="uk-margin-top"
-        dataSource={data?.map((item) => ({
-          description: item?.description,
-          createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
-          nOptions: item?.options.length,
-          status: item?.active ? "Ativo" : "Inativo",
-          options: (
-            <div className="uk-flex uk-flex-around">
-              <ExpandOutlined
-                size={15}
-                onClick={() => {
-                  setSelectedId(item.id);
-                }}
-              />
-            </div>
-          ),
-          actions: (
-            <div className="uk-flex uk-flex-around">
-              {canEditVariations && (
-                <EditTwoTone
+        <hr />
+        <Table
+          className="uk-margin-top"
+          dataSource={data?.map((item) => ({
+            description: item?.description,
+            createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
+            nOptions: item?.options.length,
+            status: item?.active ? "Ativo" : "Inativo",
+            options: (
+              <div className="uk-flex uk-flex-around">
+                <ExpandOutlined
                   size={15}
                   onClick={() => {
-                    setSelected(item);
+                    setSelectedId(item.id);
                   }}
                 />
-              )}
-              {canDeleteVariations && (
-                <DeleteVariation
-                  id={item?.id}
-                  close={() => setSelected(null)}
-                />
-              )}
-            </div>
-          ),
-        }))}
-        columns={columns}
-      />
-      <UpdateVariationOptions
-        visible={!!selectedId}
-        id={selectedId}
-        hide={() => {
-          refetch();
-          setSelectedId(null);
-        }}
-      />
-      <CreateVariation
-        visible={visible}
-        hide={() => {
-          setVisible(false);
-        }}
-      />
-      <EditVariation
-        visible={!!selected}
-        hide={() => setSelected(null)}
-        variationInfo={selected}
-      />
-    </Container>
+              </div>
+            ),
+            actions: (
+              <div className="uk-flex uk-flex-around">
+                {canEditVariations && (
+                  <EditTwoTone
+                    size={15}
+                    onClick={() => {
+                      setSelected(item);
+                    }}
+                  />
+                )}
+                {canDeleteVariations && (
+                  <DeleteVariation
+                    id={item?.id}
+                    close={() => setSelected(null)}
+                  />
+                )}
+              </div>
+            ),
+          }))}
+          columns={columns}
+        />
+        <UpdateVariationOptions
+          visible={!!selectedId}
+          id={selectedId}
+          hide={() => {
+            refetch();
+            setSelectedId(null);
+          }}
+        />
+        <CreateVariation
+          visible={visible}
+          hide={() => {
+            setVisible(false);
+          }}
+        />
+        <EditVariation
+          visible={!!selected}
+          hide={() => setSelected(null)}
+          variationInfo={selected}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

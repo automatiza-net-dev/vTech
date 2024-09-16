@@ -25,6 +25,11 @@ export const paymentsColumns = [
     dataIndex: "downDate",
   },
   {
+    title: "Dados Autorização",
+    key: "authorization",
+    dataIndex: "authorization",
+  },
+  {
     title: "Recibo",
     key: "print",
     dataIndex: "print",

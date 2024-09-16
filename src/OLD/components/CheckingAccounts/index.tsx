@@ -10,9 +10,6 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 // Services
 import { checkingAccountService } from "@/OLD/services/checkingAccount.service";
 
-// Icons
-import { SearchIcon } from "@/OLD/common/icons";
-
 // Utils
 import { Columns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -22,7 +19,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { Modal, Table, notification, Tooltip, Select } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Container, Input as InputBox } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import FormChild from "./FormChild";
 import Actions from "./Actions";
 const { Option } = Select;
@@ -123,85 +120,76 @@ const CheckingAccounts = memo(function CheckingAccounts() {
     listAccountsBankPermission === "loading" ? (
     <AccessDenied loading={listAccountsBankPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Contas bancárias</h3>
-      <div className="uk-margin-right uk-flex uk-flex-around">
-        <InputBox>
-          <input
-            type="search"
-            placeholder="Nome da conta"
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-          />
-          <SearchIcon />
-        </InputBox>
-        <InputBox>
-          <input
-            type="search"
-            placeholder="Banco"
-            onChange={(e) => setFilters({ ...filters, bank: e.target.value })}
-          />
-          <SearchIcon />
-        </InputBox>
-        {/*
-        <InputBox>
-          <input
-            type="search"
-            placeholder="Unidade de negócio"
-            onChange={(e) => setFilters({ ...filters, unity: e.target.value })}
-          />
-          <SearchIcon />
-        </InputBox>
-        */}
-        <div className="uk-width-1-3 uk-margin-small-top uk-margin-small-right">
-          <Select
-            placeholder="tipo de conta"
-            className="uk-width-1-1"
-            onChange={(e) => {
-              if (e === "all") {
-                return setFilters(delete filters.type);
-              }
-              setFilters({ ...filters, type: e });
-            }}
-          >
-            <Option value="all">Todos</Option>
-            <Option value="CONTA_CORRENTE">Conta corrente</Option>
-            <Option value="CONTA_POUPANCA">Conta pupança</Option>
-            <Option value="CONTA_INVESTIMENTO">Conta investimento</Option>
-            <Option value="CONTA_CAIXA_UNIDADE_NEGOCIO">
-              Conta caixa/Cofre unidade negócio
-            </Option>
-          </Select>
+    <PageWrapper title="Contas bancárias">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-around">
+          <InputBox>
+            <input
+              type="search"
+              placeholder="Nome da conta"
+              onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            />
+   
+          </InputBox>
+          <InputBox>
+            <input
+              type="search"
+              placeholder="Banco"
+              onChange={(e) => setFilters({ ...filters, bank: e.target.value })}
+            />
+
+          </InputBox>
+        
+          <div className="uk-width-1-3 uk-margin-small-top uk-margin-small-right">
+            <Select
+              placeholder="tipo de conta"
+              className="uk-width-1-1"
+              onChange={(e) => {
+                if (e === "all") {
+                  return setFilters(delete filters.type);
+                }
+                setFilters({ ...filters, type: e });
+              }}
+            >
+              <Option value="all">Todos</Option>
+              <Option value="CONTA_CORRENTE">Conta corrente</Option>
+              <Option value="CONTA_POUPANCA">Conta pupança</Option>
+              <Option value="CONTA_INVESTIMENTO">Conta investimento</Option>
+              <Option value="CONTA_CAIXA_UNIDADE_NEGOCIO">
+                Conta caixa/Cofre unidade negócio
+              </Option>
+            </Select>
+          </div>
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => setNewAccountVisible(true)}
+              disabled={!canCreateAccountBank}
+              text="Cadastrar"
+            />
+          </div>
         </div>
-        <div className="uk-margin-small-top">
-          <CustomButton
-            onClick={() => setNewAccountVisible(true)}
-            disabled={!canCreateAccountBank}
-          >
-            Cadastrar
-          </CustomButton>
-        </div>
-      </div>
-      <Modal
-        visible={newAccountVisible}
-        onCancel={() => setNewAccountVisible(false)}
-        title="Cadastro de nova conta bancária"
-        width={800}
-        footer={null}
-      >
-        <FormChild
-          data={data}
-          setData={setData}
-          setVisible={setNewAccountVisible}
-          submit={openCheckingAccount}
+        <Modal
+          visible={newAccountVisible}
+          onCancel={() => setNewAccountVisible(false)}
+          title="Cadastro de nova conta bancária"
+          width={800}
+          footer={null}
+        >
+          <FormChild
+            data={data}
+            setData={setData}
+            setVisible={setNewAccountVisible}
+            submit={openCheckingAccount}
+          />
+        </Modal>
+        <hr />
+        <Table
+          dataSource={formatedAccounts}
+          className="uk-margin-large-top"
+          columns={Columns}
         />
-      </Modal>
-      <hr />
-      <Table
-        dataSource={formatedAccounts}
-        className="uk-margin-large-top"
-        columns={Columns}
-      />
-    </Container>
+      </Container>
+    </PageWrapper>
   );
 });
 

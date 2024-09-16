@@ -23,8 +23,8 @@ import {
   Input,
   notification,
   Select,
-  Button,
 } from "antd";
+import { Button } from "infinity-forge";
 import HeaderForm from "../HeaderForm";
 import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
 import Editor from "@/OLD/components/Editor";
@@ -48,7 +48,7 @@ const detectForm = (str) => {
   }
 };
 
-const BaseForm = memo(function BaseForm({
+function BaseForm({
   visible,
   setVisible,
   title,
@@ -291,19 +291,17 @@ const BaseForm = memo(function BaseForm({
                 </p>
                 <div className="uk-flex uk-flex-around">
                   <Button
-                    type="primary"
                     onClick={() => {
                       finalizeHospitalization();
                       notification.destroy({ key: "discharge" });
                     }}
-                  >
-                    Sim
-                  </Button>
+                    text="Sim"
+                  />
+
                   <Button
                     onClick={() => notification.destroy({ key: "discharge" })}
-                  >
-                    Não
-                  </Button>
+                    text="Não"
+                  />
                 </div>
               </div>
             ),
@@ -426,7 +424,7 @@ const BaseForm = memo(function BaseForm({
                 tutor={patient?.tutor}
                 patient={patient?.patient}
                 triggerComponent={
-                  <Button className="uk-margin-top">Imprimir</Button>
+                  <Button style={{ marginTop: "10px" }} text="Imprimir" />
                 }
                 content={body}
                 title={"Relatório médico"}
@@ -452,10 +450,9 @@ const BaseForm = memo(function BaseForm({
       </form>
     </Modal>
   );
-});
+}
 
 export default BaseForm;
-
 
 // crmDashboard=true
 
@@ -473,8 +470,3 @@ export default BaseForm;
 
 // useLoadDashboard()
 // useLoadDashboard({ type: "crm" })
-
-
-
-
-

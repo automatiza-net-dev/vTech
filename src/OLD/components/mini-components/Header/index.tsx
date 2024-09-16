@@ -19,7 +19,6 @@ const { Group } = Radio;
 
 import { unitsService } from "@/OLD/services/units.service";
 
-import { ArrowProfile, BellIcon } from "@/OLD/common/icons";
 import { useAvailableChangeUnits } from "@/OLD/hooks/useBusinessUnits";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useRouter } from "next/router";
@@ -41,7 +40,7 @@ const Header = ({ origin = "dashboard" }) => {
   const { user, clinic } = useProfile(false, reload);
   const router = useRouter();
 
-  const {signOut} = useAuthAdmin()
+  const { signOut } = useAuthAdmin();
 
   sortItems(units, "identification");
 
@@ -96,20 +95,14 @@ const Header = ({ origin = "dashboard" }) => {
             <Link href="/dashboard">
               <div className="logo-container">
                 <img
-                  src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+                  src={
+                    process.env.NEXT_PUBLIC_API +
+                    `/assets/logo-${process.env.client}.png`
+                  }
                   width="35px"
                 />
               </div>
             </Link>
-            {/*
-            <Input>
-              <SearchIcon />
-              <input
-                type="search"
-                placeholder="Pesquise pacientes, tutores, dados e etc."
-              />
-            </Input>
-            */}
           </div>
           <div className="uk-margin-small-top uk-flex uk-flex-middle uk-flex-left uk-width-2-3">
             {!!user && (
@@ -145,7 +138,6 @@ const Header = ({ origin = "dashboard" }) => {
                     type="default"
                     size="large"
                     shape="circle"
-                    icon={<BellIcon />}
                   />
                 </Badge>{" "}
               </>
@@ -186,7 +178,7 @@ const Header = ({ origin = "dashboard" }) => {
                   <Menu.Item
                     onClick={() => {
                       if (!isThirdParty) {
-                        signOut()
+                        signOut();
                         router.push("/");
                       } else {
                         window.location.href =
@@ -202,7 +194,10 @@ const Header = ({ origin = "dashboard" }) => {
               <div className="profile uk-margin-medium-left uk-flex uk-flex-middle uk-flex-between uk-margin-right pointer">
                 <div className="profile-img uk-flex uk-flex-center uk-flex-middle">
                   <img
-                    src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+                    src={
+                      process.env.NEXT_PUBLIC_API +
+                      `/assets/logo-${process.env.client}.png`
+                    }
                     width="27px"
                     height="27px"
                   />
@@ -214,7 +209,6 @@ const Header = ({ origin = "dashboard" }) => {
                       : user.name}
                   </div>
                 )}
-                <ArrowProfile />
               </div>
             </Dropdown>
           </div>

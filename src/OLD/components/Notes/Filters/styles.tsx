@@ -9,6 +9,8 @@ export const InputBox = styled.div`
   background-color: #fff;
   border-radius: 40px;
   padding: 0 10px;
+  border: 0.5px solid #cacaca;
+  width: 100%;
 
   .date-component {
     div {

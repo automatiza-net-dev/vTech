@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import { memo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // Services
 import { productService } from "@/OLD/services/product.service";
@@ -17,12 +17,11 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Icons
 import { CheckOutlined, EditTwoTone } from "@ant-design/icons";
-import { SearchIcon } from "@/OLD/common/icons";
 import { VscTasklist } from "react-icons/vsc";
 
 // Components
 import { AutoComplete, Select, Table, Tooltip, Modal } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useQuery, useQueryClient } from "react-query";
@@ -62,7 +61,7 @@ const mapper = ({ data }) => ({
   price: currencyFormatter(data?.price?.value),
 });
 
-const Products = memo(function Products() {
+function Products() {
   const { push, query } = useRouter();
   const [filters, setFilters] = useState({ noSearch: true });
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -112,145 +111,148 @@ const Products = memo(function Products() {
   return !listProductsPermission || listProductsPermission === "loading" ? (
     <AccessDenied loading={listProductsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de produtos</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <Input>
-          <input
-            type="search"
-            placeholder="Nome"
-            onChange={(e) =>
-              setFilters({
-                ...filters,
-                description: normalizeStr(e.target.value),
-              })
-            }
-          />
-          <SearchIcon />
-        </Input>
-        <div className="uk-width-1-5 uk-margin-small-right">
-          <label>Subgrupo</label>
-          <AutoComplete
-            allowClear
-            onClear={() => {
-              const newObj = { ...filters };
-              delete newObj?.subgroup;
-              setSubgroupSearch("");
-              setFilters(newObj);
-            }}
-            className="uk-width-1-1"
-            options={subgroups.map((subgroup) => ({
-              ...subgroup,
-              value: subgroup?.description,
-              key: subgroup?.id,
-            }))}
-            value={subgroupSearch}
-            onChange={(val) => setSubgroupSearch(val)}
-            onSelect={(_, option) =>
-              setFilters({ ...filters, subgroup: option?.id })
-            }
-            filterOption={(value, option) =>
-              normalizeStr(option?.description).includes(normalizeStr(value))
-            }
-          />
-        </div>
-        <div className="uk-width-1-5 uk-margin-small-right">
-          <label>Grupo imposto</label>
-          <AutoComplete
-            className="uk-width-1-1"
-            allowClear
-            onClear={() => {
-              const newObj = { ...filters };
-              delete newObj?.taxation;
-              setTaxationgroupSearch("");
-              setFilters(newObj);
-            }}
-            options={taxationGroups.map((group) => ({
-              ...group,
-              value: group?.name,
-            }))}
-            value={taxationgroupSearch}
-            onChange={(val) => setTaxationgroupSearch(val)}
-            onSelect={(_, option) =>
-              setFilters({ ...filters, taxation: option?.id })
-            }
-            filterOption={(value, option) =>
-              normalizeStr(option?.name).includes(normalizeStr(value))
-            }
-          />
-        </div>
-        <div className="uk-width-1-5 uk-margin-small-right">
-          <label>Status</label>
-          <Select
-            onChange={(val) => {
-              if (val === "all") {
-                const newObj = { ...filters };
-                delete newObj?.active;
-                return setFilters(newObj);
+    <PageWrapper title="Controle de produtos">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <Input>
+            <input
+              type="search"
+              placeholder="Nome"
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  description: normalizeStr(e.target.value),
+                })
               }
-              setFilters({ ...filters, active: val });
-            }}
-            className="uk-width-1-1"
-          >
-            <Option value={true}>Ativo</Option>
-            <Option value={false}>Inativo</Option>
-            <Option value="all">Todos</Option>
-          </Select>
+            />
+          </Input>
+          <div className="uk-width-1-5 uk-margin-small-right">
+            <label>Subgrupo</label>
+            <AutoComplete
+              allowClear
+              onClear={() => {
+                const newObj = { ...filters };
+                delete newObj?.subgroup;
+                setSubgroupSearch("");
+                setFilters(newObj);
+              }}
+              className="uk-width-1-1"
+              options={subgroups.map((subgroup) => ({
+                ...subgroup,
+                value: subgroup?.description,
+                key: subgroup?.id,
+              }))}
+              value={subgroupSearch}
+              onChange={(val) => setSubgroupSearch(val)}
+              onSelect={(_, option) =>
+                setFilters({ ...filters, subgroup: option?.id })
+              }
+              filterOption={(value, option) =>
+                normalizeStr(option?.description).includes(normalizeStr(value))
+              }
+            />
+          </div>
+          <div className="uk-width-1-5 uk-margin-small-right">
+            <label>Grupo imposto</label>
+            <AutoComplete
+              className="uk-width-1-1"
+              allowClear
+              onClear={() => {
+                const newObj = { ...filters };
+                delete newObj?.taxation;
+                setTaxationgroupSearch("");
+                setFilters(newObj);
+              }}
+              options={taxationGroups.map((group) => ({
+                ...group,
+                value: group?.name,
+              }))}
+              value={taxationgroupSearch}
+              onChange={(val) => setTaxationgroupSearch(val)}
+              onSelect={(_, option) =>
+                setFilters({ ...filters, taxation: option?.id })
+              }
+              filterOption={(value, option) =>
+                normalizeStr(option?.name).includes(normalizeStr(value))
+              }
+            />
+          </div>
+          <div className="uk-width-1-5 uk-margin-small-right">
+            <label>Status</label>
+            <Select
+              onChange={(val) => {
+                if (val === "all") {
+                  const newObj = { ...filters };
+                  delete newObj?.active;
+                  return setFilters(newObj);
+                }
+                setFilters({ ...filters, active: val });
+              }}
+              className="uk-width-1-1"
+            >
+              <Option value={true}>Ativo</Option>
+              <Option value={false}>Inativo</Option>
+              <Option value="all">Todos</Option>
+            </Select>
+          </div>
         </div>
-      </div>
-      <div className="uk-margin-small-top uk-flex uk-flex-right">
-        <Button
-          classCallback="uk-margin-right"
-          onClick={() => {
-            setFilters({ ...filters, noSearch: false });
-            setReload((prv) => !prv);
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            marginTop: "5px",
           }}
         >
-          Filtrar
-        </Button>
-        <Button
-          disabled={!canCreateProduct}
-          onClick={() => setCreateVisible(true)}
-        >
-          {" "}
-          Cadastrar{" "}
-        </Button>
-      </div>
-      <hr />
-      <Table
-        className="uk-margin-top"
-        dataSource={
-          isLoading || Object.keys(filters).length === 0
-            ? []
-            : data
-                ?.map((d) =>
-                  mapper({
-                    data: d,
-                  })
-                )
-                .map((d) => ({
-                  ...d,
-                  actions: (
-                    <div className="uk-flex uk-flex-around">
-                      <Tooltip title="Detalhes do produto">
-                        <CheckOutlined
-                          size={15}
-                          onClick={() => {
-                            setSelectedId(d?.id);
-                            setDetailsVisible(true);
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip title="Items de produtividade">
-                        <VscTasklist
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setSelectedProduct(d);
-                            setProductivityVisible(true);
-                          }}
-                        />
-                      </Tooltip>
-                      {/*canEditProduct && (
+          <Button
+            onClick={() => {
+              setFilters({ ...filters, noSearch: false });
+              setReload((prv) => !prv);
+            }}
+            text="Filtrar"
+          />
+
+          <Button
+            disabled={!canCreateProduct}
+            onClick={() => setCreateVisible(true)}
+            text="Cadastrar"
+          />
+        </div>
+        <hr />
+        <Table
+          className="uk-margin-top"
+          dataSource={
+            isLoading || Object.keys(filters).length === 0
+              ? []
+              : data
+                  ?.map((d) =>
+                    mapper({
+                      data: d,
+                    })
+                  )
+                  .map((d) => ({
+                    ...d,
+                    actions: (
+                      <div className="uk-flex uk-flex-around">
+                        <Tooltip title="Detalhes do produto">
+                          <CheckOutlined
+                            size={15}
+                            onClick={() => {
+                              setSelectedId(d?.id);
+                              setDetailsVisible(true);
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip title="Items de produtividade">
+                          <VscTasklist
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setSelectedProduct(d);
+                              setProductivityVisible(true);
+                            }}
+                          />
+                        </Tooltip>
+                        {/*canEditProduct && (
                         <EditTwoTone
                           size={15}
                           onClick={() => {
@@ -259,73 +261,74 @@ const Products = memo(function Products() {
                         />
                         )*/}
 
-                      {canDeleteProduct && (
-                        <DeleteProduct
-                          id={d.id}
-                          hide={() => {
-                            queryClient.invalidateQueries("products");
-                          }}
-                        />
-                      )}
-                    </div>
-                  ),
-                }))
-        }
-        columns={columns}
-        locale={{
-          emptyText:
-            Object.keys(filters).length === 0 ? (
-              <>Pesquise acima para exibir o resultado</>
-            ) : (
-              <>Nenhum resultado encontrado</>
-            ),
-        }}
-      />
-      {editProductVisible && (
-        <EditProduct
-          visible={editProductVisible}
-          selectedProduct={selectedProduct}
-          close={() => {
-            setEditProductVisible(false);
-            queryClient.invalidateQueries(["products"]);
+                        {canDeleteProduct && (
+                          <DeleteProduct
+                            id={d.id}
+                            hide={() => {
+                              queryClient.invalidateQueries("products");
+                            }}
+                          />
+                        )}
+                      </div>
+                    ),
+                  }))
+          }
+          columns={columns}
+          locale={{
+            emptyText:
+              Object.keys(filters).length === 0 ? (
+                <>Pesquise acima para exibir o resultado</>
+              ) : (
+                <>Nenhum resultado encontrado</>
+              ),
           }}
         />
-      )}
-      <Modal
-        title={`Items de produtividade: ${selectedProduct?.description}`}
-        visible={productivityVisible}
-        onCancel={() => setProductivityVisible(false)}
-        footer={null}
-        width={900}
-      >
-        <ProductivityItems productId={selectedProduct?.id} />
-      </Modal>
-      {createVisible && (
-        <Modal
-          footer={null}
-          visible={createVisible}
-          width={1200}
-          onCancel={() => setCreateVisible(false)}
-        >
-          <CreateProduct setVisible={setCreateVisible} />
-        </Modal>
-      )}
-      {detailsVisible && (
-        <Modal
-          width={1300}
-          visible={detailsVisible}
-          onCancel={() => setDetailsVisible(false)}
-          footer={null}
-        >
-          <DetailsProduct
-            setVisible={setDetailsVisible}
-            id={selectedId}
-            setReload={setReload}
+        {editProductVisible && (
+          <EditProduct
+            visible={editProductVisible}
+            selectedProduct={selectedProduct}
+            close={() => {
+              setEditProductVisible(false);
+              queryClient.invalidateQueries(["products"]);
+            }}
           />
+        )}
+        <Modal
+          title={`Items de produtividade: ${selectedProduct?.description}`}
+          visible={productivityVisible}
+          onCancel={() => setProductivityVisible(false)}
+          footer={null}
+          width={900}
+        >
+          <ProductivityItems productId={selectedProduct?.id} />
         </Modal>
-      )}
-    </Container>
+        {createVisible && (
+          <Modal
+            footer={null}
+            visible={createVisible}
+            width={1200}
+            onCancel={() => setCreateVisible(false)}
+          >
+            <CreateProduct setVisible={setCreateVisible} />
+          </Modal>
+        )}
+        {detailsVisible && (
+          <Modal
+            width={1300}
+            visible={detailsVisible}
+            onCancel={() => setDetailsVisible(false)}
+            footer={null}
+          >
+            <DetailsProduct
+              setVisible={setDetailsVisible}
+              id={selectedId}
+              setReload={setReload}
+            />
+          </Modal>
+        )}
+      </Container>
+    </PageWrapper>
   );
-});
+}
 
 export default Products;

@@ -26,12 +26,7 @@ import { ICreateTutorFormProps } from "./interfaces";
 import * as S from "./styles";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
-  const {
-    tutorId,
-    origin = "Cadastro",
-    setOpen,
-    onSuccess,
-  } = props;
+  const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
 
   const { data, isFetching, refetch } = useLoadTutor(tutorId);
   const { createToast } = useToast();
@@ -162,7 +157,6 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
           )}
 
           <div className="file">
-
             {tutorId && (
               <div className="row">
                 <InputSwitch name="active" label="Ativo" />
@@ -175,10 +169,11 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
           </h3>
 
           <InputCep<ViaCep>
+            showAllFields
             providerType="ibge"
             fields={[
               {
-                logradouro: { label: "Rua*" },
+                logradouro: { label: "Rua*", readOnly: true },
                 number: { label: "Número*" },
                 complemento: { label: "Complemento" },
                 ibge: { label: "Cód*", readOnly: true },

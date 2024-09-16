@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Core
 import * as React from "react";
-import { memo, useEffect } from "react";
+import { useEffect } from "react";
 
 // Hooks
 
@@ -19,12 +19,12 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Components
 import CreateBudget from "./Create";
-import { Modal } from "infinity-forge";
+import { Modal, PageWrapper } from "infinity-forge";
 import BudgetActions from "./Actions/Container";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
-import { Button } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { Input as AntInput, Select, Table, AutoComplete } from "antd";
 
 import moment from "moment/moment";
@@ -108,7 +108,7 @@ const handleDateInput = (data) => {
   return data;
 };
 
-const Budgets = memo(function Budgets() {
+function Budgets() {
   const [filters, setFilters] = React.useState({
     noSearch: true,
   });
@@ -156,175 +156,200 @@ const Budgets = memo(function Budgets() {
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">{getWord("Orçamentos")}</h3>
-      <section className="uk-margin-top uk-width-1-1">
-        <div className="uk-flex uk-flex-middle" style={{ gap: "1rem" }}>
-          <Input style={{ width: "100%" }}>
-            <Label>Criação</Label>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              onChange={(val) => {
-                setFilters({
-                  ...filters,
-                  fromCreation: val,
-                });
-              }}
-              value={filters?.fromCreation}
-            />
-            à
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              onChange={(val) => {
-                setFilters({
-                  ...filters,
-                  toCreation: val,
-                });
-              }}
-              value={filters?.toCreation}
-            />
-            <MdOutlineClear
-              size={40}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setFilters((prv) => ({
-                  ...prv,
-                  fromCreation: null,
-                  toCreation: null,
-                }));
-              }}
-            />
-          </Input>
-
-          <Input style={{ width: "100%" }}>
-            <Label>Expiração</Label>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              onChange={(val) => {
-                setFilters({
-                  ...filters,
-                  fromExpiration: val,
-                });
-              }}
-              value={filters?.fromExpiration}
-            />
-            à
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              onChange={(val) => {
-                setFilters({
-                  ...filters,
-                  toExpiration: val,
-                });
-              }}
-              value={filters?.toExpiration}
-            />
-            <MdOutlineClear
-              size={40}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setFilters((prv) => ({
-                  ...prv,
-                  fromExpiration: null,
-                  toExpiration: null,
-                }));
-              }}
-            />
-          </Input>
-
-          <Input style={{ width: "100%" }}>
-            <Label>Status</Label>
-            <Select
-              className="uk-width-1-1"
-              value={filters.status}
-              onChange={(e) => {
-                setFilters({ ...filters, status: e });
-              }}
-            >
-              <Select.Option value={null}>Todos</Select.Option>
-              <Select.Option value="ABERTO">Aberto</Select.Option>
-              <Select.Option value="CONFIRMADO">Confirmado</Select.Option>
-              <Select.Option value="NAO_CONFIRMADO__CANCELADO">
-                Não confirmado / Cancelado
-              </Select.Option>
-              <Select.Option value="CONFIRMADO_PARCIAL">
-                Confirmado parcial
-              </Select.Option>
-            </Select>
-          </Input>
-          <Input style={{ width: "100%" }}>
-            <label>Código</label>
-            <AntInput
-              value={filters.tag}
-              onChange={(e) => setFilters({ tag: e.target.value })}
-            />
-          </Input>
-        </div>
-        <div
-          className="uk-flex uk-flex-middle uk-margin-small-top"
-          style={{ gap: "1rem" }}
-        >
-          <Input style={{ width: "100%" }}>
-            <Label>Cliente</Label>
-            <AutoComplete
-              className="uk-width-1-1"
-              value={values?.clientName}
-              options={tutors?.map((tutor) => ({
-                ...tutor,
-                value: tutor?.name,
-              }))}
-              onChange={(val) => {
-                setValues((prv) => ({ ...prv, clientName: val }));
-                if (val === "") {
-                  const newObj = { ...filters };
-                  delete newObj.client;
-                  setFilters(newObj);
-                }
-              }}
-              onSelect={(_, option) => {
-                setValues((prv) => ({ ...prv, clientName: option?.name }));
-                setFilters({ ...filters, client: option?.id });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.name.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                )
-              }
-            />
-          </Input>
-          {process.env.client !== "liftone" && (
+    <PageWrapper title={getWord("Orçamentos")}>
+      <Container>
+        <section className="uk-margin-top uk-width-1-1">
+          <div className="uk-flex uk-flex-middle" style={{ gap: "1rem" }}>
             <Input style={{ width: "100%" }}>
-              <Label>Paciente</Label>
+              <Label>Criação</Label>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                onChange={(val) => {
+                  setFilters({
+                    ...filters,
+                    fromCreation: val,
+                  });
+                }}
+                value={filters?.fromCreation}
+              />
+              à
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                onChange={(val) => {
+                  setFilters({
+                    ...filters,
+                    toCreation: val,
+                  });
+                }}
+                value={filters?.toCreation}
+              />
+              <MdOutlineClear
+                size={40}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setFilters((prv) => ({
+                    ...prv,
+                    fromCreation: null,
+                    toCreation: null,
+                  }));
+                }}
+              />
+            </Input>
+
+            <Input style={{ width: "100%" }}>
+              <Label>Expiração</Label>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                onChange={(val) => {
+                  setFilters({
+                    ...filters,
+                    fromExpiration: val,
+                  });
+                }}
+                value={filters?.fromExpiration}
+              />
+              à
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                onChange={(val) => {
+                  setFilters({
+                    ...filters,
+                    toExpiration: val,
+                  });
+                }}
+                value={filters?.toExpiration}
+              />
+              <MdOutlineClear
+                size={40}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setFilters((prv) => ({
+                    ...prv,
+                    fromExpiration: null,
+                    toExpiration: null,
+                  }));
+                }}
+              />
+            </Input>
+
+            <Input style={{ width: "100%" }}>
+              <Label>Status</Label>
+              <Select
+                className="uk-width-1-1"
+                value={filters.status}
+                onChange={(e) => {
+                  setFilters({ ...filters, status: e });
+                }}
+              >
+                <Select.Option value={null}>Todos</Select.Option>
+                <Select.Option value="ABERTO">Aberto</Select.Option>
+                <Select.Option value="CONFIRMADO">Confirmado</Select.Option>
+                <Select.Option value="NAO_CONFIRMADO__CANCELADO">
+                  Não confirmado / Cancelado
+                </Select.Option>
+                <Select.Option value="CONFIRMADO_PARCIAL">
+                  Confirmado parcial
+                </Select.Option>
+              </Select>
+            </Input>
+            <Input style={{ width: "100%" }}>
+              <label>Código</label>
+              <AntInput
+                value={filters.tag}
+                onChange={(e) => setFilters({ tag: e.target.value })}
+              />
+            </Input>
+          </div>
+          <div
+            className="uk-flex uk-flex-middle uk-margin-small-top"
+            style={{ gap: "1rem" }}
+          >
+            <Input style={{ width: "100%" }}>
+              <Label>Cliente</Label>
               <AutoComplete
                 className="uk-width-1-1"
-                value={patientSearch}
-                options={patients?.map((patient) => ({
-                  ...patient,
-                  value: patient?.name,
+                value={values?.clientName}
+                options={tutors?.map((tutor) => ({
+                  ...tutor,
+                  value: tutor?.name,
                 }))}
                 onChange={(val) => {
-                  setPatientSearch(val);
+                  setValues((prv) => ({ ...prv, clientName: val }));
                   if (val === "") {
                     const newObj = { ...filters };
-                    delete newObj.patient;
+                    delete newObj.client;
                     setFilters(newObj);
                   }
                 }}
                 onSelect={(_, option) => {
-                  setPatientSearch(option?.name);
-                  setFilters({ ...filters, patient: option?.id });
+                  setValues((prv) => ({ ...prv, clientName: option?.name }));
+                  setFilters({ ...filters, client: option?.id });
                 }}
                 filterOption={(val, opt) =>
-                  normalizeStr(opt?.name).includes(normalizeStr(val))
+                  normalizeStr(opt?.name.toUpperCase()).includes(
+                    normalizeStr(val.toUpperCase())
+                  )
                 }
               />
             </Input>
-          )}
-          {process.env.client === "liftone" && (
+            {process.env.client !== "liftone" && (
+              <Input style={{ width: "100%" }}>
+                <Label>Paciente</Label>
+                <AutoComplete
+                  className="uk-width-1-1"
+                  value={patientSearch}
+                  options={patients?.map((patient) => ({
+                    ...patient,
+                    value: patient?.name,
+                  }))}
+                  onChange={(val) => {
+                    setPatientSearch(val);
+                    if (val === "") {
+                      const newObj = { ...filters };
+                      delete newObj.patient;
+                      setFilters(newObj);
+                    }
+                  }}
+                  onSelect={(_, option) => {
+                    setPatientSearch(option?.name);
+                    setFilters({ ...filters, patient: option?.id });
+                  }}
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.name).includes(normalizeStr(val))
+                  }
+                />
+              </Input>
+            )}
+            {process.env.client === "liftone" && (
+              <Input style={{ width: "100%" }}>
+                <label>Avaliador</label>
+                <AutoComplete
+                  value={values?.reviewerName}
+                  className="uk-width-1-1"
+                  options={colaborators?.map((colab) => ({
+                    ...colab,
+                    value: colab?.name,
+                    key: colab?.id,
+                  }))}
+                  onChange={(val) =>
+                    setValues((prv) => ({ ...prv, reviewerName: val }))
+                  }
+                  onSelect={(_, opt) => {
+                    setValues((prv) => ({ ...prv, reviewerName: opt?.value }));
+                    setFilters({ ...filters, reviewerId: opt?.id });
+                  }}
+                  filterOption={(val, opt) =>
+                    normalizeStr(opt?.value.toUpperCase()).includes(
+                      normalizeStr(val.toUpperCase())
+                    )
+                  }
+                />
+              </Input>
+            )}
             <Input style={{ width: "100%" }}>
-              <label>Avaliador</label>
+              <label>Vendedor</label>
               <AutoComplete
-                value={values?.reviewerName}
+                value={values?.sellerName}
                 className="uk-width-1-1"
                 options={colaborators?.map((colab) => ({
                   ...colab,
@@ -332,11 +357,11 @@ const Budgets = memo(function Budgets() {
                   key: colab?.id,
                 }))}
                 onChange={(val) =>
-                  setValues((prv) => ({ ...prv, reviewerName: val }))
+                  setValues((prv) => ({ ...prv, sellerName: val }))
                 }
                 onSelect={(_, opt) => {
-                  setValues((prv) => ({ ...prv, reviewerName: opt?.value }));
-                  setFilters({ ...filters, reviewerId: opt?.id });
+                  setValues((prv) => ({ ...prv, sellerName: opt?.value }));
+                  setFilters({ ...filters, sellerId: opt?.id });
                 }}
                 filterOption={(val, opt) =>
                   normalizeStr(opt?.value.toUpperCase()).includes(
@@ -345,130 +370,109 @@ const Budgets = memo(function Budgets() {
                 }
               />
             </Input>
-          )}
-          <Input style={{ width: "100%" }}>
-            <label>Vendedor</label>
-            <AutoComplete
-              value={values?.sellerName}
-              className="uk-width-1-1"
-              options={colaborators?.map((colab) => ({
-                ...colab,
-                value: colab?.name,
-                key: colab?.id,
-              }))}
-              onChange={(val) =>
-                setValues((prv) => ({ ...prv, sellerName: val }))
-              }
-              onSelect={(_, opt) => {
-                setValues((prv) => ({ ...prv, sellerName: opt?.value }));
-                setFilters({ ...filters, sellerId: opt?.id });
+
+            <Input style={{ width: "max-content" }}>
+              <Label>Pendências</Label>
+              <Select
+                className="uk-width-1-1"
+                placeholder="Pendências"
+                value={filters.pending}
+                onChange={(e) => {
+                  setFilters({ ...filters, pending: e });
+                }}
+              >
+                <Select.Option value="">Todos</Select.Option>
+                <Select.Option value={true}>Sim</Select.Option>
+                <Select.Option value={false}>Não</Select.Option>
+              </Select>
+            </Input>
+          </div>
+        </section>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            marginTop: "5px",
+          }}
+        >
+          {createBudgetPermission && (
+            <Modal
+              style={{
+                maxWidth: "1200px",
+                padding: "20px",
+                overflow: "auto",
               }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                )
+              modal={openCreate}
+              setModal={setOpenCreate}
+              children={
+                <CreateBudget modal={openCreate} setModal={setOpenCreate} />
+              }
+              trigger={
+                <Button
+                  onClick={() => setOpenCreate((prev) => !prev)}
+                  text={` Novo ${getWord("Orçamento")}`}
+                />
               }
             />
-          </Input>
+          )}
 
-          <Input style={{ width: "max-content" }}>
-            <Label>Pendências</Label>
-            <Select
-              className="uk-width-1-1"
-              placeholder="Pendências"
-              value={filters.pending}
-              onChange={(e) => {
-                setFilters({ ...filters, pending: e });
-              }}
-            >
-              <Select.Option value="">Todos</Select.Option>
-              <Select.Option value={true}>Sim</Select.Option>
-              <Select.Option value={false}>Não</Select.Option>
-            </Select>
-          </Input>
-          <div
-            style={{ width: "70%", display: "flex", justifyContent: "right" }}
+          <Button
+            onClick={() => setModalCriar(true)}
+            text={`  Novo ${getWord("Orçamento")}`}
+          />
+
+          <ModalInfinityForge
+            styles={{
+              overflow: "auto",
+              height: "95vh",
+              maxWidth: "1400px",
+              minHeight: "600px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+            stylesContent={{ height: "100%", width: "100%" }}
+            open={modalCriar}
+            onClose={() => setModalCriar(false)}
           >
-            {createBudgetPermission && (
-              <Modal
-                style={{
-                  maxWidth: "1200px",
-                  padding: "20px",
-                  overflow: "auto",
-                }}
-                modal={openCreate}
-                setModal={setOpenCreate}
-                children={
-                  <CreateBudget modal={openCreate} setModal={setOpenCreate} />
-                }
-                trigger={
-                  <Button onClick={() => setOpenCreate((prev) => !prev)}>
-                    Novo {getWord("Orçamento")}
-                  </Button>
-                }
-              />
-            )}
+            <AddBudgetNew setModal={setModalCriar} listCreated={listCreated} />
+          </ModalInfinityForge>
 
-            <Button onClick={() => setModalCriar(true)}>
-              Novo {getWord("Orçamento")}
-            </Button>
+          <Button
+            onClick={() => {
+              const newObj = { ...filters };
+              delete newObj?.budget_id;
 
-            <ModalInfinityForge
-              styles={{
-                overflow: "auto",
-                height: "95vh",
-                maxWidth: "1400px",
-                minHeight: "600px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-              stylesContent={{ height: "100%", width: "100%" }}
-              open={modalCriar}
-              onClose={() => setModalCriar(false)}
-            >
-              <AddBudgetNew
-                setModal={setModalCriar}
-                listCreated={listCreated}
-              />
-            </ModalInfinityForge>
-
-            <Button
-              onClick={() => {
-                const newObj = { ...filters };
-                delete newObj?.budget_id;
-
-                setFilters(() => {
-                  setReload((prv) => !prv);
-                  return { ...newObj, noSearch: false };
-                });
-              }}
-            >
-              Filtrar
-            </Button>
-          </div>
+              setFilters(() => {
+                setReload((prv) => !prv);
+                return { ...newObj, noSearch: false };
+              });
+            }}
+            text="Filtrar"
+          />
         </div>
-      </section>
-      <hr />
-      <div className="uk-margin-top">
-        <Table
-          columns={columns}
-          dataSource={mapper(data, setReload)}
-          footer={() =>
-            data?.length > 0 && (
-              <section className="uk-flex uk-flex-right footer-box">
-                <strong>Total:&nbsp;</strong>
-                {currencyFormatter(
-                  data?.reduce((acc, current) => acc + current.total_value, 0)
-                )}
-              </section>
-            )
-          }
-        />
-      </div>
-    </Container>
+        <hr />
+        <div className="uk-margin-top">
+          <Table
+            columns={columns}
+            dataSource={mapper(data, setReload)}
+            footer={() =>
+              data?.length > 0 && (
+                <section className="uk-flex uk-flex-right footer-box">
+                  <strong>Total:&nbsp;</strong>
+                  {currencyFormatter(
+                    data?.reduce((acc, current) => acc + current.total_value, 0)
+                  )}
+                </section>
+              )
+            }
+          />
+        </div>
+      </Container>
+    </PageWrapper>
   );
-});
+};
 
 export default Budgets;

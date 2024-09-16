@@ -17,6 +17,7 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import { Container } from "./styles";
 import { Tabs } from "antd";
 const { TabPane } = Tabs;
+import { PageWrapper } from "infinity-forge";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 
@@ -42,48 +43,49 @@ export default function Kanban() {
   return !showKanbanPermission || showKanbanPermission === "loading" ? (
     <AccessDenied loading={showKanbanPermission} />
   ) : (
-    <Container className="uk-padding">
-      <SchedulingContextProvider>
-        <h3 className="uk-margin-remove">Crm</h3>
-        <Tabs
-          defaultActiveKey="1"
-          activeKey={smallConfigs?.currentKanbanTab}
-          onChange={(key) => {
-            setSmallConfigs({ ...smallConfigs, currentKanbanTab: key });
-          }}
-        >
-          <TabPane key="1" tab="Crm">
-            <CardsPanel
-              clients={clients}
-              colaborators={colaborators}
-              crmStatus={crmStatus}
-              contactTypes={contactTypes}
-              subjects={subjects}
-              actTypes={actTypes}
-              currentKanbanTab={smallConfigs?.currentKanbanTab}
-            />
-          </TabPane>
-          <TabPane key="2" tab="Oportunidades">
-            <Opportunities
-              title={false}
-              clients={clients}
-              colaborators={colaborators}
-              crmStatus={crmStatus}
-              contactTypes={contactTypes}
-              subjects={subjects}
-              actTypes={actTypes}
-              currentKanbanTab={smallConfigs?.currentKanbanTab}
-            />
-          </TabPane>
-          <TabPane key="3" tab="Atividades">
-            <Activities
-              colaborators={colaborators}
-              actTypes={actTypes}
-              currentKanbanTab={smallConfigs?.currentKanbanTab}
-            />
-          </TabPane>
-        </Tabs>
-      </SchedulingContextProvider>
-    </Container>
+    <PageWrapper title="Crm">
+      <Container>
+        <SchedulingContextProvider>
+          <Tabs
+            defaultActiveKey="1"
+            activeKey={smallConfigs?.currentKanbanTab}
+            onChange={(key) => {
+              setSmallConfigs({ ...smallConfigs, currentKanbanTab: key });
+            }}
+          >
+            <TabPane key="1" tab="Crm">
+              <CardsPanel
+                clients={clients}
+                colaborators={colaborators}
+                crmStatus={crmStatus}
+                contactTypes={contactTypes}
+                subjects={subjects}
+                actTypes={actTypes}
+                currentKanbanTab={smallConfigs?.currentKanbanTab}
+              />
+            </TabPane>
+            <TabPane key="2" tab="Oportunidades">
+              <Opportunities
+                title={false}
+                clients={clients}
+                colaborators={colaborators}
+                crmStatus={crmStatus}
+                contactTypes={contactTypes}
+                subjects={subjects}
+                actTypes={actTypes}
+                currentKanbanTab={smallConfigs?.currentKanbanTab}
+              />
+            </TabPane>
+            <TabPane key="3" tab="Atividades">
+              <Activities
+                colaborators={colaborators}
+                actTypes={actTypes}
+                currentKanbanTab={smallConfigs?.currentKanbanTab}
+              />
+            </TabPane>
+          </Tabs>
+        </SchedulingContextProvider>
+      </Container>
+    </PageWrapper>
   );
 }

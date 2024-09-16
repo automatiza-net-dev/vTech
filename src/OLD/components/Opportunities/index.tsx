@@ -8,8 +8,8 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
-import { Table, Button } from "antd";
+import { Button } from "infinity-forge";
+import { Table } from "antd";
 import Actions from "./Actions";
 import Filters from "./Filters";
 
@@ -37,10 +37,8 @@ const Opportunities = memo(function Opportunities({
   });
   const [formattedOpportunities, setFormattedOpportunities] = useState([]);
 
-  
   const { user } = useProfile();
 
-  
   const viewAllOpportunitiesPermission = useUserHasPermission("CRM09");
 
   const router = useRouter();
@@ -58,7 +56,6 @@ const Opportunities = memo(function Opportunities({
       moment(b.openingDate).diff(moment(a.openingDate))
     );
 
-    console.log(opportunities, "<<<")
 
     setFormattedOpportunities(
       opportunities.map((opp) => ({
@@ -137,8 +134,8 @@ const Opportunities = memo(function Opportunities({
         dataSource={formattedOpportunities}
         loading={loadingOpportunities}
       />
-      <footer>
-        <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
+      <footer style={{ display: "flex", justifyContent: "flex-end", marginTop: "5px" }}>
+        <Button onClick={() => router.back()} text="Voltar" />
       </footer>
     </Container>
   );

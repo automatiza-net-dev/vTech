@@ -33,7 +33,6 @@ export const Pets = styled("div")`
     }
 
     button {
-      background-color: transparent;
       border: 0;
       padding: 0;
     }
@@ -47,12 +46,23 @@ export const Pets = styled("div")`
     border: 0;
     padding: 0;
 
+    background-color: #ec8f24;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    height: 45px;
+    padding: 0 15px !important;
+    display: flex;
+
     span {
-      color: #2b2b2b;
+      font-size: 12px;
+    }
+
+    svg {
+      display: none;
     }
   }
 `;
-
 
 export const ModalAddPets = styled("div")`
   .modal_content .content_modal_infinity_forge {

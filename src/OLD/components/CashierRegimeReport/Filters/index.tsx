@@ -6,7 +6,7 @@ import { useUserBusinessUnits } from "@/OLD/hooks/useUserBusinessUnits";
 import { DatePicker } from "@mui/x-date-pickers";
 import { InputBox } from "../styles";
 import { Select } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { DateFilter } from "@/OLD/components/mini-components";
 const { Option } = Select;
 
@@ -68,15 +68,14 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
           </Select>
         </InputBox>
       </div>
-      <div className="uk-margin-top">
-        <CustomButton
+      <div style={{ display: "flex", justifyContent: "flex-end", width: "60%" }}>
+        <Button
           onClick={() => {
             setFilters((prv) => ({ ...filters, noSearch: false }));
             setReload((prv) => !prv);
           }}
-        >
-          Filtrar
-        </CustomButton>
+          text="Filtrar"
+        />
       </div>
     </section>
   );

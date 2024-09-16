@@ -7,7 +7,7 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button as CustomButton } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { notification, Modal } from "antd";
 import DownTitles from "../DownTitles";
 
@@ -107,8 +107,8 @@ const ButtonsPanel = memo(function ButtonsPanel({
     <div>
       <section className="uk-flex uk-flex-around uk-margin-bottom">
         {downTitlesPermission && (
-          <CustomButton
-            type="primary"
+          <Button
+            text="Baixar"
             onClick={() => {
               filterTitles();
               setDownTitlesVisible(true);
@@ -118,18 +118,18 @@ const ButtonsPanel = memo(function ButtonsPanel({
             */
               }
             }}
-          >
-            Baixar
-          </CustomButton>
+          />
         )}
         {checkTitlePermission && (
-          <CustomButton type="primary" onClick={handleButtonClick}>
-            {!loading ? "Aceite / Conferência" : "Enviando..."}
-          </CustomButton>
+          <Button
+            onClick={handleButtonClick}
+            text={!loading ? "Aceite / Conferência" : "Enviando..."}
+          />
         )}
-        <CustomButton onClick={() => submitItemsBordero()}>
-          Adicionar itens borderô
-        </CustomButton>
+        <Button
+          onClick={() => submitItemsBordero()}
+          text="Adicionar itens borderô"
+        />
       </section>
       <hr />
       <Modal

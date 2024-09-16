@@ -14,7 +14,6 @@ import { usePatients } from "@/OLD/hooks/usePatients";
 import { EditTwoTone } from "@ant-design/icons";
 
 import { GiConfirmed } from "react-icons/gi";
-// import { UsersIcon } from "@/OLD/common/icons";
 
 // Components
 import { Delete } from "../Delete";
@@ -28,9 +27,7 @@ import {
   Dropdown,
   Menu,
   AutoComplete,
-  Button,
 } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import { Single } from "../Single";
 import { Edit } from "../Edit";
 
@@ -40,7 +37,7 @@ import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FormCreatePatient, FormCreateTutor } from "@/presentation";
-import { Icon, Modal as InfinityForgeModal } from "infinity-forge";
+import { Icon, Modal as InfinityForgeModal, Button } from "infinity-forge";
 
 export function List({
   filters,
@@ -376,7 +373,8 @@ export function List({
               </Link>
             ),
             select: (
-              <CustomButton
+              <Button
+                text="Criar oportunidade"
                 onClick={() => {
                   setPayload((prv) => ({
                     ...prv,
@@ -388,9 +386,7 @@ export function List({
                   }));
                   setVisible(false);
                 }}
-              >
-                criar oportunidade
-              </CustomButton>
+              />
             ),
             hypertension: tutor?.hypertension ? "Sim" : "Não",
             diabetes: tutor?.diabetes ? "Sim" : "Não",
@@ -408,11 +404,10 @@ export function List({
               </div>
             ),
             selectTutor: (
-              <CustomButton
+              <Button
                 onClick={() => assignPetToTutor(tutor.id, petToVinc)}
-              >
-                Selecionar
-              </CustomButton>
+                text="Selecionar"
+              />
             ),
           };
         })
@@ -533,13 +528,11 @@ export function List({
           <hr />
           <footer className="uk-flex uk-flex-right">
             <Button
-              type="primary"
               onClick={() =>
                 assignPetToTutor(selectedTutor?.id, selectedPetToVinc?.id)
               }
-            >
-              Vincular
-            </Button>
+              text="Vincular"
+            />
           </footer>
         </Modal>
       )}

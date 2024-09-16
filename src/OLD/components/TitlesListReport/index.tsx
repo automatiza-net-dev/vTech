@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
 import TitlesFilterReport from "./TitlesFilterReport";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { Table, Button } from "antd";
+import { Table } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import { useFinancesReports } from "@/OLD/hooks/useReports";
@@ -15,7 +15,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import ReactToPrint from "react-to-print";
 import PrintTable from "./PrintTable";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 
 import { Reload } from "styled-icons/zondicons";
 
@@ -115,74 +115,73 @@ const TitlesListReport = () => {
   return !listTitlesPermission || listTitlesPermission === "loading" ? (
     <AccessDenied loading={listTitlesPermission} />
   ) : (
-    <div className="uk-padding">
-      <div className="uk-flex uk-flex-between">
-        <h3 className="uk-margin-remove">
-          Relatorio Financeiro - Listagem Titulos
-        </h3>
-        <div className="">
-          <CustomButton
-            type="primary"
+    <PageWrapper title="Relatório financeiro - Listagem de títulos">
+      <div>
+        <div className="uk-flex uk-flex-between"></div>
+        <TitlesFilterReport
+          filters={filters}
+          setFilters={setFilters}
+          paymentMethods={paymentMethods}
+          tutors={tutors}
+          plans={plans.filter((plan) => {
+            if (filters.type === "receive") {
+              return plan?.type === "CREDITO";
+            } else {
+              return plan?.type === "DEBITO";
+            }
+          })}
+          reload={reload}
+          setReload={setReload}
+          clinics={clinics}
+          loadingFinances={loadingFinances}
+        />
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            text="Filtrar"
             onClick={() => {
               setReload(!reload);
             }}
             classCallback="uk-margin-right"
-          >
-            Filtrar
-          </CustomButton>
-        </div>
-      </div>
-      <TitlesFilterReport
-        filters={filters}
-        setFilters={setFilters}
-        paymentMethods={paymentMethods}
-        tutors={tutors}
-        plans={plans.filter((plan) => {
-          if (filters.type === "receive") {
-            return plan?.type === "CREDITO";
-          } else {
-            return plan?.type === "DEBITO";
-          }
-        })}
-        reload={reload}
-        setReload={setReload}
-        clinics={clinics}
-        loadingFinances={loadingFinances}
-      />
-      <hr />
-      <div style={{ overflowX: "auto" }}>
-        <Table
-          columns={Columns}
-          dataSource={formatedFinances}
-          pagination={false}
-          scroll={{ y: 320 }}
-        />
-      </div>
-      <div className="uk-margin-top uk-flex uk-flex-right">
-        <ReactToPrint
-          trigger={() => (
-            <Button type="primary" className="uk-margin-small-right">
-              Imprimir Tabela
-            </Button>
-          )}
-          content={() => printRef.current} // Use a referência aqui
-        />
-        <Button onClick={() => handleExport()}>Exportar (Excel)</Button>
-        <div style={{ display: "none" }}>
-          <PrintTable
-            ref={printRef}
-            columns={Columns}
-            dataSource={formatedFinances}
-            filters={filters}
-            unit={
-              filters?.unit
-                ? clinics?.find((clinic) => clinic?.id === filters?.unit)
-                : ""
-            }
           />
         </div>
+        <hr />
+        <div style={{ overflowX: "auto" }}>
+          <Table
+            columns={Columns}
+            dataSource={formatedFinances}
+            pagination={false}
+            scroll={{ y: 320 }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            marginTop: "5px",
+          }}
+        >
+          <ReactToPrint
+            trigger={() => <Button type="primary" text="Imprimir Tabela" />}
+            content={() => printRef.current} // Use a referência aqui
+          />
+          <Button onClick={() => handleExport()} text="Exportar (Excel)" />
+          <div style={{ display: "none" }}>
+            <PrintTable
+              ref={printRef}
+              columns={Columns}
+              dataSource={formatedFinances}
+              filters={filters}
+              unit={
+                filters?.unit
+                  ? clinics?.find((clinic) => clinic?.id === filters?.unit)
+                  : ""
+              }
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 

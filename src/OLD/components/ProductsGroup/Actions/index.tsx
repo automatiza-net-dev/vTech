@@ -6,13 +6,14 @@ import { productService } from "@/OLD/services/product.service";
 
 import { useShowProductGroup } from "@/OLD/hooks/useProductGroup";
 
-import CreateOrUpdateForm from "./CreateOrUpdateForm";
-import AddOrRemoveItem from "./AddOrRemoveItem";
 import { notification } from "antd";
+import { PageWrapper } from "infinity-forge";
+import AddOrRemoveItem from "./AddOrRemoveItem";
+import CreateOrUpdateForm from "./CreateOrUpdateForm";
 
 import moment from "moment";
 
-const Actions = memo(function Actions() {
+function Actions({ type }: { type: "create" | "update" }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
@@ -108,33 +109,28 @@ const Actions = memo(function Actions() {
   }, [data]);
 
   return (
-    <div className="uk-padding">
-      <section>
-        <h3 className="uk-margin-remove">
-          {router?.query?.subpage === "editar"
-            ? "Editar kit"
-            : "Cadastro de kit"}
-        </h3>
-      </section>
-      <CreateOrUpdateForm
-        data={data}
-        setData={setData}
-        action={action}
-        submit={createKit}
-      />
-      {kit && (
-        <AddOrRemoveItem
-          kit={data}
-          setKit={setKit}
-          setReload={setReload}
-          reload={reload}
+    <PageWrapper title={type === "update" ? "Editar kit" : "Cadastro de kit"}>
+      <div>
+        <CreateOrUpdateForm
+          data={data}
+          setData={setData}
           action={action}
-          update={updateKit}
-          loadingUpdate={loading}
+          submit={createKit}
         />
-      )}
-    </div>
+        {kit && (
+          <AddOrRemoveItem
+            kit={data}
+            setKit={setKit}
+            setReload={setReload}
+            reload={reload}
+            action={action}
+            update={updateKit}
+            loadingUpdate={loading}
+          />
+        )}
+      </div>
+    </PageWrapper>
   );
-});
+}
 
 export default Actions;
