@@ -6,7 +6,7 @@ import { servicesService } from "@/OLD/services/services.service";
 
 import { Container } from "./styles";
 import { Table, notification } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import Header from "./Header";
 import Edit from "./Edit";
 
@@ -138,29 +138,27 @@ const Single = memo(function Single({
   }, [service]);
 
   return (
-    <Container className="uk-padding">
-      <div className="uk-flex uk-flex-between">
-        <h3 className="uk-line uk-margin-remove">
-          Detalhes do serviço - {service?.originalDescription}
-        </h3>
-        <div className="uk-flex">
-          <CustomButton
-            classCallback="uk-margin-small-right"
-            onClick={() => setVisible(false)}
-          >
-            Voltar
-          </CustomButton>
-          <CustomButton onClick={submitUpdate}>Salvar</CustomButton>
+    <PageWrapper
+      title={`Detalhes do serviço - ${service?.originalDescription}`}
+    >
+      <Container>
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+        >
+          <Button text="Voltar" onClick={() => setVisible(false)} />
+
+          <Button onClick={submitUpdate} text="Salvar" />
         </div>
-      </div>
-      <hr />
-      <Header service={service} setService={setService} />
-      <hr />
-      <Table
-        columns={servicesDetailsColumns}
-        dataSource={formatedServiceUnits}
-      />
-    </Container>
+
+        <hr />
+        <Header service={service} setService={setService} />
+        <hr />
+        <Table
+          columns={servicesDetailsColumns}
+          dataSource={formatedServiceUnits}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

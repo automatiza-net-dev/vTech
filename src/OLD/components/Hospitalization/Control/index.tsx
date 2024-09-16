@@ -15,7 +15,7 @@ import { useMutation, useQuery } from "react-query";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { hospitalizationService } from "@/OLD/services/hospitalization.service";
 
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import moment from "moment";
 import "moment/locale/pt-br";
 import Link from "next/link";
@@ -288,9 +288,7 @@ const HospitalizationControl = memo(function HospitalizationControl({
               {origin === "hospitalization" && (
                 <Link href={`/dashboard/internacao/prescricao/${id}`}>
                   <div className="uk-margin-top">
-                    <Button type="link" size="small">
-                      Nova prescrição
-                    </Button>
+                    <Button type="link" size="small" text="Nova prescrição" />
                   </div>
                 </Link>
               )}
@@ -435,14 +433,12 @@ const HospitalizationControl = memo(function HospitalizationControl({
                               cancelText="Não"
                             >
                               <Button
-                                size="small"
+                                text="Interromper"
                                 disabled={
                                   prescription.excluded_at ||
                                   interruptMutation.isLoading
                                 }
-                              >
-                                Interromper
-                              </Button>
+                              />
                             </Popconfirm>
                           )}
                         {cancelMedicalPrescriptionPermission &&
@@ -456,14 +452,12 @@ const HospitalizationControl = memo(function HospitalizationControl({
                               cancelText="Não"
                             >
                               <Button
-                                size="small"
+                                text="Cancelar"
                                 disabled={
                                   prescription.excluded_at ||
                                   excludeMutation.isLoading
                                 }
-                              >
-                                Cancelar
-                              </Button>
+                              />
                             </Popconfirm>
                           )}
                       </div>

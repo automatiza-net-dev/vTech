@@ -3,9 +3,6 @@
 import React, { memo, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
-// Icons
-import { SearchIcon } from "@/OLD/common/icons";
-
 // Services
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
@@ -22,7 +19,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 // Components
-import { Button } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Container, Input } from "./styles";
 import {
   Table,
@@ -209,107 +206,107 @@ const DailyCashier = memo(function DailyCashier() {
     listDailyCashierPermission === "loading" ? (
     <AccessDenied loading={listDailyCashierPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Caixas diários</h3>
-      <section className="uk-flex uk-flex-between uk-margin-top">
-        <div className="uk-flex uk-flex-middle">
-          <Input>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              className="date-input"
-              value={filters?.fromOpening}
-              type="search"
-              placeholder="Inicio"
-              format={"DD/MM/YYYY"}
-              onChange={(val) => {
-                setFilters({ ...filters, fromOpening: val });
-                setReload(!reload);
-              }}
-            />
-          </Input>
-          <h4 className="uk-margin-remove">&nbsp;À&nbsp;</h4>
-          <Input>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.toOpening}
-              className="date-input"
-              type="search"
-              placeholder="Fim"
-              format="DD/MM/YYYY"
-              onChange={(val) => {
-                setFilters({ ...filters, toOpening: val });
-                setReload(!reload);
-              }}
-            />
-          </Input>
-          <Input>
-            <AntInput
-              placeholder="Cod"
-              onChange={(e) => setFilters({ tag: e.target.value })}
-              allowClear
-            />
-          </Input>
-          <div className="uk-margin-left uk-width-1-4">
-            <label>Status</label>
-            <br />
-            <Select
-              value={filters?.status}
-              onChange={(v) => {
-                setFilters({ ...filters, status: v });
-                setReload(!reload);
-              }}
-              className="uk-width-1-1"
-              defaultValue="ABERTO"
-            >
-              <Option value="TODOS">Todos</Option>
-              <Option value="ABERTO">Aberto</Option>
-              <Option value="FECHADO">Fechado</Option>
-              <Option value="REVISAO">Revisão</Option>
-              <Option value="CONFERIDO">Conferido</Option>
-            </Select>
+    <PageWrapper title="Caixas diários">
+      <Container>
+        <section className="uk-flex uk-flex-between uk-margin-top">
+          <div className="uk-flex uk-flex-middle">
+            <Input>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                className="date-input"
+                value={filters?.fromOpening}
+                type="search"
+                placeholder="Inicio"
+                format={"DD/MM/YYYY"}
+                onChange={(val) => {
+                  setFilters({ ...filters, fromOpening: val });
+                  setReload(!reload);
+                }}
+              />
+            </Input>
+            <h4 className="uk-margin-remove">&nbsp;À&nbsp;</h4>
+            <Input>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                value={filters?.toOpening}
+                className="date-input"
+                type="search"
+                placeholder="Fim"
+                format="DD/MM/YYYY"
+                onChange={(val) => {
+                  setFilters({ ...filters, toOpening: val });
+                  setReload(!reload);
+                }}
+              />
+            </Input>
+            <Input>
+              <AntInput
+                placeholder="Cod"
+                onChange={(e) => setFilters({ tag: e.target.value })}
+                allowClear
+              />
+            </Input>
+            <div className="uk-margin-left uk-width-1-4">
+              <label>Status</label>
+              <br />
+              <Select
+                value={filters?.status}
+                onChange={(v) => {
+                  setFilters({ ...filters, status: v });
+                  setReload(!reload);
+                }}
+                className="uk-width-1-1"
+                defaultValue="ABERTO"
+              >
+                <Option value="TODOS">Todos</Option>
+                <Option value="ABERTO">Aberto</Option>
+                <Option value="FECHADO">Fechado</Option>
+                <Option value="REVISAO">Revisão</Option>
+                <Option value="CONFERIDO">Conferido</Option>
+              </Select>
+            </div>
           </div>
-        </div>
-        <div>
-          {createDailyCashierPermission && (
-            <Button
-              onClick={() => {
-                const movementsFilter = movements.filter(
-                  (mov) => mov.status === "Aberto"
-                );
-                if (movementsFilter?.length === 0) {
-                  return notification.warning({
-                    message: "Nenhuma movimentação aberta",
-                  });
-                }
-                setOpenVisible(true);
-              }}
-            >
-              Abrir novo caixa
-            </Button>
-          )}
-        </div>
-      </section>
-      <hr />
-      <Table dataSource={formatedCashiers} columns={Columns} />
-      {openVisible && (
-        <Modal
-          title="Abrir caixa"
-          visible={openVisible}
-          onCancel={() => setOpenVisible(false)}
-          onOk={() => openDailyCasher()}
-          footer={null}
-        >
-          <FormChild
-            data={data}
-            setData={setData}
-            user={user}
-            inputFocus={openVisible}
-            submit={openDailyCasher}
-            setVisible={setOpenVisible}
-          />
-        </Modal>
-      )}
-    </Container>
+          <div>
+            {createDailyCashierPermission && (
+              <Button
+                onClick={() => {
+                  const movementsFilter = movements.filter(
+                    (mov) => mov.status === "Aberto"
+                  );
+                  if (movementsFilter?.length === 0) {
+                    return notification.warning({
+                      message: "Nenhuma movimentação aberta",
+                    });
+                  }
+                  setOpenVisible(true);
+                }}
+                text="Abrir novo caixa"
+              />
+            )}
+          </div>
+        </section>
+        <hr />
+        <Table dataSource={formatedCashiers} columns={Columns} />
+        {openVisible && (
+          <Modal
+            title="Abrir caixa"
+            visible={openVisible}
+            onCancel={() => setOpenVisible(false)}
+            onOk={() => openDailyCasher()}
+            footer={null}
+          >
+            <FormChild
+              data={data}
+              setData={setData}
+              user={user}
+              inputFocus={openVisible}
+              submit={openDailyCasher}
+              setVisible={setOpenVisible}
+            />
+          </Modal>
+        )}
+      </Container>
+    </PageWrapper>
   );
 });
 

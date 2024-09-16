@@ -28,8 +28,8 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
-import { Table, Tooltip, Button, Modal, notification } from "antd";
+import { Button, PageWrapper } from "infinity-forge";
+import { Table, Tooltip, Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "./Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -343,17 +343,19 @@ export default function Titles({ type }: any) {
   return !listTitlesPermission || listTitlesPermission === "loading" ? (
     <AccessDenied loading={listTitlesPermission} />
   ) : (
-    <Container className="uk-padding">
-      <div className="uk-flex uk-flex-between">
-        <h3 className="uk-margin-remove">
-          Lançamento de títulos ({type === "receive" ? "Crédito" : "Débito"})
-        </h3>
-        {createTitlePermission && (
-          <CustomButton
-            onClick={() => {
-              setCreateTitleVisible(true);
-              {
-                /*
+    <PageWrapper
+      title={`    Lançamento de títulos (${
+        type === "receive" ? "Crédito" : "Débito"
+      })`}
+    >
+      <Container>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          {createTitlePermission && (
+            <Button
+              onClick={() => {
+                setCreateTitleVisible(true);
+                {
+                  /*
             router.push(
               `/dashboard/${
                 type === "receive"
@@ -362,148 +364,155 @@ export default function Titles({ type }: any) {
               }`
               );
             */
-              }
-            }}
-          >
-            Novo Título
-          </CustomButton>
-        )}
-      </div>
-      <TitlesFilters
-        filters={filters}
-        setFilters={setFilters}
-        paymentMethods={paymentMethods}
-        tutors={tutors}
-        suppliers={suppliers}
-        plans={plans.filter((plan) => {
-          if (type === "receive") {
-            return plan?.type === "CREDITO";
-          } else {
-            return plan?.type === "DEBITO";
-          }
-        })}
-        reload={reload}
-        setReload={setReload}
-        clinics={clinics}
-        loadingFinances={loadingFinances}
-      />
-      <hr />
-      {titles?.length > 0 && (
-        <ButtonsPanel
-          setReload={setReload}
-          type={type}
-          setFilters={setFilters}
-        />
-      )}
-      <Table
-        pagination={{ onChange: (page) => setCurrentPage(page) }}
-        columns={Columns(selectAllFinances)}
-        dataSource={formatedFinances}
-        footer={() => (
-          <footer className="uk-flex uk-flex-center">
-            <div className="uk-flex uk-flex-around custom-footer-box">
-              <div className="uk-width-1-2 uk-margin-right">
-                <strong>Total:&nbsp;</strong>
-                {currencyFormatter(
-                  finances?.length > 0 &&
-                    finances?.reduce(
-                      (acc, current) => acc + current?.total_value,
-                      0
-                    )
-                )}
-              </div>
-              <div className="uk-width-1-1">
-                <strong>Total em aberto:&nbsp;</strong>
-                {currencyFormatter(
-                  finances
-                    ?.filter((item) => item?.status === "ABERTO")
-                    ?.reduce((acc, current) => acc + current?.total_value, 0)
-                )}
-              </div>
-              <div className="uk-width-1-1">
-                <strong>Total baixado:</strong>
-                {currencyFormatter(
-                  finances
-                    ?.filter((item) => item?.status === "BAIXADO")
-                    ?.reduce((acc, current) => acc + current?.payment_value, 0)
-                )}
-              </div>
-            </div>
-          </footer>
-        )}
-      />
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <PrintScreen data={finances} loading={loadingFinances} />
-        </div>
-      </div>
-      <div className="uk-flex uk-flex-right uk-margin-small-top">
-        <Button
-          className="uk-margin-small-right"
-          onClick={() => handleExport()}
-        >
-          Exportar (Excel)
-        </Button>
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
+                }
+              }}
+              text="Novo título"
+            />
           )}
-          content={() => componentRef.current}
+        </div>
+        <TitlesFilters
+          filters={filters}
+          setFilters={setFilters}
+          paymentMethods={paymentMethods}
+          tutors={tutors}
+          suppliers={suppliers}
+          plans={plans.filter((plan) => {
+            if (type === "receive") {
+              return plan?.type === "CREDITO";
+            } else {
+              return plan?.type === "DEBITO";
+            }
+          })}
+          reload={reload}
+          setReload={setReload}
+          clinics={clinics}
+          loadingFinances={loadingFinances}
         />
-      </div>
-      {updateOpen && (
+        <hr />
+        {titles?.length > 0 && (
+          <ButtonsPanel
+            setReload={setReload}
+            type={type}
+            setFilters={setFilters}
+          />
+        )}
+        <Table
+          pagination={{ onChange: (page) => setCurrentPage(page) }}
+          columns={Columns(selectAllFinances)}
+          dataSource={formatedFinances}
+          footer={() => (
+            <footer className="uk-flex uk-flex-center">
+              <div className="uk-flex uk-flex-around custom-footer-box">
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances?.length > 0 &&
+                      finances?.reduce(
+                        (acc, current) => acc + current?.total_value,
+                        0
+                      )
+                  )}
+                </div>
+                <div className="uk-width-1-1">
+                  <strong>Total em aberto:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances
+                      ?.filter((item) => item?.status === "ABERTO")
+                      ?.reduce((acc, current) => acc + current?.total_value, 0)
+                  )}
+                </div>
+                <div className="uk-width-1-1">
+                  <strong>Total baixado:</strong>
+                  {currencyFormatter(
+                    finances
+                      ?.filter((item) => item?.status === "BAIXADO")
+                      ?.reduce(
+                        (acc, current) => acc + current?.payment_value,
+                        0
+                      )
+                  )}
+                </div>
+              </div>
+            </footer>
+          )}
+        />
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintScreen data={finances} loading={loadingFinances} />
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            marginTop: "5px",
+          }}
+        >
+          <Button onClick={() => router.back()} text="Voltar" />
+
+          <Button text="Exportar (Excel)" onClick={() => handleExport()} />
+
+          <ReactToPrint
+            trigger={() => (
+              <Button className="uk-margin-small-right" text="Imprimir" />
+            )}
+            content={() => componentRef.current}
+          />
+        </div>
+        {updateOpen && (
+          <Modal
+            title={`Informações do título - ${finance[0]?.document} - ${finance[0]?.installment} / ${finance[0]?.qty_installments}`}
+            width={1200}
+            visible={updateOpen}
+            onCancel={() => setUpdateOpen(false)}
+            footer={null}
+          >
+            <Edit
+              data={data}
+              setData={setData}
+              paymentMethods={paymentMethods}
+              plans={plans?.filter((plan) => {
+                if (type === "payment") {
+                  return plan?.type === "DEBITO";
+                }
+                if (type === "receive") {
+                  return plan?.type === "CREDITO";
+                }
+                return plan;
+              })}
+              submit={submitUpdate}
+              setVisible={setUpdateOpen}
+              edit={edit}
+              setEdit={setEdit}
+              source={"finances"}
+            />
+          </Modal>
+        )}
+        {borderoDetailsVisible && (
+          <Modal
+            visible={borderoDetailsVisible}
+            title="Detalhes bordero"
+            width={1200}
+            footer={null}
+            onCancel={() => setBorderoDetailsVisible(false)}
+          >
+            <BorderoDetails
+              borderoId={selectedBorderoId}
+              setVisible={setBorderoDetailsVisible}
+            />
+          </Modal>
+        )}
         <Modal
-          title={`Informações do título - ${finance[0]?.document} - ${finance[0]?.installment} / ${finance[0]?.qty_installments}`}
+          title="Novo título"
+          onCancel={() => setCreateTitleVisible(false)}
+          visible={createTitleVisible}
           width={1200}
-          visible={updateOpen}
-          onCancel={() => setUpdateOpen(false)}
           footer={null}
         >
-          <Edit
-            data={data}
-            setData={setData}
-            paymentMethods={paymentMethods}
-            plans={plans?.filter((plan) => {
-              if (type === "payment") {
-                return plan?.type === "DEBITO";
-              }
-              if (type === "receive") {
-                return plan?.type === "CREDITO";
-              }
-              return plan;
-            })}
-            submit={submitUpdate}
-            setVisible={setUpdateOpen}
-            edit={edit}
-            setEdit={setEdit}
-            source={"finances"}
-          />
+          <CreateTitle type={type} setVisible={setCreateTitleVisible} />
         </Modal>
-      )}
-      {borderoDetailsVisible && (
-        <Modal
-          visible={borderoDetailsVisible}
-          title="Detalhes bordero"
-          width={1200}
-          footer={null}
-          onCancel={() => setBorderoDetailsVisible(false)}
-        >
-          <BorderoDetails
-            borderoId={selectedBorderoId}
-            setVisible={setBorderoDetailsVisible}
-          />
-        </Modal>
-      )}
-      <Modal
-        title="Novo título"
-        onCancel={() => setCreateTitleVisible(false)}
-        visible={createTitleVisible}
-        width={1200}
-        footer={null}
-      >
-        <CreateTitle type={type} setVisible={setCreateTitleVisible} />
-      </Modal>
-    </Container>
+      </Container>
+    </PageWrapper>
   );
 }
-

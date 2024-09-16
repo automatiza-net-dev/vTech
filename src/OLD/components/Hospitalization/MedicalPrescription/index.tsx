@@ -5,11 +5,11 @@ import { useRouter } from "next/router";
 
 // Components
 import { Container } from "./styles";
-import { Button, Input, notification, DatePicker, TimePicker } from "antd";
+import { Input, notification, DatePicker, TimePicker } from "antd";
 import IntervalForm from "./IntervalForm";
 import MedicamentForm from "./MedicamentForm";
 import FluidTherapy from "./FluidTherapy";
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 const { TextArea } = Input;
 
 // Hooks
@@ -20,9 +20,7 @@ import { hospitalizationPrescriptionsService } from "@/OLD/services/hospitalizat
 
 // Utils
 import moment from "moment";
-export default function MedicalPrescription({
-  duplicate = false,
-}) {
+export default function MedicalPrescription({ duplicate = false }) {
   const router = useRouter();
   const [type, setType] = useState("PROCEDURE");
   const [intervalType, setIntervalType] = useState("RECURRENT");
@@ -172,26 +170,23 @@ export default function MedicalPrescription({
             <label>Tipo</label>
             <div className="uk-margin-small-top">
               <Button
-                type={type === "PROCEDURE" ? "primary" : ""}
+                // type={type === "PROCEDURE" ? "primary" : ""}
                 onClick={() => {
                   setType("PROCEDURE");
                   setIntervalType("RECURRENT");
                 }}
-              >
-                Procedimento
-              </Button>
+                text="Procedimento"
+              />
               <Button
                 type={type === "MEDICATION" ? "primary" : ""}
                 onClick={() => setType("MEDICATION")}
-              >
-                Medicamento
-              </Button>
+                text="Medicamento"
+              />
               <Button
-                type={type === "FLUID_THERAPY" ? "primary" : ""}
+                // type={type === "FLUID_THERAPY" ? "primary" : ""}
                 onClick={() => setType("FLUID_THERAPY")}
-              >
-                Fluidoterapia
-              </Button>
+                text="Fluidoterapia"
+              />
             </div>
           </div>
           <div className="uk-width-2-4">
@@ -200,21 +195,20 @@ export default function MedicalPrescription({
               <Button
                 type={intervalType === "RECURRENT" ? "primary" : ""}
                 onClick={() => setIntervalType("RECURRENT")}
-              >
-                Recorrente
-              </Button>
+                text="Recorrente"
+              />
+
               <Button
-                type={intervalType === "ONCE" ? "primary" : ""}
+                // type={intervalType === "ONCE" ? "primary" : ""}
                 onClick={() => setIntervalType("ONCE")}
-              >
-                Apenas uma vez
-              </Button>
+                text="Apenas uma vez"
+              />
+
               <Button
-                type={intervalType === "WHEN_NEEDED" ? "primary" : ""}
+                // type={intervalType === "WHEN_NEEDED" ? "primary" : ""}
                 onClick={() => setIntervalType("WHEN_NEEDED")}
-              >
-                Quando necessário
-              </Button>
+                text="Quando necessário"
+              />
             </div>
           </div>
         </section>
@@ -276,15 +270,11 @@ export default function MedicalPrescription({
           </div>
         </section>
         <footer className="uk-margin-top">
-          <ButtonA type="submit" classCallback="uk-margin-small-right">
-            Salvar
-          </ButtonA>
-          <ButtonA type="button" onClick={() => router.back()}>
-            Voltar
-          </ButtonA>
+          <Button type="submit" text="Salvar" />
+
+          <Button type="button" onClick={() => router.back()} text="Voltar" />
         </footer>
       </form>
     </Container>
   );
 }
-

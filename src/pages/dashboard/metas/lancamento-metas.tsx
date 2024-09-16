@@ -1,10 +1,12 @@
-import { PrivatePage } from "infinity-forge";
+import { PageWrapper } from "infinity-forge";
 import { Goals, LayoutDashboard } from "@/presentation";
 
 export default function LancamentoMetas() {
   return (
     <LayoutDashboard>
-      <Goals />
+      <PageWrapper title="Lançamento de metas">
+        <Goals />
+      </PageWrapper>
     </LayoutDashboard>
   );
 }

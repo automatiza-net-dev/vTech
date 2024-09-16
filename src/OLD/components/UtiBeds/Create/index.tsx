@@ -1,16 +1,17 @@
 // @ts-nocheck
 // Core
-import React, { memo, useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 // Services
 import { bedsService } from "@/OLD/services/beds.service";
 
 // Components
 import { Container } from "./styles";
-import { Modal, Input, Select, Switch, Button, notification } from "antd";
+import { Button } from "infinity-forge";
+import { Modal, Input, Select, Switch, notification } from "antd";
 const { Option } = Select;
 
-const CreateBed = memo(function CreateBed({
+function CreateBed({
   reload,
   setReload,
   visible,
@@ -147,25 +148,28 @@ const CreateBed = memo(function CreateBed({
           </div>
         </div>
         <hr className="uk-margin-large-top" />
-        <footer className="uk-flex uk-flex-right">
-          <div className="uk-width-1-2 uk-flex uk-flex-around">
-            <Button htmlType="submit" type="primary">
-              Salvar
-            </Button>
-            <Button
-              onClick={() => {
-                setData({ active: true });
-                setVisible(false);
-              }}
-            >
-              {" "}
-              Cancelar{" "}
-            </Button>
-          </div>
+        <footer
+          style={{
+            display: "flex",
+            gap: "10px",
+            marginTop: "10px",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button type="submit" text="Salvar" />
+
+          <Button
+            onClick={() => {
+              setData({ active: true });
+              setVisible(false);
+            }}
+            text="Cancelar"
+            type="button"
+          />
         </footer>
       </form>
     </Modal>
   );
-});
+}
 
 export default CreateBed;

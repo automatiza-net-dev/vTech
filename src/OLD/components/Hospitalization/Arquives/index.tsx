@@ -4,7 +4,7 @@ import React, { memo, useState, useEffect, useCallback } from "react";
 
 // Components
 import { Upload } from "antd";
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 // Icons
 import { PlusOutline } from "styled-icons/evaicons-outline";
@@ -38,9 +38,8 @@ const UploadArquives = memo(function UploadArquives({ fileList, setFileList }) {
       >
         {fileList.length > 0 ? (
           <div className="uk-flex uk-flex-column uk-flex-middle uk-margin-small-top">
-            <ButtonA>
-              <PlusOutline size={15} className="upload-icon" /> Adicionar anexos
-            </ButtonA>
+            <Button text="Adicionar anexos" />
+
             {fileList.map((item, i) => (
               <img
                 src={item.preview}
@@ -51,9 +50,7 @@ const UploadArquives = memo(function UploadArquives({ fileList, setFileList }) {
             ))}
           </div>
         ) : (
-          <ButtonA>
-            <PlusOutline size={15} className="upload-icon" /> Adicionar anexos
-          </ButtonA>
+          <Button text="Adicionar anexos" />
         )}
       </Upload>
     </div>

@@ -10,9 +10,6 @@ import { useDailyMovementsSearch } from "@/OLD/hooks/useDailyMovements";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-// Icons
-import { SearchIcon } from "@/OLD/common/icons";
-
 // Utils
 import { Columns } from "./Columns";
 import moment from "moment";
@@ -21,7 +18,7 @@ import moment from "moment";
 import { Container, Input } from "./styles";
 import { Table, notification, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import Actions from "./Actions";
 import Report from "./DailyMovementReport";
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -116,63 +113,65 @@ const DailyMovements = memo(function DailyMovements() {
   return !listDailyMovPermission || listDailyMovPermission === "loading" ? (
     <AccessDenied loading={listDailyMovPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Movimentação diária</h3>
-      <section className="uk-flex uk-flex-between uk-margin-top">
-        <div className="uk-flex uk-flex-middle">
-          <Input>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              className="date-input"
-              type="search"
-              format="DD/MM/YYYY"
-              placeholder="Inicio"
-              value={filters?.from}
-              onChange={(val) => setFilters({ ...filters, from: val })}
-            />
-          </Input>
-          <h4 className="uk-margin-remove">&nbsp;À&nbsp;</h4>
-          <Input>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.to}
-              format="DD/MM/YYYY"
-              className="date-input"
-              type="search"
-              placeholder="Fim"
-              onChange={(val) => setFilters({ ...filters, to: val })}
-            />
-          </Input>
-          <div className="uk-width-1-5 uk-margin-left">
-            <label>Status</label>
-            <Select
-              className="uk-width-1-1"
-              allowClear
-              value={filters?.status}
-              onChange={(val) => {
-                setFilters({ ...filters, status: val });
-              }}
-            >
-              <Option value="Aberto">Aberto</Option>
-              <Option value="Fechado">Fechado</Option>
-              <Option value="Conferido">Conferido</Option>
-            </Select>
+    <PageWrapper title="Movimentação diária">
+      <Container>
+        <section className="uk-flex uk-flex-between uk-margin-top">
+          <div className="uk-flex uk-flex-middle">
+            <Input>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                className="date-input"
+                type="search"
+                format="DD/MM/YYYY"
+                placeholder="Inicio"
+                value={filters?.from}
+                onChange={(val) => setFilters({ ...filters, from: val })}
+              />
+            </Input>
+            <h4 className="uk-margin-remove">&nbsp;À&nbsp;</h4>
+            <Input>
+              <DatePicker
+                slotProps={{ textField: { variant: "standard" } }}
+                value={filters?.to}
+                format="DD/MM/YYYY"
+                className="date-input"
+                type="search"
+                placeholder="Fim"
+                onChange={(val) => setFilters({ ...filters, to: val })}
+              />
+            </Input>
+            <div className="uk-width-1-5 uk-margin-left">
+              <label>Status</label>
+              <Select
+                className="uk-width-1-1"
+                allowClear
+                value={filters?.status}
+                onChange={(val) => {
+                  setFilters({ ...filters, status: val });
+                }}
+              >
+                <Option value="Aberto">Aberto</Option>
+                <Option value="Fechado">Fechado</Option>
+                <Option value="Conferido">Conferido</Option>
+              </Select>
+            </div>
           </div>
+          <div>
+            {createMovimentationPermission && (
+              <Button
+                onClick={() => openDailyMovement()}
+                text="Nova movimentação"
+              />
+            )}
+          </div>
+        </section>
+        <hr />
+        <div className="uk-margin-top">
+          <Table columns={Columns} dataSource={formatedMovements} />
         </div>
-        <div>
-          {createMovimentationPermission && (
-            <Button onClick={() => openDailyMovement()}>
-              Nova Movimentação
-            </Button>
-          )}
-        </div>
-      </section>
-      <hr />
-      <div className="uk-margin-top">
-        <Table columns={Columns} dataSource={formatedMovements} />
-      </div>
-      {report && <Report report={report} setReport={setReport} />}
-    </Container>
+        {report && <Report report={report} setReport={setReport} />}
+      </Container>
+    </PageWrapper>
   );
 });
 

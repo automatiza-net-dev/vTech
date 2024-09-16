@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 import { useRouter } from "next/router";
@@ -6,12 +5,11 @@ import { useRouter } from "next/router";
 import { Table, Tag, notification, Popconfirm } from "antd";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 
-import { SearchIcon } from "@/OLD/common/icons";
+import { Button, PageWrapper } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { usePathologies } from "@/OLD/hooks/usePathologies";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { pathologiesServices } from "@/OLD/services/pathologies.service";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 import { LayoutDashboard } from "@/presentation";
 
@@ -19,10 +17,7 @@ export default function PathologiesListPage() {
   const router = useRouter();
   const [reload, setReload] = useState(false);
   const [filters, setFilters] = useState({});
-  const { documents, loadingDocuments } = usePathologies(
-    filters,
-    reload
-  );
+  const { documents, loadingDocuments } = usePathologies(filters, reload);
 
   const canEditPathology = useUserHasPermission("PAT02");
   const canCreatePathology = useUserHasPermission("PAT01");
@@ -45,96 +40,94 @@ export default function PathologiesListPage() {
       });
   };
 
-
   return (
     <LayoutDashboard>
-     {!listPathologiesPermission ||
-    listPathologiesPermission === "loading" ? (
-    <AccessDenied loading={listPathologiesPermission} />
-  ) : (
-    <div className="uk-container uk-padding">
-      <div className="uk-flex uk-flex-between uk-flex-middle">
-        <h3 className="uk-margin-remove">Patologias</h3>
-      </div>
-      <div className="uk-flex uk-margin-top uk-flex-right">
-        <InputBox className="uk-margin-right">
-          <input
-            type="search"
-            placeholder="Busque por descrição"
-            onChange={(e) =>
-              setFilters({ ...filters, description: e.target.value })
-            }
-          />
-          <SearchIcon />
-        </InputBox>
-        <CustomButton
-          disabled={!canCreatePathology}
-          className="uk-button uk-button-primary"
-          onClick={() => router.push("/dashboard/patologia/cadastrar")}
-        >
-          Cadastrar
-        </CustomButton>
-      </div>
-
-      <hr />
-      <Table
-        className="uk-margin-top"
-        columns={[
-          {
-            title: "Ativo",
-            dataIndex: "active",
-            key: "active",
-            render: (status) => (
-              <Tag color={status ? "green" : "red"}>
-                {status ? "Ativo" : "Inativo"}
-              </Tag>
-            ),
-          },
-          {
-            title: "Título",
-            key: "description",
-            dataIndex: "description",
-          },
-          {
-            title: "Descrição",
-            key: "definition",
-            dataIndex: "definition",
-          },
-          {
-            title: "Ações",
-            render: (record) => (
-              <div className="uk-flex uk-flex-around">
-                {canEditPathology && (
-                  <EditTwoTone
-                    onClick={() => {
-                      router.push(`/dashboard/patologia/${record.id}`);
-                    }}
-                  />
-                )}
-                <Popconfirm
-                  title="Deseja remover esta patologia?"
-                  onConfirm={() => removePathology(record?.id)}
-                  okText="Sim"
-                  cancelText="Não"
-                  placement="left"
-                >
-                  {canDeletePathology && (
-                    <DeleteTwoTone className="uk-link" twoToneColor={"red"} />
-                  )}
-                </Popconfirm>
-              </div>
-            ),
-          },
-        ]}
-        dataSource={documents}
-        loading={loadingDocuments}
-      />
-    </div>
-  )}
+      {!listPathologiesPermission || listPathologiesPermission === "loading" ? (
+        <AccessDenied loading={listPathologiesPermission} />
+      ) : (
+        <PageWrapper title="Patologias">
+          <div>
+            <div>
+              <InputBox className="uk-margin-right">
+                <input
+                  type="search"
+                  placeholder="Busque por descrição"
+                  onChange={(e) =>
+                    setFilters({ ...filters, description: e.target.value })
+                  }
+                />
+    
+              </InputBox>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                disabled={!canCreatePathology}
+                onClick={() => router.push("/dashboard/patologia/cadastrar")}
+                text="Cadastrar"
+              />
+            </div>
+            <hr />
+            <Table
+              className="uk-margin-top"
+              columns={[
+                {
+                  title: "Ativo",
+                  dataIndex: "active",
+                  key: "active",
+                  render: (status) => (
+                    <Tag color={status ? "green" : "red"}>
+                      {status ? "Ativo" : "Inativo"}
+                    </Tag>
+                  ),
+                },
+                {
+                  title: "Título",
+                  key: "description",
+                  dataIndex: "description",
+                },
+                {
+                  title: "Descrição",
+                  key: "definition",
+                  dataIndex: "definition",
+                },
+                {
+                  title: "Ações",
+                  render: (record) => (
+                    <div className="uk-flex uk-flex-around">
+                      {canEditPathology && (
+                        <EditTwoTone
+                          onClick={() => {
+                            router.push(`/dashboard/patologia/${record.id}`);
+                          }}
+                        />
+                      )}
+                      <Popconfirm
+                        title="Deseja remover esta patologia?"
+                        onConfirm={() => removePathology(record?.id)}
+                        okText="Sim"
+                        cancelText="Não"
+                        placement="left"
+                      >
+                        {canDeletePathology && (
+                          <DeleteTwoTone
+                            className="uk-link"
+                            twoToneColor={"red"}
+                          />
+                        )}
+                      </Popconfirm>
+                    </div>
+                  ),
+                },
+              ]}
+              dataSource={documents}
+              loading={loadingDocuments}
+            />
+          </div>
+        </PageWrapper>
+      )}
     </LayoutDashboard>
   );
 }
-
 
 import styled from "styled-components";
 
@@ -147,6 +140,7 @@ export const InputBox = styled.div`
   border-radius: 40px;
   padding: 0 20px;
   margin: 2px;
+  border: 0.5px solid #cacaca;
 
   input {
     margin-left: 10px;

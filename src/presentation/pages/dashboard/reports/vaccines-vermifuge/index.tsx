@@ -143,7 +143,7 @@ export function VaccinesVermifugeReport({
                   label="Data de agendamento"
                   name="fromScheduling"
                   mode="date"
-                  date={{ maxDate: new Date() }}
+                  date={{}}
                 />
               </div>
               <div style={{ marginTop: "20px" }}>
@@ -151,7 +151,7 @@ export function VaccinesVermifugeReport({
                   language="pt"
                   name="toScheduling"
                   mode="date"
-                  date={{ maxDate: new Date() }}
+                  date={{}}
                 />
               </div>
             </div>
@@ -162,7 +162,7 @@ export function VaccinesVermifugeReport({
                   label="Data de aplicação"
                   name="fromApplication"
                   mode="date"
-                  date={{ maxDate: new Date() }}
+                  date={{}}
                 />
               </div>
               <div style={{ marginTop: "20px" }}>
@@ -171,7 +171,7 @@ export function VaccinesVermifugeReport({
                   language="pt"
                   name="toApplication"
                   mode="date"
-                  date={{ maxDate: new Date() }}
+                  date={{}}
                 />
               </div>
             </div>

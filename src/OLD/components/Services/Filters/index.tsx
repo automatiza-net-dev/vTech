@@ -19,7 +19,7 @@ const Filters = memo(function Filters({ filters, setFilters }) {
 
   return (
     <section className="uk-flex">
-      <InputBox className="uk-width-1-4 uk-margin-top">
+      <InputBox style={{ marginTop: "15px" }}>
         <Input
           placeholder="nome"
           onChange={(e) =>

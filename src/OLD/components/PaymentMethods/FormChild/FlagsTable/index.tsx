@@ -23,9 +23,10 @@ const FlagsTable = memo(function FlagsTable({ flags, reload, setReload }) {
               flag: flag?.flag?.description,
               installments: flag?.max_installments,
               fee: flag?.fee,
+              installmentsWthoutPass: flag?.installments_without_password,
               actions: (
                 <Actions flag={flag} reload={reload} setReload={setReload} />
-              )
+              ),
             };
           })
         )
@@ -38,7 +39,7 @@ const FlagsTable = memo(function FlagsTable({ flags, reload, setReload }) {
 
   return (
     <section>
-      Bandeira/Taxa adicionadas:
+      Bandeira/Taxas adicionadas:
       <Table columns={Columns} dataSource={formatedFlags} />
     </section>
   );

@@ -7,8 +7,9 @@ import { supplierService } from "@/OLD/services/supplier.service";
 import { useSingleSupplier } from "@/OLD/hooks/useSuppliers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import FormChild from "../FormChild";
 import { notification } from "antd";
+import FormChild from "../FormChild";
+import { PageWrapper } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 export function EditSupplier() {
@@ -80,14 +81,15 @@ export function EditSupplier() {
   return !editSupplierPermission ? (
     <AccessDenied />
   ) : (
-    <div className="uk-padding">
-      <h3 className="uk-margin-remove">Editar Fornecedor</h3>
-      <FormChild
-        data={data}
-        setData={setData}
-        submit={submit}
-        setPhoto={setPhoto}
-      />
-    </div>
+    <PageWrapper title="Editar Fornecedor">
+      <div>
+        <FormChild
+          data={data}
+          setData={setData}
+          submit={submit}
+          setPhoto={setPhoto}
+        />
+      </div>
+    </PageWrapper>
   );
-};
+}

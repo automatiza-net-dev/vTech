@@ -45,6 +45,27 @@ const ProductsPanel = memo(function ProductsPanel({
   const billReceipts = useBillPaymentsReceipts(billPaymentReceiptsFilters);
   const queryClient = useQueryClient();
 
+  function formatAuthorization(payment) {
+    const { approvedUser, approved_at, pending, approved } = payment;
+
+    if (pending) {
+      return "Pendente de Liberação";
+    }
+    if (!pending && !approved && approved_at !== null) {
+      return `Não aprovado por ${approvedUser} em ${moment(approved_at).format(
+        "DD/MM/YYYY"
+      )}`;
+    }
+
+    if (!pending && approved) {
+      return `Aprovado por ${approvedUser} em ${moment(approved_at).format(
+        "DD/MM/YYYY"
+      )}`;
+    }
+
+    return "-";
+  }
+
   const formatPayments = () => {
     setFormatedPayments(
       payments?.map((payment, i) => {
@@ -79,6 +100,8 @@ const ProductsPanel = memo(function ProductsPanel({
             ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY") +
               ` (${payment?.finance?.paymentMethod?.description})`
             : "-",
+
+          authorization: formatAuthorization(payment),
           print: payment?.finance?.payment_date && (
             <div
               onMouseOver={() => {

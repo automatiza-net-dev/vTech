@@ -4,16 +4,12 @@ import { memo } from "react";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 
 import { InputBox } from "./styles";
+import { Button } from "infinity-forge";
+import { Select, DatePicker } from "antd";
 import { DateFilter } from "@/OLD/components/mini-components";
-import { Select, DatePicker, Button } from "antd";
 const { Option } = Select;
 
-function Filters({
-  filters,
-  setFilters,
-  setReload,
-  setValues,
-}) {
+function Filters({ filters, setFilters, setReload, setValues }) {
   const { businessUnits } = useBusinessUnitsByUser(false);
 
   return (
@@ -69,13 +65,12 @@ function Filters({
               setFilters({ ...filters, noSearch: false });
               setReload((prv) => !prv);
             }}
-          >
-            Filtrar
-          </Button>
+            text="Filtrar"
+          />
         </div>
       </div>
     </section>
   );
-};
+}
 
 export default Filters;

@@ -5,7 +5,7 @@ import { memo, useRef } from "react";
 import { useQuery } from "react-query";
 import { depositService } from "@/OLD/services/deposit.service";
 
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import PrintScreen from "./PrintScreen";
 
 import { useRouter } from "next/router";
@@ -59,90 +59,90 @@ export const ShowDeposit = memo(() => {
   sortItems(showDepositQuery?.data?.items, "description");
 
   return (
-    <section className="uk-padding">
-      <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
-        <h3 className="uk-margin-remove">
-          Detalhes do depósito: {showDepositQuery?.data?.description ?? ""}
-        </h3>
-      </div>
+    <PageWrapper
+      title={`Detalhes do depósito: ${
+        showDepositQuery?.data?.description ?? ""
+      }`}
+    >
+      <section>
+        {showDepositQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
+        {showDepositQuery.data && (
+          <div>
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col span={4}>
+                <div className="uk-flex uk-flex-column">
+                  <span>Código</span>
+                  <Input value={showDepositQuery.data.id} readOnly />
+                </div>
+              </Col>
 
-      {showDepositQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
-      {showDepositQuery.data && (
-        <div>
-          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-            <Col span={4}>
-              <div className="uk-flex uk-flex-column">
-                <span>Código</span>
-                <Input value={showDepositQuery.data.id} readOnly />
-              </div>
-            </Col>
+              <Col span={8}>
+                <div className="uk-flex uk-flex-column">
+                  <span>Descrição</span>
+                  <Input value={showDepositQuery.data.description} readOnly />
+                </div>
+              </Col>
 
-            <Col span={8}>
-              <div className="uk-flex uk-flex-column">
-                <span>Descrição</span>
-                <Input value={showDepositQuery.data.description} readOnly />
-              </div>
-            </Col>
+              <Col span={4}>
+                <div className="uk-flex uk-flex-column">
+                  <span>Tipo</span>
+                  <Input value={showDepositQuery.data.type} readOnly />
+                </div>
+              </Col>
 
-            <Col span={4}>
-              <div className="uk-flex uk-flex-column">
-                <span>Tipo</span>
-                <Input value={showDepositQuery.data.type} readOnly />
-              </div>
-            </Col>
+              <Col span={4}>
+                <div className="uk-flex uk-flex-column">
+                  <span>Principal</span>
+                  <Input
+                    value={showDepositQuery.data.principal ? "Sim" : "Não"}
+                    readOnly
+                  />
+                </div>
+              </Col>
 
-            <Col span={4}>
-              <div className="uk-flex uk-flex-column">
-                <span>Principal</span>
-                <Input
-                  value={showDepositQuery.data.principal ? "Sim" : "Não"}
-                  readOnly
-                />
-              </div>
-            </Col>
+              <Col span={4}>
+                <div className="uk-flex uk-flex-column">
+                  <span>Status</span>
+                  <Input value={showDepositQuery.data.status} readOnly />
+                </div>
+              </Col>
+            </Row>
 
-            <Col span={4}>
-              <div className="uk-flex uk-flex-column">
-                <span>Status</span>
-                <Input value={showDepositQuery.data.status} readOnly />
-              </div>
-            </Col>
-          </Row>
+            <hr />
 
-          <hr />
-
-          <h4 className="uk-margin-remove">Produtos</h4>
-          <Table
-            columns={columns}
-            dataSource={(showDepositQuery.data.items ?? []).map((elem) => ({
-              id: elem.id,
-              description: elem.variation.product.description,
-              barcode: elem.variation.barcode ?? "Não informado",
-              qty:
-                showDepositQuery?.data?.type === "Consumo"
-                  ? "-"
-                  : elem.quantity,
-              status: elem.status,
-            }))}
+            <h4 className="uk-margin-remove">Produtos</h4>
+            <Table
+              columns={columns}
+              dataSource={(showDepositQuery.data.items ?? []).map((elem) => ({
+                id: elem.id,
+                description: elem.variation.product.description,
+                barcode: elem.variation.barcode ?? "Não informado",
+                qty:
+                  showDepositQuery?.data?.type === "Consumo"
+                    ? "-"
+                    : elem.quantity,
+                status: elem.status,
+              }))}
+            />
+          </div>
+        )}
+        <footer
+          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+        >
+          <ReactToPrint
+            trigger={() => (
+              <Button classCallback="uk-margin-small-right" text="Imprimir" />
+            )}
+            content={() => componentRef.current}
           />
+          <Button onClick={() => router.back()} text="Voltar" />
+        </footer>
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintScreen data={showDepositQuery?.data} />
+          </div>
         </div>
-      )}
-      <footer className="uk-flex uk-flex-right">
-        <ReactToPrint
-          trigger={() => (
-            <CustomButton classCallback="uk-margin-small-right">
-              Imprimir
-            </CustomButton>
-          )}
-          content={() => componentRef.current}
-        />
-        <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
-      </footer>
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <PrintScreen data={showDepositQuery?.data} />
-        </div>
-      </div>
-    </section>
+      </section>
+    </PageWrapper>
   );
 });

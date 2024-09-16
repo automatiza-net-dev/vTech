@@ -50,3 +50,31 @@ export const AUTH_COLUMNS = [
     key: "authorization",
   },
 ];
+
+export const paymentsColumns = [
+  {
+    title: "Data",
+    dataIndex: "createdAt",
+    key: "createdAt",
+  },
+  {
+    title: "Valor",
+    dataIndex: "value",
+    key: "value",
+  },
+  {
+    title: "Forma pagamento",
+    dataIndex: "paymentMethodDescription",
+    key: "paymentMethod",
+  },
+  {
+    title: "Comprovante/NSU",
+    dataIndex: "nsu",
+    key: "nsu",
+  },
+  {
+    title: "Dados Autorização",
+    dataIndex: "authorization",
+    key: "authorization",
+  },
+];

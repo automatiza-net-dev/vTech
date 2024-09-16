@@ -26,14 +26,14 @@ import {
   TimePicker,
   notification,
   AutoComplete,
-  Button,
   Select,
   Input,
 } from "antd";
+import { Button } from "infinity-forge";
 const { Option } = Select;
 const { TextArea } = Input;
 
-const ByHour = memo(function ByHour({
+function ByHour({
   visible,
   setVisible,
   patientData,
@@ -318,14 +318,12 @@ const ByHour = memo(function ByHour({
           <>Nenhuma prescrição agendada para a data selecionada</>
         )}
         <hr />
-        <footer className="uk-flex uk-flex-right">
-          <Button type="primary" onClick={() => setVisible(false)}>
-            Concluir
-          </Button>
+        <footer style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={() => setVisible(false)} text="Concluir" />
         </footer>
       </Container>
     </Modal>
   );
-});
+}
 
 export default ByHour;

@@ -2,7 +2,6 @@
 import { useEffect, useRef } from "react";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import {
-  Button,
   Col,
   Form,
   Input,
@@ -14,7 +13,7 @@ import {
   Popconfirm,
   Tooltip,
 } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { InputBox } from "./styles";
 import moment from "moment";
@@ -155,336 +154,322 @@ export const Deposits = memo(() => {
   return !listDepositsPermission || listDepositsPermission === "loading" ? (
     <AccessDenied loading={listDepositsPermission} />
   ) : (
-    <section className="uk-padding">
-      <h3 className="uk-margin-remove">Deposito Estoque</h3>
+    <PageWrapper title="Deposito Estoque">
+      <section>
+        <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom uk-margin-small-top">
+          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ flex: 1 }}>
+            <Col span={8}>
+              <span>Descrição</span>
+              <InputBox className="uk-flex uk-flex-column">
+                <Input
+                  value={searchParams.description}
+                  onInput={(e) =>
+                    setSearchParams((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </InputBox>
+            </Col>
 
-      <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom uk-margin-small-top">
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ flex: 1 }}>
-          <Col span={8}>
-            <span>Descrição</span>
-            <InputBox className="uk-flex uk-flex-column">
-              <Input
-                value={searchParams.description}
-                onInput={(e) =>
-                  setSearchParams((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-              />
-            </InputBox>
-          </Col>
+            <Col span={4}>
+              <span>Tipo</span>
+              <InputBox className="uk-flex uk-flex-column">
+                <Select
+                  value={searchParams.type}
+                  className="uk-width-1-1"
+                  onChange={(e) =>
+                    setSearchParams((prev) => ({ ...prev, type: e }))
+                  }
+                >
+                  <Option value=""> Todos </Option>
+                  <Option value="Venda"> Venda </Option>
+                  <Option value="Consumo"> Consumo </Option>
+                </Select>
+              </InputBox>
+            </Col>
 
-          <Col span={4}>
-            <span>Tipo</span>
-            <InputBox className="uk-flex uk-flex-column">
-              <Select
-                value={searchParams.type}
-                className="uk-width-1-1"
-                onChange={(e) =>
-                  setSearchParams((prev) => ({ ...prev, type: e }))
-                }
-              >
-                <Option value=""> Todos </Option>
-                <Option value="Venda"> Venda </Option>
-                <Option value="Consumo"> Consumo </Option>
-              </Select>
-            </InputBox>
-          </Col>
+            <Col span={4}>
+              <span>Status</span>
+              <InputBox className="uk-flex uk-flex-column">
+                <Select
+                  value={searchParams.status}
+                  className="uk-width-1-1"
+                  onChange={(e) =>
+                    setSearchParams((prev) => ({ ...prev, status: e }))
+                  }
+                >
+                  <Option value=""> Todos </Option>
+                  <Option value="Ativo"> Ativo </Option>
+                  <Option value="Inativo"> Inativo </Option>
+                </Select>
+              </InputBox>
+            </Col>
+          </Row>
 
-          <Col span={4}>
-            <span>Status</span>
-            <InputBox className="uk-flex uk-flex-column">
-              <Select
-                value={searchParams.status}
-                className="uk-width-1-1"
-                onChange={(e) =>
-                  setSearchParams((prev) => ({ ...prev, status: e }))
-                }
-              >
-                <Option value=""> Todos </Option>
-                <Option value="Ativo"> Ativo </Option>
-                <Option value="Inativo"> Inativo </Option>
-              </Select>
-            </InputBox>
-          </Col>
-        </Row>
-
-        <div className="uk-flex uk-flex-middle">
-          {canCreateDeposit && (
-            <CustomButton
-              type="primary"
-              classCallback="uk-margin-left"
-              onClick={() => setOpenCreate(true)}
-            >
-              Cadastrar
-            </CustomButton>
-          )}
+          <div className="uk-flex uk-flex-middle">
+            {canCreateDeposit && (
+              <Button text="Cadastrar" onClick={() => setOpenCreate(true)} />
+            )}
+          </div>
         </div>
-      </div>
 
-      {depositsQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
-      {depositsQuery.data && (
-        <div>
-          <Table
-            columns={columns}
-            dataSource={(depositsQuery.data ?? [])
-              .map((elem) => ({
-                id: elem.id,
-                description: elem.description,
-                type: elem.type,
-                status: elem.status,
-                createdAt: elem.created_at
-                  ? moment(elem.created_at).format("DD/MM/YYYY - HH:mm")
-                  : "-",
-                actions: (
-                  <div
-                    className="uk-flex"
-                    style={{ gap: "1rem", alignItems: "center" }}
-                  >
-                    {canEditDeposit && (
-                      <EditTwoTone
-                        size={15}
-                        onClick={() => {
-                          setUpdateDepositData({
-                            id: elem.id,
-                            description: elem.description,
-                            type: elem.type,
-                            status: elem.status,
-                          });
+        {depositsQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
+        {depositsQuery.data && (
+          <div>
+            <Table
+              columns={columns}
+              dataSource={(depositsQuery.data ?? [])
+                .map((elem) => ({
+                  id: elem.id,
+                  description: elem.description,
+                  type: elem.type,
+                  status: elem.status,
+                  createdAt: elem.created_at
+                    ? moment(elem.created_at).format("DD/MM/YYYY - HH:mm")
+                    : "-",
+                  actions: (
+                    <div
+                      className="uk-flex"
+                      style={{ gap: "1rem", alignItems: "center" }}
+                    >
+                      {canEditDeposit && (
+                        <EditTwoTone
+                          size={15}
+                          onClick={() => {
+                            setUpdateDepositData({
+                              id: elem.id,
+                              description: elem.description,
+                              type: elem.type,
+                              status: elem.status,
+                            });
 
-                          setOpenUpdate(true);
-                          // setShowRowId(elem.id);
-                        }}
-                        disabled={isDisabled}
-                      />
-                    )}
-                    <Link href={`/dashboard/depositos/${elem.id}`}>
-                      <div
-                        style={{
-                          alignItems: "center",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <CgDetailsMore size={15} />
-                      </div>
-                    </Link>
-                    {canRemoveDeposit && (
-                      <Tooltip title="Remover depósito">
-                        <Popconfirm
-                          onConfirm={() =>
-                            notification.warning({
-                              message: "Verificar método",
-                            })
-                          }
-                          title="Deseja remover este depósito?"
+                            setOpenUpdate(true);
+                            // setShowRowId(elem.id);
+                          }}
+                          disabled={isDisabled}
+                        />
+                      )}
+                      <Link href={`/dashboard/depositos/${elem.id}`}>
+                        <div
+                          style={{
+                            alignItems: "center",
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
                         >
-                          <DeleteTwoTone twoToneColor={"red"} />
-                        </Popconfirm>
-                      </Tooltip>
-                    )}
-                    <ReactToPrint
-                      onBeforeGetContent={() =>
-                        depositService
-                          .getDeposit(elem?.id)
-                          .then((res) => setDepositDetails(res.data))
-                      }
-                      trigger={() => <MdLocalPrintshop />}
-                      content={() => componentRef?.current}
-                      onAfterPrint={() => setDepositDetails(false)}
-                    />
-                  </div>
-                ),
-              }))
-              .sort((a, b) => {
-                if (
-                  a?.description?.toLowerCase() < b.description?.toLowerCase()
-                ) {
-                  return -1;
-                }
+                          <CgDetailsMore size={15} />
+                        </div>
+                      </Link>
+                      {canRemoveDeposit && (
+                        <Tooltip title="Remover depósito">
+                          <Popconfirm
+                            onConfirm={() =>
+                              notification.warning({
+                                message: "Verificar método",
+                              })
+                            }
+                            title="Deseja remover este depósito?"
+                          >
+                            <DeleteTwoTone twoToneColor={"red"} />
+                          </Popconfirm>
+                        </Tooltip>
+                      )}
+                      <ReactToPrint
+                        onBeforeGetContent={() =>
+                          depositService
+                            .getDeposit(elem?.id)
+                            .then((res) => setDepositDetails(res.data))
+                        }
+                        trigger={() => <MdLocalPrintshop />}
+                        content={() => componentRef?.current}
+                        onAfterPrint={() => setDepositDetails(false)}
+                      />
+                    </div>
+                  ),
+                }))
+                .sort((a, b) => {
+                  if (
+                    a?.description?.toLowerCase() < b.description?.toLowerCase()
+                  ) {
+                    return -1;
+                  }
 
-                if (a.description?.toLowerCase() > b.name?.toLowerCase()) {
-                  return 1;
-                }
+                  if (a.description?.toLowerCase() > b.name?.toLowerCase()) {
+                    return 1;
+                  }
 
-                return 0;
-              })}
-          />
-        </div>
-      )}
-
-      <Modal
-        title="Cadastrar Deposito"
-        visible={openCreate}
-        footer={null}
-        width={600}
-        onCancel={() => {
-          setOpenCreate(false);
-          // setCreatedRole(false);
-          setCreateDepositData({
-            description: "",
-            type: "Venda",
-          });
-          depositsQuery.refetch();
-        }}
-      >
-        <Form
-          layout="vertical"
-          onSubmitCapture={() =>
-            createDepositMutation.mutate(createDepositData)
-          }
-        >
-          <div
-            className="uk-flex uk-flex-between"
-            style={{ columnGap: "2rem" }}
-          >
-            <Form.Item label="Descrição" required style={{ width: "100%" }}>
-              <Input
-                required
-                placeholder=""
-                value={createDepositData?.description}
-                style={{ width: "100%" }}
-                onChange={(e) =>
-                  setCreateDepositData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-              />
-            </Form.Item>
-
-            <Form.Item label="Tipo" required style={{ width: "50%" }}>
-              <Select
-                value={createDepositData?.type}
-                className="uk-width-1-1"
-                onChange={(e) =>
-                  setCreateDepositData((prev) => ({ ...prev, type: e }))
-                }
-              >
-                <Option value="Venda"> Venda </Option>
-                <Option value="Consumo"> Consumo </Option>
-              </Select>
-            </Form.Item>
+                  return 0;
+                })}
+            />
           </div>
+        )}
 
-          <hr />
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              columnGap: "1rem",
-              width: "100%",
-            }}
+        <Modal
+          title="Cadastrar Deposito"
+          visible={openCreate}
+          footer={null}
+          width={600}
+          onCancel={() => {
+            setOpenCreate(false);
+            // setCreatedRole(false);
+            setCreateDepositData({
+              description: "",
+              type: "Venda",
+            });
+            depositsQuery.refetch();
+          }}
+        >
+          <Form
+            layout="vertical"
+            onSubmitCapture={() =>
+              createDepositMutation.mutate(createDepositData)
+            }
           >
-            <Button
-              type="ghost"
-              onClick={() => {
-                setOpenCreate(false);
-                setCreateDepositData(false);
-                depositsQuery.refetch();
+            <div
+              className="uk-flex uk-flex-between"
+              style={{ columnGap: "2rem" }}
+            >
+              <Form.Item label="Descrição" required style={{ width: "100%" }}>
+                <Input
+                  required
+                  placeholder=""
+                  value={createDepositData?.description}
+                  style={{ width: "100%" }}
+                  onChange={(e) =>
+                    setCreateDepositData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item label="Tipo" required style={{ width: "50%" }}>
+                <Select
+                  value={createDepositData?.type}
+                  className="uk-width-1-1"
+                  onChange={(e) =>
+                    setCreateDepositData((prev) => ({ ...prev, type: e }))
+                  }
+                >
+                  <Option value="Venda"> Venda </Option>
+                  <Option value="Consumo"> Consumo </Option>
+                </Select>
+              </Form.Item>
+            </div>
+
+            <hr />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                columnGap: "1rem",
+                width: "100%",
               }}
             >
-              Cancelar
-            </Button>
-
-            <Button type="primary" htmlType="submit">
-              Salvar
-            </Button>
-          </div>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Atualizar Deposito"
-        onCancel={() => setOpenUpdate(false)}
-        visible={openUpdate}
-        footer={null}
-        width={600}
-      >
-        <Form
-          layout="vertical"
-          onSubmitCapture={() =>
-            updateDepositMutation.mutate(updateDepositData)
-          }
-        >
-          <div
-            className="uk-flex uk-flex-between"
-            style={{ columnGap: "2rem" }}
-          >
-            <Form.Item label="Descrição" required style={{ width: "100%" }}>
-              <Input
-                required
-                placeholder=""
-                value={updateDepositData?.description}
-                style={{ width: "100%" }}
-                onChange={(e) =>
-                  setUpdateDepositData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
+              <Button
+                onClick={() => {
+                  setOpenCreate(false);
+                  setCreateDepositData(false);
+                  depositsQuery.refetch();
+                }}
+                text="Cancelar"
               />
-            </Form.Item>
 
-            <Form.Item label="Tipo" required style={{ width: "50%" }}>
-              <Select
-                value={updateDepositData?.type}
-                className="uk-width-1-1"
-                onChange={(e) =>
-                  setUpdateDepositData((prev) => ({ ...prev, type: e }))
-                }
-              >
-                <Option value="Venda"> Venda </Option>
-                <Option value="Consumo"> Consumo </Option>
-              </Select>
-            </Form.Item>
+              <Button type="submit" text="Salvar" />
+            </div>
+          </Form>
+        </Modal>
 
-            <Form.Item label="Status" required style={{ width: "40%" }}>
-              <Select
-                value={updateDepositData?.status}
-                className="uk-width-1-1"
-                onChange={(e) =>
-                  setUpdateDepositData((prev) => ({ ...prev, status: e }))
-                }
-              >
-                <Option value="Ativo"> Ativo </Option>
-                <Option value="Inativo"> Inativo </Option>
-              </Select>
-            </Form.Item>
-          </div>
-
-          <hr />
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              columnGap: "1rem",
-              width: "100%",
-            }}
+        <Modal
+          title="Atualizar Deposito"
+          onCancel={() => setOpenUpdate(false)}
+          visible={openUpdate}
+          footer={null}
+          width={600}
+        >
+          <Form
+            layout="vertical"
+            onSubmitCapture={() =>
+              updateDepositMutation.mutate(updateDepositData)
+            }
           >
-            <Button
-              type="ghost"
-              onClick={() => {
-                setOpenUpdate(false);
+            <div
+              className="uk-flex uk-flex-between"
+              style={{ columnGap: "2rem" }}
+            >
+              <Form.Item label="Descrição" required style={{ width: "100%" }}>
+                <Input
+                  required
+                  placeholder=""
+                  value={updateDepositData?.description}
+                  style={{ width: "100%" }}
+                  onChange={(e) =>
+                    setUpdateDepositData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item label="Tipo" required style={{ width: "50%" }}>
+                <Select
+                  value={updateDepositData?.type}
+                  className="uk-width-1-1"
+                  onChange={(e) =>
+                    setUpdateDepositData((prev) => ({ ...prev, type: e }))
+                  }
+                >
+                  <Option value="Venda"> Venda </Option>
+                  <Option value="Consumo"> Consumo </Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item label="Status" required style={{ width: "40%" }}>
+                <Select
+                  value={updateDepositData?.status}
+                  className="uk-width-1-1"
+                  onChange={(e) =>
+                    setUpdateDepositData((prev) => ({ ...prev, status: e }))
+                  }
+                >
+                  <Option value="Ativo"> Ativo </Option>
+                  <Option value="Inativo"> Inativo </Option>
+                </Select>
+              </Form.Item>
+            </div>
+
+            <hr />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                columnGap: "1rem",
+                width: "100%",
               }}
             >
-              Cancelar
-            </Button>
+              <Button
+                onClick={() => {
+                  setOpenUpdate(false);
+                }}
+                text="Cancelar"
+              />
 
-            <Button type="primary" htmlType="submit">
-              Salvar
-            </Button>
+              <Button type="submit" text="Salvar" />
+            </div>
+          </Form>
+        </Modal>
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintScreen data={depositDetails} />
           </div>
-        </Form>
-      </Modal>
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <PrintScreen data={depositDetails} />
         </div>
-      </div>
-    </section>
+      </section>
+    </PageWrapper>
   );
 });

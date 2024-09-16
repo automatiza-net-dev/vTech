@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-
 //Services
 import { clinicService } from "@/OLD/services/clinic.service";
 import { adminService } from "@/OLD/services/admin.service";
@@ -13,7 +12,8 @@ import { userService } from "@/OLD/services/user.service";
 import Masks from "@/OLD/utils/masks";
 
 // Components
-import { Modal, Form, Select, notification, Input, Button } from "antd";
+import { Button } from "infinity-forge";
+import { Modal, Form, Select, notification, Input } from "antd";
 const { Item } = Form;
 const { Option } = Select;
 
@@ -184,16 +184,21 @@ const Create = memo(function Create({
             }
           />
         </div>
-        <div className="uk-flex uk-flex-right">
+        <footer
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "flex-end",
+            marginTop: "10px",
+          }}
+        >
           <Button
-            htmlType="submit"
-            loading={loading}
-            type="primary"
-            className="uk-margin-top"
-          >
-            Cadastrar
-          </Button>
-        </div>
+            text="Cancelar"
+            onClick={() => setVisible(false)}
+            type="button"
+          />
+          <Button type="submit" loading={loading} text="Cadastrar" />
+        </footer>
       </form>
     </Modal>
   );

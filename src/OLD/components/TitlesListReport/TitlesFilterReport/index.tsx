@@ -2,18 +2,16 @@
 import React, { memo, useEffect } from "react";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { Container, InputBox } from "./styles";
-import {
-  Button as CustomButton,
-  DateFilter,
-} from "@/OLD/components/mini-components";
+import { DateFilter } from "@/OLD/components/mini-components";
 import { DatePicker, Select, Radio } from "antd";
+import { Button } from "infinity-forge";
 
 const { Option } = Select;
 const { Group } = Radio;
 
 import moment from "moment";
 
-const TitleFilterReports = memo(function TitleFilterReports({
+function TitleFilterReports({
   filters,
   setFilters,
   paymentMethods,
@@ -293,6 +291,6 @@ const TitleFilterReports = memo(function TitleFilterReports({
       </div>
     </Container>
   );
-});
+};
 
 export default TitleFilterReports;

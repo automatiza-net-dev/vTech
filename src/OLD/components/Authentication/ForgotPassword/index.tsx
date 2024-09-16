@@ -2,13 +2,12 @@ import React from "react";
 import { useRouter } from "next/router";
 
 import { notification } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 
 import { Container } from "./styles";
 import ConfirmScreen from "@/OLD/components/mini-components/ConfirmScreen";
 
 import { unitsService } from "@/OLD/services/units.service";
-
 
 const verifyErrors = (msg) => {
   if (msg?.includes("Campo não existe nos registros")) {
@@ -23,7 +22,6 @@ const verifyErrors = (msg) => {
 export function ForgotPassword() {
   const [email, setEmail] = React.useState("");
   const [send, setSend] = React.useState(false);
-
 
   const router = useRouter();
 
@@ -52,7 +50,7 @@ export function ForgotPassword() {
             err?.response?.data?.errors[0]?.message ||
               err?.response?.data?.message
           );
-        })
+        });
     },
     [email]
   );
@@ -64,7 +62,8 @@ export function ForgotPassword() {
         <img
           width="20%"
           src={
-            process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`
+            process.env.NEXT_PUBLIC_API +
+            `/assets/logo-${process.env.client}.png`
           }
         />
         {!send ? (
@@ -80,7 +79,7 @@ export function ForgotPassword() {
                   required
                   onChange={(e) => setEmail(e.target.value)}
                 />
-                <Button type="submit">Enviar email</Button>
+                <Button type="submit" text="Enviar e-mail" />
               </form>
             </div>
           </>

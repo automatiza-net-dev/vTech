@@ -7,10 +7,10 @@ import { documentServices } from "@/OLD/services/document.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
-import { notification, Spin, Upload } from "antd";
+import { Button } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
+import { notification, Spin, Upload } from "antd";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 // Icons
@@ -19,7 +19,7 @@ import { DeleteTwoTone } from "@ant-design/icons";
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
 
-const DocumentCreate = React.memo(function DocumentCreate() {
+function DocumentCreate() {
   const router = useRouter();
   const [data, setData] = useState();
   const [body, setBody] = useState();
@@ -244,7 +244,7 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                     setFile(info.file);
                   }}
                 >
-                  <CustomButton>Importar arquivo word</CustomButton>
+                  <Button text="Importar arquivo word" />
                 </Upload>
               ) : (
                 <div>
@@ -270,13 +270,12 @@ const DocumentCreate = React.memo(function DocumentCreate() {
               </>
             )}
             <div className="uk-margin-top">
-              <CustomButton
+              <Button
                 onClick={submitData}
-                classCallback="uk-margin-right"
-              >
-                {loading ? "Salvando..." : "Salvar"}
-              </CustomButton>
-              <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
+                text={loading ? "Salvando..." : "Salvar"}
+              />
+
+              <Button onClick={() => router.back()} text="Voltar" />
             </div>
           </div>
           {data?.type !== "pdf" && (
@@ -286,6 +285,6 @@ const DocumentCreate = React.memo(function DocumentCreate() {
       )}
     </div>
   );
-});
+}
 
 export default DocumentCreate;

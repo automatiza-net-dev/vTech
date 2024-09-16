@@ -8,6 +8,7 @@ import { Absence } from "../Absence";
 import { WorkingDay } from "../WorkingDay";
 import AcessData from "./AcessData";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { PageWrapper } from "infinity-forge";
 const { TabPane } = Tabs;
 
 export function EditColaborator() {
@@ -19,10 +20,7 @@ export function EditColaborator() {
   return !editDataPermission || editDataPermission === "loading" ? (
     <AccessDenied loading={editDataPermission} />
   ) : (
-    <div className="uk-padding">
-      <div>
-        <h2>Editar colaborador</h2>
-      </div>
+    <PageWrapper title="Editar Colaborador">
       <Tabs defaultActiveKey="1">
         <TabPane tab="Dados Cadastrais" key="1">
           <Details />
@@ -46,8 +44,8 @@ export function EditColaborator() {
           </TabPane>
         )}
       </Tabs>
-    </div>
+    </PageWrapper>
   );
-};
+}
 
 export default EditColaborator;

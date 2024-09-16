@@ -13,7 +13,7 @@ import OpportunitiesForm from "@/OLD/components/Opportunities/FormChild";
 import Actions from "./Actions";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
 import { Table, notification, Input } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 import { opportunitiesActivitiesColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -233,12 +233,10 @@ const OpActivities = memo(function OpActivities({
         {!edit &&
           opportunitiesData?.closingDate === "-" &&
           newAcitivityPermission && (
-            <CustomButton
-              classCallback=""
+            <Button
+              text="Nova atividade"
               onClick={() => setCreateActVisible(true)}
-            >
-              Nova atividade
-            </CustomButton>
+            />
           )}
       </div>
       <Table

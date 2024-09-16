@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 import { useRouter } from "next/router";
 
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { Input, AutoComplete, Select, notification, Checkbox } from "antd";
 
 const { Option } = Select;
@@ -18,7 +18,6 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 export const Container = styled.div`
-
   .custom-container {
     background-color: #ffffff;
     border-radius: 5px;
@@ -26,7 +25,6 @@ export const Container = styled.div`
     padding: 20px;
   }
 `;
-
 
 const verifyFields = (arr) => {
   let verification = "";
@@ -561,18 +559,13 @@ export function SinglePendingProducts({
             </div>
           ))}
       </section>
-      <footer className="uk-flex uk-flex-right">
-        <CustomButton
-          classCallback="uk-margin-small-right"
-          onClick={() => router.back()}
-        >
-          Cancelar
-        </CustomButton>
-        <CustomButton onClick={() => submitUpdateProducts()}>
-          Salvar
-        </CustomButton>
+      <footer
+        style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+      >
+        <Button text="Cancelar" onClick={() => router.back()} />
+
+        <Button onClick={() => submitUpdateProducts()} text="Salvar" />
       </footer>
     </Container>
   );
-};
-
+}

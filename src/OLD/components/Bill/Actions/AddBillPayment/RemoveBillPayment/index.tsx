@@ -6,8 +6,8 @@ import { billService } from "@/OLD/services/bills.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
+import { Button } from "infinity-forge";
 import { Popconfirm, notification, Tooltip } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 const verifyUpdateExpirationErrors = (err) => {
   return notification.error({
@@ -81,14 +81,15 @@ const RemoveBillPayment = memo(function ({
   return (
     <div className="uk-flex uk-flex-right uk-margin-bottom">
       {updateExpirationDatePermission && (
-        <CustomButton
+        <Button
           classCallback="uk-margin-right"
           onClick={() => updateBillExpirationDate()}
-        >
-          {!editExpirationDate
-            ? "Alterar Vencimento"
-            : "Salvar Vencimento Parcelas"}
-        </CustomButton>
+          text={
+            !editExpirationDate
+              ? "Alterar Vencimento"
+              : "Salvar Vencimento Parcelas"
+          }
+        />
       )}
       {removeBlockPermission && !editExpirationDate && (
         <Popconfirm
@@ -99,7 +100,7 @@ const RemoveBillPayment = memo(function ({
           placement="left"
         >
           <Tooltip title="Remover pagamento">
-            <CustomButton>Remover Bloco</CustomButton>
+            <Button text="Remover Pagamento" />
           </Tooltip>
         </Popconfirm>
       )}

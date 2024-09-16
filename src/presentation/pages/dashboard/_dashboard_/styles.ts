@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export interface IStyledDashboard {
   $breakColumns?: boolean;
+  $gridStyle?: "grid-3" | "";
 }
 
 export const Dashboard = styled("div")<IStyledDashboard>`

@@ -3,10 +3,10 @@ import { memo, useRef } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-
 import { Container, RowBox } from "./styles";
-import { Button, Empty } from "antd";
+import { Empty } from "antd";
 import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { Button } from "infinity-forge";
 
 import ReactToPrint from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -17,12 +17,11 @@ import { useDictionary } from "@/presentation";
 const PrintTable = memo(function PrintTable({ reports }) {
   const { clinic } = useProfile();
 
-
   const componentRef = useRef();
 
   const handleExport = () => {
     const formatted =
-    process.env.client !== "liftone"
+      process.env.client !== "liftone"
         ? reports?.map((item) => ({
             unidade_de_negocios: item?.unit?.identification,
             cidade: item?.unit?.city,
@@ -122,7 +121,7 @@ const PrintTable = memo(function PrintTable({ reports }) {
     XLSX.writeFile(wb, "orcamentos" + ".xlsx");
   };
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
 
   return (
     <>
@@ -214,12 +213,12 @@ const PrintTable = memo(function PrintTable({ reports }) {
         <Button
           className="uk-margin-small-right"
           onClick={() => handleExport()}
-        >
-          Exportar (Excel)
-        </Button>
+          text="Exportar (Excel)"
+        />
+
         <ReactToPrint
           trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
+            <Button className="uk-margin-small-right" text="Imprimir" />
           )}
           content={() => componentRef.current}
         />

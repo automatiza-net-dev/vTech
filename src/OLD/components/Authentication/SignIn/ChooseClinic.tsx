@@ -1,5 +1,6 @@
-import { Button, Modal, notification, Radio, Space } from "antd";
+import { Modal, notification, Radio, Space } from "antd";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import React from "react";
 import { sessionService } from "@/OLD/services/session.service";
 import { sortItems } from "@/OLD/utils/sortItems";
@@ -11,18 +12,14 @@ const verifyErrors = (msg) => {
   }
 };
 
-export function ChooseClinic({
-  login,
-  data,
-  clinics
-}) {
+export function ChooseClinic({ login, data, clinics }) {
   const [loading, setLoading] = React.useState(false);
   const [visible, setVisible] = React.useState(true);
   const [dataWithClinic, setDataWithClinic] = React.useState({
     email: data.email,
     password: data.password,
     business_unit_id: "",
-    ipAddress: data.ipAddress
+    ipAddress: data.ipAddress,
   });
 
   const router = useRouter();
@@ -46,7 +43,7 @@ export function ChooseClinic({
       setLoading(false);
       return notification.error({
         message: "Erro",
-        description: "Escolha uma clinica para concluir o login!"
+        description: "Escolha uma clinica para concluir o login!",
       });
     }
     try {
@@ -68,17 +65,13 @@ export function ChooseClinic({
         title="Selecione a clinica em que deseja entrar"
         onOk={() => handleOk()}
         onCancel={() => router.reload()}
-        footer={[
-          <Button type="primary" loading={loading} onClick={handleOk}>
-            Entrar
-          </Button>
-        ]}
+        footer={[<Button text="Entrar" loading={loading} onClick={handleOk} />]}
       >
         <Radio.Group
           onChange={(e) => {
             setDataWithClinic({
               ...dataWithClinic,
-              business_unit_id: e.target.value
+              business_unit_id: e.target.value,
             });
           }}
           value={dataWithClinic.business_unit_id}

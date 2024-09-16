@@ -22,7 +22,6 @@ import { EditTwoTone } from "@ant-design/icons";
 
 // Components
 import {
-  Button,
   Col,
   Input,
   Row,
@@ -33,7 +32,7 @@ import {
   notification,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
 import { Container } from "../styles";
@@ -205,10 +204,10 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
   }, [updateData, data]);
 
   return (
-    <Container className="uk-padding">
+    <Container>
       <div className="uk-flex uk-flex-between">
         {!!data && (
-          <h3 className="uk-margin-remove">Produto - {data.description}</h3>
+          <h2 className="uk-margin-remove">Produto - {data.description}</h2>
         )}
         {!!error && (
           <div className="uk-alert-danger" uk-alert="true">
@@ -216,16 +215,17 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
           </div>
         )}
         {!!data && (
-          <div>
-            <CustomButton
-              classCallback="uk-margin-right"
-              onClick={submitUpdate}
-            >
-              Salvar
-            </CustomButton>
-            <CustomButton onClick={() => setVisible(false)}>
-              Voltar
-            </CustomButton>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              justifyContent: "flex-end",
+              marginTop: "20px",
+            }}
+          >
+            <Button onClick={submitUpdate} text="Salvar" />
+
+            <Button onClick={() => setVisible(false)} text="Voltar" />
           </div>
         )}
       </div>
@@ -551,7 +551,10 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
           <div className="uk-flex uk-flex-column uk-margin-small-top">
             <span>Grupo de Variação</span>
             <span>{data?.variationGroup?.description}</span>
-            <Button onClick={() => setCreate(true)}>Criar nova variação</Button>
+            <Button
+              onClick={() => setCreate(true)}
+              text="Criar nova variação"
+            />
 
             <div className={"uk-margin-small-top"}>
               {data.variations.map((variation) => (

@@ -5,10 +5,10 @@ import { useRaces } from "@/OLD/hooks/useRaces";
 import { memo, useCallback, useEffect, useState } from "react";
 import { columns } from "./columns";
 import { Create } from "./Create";
-import { SearchIcon } from "@/OLD/common/icons";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { PageWrapper } from "infinity-forge";
 
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -90,86 +90,86 @@ const RacesManagement = memo(() => {
   return !listRacesPermission || listRacesPermission === "loading" ? (
     <AccessDenied loading={listRacesPermission} />
   ) : (
-    <div className="uk-margin-medium-top uk-container">
-      <div className="uk-flex uk-flex-between uk-margin-medium">
-        <h3 className="uk-line uk-margin-remove">Gestão de Raças</h3>
-        <Create
-          visible={visible}
-          setVisible={setVisible}
-          button={true}
-          reload={reload}
-          setReload={setReload}
-        />
-      </div>
+    <PageWrapper title="Gestão de raças">
       <div>
-        <FilterContainer>
-          <Input>
-            <input
-              type="search"
-              placeholder="Pesquisar"
-              value={search.description}
-              onChange={(e) =>
-                setSearch({
-                  ...search,
-                  description: normalizeStr(e.target.value)
-                })
+        <div>
+          <FilterContainer>
+            <Input>
+              <input
+                type="search"
+                placeholder="Pesquisar"
+                value={search.description}
+                onChange={(e) =>
+                  setSearch({
+                    ...search,
+                    description: normalizeStr(e.target.value),
+                  })
+                }
+              />
+            </Input>
+            {/* Filtro de Espécie */}
+            <AutoComplete
+              style={{
+                display: "flex",
+                alignItems: "center",
+                height: "40px",
+                backgroundColor: "#fff",
+                borderRadius: "40px",
+                width: "50%",
+                padding: "0 20px",
+                marginBottom: "10px",
+                marginLeft: "10px",
+              }}
+              options={species?.map((specie) => ({
+                ...specie,
+                value: specie.description,
+              }))}
+              filterOption={(value, option) =>
+                normalizeStr(option.value.toUpperCase()).includes(
+                  normalizeStr(value.toUpperCase())
+                )
               }
+              placeholder="Espécie"
+              value={search.specie}
+              onChange={handleSpeciesFilter}
+              onSelect={(value, option) => {
+                setSearch({ ...search, specie: option.value });
+              }}
             />
-            <SearchIcon />
-          </Input>
-          {/* Filtro de Espécie */}
-          <AutoComplete
-            style={{
-              display: "flex",
-              alignItems: "center",
-              height: "40px",
-              backgroundColor: "#fff",
-              borderRadius: "40px",
-              width: "50%",
-              padding: "0 20px",
-              marginBottom: "10px",
-              marginLeft: "10px"
+            {/* Filtro de Tipo de Pelagem */}
+            <Input>
+              <input
+                placeholder="Tipo de Pelagem"
+                value={selectedFur}
+                onChange={handleFurFilter}
+              />
+            </Input>
+          </FilterContainer>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Create
+              visible={visible}
+              setVisible={setVisible}
+              button={true}
+              reload={reload}
+              setReload={setReload}
+            />
+          </div>
+          <hr />
+          <Table
+            locale={{
+              emptyText: "Nenhum registro encontrado para essa pesquisa",
             }}
-            options={species?.map((specie) => ({
-              ...specie,
-              value: specie.description
-            }))}
-            filterOption={(value, option) =>
-              normalizeStr(option.value.toUpperCase()).includes(
-                normalizeStr(value.toUpperCase())
-              )
+            dataSource={
+              filteredRaces.length > 0
+                ? filteredRaces.sort(sortByAlphabetRace)
+                : []
             }
-            placeholder="Espécie"
-            value={search.specie}
-            onChange={handleSpeciesFilter}
-            onSelect={(value, option) => {
-              setSearch({ ...search, specie: option.value });
-            }}
+            loading={loadingRaces}
+            columns={columns()}
           />
-          {/* Filtro de Tipo de Pelagem */}
-          <Input>
-            <input
-              placeholder="Tipo de Pelagem"
-              value={selectedFur}
-              onChange={handleFurFilter}
-            />
-            <SearchIcon />
-          </Input>
-        </FilterContainer>
-        <Table
-          locale={{
-            emptyText: "Nenhum registro encontrado para essa pesquisa"
-          }}
-          dataSource={
-            filteredRaces.length > 0
-              ? filteredRaces.sort(sortByAlphabetRace)
-              : []
-          }
-          loading={loadingRaces}
-          columns={columns()}
-        />
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

@@ -1,10 +1,11 @@
 // @ts-nocheck
-import { Button, LoadingSkeleton } from "@/OLD/components/mini-components";
+import { LoadingSkeleton } from "@/OLD/components/mini-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { memo, useCallback, useEffect, useState } from "react";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { convertDate } from "@/OLD/utils/convertDate";
+import { Button } from "infinity-forge";
 import { Edit } from "../Edit";
 
 export const Single = memo(() => {
@@ -38,7 +39,7 @@ export const Single = memo(() => {
       <div className="uk-flex uk-flex-between uk-margin-bottom">
         <h3 className="uk-margin-remove">Tipo de agendamento</h3>
         <Link href="/dashboard/tipos-servico">
-          <Button>Voltar</Button>
+          <Button text="Voltar" />
         </Link>
       </div>
       <div

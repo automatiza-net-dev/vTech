@@ -12,15 +12,6 @@ import {
   ArrowContent,
   SelectOptions,
 } from "./styles";
-import {
-  HomeIcon,
-  ScheduleIcon,
-  FootPrint,
-  File,
-  SearchIcon,
-  BellIcon,
-  ArrowProfile,
-} from "@/OLD/common/icons";
 import Link from "next/link";
 import { userService } from "@/OLD/services/user.service";
 import { sessionService } from "@/OLD/services/session.service";
@@ -31,22 +22,22 @@ import { useAuthAdmin, useQuery, useQueryClient } from "infinity-forge";
 
 const icons = [
   {
-    icon: <HomeIcon />,
+    icon: <></>,
     label: "Dashboard",
     to: "/dashboard",
   },
   {
-    icon: <ScheduleIcon />,
+    icon: <></>,
     label: "Agenda",
     to: "/agenda",
   },
   {
-    icon: <FootPrint />,
+    icon: <></>,
     label: "Pacientes",
     to: "/pacientes",
   },
   {
-    icon: <File />,
+    icon: <></>,
     label: "Relatórios",
     to: "/relatorios",
   },
@@ -89,15 +80,7 @@ export const Navbar = React.memo(function Navbar({
         ))}
       </Left>
       <Top>
-        {/*
-        <Input>
-          <SearchIcon />
-          <input
-            type="search"
-            placeholder="Pesquise pacientes, tutores, dados e etc."
-          />
-        </Input>
-      */}
+       
 
         <div className="profile-info">
           <div
@@ -107,7 +90,7 @@ export const Navbar = React.memo(function Navbar({
               setNotificationsOpen(!notificationsOpen);
             }}
           >
-            <BellIcon />
+           
             {!notificationVisulized && (
               <div className="count-notifications">2</div>
             )}

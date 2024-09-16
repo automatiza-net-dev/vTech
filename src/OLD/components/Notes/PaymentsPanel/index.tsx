@@ -12,7 +12,7 @@ import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import AddPayments from "../AddPayments";
 import { FormHandler } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import {
   Collapse,
   Table,
@@ -416,9 +416,10 @@ function PaymentsPanel({
                     {paymentsList[0]?.block !== editBlock && (
                       <>
                         {removePaymentsPermission && (
-                          <CustomButton classCallback="uk-margin-small-right">
-                            Remover bloco
-                          </CustomButton>
+                          <Button
+                            classCallback="uk-margin-small-right"
+                            text="Remover bloco"
+                          />
                         )}
                       </>
                     )}
@@ -426,26 +427,26 @@ function PaymentsPanel({
                   {paymentsList[0]?.block !== editBlock ? (
                     <>
                       {updatePaymentsPermission && (
-                        <CustomButton
+                        <Button
+                          text="Alterar dados"
                           onClick={() => setEditBlock(paymentsList[0]?.block)}
-                        >
-                          Alterar dados
-                        </CustomButton>
+                        />
                       )}
                     </>
                   ) : (
                     <>
-                      <CustomButton onClick={() => submitPaymentUpdate()}>
-                        Salvar
-                      </CustomButton>
-                      <CustomButton
+                      <Button
+                        onClick={() => submitPaymentUpdate()}
+                        text="Salvar"
+                      />
+
+                      <Button
+                        text="Cancelar"
                         onClick={() => {
                           setReload((prv) => !prv);
                           setEditBlock(false);
                         }}
-                      >
-                        Cancelar
-                      </CustomButton>
+                      />
                     </>
                   )}
                 </div>
@@ -455,16 +456,17 @@ function PaymentsPanel({
           );
         })}
       <div className="uk-margin-small-top uk-flex uk-flex-right">
-        <CustomButton
-          classCallback="uk-margin-small-right"
+        <Button
+          text="Voltar"
           onClick={() => (setVisible ? setVisible(false) : router.back())}
-        >
-          Voltar
-        </CustomButton>
+        />
+
         {finishReceiptPermission && (
-          <CustomButton classCallback="" onClick={() => submitFinishReceipt()}>
-            Finalizar nota
-          </CustomButton>
+          <Button
+            classCallback=""
+            onClick={() => submitFinishReceipt()}
+            text="Finalizar nota"
+          />
         )}
       </div>
     </>

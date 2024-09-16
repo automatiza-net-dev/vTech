@@ -4,7 +4,8 @@ import React, { memo } from "react";
 
 // Components
 import { Container } from "./styles";
-import { Input, Button } from "antd";
+import { Input } from "antd";
+import { Button } from "infinity-forge";
 
 const risks = [
   { id: 1, value: "Leve" },
@@ -41,7 +42,7 @@ const Details = memo(function Details({ patient, setVisible }) {
       </div>
       <hr />
       <footer className="uk-margin-top uk-flex uk-flex-right">
-        <Button onClick={() => setVisible(false)}>Fechar</Button>
+        <Button onClick={() => setVisible(false)} text="Fechar" />
       </footer>
     </Container>
   );

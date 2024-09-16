@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Input = styled.div`
   display: flex;
@@ -7,6 +7,8 @@ export const Input = styled.div`
   background-color: #fff;
   border-radius: 40px;
   padding: 0 20px;
+  border: 0.5px solid #cacaca;
+  width: 50%;
 
   input {
     margin-left: 10px;

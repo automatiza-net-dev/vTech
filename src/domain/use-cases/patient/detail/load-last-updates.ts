@@ -87,6 +87,14 @@ export type TimeLine = {
       description: string;
       origin: string;
     };
+    bed?: { name: string }
+    complaint?: string;
+    diagnosis?: string;
+    expectedDischarge?: string;
+    prognosis?: string;
+    realized?: string;
+    risk?: number;
+    description?: string;
   };
   createdAt: string;
   updatedAt: string;

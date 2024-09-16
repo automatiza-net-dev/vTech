@@ -1,26 +1,20 @@
 import { useFormikContext } from "formik";
 import { Icon, Input, useAuthAdmin, InputCurrency } from "infinity-forge";
 
-import { User } from "@/domain";
 import { DiscountPercentage, SelectProduct, Total } from "./components";
+import { AuthorizationStatusProduct } from "@/presentation";
 
 import { Cart } from "./interfaces";
 
 import * as S from "./styles";
-import { useEffect } from "react";
 
 export function AddProduct() {
-  const { values, initialValues, setFieldValue, setFieldError } =
+  const { values, setFieldValue, setFieldError, initialValues } =
     useFormikContext<{
       cart: Cart[];
       product_selected: string | undefined;
+      clientId?: string;
     }>();
-
-  // useEffect(() => {
-  //   if(initialValues && Array.isArray(initialValues["items"])) {
-  //     s
-  //   }
-  // }, [initialValues])
 
   const { user } = useAuthAdmin();
 
@@ -40,7 +34,6 @@ export function AddProduct() {
     value: string | number | boolean;
     indexVariation: number;
   }) {
-
     try {
       const product = cart[indexProduct];
       const variation = product.variations[indexVariation];
@@ -48,7 +41,6 @@ export function AddProduct() {
       setFieldValue(`${pathName}.${fieldName}`, value);
 
       if (typeof value !== "boolean") {
-
         const quantity = fieldName === "quantity" ? value : variation.quantity;
         const unitaryValue =
           fieldName === "unitaryValue" ? value : variation.unitaryValue;
@@ -107,6 +99,9 @@ export function AddProduct() {
           <div>
             <h3 className="font-12-bold">CORTESIA</h3>
           </div>
+          <div>
+            <h3 className="font-12-bold">Dados Autorização</h3>
+          </div>
         </div>
       )}
 
@@ -142,6 +137,7 @@ export function AddProduct() {
                     <Input
                       type="number"
                       name={pathName + `.quantity`}
+                      readOnly={!!initialValues.clientId}
                       onChangeInput={(value) => {
                         handleInputChange({
                           value: value as string,
@@ -277,17 +273,21 @@ export function AddProduct() {
                       <button
                         type="button"
                         className="delete"
-                        onClick={() =>
+                        onClick={() => {
                           setFieldValue(
                             "cart",
                             cart.filter(
                               (_, cartIndex) => cartIndex !== indexProduct
                             )
-                          )
-                        }
+                          );
+                        }}
                       >
                         <Icon name="IconDelete" />
                       </button>
+                    </div>
+
+                    <div className="dados-autorizacao">
+                      <AuthorizationStatusProduct item={product} />
                     </div>
                   </div>
                 );

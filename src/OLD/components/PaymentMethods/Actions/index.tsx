@@ -114,23 +114,25 @@ const Actions = memo(function Actions({ method, reload, setReload }) {
           <DeleteTwoTone className="action-icon" twoToneColor="red" />
         )}
       </Popconfirm>
-      <Modal
-        visible={updateVisible}
-        title="Atualizar forma de pagamento"
-        onCancel={() => setUpdateVisible(false)}
-        width={800}
-        footer={null}
-      >
-        <FormChild
-          data={data}
-          methodId={method?.id}
-          setData={setData}
-          setVisible={setUpdateVisible}
-          submit={submitUpdatePaymentMethod}
-          reload={reload}
-          setReload={setReload}
-        />
-      </Modal>
+      {updateVisible && (
+        <Modal
+          visible={updateVisible}
+          title="Atualizar forma de pagamento"
+          onCancel={() => setUpdateVisible(false)}
+          width={800}
+          footer={null}
+        >
+          <FormChild
+            data={data}
+            methodId={method?.id}
+            setData={setData}
+            setVisible={setUpdateVisible}
+            submit={submitUpdatePaymentMethod}
+            reload={reload}
+            setReload={setReload}
+          />
+        </Modal>
+      )}
     </Container>
   );
 });

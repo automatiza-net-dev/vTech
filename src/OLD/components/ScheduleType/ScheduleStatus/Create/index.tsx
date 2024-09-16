@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Form, Input, Modal, notification } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { memo, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -38,9 +38,9 @@ export const Create = memo(() => {
       <Button
         onClick={() => setIsVisible(true)}
         disabled={!canCreateScheduleStatus}
-      >
-        Criar Status
-      </Button>
+        text="Criar status"
+      />
+
       <Modal
         loading={loading}
         title="Criar status"

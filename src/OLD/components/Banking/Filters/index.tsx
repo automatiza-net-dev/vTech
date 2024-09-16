@@ -12,7 +12,7 @@ import moment from "moment";
 import { DateFilter } from "@/OLD/components/mini-components";
 import { Radio, Select, DatePicker, Input } from "antd";
 import { Container, InputBox } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { currencyFormatter } from "@/OLD/components/Budget";
 const { Group } = Radio;
 const { Option } = Select;
@@ -28,11 +28,11 @@ const Filters = memo(function Filters({
   const { checkingAccounts } = useCheckingAccounts();
 
   return (
-    <Container className="uk-margin-top">
-      <div className="uk-flex">
+    <Container>
+      <div>
         <div>
-          <div className="uk-flex">
-            <div className="">
+          <div style={{ display: "flex" }}>
+            <div style={{ width: "25%" }}>
               <label>Tipo</label>
               <br />
               <Group
@@ -50,7 +50,7 @@ const Filters = memo(function Filters({
                 <Radio value="all">Todos</Radio>
               </Group>
             </div>
-            <div className="uk-margin-left">
+            <div style={{ width: "25%" }}>
               <label>Conciliado</label>
               <br />
               <Group
@@ -86,8 +86,8 @@ const Filters = memo(function Filters({
               </Select>
             </div>
           </div>
-          <div className="uk-flex uk-margin-top">
-            <div className="uk-width-1-4 uk-margin-right">
+          <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
+            <div style={{ width: "25%" }}>
               <div className="uk-flex">
                 <label>Data emissão</label>
                 <DateFilter
@@ -113,7 +113,7 @@ const Filters = memo(function Filters({
                 />
               </InputBox>
             </div>
-            <div className="uk-margin-right">
+            <div style={{ width: "25%" }}>
               <label>Data competência</label>
               <InputBox>
                 <DatePicker
@@ -135,7 +135,7 @@ const Filters = memo(function Filters({
                 />
               </InputBox>
             </div>
-            <div className="">
+            <div style={{ width: "25%" }}>
               <label>Documento</label>
               <InputBox>
                 <Input
@@ -145,10 +145,8 @@ const Filters = memo(function Filters({
                 />
               </InputBox>
             </div>
-            <div className="uk-margin-top uk-margin-large-left">
-              <CustomButton onClick={() => setReload(!reload)}>
-                Filtrar
-              </CustomButton>
+            <div style={{ display: "flex", justifyContent: "flex-end", width: "50%" }}>
+              <Button onClick={() => setReload(!reload)} text="Filtrar" />
             </div>
           </div>
         </div>

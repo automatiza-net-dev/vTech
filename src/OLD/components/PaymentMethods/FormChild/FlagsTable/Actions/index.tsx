@@ -23,7 +23,7 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
   const [data, setData] = useState({});
   const [installmentsData, setInstallmentsData] = useState([]);
 
-  const { acquirers } = useTefAcquirers();
+  const { acquirers } = useTefAcquirers(updateVisible);
 
   useEffect(() => {
     setData({
@@ -31,6 +31,8 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
       maxInstallments: flag?.max_installments,
       fee: flag?.fee,
       active: flag?.active,
+      daysUntilTransfer: flag?.days_until_transfer,
+      installmentsWithoutPassword: flag?.installments_without_password
     });
   }, [flag]);
 
@@ -78,47 +80,47 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
   return (
     <section className="uk-flex uk-flex-around">
       <EditTwoTone onClick={() => setUpdateVisible(true)} />
-      <Modal
-        title="Atualizar bandeira"
-        visible={updateVisible}
-        onCancel={() => setUpdateVisible(false)}
-        onOk={() => updateFlag()}
-        okText="Salvar Taxas"
-        width={700}
-      >
-        <section>
-          {" "}
-          <div className="uk-margin-top uk-flex">
-            <div className="uk-width-1-2 uk-margin-small-right">
-              <label>Adquirente</label>
-              <Select
-                className="uk-width-1-1"
-                value={data?.tefAcquirerId}
-                onChange={(e) => setData({ ...data, tefAcquirerId: e })}
-              >
-                {acquirers?.length > 0 &&
-                  acquirers.map((acquirer) => (
-                    <Option value={acquirer?.id}>
-                      {acquirer?.description}
-                    </Option>
-                  ))}
-              </Select>
-            </div>
-            <div className="uk-width-1-2 uk-margin-small-right">
-              <label>Limite Max. Parcelas</label>
-              <Input
-                type="number"
-                value={data?.maxInstallments}
-                onChange={(e) =>
-                  setData({ ...data, maxInstallments: e.target.value })
-                }
-              />
-            </div>
-            <div className="uk-margin-small-right uk-width-1-2">
-              <label>Dias Repasse Adm. Cartão</label>
-              <Input type="number" />
-            </div>
-            {/*
+      {updateVisible && (
+        <Modal
+          title="Atualizar bandeira"
+          visible={updateVisible}
+          onCancel={() => setUpdateVisible(false)}
+          onOk={() => updateFlag()}
+          okText="Salvar Taxas"
+          width={700}
+        >
+          <section>
+            {" "}
+            <div style={{ display: "flex", gap: "5px" }}>
+              <div style={{ width: "70%" }}>
+                <label>Adquirente</label>
+                <Select
+                  className="uk-width-1-1"
+                  value={data?.tefAcquirerId}
+                  onChange={(e) => setData({ ...data, tefAcquirerId: e })}
+                >
+                  {acquirers?.length > 0 &&
+                    acquirers.map((acquirer) => (
+                      <Option value={acquirer?.id}>
+                        {acquirer?.description}
+                      </Option>
+                    ))}
+                </Select>
+              </div>
+              <div style={{ width: "30%" }}>
+                <label>Dias Repasse Adm. Cartão</label>
+                <Input
+                  type="number"
+                  value={data?.daysUntilTransfer}
+                  onChange={(e) =>
+                    setData((prv) => ({
+                      ...prv,
+                      daysUntilTransfer: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              {/*
             <div className="uk-width-1-3">
               <label>Taxa Desc. Adm. Cartão</label>
               <Input
@@ -128,13 +130,39 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
               />
             </div>
             */}
-          </div>
-        </section>
-        <InstallmentsPanel
-          data={installmentsData}
-          setData={setInstallmentsData}
-        />
-      </Modal>
+            </div>
+          </section>
+          <section style={{ marginTop: "10px", display: "flex", gap: "5px" }}>
+            <div style={{ width: "30%" }}>
+              <label>N° Max parcelas</label>
+              <Input
+                type="number"
+                value={data?.maxInstallments}
+                onChange={(e) =>
+                  setData({ ...data, maxInstallments: e.target.value })
+                }
+              />
+            </div>
+            <div style={{ width: "30%" }}>
+              <label>N° Max. parcelas sem senha</label>
+              <Input
+                value={data?.installmentsWithoutPassword}
+                type="number"
+                onChange={(e) =>
+                  setData((prv) => ({
+                    ...prv,
+                    installmentsWithoutPassword: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          </section>
+          <InstallmentsPanel
+            data={installmentsData}
+            setData={setInstallmentsData}
+          />
+        </Modal>
+      )}
     </section>
   );
 });

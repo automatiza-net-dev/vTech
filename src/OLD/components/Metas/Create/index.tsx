@@ -1,13 +1,6 @@
 // @ts-nocheck
-import {
-  Form,
-  Input,
-  Modal,
-  notification,
-  Select,
-  Button as ButtonA,
-} from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Form, Input, Modal, notification, Select } from "antd";
+import { Button } from "infinity-forge";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { metasService } from "@/OLD/services/metas.service";
@@ -66,7 +59,7 @@ export const Create = memo(({ canCreate }) => {
   return (
     <div>
       {canCreate && (
-        <Button onClick={() => setVisible(true)}>Criar nova meta</Button>
+        <Button onClick={() => setVisible(true)} text="Criar nova meta" />
       )}
       <Modal
         loading={loading}
@@ -77,7 +70,7 @@ export const Create = memo(({ canCreate }) => {
         }}
         footer={
           <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
-            <ButtonA onClick={() => setVisible(false)}>Cancelar</ButtonA>
+            <Button onClick={() => setVisible(false)} text="Cancelar" />
           </div>
         }
       >
@@ -108,9 +101,7 @@ export const Create = memo(({ canCreate }) => {
           </Form.Item>
 
           <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
-            <ButtonA type="primary" htmlType="submit">
-              Criar
-            </ButtonA>
+            <Button type="primary" htmlType="submit" text="Criar" />
           </div>
         </Form>
       </Modal>

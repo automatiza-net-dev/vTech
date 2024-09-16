@@ -9,6 +9,7 @@ export const InputBox = styled.div`
   border-radius: 40px;
   padding: 0 20px;
   margin: 10px;
+  border: 0.5px solid #cacaca;
 
   input {
     margin-left: 10px;

@@ -65,14 +65,33 @@ export const Edit = ({ item }) => {
   });
 
   const { mutate, loading } = useMutation(
-    (data) =>
-      calendarService.editAbsence(item.id, {
+    (data) => {
+      let newObj = {
         ...data,
         ...payload,
         startHour: moment(payload.startHour).format("HH:mm:ss"),
         endHour: moment(payload.endHour).format("HH:mm:ss"),
         frequency,
-      }),
+      };
+
+      if (
+        !moment(newObj.startDate).isValid() ||
+        !moment(newObj.endDate).isValid()
+      ) {
+        delete newObj.startDate;
+        delete newObj.endDate;
+      } else {
+        newObj = {
+          ...data,
+          ...payload,
+          startHour: moment(payload.startHour).format("HH:mm:ss"),
+          endHour: moment(payload.endHour).format("HH:mm:ss"),
+          startDate: moment(payload.startDate).toISOString(),
+          endDate: moment(payload.endDate).toISOString(),
+        };
+      }
+      calendarService.editAbsence(item.id, newObj);
+    },
     {
       onError: () => {
         notification.error({
@@ -109,8 +128,10 @@ export const Edit = ({ item }) => {
       frequency: item.frequency,
       startHour: moment(item.start_hour, "HH:mm"),
       endHour: moment(item.end_hour, "HH:mm"),
-      startDate: moment(item.start_date, "YYYY-MM-DD[T]HH:mm:ss"),
-      endDate: moment(item.end_date, "YYYY-MM-DD[T]HH:mm:ss"),
+      startDate:
+        item.start_date !== "---" ? moment(item.start_date, "DD-MM-YYYY") : "",
+      endDate:
+        item.end_date !== "---" ? moment(item.end_date, "DD-MM-YYYY") : "",
       title: item.title,
     });
   }, [item]);
@@ -164,7 +185,7 @@ export const Edit = ({ item }) => {
                   onChange={(e) =>
                     setPayload({
                       ...payload,
-                      endDate: moment(e),
+                      endDate: e,
                     })
                   }
                   format="DD/MM/YYYY"

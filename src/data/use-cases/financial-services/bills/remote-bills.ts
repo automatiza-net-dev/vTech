@@ -8,9 +8,10 @@ import * as domain from "@/domain";
 @injectable()
 export class RemoteBills
   implements
+    domain.LoadBill,
     domain.CreateBill,
-    domain.LoadBillPaymentReceipts,
     domain.PrintDocument,
+    domain.LoadBillPaymentReceipts,
     domain.UpdateFinancialResponsible
 {
   constructor(
@@ -27,6 +28,27 @@ export class RemoteBills
     });
 
     return response as domain.CreateBill.Model;
+  }
+
+  async update(params: domain.UpdateBill.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`bills/update`),
+      method: "post",
+      body: params,
+    });
+
+    return response as domain.UpdateBill.Model;
+  }
+
+  async load(params: domain.LoadBill.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(
+        `bills/show/${params.id}`
+      ),
+      method: "get",
+    });
+
+    return response as domain.LoadBill.Model;
   }
 
   async loadBillReceipts(params: domain.LoadBillPaymentReceipts.Params) {
@@ -59,6 +81,13 @@ export class RemoteBills
     });
 
     return {};
+  }
+
+  async deleteBillItem(params: domain.DeleteBillItem.Params) {
+    await this.httpClient.request({
+      url: this.makeApiURL.make(`bills/delete-item/${params.id}`),
+      method: "put",
+    });
   }
 
   async authDiscountPendencySellingBill(

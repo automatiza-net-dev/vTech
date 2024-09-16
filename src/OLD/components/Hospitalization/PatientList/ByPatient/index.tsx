@@ -21,10 +21,10 @@ import {
   DatePicker,
   Input,
   TimePicker,
-  Button,
   notification,
   Select,
 } from "antd";
+import { Button } from "infinity-forge";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -301,9 +301,11 @@ const ByPatient = memo(function ByPatient({
         )}
         <hr />
         <footer className="uk-flex uk-flex-right">
-          <Button type="primary" onClick={() => setVisible(false)}>
-            Concluir
-          </Button>
+          <Button
+            type="primary"
+            onClick={() => setVisible(false)}
+            text="Concluir"
+          />
         </footer>
       </Container>
     </Modal>

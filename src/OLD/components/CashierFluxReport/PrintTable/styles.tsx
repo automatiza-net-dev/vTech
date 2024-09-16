@@ -20,11 +20,6 @@ export const Container = styled.div`
     }
   }
 
-  .table-box {
-    height: 300px;
-    overflow-y: scroll;
-  }
-
   @media print {
     @page {
       size: auto;

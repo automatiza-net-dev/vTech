@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { notification } from "antd";
 
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { userService } from "@/OLD/services/user.service";
 import ConfirmScreen from "@/OLD/components/mini-components/ConfirmScreen";
 
@@ -76,7 +76,10 @@ export function ResetPassword({ type = "reset" }) {
       <img src="/svg/dog_walking.svg" width="60%" />
       <div className="form-side">
         <img
-          src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+          src={
+            process.env.NEXT_PUBLIC_API +
+            `/assets/logo-${process.env.client}.png`
+          }
         />
         {!send ? (
           <>
@@ -107,7 +110,7 @@ export function ResetPassword({ type = "reset" }) {
                     setData({ ...data, password_confirmation: e.target.value })
                   }
                 />
-                <Button type="submit">Alterar</Button>
+                <Button type="submit" text="Alterar" />
               </form>
             </div>
           </>

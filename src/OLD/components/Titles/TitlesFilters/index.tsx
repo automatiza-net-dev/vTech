@@ -14,11 +14,9 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { MdOutlineClear } from "react-icons/md";
 
 // Components
+import { Button } from "infinity-forge";
 import { Container, InputBox } from "./styles";
-import {
-  Button as CustomButton,
-  DateFilter,
-} from "@/OLD/components/mini-components";
+import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, Select, Radio, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Option } = Select;
@@ -54,14 +52,14 @@ const TitlesFilters = memo(function TitlesFilters({
       tutors?.map((tutor) => ({
         ...tutor,
         value: tutor?.name,
-        key: tutor?.id
+        key: tutor?.id,
       })) || [];
 
     const formattedSuppliers = Array.isArray(suppliers)
       ? suppliers.map((supplier) => ({
           ...supplier,
           value: supplier?.name,
-          key: supplier?.id
+          key: supplier?.id,
         }))
       : [];
 
@@ -476,17 +474,14 @@ const TitlesFilters = memo(function TitlesFilters({
           </InputBox>
         </div>
         <div className="uk-margin-top uk-flex uk-flex-rightt">
-          <CustomButton
-            type="primary"
+          <Button
             onClick={() => {
               setFilters({ ...filters, noSearch: false });
               setTitles([]);
               setReload(!reload);
             }}
-            classCallback="uk-margin-right"
-          >
-            Filtrar
-          </CustomButton>
+            text="Filtrar"
+          />
         </div>
       </div>
     </Container>

@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { Form, Modal, Select, Checkbox, DatePicker, Space } from "antd";
-import { useToast } from "infinity-forge";
-import { Button } from "@/OLD/components/mini-components";
+import { useToast, Button } from "infinity-forge";
 import { useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -82,12 +81,10 @@ export const Create = memo(() => {
 
   return (
     <div>
-      <button
-        className="uk-button uk-button-danger uk-border-pill"
+      <Button
+        text="Adicionar bloqueio de agenda"
         onClick={() => setIsVisible(true)}
-      >
-        Adicionar bloqueio de agenda
-      </button>
+      />
       {isVisible && (
         <Modal
           visible={isVisible}

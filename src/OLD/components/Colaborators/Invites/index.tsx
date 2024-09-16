@@ -11,7 +11,6 @@ import EditInvite from "./Update";
 import { Input } from "./styles";
 
 // Icons
-import { SearchIcon } from "@/OLD/common/icons";
 import { EditTwoTone } from "@ant-design/icons";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
@@ -111,7 +110,7 @@ export const Invites = React.memo(function Invites() {
             placeholder="Busque por nome"
             onChange={(e) => setFilters({ ...filters, name: e.target.value })}
           />
-          <SearchIcon />
+       
         </Input>
         <Input>
           <input
@@ -119,7 +118,7 @@ export const Invites = React.memo(function Invites() {
             placeholder="Busque por email"
             onChange={(e) => setFilters({ ...filters, email: e.target.value })}
           />
-          <SearchIcon />
+     
         </Input>
         <Input>
           <input
@@ -127,7 +126,7 @@ export const Invites = React.memo(function Invites() {
             placeholder="Busque por telefone"
             onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
           />
-          <SearchIcon />
+       
         </Input>
       </div>
       <div className="uk-margin-right uk-flex uk-flex-around">
@@ -137,7 +136,7 @@ export const Invites = React.memo(function Invites() {
             placeholder="Busque por cargo"
             onChange={(e) => setFilters({ ...filters, role: e.target.value })}
           />
-          <SearchIcon />
+        
         </Input>
         <Input>
           <input
@@ -145,7 +144,7 @@ export const Invites = React.memo(function Invites() {
             placeholder="Busque por clinica"
             onChange={(e) => setFilters({ ...filters, unit: e.target.value })}
           />
-          <SearchIcon />
+ 
         </Input>
         <div className="uk-margin-small-top">
           {canCreateInvite && (

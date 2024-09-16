@@ -35,7 +35,7 @@ export const AddProduct = styled("div")`
   .cart_item,
   .head_cart {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
     justify-content: flex-start;
 
@@ -50,6 +50,7 @@ export const AddProduct = styled("div")`
 
     > div:nth-child(1) {
       width: 100%;
+      min-width: 150px;
     }
 
     > div:not(:nth-child(1)) {
@@ -58,8 +59,8 @@ export const AddProduct = styled("div")`
     }
 
     > div:last-child {
-      min-width: 205px;
-      max-width: 205px;
+      min-width: 150px;
+      max-width: 150px;
     }
   }
 
@@ -83,12 +84,11 @@ export const AddProduct = styled("div")`
     align-items: flex-start;
     gap: 25px;
     div {
-      width: 100px;
+      width: 13px;
     }
     .delete {
-      margin-top: 5px;
-      width: 30px;
-      height: 30px;
+      width: 13px;
+      height: 13px;
       display: flex;
       align-items: center;
       justify-content: center;

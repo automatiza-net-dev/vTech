@@ -22,7 +22,7 @@ import {
   notification,
   Popconfirm,
 } from "antd";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 const { TextArea } = Input;
 
 import moment from "moment";
@@ -247,16 +247,14 @@ const MultipleExecution = memo(function MultipleExecution() {
             title="Deseja completar execuções do dia?"
             onConfirm={() => !loading && submitExecutions()}
           >
-            <CustomButton classCallback="uk-margin-right">
-              {!loading ? "Salvar" : "Carregando..."}
-            </CustomButton>
+            <Button text={!loading ? "Salvar" : "Carregando..."} />
           </Popconfirm>
         )}
         <Popconfirm
           title="Descartar alterações?"
           onConfirm={() => router.back()}
         >
-          <CustomButton>Cancelar</CustomButton>
+          <Button text="Cancelar" />
         </Popconfirm>
       </footer>
     </Container>

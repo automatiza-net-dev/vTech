@@ -8,6 +8,7 @@ import { metasService } from "@/OLD/services/metas.service";
 import { Edit } from "./Edit";
 import { Delete } from "./Delete";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { PageWrapper } from "infinity-forge";
 
 const MetasManagement = memo(() => {
   const { data, isLoading } = useQuery({
@@ -40,22 +41,23 @@ const MetasManagement = memo(() => {
   }, [JSON.stringify(data)]);
 
   return (
-    <div className="uk-margin-medium-top uk-container">
-      <div className="uk-flex uk-flex-between uk-margin-medium">
-        <h3 className="uk-line uk-margin-remove">Controle de Metas</h3>
-        <Create canCreate={createMeta} />
+    <PageWrapper title="Controle de metas">
+      <div style={{ padding: "20px" }}>
+        <div>
+          <Create canCreate={createMeta} />
+        </div>
+        <div>
+          <Table
+            locale={{
+              emptyText: "Nenhum registro encontrado para essa pesquisa",
+            }}
+            dataSource={mappedData}
+            loading={isLoading}
+            columns={columns()}
+          />
+        </div>
       </div>
-      <div>
-        <Table
-          locale={{
-            emptyText: "Nenhum registro encontrado para essa pesquisa",
-          }}
-          dataSource={mappedData}
-          loading={isLoading}
-          columns={columns()}
-        />
-      </div>
-    </div>
+    </PageWrapper>
   );
 });
 

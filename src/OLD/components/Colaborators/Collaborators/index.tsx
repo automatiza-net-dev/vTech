@@ -10,19 +10,18 @@ import { clinicService } from "@/OLD/services/clinic.service";
 import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
 
 // Components
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { Input } from "./styles";
 import Create from "./Create";
 
 // Icons
-import { SearchIcon } from "@/OLD/common/icons";
 import { EditTwoTone } from "@ant-design/icons";
 
 // Utils
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-const Colaborators = memo(function Colaborators() {
+function Colaborators() {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [refreshList, setRefreshList] = useState(false);
@@ -133,7 +132,7 @@ const Colaborators = memo(function Colaborators() {
             placeholder="Busque por nome"
             onChange={(e) => setFilters({ ...filters, name: e.target.value })}
           />
-          <SearchIcon />
+   
         </Input>
         <Input>
           <input
@@ -143,7 +142,7 @@ const Colaborators = memo(function Colaborators() {
               setFilters({ ...filters, document: e.target.value })
             }
           />
-          <SearchIcon />
+
         </Input>
         <Input>
           <input
@@ -151,7 +150,7 @@ const Colaborators = memo(function Colaborators() {
             placeholder="Busque por telefone"
             onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
           />
-          <SearchIcon />
+  
         </Input>
       </div>
       <div className="uk-margin-right uk-flex uk-flex-around">
@@ -161,20 +160,19 @@ const Colaborators = memo(function Colaborators() {
             placeholder="Busque por cargo"
             onChange={(e) => setFilters({ ...filters, role: e.target.value })}
           />
-          <SearchIcon />
+        
         </Input>
         <Input>
           <input type="search" placeholder="Verificar funcionalidade" />
-          <SearchIcon />
+    
         </Input>
         <div className="uk-margin-small-top">
           <Tooltip title={canCreateColaborator ? "-" : "Você não tem acesso"}>
             <Button
               disabled={!canCreateColaborator}
               onClick={() => setCreateVisible(true)}
-            >
-              Cadastrar
-            </Button>
+              text="Cadastrar"
+            />
           </Tooltip>
         </div>
       </div>
@@ -202,6 +200,6 @@ const Colaborators = memo(function Colaborators() {
       />
     </div>
   );
-});
+};
 
 export default Colaborators;

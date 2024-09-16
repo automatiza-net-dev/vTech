@@ -13,6 +13,7 @@ import { Container } from "./styles";
 import Filters from "./Filters";
 import PrintTable from "./PrintTable";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { PageWrapper } from "infinity-forge";
 
 import moment from "moment";
 
@@ -63,26 +64,27 @@ function FinancesReport() {
     listCashierFluxPermission === "loading" ? (
     <AccessDenied loading={listCashierFluxPermission} />
   ) : (
-    <Container className="uk-padding-small">
-      <h3 className="uk-margin-remove">Relatório de fluxo de caixa</h3>
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        setReload={setReload}
-        setValues={setValues}
-      />
-      <hr />
-      <PrintTable
-        reports={{
-          flowReports: [...formatedReports],
-          checkingAccountReports,
-          expiredReports,
-        }}
-        filters={filters}
-        values={values}
-      />
-    </Container>
+    <PageWrapper title="Relatório de fluxo de caixa">
+      <Container>
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          setReload={setReload}
+          setValues={setValues}
+        />
+        <hr />
+        <PrintTable
+          reports={{
+            flowReports: [...formatedReports],
+            checkingAccountReports,
+            expiredReports,
+          }}
+          filters={filters}
+          values={values}
+        />
+      </Container>
+    </PageWrapper>
   );
-};
+}
 
 export default FinancesReport;

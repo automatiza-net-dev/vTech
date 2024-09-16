@@ -13,11 +13,10 @@ import "moment/locale/pt-br";
 
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
-import { SearchIcon } from "@/OLD/common/icons";
 
 // Components
 import { Container, Input } from "./styles";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import EditExam from "./Edit";
 import RemoveExam from "./Delete";
 import { Table, notification, Select } from "antd";
@@ -94,62 +93,64 @@ const Exams = memo(function Exams() {
   return !listExamsPermission || listExamsPermission === "loading" ? (
     <AccessDenied loading={listExamsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de exames</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <Input>
-          <input
-            type="search"
-            placeholder="Nome"
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-          />
-          <SearchIcon />
-        </Input>
-        <Input>
-          <input
-            type="search"
-            placeholder="Descrição"
-            onChange={(e) =>
-              setFilters({ ...filters, description: e.target.value })
-            }
-          />
-          <SearchIcon />
-        </Input>
-        <Input>
-          <input
-            type="search"
-            placeholder="Tipo"
-            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-          />
-          <SearchIcon />
-        </Input>
-        <div className="uk-margin-small-top">
-          {canCreateExams && (
-            <Button onClick={() => router.push("/dashboard/exames/criar")}>
-              Cadastrar
-            </Button>
-          )}
+    <PageWrapper title="Controle de exames">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <Input>
+            <input
+              type="search"
+              placeholder="Nome"
+              onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            />
+           
+          </Input>
+          <Input>
+            <input
+              type="search"
+              placeholder="Descrição"
+              onChange={(e) =>
+                setFilters({ ...filters, description: e.target.value })
+              }
+            />
+         
+          </Input>
+          <Input>
+            <input
+              type="search"
+              placeholder="Tipo"
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+            />
+          
+          </Input>
+          <div className="uk-margin-small-top">
+            {canCreateExams && (
+              <Button
+                onClick={() => router.push("/dashboard/exames/criar")}
+                text="Cadastrar"
+              />
+            )}
+          </div>
         </div>
-      </div>
-      <hr />
-      <div className="uk-width-1-6 uk-margin-left">
-        <h5>Filtrar por:</h5>
-        <Select
-          className="uk-width-1-1"
-          value={filters?.active}
-          onChange={(e) => setFilters({ ...filters, active: e })}
-        >
-          <Option value="true">Ativo</Option>
-          <Option value="false">Inativo</Option>
-          <Option value="">Todos</Option>
-        </Select>
-      </div>
-      <Table
-        className="uk-margin-top"
-        dataSource={allExams}
-        columns={Columns}
-      />
-    </Container>
+        <hr />
+        <div className="uk-width-1-6 uk-margin-left">
+          <h5>Filtrar por:</h5>
+          <Select
+            className="uk-width-1-1"
+            value={filters?.active}
+            onChange={(e) => setFilters({ ...filters, active: e })}
+          >
+            <Option value="true">Ativo</Option>
+            <Option value="false">Inativo</Option>
+            <Option value="">Todos</Option>
+          </Select>
+        </div>
+        <Table
+          className="uk-margin-top"
+          dataSource={allExams}
+          columns={Columns}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

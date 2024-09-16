@@ -10,7 +10,7 @@ import { userService } from "@/OLD/services/user.service";
 // Components
 import { notification, Input, Select, Space, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import { Container } from "./styles";
 const { Option } = Select;
 
@@ -28,7 +28,7 @@ function snakeToCamel(snakeCaseString) {
   );
 }
 
-const EditColaborator = memo(function EditColaborator() {
+function EditColaborator() {
   const [data, setData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
@@ -319,19 +319,15 @@ const EditColaborator = memo(function EditColaborator() {
             </div>
           </div>
         </Container>
-        <div className="uk-margin-small-top">
-          <div className="uk-width-1-3 uk-flex uk-flex-around">
-            <Button loading={loading} type="submit">
-              Salvar
-            </Button>
-            <Button type="button" onClick={() => router.back()}>
-              Voltar
-            </Button>
-          </div>
-        </div>
+        <footer
+          style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}
+        >
+          <Button loading={loading} type="submit" text="Salvar" />
+          <Button type="button" onClick={() => router.back()} text="Voltar" />
+        </footer>
       </form>
     </div>
   );
-});
+}
 
 export default EditColaborator;

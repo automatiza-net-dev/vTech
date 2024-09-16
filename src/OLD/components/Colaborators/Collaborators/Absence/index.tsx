@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { notification, Table } from "antd";
-import { Button } from "@/OLD/components/mini-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useColaborator } from "@/OLD/hooks/useColaborators";
@@ -11,9 +10,11 @@ import { columns } from "./columns";
 import { Create } from "./Create";
 import { dataTeste } from "./mockData";
 
+import moment from "moment";
+
 // Components
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 export const Absence = ({ edit }) => {
   const router = useRouter();
@@ -41,25 +42,19 @@ export const Absence = ({ edit }) => {
         <div>
           <h2>Colaborador: {colaborator?.name}</h2>
         </div>
-        <div className="uk-flex">
+        <div style={{ display: "flex", gap: "10px" }}>
           <div>
-            <CustomButton
-              classCallback="uk-margin-small-right"
-              onClick={() => router.back()}
-            >
-              Voltar
-            </CustomButton>
+            <Button onClick={() => router.back()} text="Voltar" />
           </div>
           <div>
-            <CustomButton
+            <Button
               onClick={() =>
                 router.push(
                   `/dashboard/colaboradores/editar-colaborador/${colaborator?.id}`
                 )
               }
-            >
-              Editar colaborador
-            </CustomButton>
+              text="Editar Colaborador"
+            />
           </div>
         </div>
       </div>
@@ -67,7 +62,19 @@ export const Absence = ({ edit }) => {
         <h3 className="uk-margin-remove">Bloqueios de agenda</h3>
         <div className="uk-margin-top">
           <Table
-            dataSource={data}
+            dataSource={data?.map((item) => ({
+              ...item,
+              start_date: item?.start_date
+                ? moment(item?.start_date, "YYYY-MM-DD[T]HH:mm:ss").format(
+                    "DD/MM/YYYY"
+                  )
+                : "---",
+              end_date: item?.end_date
+                ? moment(item?.end_date, "YYYY-MM-DD[T]HH:mm:ss").format(
+                    "DD/MM/YYYY"
+                  )
+                : "---",
+            }))}
             loading={loading}
             columns={columns(edit)}
             className="uk-margin-small-top"
@@ -80,21 +87,26 @@ export const Absence = ({ edit }) => {
         </div>
       </Container>
       {edit && (
-        <div className="uk-margin-small-top">
-          <div className="uk-width-1-4 uk-flex uk-flex-between">
-            <Button
-              onClick={() => {
-                notification.success({
-                  message: "Informações salvas com sucesso!",
-                });
-                router.back();
-              }}
-            >
-              Salvar
-            </Button>
-            <Button onClick={() => router.back()}>Voltar</Button>
-          </div>
-        </div>
+        <footer
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "flex-end",
+            marginTop: "10px",
+          }}
+        >
+          <Button
+            onClick={() => {
+              notification.success({
+                message: "Informações salvas com sucesso!",
+              });
+              router.back();
+            }}
+            text="Salvar"
+          />
+
+          <Button onClick={() => router.back()} text="Voltar" />
+        </footer>
       )}
     </>
   );

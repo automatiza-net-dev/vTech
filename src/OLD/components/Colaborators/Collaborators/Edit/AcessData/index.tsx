@@ -14,13 +14,13 @@ import { clinicService } from "@/OLD/services/clinic.service";
 // Components
 import { Container } from "./styles";
 import { Select, notification, Input, Checkbox } from "antd";
-import { Button } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 const { Option } = Select;
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 
-const AccessData = memo(function AccessData() {
+function AccessData() {
   const router = useRouter();
   const userId = router.query.id;
   const [data, setData] = useState(false);
@@ -248,16 +248,14 @@ const AccessData = memo(function AccessData() {
           </div>
         </div>
       </Container>
-      <div className="uk-margin-small-top">
-        <div className="uk-width-1-3 uk-flex uk-flex-around">
-          <Button type="submit">Salvar</Button>
-          <Button type="button" onClick={() => router.back()}>
-            Voltar
-          </Button>
-        </div>
-      </div>
+      <footer
+        style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}
+      >
+        <Button type="submit" text="Salvar" />
+        <Button type="button" onClick={() => router.back()} text="Voltar" />
+      </footer>
     </form>
   );
-});
+}
 
 export default AccessData;

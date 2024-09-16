@@ -9,6 +9,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import PrintTable from "./PrintTable";
 import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { PageWrapper } from "infinity-forge";
 
 const SchedulesReport = memo(function SchedulesReport() {
   const [filters, setFilters] = useState({ noSearch: true });
@@ -29,23 +30,24 @@ const SchedulesReport = memo(function SchedulesReport() {
     listSchedulesReportPermission === "loading" ? (
     <AccessDenied loading={listSchedulesReportPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Relatório de agendamentos</h3>
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        values={values}
-        setValues={setValues}
-        setReload={setReload}
-      />
-      <PrintTable
-        schedules={reports}
-        filters={filters}
-        values={values}
-        setReload={setReload}
-        setFilters={setFilters}
-      />
-    </Container>
+    <PageWrapper title="Relatório de Agendamentos">
+      <Container>
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          values={values}
+          setValues={setValues}
+          setReload={setReload}
+        />
+        <PrintTable
+          schedules={reports}
+          filters={filters}
+          values={values}
+          setReload={setReload}
+          setFilters={setFilters}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

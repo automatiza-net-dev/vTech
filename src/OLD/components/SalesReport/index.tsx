@@ -11,6 +11,7 @@ import { reportsService } from "@/OLD/services/reports.service";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { PageWrapper } from "infinity-forge";
 
 import moment from "moment";
 
@@ -53,23 +54,24 @@ const SalesReport = memo(function SalesReport() {
   return !listBillReportPermission || listBillReportPermission === "loading" ? (
     <AccessDenied loading={listBillReportPermission} />
   ) : (
-    <Container className="uk-padding-small">
-      <h3 className="uk-margin-remove">Relatório de vendas</h3>
-      <Filters
-        loading={isLoading}
-        filters={filters}
-        setFilters={(f) => {
-          setCanSearch(false);
-          setFilters(f);
-        }}
-        tutors={tutors}
-        patients={patients}
-        search={() => setCanSearch(true)}
-      />
+    <PageWrapper title="Relatório de vendas">
+      <Container>
+        <Filters
+          loading={isLoading}
+          filters={filters}
+          setFilters={(f) => {
+            setCanSearch(false);
+            setFilters(f);
+          }}
+          tutors={tutors}
+          patients={patients}
+          search={() => setCanSearch(true)}
+        />
 
-      <hr />
-      <PrintTable data={data ?? []} loading={isLoading} />
-    </Container>
+        <hr />
+        <PrintTable data={data ?? []} loading={isLoading} />
+      </Container>
+    </PageWrapper>
   );
 });
 

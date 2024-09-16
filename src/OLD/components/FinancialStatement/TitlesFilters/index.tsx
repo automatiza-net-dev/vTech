@@ -15,7 +15,6 @@ import { MdOutlineClear } from "react-icons/md";
 
 // Components
 import { Container, InputBox } from "./styles";
-import { Button as CustomButton, DateFilter } from "@/OLD/components/mini-components";
 import { Input, Select, Radio, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Option } = Select;
@@ -33,7 +32,7 @@ const TitlesFilters = memo(function TitlesFilters({
   clinics,
   loadingFinances,
   checkingAccounts,
-  tefFlags
+  tefFlags,
 }) {
   const [formatedTutors, setFormatedTutors] = useState([]);
   const [values, setValues] = useState({});
@@ -59,13 +58,13 @@ const TitlesFilters = memo(function TitlesFilters({
     const formattedTutors =
       tutors?.map((tutor) => ({
         ...tutor,
-        value: tutor?.name
+        value: tutor?.name,
       })) || [];
 
     const formattedSuppliers = Array.isArray(suppliers)
       ? suppliers.map((supplier) => ({
           ...supplier,
-          value: supplier?.name
+          value: supplier?.name,
         }))
       : [];
 
@@ -109,13 +108,13 @@ const TitlesFilters = memo(function TitlesFilters({
           <InputBox>
             <DatePicker
               slotProps={{
-                textField: { variant: "standard" }
+                textField: { variant: "standard" },
               }}
               value={filters?.fromIssue}
               onChange={(e) => {
                 setFilters({
                   ...filters,
-                  fromIssue: e?.startOf("day") ?? null
+                  fromIssue: e?.startOf("day") ?? null,
                 });
               }}
               className="date-component"
@@ -127,7 +126,7 @@ const TitlesFilters = memo(function TitlesFilters({
               onChange={(e) => {
                 setFilters({
                   ...filters,
-                  toIssue: e?.endOf("day") ?? null
+                  toIssue: e?.endOf("day") ?? null,
                 });
               }}
               className="date-component"
@@ -139,7 +138,7 @@ const TitlesFilters = memo(function TitlesFilters({
                 setFilters((prv) => ({
                   ...prv,
                   fromIssue: null,
-                  toIssue: null
+                  toIssue: null,
                 }));
               }}
             />
@@ -162,7 +161,7 @@ const TitlesFilters = memo(function TitlesFilters({
               onChange={(e) =>
                 setFilters({
                   ...filters,
-                  fromExpiration: e?.startOf("day") ?? null
+                  fromExpiration: e?.startOf("day") ?? null,
                 })
               }
               className="date-component"
@@ -174,7 +173,7 @@ const TitlesFilters = memo(function TitlesFilters({
               onChange={(e) =>
                 setFilters({
                   ...filters,
-                  toExpiration: e?.endOf("day") ?? null
+                  toExpiration: e?.endOf("day") ?? null,
                 })
               }
               className="date-component"
@@ -186,7 +185,7 @@ const TitlesFilters = memo(function TitlesFilters({
                 setFilters((prv) => ({
                   ...prv,
                   fromExpiration: null,
-                  toExpiration: null
+                  toExpiration: null,
                 }));
               }}
             />
@@ -209,7 +208,7 @@ const TitlesFilters = memo(function TitlesFilters({
               onChange={(e) =>
                 setFilters({
                   ...filters,
-                  fromPayment: e?.startOf("day") ?? null
+                  fromPayment: e?.startOf("day") ?? null,
                 })
               }
               className="date-component"
@@ -221,7 +220,7 @@ const TitlesFilters = memo(function TitlesFilters({
               onChange={(e) =>
                 setFilters({
                   ...filters,
-                  toPayment: e?.endOf("day") ?? null
+                  toPayment: e?.endOf("day") ?? null,
                 })
               }
               className="date-component"
@@ -233,7 +232,7 @@ const TitlesFilters = memo(function TitlesFilters({
                 setFilters((prv) => ({
                   ...prv,
                   fromPayment: null,
-                  toPayment: null
+                  toPayment: null,
                 }));
               }}
             />
@@ -255,7 +254,7 @@ const TitlesFilters = memo(function TitlesFilters({
                 onChange={(e) =>
                   setFilters({
                     ...filters,
-                    competence: moment(e)
+                    competence: moment(e),
                   })
                 }
               />
@@ -265,7 +264,7 @@ const TitlesFilters = memo(function TitlesFilters({
                 onClick={() => {
                   setFilters((prv) => ({
                     ...prv,
-                    competence: null
+                    competence: null,
                   }));
                 }}
               />
@@ -345,7 +344,7 @@ const TitlesFilters = memo(function TitlesFilters({
               className="uk-width-1-1"
               options={paymentMethods.map((method) => ({
                 label: method.description,
-                value: method.id
+                value: method.id,
               }))}
               filterOption={(value, option) =>
                 normalizeStr(option.label.toUpperCase()).includes(
@@ -362,7 +361,7 @@ const TitlesFilters = memo(function TitlesFilters({
               className="uk-width-1-1"
               options={tefFlags?.map((flag) => ({
                 ...flag,
-                value: flag?.description
+                value: flag?.description,
               }))}
               onChange={(val) =>
                 setValues((prv) => ({ ...prv, flagDescription: val }))
@@ -387,7 +386,7 @@ const TitlesFilters = memo(function TitlesFilters({
               className="uk-width-1-1"
               options={checkingAccounts?.map((account) => ({
                 ...account,
-                value: account?.description
+                value: account?.description,
               }))}
               value={values?.accountDescription}
               onChange={(val) =>
@@ -396,7 +395,7 @@ const TitlesFilters = memo(function TitlesFilters({
               onSelect={(_, opt) => {
                 setValues((prv) => ({
                   ...prv,
-                  accountDescription: opt?.value
+                  accountDescription: opt?.value,
                 }));
                 setFilters((prv) => ({ ...prv, checkingAccountId: opt?.id }));
               }}
@@ -461,7 +460,7 @@ const TitlesFilters = memo(function TitlesFilters({
                 className="uk-width-1-1"
                 options={plans.map((plan) => ({
                   label: plan.description,
-                  value: plan.id
+                  value: plan.id,
                 }))}
                 filterOption={(value, option) =>
                   normalizeStr(option.label.toUpperCase()).includes(

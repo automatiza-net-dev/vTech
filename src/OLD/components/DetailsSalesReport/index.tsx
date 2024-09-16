@@ -9,6 +9,7 @@ import { Container } from "./styles";
 import Filters from "./Filters";
 import PrintScreen from "./PrintScreen";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { PageWrapper } from "infinity-forge";
 
 import * as XLSX from "xlsx/xlsx.mjs";
 import moment from "moment";
@@ -134,29 +135,30 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
     listDetailedSalesReportsPermission === "loading" ? (
     <AccessDenied loading={loadingReports} />
   ) : (
-    <Container className="uk-padding-small">
-      <h3 className="uk-margin-remove">Relatório detalhado de vendas</h3>
-      <Filters filters={filters} setFilters={setFilters} />
-      <div className="uk-flex uk-flex-around">
-        {/* <ReactToPrint
+    <PageWrapper title="Relatório detalhado de vendas">
+      <Container>
+        <Filters filters={filters} setFilters={setFilters} />
+        <div className="uk-flex uk-flex-around">
+          {/* <ReactToPrint
           trigger={() => <Button>Imprimir</Button>}
           content={() => componentRef?.current}
   /> */}
-        <Button
-          onClick={() => handleExport()}
-          onMouseOver={() => {
-            setReload((prv) => !prv);
-          }}
-        >
-          Exportar (Excel)
-        </Button>
-      </div>
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <PrintScreen reports={reports} />
+          <Button
+            onClick={() => handleExport()}
+            onMouseOver={() => {
+              setReload((prv) => !prv);
+            }}
+          >
+            Exportar (Excel)
+          </Button>
         </div>
-      </div>
-    </Container>
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintScreen reports={reports} />
+          </div>
+        </div>
+      </Container>
+    </PageWrapper>
   );
 });
 

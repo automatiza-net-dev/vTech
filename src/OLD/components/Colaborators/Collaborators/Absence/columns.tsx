@@ -35,13 +35,11 @@ export const columns = (edit) => {
       title: "Data de entrada",
       dataIndex: "start_date",
       key: "start_date",
-      render: (start_date) => convertDate(start_date),
     },
     {
       title: "Data de saída",
       dataIndex: "end_date",
       key: "end_date",
-      render: (end_date) => convertDate(end_date),
     },
   ];
 

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { memo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { useKanbanOpportunities } from "@/OLD/hooks/useOpportunities";
 
@@ -17,7 +17,7 @@ const status = [
   { title: "Fechado", label: "Fechado" },
 ];
 
-const CardsPanel = memo(function CardsPanel({
+function CardsPanel({
   clients,
   colaborators,
   crmStatus,
@@ -82,6 +82,6 @@ const CardsPanel = memo(function CardsPanel({
       </section>
     </Container>
   );
-});
+};
 
 export default CardsPanel;

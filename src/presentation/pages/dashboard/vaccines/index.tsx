@@ -5,7 +5,7 @@ import { useLoadAllVaccinesProtocols } from "@/presentation";
 import { ProtocolsTable } from "./components/protocols-table";
 
 import { LayoutDashboard } from "@/presentation";
-import { Input, FormHandler } from "infinity-forge";
+import { Input, FormHandler, PageWrapper } from "infinity-forge";
 import { CreateVaccine } from "./components";
 import { EditVaccine } from "./components/actions";
 import { DeleteVaccine } from "./components/actions/delete-vaccine";
@@ -20,32 +20,33 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
   const protocolsTableProps = {
     data: vaccinesProtocols.data,
     actions: [DeleteVaccine, EditVaccine],
-    type: props?.type === 'vaccine' ? "Vacina" : "Vermifugo",
+    type: props?.type === "vaccine" ? "Vacina" : "Vermifugo",
   };
 
   return (
     <LayoutDashboard>
-      <S.Vaccine>
-        <h2>
-          {props.type === "vaccine"
-            ? "Gestão de vacinas"
-            : "Gestão de vermifugo"}
-        </h2>
-        <FormHandler
-          initialData={params}
-          onChangeForm={{ callbackResult: (prv) => setParams(prv) }}
-        >
-          <section>
-            <Input name="name" label="Nome" />
-            <Input name="specie" label="Espécie" />
-          </section>
-        </FormHandler>
-        <CreateVaccine type={props.type} />
-        <hr />
-        {vaccinesProtocols?.data && vaccinesProtocols?.data.length > 0 && (
-          <ProtocolsTable {...protocolsTableProps} />
-        )}
-      </S.Vaccine>
+      <PageWrapper
+        title={
+          props.type === "vaccine" ? "Gestão de vacinas" : "Gestão de vermifugo"
+        }
+      >
+        <S.Vaccine>
+          <FormHandler
+            initialData={params}
+            onChangeForm={{ callbackResult: (prv) => setParams(prv) }}
+          >
+            <section>
+              <Input name="name" label="Nome" />
+              <Input name="specie" label="Espécie" />
+            </section>
+          </FormHandler>
+          <CreateVaccine type={props.type} />
+          <hr />
+          {vaccinesProtocols?.data && vaccinesProtocols?.data.length > 0 && (
+            <ProtocolsTable {...protocolsTableProps} />
+          )}
+        </S.Vaccine>
+      </PageWrapper>
     </LayoutDashboard>
   );
 }

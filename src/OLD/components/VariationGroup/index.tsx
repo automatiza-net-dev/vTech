@@ -14,7 +14,7 @@ import { EditTwoTone, ExpandOutlined } from "@ant-design/icons";
 
 // Components
 import { Table } from "antd";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import { useQuery } from "react-query";
 import columns from "./Columns";
 import CreateVariationGroup from "./Create";
@@ -49,79 +49,78 @@ const VariationsGroups = memo(function Subgroups() {
     listGroupVariationsPermission === "loading" ? (
     <AccessDenied loading={listGroupVariationsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Controle de grupos de variação</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <span />
-        <div className="uk-margin-small-top">
-          <Button
-            onClick={() => setVisible(true)}
-            disabled={!canCreateGroupVariations}
-          >
-            {" "}
-            Cadastro{" "}
-          </Button>
+    <PageWrapper title="Controle de Variação">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <span />
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => setVisible(true)}
+              disabled={!canCreateGroupVariations}
+              text="Cadastro"
+            />
+          </div>
         </div>
-      </div>
-      <hr />
-      <Table
-        className="uk-margin-top"
-        dataSource={data?.map((item) => ({
-          description: item?.description,
-          nVariations: item?.variations.length,
-          createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
-          status: item?.active ? "Ativo" : "Inativo",
-          options: (
-            <div className="uk-flex uk-flex-around">
-              <ExpandOutlined
-                size={15}
-                onClick={() => {
-                  setSelectedId(item.id);
-                }}
-              />
-            </div>
-          ),
-          actions: (
-            <div className="uk-flex uk-flex-around">
-              {canEditGroupVariations && (
-                <EditTwoTone
+        <hr />
+        <Table
+          className="uk-margin-top"
+          dataSource={data?.map((item) => ({
+            description: item?.description,
+            nVariations: item?.variations.length,
+            createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
+            status: item?.active ? "Ativo" : "Inativo",
+            options: (
+              <div className="uk-flex uk-flex-around">
+                <ExpandOutlined
                   size={15}
                   onClick={() => {
-                    setSelectedGroup(item);
+                    setSelectedId(item.id);
                   }}
                 />
-              )}
-              {canDeleteGroupVariations && (
-                <DeleteVariationGroup
-                  id={item?.id}
-                  close={() => setSelectedGroup(null)}
-                />
-              )}
-            </div>
-          ),
-        }))}
-        columns={columns}
-      />
-      <UpdateGroupVariations
-        visible={!!selectedId}
-        id={selectedId}
-        hide={() => {
-          refetch();
-          setSelectedId(null);
-        }}
-      />
-      <CreateVariationGroup
-        visible={visible}
-        hide={() => {
-          setVisible(false);
-        }}
-      />
-      <EditVariationGroup
-        visible={!!selectedGroup}
-        hide={() => setSelectedGroup(null)}
-        groupInfo={selectedGroup}
-      />
-    </Container>
+              </div>
+            ),
+            actions: (
+              <div className="uk-flex uk-flex-around">
+                {canEditGroupVariations && (
+                  <EditTwoTone
+                    size={15}
+                    onClick={() => {
+                      setSelectedGroup(item);
+                    }}
+                  />
+                )}
+                {canDeleteGroupVariations && (
+                  <DeleteVariationGroup
+                    id={item?.id}
+                    close={() => setSelectedGroup(null)}
+                  />
+                )}
+              </div>
+            ),
+          }))}
+          columns={columns}
+        />
+        <UpdateGroupVariations
+          visible={!!selectedId}
+          id={selectedId}
+          hide={() => {
+            refetch();
+            setSelectedId(null);
+          }}
+        />
+        <CreateVariationGroup
+          visible={visible}
+          hide={() => {
+            setVisible(false);
+          }}
+        />
+        <EditVariationGroup
+          visible={!!selectedGroup}
+          hide={() => setSelectedGroup(null)}
+          groupInfo={selectedGroup}
+        />
+      </Container>
+    </PageWrapper>
   );
 });
 

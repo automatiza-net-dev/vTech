@@ -7,24 +7,18 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
 
 import { InputBox } from "./styles";
-import { Select, AutoComplete, Button } from "antd";
+import { Select, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
+import { Button } from "infinity-forge";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-export const Filters = memo(function Filters({
-  filters,
-  setFilters,
-  values,
-  setValues,
-  setReload,
-}) {
+export function Filters({ filters, setFilters, values, setValues, setReload }) {
   const { businessUnits } = useBusinessUnitsByUser(false);
   const { patients } = usePatients();
   const { tutors } = useTutor(false, false);
   const { allEconomicGroup } = useEconomicGroup();
-
 
   sortItems(patients, "name");
   sortItems(tutors, "name");
@@ -219,12 +213,11 @@ export const Filters = memo(function Filters({
             setFilters({ ...filters, noSearch: false });
             setReload((prv) => !prv);
           }}
-        >
-          Filtrar
-        </Button>
+          text="Filtrar"
+        />
       </div>
     </div>
   );
-});
+}
 
 export default Filters;

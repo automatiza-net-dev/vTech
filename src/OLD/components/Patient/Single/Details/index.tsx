@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { petsService } from "@/OLD/services/patient.service";
 import { notification, Table, Modal, Tooltip, Tag } from "antd";
-import { Button, LoadingSkeleton } from "@/OLD/components/mini-components";
+import { LoadingSkeleton } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
 import { convertDate } from "@/OLD/utils/convertDate";
 import TutorVincForm from "./TutorVincForm";
@@ -131,163 +132,162 @@ const Details = React.memo(function Single({
   return loading ? (
     <LoadingSkeleton />
   ) : (
-    <div>
-      <h3>Paciente</h3>
-      <div
-        className="uk-card uk-card-body uk-margin-bottom"
-        style={{ background: "#fff", borderRadius: "20px", marginTop: "50px" }}
-      >
-        <>
-          <div className="uk-margin-large-bottom">
-            <div
-              style={{
-                borderRadius: "50%",
-                background: "#ccc",
-                width: "115px",
-                height: "115px",
-                display: "flex",
-                border: "solid 3px var(--darkBlue)",
-                marginTop: "50px",
-                position: "absolute",
-                top: -80,
-              }}
-            >
-              {patient?.photo && (
-                <img
-                  className="uk-border-circle"
-                  width="115px"
-                  height="115px"
-                  src={photoSrc}
+    <PageWrapper title="Detalhes do paciente">
+      <div>
+        <div
+          className="uk-card uk-card-body uk-margin-bottom"
+          style={{
+            background: "#fff",
+            borderRadius: "20px",
+            marginTop: "50px",
+          }}
+        >
+          <>
+            <div className="uk-margin-large-bottom">
+              <div
+                style={{
+                  borderRadius: "50%",
+                  background: "#ccc",
+                  width: "115px",
+                  height: "115px",
+                  display: "flex",
+                  border: "solid 3px var(--darkBlue)",
+                  marginTop: "50px",
+                  position: "absolute",
+                  top: -80,
+                }}
+              >
+                {patient?.photo && (
+                  <img
+                    className="uk-border-circle"
+                    width="115px"
+                    height="115px"
+                    src={photoSrc}
+                  />
+                )}
+              </div>
+              <div
+                style={{
+                  gap: "10px",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Button
+                  onClick={() =>
+                    router.push(`/dashboard/paciente/${patient?.id}`)
+                  }
+                  text="Ficha paciente"
                 />
-              )}
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                right: 40,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                onClick={() =>
-                  router.push(`/dashboard/paciente/${patient?.id}`)
-                }
-                classCallback="uk-margin-small-right"
-              >
-                Ficha paciente
-              </Button>
-              <Button
-                onClick={() => setVisible(false)}
-                classCallback="uk-margin-small-right"
-              >
-                Voltar
-              </Button>
 
-              <FormCreatePatient
-                isModal
-                patientId={patient?.id}
-                trigger={<Button>Editar</Button>}
+                <Button onClick={() => setVisible(false)} text="Voltar" />
+
+                <FormCreatePatient
+                  isModal
+                  patientId={patient?.id}
+                  trigger={<Button text="Editar" />}
+                />
+              </div>
+            </div>
+            <br />
+            <h5 className="uk-heading-line">
+              <span>Dados do paciente</span>
+            </h5>
+            <div className="uk-flex">
+              <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
+                <span>
+                  Nome:
+                  {` ${patient?.name}`}
+                </span>
+                <span>
+                  Data de nascimento:
+                  {` ${convertDate(patient?.birth_date)}`}
+                </span>
+                <span>
+                  Tags:
+                  {` ${patient?.tags}`}
+                </span>
+              </div>
+              <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
+                <span>
+                  Criado em:
+                  {` ${convertDate(patient?.created_at)}`}
+                </span>
+                <span>
+                  Gênero:
+                  {` ${patient?.gender}`}
+                </span>
+                <span>
+                  Ativo:
+                  {patient?.active ? " Ativo" : " Inativo"}
+                </span>
+              </div>
+              <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
+                <h4 className="uk-margin-remove">RG: {patient?.tag}</h4>
+                <p className="uk-margin-remove">Peso: {patient?.weight}</p>
+                <p className="uk-margin-remove">
+                  Data pesagem:{" "}
+                  {moment(patient?.weight_date).format("DD/MM/YYYY")}
+                </p>
+              </div>
+              <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
+                <p className="uk-margin-remove">
+                  Castrado: {patient?.patientAnimal?.castrated ? "Sim" : "Não"}
+                </p>
+                <p className="uk-margin-remove">
+                  Óbito: {patient?.patientAnimal?.death ? "Sim" : "Não"}
+                </p>
+                {patient?.patientAnimal?.death && (
+                  <p className="uk-margin-remove">
+                    Data do óbito:{" "}
+                    {moment(patient?.patientAnimal?.death_date).format(
+                      "DD/MM/YYYY"
+                    )}
+                  </p>
+                )}
+              </div>
+              <div>
+                <p className="uk-margin-remove">
+                  Microchip: {patient?.patientAnimal?.microchip}
+                </p>
+                <p className="uk-margin-remove">
+                  Pelagem: {patient?.patientAnimal?.hair?.description}
+                </p>
+              </div>
+            </div>
+          </>
+        </div>
+        <section className="uk-margin-small-top">
+          <div className="uk-flex uk-flex-between">
+            <h4>Tutores</h4>
+            <div>
+              <Button
+                onClick={() => setNewTutorOpen(true)}
+                text="Vincular tutor"
               />
             </div>
           </div>
-          <br />
-          <h5 className="uk-heading-line">
-            <span>Dados do paciente</span>
-          </h5>
-          <div className="uk-flex">
-            <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
-              <span>
-                Nome:
-                {` ${patient?.name}`}
-              </span>
-              <span>
-                Data de nascimento:
-                {` ${convertDate(patient?.birth_date)}`}
-              </span>
-              <span>
-                Tags:
-                {` ${patient?.tags}`}
-              </span>
-            </div>
-            <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
-              <span>
-                Criado em:
-                {` ${convertDate(patient?.created_at)}`}
-              </span>
-              <span>
-                Gênero:
-                {` ${patient?.gender}`}
-              </span>
-              <span>
-                Ativo:
-                {patient?.active ? " Ativo" : " Inativo"}
-              </span>
-            </div>
-            <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
-              <h4 className="uk-margin-remove">RG: {patient?.tag}</h4>
-              <p className="uk-margin-remove">Peso: {patient?.weight}</p>
-              <p className="uk-margin-remove">
-                Data pesagem:{" "}
-                {moment(patient?.weight_date).format("DD/MM/YYYY")}
-              </p>
-            </div>
-            <div className="uk-flex uk-flex-column uk-margin-xlarge-right">
-              <p className="uk-margin-remove">
-                Castrado: {patient?.patientAnimal?.castrated ? "Sim" : "Não"}
-              </p>
-              <p className="uk-margin-remove">
-                Óbito: {patient?.patientAnimal?.death ? "Sim" : "Não"}
-              </p>
-              {patient?.patientAnimal?.death && (
-                <p className="uk-margin-remove">
-                  Data do óbito:{" "}
-                  {moment(patient?.patientAnimal?.death_date).format(
-                    "DD/MM/YYYY"
-                  )}
-                </p>
-              )}
-            </div>
-            <div>
-              <p className="uk-margin-remove">
-                Microchip: {patient?.patientAnimal?.microchip}
-              </p>
-              <p className="uk-margin-remove">
-                Pelagem: {patient?.patientAnimal?.hair?.description}
-              </p>
-            </div>
-          </div>
-        </>
+          <Table
+            dataSource={patient?.tutors}
+            columns={Columns}
+            className="uk-margin-small-top"
+          />
+        </section>
+        <Modal
+          title="Vincular tutor"
+          visible={newTutorOpen}
+          footer={null}
+          onCancel={() => setNewTutorOpen(false)}
+        >
+          <TutorVincForm
+            reload={reload}
+            setReload={setReload}
+            patient={patient}
+            setVisible={setNewTutorOpen}
+          />
+        </Modal>
       </div>
-      <section className="uk-margin-small-top">
-        <div className="uk-flex uk-flex-between">
-          <h4>Tutores</h4>
-          <div>
-            <Button onClick={() => setNewTutorOpen(true)}>
-              Vincular tutor
-            </Button>
-          </div>
-        </div>
-        <Table
-          dataSource={patient?.tutors}
-          columns={Columns}
-          className="uk-margin-small-top"
-        />
-      </section>
-      <Modal
-        title="Vincular tutor"
-        visible={newTutorOpen}
-        footer={null}
-        onCancel={() => setNewTutorOpen(false)}
-      >
-        <TutorVincForm
-          reload={reload}
-          setReload={setReload}
-          patient={patient}
-          setVisible={setNewTutorOpen}
-        />
-      </Modal>
-    </div>
+    </PageWrapper>
   );
 });
 

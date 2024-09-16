@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useServices } from "@/OLD/hooks/useServices";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Table, Tooltip, Modal } from "antd";
 import Filters from "./Filters";
 import Actions from "./Actions";
@@ -66,56 +66,62 @@ const Services = memo(function Services() {
   return !listServicesPermission || listServicesPermission === "loading" ? (
     <AccessDenied loading={listServicesPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-line uk-margin-remove">Controle de serviços</h3>
-      <Filters filters={filters} setFilters={setFilters} />
-      <div className="uk-flex uk-flex-right">
-        <CustomButton
-          classCallback="uk-margin-right"
-          onClick={() => setFilters({ ...filters, noSearch: false })}
+    <PageWrapper title="Controle de serviços">
+      <Container>
+        <Filters filters={filters} setFilters={setFilters} />
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "flex-end",
+            marginTop: "5px",
+          }}
         >
-          Filtrar
-        </CustomButton>
-        <CustomButton
-          onClick={() => {
-            setCreateVisible(true);
-            {
-              /*
+          <Button
+            text="Filtrar"
+            onClick={() => setFilters({ ...filters, noSearch: false })}
+          />
+
+          <Button
+            onClick={() => {
+              setCreateVisible(true);
+              {
+                /*
             router.push("/dashboard/servicos/cadastrar");
           */
-            }
-          }}
-          disabled={!canCreateService}
-        >
-          Cadastrar
-        </CustomButton>
-      </div>
-      <hr />
-      <section>
-        <Table
-          columns={servicesColumns}
-          dataSource={formatedServices}
-          locale={{
-            emptyText:
-              Object.keys(filters).length === 0 ? (
-                <>Pesquise acima para exibir o resultado</>
-              ) : (
-                <>Nenhum resultado encontrado</>
-              ),
-          }}
-        />
-      </section>
-      {createVisible && (
-        <Modal
-          visible={createVisible}
-          onCancel={() => setCreateVisible(false)}
-          width={1200}
-          footer={null}
-        >
-          <CreateServices setVisible={setCreateVisible} />
-        </Modal>
-      )}
-    </Container>
+              }
+            }}
+            disabled={!canCreateService}
+            text="Cadastrar"
+          />
+        </div>
+        <hr />
+        <section>
+          <Table
+            columns={servicesColumns}
+            dataSource={formatedServices}
+            locale={{
+              emptyText:
+                Object.keys(filters).length === 0 ? (
+                  <>Pesquise acima para exibir o resultado</>
+                ) : (
+                  <>Nenhum resultado encontrado</>
+                ),
+            }}
+          />
+        </section>
+        {createVisible && (
+          <Modal
+            visible={createVisible}
+            onCancel={() => setCreateVisible(false)}
+            width={1200}
+            footer={null}
+          >
+            <CreateServices setVisible={setCreateVisible} />
+          </Modal>
+        )}
+      </Container>
+    </PageWrapper>
   );
 });
 

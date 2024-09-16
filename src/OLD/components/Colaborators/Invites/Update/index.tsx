@@ -3,9 +3,8 @@
 import React, { useEffect, useState, memo, useCallback } from "react";
 
 // Components
-import { useToast } from "infinity-forge";
 import { Modal } from "antd";
-import { Button } from "@/OLD/components/mini-components/Button";
+import { useToast, Button } from "infinity-forge";
 
 //Services
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -173,9 +172,7 @@ const EditInvite = memo(function EditInvite({
           </select>
         </div>
         <div className="uk-flex uk-flex-right uk-margin-top">
-          <Button id="submit-button" type="submit">
-            Atualizar
-          </Button>
+          <Button id="submit-button" type="submit" text="Atualizar" />
         </div>
       </form>
     </Modal>

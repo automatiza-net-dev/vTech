@@ -1,13 +1,7 @@
 // @ts-nocheck
-import {
-  Form,
-  Input,
-  Modal,
-  notification,
-  Select,
-  Button as ButtonA,
-} from "antd";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { Form, Input, Modal, notification, Select } from "antd";
+import { LoadingSpin } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { CreateTypeService } from "@/OLD/components/ServiceType/Create";
 import { useRouter } from "next/router";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -166,12 +160,11 @@ export const Edit = memo(({ reload, setReload, icon, id }) => {
                 <LoadingSpin />
               )}
               <Option value="">
-                <ButtonA
+                <Button
                   className="uk-width-1-1"
                   onClick={() => setIsModalServiceType(true)}
-                >
-                  Criar novo tipo de serviço
-                </ButtonA>
+                  text="Criar novo tipo de serviço"
+                />
               </Option>
             </Select>
           </Form.Item>
@@ -204,14 +197,9 @@ export const Edit = memo(({ reload, setReload, icon, id }) => {
             <Editor editorState={body} setEditorState={setBody} />
           </Form.Item>
           <footer className="uk-flex uk-flex-right">
-            <ButtonA
-              type="primary"
-              htmlType="submit"
-              className="uk-margin-right"
-            >
-              Salvar
-            </ButtonA>
-            <ButtonA onClick={() => setIsModalVisible(false)}>Cancelar</ButtonA>
+            <Button type="submit" text="Salvar" />
+
+            <Button onClick={() => setIsModalVisible(false)} text="Cancelar" />
           </footer>
         </Form>
         <CreateTypeService

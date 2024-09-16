@@ -6,7 +6,7 @@ import { Input, notification } from "antd";
 
 import api from "@/OLD/services";
 import { userService } from "@/OLD/services/user.service";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 import { Container, InputBox } from "./styles";
 
@@ -36,30 +36,29 @@ export function Step3({ data, setStep }) {
   };
 
   const resendCode = useCallback(async () => {
-    await api?.get(`/users/resend-confirmation/${data?.email}`)
+    await api
+      ?.get(`/users/resend-confirmation/${data?.email}`)
       .then((_res) =>
         notification.success({ message: "Código reenviado com sucesso!" })
       );
   }, [data.email]);
 
   const submitCode = useCallback(() => {
-      userService
-        .confirmToken({ code, email: data?.email })
-        .then((_res) => {
-          setStep((prv) => prv + 1);
-          return notification.success({
-            message: "Email confirmado com sucesso",
-          });
-        })
-        .catch((err) => {
-          notification.error({
-            message:
-              "Código inválido, verifique o código informado e tente novamente",
-          });
+    userService
+      .confirmToken({ code, email: data?.email })
+      .then((_res) => {
+        setStep((prv) => prv + 1);
+        return notification.success({
+          message: "Email confirmado com sucesso",
         });
-    },
-    [code, data?.email]
-  );
+      })
+      .catch((err) => {
+        notification.error({
+          message:
+            "Código inválido, verifique o código informado e tente novamente",
+        });
+      });
+  }, [code, data?.email]);
 
   return (
     <Container>
@@ -129,14 +128,13 @@ export function Step3({ data, setStep }) {
           </span>
         </div>
         <footer className="uk-margin-large-top">
-          <CustomButton
-            classCallback="uk-margin-right"
+          <Button
             onClick={() => setStep((prv) => prv - 1)}
             type="button"
-          >
-            Voltar
-          </CustomButton>
-          <CustomButton type="submit">Confirmar</CustomButton>
+            text="Voltar"
+          />
+
+          <Button type="submit" text="Confirmar" />
         </footer>
         <div className="uk-margin-small-top">
           <span className="uk-link" onClick={() => router.push("/")}>

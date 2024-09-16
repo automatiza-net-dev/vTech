@@ -6,12 +6,12 @@ import { useRouter } from "next/router";
 
 import { notification, Spin } from "antd";
 
+import { Button, PageWrapper } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { recipeServices } from "@/OLD/services/recipes.service";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
 export default function MedicalRecipeEditPage() {
   const [data, setData] = useState<{
@@ -92,82 +92,84 @@ export default function MedicalRecipeEditPage() {
       {!canEditMedicalRecipe || canEditMedicalRecipe === "loading" ? (
         <AccessDenied loading={canEditMedicalRecipe} />
       ) : (
-        <div className="uk-container uk-padding">
-          <div className="uk-flex uk-flex-between uk-flex-middle">
-            <h3 className="uk-margin-remove">Editar receita</h3>
-          </div>
-          {startPage ? (
-            <div className="uk-flex uk-flex-center">
-              <Spin spinning size="large" />{" "}
-            </div>
-          ) : (
-            <div className="uk-card uk-card-default uk-card-body uk-margin-top uk-flex">
-              <div className="uk-width-5-6">
-                <div className="uk-margin-small">
-                  <label>Ativo</label>
-                  <select
-                    className="uk-select"
-                    value={data?.active?.toString()}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        active: e.target.value === "true" ? true : false,
-                      })
-                    }
-                  >
-                    <option value={"true"}>Ativo</option>
-                    <option value={"false"}>Inativo</option>
-                  </select>
-                </div>
-                <div className="uk-margin-small">
-                  <label>Titulo</label>
-                  <input
-                    type="text"
-                    className="uk-input"
-                    placeholder="Titulo do documento"
-                    value={data?.title}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        title: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="uk-margin-small">
-                  <label>Descrição</label>
-                  <textarea
-                    className="uk-textarea"
-                    placeholder="Descrição do documento"
-                    value={data?.description}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="uk-margin-small">
-                  <label>Conteúdo</label>
-                  <Editor editorState={body} setEditorState={setBody} />
-                </div>
-                <div className="uk-margin-top">
-                  <CustomButton
-                    classCallback="uk-margin-right"
-                    onClick={() => router.back()}
-                  >
-                    Voltar
-                  </CustomButton>
-                  <CustomButton onClick={submitData}>
-                    {loading ? "Salvando..." : "Salvar"}
-                  </CustomButton>
-                </div>
+        <PageWrapper title="Editar Receita">
+          <div>
+            {startPage ? (
+              <div className="uk-flex uk-flex-center">
+                <Spin spinning size="large" />{" "}
               </div>
-              <LabelsPanel body={body} setBody={setBody} />
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="uk-card uk-card-default uk-card-body uk-margin-top uk-flex">
+                <div className="uk-width-5-6">
+                  <div className="uk-margin-small">
+                    <label>Ativo</label>
+                    <select
+                      className="uk-select"
+                      value={data?.active?.toString()}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          active: e.target.value === "true" ? true : false,
+                        })
+                      }
+                    >
+                      <option value={"true"}>Ativo</option>
+                      <option value={"false"}>Inativo</option>
+                    </select>
+                  </div>
+                  <div className="uk-margin-small">
+                    <label>Titulo</label>
+                    <input
+                      type="text"
+                      className="uk-input"
+                      placeholder="Titulo do documento"
+                      value={data?.title}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          title: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="uk-margin-small">
+                    <label>Descrição</label>
+                    <textarea
+                      className="uk-textarea"
+                      placeholder="Descrição do documento"
+                      value={data?.description}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="uk-margin-small">
+                    <label>Conteúdo</label>
+                    <Editor editorState={body} setEditorState={setBody} />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: "10px",
+                    }}
+                  >
+                    <Button onClick={() => router.back()} text="Voltar" />
+
+                    <Button
+                      onClick={submitData}
+                      text={loading ? "Salvando..." : "Salvar"}
+                    />
+                  </div>
+                </div>
+                <LabelsPanel body={body} setBody={setBody} />
+              </div>
+            )}
+          </div>
+        </PageWrapper>
       )}
     </LayoutDashboard>
   );

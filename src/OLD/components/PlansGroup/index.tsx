@@ -9,7 +9,7 @@ import { plansGroupColumns } from "./Columns/plansGroupColumns";
 import moment from "moment";
 
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Table, Modal, notification } from "antd";
 import FormChild from "./FormChild";
 import Actions from "./Actions";
@@ -17,7 +17,7 @@ import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-const PlansGroup = memo(function PlansGroup() {
+function PlansGroup() {
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
@@ -85,36 +85,36 @@ const PlansGroup = memo(function PlansGroup() {
   return !listPlansGroupPermission || listPlansGroupPermission === "loading" ? (
     <AccessDenied loading={listPlansGroupPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Grupos de Planos de Contas</h3>
-      <div className="uk-flex uk-flex-right">
-        <Filters filters={filters} setFilters={setFilters} />
-        <div>
-          <CustomButton
-            onClick={() => setCreateVisible(true)}
-            disabled={!canCreatePlansGroup}
-          >
-            Cadastrar
-          </CustomButton>
+    <PageWrapper title="Grupo de planos de contas">
+      <Container>
+        <div className="uk-flex uk-flex-right">
+          <Filters filters={filters} setFilters={setFilters} />
+          <div>
+            <Button
+              text="Cadastrar"
+              onClick={() => setCreateVisible(true)}
+              disabled={!canCreatePlansGroup}
+            />
+          </div>
         </div>
-      </div>
-      <hr />
-      <Table columns={plansGroupColumns} dataSource={formatedPlansGroup} />
-      <Modal
-        visible={createVisible}
-        onCancel={() => setCreateVisible(false)}
-        title="Cadastro de grupos de planos de contas"
-        footer={null}
-      >
-        <FormChild
-          data={data}
-          setData={setData}
-          setVisible={setCreateVisible}
-          submit={submitCreatePlansGroup}
-        />
-      </Modal>
-    </Container>
+        <hr />
+        <Table columns={plansGroupColumns} dataSource={formatedPlansGroup} />
+        <Modal
+          visible={createVisible}
+          onCancel={() => setCreateVisible(false)}
+          title="Cadastro de grupos de planos de contas"
+          footer={null}
+        >
+          <FormChild
+            data={data}
+            setData={setData}
+            setVisible={setCreateVisible}
+            submit={submitCreatePlansGroup}
+          />
+        </Modal>
+      </Container>
+    </PageWrapper>
   );
-});
+}
 
 export default PlansGroup;

@@ -3,6 +3,18 @@ import styled from "styled-components";
 export const SchedulesCarousel = styled("section")`
   width: 100%;
 
+  .swiper {
+    margin-left: 0;
+    max-width: 1790px;
+
+    .swiper-slide {
+      max-width: 350px;
+    }
+  }
+
+  .swiper-slide {
+  }
+
   h2 {
     margin-bottom: 10px;
     color: #2b2b2b;

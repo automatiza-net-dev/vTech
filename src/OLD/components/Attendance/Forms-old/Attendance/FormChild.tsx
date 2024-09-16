@@ -6,19 +6,10 @@ import { useScheduleTypeServices } from "@/OLD/hooks/useScheduleServicetype";
 import { PlusOutline } from "styled-icons/evaicons-outline";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-import {
-  Input,
-  AutoComplete,
-  Button,
-  Upload,
-  Modal,
-  Popconfirm,
-  Collapse
-} from "antd";
+import { Button } from "infinity-forge";
+import { Input, AutoComplete, Upload, Modal, Popconfirm, Collapse } from "antd";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
-import BudgetsPanel from "@/OLD/components/Attendance/BudgetsPanel";
 import AddBudget from "@/OLD/components/Budget/Create";
 
 import { MdDownload } from "react-icons/md";
@@ -46,7 +37,7 @@ const FormChild = memo(function FormChild({
   setReload,
   created = false,
   setCreated = false,
-  eventId = false
+  eventId = false,
 }) {
   const [selectedService, setSelectedService] = useState({});
   const [formatedServices, setFormatedServices] = useState([]);
@@ -62,7 +53,7 @@ const FormChild = memo(function FormChild({
       services.map((item) => {
         return {
           ...item,
-          value: <span key={item?.id}>{item?.description}</span>
+          value: <span key={item?.id}>{item?.description}</span>,
         };
       })
     );
@@ -76,7 +67,7 @@ const FormChild = memo(function FormChild({
     if (scheduleData && services) {
       setData({
         scheduleServiceId: scheduleData?.serviceType?.id,
-        serviceDescription: scheduleData?.serviceType?.description
+        serviceDescription: scheduleData?.serviceType?.description,
       });
       replaceText(
         services?.find(
@@ -104,13 +95,13 @@ const FormChild = memo(function FormChild({
               setData({
                 ...data,
                 scheduleServiceId: option?.id,
-                serviceDescription: option?.description
+                serviceDescription: option?.description,
               });
             }}
             onChange={(e) => {
               setSelectedService({
                 ...selectedService,
-                serviceDescription: e
+                serviceDescription: e,
               });
               setData({ ...data, serviceDescription: e });
             }}
@@ -135,19 +126,6 @@ const FormChild = memo(function FormChild({
         <div className="uk-width-5-6">
           <Editor editorState={body} setEditorState={setBody} />
         </div>
-        <BudgetsPanel
-          eventId={eventId}
-          setVisible={setBudgetVisible}
-          type={modal}
-          data={data}
-          body={body}
-          patientId={patient?.id}
-          fileList={fileList}
-          setData={setData}
-          setCreated={setCreated}
-          created={created}
-          setEvaluationVisible={setVisible}
-        />
       </div>
       {modal ? (
         <div className="uk-width-5-6 uk-margin-small-top">
@@ -186,9 +164,7 @@ const FormChild = memo(function FormChild({
               setFileList(info.fileList);
             }}
           >
-            <ButtonA>
-              <PlusOutline size={15} className="upload-icon" /> Adicionar anexos
-            </ButtonA>
+            <Button text="Adicionar anexos" />
           </Upload>
           {!modal && (
             <p className="uk-link" onClick={() => setPhotosVisible(true)}>

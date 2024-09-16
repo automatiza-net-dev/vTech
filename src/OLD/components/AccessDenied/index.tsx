@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
+import { Button } from "infinity-forge";
 import { LoadingPage } from "@/OLD/components/mini-components";
-import { Button as CustomButton } from "@/OLD/components/mini-components";
 
 import styled from "styled-components";
 
@@ -28,7 +28,7 @@ export default function AcessDenied({ loading }: any) {
     <Container className="uk-flex uk-flex-center uk-flex-middle">
       <div className="uk-text-center">
         <div className="custom-text">Usuário não autorizado</div>
-        <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
+        <Button onClick={() => router.back()} text="Voltar" />
       </div>
     </Container>
   );

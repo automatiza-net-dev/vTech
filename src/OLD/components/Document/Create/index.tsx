@@ -9,7 +9,7 @@ import { documentServices } from "@/OLD/services/document.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
-import { Button as CustomButton } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 const { Group } = Radio;
@@ -130,45 +130,69 @@ const DocumentCreate = React.memo(function DocumentCreate() {
   return !canCreateDocument || canCreateDocument === "loading" ? (
     <AccessDenied loading={canCreateDocument} />
   ) : (
-    <div className="uk-container uk-padding">
-      <div className="uk-flex uk-flex-between uk-flex-middle">
-        <h3 className="uk-margin-remove">Cadastrar documento</h3>
-      </div>
-      <div className="uk-card uk-card-default uk-card-body uk-margin-top">
-        <div className="uk-width-1-1">
-          <div className="uk-margin-small">
-            <label>Titulo</label>
-            <input
-              type="text"
-              className="uk-input"
-              placeholder="Titulo do documento"
-              value={data?.title}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  title: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div>
-            <label>Tipo</label>
-            <br />
-            <Group
-              defaultValue={"text"}
-              onChange={(e) => {
-                setData((prv) => ({ ...prv, type: e.target.value }));
-              }}
-            >
-              <Radio value="text">
-                Escrever o texto (fazer texto manualmente)
-              </Radio>
-              <Radio value="import">Documento Word</Radio>
-            </Group>
-          </div>
-          {data?.type === "text" && (
-            <div className="uk-flex">
-              <div className="uk-width-5-6">
+    <PageWrapper title="Cadastrar Documento">
+      <div>
+        <div className="uk-flex uk-flex-between uk-flex-middle"></div>
+        <div className="uk-card uk-card-default uk-card-body uk-margin-top">
+          <div className="uk-width-1-1">
+            <div className="uk-margin-small">
+              <label>Titulo</label>
+              <input
+                type="text"
+                className="uk-input"
+                placeholder="Titulo do documento"
+                value={data?.title}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    title: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div>
+              <label>Tipo</label>
+              <br />
+              <Group
+                defaultValue={"text"}
+                onChange={(e) => {
+                  setData((prv) => ({ ...prv, type: e.target.value }));
+                }}
+              >
+                <Radio value="text">
+                  Escrever o texto (fazer texto manualmente)
+                </Radio>
+                <Radio value="import">Documento Word</Radio>
+              </Group>
+            </div>
+            {data?.type === "text" && (
+              <div className="uk-flex">
+                <div className="uk-width-5-6">
+                  <div className="uk-margin-small">
+                    <label>Descrição</label>
+                    <textarea
+                      type="text"
+                      className="uk-textarea"
+                      placeholder="Descrição do documento"
+                      value={data?.description}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="uk-margin-small">
+                    <label>Conteúdo</label>
+                    <Editor editorState={body} setEditorState={setBody} />
+                  </div>
+                </div>
+                <LabelsPanel body={body} setBody={setBody} />
+              </div>
+            )}
+            {data?.type === "import" && (
+              <div className="uk-margin-small-top">
                 <div className="uk-margin-small">
                   <label>Descrição</label>
                   <textarea
@@ -184,68 +208,49 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                     }
                   />
                 </div>
-                <div className="uk-margin-small">
-                  <label>Conteúdo</label>
-                  <Editor editorState={body} setEditorState={setBody} />
-                </div>
+                {!file ? (
+                  <Upload
+                    multiple={false}
+                    beforeUpload={beforeUpload}
+                    showUploadList={false}
+                    type=".doc, docx"
+                    onChange={(info) => {
+                      setFile(info.file);
+                    }}
+                  >
+                    <Button text="Importar arquivo word" />
+                  </Upload>
+                ) : (
+                  <div>
+                    Arquivo:{" "}
+                    <span className="uk-link">{file?.originFileObj?.name}</span>
+                    &nbsp;
+                    <DeleteTwoTone
+                      twoToneColor="red"
+                      onClick={() => setFile(false)}
+                    />
+                  </div>
+                )}
               </div>
-              <LabelsPanel body={body} setBody={setBody} />
-            </div>
-          )}
-          {data?.type === "import" && (
-            <div className="uk-margin-small-top">
-              <div className="uk-margin-small">
-                <label>Descrição</label>
-                <textarea
-                  type="text"
-                  className="uk-textarea"
-                  placeholder="Descrição do documento"
-                  value={data?.description}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              {!file ? (
-                <Upload
-                  multiple={false}
-                  beforeUpload={beforeUpload}
-                  showUploadList={false}
-                  type=".doc, docx"
-                  onChange={(info) => {
-                    setFile(info.file);
-                  }}
-                >
-                  <CustomButton>Importar arquivo word</CustomButton>
-                </Upload>
-              ) : (
-                <div>
-                  Arquivo:{" "}
-                  <span className="uk-link">{file?.originFileObj?.name}</span>
-                  &nbsp;
-                  <DeleteTwoTone
-                    twoToneColor="red"
-                    onClick={() => setFile(false)}
-                  />
-                </div>
-              )}
-            </div>
-          )}
-          <div className="uk-margin-top">
-            <CustomButton
-              onClick={() => submitData()}
-              classCallback="uk-margin-right"
+            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
             >
-              {loading ? "Salvando..." : "Salvar"}
-            </CustomButton>
-            <CustomButton onClick={() => router.back()}>Voltar</CustomButton>
+              <Button
+                onClick={() => submitData()}
+                text={loading ? "Salvando..." : "Salvar"}
+              />
+
+              <Button onClick={() => router.back()} text="Voltar" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 });
 

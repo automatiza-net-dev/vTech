@@ -1,27 +1,18 @@
-import {
-  Error,
-  Input,
-  useToast,
-  Textarea,
-  FormHandler,
-  LoaderCircle,
-} from "infinity-forge";
 import moment from "moment";
-import { Table } from "antd";
+import { Table, Collapse } from "antd";
 import { useQueryClient } from "react-query";
 
-import { schema } from "./schema";
-import { useLoadBill } from "./hook";
+import { Error, LoaderCircle } from "infinity-forge";
+
+const { Panel } = Collapse;
+
 import { authorizationFormater } from "./utils/formater";
 
-import { RemoteBills } from "@/data";
-import { AUTH_COLUMNS } from "./columns";
-import { PermissionItem } from "@/presentation";
+import { AUTH_COLUMNS, paymentsColumns } from "./columns";
 
-import {
-  financialServicesTypes,
-  financialServicesContainer,
-} from "@/container";
+import { currencyFormatter } from "../../Budget";
+
+import { AuthorizationPaymentForm, useLoadBill } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -32,8 +23,8 @@ export function AuthorizationSell({
   billId: string;
   setReload;
 }) {
-  const { data, isLoading } = useLoadBill({ billId });
-  const { createToast } = useToast();
+  const { data, isLoading } = useLoadBill({ id: billId });
+
   const queryClient = useQueryClient();
 
   if (isLoading) {
@@ -43,13 +34,6 @@ export function AuthorizationSell({
   if (!data) {
     return <></>;
   }
-
-  const showForm = data?.items?.some(
-    (item) =>
-      !item.approved &&
-      item.courtesy_approved_at === null &&
-      (item.courtesy || item.max_discount)
-  );
 
   const tableDataSource =
     data?.items?.map((item) => ({
@@ -64,51 +48,27 @@ export function AuthorizationSell({
           ?.maximum_discount_percentage,
       courtesy: item?.courtesy ? "Sim" : "Não",
       totalItem: item?.total_value,
-      authorization: authorizationFormater(item),
+      authorization: authorizationFormater(item, "product"),
     })) || [];
 
-  async function sendBillAuthorization(approved: boolean, payload) {
-    const itemsIdList = data?.items
-      ?.filter(
-        (item) =>
-          !item.approved &&
-          item.courtesy_approved_at === null &&
-          (item.courtesy || item.max_discount)
-      )
-      .map((item) => item.id);
+  const paymentsDataSource = data?.payments?.map((payment) => ({
+    ...payment,
+    createdAt: payment?.created_at
+      ? moment(payment?.created_at).format("DD/MM/YYYY - HH:MM")
+      : "---",
+    value: payment?.total_value ? moment(payment?.total_value) : "---",
+    paymentMethodDescription: payment?.paymentMethod?.description,
+    nsu: payment?.nsu_document || "---",
+    authorization: authorizationFormater(payment, "payment"),
+  }));
 
-    if (itemsIdList.length === 0) {
-      createToast({ message: "Nenhum item selecionado", status: "error" });
-      return;
+  let block = 0;
+  data?.payments?.map((item) => {
+    if (item?.block > block) {
+      block = item?.block;
     }
-
-    try {
-      await financialServicesContainer
-        .get<RemoteBills>(financialServicesTypes.RemoteBills)
-        .authDiscountPendencySellingBill({
-          approved,
-          itemsIdList,
-          billId,
-          email: payload.email,
-          password: payload.password,
-          reason: payload.description,
-        });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["RemoteLoadBill", billId],
-      });
-
-      setReload && setReload((prv) => !prv);
-      document?.querySelector<any>(".ant-modal-close")?.click();
-
-      createToast({ message: "Alterado com sucesso!", status: "success" });
-    } catch (err: any) {
-      createToast({
-        message: err?.error?.message || "Ocorreu um erro ao enviar",
-        status: "error",
-      });
-    }
-  }
+  });
+  const blockList = Array.from(Array(block).keys());
 
   return (
     <Error name="AuthorizationSell">
@@ -140,32 +100,71 @@ export function AuthorizationSell({
 
         <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
 
-        {showForm && (
-          <PermissionItem hash="VEN16">
-            <FormHandler
-              schema={schema}
-              onSucess={(payload) => sendBillAuthorization(true, payload)}
-              button={{
-                text: "Autorizar",
-              }}
-              customSubmit={[
-                {
-                  action: (payload) => sendBillAuthorization(false, payload),
-                  active: true,
-                  props: {
-                    text: "Não Autorizar",
-                  },
-                },
-              ]}
-            >
-              <Input name="email" label="Email Usuário" />
-
-              <Input label="Senha" name="password" type="password" />
-
-              <Textarea label="Descrição" name="description" />
-            </FormHandler>
-          </PermissionItem>
-        )}
+        <h1>Pagamentos</h1>
+        {paymentsDataSource?.length > 0 &&
+          blockList.map((i) => {
+            const paymentsList = paymentsDataSource?.filter(
+              (item) => item?.block === i + 1
+            );
+            return (
+              <Collapse key={i} style={{ margin: "10px" }}>
+                <Panel
+                  key={i}
+                  header={
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: "10px",
+                      }}
+                    >
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <div>
+                          {paymentsList[0]?.paymentMethod?.description}&nbsp;
+                          {paymentsList[0]?.qty_installments > 1
+                            ? "(Parcelado)"
+                            : ""}
+                          &nbsp;
+                          {paymentsList[0]?.flag?.description
+                            ? paymentsList[0]?.flag?.description
+                            : ""}
+                          &nbsp;
+                          {paymentsList[0]?.paymentMethod?.type}
+                        </div>
+                        <div>
+                          {currencyFormatter(
+                            paymentsList.reduce(
+                              (acc, current) => acc + current.total_value,
+                              0
+                            )
+                          )}
+                        </div>
+                        <div>{paymentsList?.length}x</div>
+                      </div>
+                      <div style={{ display: "flex" }}>
+                        {paymentsList[0]?.pending && "Pendente"}
+                        {authorizationFormater(paymentsList[0], "payment")}
+                      </div>
+                    </div>
+                  }
+                >
+                  <Table columns={paymentsColumns} dataSource={paymentsList} />
+                </Panel>
+              </Collapse>
+            );
+          })}
+     
+          <AuthorizationPaymentForm
+            bill={data}
+            onSuccess={async () => {
+              await queryClient.invalidateQueries({
+                queryKey: ["RemoteLoadBill", billId],
+              });
+              
+              setReload && setReload((prv) => !prv);
+              document?.querySelector<any>(".ant-modal-close")?.click();
+            }}
+          />
       </S.AuthorizationSell>
     </Error>
   );

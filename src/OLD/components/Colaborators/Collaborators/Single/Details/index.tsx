@@ -1,6 +1,6 @@
 // @ts-nocheck
+import { Button } from "infinity-forge";
 import { notification, Table } from "antd";
-import { Button } from "@/OLD/components/mini-components/Button";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -41,17 +41,21 @@ export const Details = React.memo(function () {
           <div>
             <h2>Colaborador: {user?.name}</h2>
           </div>
-          <div className="uk-flex right-small">
+          <div
+            style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}
+          >
             <div>
-              <Button className="right-small" onClick={() => router.back()}>
-                Voltar
-              </Button>
+              <Button
+                className="right-small"
+                onClick={() => router.back()}
+                text="Voltar"
+              />
             </div>
             <Link
               href={`/dashboard/colaborador/editar-colaborador/${user?.id}`}
             >
               <div>
-                <Button> Editar colaborador </Button>
+                <Button text="Editar colaborador" />
               </div>
             </Link>
           </div>

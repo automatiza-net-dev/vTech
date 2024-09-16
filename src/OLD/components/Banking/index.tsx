@@ -13,7 +13,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button, PageWrapper } from "infinity-forge";
 import { Table, Tooltip } from "antd";
 import { useBankings } from "@/OLD/hooks/useBankings";
 import Filters from "./Filters";
@@ -74,29 +74,29 @@ const Banking = memo(function Banking() {
   return !listMovementsPermission || listMovementsPermission === "loading" ? (
     <AccessDenied loading={listMovementsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Consulta bancário</h3>
-      <div className="uk-flex uk-flex-right">
-        {createMovementPermission && (
-          <CustomButton
-            onClick={() => router.push(`/dashboard/controle-bancario/novo`)}
-          >
-            Nova Movimentação
-          </CustomButton>
-        )}
-      </div>
-      <Filters
-        filters={filters}
-        setFilters={setFilters}
-        reload={reload}
-        setReload={setReload}
-        firstItem={bankings[0]}
-        lastItem={bankings[bankings?.length - 1]}
-      />
-      <section className="uk-margin-top">
-        <Table columns={Columns} dataSource={formatedBankings} />
-      </section>
-    </Container>
+    <PageWrapper title="Consulta bancário">
+      <Container>
+        <div className="uk-flex uk-flex-right">
+          {createMovementPermission && (
+            <Button
+              onClick={() => router.push(`/dashboard/controle-bancario/novo`)}
+              text="Nova Movimentação"
+            />
+          )}
+        </div>
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          reload={reload}
+          setReload={setReload}
+          firstItem={bankings[0]}
+          lastItem={bankings[bankings?.length - 1]}
+        />
+        <section className="uk-margin-top">
+          <Table columns={Columns} dataSource={formatedBankings} />
+        </section>
+      </Container>
+    </PageWrapper>
   );
 });
 

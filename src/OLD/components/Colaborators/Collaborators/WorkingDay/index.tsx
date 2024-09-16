@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React, { useState } from "react";
-import { Col, Row, Button, notification, Checkbox } from "antd";
+import { Col, Row, notification, Checkbox } from "antd";
 import { useQuery, useQueryClient, useMutation } from "react-query";
-import { Button as ButtonA } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 
 import { userService } from "@/OLD/services/user.service";
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -17,9 +17,8 @@ import { useWorkingDays } from "@/OLD/hooks/useWorkingDays";
 
 // Components
 import { Container } from "./styles";
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
 
-export const WorkingDay = React.memo(function WorkingDay({ edit }) {
+export function WorkingDay({ edit }) {
   const [reload, setReload] = useState(false);
   const [rowEditing, setRowEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -90,26 +89,19 @@ export const WorkingDay = React.memo(function WorkingDay({ edit }) {
         <div>
           <h2>Colaborador: {colaborator?.name}</h2>
         </div>
-        <div className="uk-flex">
+        <div style={{ display: "flex", gap: "10px" }}>
           <div>
-            <CustomButton
-              classCallback="uk-margin-small-right"
-              onClick={() => router.back()}
-            >
-              Voltar
-            </CustomButton>
+            <Button onClick={() => router.back()} text="Voltar" />
           </div>
           <div>
-            <CustomButton
+            <Button
               onClick={() =>
                 router.push(
                   `/dashboard/colaboradores/editar-colaborador/${colaborator?.id}`
                 )
               }
-            >
-              {" "}
-              Editar colaborador{" "}
-            </CustomButton>
+              text="Editar Colaborador"
+            />
           </div>
         </div>
       </div>
@@ -127,15 +119,13 @@ export const WorkingDay = React.memo(function WorkingDay({ edit }) {
         {edit && (
           <div className="uk-flex uk-flex-right" type="primary">
             <Button
-              type="primary"
               onClick={() => {
                 setRowEditing((prv) => !prv);
                 rowEditing && setReload(!reload);
                 rowEditing && queryClient.invalidateQueries("workingDay");
               }}
-            >
-              {!rowEditing ? "Editar" : "Concluir"}
-            </Button>
+              text={!rowEditing ? "Editar" : "Concluir"}
+            />
           </div>
         )}
         <Row className="uk-margin-bottom">
@@ -170,33 +160,30 @@ export const WorkingDay = React.memo(function WorkingDay({ edit }) {
         <div className="uk-flex uk-flex-between">
           {edit && !rowEditing && (
             <Button
-              type="primary"
-              className="uk-border-pill uk-margin-top"
+              text="Adicionar Horário de agenda"
               onClick={() => mutate(defaultData)}
               loading={isMutating}
-            >
-              Adicionar Horário de agenda
-            </Button>
+            />
           )}
         </div>
       </div>
       {edit && (
-        <div className="uk-margin-small-top">
-          <div className="uk-width-1-3 uk-flex uk-flex-around">
-            <ButtonA
-              onClick={() => {
-                notification.success({
-                  message: "Informações salvas com sucesso!",
-                });
-                router.back();
-              }}
-            >
-              Salvar
-            </ButtonA>
-            <ButtonA onClick={() => router.back()}>Voltar</ButtonA>
-          </div>
-        </div>
+        <footer
+          style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}
+        >
+          <Button
+            onClick={() => {
+              notification.success({
+                message: "Informações salvas com sucesso!",
+              });
+              router.back();
+            }}
+            text="Salvar"
+          />
+
+          <Button onClick={() => router.back()} text="Voltar" />
+        </footer>
       )}
     </Container>
   );
-});
+}

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { Form, Input, Modal, notification, Select } from "antd";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { LoadingSpin } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { useRouter } from "next/router";
 import { memo, useCallback, useEffect, useState } from "react";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -10,7 +11,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 // Icons
 import { EditTwoTone } from "@ant-design/icons";
 
-export const Edit = memo(({ icon, id, reload, setReload }) => {
+export const Edit = ({ icon, id, reload, setReload }) => {
   const { Option } = Select;
   const router = useRouter();
   const idRouter = router?.query?.innerpage;
@@ -114,4 +115,4 @@ export const Edit = memo(({ icon, id, reload, setReload }) => {
       </Modal>
     </div>
   );
-});
+};

@@ -1,13 +1,6 @@
 // @ts-nocheck
-import {
-  Form,
-  Input,
-  Modal,
-  Select,
-  Button as ButtonA,
-  notification,
-} from "antd";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { Form, Input, Modal, Select, notification } from "antd";
+import { LoadingSpin } from "@/OLD/components/mini-components";
 import { CreateTypeService } from "@/OLD/components/ServiceType/Create";
 import { memo, useCallback, useEffect, useState } from "react";
 import Editor from "@/OLD/components/Editor";
@@ -18,7 +11,9 @@ import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { productService } from "@/OLD/services/product.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-export const Create = memo(({ setRefreshTable }) => {
+import { Button } from "infinity-forge";
+
+export const Create = ({ setRefreshTable }) => {
   const { Option } = Select;
   const [loading, setLoading] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -98,15 +93,15 @@ export const Create = memo(({ setRefreshTable }) => {
     <div>
       <Button
         onClick={() => setIsModalVisible(true)}
-        disabled={!canCreateScheduleService}
-      >
-        Cadastrar
-      </Button>
+        disabled={canCreateScheduleService}
+        text="Cadastrar"
+      />
+
       <Modal
         title="Criar Serviços de Agendamento"
-        
-        onOk={handleOk}
         onCancel={() => setIsModalVisible(false)}
+        visible={isModalVisible}
+        footer={null}
       >
         <Form layout="vertical" onSubmitCapture={handleSubmit}>
           <div className="uk-flex">
@@ -178,12 +173,11 @@ export const Create = memo(({ setRefreshTable }) => {
                 <LoadingSpin />
               )}
               <Option value="">
-                <ButtonA
+                <Button
                   className="uk-width-1-1"
                   onClick={() => setIsModalServiceType(true)}
-                >
-                  Criar novo tipo de serviço
-                </ButtonA>
+                  text="Criar novo tipo de serviço"
+                />
               </Option>
             </Select>
           </Form.Item>
@@ -192,12 +186,25 @@ export const Create = memo(({ setRefreshTable }) => {
           </Form.Item>
           <input type="submit" id="submit-button" style={{ display: "none" }} />
         </Form>
+
         <CreateTypeService
           isModalVisible={isModalServiceType}
           setIsModalVisible={setIsModalServiceType}
           setRefresh={() => setRefreshServiceTypes(!refreshServiceTypes)}
         />
+
+        <footer
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            marginTop: "10px",
+          }}
+        >
+          <Button text="Cancelar" onClick={() => setIsModalVisible(false)} />
+          <Button text="Salvar" onClick={() => handleOk()} />
+        </footer>
       </Modal>
     </div>
   );
-});
+};

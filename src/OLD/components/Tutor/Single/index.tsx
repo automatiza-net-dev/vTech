@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { petsService } from "@/OLD/services/patient.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { notification, Table } from "antd";
-import { Button, LoadingSkeleton } from "@/OLD/components/mini-components";
+import { LoadingSkeleton } from "@/OLD/components/mini-components";
 import Link from "next/link";
 import { convertDate } from "@/OLD/utils/convertDate";
 import { AddPatient } from "./AddPatient";
 import { FormCreateTutor, useVerifyPermissions } from "@/presentation";
 import { Unlink } from "../unlink";
+import { Button } from "infinity-forge";
 
 export function Single({
   selectedId,
@@ -101,9 +102,8 @@ export function Single({
                 onClick={() =>
                   router.push(`/dashboard/paciente/${patient?.id}`)
                 }
-              >
-                Ficha paciente
-              </Button>
+                text="Ficha paciente"
+              />
             ),
             unlinkTutorPet: (
               <Unlink
@@ -190,23 +190,24 @@ export function Single({
             >
               {process.env.client === "liftone" && (
                 <Link href={`/dashboard/paciente/${tutor?.id}`}>
-                  <Button type="secondary" classCallback="uk-margin-right">
-                    Ficha paciente
-                  </Button>
+                  <Button
+                    type="secondary"
+                    classCallback="uk-margin-right"
+                    text="Ficha paciente"
+                  />
                 </Link>
               )}
               <Button
                 type="secondary"
                 classCallback="uk-margin-right"
                 onClick={() => setVisible(false)}
-              >
-                Voltar
-              </Button>
+                text="Voltar"
+              />
 
               <FormCreateTutor
                 isModal
                 tutorId={tutor?.id}
-                trigger={<Button>Editar</Button>}
+                trigger={<Button text="Editar" />}
               />
             </div>
           </div>

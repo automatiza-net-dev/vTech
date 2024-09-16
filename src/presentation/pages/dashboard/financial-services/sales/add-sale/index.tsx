@@ -1,42 +1,43 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   Input,
   useToast,
   FormHandler,
   LoaderCircle,
-  Modal,
+  BadRequestError,
 } from "infinity-forge";
 
 import {
   AddProduct,
   formatCart,
+  useLoadBill,
+  SelectClient,
+  SelectSeller,
+  SelectPatient,
+  ErrorDailyBox,
   useLoadPatient,
+  DeleteCartItems,
   useLoadAllPatientTutor,
   useLoadAllDailyMovements,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
-import { CreateBill, Bill } from "@/domain";
+import { Bill, UpdateBill } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
-
-import { DiscountConfirmation } from "@/presentation";
-import { ErrorSale, SelectClient, SelectPatient } from "./components";
 
 import * as S from "./styles";
 
 export function AddSale({
-  budgetId,
+  billId,
   setModal,
   listCreated,
 }: {
-  budgetId?: string;
+  billId?: Bill["id"];
   setModal?: Dispatch<SetStateAction<boolean>>;
-  listCreated: (id: Bill["id"]) => void | undefined;
+  listCreated?: (id: Bill["id"]) => void | undefined;
 }) {
-  const [storeData, setStoreData] = useState({});
-  const [discountConfirmVisible, setDiscountConfirmVisible] = useState<boolean>(false);
-
   const patient = useLoadPatient();
+  const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
   const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
 
@@ -49,7 +50,8 @@ export function AddSale({
   if (
     dailyMovements.isFetching ||
     patient.isFetching ||
-    patientTutor.isFetching
+    patientTutor.isFetching ||
+    (billId && bill?.isFetching)
   ) {
     return (
       <S.AddSale>
@@ -60,64 +62,89 @@ export function AddSale({
     );
   }
 
-  if (!activeDailyMovement && !dailyMovements.isFetching) {
-    return <ErrorSale />;
+  if (
+    (!activeDailyMovement && !dailyMovements.isFetching) ||
+    (billId && bill.error)
+  ) {
+    return <ErrorDailyBox />;
   }
 
-  const patientId = patient?.data?.id;
-  const clientId =
-    process.env.client === "sancla" ? patient.data?.tutor?.id : patientId;
+  const patientId =
+    process.env.client === "sancla"
+      ? bill?.data?.patient?.id || patient?.data?.id
+      : undefined;
+
+  const clientId = billId
+    ? bill?.data?.client?.id
+    : process.env.client === "sancla"
+    ? patient.data?.tutor?.id
+    : patientId;
 
   const initialData = {
-    clientId,
-    patientId: process.env.client === "sancla" ? patientId : undefined,
     maxDiscount: false,
+    clientId,
+    patientId,
+    clientName:
+      bill?.data?.client?.name ||
+      patientTutor?.data?.find((tutor) => tutor.id === clientId)?.name,
+    cart: bill?.data?.products,
+    sellerId: bill?.data?.seller?.id,
   };
 
-  const handleSubmit = async (data) => {
-    const payload = {
-      ...data,
-      items: formatCart(data.cart, data?.maxDiscount),
-      billDate: new Date().toISOString(),
-      budgetId,
-      // financialResponsibleId: "",
-      dailyMovementId: activeDailyMovement?.id,
-    } as CreateBill.Params;
+  async function handleSubmit(data, _, initialValues) {
+    try {
+      const formatItemsCart = formatCart(data.cart, data?.maxDiscount);
 
-    const response = await container
-      .get<RemoteBills>(TypesAutomatiza.RemoteBills)
-      .create(payload);
+      const payload = {
+        ...data,
+        billId,
+        cart: undefined,
+        items: formatItemsCart,
+        billDate: new Date().toISOString(),
+        dailyMovementId: activeDailyMovement?.id,
+      } as UpdateBill.Params;
 
-    listCreated && listCreated(response.id);
+      const response = await container
+        .get<RemoteBills>(TypesAutomatiza.RemoteBills)
+        [billId ? "update" : "create"](payload);
 
-    createToast({
-      status: "success",
-      message: "Venda criada com sucesso",
-    });
+      await DeleteCartItems(initialValues.cart, data.cart, true);
 
-    setModal && setModal(false);
-  };
+      listCreated && listCreated(response.id);
+
+      createToast({
+        status: "success",
+        message: "Venda criada com sucesso",
+      });
+
+      setModal && setModal(false);
+    } catch (err) {
+      if (
+        err instanceof BadRequestError &&
+        err?.error?.message === "Desconto máximo foi excedido"
+      ) {
+        if (
+          window.confirm(
+            `Desconto máximo foi excedido, A venda possui itens com desconto acima do permitido, deseja gravar e enviar a venda para aprovação?`
+          )
+        ) {
+          handleSubmit({ ...data, maxDiscount: true }, _, initialValues);
+        }
+      }
+    }
+  }
 
   return (
     <S.AddSale>
       <FormHandler
         isStickyButtons
         disableEnterKeySubmitForm
-        button={{ text: "CRIAR VENDA" }}
+        button={{ text: "SALVAR" }}
         initialData={initialData}
-        onSucess={async (data) => {
-          try {
-            await handleSubmit(data);
-          } catch (response: any) {
-            if (response?.error?.message === "Desconto máximo foi excedido") {
-              setStoreData(data);
-              setDiscountConfirmVisible(true);
-            }
-          }
-        }}
+        onSucess={handleSubmit}
         cleanFieldsOnSubmit={false}
       >
-        <h2 className="font-24-bold">Nova venda</h2>
+        <h2 className="font-24-bold">{billId ? "Editar" : "Criar"} venda</h2>
 
         <div className="row">
           <SelectClient />
@@ -126,24 +153,13 @@ export function AddSale({
         </div>
 
         <div className="row">
-          {/* <SelectSeller /> */}
+          <SelectSeller />
 
           <Input label="Observação" name="additionalInformation" />
         </div>
 
         <AddProduct />
       </FormHandler>
-      <Modal
-        open={discountConfirmVisible}
-        onClose={() => setDiscountConfirmVisible(false)}
-        children={
-          <DiscountConfirmation
-            onConfirm={() => handleSubmit({ ...storeData, maxDiscount: true })}
-            onCancel={() => setDiscountConfirmVisible(false)}
-            origin="Venda"
-          />
-        }
-      />
     </S.AddSale>
   );
 }

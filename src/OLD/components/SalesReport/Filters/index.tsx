@@ -5,14 +5,15 @@ import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { InputBox } from "./styles";
-import { Select, Button, AutoComplete } from "antd";
+import { Select, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
+import { Button } from "infinity-forge";
 const { Option } = Select;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-const Filters = memo(function Filters({
+function Filters({
   filters,
   setFilters,
   tutors,
@@ -159,12 +160,15 @@ const Filters = memo(function Filters({
           />
         </InputBox>
 
-        <Button onClick={search} type="primary" loading={loading}>
-          Filtrar
-        </Button>
+        <Button
+          onClick={search}
+          type="primary"
+          loading={loading}
+          text="Filtrar"
+        />
       </div>
     </section>
   );
-});
+};
 
 export default Filters;

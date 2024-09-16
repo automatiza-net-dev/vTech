@@ -6,15 +6,14 @@ import { notification } from "antd";
 
 import api from "@/OLD/services";
 import { sessionService } from "@/OLD/services/session.service";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
-import { useAuthAdmin } from "infinity-forge";
+import { useAuthAdmin, Button } from "infinity-forge";
 
 export function SignUpClinic() {
   const router = useRouter();
   const [data, setData] = useState<{}>({});
   const [loading, setLoading] = useState(false);
 
-  const { signOut } = useAuthAdmin()
+  const { signOut } = useAuthAdmin();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -22,7 +21,11 @@ export function SignUpClinic() {
       setLoading(true);
 
       await api
-        .post("/invites/accept-invite-new-user", { ...data, id: router?.query?.token }).then((res) => {
+        .post("/invites/accept-invite-new-user", {
+          ...data,
+          id: router?.query?.token,
+        })
+        .then((res) => {
           notification.success({
             message: "Sucesso",
             description: "Cadastro realizado com sucesso!",
@@ -63,7 +66,10 @@ export function SignUpClinic() {
           }}
         >
           <img
-            src={process.env.NEXT_PUBLIC_API + `/assets/logo-${process.env.client}.png`}
+            src={
+              process.env.NEXT_PUBLIC_API +
+              `/assets/logo-${process.env.client}.png`
+            }
           />
           <h3>Cadastro por convite</h3>
         </div>
@@ -96,9 +102,7 @@ export function SignUpClinic() {
               setData({ ...data, password_confirmation: e.target.value })
             }
           />
-          <Button type="submit">
-            {loading ? <LoadingSpin /> : "Cadastrar"}
-          </Button>
+          <Button type="submit" text={loading ? "Carregando" : "Cadastrar"} />
         </form>
       </div>
     </div>

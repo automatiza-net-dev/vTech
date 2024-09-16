@@ -9,10 +9,11 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Form, notification } from "antd";
-import { Button, LoadingSpin } from "@/OLD/components/mini-components";
+import { LoadingSpin } from "@/OLD/components/mini-components";
 import { FormChild } from "../Edit/FormChild";
 import { Container } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { Button } from "infinity-forge";
 
 import masks from "@/OLD/utils/masks";
 import moment from "moment";
@@ -298,15 +299,11 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
         />
         <hr />
         <footer className="uk-flex uk-flex-right">
+          <Button onClick={() => setVisible(false)} text="Voltar" />
           <Button
-            classCallback="uk-margin-right"
-            onClick={() => setVisible(false)}
-          >
-            Voltar
-          </Button>
-          <Button type="submit">
-            {loading ? <LoadingSpin /> : "Cadastrar"}
-          </Button>
+            type="submit"
+            text={loading ? "Carregando..." : "Cadastrar"}
+          />
         </footer>
       </Form>
     </Container>

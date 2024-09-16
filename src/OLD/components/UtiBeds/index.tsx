@@ -2,9 +2,6 @@
 // Core
 import React, { memo, useEffect, useState, useCallback } from "react";
 
-// Icons
-import { SearchIcon } from "@/OLD/common/icons";
-
 // Services
 import { bedsService } from "@/OLD/services/beds.service";
 
@@ -17,7 +14,7 @@ import { EditTwoTone } from "@ant-design/icons";
 
 // Components
 import { Input, Container } from "./styles";
-import { Button } from "@/OLD/components/mini-components";
+import { Button, PageWrapper } from "infinity-forge";
 import CreateBed from "./Create";
 import RemoveBed from "./Delete";
 import { Table, notification, Select } from "antd";
@@ -36,7 +33,7 @@ const labelFormat = (str) => {
   }
 };
 
-export function UtiBeds () {
+export function UtiBeds() {
   const [allBeds, setAllBeds] = useState([]);
   const [filters, setFilters] = useState({ active: "true" });
   const [createVisible, setCreateVisible] = useState(false);
@@ -107,60 +104,59 @@ export function UtiBeds () {
   return !listUtiBedsPermission || listUtiBedsPermission === "loading" ? (
     <AccessDenied loading={listUtiBedsPermission} />
   ) : (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Gerenciamento de leitos</h3>
-      <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
-        <Input>
-          <input
-            type="search"
-            placeholder="Sigla"
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-          />
-          <SearchIcon />
-        </Input>
-        <Input>
-          <input
-            type="search"
-            placeholder="Tipo"
-            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-          />
-          <SearchIcon />
-        </Input>
-        <div className="uk-margin-small-top">
-          <Button
-            onClick={() => {
-              setUpdateData(false);
-              setCreateVisible(true);
-            }}
-            disabled={!canCreateUtiBeds}
-          >
-            {" "}
-            Cadastrar{" "}
-          </Button>
+    <PageWrapper title="Gerenciamento de leitos">
+      <Container>
+        <div className="uk-margin-right uk-flex uk-flex-between uk-margin-top">
+          <Input>
+            <input
+              type="search"
+              placeholder="Sigla"
+              onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            />
+    
+          </Input>
+          <Input>
+            <input
+              type="search"
+              placeholder="Tipo"
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+            />
+   
+          </Input>
+          <div className="uk-margin-small-top">
+            <Button
+              onClick={() => {
+                setUpdateData(false);
+                setCreateVisible(true);
+              }}
+              disabled={!canCreateUtiBeds}
+              text="Cadastrar"
+            />
+          </div>
         </div>
-      </div>
-      <hr />
-      <div className="uk-margin-bottom">
-        <label>Filtrar por:</label>
-        <br />
-        <Select
-          className="uk-width-1-5"
-          onChange={(e) => setFilters({ ...filters, active: e })}
-          value={filters?.active}
-        >
-          <Option value="true">Ativo</Option>
-          <Option value="false">Inativo</Option>
-          <Option value="">Todos</Option>
-        </Select>
-      </div>
-      <Table dataSource={allBeds} columns={Columns} />
-      <CreateBed
-        visible={createVisible}
-        setVisible={setCreateVisible}
-        reload={reload}
-        setReload={setReload}
-        updateData={updateData}
-      />
-    </Container>
+        <hr />
+        <div className="uk-margin-bottom">
+          <label>Filtrar por:</label>
+          <br />
+          <Select
+            className="uk-width-1-5"
+            onChange={(e) => setFilters({ ...filters, active: e })}
+            value={filters?.active}
+          >
+            <Option value="true">Ativo</Option>
+            <Option value="false">Inativo</Option>
+            <Option value="">Todos</Option>
+          </Select>
+        </div>
+        <Table dataSource={allBeds} columns={Columns} />
+        <CreateBed
+          visible={createVisible}
+          setVisible={setCreateVisible}
+          reload={reload}
+          setReload={setReload}
+          updateData={updateData}
+        />
+      </Container>
+    </PageWrapper>
   );
-};
+}

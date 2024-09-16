@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { notification } from "antd";
 import { useAuthAdmin } from "infinity-forge";
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 import { sessionService } from "@/OLD/services/session.service";
 import { container, TypesAutomatiza } from "@/container";
 import { Container } from "./styles";
@@ -128,7 +128,7 @@ export function SignIn() {
                 <Link href="/senha/esqueci">Esqueci minha senha</Link>
               </div>
 
-              <Button type="submit">Entrar</Button>
+              <Button type="submit" text="Entrar" style={{ width: "100%", borderRadius: "25px" }} />
 
               <div style={{ textAlign: "center", marginTop: "10px" }}>
                 <Link href="/admin">Área do franqueador</Link>

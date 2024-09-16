@@ -30,6 +30,8 @@ const CardPanel = memo(function DebitPanel({
           return {
             ...flag,
             paymentMethodId: method?.id,
+            paymentMethodFlagId: flag?.id,
+            installments_without_password: flag?.installments_without_password,
             tef: method?.tef,
             type: method?.type,
             requiresDocument: method?.requires_document,
@@ -57,7 +59,10 @@ const CardPanel = memo(function DebitPanel({
                   setFormData({
                     ...formData,
                     budgetPaymentId: null,
+                    installments_without_password:
+                      flag?.installments_without_password,
                     paymentMethodId: flag?.paymentMethodId,
+                    paymentMethodFlagId: flag?.id,
                     acquirerId: flag?.acquirer?.id,
                     flagId: flag?.flag?.id,
                     maxInstallments: flag?.max_installments,

@@ -13,7 +13,7 @@ import {
 import { useProfile } from "@/OLD/hooks/useProfile.ts";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile.ts";
 
-import { Button as CustomButton } from "@/OLD/components/mini-components/Button";
+import { Button } from "infinity-forge";
 import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
 import {
   Input,
@@ -23,7 +23,6 @@ import {
   Tooltip,
   Modal,
   Typography,
-  Button,
 } from "antd";
 const { TextArea } = Input;
 
@@ -389,7 +388,7 @@ export function Details({ receiptId, setVisible }: any) {
       <section className="uk-margin-small-top">
         <h3 className="uk-heading-line">
           <span>
-            Documentos fiscais <CustomButton>Emitir nota fiscal</CustomButton>
+            Documentos fiscais <Button text="Emitir nota fiscal" />
           </span>
         </h3>
         <Table
@@ -493,18 +492,14 @@ export function Details({ receiptId, setVisible }: any) {
               marginTop: "2rem",
             }}
           >
-            <Button size={"large"} onClick={() => setOpenModal(false)}>
-              Cancelar
-            </Button>
+            <Button onClick={() => setOpenModal(false)} text="Cancelar" />
+
             <Button
-              type="primary"
-              size={"large"}
-              htmlType="submit"
+              text="Emitir"
+              type="submit"
               disabled={documentsToIssue.length === 0}
               loading={loading}
-            >
-              Emitir
-            </Button>
+            />
           </div>
         </form>
       </Modal>
@@ -549,13 +544,10 @@ export function Details({ receiptId, setVisible }: any) {
                 setOpenCancelNfe(false);
                 setCancelNfeData({});
               }}
-              className="uk-margin-small-right"
-            >
-              Cancelar
-            </Button>
-            <Button type="primary" htmlType="submit">
-              Concluir
-            </Button>
+              text="Cancelar"
+            />
+
+            <Button type="submit" text="Concluir" text="Concluir" />
           </div>
         </form>
       </Modal>
@@ -600,13 +592,10 @@ export function Details({ receiptId, setVisible }: any) {
                 setOpenCancelNfe(false);
                 setDisableNfeData({});
               }}
-              className="uk-margin-small-right"
-            >
-              Cancelar
-            </Button>
-            <Button type="primary" htmlType="submit">
-              Concluir
-            </Button>
+              text="Cancelar"
+            />
+
+            <Button type="submit" text="Concluir" />
           </div>
         </form>
       </Modal>
@@ -629,6 +618,6 @@ export function Details({ receiptId, setVisible }: any) {
       </Modal>
     </div>
   );
-};
+}
 
 export default Details;

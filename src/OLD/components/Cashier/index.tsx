@@ -12,7 +12,7 @@ import { Modal, notification } from "antd";
 import CashierHeader from "./CashierHeader";
 import CashierPanel from "./CashierPanel";
 import ReceiptForm from "./ReceiptAndExpensesForm";
-import { Button } from "@/OLD/components/mini-components";
+import { Button } from "infinity-forge";
 
 // Hooks
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
@@ -128,7 +128,7 @@ const Cashier = memo(function Cashier() {
         <ReceiptForm data={data} setData={setData} type={type} />
       </Modal>
       <br />
-      <Button onClick={() => router.back()}>FECHAR</Button>
+      <Button onClick={() => router.back()} text="Fechar" />
     </div>
   );
 });

@@ -4,13 +4,37 @@ import { BirthDate } from "./birth";
 import { ButtonSetSchedulling } from "./button-set-scheduling";
 
 export const columnsTable = [
-  { id: "name", label: "Nome", width: 100 },
-  { id: "tag", label: "RG", width: 20 },
-  { id: "gender", label: "Gênero", width: 60,  Component: {
-    Element: (props) => props.gender === "female" ? "Fêmea" : "Macho",
-    props: { gender: "gender" },
-    defaultProps: {},
-  },},
+  {
+    id: "name",
+    label: "Nome",
+    width: 100,
+    Component: {
+      Element: (props) => props?.name ?? "-",
+      props: { name: "name" },
+      defaultProps: {},
+    },
+  },
+  {
+    id: "tag",
+    label: "RG",
+    width: 20,
+    Component: {
+      Element: (props) => props.tag ?? "-",
+      props: { tag: "tag" },
+      defaultProps: {},
+    },
+  },
+  {
+    id: "gender",
+    label: "Gênero",
+    width: 60,
+    Component: {
+      Element: (props) =>
+        props.gender ? (props.gender === "female" ? "Fêmea" : "Macho") : "-",
+      props: { gender: "gender" },
+      defaultProps: {},
+    },
+  },
   {
     id: "birthDate",
     label: "Aniversário",
@@ -37,7 +61,7 @@ export const columnsTable = [
     width: 200,
     Component: {
       Element: Tutors,
-      props: { tutors: "tutors", id: "id" },
+      props: { tutors: "tutors", id: "id", name: "name" },
       defaultProps: {},
     },
   },
