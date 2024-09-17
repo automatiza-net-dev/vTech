@@ -137,7 +137,7 @@ export function AddProduct() {
                     <Input
                       type="number"
                       name={pathName + `.quantity`}
-                      readOnly={!!initialValues.clientId}
+                      readOnly={!!product.variations?.[0]?.billItemId}
                       onChangeInput={(value) => {
                         handleInputChange({
                           value: value as string,

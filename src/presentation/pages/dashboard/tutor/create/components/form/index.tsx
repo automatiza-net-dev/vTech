@@ -173,7 +173,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             providerType="ibge"
             fields={[
               {
-                logradouro: { label: "Rua*", readOnly: true },
+                logradouro: { label: "Rua*" },
                 number: { label: "Número*" },
                 complemento: { label: "Complemento" },
                 ibge: { label: "Cód*", readOnly: true },
