@@ -155,6 +155,7 @@ export function AuthorizationSell({
           })}
      
           <AuthorizationPaymentForm
+            auth={'VEN16'}
             bill={data}
             onSuccess={async () => {
               await queryClient.invalidateQueries({

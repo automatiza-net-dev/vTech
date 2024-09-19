@@ -89,6 +89,7 @@ export function AddSale({
       patientTutor?.data?.find((tutor) => tutor.id === clientId)?.name,
     cart: bill?.data?.products,
     sellerId: bill?.data?.seller?.id,
+    financialResponsibleId: bill?.data?.financialResponsible?.id,
   };
 
   async function handleSubmit(data, _, initialValues) {
@@ -147,13 +148,42 @@ export function AddSale({
         <h2 className="font-24-bold">{billId ? "Editar" : "Criar"} venda</h2>
 
         <div className="row">
-          <SelectClient />
+          <SelectClient
+            inputProps={{
+              label: "Cliente",
+              name: "clientId",
+              disabled: !!patient.data?.id || !!initialData?.clientId,
+            }}
+            allowClear={false}
+          />
 
-          {process.env.client === "sancla" && <SelectPatient />}
+          {process.env.client === "sancla" ? (
+            <SelectPatient />
+          ) : (
+            <SelectClient
+              inputProps={{
+                label: "Responsável financeiro",
+                name: "financialResponsibleId",
+                disabled: false,
+              }}
+              allowClear={true}
+            />
+          )}
         </div>
 
         <div className="row">
           <SelectSeller />
+
+          {process.env.client === "sancla" && (
+            <SelectClient
+              inputProps={{
+                label: "Responsável financeiro",
+                name: "financialResponsibleId",
+                disabled: false,
+              }}
+              allowClear={true}
+            />
+          )}
 
           <Input label="Observação" name="additionalInformation" />
         </div>

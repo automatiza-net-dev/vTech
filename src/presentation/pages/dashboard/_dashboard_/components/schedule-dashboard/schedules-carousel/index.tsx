@@ -18,12 +18,11 @@ export function SchedulesCarousel({
     Component: ScheduleCard,
     id: confirmed ? "ConfirmedScheduleDashboard" : "ScheduleDashboard",
     config: {
-      slidesPerView: 5,
-      loop: false,
+      slidesPerView: "auto",
       spaceBetween: 20,
       breakpoints: {
         1600: {
-          slidesPerView: 4,
+          slidesPerView: 5,
         },
         1200: {
           slidesPerView: 4,

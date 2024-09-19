@@ -76,6 +76,7 @@ export function AuthorizationBudget({
         <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
 
         <AuthorizationPaymentForm
+          auth={"ORC11"}
           budget={data}
           onSuccess={async () => {
             await queryClient.invalidateQueries({

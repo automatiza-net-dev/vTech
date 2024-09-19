@@ -1,30 +1,35 @@
 import { TableDashboard, useLoadDashboard } from "@/presentation";
 import { IndicatorTable } from "./indicator-table";
+import { SellerIndicatorTable } from "./seller-indicator-table";
 
 export function TablesSection({ type }: { type?: "crm" }) {
   const dashboard = useLoadDashboard({ type });
 
-  const TableSalesPerPeriod = dashboard?.data?.tables?.find(
+  const tableSalesPerPeriod = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-period"
   );
 
-  const TableSalesPerUser = dashboard?.data?.tables?.find(
+  const tableSalesPerUser = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-user"
   );
 
-  const TableBudgets = dashboard?.data?.tables?.filter(
+  const tableBudgets = dashboard?.data?.tables?.filter(
     (table) => table.name === "budgets"
   );
 
-  const IndicatorTableData = dashboard?.data?.tables?.find(
+  const indicatorTableData = dashboard?.data?.tables?.find(
     (table) => table.name === "budgetsAvaliadorConsolidado"
   );
 
-  const BillsReviewerTableData = dashboard?.data?.tables?.find(
+  const sellerindicatorTableData = dashboard?.data?.tables?.find(
+    (table) => table.name === "budgetsVendedorConsolidado"
+  );
+
+  const billsReviewerTableData = dashboard?.data?.tables?.find(
     (table) => table.name === "billsReviewer"
   );
 
-  const ActivitiesTableData = dashboard?.data?.tables?.find(
+  const activitiesTableData = dashboard?.data?.tables?.find(
     (table) => table.name === "activities"
   );
 
@@ -33,34 +38,34 @@ export function TablesSection({ type }: { type?: "crm" }) {
       {dashboard.data?.tables && dashboard.data?.tables?.length > 0 && (
         <section className="tables-section">
           <div className="row">
-            {TableSalesPerPeriod && (
+            {tableSalesPerPeriod && (
               <TableDashboard
-                key={TableSalesPerPeriod.name}
-                {...TableSalesPerPeriod}
+                key={tableSalesPerPeriod.name}
+                {...tableSalesPerPeriod}
               />
             )}
 
-            {TableSalesPerUser && (
+            {tableSalesPerUser && (
               <TableDashboard
-                key={TableSalesPerUser.name}
-                {...TableSalesPerUser}
+                key={tableSalesPerUser.name}
+                {...tableSalesPerUser}
               />
             )}
           </div>
 
-          {TableBudgets &&
-            TableBudgets.map((item) => (
+          {tableBudgets &&
+            tableBudgets.map((item) => (
               <TableDashboard key={item?.name} {...item} />
             ))}
 
-          {ActivitiesTableData && ActivitiesTableData?.hasData && (
+          {activitiesTableData && activitiesTableData?.hasData && (
             <TableDashboard
-              key={ActivitiesTableData.name}
-              {...ActivitiesTableData}
+              key={activitiesTableData.name}
+              {...activitiesTableData}
             />
           )}
 
-          {BillsReviewerTableData && (
+          {billsReviewerTableData && (
             <IndicatorTable
               indicator={dashboard.data.tables.find(
                 (item) => item.name === "billsReviewer"
@@ -68,10 +73,18 @@ export function TablesSection({ type }: { type?: "crm" }) {
             />
           )}
 
-          {IndicatorTableData && (
+          {indicatorTableData && (
             <IndicatorTable
               indicator={dashboard.data.tables.find(
                 (item) => item.name === "budgetsAvaliadorConsolidado"
+              )}
+            />
+          )}
+
+          {sellerindicatorTableData && (
+            <SellerIndicatorTable
+              indicator={dashboard.data.tables.find(
+                (item) => item.name === "budgetsVendedorConsolidado"
               )}
             />
           )}

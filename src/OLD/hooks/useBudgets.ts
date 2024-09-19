@@ -111,31 +111,3 @@ export const useBudgetProducts = (enabled = false) => {
     }
   );
 };
-
-export const useBudgetsFromAttendance = (id, reload) => {
-  const [budgets, setBudgets] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    if (!id) {
-      return;
-    }
-
-    setLoading(true);
-    budgetService
-      .getBudgetsFromAttendance(id)
-      .then((res) => setBudgets(res.data))
-      .catch(() => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [id, reload]);
-
-  return {
-    budgets,
-    loadingBudgets: loading,
-    fetchBudgets: fetchData,
-  };
-};

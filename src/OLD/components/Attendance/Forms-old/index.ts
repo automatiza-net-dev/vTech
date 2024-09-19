@@ -6,8 +6,6 @@ import AddPhotos from "./SendPhotos";
 import AddNotes from "./Notes";
 import AddVaccines from "./Vaccines";
 import AddExam from "./AddExam";
-import Hospitalization from "./Hospitalization";
-import Attendance from "./Attendance";
 
 export {
   AddWeight,
@@ -18,6 +16,4 @@ export {
   AddNotes,
   AddVaccines,
   AddExam,
-  Hospitalization,
-  Attendance
 };

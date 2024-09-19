@@ -199,28 +199,3 @@ export const useShowActivities = (filters, reload, fetch) => {
     allActivities,
   };
 };
-
-export const useSyncableOpportunities = (filters) => {
-  const [opportunities, setOpportunities] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    setLoading(true);
-
-    opportunitiesService
-      .getSyncableOpportunities(filters)
-      .then((res) => setOpportunities(res?.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    filters?.client && fetchData();
-  }, [filters]);
-
-  return {
-    opportunities,
-    loadingOpportunities: loading,
-    fetchOpportunities: fetchData,
-  };
-};

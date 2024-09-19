@@ -5,6 +5,7 @@ export type DashboardTableTypes =
   | "subgroups"
   | "budgetsAvaliadorConsolidado"
   | "billsReviewer"
+  | "budgetsVendedorConsolidado"
   | "activities";
 
 export type DashboardTable<T = any> = {

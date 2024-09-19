@@ -7,7 +7,7 @@ import { hospitalizationPrescriptionsService } from "@/OLD/services/hospitalizat
 import { clinicService } from "@/OLD/services/clinic.service";
 
 // Hooks
-import { useWorkerSchedule } from "@/OLD/hooks/useWorkerSchedule";
+import { useLoadAllSchedulesUser } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -50,7 +50,7 @@ function ByHour({
   const [allMedicalPrescriptions, setAllMedicalPrescriptions] = useState([]);
   const [availableUserFilters, setAvailableUserFilters] = useState({});
 
-  const { workerSchedule } = useWorkerSchedule(availableUserFilters);
+  const workerSchedule = useLoadAllSchedulesUser(availableUserFilters);
 
   useEffect(() => {
     setAvailableUserFilters({
@@ -218,8 +218,8 @@ function ByHour({
                         setData({ ...data, executionUserId: e });
                       }}
                     >
-                      {workerSchedule.length > 0 &&
-                        workerSchedule
+                      {workerSchedule?.data?.length > 0 &&
+                        workerSchedule?.data
                           ?.filter(
                             (user) => user?.events?.length > 0 || user?.onDuty
                           )

@@ -269,7 +269,10 @@ function DocumentCreate() {
                 </div>
               </>
             )}
-            <div className="uk-margin-top">
+            <div
+              className="uk-margin-top"
+              style={{ display: "flex", alignItems: "center", gap: 10 }}
+            >
               <Button
                 onClick={submitData}
                 text={loading ? "Salvando..." : "Salvar"}

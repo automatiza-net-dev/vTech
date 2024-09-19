@@ -120,7 +120,6 @@ function Budgets() {
   const { colaborators } = useColaborators();
 
   const [patientSearch, setPatientSearch] = React.useState("");
-  const [openCreate, setOpenCreate] = React.useState(false);
   const [values, setValues] = React.useState({});
 
   const createBudgetPermission = useUserHasPermission("ORC01");
@@ -396,27 +395,6 @@ function Budgets() {
             marginTop: "5px",
           }}
         >
-          {createBudgetPermission && (
-            <Modal
-              style={{
-                maxWidth: "1200px",
-                padding: "20px",
-                overflow: "auto",
-              }}
-              modal={openCreate}
-              setModal={setOpenCreate}
-              children={
-                <CreateBudget modal={openCreate} setModal={setOpenCreate} />
-              }
-              trigger={
-                <Button
-                  onClick={() => setOpenCreate((prev) => !prev)}
-                  text={` Novo ${getWord("Orçamento")}`}
-                />
-              }
-            />
-          )}
-
           <Button
             onClick={() => setModalCriar(true)}
             text={`  Novo ${getWord("Orçamento")}`}
@@ -473,6 +451,6 @@ function Budgets() {
       </Container>
     </PageWrapper>
   );
-};
+}
 
 export default Budgets;

@@ -82,56 +82,6 @@ export const useSchedulesByPatient = (id, reload) => {
   };
 };
 
-export const useCalendarScheduleTasks = (filters) => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    setLoading(true);
-
-    calendarService
-      .getSchedules(filters)
-      .then((res) => setTasks(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [filters]);
-
-  return {
-    tasks,
-    fetchTasks: fetchData,
-    loadingTasks: loading,
-  };
-};
-
-export const useWeekCalendarSchedules = (filters, reload) => {
-  const [weekSchedules, setWeekSchedules] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    setLoading(true);
-
-    calendarService
-      .getWeekSchedulings(filters)
-      .then((res) => setWeekSchedules(res.data))
-      .catch((err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [filters, reload]);
-
-  return {
-    weekSchedules,
-    loadingWeekSchedules: loading,
-    fetchWeekSchedules: fetchData,
-  };
-};
-
 export const useSyncableSchedules = (filters) => {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(false);

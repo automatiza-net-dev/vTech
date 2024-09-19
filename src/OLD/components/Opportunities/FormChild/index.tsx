@@ -172,7 +172,14 @@ export default function FormChild({
           </div>
           <div>
             {!footer && (
-              <div className="uk-flex uk-flex-right uk-margin-remove">
+              <div
+                className="uk-flex uk-flex-right uk-margin-remove"
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                }}
+              >
                 {!edit && (
                   <>
                     {data?.closingDate === "-" && !data?.balance && (
@@ -606,7 +613,14 @@ export default function FormChild({
           ) : (
             <>
               <hr />
-              <footer className="uk-flex uk-flex-right">
+              <footer
+                className="uk-flex uk-flex-right"
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button type="submit" text="Salvar" />
 
                 <Button

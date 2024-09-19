@@ -186,6 +186,7 @@ export function Single({
                 right: 40,
                 display: "flex",
                 alignItems: "center",
+                gap: 10,
               }}
             >
               {process.env.client === "liftone" && (
