@@ -1,28 +1,47 @@
-import { Select } from "infinity-forge";
-import { useFormikContext } from "formik";
+import { InputProps, Select } from "infinity-forge";
 
 import { CreateBudget } from "@/domain";
-import { useLoadAllPatientTutor, useLoadPatient } from "@/presentation";
+import { useFormikContext } from "formik";
 
-export function SelectClient() {
-  const { initialValues } = useFormikContext<CreateBudget.Params>();
+import { useLoadAllPatientTutor } from "@/presentation";
 
-  const patient = useLoadPatient();
+import { MdOutlineClear } from "react-icons/md";
+
+import * as S from "./styles";
+
+export function SelectClient({
+  inputProps,
+  allowClear,
+}: {
+  inputProps: InputProps;
+  allowClear: boolean;
+}) {
   const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
 
+  const { setFieldValue } = useFormikContext<CreateBudget.Params>();
+
   return (
-    <Select
-      onlyOneValue
-      label="Cliente"
-      name="clientId"
-      loading={patientTutor.isFetching}
-      disabled={!!patient.data?.id || !!initialValues?.clientId}
-      options={
-        patientTutor.data?.map((tutor) => ({
-          label: tutor.name,
-          value: tutor.id,
-        })) || []
-      }
-    />
+    <S.SelectClient>
+      <Select
+        onlyOneValue
+        {...inputProps}
+        loading={patientTutor.isFetching}
+        options={
+          patientTutor.data?.map((tutor) => ({
+            label: tutor.name,
+            value: tutor.id,
+          })) || []
+        }
+      />
+      {allowClear && (
+        <MdOutlineClear
+          size={30}
+          className="remove-icon"
+          onClick={() => {
+            setFieldValue(inputProps.name, null);
+          }}
+        />
+      )}
+    </S.SelectClient>
   );
 }

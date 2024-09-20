@@ -108,9 +108,9 @@ export function AddBudgetNew({
       const verifyClientExist = patientTutor.data?.find(
         (tutor) => tutor.id === data.clientId
       );
-  
+
       const formatItemsCart = formatCart(data.cart, data.maxDiscount);
-  
+
       const payload = {
         ...data,
         id: budgetId,
@@ -122,29 +122,32 @@ export function AddBudgetNew({
         dailyMovementId: activeDailyMovement?.id,
         expirationDate: moment(data.expirationDate).format("YYYY-MM-DD"),
       };
-  
+
       const response = await container
         .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
         [budgetId ? "update" : "create"](payload);
 
       await DeleteCartItems(initialValues?.cart, data.cart);
-  
+
       listCreated && listCreated(response.id);
-  
+
       createToast({
         status: "success",
         message: `${getWord("Orçamento")} ${
           budgetId ? "atualizado" : "criado"
         } com sucesso`,
       });
-  
+
       patientId &&
         queryClient.invalidateQueries({
           queryKey: ["LastUpdates", patientId],
         });
       setModal && setModal(false);
-    }catch(err) {
-      if (err instanceof BadRequestError && err?.error?.message === "Desconto máximo foi excedido") {
+    } catch (err) {
+      if (
+        err instanceof BadRequestError &&
+        err?.error?.message === "Desconto máximo foi excedido"
+      ) {
         if (
           window.confirm(
             `Desconto máximo foi excedido, O orçamento possui itens com desconto acima do permitido, deseja gravar e enviar o orçamento para aprovação ?`
@@ -182,7 +185,14 @@ export function AddBudgetNew({
               />
             </div>
 
-            <SelectClient />
+            <SelectClient
+              inputProps={{
+                label: "Cliente",
+                name: "clientId",
+                disabled: !!patient.data?.id || !!initialData?.clientId,
+              }}
+              allowClear={false}
+            />
 
             {process.env.client === "sancla" && <SelectPatient />}
           </div>
@@ -197,7 +207,6 @@ export function AddBudgetNew({
         </div>
 
         <AddProduct />
-        
       </FormHandler>
     </S.AddBudget>
   );

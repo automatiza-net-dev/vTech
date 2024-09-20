@@ -111,7 +111,6 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }) {
       <>
         <div className="uk-width-1-1">
           <label>Veterinário responsável</label>
-
           {vetsQuery?.data &&
             vetsQuery?.data?.length > 0 &&
             selectedVet.user !== null && (

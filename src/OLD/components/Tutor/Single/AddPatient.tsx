@@ -56,13 +56,15 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
 
   return (
     <Container>
-      <Button
-        classCallback="uk-margin-small-right"
-        onClick={() => setCreatePetVisible(true)}
-        text="Adicionar pet"
-      />
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <Button
+          classCallback="uk-margin-small-right"
+          onClick={() => setCreatePetVisible(true)}
+          text="Adicionar pet"
+        />
 
-      <Button onClick={() => setIsVisible(true)} text="Vincular pet" />
+        <Button onClick={() => setIsVisible(true)} text="Vincular pet" />
+      </div>
       <Modal
         visible={isVisible}
         onCancel={() => setIsVisible(false)}

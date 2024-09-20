@@ -25,31 +25,3 @@ export const useSingleUser = (id: string) => {
     fetchUser: fetchData,
   };
 };
-
-export const useCheckUserDocument = (doc) => {
-  const [validation, setValidation] = useState(false);
-  const [loading, setLoading] = useState();
-
-  const fetchData = () => {
-    if (!doc) {
-      return;
-    }
-
-    setLoading(true);
-    userService
-      .checkDocument(doc)
-      .then((res) => setValidation(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData;
-  }, [doc]);
-
-  return {
-    validation,
-    loadingValidation: loading,
-    fetchValidation: fetchData,
-  };
-};

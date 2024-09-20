@@ -9,7 +9,7 @@ import {
   useScheduling,
   DateToYYYYMMDD,
   useVerifyPermissions,
-  useLoadAllSchedulesUser,
+  useLoadAllSchedulesUser, 
 } from "@/presentation";
 
 export function useSubmitSchedule() {

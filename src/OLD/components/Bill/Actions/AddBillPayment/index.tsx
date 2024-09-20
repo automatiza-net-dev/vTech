@@ -394,11 +394,13 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
             />
           ))}
         <footer className="uk-margin-top uk-flex uk-flex-right">
-          <Button onClick={() => setVisible(false)} text="Salvar" />
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <Button onClick={() => setVisible(false)} text="Salvar" />
 
-          {endBillPermission && (
-            <Button onClick={() => verifyPayment()} text="Finalizar" />
-          )}
+            {endBillPermission && (
+              <Button onClick={() => verifyPayment()} text="Finalizar" />
+            )}
+          </div>
         </footer>
       </div>
     </Container>

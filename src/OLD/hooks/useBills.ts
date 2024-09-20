@@ -71,20 +71,6 @@ export const useCreateBillPayment = () => {
   });
 };
 
-export const useTaxationGroupRules = (enabled) => {
-  return useQuery(
-    ["taxation-group-rules"],
-    async () => {
-      const { data } = await api.get("/taxation-group-rules");
-
-      return data;
-    },
-    {
-      enabled,
-    }
-  );
-};
-
 export const useShowBill = (id, enabled) => {
   return useQuery(
     ["bills", id],

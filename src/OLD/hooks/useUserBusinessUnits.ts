@@ -26,4 +26,4 @@ export const useUserBusinessUnits = (id, reload) => {
     loadingFetchUnits: loading,
     units,
   };
-};
+}

@@ -88,32 +88,3 @@ export const useSearchDateExecutions = (filters, reload) => {
     loadingExecutions: loading,
   };
 };
-
-export const useSearchNotExecuted = (filters, reload) => {
-  const [executions, setExecutions] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    setLoading(true);
-
-    if (Object?.keys(filters)?.length === 0) {
-      return;
-    }
-
-    treatmentService
-      .searchNotExecuted(filters)
-      .then((res) => setExecutions(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [reload, filters]);
-
-  return {
-    executions,
-    fetchExecutions: fetchData,
-    loadingExecutions: loading,
-  };
-};

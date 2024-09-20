@@ -6,31 +6,6 @@ import { reportsService } from "@/OLD/services/reports.service";
 
 import moment from "moment";
 
-export const useOpenDailyCashierReports = (filters, reload) => {
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    setLoading(true);
-
-    financesService
-      .getResumeOpenCashiers(filters)
-      .then((res) => setReports(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [filters, reload]);
-
-  return {
-    reports,
-    loadingReports: loading,
-    fetchReports: fetchData,
-  };
-};
-
 export const useFlowReports = (filters, reload) => {
   const [flowReports, setFlowReports] = useState([]);
   const [loading, setLoading] = useState(false);

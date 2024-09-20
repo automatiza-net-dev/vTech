@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { animalServices } from "@/OLD/services/animal.service";
 import { petsService } from "@/OLD/services/patient.service";
 
 export function usePatientTutors(
