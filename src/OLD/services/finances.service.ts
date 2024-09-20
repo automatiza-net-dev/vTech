@@ -3,11 +3,8 @@ import api from "@/OLD/services";
 // GET
 const getAllFinances = async (params) =>
   await api.get("/finances", {
-    params
+    params,
   });
-
-const getCheckingAccountsResume = async (params) =>
-  await api.get("/finances/checking-accounts-resume", { params });
 
 const getOverallResume = async (params) =>
   await api.get("/finances/overall-resume", { params });
@@ -109,7 +106,6 @@ export const financesService = {
   getResumeClosedCashiers,
   getResumeOpenCashiers,
   getResumeRevisedCashiers,
-  getCheckingAccountsResume,
   getOverallResume,
   getExpiringPayments,
   getExpiringExpenses,
@@ -118,5 +114,5 @@ export const financesService = {
   showBordero,
   getPaymentGroup,
   getGroupedFinances,
-  getFinancesBalance
+  getFinancesBalance,
 };

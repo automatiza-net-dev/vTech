@@ -4,8 +4,6 @@ const getSpecies = async ({ description }) => {
   return (await api.get("/species", { params: { description } })).data;
 };
 
-const showSpecie = async (id) => await api.get(`/species/${id}`);
-
 const createSpecie = async (data) => {
   return await api.post("/species", data);
 };
@@ -37,9 +35,8 @@ export const animalServices = {
   createSpecie,
   editSpecie,
   deleteSpecie,
-  showSpecie,
   getRaces,
   createRace,
   deleteRace,
-  editRace
+  editRace,
 };

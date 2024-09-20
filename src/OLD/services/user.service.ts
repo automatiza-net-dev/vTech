@@ -2,7 +2,7 @@ import { container, TypesAutomatiza } from "@/container";
 import api from "@/OLD/services";
 
 const getUser = async () => {
-  const ip = await container.get<any>(TypesAutomatiza.storage).get("ip")
+  const ip = await container.get<any>(TypesAutomatiza.storage).get("ip");
   return await api.get(`/auth/me?ip=${ip?.value}`);
 };
 
@@ -37,10 +37,6 @@ const changePassword = async (data) => {
 const resetPassword = async (data) =>
   await api.post("/auth/reset-password", data);
 
-const deleteUser = async (id) => {
-  return await api.delete(`/users/${id}`);
-};
-
 //WORKING DAY
 const createWorkingDay = async (data) => {
   return await api.post("/working-days", data);
@@ -48,10 +44,6 @@ const createWorkingDay = async (data) => {
 
 const getWorkingDays = async ({ user }) => {
   return await api.get(`/working-days${user ? `?user=${user}` : ""}`);
-};
-
-const getSingleWorkingDay = async (id) => {
-  return await api.get(`/working-days/${id}`);
 };
 
 const deleteWorkingDay = async (id) => {
@@ -78,15 +70,11 @@ export const userService = {
   addLicence,
   changePassword,
   resetPassword,
-  deleteUser,
-
   createWorkingDay,
   getWorkingDays,
-  getSingleWorkingDay,
   deleteWorkingDay,
   editWorkingDay,
   updateLoggedUser,
-
   confirmToken,
   startChangePassword,
 };

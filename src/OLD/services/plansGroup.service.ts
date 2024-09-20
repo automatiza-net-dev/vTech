@@ -8,8 +8,6 @@ const index = async ({ name, type } = false) =>
     }`
   );
 
-const show = async (id) => await api.get(`/account-plan-groups/${id}`);
-
 const create = async (data) => await api.post("/account-plan-groups", data);
 
 const update = async (id, data) =>
@@ -19,8 +17,7 @@ const remove = async (id) => await api.delete(`/account-plan-groups/${id}`);
 
 export const plansGroupService = {
   index,
-  show,
   create,
   update,
-  remove
+  remove,
 };

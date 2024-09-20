@@ -1,6 +1,5 @@
 import api from "@/OLD/services";
 
-// GET
 const getAllBills = async (params) => {
   const { data } = await api.get(`/bills`, { params });
 
@@ -58,9 +57,6 @@ const verifyDiscount = async (data) =>
 const removeBillPaymentBlock = async (data) =>
   await api.delete("/bills/delete-payment-block", { data });
 
-const removeBillPayment = async (id) =>
-  await api.delete(`/bills/delete-payment/${id}`);
-
 // PUT
 const closeBillPayment = async (id) => await api.put(`/bills/close-bill/${id}`);
 
@@ -90,18 +86,14 @@ export const billService = {
   getBillProducts,
   getSingleBill,
   getFiscalData,
-
   createBill,
   createBillItem,
   createBillPayment,
   convertBillToTreatment,
   createMultipleItems,
   verifyDiscount,
-
-  removeBillPayment,
   removeBillPaymentBlock,
   removeBill,
-
   closeBillPayment,
   reopenBillPayment,
   updateBillItem,

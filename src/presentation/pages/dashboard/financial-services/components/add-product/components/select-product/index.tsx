@@ -56,6 +56,8 @@ export function SelectProduct() {
       ),
     };
 
+    console.log(findProduct)
+
     if (findProduct) {
       setFieldValue("cart", cart ? [...cart, cartItem] : [cartItem]);
     }

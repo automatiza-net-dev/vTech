@@ -15,13 +15,11 @@ const create = async (data) => await api.post(`/document-templates`, data);
 const createWithDoc = async (data) =>
   await api.post(`/document-templates/upload`, data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 
 const renderPdf = (id) => api.get(`/document-templates/render-pdf/${id}`);
-
-const generatePublicLink = (id) => api.get(`/document-templates/pdf/${id}`);
 
 const update = async (id, data) =>
   await api.put(`/document-templates/${id}`, data);
@@ -29,8 +27,8 @@ const update = async (id, data) =>
 const updateWithDoc = async (id, data) =>
   await api.put(`/document-templates/${id}`, data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 
 const remove = async (id) => await api.delete(`/document-templates/${id}`);
@@ -43,6 +41,5 @@ export const documentServices = {
   getById,
   createWithDoc,
   renderPdf,
-  generatePublicLink,
-  updateWithDoc
+  updateWithDoc,
 };

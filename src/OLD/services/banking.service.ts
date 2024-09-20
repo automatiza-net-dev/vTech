@@ -7,7 +7,7 @@ const getAllBankings = async ({
   competence,
   document,
   from,
-  to
+  to,
 }) =>
   api.get(
     `/bankings${type ? `?type=${type}` : ""}${
@@ -43,5 +43,5 @@ const updateBanking = async (id, data) =>
 export const bankingService = {
   getAllBankings,
   createBanking,
-  updateBanking
+  updateBanking,
 };

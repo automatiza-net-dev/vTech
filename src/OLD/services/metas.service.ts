@@ -1,6 +1,5 @@
 import api from "@/OLD/services";
 
-// GET
 const getAll = async () => await api.get("/metas");
 
 const create = async (data) => await api.post("/metas", data);

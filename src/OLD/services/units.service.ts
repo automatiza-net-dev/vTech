@@ -13,5 +13,5 @@ const forgotPassword = async (data) =>
 export const unitsService = {
   listUnits,
   swapUnit,
-  forgotPassword
+  forgotPassword,
 };

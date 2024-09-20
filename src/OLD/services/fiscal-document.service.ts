@@ -1,24 +1,11 @@
 import api from "@/OLD/services";
 
-const getAllFiscalDocuments = async ({ document, movement }) => {
-  const { data } = await api.get("/fiscal-documents", {
-    params: {
-      document,
-      movement
-    }
-  });
-
-  if (!data) return [];
-
-  return data;
-};
-
 const getAllUnitFiscalDocuments = async ({ document, movement }) => {
   const { data } = await api.get("/fiscal-documents/business-unit/search", {
     params: {
       document,
-      movement
-    }
+      movement,
+    },
   });
 
   if (!data) return [];
@@ -35,8 +22,8 @@ const getIssuedNfse = async ({ bill }) => {
     "/fiscal-documents/business-unit/issued-nfse",
     {
       params: {
-        bill
-      }
+        bill,
+      },
     }
   );
 
@@ -61,8 +48,8 @@ const authorizeNfe = async (data) => {
 const getIssuedNfe = async ({ bill }) => {
   const { data } = await api.get("/fiscal-documents/business-unit/issued-nfe", {
     params: {
-      bill
-    }
+      bill,
+    },
   });
 
   if (!data) return [];
@@ -83,17 +70,14 @@ const disableIssuedNfe = async ({ data }) => {
 };
 
 export const fiscalDocumentService = {
-  getAllFiscalDocuments,
   getAllUnitFiscalDocuments,
-
   authorizeNfse,
   getIssuedNfse,
   updateIssuedNfse,
   cancelIssuedNfse,
-
   authorizeNfe,
   getIssuedNfe,
   updateIssuedNfe,
   cancelIssuedNfe,
-  disableIssuedNfe
+  disableIssuedNfe,
 };

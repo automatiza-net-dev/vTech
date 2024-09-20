@@ -126,6 +126,8 @@ export function AddProduct() {
                   100
                 ).toFixed(2);
 
+                console.log(variation);
+
                 return (
                   <div key={variation.productVariationId} className="cart_item">
                     <div>
@@ -162,9 +164,15 @@ export function AddProduct() {
                           fieldName: "unitaryValue",
                         });
                       }}
+                      controlledInitialValue={{
+                        value: String(variation?.unitaryValue),
+                      }}
                     />
 
                     <InputCurrency
+                      controlledInitialValue={{
+                        value: String(variation?.discountValue),
+                      }}
                       type="number"
                       name={pathName + `.discountValue`}
                       max={maxDiscount}
@@ -219,6 +227,9 @@ export function AddProduct() {
                       <div>
                         <InputCurrency
                           type="number"
+                          controlledInitialValue={{
+                            value: String(variation?.total),
+                          }}
                           name={pathName + `.total`}
                           readOnly
                         />

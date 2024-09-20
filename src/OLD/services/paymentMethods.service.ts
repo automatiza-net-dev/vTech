@@ -6,11 +6,6 @@ const createPaymentMethod = async (data) =>
 const createFlag = async (data) =>
   await api.post(`/payment-methods/create-flag`, data);
 
-const createFee = async (data) =>
-  await api.post(`/payment-methods/create-fee`, data);
-
-const getPartial = async () => await api.get(`/payment-methods/partial`);
-
 const getTefFlags = async (type) =>
   await api.get(`/payment-methods/tef-flags?type=${type}`);
 
@@ -20,7 +15,7 @@ const getComplete = async ({
   type,
   cancellation,
   account,
-  active
+  active,
 }) =>
   await api.get(
     `/payment-methods/complete${
@@ -66,13 +61,11 @@ const updateFlag = async (id, data) =>
 export const paymentMethodsService = {
   createPaymentMethod,
   createFlag,
-  createFee,
-  getPartial,
   getTefFlags,
   getComplete,
   getTefFlagsAcquirers,
   removePaymentMethod,
   updatePaymentMethod,
   updateFlag,
-  updateFeeFlagInstallments
+  updateFeeFlagInstallments,
 };

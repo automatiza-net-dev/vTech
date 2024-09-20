@@ -1,6 +1,8 @@
 // @ts-nocheck
 import api from "@/OLD/services";
 
+// fazer
+
 const createVaccine = async (data) => await api.post("/vaccines", data);
 
 const listVaccines = async () => await api.get("/vaccines");

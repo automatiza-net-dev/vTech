@@ -1,16 +1,6 @@
 import api from "@/OLD/services";
 
-const createScheduling = async (data) => {
-  return await api.post("/schedules", data);
-};
-
-const editSchedule = async (id, data) => {
-  return await api.put(`/schedules/${id}`, data);
-};
-
-const createReschedule = async (id, data) => {
-  return await api.put(`/schedules/reschedule/${id}`, data);
-};
+//
 
 const getSchedules = async (params) => {
   return await api.get("/schedules", { params });
@@ -29,14 +19,6 @@ const getWorkerSchedulings = async (params) => {
 
 const getWeekSchedulings = async (params) =>
   await api.get("/schedules/users-weekly-schedules", { params });
-
-const getScheduleDiponibility = async (data) => {
-  return await api.get(
-    `/schedules/disponibility?start=${data?.start ? data?.start : ""}&end=${
-      data?.end ? data?.end : ""
-    }&user=${data?.user ? data?.user : ""}`
-  );
-};
 
 const getReturnablesSchedulings = async (patientId) => {
   return await api.get(`/schedules/returnables/${patientId}`);
@@ -82,14 +64,8 @@ const getPatientHistoric = async (id) => {
   return await api.get(`/schedules/historic/${id}`);
 };
 
-const createContact = async (data) => {
-  return await api.post("/schedules/create-contact", data);
-};
-
 export const calendarService = {
-  createScheduling,
   getSchedules,
-  getScheduleDiponibility,
   getWorkerSchedulings,
   getSchedulesByPatient,
   createAbsence,
@@ -99,12 +75,9 @@ export const calendarService = {
   getWorkerSchedulers,
   getScheduleRange,
   getSyncableSchedules,
-  editSchedule,
-  createReschedule,
   getReturnablesSchedulings,
   getHomeSchedules,
   showSchedule,
   getPatientHistoric,
-  createContact,
-  getWeekSchedulings
+  getWeekSchedulings,
 };
