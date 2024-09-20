@@ -81,8 +81,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: ^2.8.7
-        version: 2.8.7(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1)
+        specifier: ^2.9.1
+        version: 2.9.1(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1)
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -1819,8 +1819,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@2.8.7:
-    resolution: {integrity: sha512-i4LOUcmM/TTC/3jvH9fbDitdnpEvp4dy61NayPicQZa+Z0gaCqEfPrJGKH+w+OEOZwn/2dN2aG05xIgqvjQQ/w==}
+  infinity-forge@2.9.1:
+    resolution: {integrity: sha512-/thhYNWBOgBBf8ZX9z+xMaPIMQyEt72JgJscHVOQ3OgvRgiPxYMXHuL05miUIwvGDSpAjYUVy/nBZT/YOqAEPw==}
     peerDependencies:
       react: '>=16'
 
@@ -5002,7 +5002,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@2.8.7(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1):
+  infinity-forge@2.9.1(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1):
     dependencies:
       '@types/lodash': 4.17.7
       axios: 1.7.2
