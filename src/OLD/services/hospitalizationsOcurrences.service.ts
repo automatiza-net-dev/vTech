@@ -14,5 +14,5 @@ export const hospitalizationOccurences = {
   createOccurrence,
   getAllBaseOccurrences,
   updateOccurrence,
-  getOccurrence
+  getOccurrence,
 };

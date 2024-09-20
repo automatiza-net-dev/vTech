@@ -40,5 +40,5 @@ export const hospitalizationPrescriptionsService = {
   updateScheduling,
   getAllMedicalPrescriptionSchedulling,
   interruptPrescription,
-  excludePrescription
+  excludePrescription,
 };

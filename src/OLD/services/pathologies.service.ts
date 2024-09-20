@@ -19,5 +19,5 @@ export const pathologiesServices = {
   update,
   remove,
   getAll,
-  getById
+  getById,
 };

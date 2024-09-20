@@ -2,7 +2,7 @@ import api from "@/OLD/services";
 
 const listDailyCashiers = async (params = {}) =>
   await api.get(`/daily-cashiers`, {
-    params
+    params,
   });
 
 const dumpDailyCashier = async (id) =>
@@ -46,5 +46,5 @@ export const dailyCasherService = {
   receiptDailyCasher,
   dumpDailyCashier,
   getInfoDailyCasher,
-  clearPayments
+  clearPayments,
 };

@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import { attendanceService } from "@/OLD/services/attendances.service";
-import { scheduleDetailsService } from "@/OLD/services/scheduleDetails.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useAttendances } from "@/OLD/hooks/useAttendances";

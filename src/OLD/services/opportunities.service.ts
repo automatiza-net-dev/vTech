@@ -1,14 +1,12 @@
 import api from "@/OLD/services";
 
 // GET
+
 const getAll = async (params) =>
   await api.get(`/opportunities/search`, { params });
 
 const getAllKanban = async (params) =>
   await api.get("/opportunities/search-kanban", { params });
-
-const getAllKanbanActivities = async (params) =>
-  await api.get("/opportunities/search-kanban-activities", { params });
 
 const showOpportunity = async (id) =>
   await api.get(`/opportunities/show/${id}`);
@@ -49,9 +47,6 @@ const excludeActivityOpportunity = async (id) =>
 const syncSchedule = async (data) =>
   await api.post("/opportunities/sync-schedule", data);
 
-const reopenOpportunity = async (id) =>
-  await api?.post(`/opportunities/reopen/${id}`);
-
 const reopenActivity = async (id) =>
   await api.post(`/opportunities/reopen-activity/${id}`);
 
@@ -68,7 +63,6 @@ const removeOpportunity = async (id) =>
 export const opportunitiesService = {
   getAll,
   getAllKanban,
-  getAllKanbanActivities,
   create,
   createActivity,
   reopenActivity,
@@ -81,10 +75,9 @@ export const opportunitiesService = {
   getSyncableOpportunities,
   closeWinning,
   closeLossing,
-  reopenOpportunity,
   updateUser,
   updateStatus,
   syncSchedule,
   excludeActivityOpportunity,
-  removeOpportunity
+  removeOpportunity,
 };

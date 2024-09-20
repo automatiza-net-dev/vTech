@@ -27,5 +27,5 @@ export const dailyMovementsService = {
   openDailyMovement,
   closeDailyMovement,
   checkDailyMovement,
-  reopenDailyMovement
+  reopenDailyMovement,
 };

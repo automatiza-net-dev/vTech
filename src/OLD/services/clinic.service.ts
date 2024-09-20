@@ -1,4 +1,5 @@
 import api from "@/OLD/services";
+//
 
 const create = async (data) => {
   return await api.post(`/business-units`, data);
@@ -14,26 +15,13 @@ const getClinicById = async (id) => {
 
 const getClinicsByUser = async (params = {}) => {
   return await api.get("/business-units/user", {
-    params
+    params,
   });
 };
 
 const getColaborators = async ({ name, document, phone, role }) => {
   return await api.get(
     `/business-units/users${name ? `?name=${name}` : ""}${
-      document ? `${name ? "&" : "?"}document=${document}` : ""
-    }${phone ? `${name || document ? "&" : "?"}phone=${phone}` : ""}${
-      role ? `${name || document || phone ? "&" : "?"}role=${role}` : ""
-    }`
-  );
-};
-
-const getAllEconomicGroupUsers = async (
-  id,
-  { name, document, phone, role }
-) => {
-  return await api.get(
-    `/economic-groups/${id}/users${name ? `?name=${name}` : ""}${
       document ? `${name ? "&" : "?"}document=${document}` : ""
     }${phone ? `${name || document ? "&" : "?"}phone=${phone}` : ""}${
       role ? `${name || document || phone ? "&" : "?"}role=${role}` : ""
@@ -76,14 +64,6 @@ const createWorkingDay = async (data) => {
   return await api.post("/working-days", data);
 };
 
-const updateWorkingDay = async (data, id) => {
-  return await api.put(`/working-days/${id}`, data);
-};
-
-const deleteWorkingDay = async (id) => {
-  return await api.delete(`/working-days/${id}`);
-};
-
 const getCollabById = async (id) => await api.get(`/business-units/user/${id}`);
 
 const updateCollaborator = async (id, data) =>
@@ -100,8 +80,6 @@ export const clinicService = {
   createInvite,
   getInvites,
   createWorkingDay,
-  updateWorkingDay,
-  deleteWorkingDay,
   deleteInvite,
   getColaborators,
   deleteColaborator,
@@ -112,6 +90,5 @@ export const clinicService = {
   resendInvite,
   showInvite,
   acceptInvite,
-  getAllEconomicGroupUsers,
-  createCollaborator
+  createCollaborator,
 };

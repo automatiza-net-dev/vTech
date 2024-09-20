@@ -1,6 +1,5 @@
 import api from "@/OLD/services";
 
-// POST
 const createBudget = async (data) => {
   const { data: budget } = await api.post(`/budgets/create`, data);
 
@@ -66,9 +65,6 @@ const getCompleteBudget = async (id) => {
 const getBudgetsFromAttendance = async (id) =>
   await api.get(`/budgets/from-attendance/${id}`);
 
-const getBudgetPayments = async (id) =>
-  await api.get(`/budgets/payments/${id}`);
-
 // DELETE
 const removeBudgetItem = async (id) =>
   await api.delete(`/budgets/delete-item/${id}`);
@@ -78,20 +74,16 @@ export const budgetService = {
   createBudgetItem,
   createMultipleBudgetItems,
   createBudgetPayments,
-
   updateBudgetItem,
   cancelBudget,
   confirmBudget,
   updateObservation,
   updateBudgetSellerAndReviewer,
   removeBudgetPayment,
-
   getCompleteBudgets,
   getPartialBudgets,
   getBudgetProducts,
   getCompleteBudget,
   getBudgetsFromAttendance,
-  getBudgetPayments,
-
-  removeBudgetItem
+  removeBudgetItem,
 };

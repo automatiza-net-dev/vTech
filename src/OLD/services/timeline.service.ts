@@ -1,9 +1,6 @@
 // @ts-nocheck
 import api from "@/OLD/services";
 
-const getAppointments = async (id) =>
-  await api.get(`/n-timeline/appointments/${id}`);
-
 const getCompleteHospitalizationsTimeline = async (id) =>
   await api.get(`/hospitalizations/patient-timeline/${id}`);
 
@@ -27,9 +24,6 @@ const insertArquive = async (data) =>
 const insertObservations = async (data) =>
   await api.post("/n-timeline/observations", data);
 
-const insertVaccine = async (data) =>
-  await api.post("/n-timeline/vaccines", data);
-
 const insertGlycemia = async (data) =>
   await api.post("/n-timeline/glycemia", data);
 
@@ -38,9 +32,6 @@ const insertPressure = async (data) =>
 
 const insertPatientEvaluation = async (data) =>
   await api.post("/n-timeline/evaluation", data);
-
-const insertPatientDeath = async (data) =>
-  await api.post("/n-timeline/deaths", data);
 
 const generateS3Arquive = async (data) =>
   await api.post("/s3/generate-link", data);
@@ -68,8 +59,6 @@ const updatePhotos = async (id, data) =>
   await api.put(`/n-timeline/photos/${id}`, data);
 
 // Delete
-const deleteAanimalPhotos = async (id) =>
-  await api.delete(`/n-timeline/photos/${id}`);
 
 const removeComplete = async (id) => await api.delete(`/n-timeline/${id}`);
 
@@ -79,26 +68,13 @@ const listLastUpdates = async (id) => await api.get(`/n-timeline/${id}`);
 const listDocuments = async (id) =>
   await api.get(`/n-timeline/documents/${id}`);
 
-const listPhotosVideos = async (id) =>
-  await api.get(`/n-timeline/photos/${id}`);
-
 const listPatologies = async (id) =>
   await api.get(`n-timeline/pathologies/${id}`);
 
 const listMedicalRecipes = async (id) =>
   await api.get(`/n-timeline/recipes/${id}`);
 
-const listObservations = async (id) =>
-  await api.get(`/n-timeline/observations/${id}`);
-
 const listWeight = async (id) => await api.get(`/n-timeline/weight/${id}`);
-
-const timelineDownload = async (link) => await api.get(link);
-
-const listVaccine = async (id) => await api.get(`/n-timeline/vaccines/${id}`);
-
-const listSinglePhoto = async (photoUrl) =>
-  await api.get(photoUrl, { mode: "no-cors" });
 
 const listPatientHospitalizationTimeline = async (id) =>
   await api.get(`/hospitalizations/timeline/${id}`);
@@ -111,7 +87,6 @@ const removeObservationMedia = async (timelineId, mediaIndex) =>
 
 export const timelineService = {
   insertWeight,
-  getAppointments,
   insertDocument,
   insertRecipe,
   insertPatology,
@@ -123,28 +98,20 @@ export const timelineService = {
   generateS3Arquive,
   listLastUpdates,
   listDocuments,
-  listPhotosVideos,
   listPatologies,
   listMedicalRecipes,
-  listObservations,
-  timelineDownload,
   listWeight,
-  insertVaccine,
-  listVaccine,
   updateWeight,
   updateDocuments,
   updateMedicalRecipe,
   updatePathology,
   updatePhotos,
-  deleteAanimalPhotos,
-  listSinglePhoto,
   updateObservation,
   listPatientHospitalizationTimeline,
   removeSinglePhoto,
   updatePatientEvaluation,
   removeObservationMedia,
-  insertPatientDeath,
   getCompleteHospitalizationsTimeline,
   removeComplete,
-  getArquivesDownload
+  getArquivesDownload,
 };

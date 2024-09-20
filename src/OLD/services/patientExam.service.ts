@@ -9,9 +9,6 @@ const createAttachment = async (id, data) =>
     },
   });
 
-const updateExam = async (id, data) =>
-  await api.put(`/patient-exams/${id}`, data);
-
 const listPatientExams = async (id) =>
   await api.get(`/patient-exams?patient=${id}`);
 
@@ -26,7 +23,6 @@ const removeAttachment = async (patientExamId, attachmentId) =>
 export const patientExamsService = {
   launchExam,
   createAttachment,
-  updateExam,
   listPatientExams,
   showPatientExam,
   updatePatientExam,

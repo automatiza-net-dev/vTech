@@ -9,10 +9,6 @@ const getSingleTutor = async (id) => {
   return api.get(`/patient-tutors/${id}`);
 };
 
-const getPatientsByTutor = async () => {
-  return api.get(); //ainda sem endpoint
-};
-
 const getTutorOrigins = async (params) => {
   return await api.get(`/client-origins`, { params });
 };
@@ -24,7 +20,7 @@ const getUniqueOrigins = async (params) => {
 const getPatients = async (params) => {
   return (
     await api.get(`patients/animals`, {
-      params
+      params,
     })
   ).data;
 };
@@ -35,15 +31,6 @@ const getSinglePatient = async (id) => {
 
 const checkPhone = async (data) =>
   await api.post("/patients/check-phone", data);
-
-const searchPatient = async (data) => {
-  return (
-    await api.get(
-      `/patients/search?holder=${data.holder}&patient=${data.patient}`,
-      data
-    )
-  ).data;
-};
 
 const getPatientMetadata = async (id) => api.get(`/patients/metadata/${id}`);
 
@@ -61,25 +48,24 @@ const assignPatientToTutor = async (data) => {
 const createTutor = async (data) => {
   return api.post("patient-tutors", data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 };
-
 
 const deathPatient = async (data, patientId) => {
   return api.put(`patients/declare-death/${patientId}`, data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 };
 
 const createPatient = async (data) => {
   return api.post("/patients", data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 };
 
@@ -89,16 +75,16 @@ const fastPatientRegister = async (data) =>
 const editPatient = async (data, id) => {
   return api.put(`/patients/${id}`, data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 };
 
 const editTutor = async (data, id) => {
   return api.put(`/patient-tutors/${id}`, data, {
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 };
 
@@ -111,29 +97,23 @@ const deletePatient = async (id) => {
 
 export const petsService = {
   deathPatient,
-
   getTutors,
   getSingleTutor,
-  getPatientsByTutor,
   getTutorProfessions,
   getUniqueOrigins,
-
   createTutor,
   editTutor,
   assignPatientToTutor,
-
   getPatients,
   createPatient,
   editPatient,
   getSinglePatient,
   deletePatient,
-
-  searchPatient,
   getTutorOrigins,
   checkPhone,
   setMainTutor,
   fastPatientRegister,
   getPatientMetadata,
   getPatientSalesMetadata,
-  getPatientHairTypes
+  getPatientHairTypes,
 };

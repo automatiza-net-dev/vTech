@@ -22,5 +22,5 @@ export const examService = {
   listExams,
   updateExams,
   removeExam,
-  showExam
+  showExam,
 };

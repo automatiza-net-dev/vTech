@@ -97,5 +97,5 @@ export const indicatorsService = {
   getAvgInstallmentsSales,
   getProductTypeSubgroup,
   getSubgroupsTree,
-  getBudgetsByStatus
+  getBudgetsByStatus,
 };

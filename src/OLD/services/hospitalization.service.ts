@@ -1,5 +1,6 @@
 import api from "@/OLD/services";
 
+
 const listHospitalizations = async (filters = false) =>
   await api.get("/hospitalizations");
 
