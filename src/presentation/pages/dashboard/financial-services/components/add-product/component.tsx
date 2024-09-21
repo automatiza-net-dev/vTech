@@ -9,7 +9,7 @@ import { Cart } from "./interfaces";
 import * as S from "./styles";
 
 export function AddProduct() {
-  const { values, setFieldValue, setFieldError, initialValues } =
+  const { values, setFieldValue, setFieldError } =
     useFormikContext<{
       cart: Cart[];
       product_selected: string | undefined;
@@ -19,7 +19,7 @@ export function AddProduct() {
   const { user } = useAuthAdmin();
 
   const cart = values["cart"];
-  const isPossibleChangePricesProducs = user.unit.unitConfig?.alter_prices;
+  const isPossibleChangePricesProducs = user?.unit?.unitConfig?.alter_prices;
 
   function handleInputChange({
     value,
@@ -148,6 +148,9 @@ export function AddProduct() {
                           indexVariation,
                           fieldName: "quantity",
                         });
+                      }}
+                      controlledInitialValue={{
+                        value: String(variation?.quantity),
                       }}
                     />
 
