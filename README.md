@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["es2021", "dom"],
     "types": ["reflect-metaadata", "node"],
-    "experimentalDecorators": true,a
+    "experimentalDecorators": true,aa
     "emitDecoratorMetadata": true,
     "jsx": "react-jsx",
     "baseUrl": "./src",
