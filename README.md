@@ -24,7 +24,7 @@
 102030
 controller@liftone.com.br
 
-# LIFTONE - PROD
+#LIFTONE - PROD
 # api=https://vetech-api.creativecode.dev.br/
 # NEXT_PUBLIC_API=https://vetech-api.automatiza.net
 # SYSTEM_URL=https://liftone.automatiza.net
