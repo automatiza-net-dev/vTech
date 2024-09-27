@@ -12,7 +12,13 @@ const nextConfig = {
   },
   reactStrictMode: false,
   compiler: {
-    styledComponents: true,
+    styledComponents: {
+      ssr: false,
+      fileName: false,
+      minify: false,
+      pure: true,
+      cssProp: false,
+    },
   },
 };
 

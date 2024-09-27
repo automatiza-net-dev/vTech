@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ButtonInfinityForge = styled("div")<any>`
+export const ButtonInfinityForge = styled("div")`
   button {
     background-color: ${(props) => props.theme.primaryColor};
     border-radius: 5px;

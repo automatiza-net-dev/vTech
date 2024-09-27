@@ -141,6 +141,7 @@ export function CalendarEvent({
                 color: "#000",
                 fontWeight: "700",
                 fontSize: "12px",
+                direction: "ltr",
               }}
             >
               {fullTime}

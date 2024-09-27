@@ -37,7 +37,6 @@ import Link from "next/link";
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
-  
   return (
     <QueryClientProvider client={queryClient}>
       <IpProvider>
@@ -106,35 +105,17 @@ export default function App({ Component, pageProps }) {
           }}
           theme={themes[process.env.client || "sancla"]}
         >
+          <GlobalStyles host={process.env.clientName} />
+
           <SchedulingContextProvider>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <ConfigProvider locale={ptBR}>
                 <AppProvider>
                   <Head>
                     <title>{process.env.clientName}</title>
-                    <link
-                      rel="icon"
-                      href={`/images/logo/${process.env.client}.png`}
-                    />
-
-                    <link
-                      rel="preconnect"
-                      href="https://fonts.googleapis.com"
-                    />
-                    <link
-                      rel="preconnect"
-                      href="https://fonts.gstatic.com"
-                      crossOrigin="anonymous"
-                    />
-                    <link
-                      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-                      rel="stylesheet"
-                    />
                   </Head>
 
                   <Component {...pageProps} />
-
-                  <GlobalStyles host={process.env.clientName} />
                 </AppProvider>
               </ConfigProvider>
             </LocalizationProvider>

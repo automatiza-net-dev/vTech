@@ -2,8 +2,8 @@
   "include": ["src/**/*"],
   "compilerOptions": {
     "lib": ["es2021", "dom"],
-    "types": ["reflect-metadata", "node"],
-    "experimentalDecorators": true,
+    "types": ["reflect-metaadata", "node"],
+    "experimentalDecorators": true,aa
     "emitDecoratorMetadata": true,
     "jsx": "react-jsx",
     "baseUrl": "./src",
@@ -20,8 +20,9 @@
   "afterDeclarations": true
 }
 
-controller@liftone.com.br
+
 102030
+controller@liftone.com.br
 
 #LIFTONE - PROD
 # api=https://vetech-api.creativecode.dev.br/
@@ -31,7 +32,7 @@ controller@liftone.com.br
 # client=liftone
 # clientName=LiftOne
 
-#LIFTONE - HMG
+# LIFTONE - HMG
 # api=https://vetech-api.creativecode.dev.br/
 # NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
 # SYSTEM_URL=https://liftone.creativecode.dev.br
