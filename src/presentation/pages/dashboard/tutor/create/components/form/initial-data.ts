@@ -6,6 +6,7 @@ export const initialData = ({ data, tutorId }) => {
   return data
     ? {
         ...data,
+        birthDate: new Date(data?.birthDate),
         id: tutorId,
         photo: [
           {
