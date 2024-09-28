@@ -81,7 +81,7 @@ const FormChild = memo(function FormChild({
   );
 
   const productOptions = products
-    ?.filter((product) => product?.unit?.type === "PRODUCT")
+    ?.filter((product) => product?.unit?.type !== "SERVICE")
     ?.map((product) => {
       return {
         ...product,
