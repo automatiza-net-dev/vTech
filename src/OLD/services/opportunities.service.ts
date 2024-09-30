@@ -50,6 +50,9 @@ const syncSchedule = async (data) =>
 const reopenActivity = async (id) =>
   await api.post(`/opportunities/reopen-activity/${id}`);
 
+const reopenOpportunity = async (id) =>
+  await api.post(`/opportunities/reopen/${id}`);
+
 // PUT
 const update = async (id, data) => await api.put(`/opportunities/${id}`, data);
 
@@ -80,4 +83,5 @@ export const opportunitiesService = {
   syncSchedule,
   excludeActivityOpportunity,
   removeOpportunity,
+  reopenOpportunity
 };
