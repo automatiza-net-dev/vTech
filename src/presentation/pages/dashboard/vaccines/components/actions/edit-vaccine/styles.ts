@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const EditVaccine = styled("div")`
+
   button {
     height: 30px;
     width: 30px;

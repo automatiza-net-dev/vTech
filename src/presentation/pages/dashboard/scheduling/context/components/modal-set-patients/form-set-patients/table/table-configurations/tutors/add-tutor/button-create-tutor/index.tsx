@@ -7,12 +7,12 @@ export function ButtonCreateTutor({ refetch, setInitialHolder, origin }: any) {
   }
 
   return (
-    <PermissionItem hash={"TUT01" || "PET01"}>
-      <FormCreateTutor
-        isModal
-        origin={origin || "Agenda"}
-        onSuccess={onSuccess}
-      />
-    </PermissionItem>
+    // <PermissionItem hash={"TUT01" || "PET01"}>
+    <FormCreateTutor
+      isModal
+      origin={origin || "Agenda"}
+      onSuccess={onSuccess}
+    />
+    // </PermissionItem>
   );
 }

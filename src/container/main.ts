@@ -12,25 +12,27 @@ import {
   userDashboardContainer,
   dashboardContainer,
   financialServicesContainer,
+  marketingContainer,
 } from "./dashboard";
 import { systemContainer } from "./system";
 import { businessUnitsContainer } from "./business-units";
 import { configurationContainer } from "./configuration";
 
 const container = Container.merge(
-  infraContainer,
-  adminContainer,
-  patientContainer,
   crmContainer,
-  entriesContainer,
   menuContainer,
-  userDashboardContainer,
-  dashboardContainer,
-  subgroupContainer,
+  adminContainer,
+  infraContainer,
   systemContainer,
-  financialServicesContainer,
+  patientContainer,
+  entriesContainer,
+  subgroupContainer,
+  dashboardContainer,
+  marketingContainer,
+  userDashboardContainer,
   businessUnitsContainer,
-  configurationContainer
+  configurationContainer,
+  financialServicesContainer
 );
 
 export { container };

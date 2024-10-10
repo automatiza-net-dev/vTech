@@ -64,51 +64,51 @@ export const useKanbanOpportunities = (filters, reload, fetch = true) => {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const keys = Object.keys(filters);
-  let newObj = { ...filters };
-
   const fetchData = () => {
+
+    let newObj = { ...filters };
+
     if (!fetch || filters?.noSearch) {
       return;
     }
     setLoading(true);
 
-    if (!filters?.dateFrom) {
-      delete filters?.dateFrom;
-      delete filters?.dateTo;
+    if (!newObj?.dateFrom) {
+      delete newObj?.dateFrom;
+      delete newObj?.dateTo;
     }
 
-    if (!filters?.contactFrom) {
-      delete filters?.contactFrom;
+    if (!newObj?.contactFrom) {
+      delete newObj?.contactFrom;
       delete filters?.contactTo;
     }
 
-    if (!filters?.openingFrom) {
-      delete filters?.openingFrom;
-      delete filters?.openingToTo;
+    if (!newObj?.openingFrom) {
+      delete newObj?.openingFrom;
+      delete newObj?.openingTo;
     }
 
-    if (keys.includes("openingFrom")) {
+    if (newObj?.openingFrom) {
       newObj = {
         ...newObj,
-        openingFrom: moment(filters?.openingFrom).format("YYYY-MM-DD"),
-        openingTo: moment(filters?.openingTo).format("YYYY-MM-DD"),
+        openingFrom: moment(newObj?.openingFrom).format("YYYY-MM-DD"),
+        openingTo: moment(newObj?.openingTo).format("YYYY-MM-DD"),
       };
     }
 
-    if (keys.includes("contactFrom")) {
+    if (newObj?.contactFrom) {
       newObj = {
         ...newObj,
-        contactFrom: moment(filters?.contactFrom).format("YYYY-MM-DD"),
-        contactTo: moment(filters?.contactTo).format("YYYY-MM-DD"),
+        contactFrom: moment(newObj?.contactFrom).format("YYYY-MM-DD"),
+        contactTo: moment(newObj?.contactTo).format("YYYY-MM-DD"),
       };
     }
 
-    if (keys.includes("dateFrom")) {
+    if (newObj?.dateFrom) {
       newObj = {
         ...newObj,
-        dateFrom: moment(filters?.dateFrom).format("YYYY-MM-DD"),
-        dateTo: moment(filters?.dateTo).format("YYYY-MM-DD"),
+        dateFrom: moment(newObj?.dateFrom).format("YYYY-MM-DD"),
+        dateTo: moment(newObj?.dateTo).format("YYYY-MM-DD"),
       };
     }
 

@@ -26,9 +26,14 @@ import { Container } from "./styles";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-import { FormCreatePatient, FormCreateTutor } from "@/presentation";
+import {
+  FormCreatePatient,
+  FormCreateTutor,
+  useLoadCampaings,
+} from "@/presentation";
 import { container, TypesAutomatiza } from "@/container";
 import { RemoteCRM } from "@/data";
+import { SelectMidia } from "./select-midia";
 
 export default function FormChild({
   op,
@@ -55,7 +60,10 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
-  const { uniqueOrigins } = useUniquetutorOrigins(data?.tutorOriginId);
+  const { data: uniqueOrigins } = useLoadCampaings({
+    active: true,
+    clientOriginId: data?.originId,
+  });
 
   const router = useRouter();
 
@@ -445,7 +453,7 @@ export default function FormChild({
                     value: ctt?.id,
                   }))}
                   onlyOneValue
-                  onChangeSelect={(val) =>
+                  onChangeInput={(val) =>
                     setData({ ...data, contactTypeId: val })
                   }
                   value={data?.contactTypeId}
@@ -459,13 +467,13 @@ export default function FormChild({
                   <Select
                     disabled={!footer ? !edit : false}
                     menuPlacement="bottom"
-                    name="originDescription"
+                    name="originId"
                     options={clients.map((client) => ({
                       label: client?.description,
                       value: client?.id,
                     }))}
                     onlyOneValue
-                    onChangeSelect={(val) => {
+                    onChangeInput={(val) => {
                       setData({ ...data, originId: val });
                     }}
                     value={data?.originId}
@@ -473,25 +481,13 @@ export default function FormChild({
                 </FormHandler>
               </div>
             </div>
-            {selectedOrigin?.default && (
-              <div className="uk-width-1-4 uk-margin-small-right">
-                <label>Campanha mídia</label>
-                <FormHandler>
-                  <Select
-                    menuPlacement="bottom"
-                    name="clientOriginDescription"
-                    options={uniqueOrigins.sort().map((origin) => ({
-                      label: origin,
-                      value: origin,
-                    }))}
-                    onlyOneValue
-                    onChangeSelect={(val) =>
-                      setData({ ...data, clientOriginItemDescription: val })
-                    }
-                    value={data?.clientOriginItemDescription}
-                  />
-                </FormHandler>
-              </div>
+            {(selectedOrigin?.default || uniqueOrigins?.length) > 0 && (
+              <SelectMidia
+                disabled={!footer ? !edit : false}
+                data={data}
+                setData={setData}
+                options={uniqueOrigins}
+              />
             )}
             <div className="uk-width-1-4">
               <label>Assunto Contato</label>
@@ -505,7 +501,7 @@ export default function FormChild({
                     value: subject.id,
                   }))}
                   onlyOneValue
-                  onChangeSelect={(val) =>
+                  onChangeInput={(val) =>
                     setData({ ...data, contactSubjectId: val })
                   }
                   value={data?.contactSubjectId}

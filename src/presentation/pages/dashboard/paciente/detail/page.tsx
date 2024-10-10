@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Tab, TabItem } from "infinity-forge";
 
 import {
@@ -8,7 +10,8 @@ import {
   VaccinesTable,
   ActionsPatient,
 } from "./components";
-import { useLoadPatient } from "@/presentation";
+import { useLoadPatient, VaccinesPanel } from "@/presentation";
+import { useQueryClient } from "react-query";
 
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
 import { BillAndBudget } from "@/OLD/components/Attendance/Timeline/BillAndBudget";
@@ -18,6 +21,12 @@ import * as S from "./styles";
 
 export function PacientePage() {
   const { data, isFetching } = useLoadPatient();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries(["RemotePatient"]);
+  }, []);
 
   if (isFetching || !data) {
     return <>Carregando...</>;
@@ -40,6 +49,12 @@ export function PacientePage() {
       title: "Vacinas / Vermífugos lançados",
       content: (props) => <VaccinesTable {...data} {...props} />,
       key: "vaccines",
+      active: process.env.clientName === "Sanclá",
+    },
+    {
+      title: "Vacinas / Vermífugos Status",
+      content: (props) => <VaccinesPanel patientId={data?.id} />,
+      key: "vaccines status",
       active: process.env.clientName === "Sanclá",
     },
     {

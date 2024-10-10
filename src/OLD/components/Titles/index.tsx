@@ -123,6 +123,7 @@ export default function Titles({ type }: any) {
         : "-",
       forma_de_pagamento: item?.payment_method,
       "nsu/comprovante": item?.nsu_document,
+      usuario_lancamento: item?.user_name,
     }));
 
     let wb = XLSX.utils.book_new(),

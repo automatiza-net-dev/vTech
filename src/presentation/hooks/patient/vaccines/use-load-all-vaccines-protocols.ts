@@ -1,18 +1,25 @@
+import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 
 import { RemoteVaccine } from "@/data";
 import { LoadVaccineProtocols } from "@/domain";
-import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 export function useLoadAllVaccinesProtocols(
   params: LoadVaccineProtocols.Params & { fetch: boolean }
 ) {
+  const router = useRouter();
+
   async function fetcher() {
+    const newObj = {
+      ...params,
+      type: router?.pathname?.includes("vacinas") ? "vaccine" : "vermifuge",
+    };
+
     if (params.fetch) {
       const response = await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
-        .loadAllProtocols(params);
+        .loadAllProtocols(newObj);
 
       return response;
     }
@@ -21,6 +28,5 @@ export function useLoadAllVaccinesProtocols(
   return useQuery({
     queryKey: ["LoadAllVaccineProtocols", params],
     queryFn: fetcher,
-    ...callApiOneTime,
   });
 }

@@ -1,21 +1,23 @@
 import { Patient, SystemUser, Vaccine } from "@/domain";
 
+export type VaccineCalendar = {
+  id: string;
+  patient_vacine_id: string;
+  schedule_id: string | null;
+  user_id: string;
+  product_id: string | null;
+  scheduling_date: string | null;
+  application_date: string | null;
+  dose: number;
+  laboratory: string | null;
+  batch: string | null;
+  created_at: string;
+};
+
 export type ScheduleVaccine = {
   id: string;
   created_at: string;
-  calendars: {
-    id: string;
-    patient_vacine_id: string;
-    schedule_id: string | null;
-    user_id: string;
-    product_id: string | null;
-    scheduling_date: string | null;
-    application_date: string | null;
-    dose: number;
-    laboratory: string | null;
-    batch: string | null;
-    created_at: string;
-  }[];
+  calendars: VaccineCalendar[];
   protocol: {
     id: string;
     vaccine_id: string;

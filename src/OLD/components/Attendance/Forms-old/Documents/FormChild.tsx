@@ -67,7 +67,7 @@ function FormChild({
             value={document?.title}
             disabled={!modal}
             onlyOneValue
-            onChangeSelect={async (value) => {
+            onChangeInput={async (value) => {
               const optionSelected = allDocuments?.find(
                 (document) => document.title === value
               );

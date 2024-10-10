@@ -50,11 +50,11 @@ export function SignIn() {
         const loginResponse =
           Array.isArray(getBusinessUnits.data) &&
           getBusinessUnits.data[0].businessUnits &&
-          (await sessionService.login({
+          ((await sessionService.login({
             ...data,
             system: process.env.clientName,
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
-          }));
+          })) as any);
 
         await container.get<Storage>(TypesAutomatiza.storage).set("token", {
           value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
@@ -128,7 +128,11 @@ export function SignIn() {
                 <Link href="/senha/esqueci">Esqueci minha senha</Link>
               </div>
 
-              <Button type="submit" text="Entrar" style={{ width: "100%", borderRadius: "25px" }} />
+              <Button
+                type="submit"
+                text="Entrar"
+                style={{ width: "100%", borderRadius: "25px" }}
+              />
 
               <div style={{ textAlign: "center", marginTop: "10px" }}>
                 <Link href="/admin">Área do franqueador</Link>

@@ -70,10 +70,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.dateFrom}
             onChange={(val) =>
-              setFilters({
-                ...filters,
+              setFilters((prv) => ({
+                ...prv,
                 dateFrom: val,
-              })
+              }))
             }
           />
           &nbsp;à&nbsp;
@@ -84,10 +84,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.dateTo}
             onChange={(val) =>
-              setFilters({
+              setFilters((prv) => ({
                 ...filters,
                 dateTo: val,
-              })
+              }))
             }
           />
           <MdOutlineClear
@@ -131,7 +131,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
                 }}
                 onSelect={(_val, opt) => {
                   setValues({ ...values, techName: opt?.value });
-                  setFilters({ ...filters, technician: opt?.id });
+                  setFilters((prv) => ({ ...prv, technician: opt?.id }));
                   return setReload((prv) => !prv);
                 }}
                 filterOption={(val, opt) =>
@@ -151,10 +151,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.openingFrom}
             onChange={(val) =>
-              setFilters({
-                ...filters,
+              setFilters((prv) => ({
+                ...prv,
                 openingFrom: val,
-              })
+              }))
             }
           />
           &nbsp;à&nbsp;
@@ -164,10 +164,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.openingTo}
             onChange={(val) =>
-              setFilters({
-                ...filters,
+              setFilters((prv) => ({
+                ...prv,
                 openingTo: val,
-              })
+              }))
             }
           />
           <MdOutlineClear
@@ -198,7 +198,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
                 delete newObj.unit;
                 return setFilters(newObj);
               }
-              setFilters({ ...filters, unit: val });
+              setFilters((prv) => ({ ...prv, unit: val }));
               return setReload((prv) => !prv);
             }}
           >
@@ -217,10 +217,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.contactFrom}
             onChange={(val) =>
-              setFilters({
-                ...filters,
+              setFilters((prv) => ({
+                ...prv,
                 contactFrom: val,
-              })
+              }))
             }
           />
           &nbsp;à&nbsp;
@@ -230,10 +230,10 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             slotProps={{ textField: { variant: "standard" } }}
             value={filters?.contactTo}
             onChange={(val) =>
-              setFilters({
-                ...filters,
+              setFilters((prv) => ({
+                ...prv,
                 contactTo: val,
-              })
+              }))
             }
           />
           &nbsp;
@@ -270,7 +270,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
             placeholder="Ordenar Por"
             className="uk-width-1-1"
             onChange={(val) => {
-              setFilters({ ...filters, orderBy: val });
+              setFilters((prv) => ({ ...prv, orderBy: val }));
               return setReload((prv) => !prv);
             }}
           >

@@ -18,14 +18,13 @@ export function VaccineForm(props: {
   type: "vaccine" | "vermifuge";
 }) {
   const subgroups = useLoadSubgroups({});
-  const router = useRouter();
 
   return (
     <S.VaccineForm>
       <h2>
         {!props.edit
-          ? `Cadastrar ${props?.type === "vaccine" ? "Vacine" : "Vermifugo"} `
-          : `Editar ${props?.type === "vaccine" ? "Vacine" : "Vermifugo"}`}
+          ? `Cadastrar ${props?.type === "vaccine" ? "Vacina" : "Vermifugo"} `
+          : `Editar ${props?.type === "vaccine" ? "Vacina" : "Vermifugo"}`}
       </h2>
       <FormHandler
         initialData={props.data}

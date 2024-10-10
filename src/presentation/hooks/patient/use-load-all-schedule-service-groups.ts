@@ -2,19 +2,24 @@ import { useQuery } from "react-query";
 
 import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
+import { LoadAllScheduleServicesGroups } from "@/domain";
 import { RemoteLoadAllScheduleServicesGroups } from "@/data";
 
-export function useLoadAllScheduleServicesGroups() {
+export function useLoadAllScheduleServicesGroups(
+  params: LoadAllScheduleServicesGroups.Params
+) {
   async function fetcher() {
     const response = await container
-      .get<RemoteLoadAllScheduleServicesGroups>(patientTypes.RemoteLoadAllScheduleServicesGroups)
-      .loadAll({});
+      .get<RemoteLoadAllScheduleServicesGroups>(
+        patientTypes.RemoteLoadAllScheduleServicesGroups
+      )
+      .loadAll(params);
 
     return response;
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllScheduleServicesGroups",
+    queryKey: ["RemoteLoadAllScheduleServicesGroups", params],
     queryFn: fetcher,
     ...callApiOneTime,
   });

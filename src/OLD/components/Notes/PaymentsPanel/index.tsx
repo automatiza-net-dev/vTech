@@ -339,7 +339,7 @@ function PaymentsPanel({
                 <label>Plano de contas para geração dos tributos</label>
 
                 <Select
-                  onChangeSelect={(val) => setSelectedAccountPlanId(val)}
+                  onChangeInput={(val) => setSelectedAccountPlanId(val)}
                   onlyOneValue
                   style={{ width: "100%" }}
                   isMultiple={false}
@@ -376,21 +376,21 @@ function PaymentsPanel({
               <Panel
                 header={
                   <div>
-                    {paymentsList[0]?.paymentMethodDescription?.type ===
+                    {paymentsList?.[0]?.paymentMethodDescription?.type ===
                       "DEBITO" ||
-                    paymentsList[0]?.paymentMethodDescription?.type ===
+                    paymentsList?.[0]?.paymentMethodDescription?.type ===
                       "CREDITO"
                       ? `
                       ${
-                        paymentsList[0]?.paymentMethodDescription?.tef !== "NAO"
-                          ? paymentsList[0]?.paymentMethodDescription?.tef
+                        paymentsList?.[0]?.paymentMethodDescription?.tef !== "NAO"
+                          ? paymentsList?.[0]?.paymentMethodDescription?.tef
                           : ""
                       }\n
                       CARTÃO ${
-                        paymentsList[0]?.paymentMethodDescription?.type
-                      } - ${paymentsList[0]?.flagDescription?.description}
+                        paymentsList?.[0]?.paymentMethodDescription?.type
+                      } - ${paymentsList?.[0]?.flagDescription?.description}
                       `
-                      : paymentsList[0]?.paymentMethodDescription
+                      : paymentsList?.[0]?.paymentMethodDescription
                           ?.description}{" "}
                     {currencyFormatter(
                       paymentsList?.reduce(
@@ -413,7 +413,7 @@ function PaymentsPanel({
                       })
                     }
                   >
-                    {paymentsList[0]?.block !== editBlock && (
+                    {paymentsList?.[0]?.block !== editBlock && (
                       <>
                         {removePaymentsPermission && (
                           <Button
@@ -424,12 +424,12 @@ function PaymentsPanel({
                       </>
                     )}
                   </Popconfirm>
-                  {paymentsList[0]?.block !== editBlock ? (
+                  {paymentsList?.[0]?.block !== editBlock ? (
                     <>
                       {updatePaymentsPermission && (
                         <Button
                           text="Alterar dados"
-                          onClick={() => setEditBlock(paymentsList[0]?.block)}
+                          onClick={() => setEditBlock(paymentsList?.[0]?.block)}
                         />
                       )}
                     </>

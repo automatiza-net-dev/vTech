@@ -4,6 +4,8 @@ import { VaccineProtocol } from "@/domain";
 
 import { RemoteVaccine } from "@/data";
 
+import { useQueryClient } from "react-query";
+
 import { ProtocolForm } from "../../protocol-form";
 import { Modal, Tooltip, useToast } from "infinity-forge";
 
@@ -17,18 +19,22 @@ export function EditProtocol(props: VaccineProtocol) {
 
   const { createToast } = useToast();
 
+  const queryClient = useQueryClient();
+
   const updateProtocol = async () => {
     try {
       const response = await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
         .editProtocol(data);
-    } catch (err) {
-      return createToast({
-        message: "Verificar retorno de erros",
-        status: "error",
-      });
+    } catch (err: any) {
+      if (err?.error) {
+        return createToast({ message: err?.error?.message, status: "error" });
+      }
     }
     setOpen(false);
+
+    queryClient.invalidateQueries(["LoadAllVaccineProtocols"]);
+
     return createToast({
       message: "Protocolo atualizado com sucesso!",
       status: "success",
@@ -50,6 +56,7 @@ export function EditProtocol(props: VaccineProtocol) {
       doses: props?.doses,
       interval: props?.interval,
       active: props?.active,
+      expirationDays: props?.expirationDays,
     });
   }, [open]);
 

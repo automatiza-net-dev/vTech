@@ -56,8 +56,6 @@ export function SelectProduct() {
       ),
     };
 
-    console.log(findProduct)
-
     if (findProduct) {
       setFieldValue("cart", cart ? [...cart, cartItem] : [cartItem]);
     }
@@ -77,7 +75,7 @@ export function SelectProduct() {
         placeholder="Selecionar para adicionar"
         label="Adicionar um produto/serviço"
         loading={productsList.isFetching}
-        onChangeSelect={handleChange}
+        onChangeInput={handleChange}
       />
     </div>
   );

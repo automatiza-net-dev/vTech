@@ -124,5 +124,5 @@ var localeValues = {
   Image: {
     preview: "Pré-visualização",
   },
-};
+} as any;
 export default localeValues;

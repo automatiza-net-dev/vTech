@@ -3,9 +3,10 @@ import React, { memo, useEffect, useState, useCallback } from "react";
 
 import { plansGroupService } from "@/OLD/services/plansGroup.service";
 
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import { Modal, notification, Popconfirm } from "antd";
 import FormChild from "../FormChild";
+import { PermissionItem } from 'infinity-forge'
+import { Modal, notification, Popconfirm } from "antd";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
@@ -22,6 +23,7 @@ const Actions = memo(function ({ reload, setReload, group }) {
       description: group?.description,
       type: group?.type,
       active: group?.active,
+      dreGroupId: group?.dreGroup?.id
     });
   };
 
@@ -52,10 +54,6 @@ const Actions = memo(function ({ reload, setReload, group }) {
   }, [group?.id]);
 
   const submitUpdatePlansGroup = useCallback(() => {
-    if (!permissions?.GPC2) {
-      return notification.error({ message: "Ação não permitida" });
-    }
-
     let error = false;
     setLoading(true);
     plansGroupService

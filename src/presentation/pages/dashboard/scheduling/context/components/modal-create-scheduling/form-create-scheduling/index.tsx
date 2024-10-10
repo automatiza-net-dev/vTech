@@ -24,8 +24,8 @@ export function FormCreateScheduling() {
   const { submit } = useSubmitSchedule();
   const selectedDate = useScheduling((state) => state.selectedDate);
   const { data } = useLoadAllSchedulesUser(
-    DateToYYYYMMDD(selectedDate || new Date()),
-    DateToYYYYMMDD(selectedDate || new Date())
+    DateToYYYYMMDD(selectedDate || new Date()) || "",
+    DateToYYYYMMDD(selectedDate || new Date()) || ""
   );
   const createSchedulingArgs = useScheduling(
     (state) => state.createSchedulingArgs

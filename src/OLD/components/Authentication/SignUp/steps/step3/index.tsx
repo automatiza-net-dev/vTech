@@ -2,13 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
+import { Button } from "infinity-forge";
 import { Input, notification } from "antd";
 
 import api from "@/OLD/services";
 import { userService } from "@/OLD/services/user.service";
-import { Button } from "infinity-forge";
 
-import { Container, InputBox } from "./styles";
+import * as S from "./styles";
 
 export function Step3({ data, setStep }) {
   const [code, setCode] = useState("");
@@ -61,7 +61,7 @@ export function Step3({ data, setStep }) {
   }, [code, data?.email]);
 
   return (
-    <Container>
+    <S.Step3>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -79,55 +79,58 @@ export function Step3({ data, setStep }) {
           CÓDIGO DE VERIFICAÇÃO
         </h5>
         <div className="uk-width-1-4 uk-flex">
-          <InputBox>
+          <S.InputBox>
             <Input
               id="input-0"
               value={code[0]}
               onChange={(e) => stringManipulation(e)}
             />
-          </InputBox>
-          <InputBox>
+          </S.InputBox>
+          <S.InputBox>
             <Input
               id="input-1"
               value={code[1]}
               onChange={(e) => stringManipulation(e)}
             />
-          </InputBox>
-          <InputBox>
+          </S.InputBox>
+          <S.InputBox>
             <Input
               id="input-2"
               value={code[2]}
               onChange={(e) => stringManipulation(e)}
             />
-          </InputBox>
-          <InputBox>
+          </S.InputBox>
+          <S.InputBox>
             <Input
               id="input-3"
               value={code[3]}
               onChange={(e) => stringManipulation(e)}
             />
-          </InputBox>
-          <InputBox>
+          </S.InputBox>
+          <S.InputBox>
             <Input
               id="input-4"
               value={code[4]}
               onChange={(e) => stringManipulation(e)}
             />
-          </InputBox>
-          <InputBox>
+          </S.InputBox>
+          <S.InputBox>
             <Input
               id="input-5"
               value={code[5]}
               onChange={(e) => stringManipulation(e)}
             />
-          </InputBox>
+          </S.InputBox>
         </div>
         <div className="uk-margin-small-top">
-          <span className="uk-link uk-text-muted" onClick={() => resendCode()}>
+          <span
+            className="font-12 uk-link uk-text-muted"
+            onClick={() => resendCode()}
+          >
             Reenviar código
           </span>
         </div>
-        <footer className="uk-margin-large-top">
+        <footer className="uk-flex  uk-margin-large-top">
           <Button
             onClick={() => setStep((prv) => prv - 1)}
             type="button"
@@ -137,11 +140,11 @@ export function Step3({ data, setStep }) {
           <Button type="submit" text="Confirmar" />
         </footer>
         <div className="uk-margin-small-top">
-          <span className="uk-link" onClick={() => router.push("/")}>
+          <span className="font-12 uk-link" onClick={() => router.push("/")}>
             Já possuo conta
           </span>
         </div>
       </form>
-    </Container>
+    </S.Step3>
   );
 }

@@ -6,8 +6,8 @@ export type LoadDreReport = {
 
 export namespace LoadDreReport {
   export type Params = {
-    unit: BusinessUnit["id"];
-    competence: Date;
+    unit?: BusinessUnit["id"];
+    competence?: Date;
   };
 
   export type Model = { result: string };

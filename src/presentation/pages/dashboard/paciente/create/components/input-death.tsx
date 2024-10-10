@@ -30,7 +30,7 @@ export function InputDeath() {
           },
         ]}
         onlyOneValue
-        onChangeSelect={(value) => {
+        onChangeInput={(value) => {
           if ((value as string) === "true") {
             setDeathDate(true);
           } else {

@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+export const Step3 = styled("div")`
+  footer {
+    display: flex;
+    gap: 5px;
+  }
+`;
 
 export const InputBox = styled.div`
   margin-right: 2%;

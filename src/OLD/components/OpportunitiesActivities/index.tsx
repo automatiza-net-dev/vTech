@@ -87,6 +87,7 @@ const OpActivities = memo(function OpActivities({
       originDescription: opportunity?.clientOrigin?.description,
       originId: opportunity?.clientOrigin?.id,
       clientOriginItemDescription: opportunity?.clientOriginItemDescription,
+      marketingCampaignId: opportunity?.marketingCampaignId,
     });
   }, [opportunity, reload]);
 
@@ -104,6 +105,7 @@ const OpActivities = memo(function OpActivities({
               duration: activity.duration,
               description: activity?.description,
               status: activity?.status,
+              marketingCampaignId: activity?.marketingCampaignId,
               executionDate: moment(activity?.execution_date).format(
                 "DD/MM/YYYY - HH:mm"
               ),
@@ -145,6 +147,7 @@ const OpActivities = memo(function OpActivities({
       gender: opportunitiesData?.gender,
       castrated: opportunitiesData?.castrated,
       raceId: opportunitiesData?.raceId,
+      marketingCampaignId: opportunitiesData?.marketingCampaignId,
       clientOriginItemDescription:
         opportunitiesData?.clientOriginItemDescription,
     };

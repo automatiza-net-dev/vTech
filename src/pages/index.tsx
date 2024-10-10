@@ -1,9 +1,10 @@
 import { DashboardPage, LayoutDashboard } from "@/presentation";
 
-export default function Dashboard() {
+import { Button, useCarousel } from "infinity-forge";
 
+export default function Dashboard() {
   return (
-    <LayoutDashboard >
+    <LayoutDashboard>
       <DashboardPage />
     </LayoutDashboard>
   );

@@ -21,16 +21,23 @@ export function ProtocolForm(props: {
       <FormHandler
         initialData={props.data}
         onSucess={() => props.submit()}
-        button={{ text: "Salvar" }}
+        customSubmit={[
+          {
+            action: () => props.submit(),
+            active: true,
+            props: {
+              text: "Salvar",
+            },
+          },
+        ]}
         onChangeForm={{ callbackResult: (prv) => props.setData(prv) }}
       >
         <section>
-          <Input name="name" label="Nome" />
+          <Input name="name" label="Nome" className="box-1" />
           {species?.data && (
-            <div>
-              <label>Especie</label>
-
+            <div className="box-2">
               <Select
+                label="Especie"
                 menuPlacement="bottom"
                 name="specieId"
                 options={species.data.map((specie) => ({
@@ -42,11 +49,11 @@ export function ProtocolForm(props: {
               />
             </div>
           )}
-          <Input name="interval" label="Intervalo (Em dias)" type="number" />
+        </section>
+        <div className="down-box">
           <div>
-            <label>Qtd. Doses</label>
-
             <Select
+              label="Qtd. Doses"
               menuPlacement="top"
               name="doses"
               options={dosageList.map((dose) => ({
@@ -57,7 +64,13 @@ export function ProtocolForm(props: {
               value={props.data.doses}
             />
           </div>
-        </section>
+          <Input name="interval" label="Intervalo (Em dias)" type="number" />
+          <Input
+            type="number"
+            label="Valido por (Em dias)"
+            name="expirationDays"
+          />
+        </div>
       </FormHandler>
     </S.ProtocolForm>
   );

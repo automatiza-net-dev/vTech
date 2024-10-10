@@ -61,7 +61,7 @@ const MultipleContacts = memo(function MultipleContacts({
                 }))}
                 onlyOneValue
                 value={contact?.type}
-                onChangeSelect={async (value) => {
+                onChangeInput={async (value) => {
                   const arr = [...contacts];
                   arr.splice(i, 1, {
                     ...contacts[i],

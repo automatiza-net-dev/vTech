@@ -49,7 +49,7 @@ function FormChild({
                   }))}
                   disabled={!modal}
                   onlyOneValue
-                  onChangeSelect={async (value) => {
+                  onChangeInput={async (value) => {
                     const selectedPathology = allPathologies.find(
                       (pathology) => pathology.id === value
                     );

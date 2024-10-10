@@ -1,4 +1,3 @@
-import { useDictionary } from "@/presentation";
 import { useState, createContext } from "react";
 
 export const AppContext = createContext<{
@@ -21,7 +20,6 @@ export const AppProvider = ({ children }) => {
       value={{
         titles,
         setTitles,
-
 
         originConfig,
         setOriginConfig,

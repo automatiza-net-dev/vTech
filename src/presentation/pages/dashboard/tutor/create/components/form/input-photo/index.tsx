@@ -74,12 +74,6 @@ function ResultFile({
 
         <Icon name="IconEditImage" />
       </div>
-
-      {/* <DeleteFileButton onDelete={onDelete} />
-
-      <DownloadButton />
-
-      <ShowDetailFileButton /> */}
     </S.ResultFileStyled>
   );
 }

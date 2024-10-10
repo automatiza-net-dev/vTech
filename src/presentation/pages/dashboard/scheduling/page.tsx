@@ -30,7 +30,7 @@ function Scheduling() {
     (state) => state.listCancelledEvents
   );
 
-  const dateFormatted = DateToYYYYMMDD(selectedDate || new Date());
+  const dateFormatted = DateToYYYYMMDD(selectedDate || new Date()) || "";
 
   const { data, isFetching } = useLoadAllSchedulesUser(
     dateFormatted,

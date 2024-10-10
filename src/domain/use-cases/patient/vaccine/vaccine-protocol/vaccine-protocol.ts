@@ -4,7 +4,7 @@ export type VaccineProtocol = {
   id?: string;
   vaccine_id?: string;
   specie_id?: string;
-  name?:string;
+  name?: string;
   doses?: number;
   interval?: number;
   created_at?: string;
@@ -12,4 +12,5 @@ export type VaccineProtocol = {
   vaccine: Vaccine;
   specie: Specie;
   active?: boolean;
-}
+  expirationDays?: string | null;
+};

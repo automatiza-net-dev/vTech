@@ -9,9 +9,14 @@ import {
 } from "@/presentation";
 
 export function SelectServices() {
-  const { data } = useLoadAllScheduleServicesGroups();
   const { initialValues, setFieldValue } = useFormikContext<any>();
-  const createSchedulingArgs= useScheduling((state) => state.createSchedulingArgs);
+  const { data } = useLoadAllScheduleServicesGroups({
+    patient: initialValues?.patientId?.[0],
+  });
+  const createSchedulingArgs = useScheduling(
+    (state) => state.createSchedulingArgs
+  );
+
 
   const options = data?.reduce((reducer: any, result) => {
     return [
@@ -57,7 +62,7 @@ export function SelectServices() {
       name="scheduleServiceTypeId"
       placeholder="Serviço"
       options={options || []}
-      onChangeSelect={(value) => setTimingService(value as string[])}
+      onChangeInput={(value) => setTimingService(value as string[])}
     />
   );
 }

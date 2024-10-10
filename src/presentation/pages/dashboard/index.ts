@@ -1,3 +1,4 @@
+export * from "./dre";
 export * from "./sales";
 export * from "./tutor";
 export * from "./goals";

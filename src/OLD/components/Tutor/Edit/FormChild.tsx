@@ -292,7 +292,7 @@ export function FormChild({
                     ]}
                     onlyOneValue
                     value={data?.gender}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, gender: value });
                     }}
                   />
@@ -310,7 +310,7 @@ export function FormChild({
                       }))}
                       onlyOneValue
                       value={data?.professionId}
-                      onChangeSelect={async (value) => {
+                      onChangeInput={async (value) => {
                         const opt = professions.find(
                           (prof) => prof.id === value
                         );
@@ -339,7 +339,7 @@ export function FormChild({
                     ]}
                     onlyOneValue
                     value={data?.civilStatus}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, civilStatus: value });
                     }}
                   />
@@ -370,7 +370,7 @@ export function FormChild({
                     }))}
                     onlyOneValue
                     value={data?.clientOriginId}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, clientOriginId: value });
                       setSelectedOrigin(
                         tutorOrigins?.find((item) => item?.id === value)
@@ -553,7 +553,7 @@ export function FormChild({
                 ]}
                 onlyOneValue
                 value={data?.residence}
-                onChangeSelect={async (value) => {
+                onChangeInput={async (value) => {
                   setData({ ...data, residence: value });
                 }}
               />

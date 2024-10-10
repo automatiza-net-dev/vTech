@@ -36,8 +36,6 @@ function FormChild({
 
   sortItems(allRecipes, "description");
 
-
-
   return (
     <FormHandler isStickyButtons>
       <div>
@@ -54,7 +52,7 @@ function FormChild({
                 }))}
                 disabled={!modal}
                 onlyOneValue
-                onChangeSelect={async (value) => {
+                onChangeInput={async (value) => {
                   const selectedRecipe = allRecipes.find(
                     (recipe) => recipe.id === value
                   );

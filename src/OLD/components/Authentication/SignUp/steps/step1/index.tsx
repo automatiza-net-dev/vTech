@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import api from "@/OLD/services";
 import { Button } from "infinity-forge";
 
+import * as S from "./styles";
+
 export function Step1(props) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export function Step1(props) {
       await api
         ?.get(`/users/check-email/${data.email}`)
         .then((res) => {
-          if (res.data?.inUse) {
+          if (res.data?.exists) {
             setError(true);
           } else {
             props.setData({
@@ -36,7 +38,7 @@ export function Step1(props) {
   );
 
   return (
-    <div>
+    <S.Step1>
       {error ? (
         <>
           <h3 style={{ color: "#ffffff" }}>
@@ -82,15 +84,17 @@ export function Step1(props) {
                   type="submit"
                 />
               </div>
-              <div className="uk-margin-top uk-text-center uk-width-1-4">
-                <span className="uk-link" onClick={() => router.push("/")}>
-                  Já possuo conta
-                </span>
-              </div>
+
+              <span
+                className="uk-link font-12"
+                onClick={() => router.push("/")}
+              >
+                Já possuo conta
+              </span>
             </footer>
           </form>
         </>
       )}
-    </div>
+    </S.Step1>
   );
 }

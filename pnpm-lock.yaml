@@ -78,8 +78,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: 3.0.0
-        version: 3.0.0(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1)
+        specifier: 3.8.1
+        version: 3.8.1(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1)
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -1827,8 +1827,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@3.0.0:
-    resolution: {integrity: sha512-wlqp1sUxCnHsFQ/IEfZXi9rMtludz0F0ImkkVmLfPNYo6DISEIx4I56jI/axt7gAHx01gqapRBYF0ar8jBjLKA==}
+  infinity-forge@3.8.1:
+    resolution: {integrity: sha512-IWv/x3pL27W/jys7fvO0s/poFLIDvYy7zuPHPyR+zvv2mAq1iXarye3xmr6QUVezOSstMpQVZQ8Q+ch5Y2+J3g==}
     peerDependencies:
       react: '>=16'
 
@@ -2609,6 +2609,11 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
+  react-async-script@1.2.0:
+    resolution: {integrity: sha512-bCpkbm9JiAuMGhkqoAiC0lLkb40DJ0HOEJIku+9JDjxX3Rcs+ztEOG13wbrOskt3n2DTrjshhaQ/iay+SnGg5Q==}
+    peerDependencies:
+      react: '>=16.4.1'
+
   react-calendar@4.8.0:
     resolution: {integrity: sha512-qFgwo+p58sgv1QYMI1oGNaop90eJVKuHTZ3ZgBfrrpUb+9cAexxsKat0sAszgsizPMVo7vOXedV7Lqa0GQGMvA==}
     peerDependencies:
@@ -2672,6 +2677,11 @@ packages:
     peerDependencies:
       prop-types: ^15.6.0
       react: ^15.6.2 || ^16.0 || ^17 || ^18
+
+  react-google-recaptcha@3.1.0:
+    resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
+    peerDependencies:
+      react: '>=16.4.1'
 
   react-hook-form@7.52.1:
     resolution: {integrity: sha512-uNKIhaoICJ5KQALYZ4TOaOLElyM+xipord+Ha3crEFhTntdLvWZqVY49Wqd/0GiVCA/f9NjemLeiNPjG7Hpurg==}
@@ -5043,7 +5053,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@3.0.0(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1):
+  infinity-forge@3.8.1(@types/react@18.3.3)(prop-types@15.8.1)(react@18.3.1):
     dependencies:
       '@types/lodash': 4.17.7
       axios: 1.7.2
@@ -5056,6 +5066,8 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-ga: 3.3.1(prop-types@15.8.1)(react@18.3.1)
+      react-google-recaptcha: 3.1.0(react@18.3.1)
+      react-is: 18.3.1
       react-rte: 0.16.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-share: 5.1.0(react@18.3.1)
@@ -5910,6 +5922,12 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-async-script@1.2.0(react@18.3.1):
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      prop-types: 15.8.1
+      react: 18.3.1
+
   react-calendar@4.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@wojtekmaj/date-utils': 1.5.1
@@ -5983,6 +6001,12 @@ snapshots:
     dependencies:
       prop-types: 15.8.1
       react: 18.3.1
+
+  react-google-recaptcha@3.1.0(react@18.3.1):
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-async-script: 1.2.0(react@18.3.1)
 
   react-hook-form@7.52.1(react@18.3.1):
     dependencies:

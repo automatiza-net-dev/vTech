@@ -8,6 +8,7 @@ export interface PatientHuman {
   type: string;
   photo: string | null;
   vaccineOrigin?: string;
+  holders?: Tutor[];
   gender: "female" | "male";
   genderText: string;
   tags: string;

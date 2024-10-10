@@ -22,7 +22,7 @@ export function SelectPatient() {
       label="Nome"
       name="patient"
       placeholder="Selecione uma opção"
-      onChangeSelect={handleChange}
+      onChangeInput={handleChange}
       options={
         patients?.data?.map((patient) => ({
           label: patient.name,

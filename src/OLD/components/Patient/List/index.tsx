@@ -12,7 +12,7 @@ import { usePatients } from "@/OLD/hooks/usePatients";
 // Components
 import { Container } from "./styles";
 import { Button } from "infinity-forge";
-import PatientDetails from "../Single/Details";
+import PatientDetails from "../../../../presentation/pages/dashboard/paciente/patient-info/patient-info";
 import { Edit } from "../Edit";
 
 // Icons

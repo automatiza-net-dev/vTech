@@ -83,5 +83,5 @@ export const opportunitiesService = {
   syncSchedule,
   excludeActivityOpportunity,
   removeOpportunity,
-  reopenOpportunity
+  reopenOpportunity,
 };

@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { VaccineProtocol } from "@/domain";
 
 import { RemoteVaccine } from "@/data";
+
+import { useQueryClient } from "react-query";
 import { useLoadAllVaccinesProtocols } from "@/presentation";
 
 import { VaccineForm } from "../../vaccine-form";
@@ -27,6 +29,7 @@ export function EditVaccine(props: VaccineProtocol) {
   });
 
   const { createToast } = useToast();
+  const queryClient = useQueryClient();
 
   const vaccinesProtocols = useLoadAllVaccinesProtocols({
     vaccine: props?.vaccine?.id,
@@ -35,14 +38,17 @@ export function EditVaccine(props: VaccineProtocol) {
 
   const updateVaccine = async () => {
     try {
-      const response = await container
+      await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
         .editVaccine(data);
-    } catch (err) {
-      return createToast({
-        message: "Verificar retorno de erros",
-        status: "error",
-      });
+
+      setOpen(false);
+
+      queryClient.invalidateQueries(["LoadAllVaccineProtocols"]);
+    } catch (err: any) {
+      if (err?.error) {
+        return createToast({ message: err?.error?.message, status: "error" });
+      }
     }
     return createToast({
       message: "Vacina atualizada com sucesso!",
@@ -86,7 +92,11 @@ export function EditVaccine(props: VaccineProtocol) {
             : "Editar vermífugo"
         }
         trigger={
-          <button onClick={() => setOpen(true)}>
+          <button
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="12"
@@ -100,12 +110,15 @@ export function EditVaccine(props: VaccineProtocol) {
               />
             </svg>
             <Modal
+              styles={{ width: "980px", padding: "20px" }}
               children={
                 <>
                   <VaccineForm {...protocolFormProps} />
                   <>
                     <CreateProtocol vaccineId={props?.vaccine?.id} />
-                    <ProtocolsTable {...protocolsTableProps} />
+                    <div style={{ width: "900px" }}>
+                      <ProtocolsTable {...protocolsTableProps} />
+                    </div>
                   </>
                 </>
               }

@@ -39,6 +39,17 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
       },
     },
     {
+      id: "expirationDays",
+      label: "Valido por (Em Dias)",
+      hasAsc: false,
+      width: 100,
+      Component: {
+        Element: (props) => <span>{props.expirationDays || "-"}</span>,
+        props: {},
+        allProps: true,
+      },
+    },
+    {
       id: "vaccine",
       label: "Ativa",
       hasAsc: false,

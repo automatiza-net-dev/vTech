@@ -124,7 +124,7 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }) {
                   }))}
                   disabled={!modal}
                   onlyOneValue
-                  onChangeSelect={async (value) => {
+                  onChangeInput={async (value) => {
                     const selectedUser = vetsQuery.data.find(
                       (user) => user.id === value
                     );

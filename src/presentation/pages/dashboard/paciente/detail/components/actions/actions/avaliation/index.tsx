@@ -10,12 +10,13 @@ import {
   Textarea,
   Accordion,
   InputFile,
-  TextEditor,
   FormHandler,
   useAuthAdmin,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
+
+import * as yup from "yup";
 
 import { TimeLine, User } from "@/domain";
 import { RemoteAttendances } from "@/data";
@@ -58,50 +59,74 @@ export function Avaliation(props: DropdownComponentProps) {
   const schedule = useLoadSchedule(scheduleId);
 
   async function handleSubmit(data, onSuccess: () => void) {
-    const payload = {
-      ...data,
-      scheduleId,
-      protocol: body,
-      realizedAt: moment().toDate(),
-      technicianId: user?.user?.id as string,
-      scheduleServiceId: data.scheduleServiceId
-        ? data.scheduleServiceId[0]
-        : "",
-      patientId,
-      photos: data?.photos?.map((photo) => photo.file),
-    };
+    try {
+      if (body === "") {
+        return createToast({
+          message: "Protocolo não informado",
+          status: "error",
+        });
+      }
 
-    const attendanceResponse = await container
-      .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
-      [!attendanceId ? "open" : "update"]({
-        ...payload,
-        id: attendanceId
-          ? process.env.client === "liftone"
-            ? timeLine._id
-            : attendanceId
-          : undefined,
+      if (!data?.scheduleServiceId || data?.scheduleServiceId == "") {
+        return createToast({
+          message: "Informe o tipo de atendimento",
+          status: "error",
+        });
+      }
+
+      const payload = {
+        ...data,
+        scheduleId,
+        protocol: body,
+        realizedAt: moment().toDate(),
+        technicianId: user?.user?.id as string,
+        scheduleServiceId: data.scheduleServiceId
+          ? data.scheduleServiceId[0]
+          : "",
+        patientId,
+        photos: data?.photos?.map((photo) => photo.file),
+      };
+
+      const attendanceResponse = await container
+        .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
+        [!attendanceId ? "open" : "update"]({
+          ...payload,
+          id: attendanceId
+            ? process.env.client === "liftone"
+              ? timeLine._id
+              : attendanceId
+            : undefined,
+        });
+
+      setAttendance(attendanceResponse);
+
+      onSuccess && onSuccess();
+
+      if (scheduleDate) {
+        queryClient.invalidateQueries({
+          queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "true",
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "false",
+        });
+      }
+
+      createToast({
+        message: `Atendimento ${
+          attendanceId ? "atualizado" : "criado"
+        }  com sucesso!`,
+        status: "success",
       });
-
-    setAttendance(attendanceResponse);
-
-    onSuccess && onSuccess();
-
-    if (scheduleDate) {
-      queryClient.invalidateQueries({
-        queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "true",
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "false",
+    } catch (err: any) {
+      if (err?.error?.message) {
+        return createToast({ status: "error", message: err?.error?.message });
+      }
+      return createToast({
+        status: "error",
+        message: "Houve um erro ao criar a avaliação",
       });
     }
-
-    createToast({
-      message: `Atendimento ${
-        attendanceId ? "atualizado" : "criado"
-      }  com sucesso!`,
-      status: "success",
-    });
   }
 
   const initialData = {
@@ -130,6 +155,9 @@ export function Avaliation(props: DropdownComponentProps) {
           <FormHandler
             isStickyButtons
             debugMode
+            schema={{
+              resume: yup.string().required("Campo resumo é obrigatório"),
+            }}
             cleanFieldsOnSubmit={false}
             initialData={initialData}
             customSubmit={[

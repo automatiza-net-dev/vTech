@@ -22,8 +22,8 @@ export function useSubmitSchedule() {
   } = useScheduling((state) => state);
 
   const scheduleUsers = useLoadAllSchedulesUser(
-    DateToYYYYMMDD(selectedDate || new Date()),
-    DateToYYYYMMDD(selectedDate || new Date())
+    DateToYYYYMMDD(selectedDate || new Date()) || "",
+    DateToYYYYMMDD(selectedDate || new Date()) || ""
   );
 
   const findBlokingEventsHours =

@@ -19,7 +19,7 @@ export function SelectReason({ setDisableObservation }) {
       options={options || []}
       onlyOneValue
       loading={isFetching}
-      onChangeSelect={(value) => {
+      onChangeInput={(value) => {
         const requires_observation = !data?.find(
           (reason) => reason.id === value
         )?.requires_observation;

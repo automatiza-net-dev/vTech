@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   FormHandler,
@@ -6,31 +6,30 @@ import {
   Button,
   InputDatePicker,
   PageWrapper,
+  updateRoute,
 } from "infinity-forge";
 
 import * as S from "./styles";
 
 import { useLoadAllAvailableUnits, useLoadDreReport } from "@/presentation";
 
-import moment from "moment";
 import axios from "axios";
 
 export function DreReport() {
-  const [filters, setFilters] = useState({ competence: new Date(), unit: "" });
-
+  const router = useRouter();
+  const reports = useLoadDreReport();
   const businessUnits = useLoadAllAvailableUnits();
-  const reports = useLoadDreReport(filters);
 
   return (
     <PageWrapper title="Relatório DRE">
       <S.DreReport>
         <FormHandler
-          initialData={filters}
+          initialData={{ competence: new Date() }}
           onChangeForm={{
             callbackResult: (data) => {
-              setFilters({
-                ...data,
-                competence: moment(data.competence).format("MM/YYYY"),
+              updateRoute({
+                params: { ...data, competence: data?.competenceundefined },
+                router,
               });
               reports.remove();
             },
@@ -42,7 +41,6 @@ export function DreReport() {
               label="Competencia"
               name="competence"
               mode="month"
-              date={{ maxDate: new Date() }}
             />
             {businessUnits.data && (
               <Select
@@ -64,7 +62,7 @@ export function DreReport() {
             onClick={async () => {
               const reportsResponse = await reports.refetch();
 
-              const response = await axios.get(reportsResponse.data.result, {
+              const response = await axios.get(reportsResponse?.data?.result, {
                 method: "get",
                 responseType: "blob",
               });

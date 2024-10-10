@@ -39,7 +39,6 @@ export default function Create({
   const createOpportunity = useCallback(() => {
     const newObj = {
       ...data,
-      contactId: data?.contactId,
       businessUnitId: clinic?.id,
       contactDate: moment(data?.contactDate).toISOString(),
       value: convertIntlCurrency(data?.value),

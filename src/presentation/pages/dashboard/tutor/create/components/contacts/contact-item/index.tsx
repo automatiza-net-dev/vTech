@@ -29,7 +29,7 @@ export function ContactItem({
         name={`contacts[${index}].type`}
         options={types}
         label="Tipo Contato*"
-        onChangeSelect={(value) => {
+        onChangeInput={(value) => {
           if (type === "email" && value !== "email") {
             setFieldValue(`contacts[${index}].contact`, "");
           }
