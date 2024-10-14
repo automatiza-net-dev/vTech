@@ -101,33 +101,31 @@ export function AuthorizationPaymentForm({
   }
 
   return (
-    <PermissionItem hash={auth}>
-      <FormHandler
-        schema={{
-          email: yup.string().required("E-mail é obrigatório"),
-          password: yup.string().required("Senha é obrigatório"),
-          description: yup.string().required("Descrição é obrigatório"),
-        }}
-        onSucess={(payload) => sendAuthorization(true, payload)}
-        button={{
-          text: "Autorizar",
-        }}
-        customSubmit={[
-          {
-            action: (payload) => sendAuthorization(false, payload),
-            active: true,
-            props: {
-              text: "Não Autorizar",
-            },
+    <FormHandler
+      schema={{
+        email: yup.string().required("E-mail é obrigatório"),
+        password: yup.string().required("Senha é obrigatório"),
+        description: yup.string().required("Descrição é obrigatório"),
+      }}
+      onSucess={(payload) => sendAuthorization(true, payload)}
+      button={{
+        text: "Autorizar",
+      }}
+      customSubmit={[
+        {
+          action: (payload) => sendAuthorization(false, payload),
+          active: true,
+          props: {
+            text: "Não Autorizar",
           },
-        ]}
-      >
-        <Input name="email" label="Email Usuário" />
+        },
+      ]}
+    >
+      <Input name="email" label="Email Usuário" />
 
-        <Input label="Senha" name="password" type="password" />
+      <Input label="Senha" name="password" type="password" />
 
-        <Textarea label="Descrição" name="description" />
-      </FormHandler>
-    </PermissionItem>
+      <Textarea label="Descrição" name="description" />
+    </FormHandler>
   );
 }

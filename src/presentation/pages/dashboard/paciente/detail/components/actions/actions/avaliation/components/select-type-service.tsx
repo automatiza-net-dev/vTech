@@ -28,7 +28,7 @@ export function SelectTypeService({
   const schedule = useLoadSchedule(scheduleId);
   const { setFieldValue } = useFormikContext();
 
-  const { data, isFetching } = useLoadAllScheduleServicesGroups();
+  const { data, isFetching } = useLoadAllScheduleServicesGroups({});
 
   async function AddInitialValueInResumeInput(value: string) {
     const optionSelected = data?.find((option) =>
@@ -69,7 +69,7 @@ export function SelectTypeService({
       label="Tipo atendimento"
       menuPlacement={"bottom"}
       isGroup
-      onChangeSelect={(ev) => {
+      onChangeInput={(ev) => {
         const value = (ev as string[])[0];
 
         AddInitialValueInResumeInput(value);

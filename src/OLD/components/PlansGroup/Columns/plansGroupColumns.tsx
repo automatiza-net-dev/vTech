@@ -10,6 +10,11 @@ export const plansGroupColumns = [
     key: "type"
   },
   {
+    title: "Agrupamento DRE",
+    dataIndex: "dreGroup",
+    key: 'dreGroup'
+  },
+  {
     title: "Status",
     dataIndex: "active",
     key: "active"

@@ -80,7 +80,6 @@ export function Patient({
                         } as any)
                       }
                     />
-                   
                   </Input>
                   <Input>
                     <input
@@ -93,7 +92,6 @@ export function Patient({
                         } as any)
                       }
                     />
-                 
                   </Input>
                   <Input>
                     <input
@@ -106,7 +104,6 @@ export function Patient({
                         } as any)
                       }
                     />
-                   
                   </Input>
                   <Input>
                     <input
@@ -116,7 +113,6 @@ export function Patient({
                         setFilters({ ...filters, phone: e.target.value } as any)
                       }
                     />
-                   
                   </Input>
                   <Input>
                     <input
@@ -129,7 +125,6 @@ export function Patient({
                         } as any)
                       }
                     />
-                   
                   </Input>
                   <div
                     style={{
@@ -190,7 +185,7 @@ export function Patient({
             payload={payload}
             setPayload={setPayload}
             setSearch={setPayload}
-            setNewPacient={setPayload}
+            // setNewPacient={setPayload}
             setTutorsReload={setReload}
           />
         )}

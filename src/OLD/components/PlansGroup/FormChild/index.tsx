@@ -1,15 +1,14 @@
 // @ts-nocheck
-import React, { memo } from "react";
+import React from "react";
+
+import { useLoadAllDreGroups } from "@/presentation";
 
 import { Switch, Select, Button, Input } from "antd";
 const { Option } = Select;
 
-const FormChild = memo(function FormChild({
-  data,
-  setData,
-  submit,
-  setVisible
-}) {
+function FormChild({ data, setData, submit, setVisible }) {
+  const dreGroups = useLoadAllDreGroups();
+
   return (
     <div>
       <form
@@ -50,6 +49,19 @@ const FormChild = memo(function FormChild({
             <Option value="AMBOS">Ambos</Option>
           </Select>
         </div>
+        <div style={{ marginTop: "10px" }}>
+          <label>Agrupamento DRE</label>
+          <Select
+            style={{ width: "100%" }}
+            required
+            value={data?.dreGroupId}
+            onChange={(val) => setData({ ...data, dreGroupId: val })}
+          >
+            {dreGroups?.data?.map((group) => (
+              <Option value={group?.id}>{group?.description}</Option>
+            ))}
+          </Select>
+        </div>
         <hr />
         <footer className="uk-margin-top uk-flex uk-flex-right">
           <Button type="primary" htmlType="submit" className="uk-margin-right">
@@ -60,6 +72,6 @@ const FormChild = memo(function FormChild({
       </form>
     </div>
   );
-});
+}
 
 export default FormChild;

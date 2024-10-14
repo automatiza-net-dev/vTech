@@ -8,8 +8,7 @@ import { columns } from "./columns";
 export function VaccinesTable(props: Patient) {
   const { data, isFetching } = useLoadAllPatientVaccines(props);
 
-  const { Table } = useTable<ScheduleVaccine>({
-    
+  const { Table } = useTable<ScheduleVaccine | any>({
     columnsConfiguration: {
       columns,
     },

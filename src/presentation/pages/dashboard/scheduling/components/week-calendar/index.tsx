@@ -38,8 +38,8 @@ export function WeekCalendar({
   const professionals = useLoadProfessionalsSchedule();
 
   const { data, refetchKeyWeekCalendar } = useLoadAllSchedulesUserWeek(
-    DateToYYYYMMDD(weekRange?.to || new Date()),
-    DateToYYYYMMDD(weekRange?.from || new Date()),
+    DateToYYYYMMDD(weekRange?.to || new Date()) || "",
+    DateToYYYYMMDD(weekRange?.from || new Date()) || "",
     weekRange.professionals,
     listCancelledEvents
   );

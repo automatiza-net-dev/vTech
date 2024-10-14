@@ -113,7 +113,7 @@ export default function AddPaymentsScreen({
               <label>Plano de contas para geração dos tributos</label>
 
               <Select
-                onChangeSelect={(val) => setAccountPlanId(val)}
+                onChangeInput={(val) => setAccountPlanId(val)}
                 onlyOneValue
                 isMultiple={false}
                 menuPlacement="bottom"

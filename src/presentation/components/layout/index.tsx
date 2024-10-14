@@ -30,7 +30,7 @@ export function LayoutDashboard({ children }) {
 
 function LayoutPage({ children }) {
   const router = useRouter();
-  const avaiableUnits = useLoadAllAvailableUnits();
+  const avaiableUnits = useLoadAllAvailableUnits?.();
 
   const { user } = useAuthAdmin();
   const workspaces = {

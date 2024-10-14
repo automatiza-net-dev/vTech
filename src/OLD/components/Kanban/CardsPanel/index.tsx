@@ -82,6 +82,6 @@ function CardsPanel({
       </section>
     </Container>
   );
-};
+}
 
 export default CardsPanel;

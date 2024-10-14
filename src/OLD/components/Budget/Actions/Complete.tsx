@@ -22,6 +22,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 import Negotiation from "@/OLD/components/Budget/Negotiation";
+import { Modal as ModalInfinityForge } from "infinity-forge";
 
 import {
   CheckIcon,
@@ -94,6 +95,8 @@ const columns = [
 
 export default function CompleteBudget({ budget, setReload = false }) {
   const queryClient = useQueryClient();
+  const [stockProducts, setStockProducts] = React.useState<any>([]);
+  const [stockProductsOpen, setStockProductsOpen] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [observation, setObservation] = React.useState("Sem observações");
@@ -199,6 +202,11 @@ export default function CompleteBudget({ budget, setReload = false }) {
     } catch (error) {
       setIsLoading(false);
       const errorMessage = error?.error?.message;
+
+      if (errorMessage?.includes("não existe no depósito")) {
+        setStockProducts(errorMessage?.replaceAll("=", "|").split("|"));
+        return setStockProductsOpen(true);
+      }
 
       if (errorMessage) {
         createToast({
@@ -343,7 +351,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
                       value={client?.id}
                       name="tutor"
                       onlyOneValue
-                      onChangeSelect={(value: string) => {
+                      onChangeInput={(value: string) => {
                         updateClient(value);
                         setClient({
                           name: tutorsList.find((t) => t.value === value)
@@ -570,6 +578,21 @@ export default function CompleteBudget({ budget, setReload = false }) {
             <Negotiation budgetId={budget?.id} />
           </TabPane>
         </Tabs>
+        <ModalInfinityForge
+        open={stockProductsOpen}
+        onClose={() => setStockProductsOpen(false)}
+        styles={{ width: "500px", padding: "20px" }}
+        children={
+          <>
+            <h4>Os seguintes produtos não possuem quantidade em estoque:</h4>
+            {stockProducts?.map((item, i) => {
+              if (i !== 0) {
+                return <li key={i}>{item}</li>;
+              }
+            })}
+          </>
+        }
+      />
       </Modal>
     </>
   );

@@ -129,7 +129,7 @@ function Vaccines({ modal, setModal, value }) {
                 }))}
                 disabled={!modal}
                 onlyOneValue
-                onChangeSelect={async (value) => {
+                onChangeInput={async (value) => {
                   setData({ ...data, protocolId: value });
                   const selected = allProtocols.find(
                     (item) => item.id === value

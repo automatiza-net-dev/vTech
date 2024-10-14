@@ -20,7 +20,9 @@ function SelectComponent({ isReturn }) {
     (values as any).patientId
   );
 
-  const createSchedulingArgs = useScheduling(state => state.createSchedulingArgs);
+  const createSchedulingArgs = useScheduling(
+    (state) => state.createSchedulingArgs
+  );
 
   useEffect(() => {
     if (data && data.length === 0 && isReturn && !isLoading) {
@@ -65,7 +67,9 @@ export function SelectReturnable() {
   const initialValue =
     values["scheduleServiceTypeId"] || initialValues["scheduleServiceTypeId"];
 
-  const { data } = useLoadAllScheduleServicesGroups();
+  const { data } = useLoadAllScheduleServicesGroups({
+    patient: initialValues?.patientId?.[0],
+  });
 
   const options = data?.reduce((reducer: any, result) => {
     return [

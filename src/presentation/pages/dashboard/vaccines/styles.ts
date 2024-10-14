@@ -5,4 +5,14 @@ export const Vaccine = styled("div")`
     display: flex;
     gap: 10px;
   }
+
+  .buttons-container {
+    display: flex;
+    width: 70%;
+    justify-content: flex-end;
+  }
+
+  .input-container {
+    width: 700px;
+  }
 `;

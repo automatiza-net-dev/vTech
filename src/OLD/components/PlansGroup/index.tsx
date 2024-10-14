@@ -34,8 +34,10 @@ function PlansGroup() {
     setFormatedPlansGroup(
       plansGroup?.map((group) => {
         return {
+          dreGroup: group?.dreGroup?.id,
           description: group?.description,
           type: group?.type,
+          dreGroup: group?.dreGroup?.description || "---",
           active: group?.active ? "Ativo" : "Inativo",
           createdAt: moment(group?.created_at).format("DD/MM/YYYY"),
           actions: (

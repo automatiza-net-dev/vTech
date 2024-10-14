@@ -11,14 +11,13 @@ import {
   Collapse,
   Skeleton,
   Popconfirm,
-  notification,
 } from "antd";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { BiDuplicate } from "react-icons/bi";
 import { useMutation, useQuery } from "react-query";
 
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import { sortItems } from "@/OLD/utils/sortItems";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { adminService } from "@/OLD/services/admin.service";
@@ -94,6 +93,7 @@ export default function ControlesDeAcessoPage() {
   const [searchRoleParams, setSearchRoleParams] = useState({});
 
   const { info } = useSearchProfileInfo(searchRoleParams);
+  const { createToast } = useToast();
 
   useEffect(() => {
     setSearchRoleParams({ id: showRoleId });
@@ -170,11 +170,12 @@ export default function ControlesDeAcessoPage() {
         setShowRoleId(res.data.id);
       },
       onError: (err: any) => {
-        notification.error({
-          message: err.response.data.message
-            ? err.response.data.message.split(":").at(1)
-            : "Erro ao criar",
-        });
+        if (err?.response?.data?.errors) {
+          return createToast({
+            message: err?.response?.data?.errors?.[0]?.message,
+            status: "error",
+          });
+        }
       },
     }
   );
@@ -195,11 +196,12 @@ export default function ControlesDeAcessoPage() {
         rolesQuery.refetch();
       },
       onError: (err: any) => {
-        notification.error({
-          message: err.response.data.message
-            ? err.response.data.message.split(":").at(1)
-            : "Erro ao atualizar",
-        });
+        if (err?.response?.data?.errors) {
+          return createToast({
+            message: err?.response?.data?.errors?.[0]?.message,
+            status: "error",
+          });
+        }
       },
     }
   );
@@ -209,11 +211,12 @@ export default function ControlesDeAcessoPage() {
       rolesQuery.refetch();
     },
     onError: (err: any) => {
-      notification.error({
-        message: err.response.data.message
-          ? err.response.data.message.split(":").at(1)
-          : "Erro ao deletar cargo",
-      });
+      if (err?.response?.data?.errors) {
+        return createToast({
+          message: err?.response?.data?.errors?.[0]?.message,
+          status: "error",
+        });
+      }
     },
   });
 
@@ -224,11 +227,12 @@ export default function ControlesDeAcessoPage() {
         showRoleMetadataQuery.refetch();
       },
       onError: (err: any) => {
-        notification.error({
-          message: err.response.data.message
-            ? err.response.data.message.split(":").at(1)
-            : "Erro ao adicionar",
-        });
+        if (err?.response?.data?.errors) {
+          return createToast({
+            message: err?.response?.data?.errors?.[0]?.message,
+            status: "error",
+          });
+        }
       },
     }
   );
@@ -248,11 +252,12 @@ export default function ControlesDeAcessoPage() {
         rolesQuery.refetch();
       },
       onError: (err: any) => {
-        notification.error({
-          message: err.response.data.message
-            ? err.response.data.message.split(":").at(1)
-            : "Erro ao adicionar",
-        });
+        if (err?.response?.data?.errors) {
+          return createToast({
+            message: err?.response?.data?.errors?.[0]?.message,
+            status: "error",
+          });
+        }
       },
     }
   );
@@ -265,8 +270,9 @@ export default function ControlesDeAcessoPage() {
       .then((res) => {
         setTerm(res?.data?.name);
         setLoading(false);
-        return notification.success({
+        createToast({
           message: "Controle copiado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {

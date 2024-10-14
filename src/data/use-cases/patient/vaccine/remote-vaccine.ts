@@ -15,7 +15,8 @@ export class RemoteVaccine
     domain.EditVaccineProtocol,
     domain.EditVaccine,
     domain.LoadVaccinesReports,
-    domain.LoadAllVaccines
+    domain.LoadAllVaccines,
+    domain.LoadAllVaccineStatus
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -85,6 +86,13 @@ export class RemoteVaccine
       url: this.makeApiURL.make("reports/vaccine-vermifuge"),
       method: "get",
       body: params,
+    });
+  }
+
+  async loadAllVaccinesStatus(params: domain.LoadAllVaccinesStatus.Params) {
+    return await this.httpClient.request({
+      url: this.makeApiURL.make(`vaccines/status/${params.id}`),
+      method: "get",
     });
   }
 }

@@ -1,20 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useLoadAllVaccinesProtocols } from "@/presentation";
+import { useQueryClient } from "react-query";
 
 import { ProtocolsTable } from "./components/protocols-table";
 
-import { LayoutDashboard } from "@/presentation";
-import { Input, FormHandler, PageWrapper } from "infinity-forge";
 import { CreateVaccine } from "./components";
+import { LayoutDashboard } from "@/presentation";
 import { EditVaccine } from "./components/actions";
 import { DeleteVaccine } from "./components/actions/delete-vaccine";
+import { Input, FormHandler, PageWrapper, Button } from "infinity-forge";
 
 import * as S from "./styles";
 
 export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
-  const [params, setParams] = useState({ fetch: true, type: props.type });
+  const [params, setParams] = useState({ fetch: false });
 
+  const queryClient = useQueryClient();
   const vaccinesProtocols = useLoadAllVaccinesProtocols(params);
 
   const protocolsTableProps = {
@@ -22,6 +24,10 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
     actions: [DeleteVaccine, EditVaccine],
     type: props?.type === "vaccine" ? "Vacina" : "Vermifugo",
   };
+
+  useEffect(() => {
+    queryClient.removeQueries();
+  }, []);
 
   return (
     <LayoutDashboard>
@@ -31,18 +37,32 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
         }
       >
         <S.Vaccine>
-          <FormHandler
-            initialData={params}
-            onChangeForm={{ callbackResult: (prv) => setParams(prv) }}
-          >
-            <section>
-              <Input name="name" label="Nome" />
-              <Input name="specie" label="Espécie" />
-            </section>
-          </FormHandler>
-          <CreateVaccine type={props.type} />
+          <section>
+            <FormHandler
+              initialData={params}
+              onChangeForm={{ callbackResult: (prv) => setParams(prv) }}
+            >
+              <section className="input-container">
+                <Input name="name" label="Nome" />
+                <Input name="specie" label="Espécie" />
+              </section>
+            </FormHandler>
+            <div className="buttons-container">
+              <Button
+                text="Filtrar"
+                style={{ marginTop: "10px" }}
+                onClick={() => {
+                  vaccinesProtocols.refetch();
+                  setParams((prv) => ({ ...prv, fetch: true }));
+                }}
+              />
+              <CreateVaccine type={props.type} />
+            </div>
+          </section>
+
           <hr />
-          {vaccinesProtocols?.data && vaccinesProtocols?.data.length > 0 && (
+
+          {vaccinesProtocols?.data && !vaccinesProtocols?.isLoading && (
             <ProtocolsTable {...protocolsTableProps} />
           )}
         </S.Vaccine>

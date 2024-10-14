@@ -12,12 +12,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 // Components
 import { AutoComplete, Button, notification } from "antd";
 
-const TutorVincForm = memo(function TutorVincForm({
-  patient,
-  setVisible,
-  setReload,
-  reload,
-}) {
+function TutorVincForm({ patient, setVisible, setReload, reload }: any) {
   const [tutor, setTutor] = useState({});
   const [loading, setLoading] = useState(false);
   const [formatedTutors, setFormatedTutors] = useState([]);
@@ -98,6 +93,6 @@ const TutorVincForm = memo(function TutorVincForm({
       </footer>
     </div>
   );
-});
+}
 
 export default TutorVincForm;

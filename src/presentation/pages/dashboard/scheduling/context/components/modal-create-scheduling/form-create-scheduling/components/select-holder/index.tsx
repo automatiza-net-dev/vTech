@@ -12,7 +12,8 @@ export function SelectHolder() {
     return <></>;
   }
 
-  const hasInitialValue = initialValues["holderId"] || initialValues["patientId"]
+  const hasInitialValue =
+    initialValues["holderId"] || initialValues["patientId"];
 
   return (
     <Select
@@ -26,7 +27,7 @@ export function SelectHolder() {
       }
       disabled={hasInitialValue}
       placeholder="Cliente"
-      onChangeSelect={() => {
+      onChangeInput={() => {
         if (process.env.client === "sancla") {
           setFieldValue("patientId", []);
           setFieldValue("scheduleServiceTypeId", []);

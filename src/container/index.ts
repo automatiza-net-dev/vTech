@@ -6,5 +6,5 @@ export * from "./admin";
 export * from "./system";
 export * from "./dashboard";
 export * from "./subgroups";
-export * from "./business-units"
-export * from "./configuration"
+export * from "./business-units";
+export * from "./configuration";

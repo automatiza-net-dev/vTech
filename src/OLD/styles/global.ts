@@ -10,6 +10,15 @@ input, textarea {
     font-size: 13px !important;
 }
 
+.create-button {
+    background-color: ${(props) => props.theme.primaryColor} !important;
+}
+
+.filters-accordion + form {
+    button {
+        background-color: ${(props) => props.theme.primaryColor} !important;
+    }
+}
 
 
 .form-button.sticky {
@@ -18,6 +27,7 @@ input, textarea {
     gap: 20px; 
     border-top: 1px solid #ccc;
     padding-right: 0 !important;
+    
 
     button:last-child {
         width: fit-content;

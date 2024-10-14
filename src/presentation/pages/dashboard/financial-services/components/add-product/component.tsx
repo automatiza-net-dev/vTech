@@ -9,12 +9,11 @@ import { Cart } from "./interfaces";
 import * as S from "./styles";
 
 export function AddProduct() {
-  const { values, setFieldValue, setFieldError } =
-    useFormikContext<{
-      cart: Cart[];
-      product_selected: string | undefined;
-      clientId?: string;
-    }>();
+  const { values, setFieldValue, setFieldError } = useFormikContext<{
+    cart: Cart[];
+    product_selected: string | undefined;
+    clientId?: string;
+  }>();
 
   const { user } = useAuthAdmin();
 
@@ -125,8 +124,6 @@ export function AddProduct() {
                       Number(variation.unitaryValue || 0))) *
                   100
                 ).toFixed(2);
-
-                console.log(variation);
 
                 return (
                   <div key={variation.productVariationId} className="cart_item">

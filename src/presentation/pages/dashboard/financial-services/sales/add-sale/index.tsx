@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import {
   Input,
+  Modal,
   useToast,
   FormHandler,
   LoaderCircle,
@@ -36,6 +37,9 @@ export function AddSale({
   setModal?: Dispatch<SetStateAction<boolean>>;
   listCreated?: (id: Bill["id"]) => void | undefined;
 }) {
+  const [stockProducts, setStockProducts] = useState<any>([]);
+  const [stockProductsOpen, setStockProductsOpen] = useState(false);
+
   const patient = useLoadPatient();
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
@@ -72,7 +76,7 @@ export function AddSale({
   const patientId =
     process.env.client === "sancla"
       ? bill?.data?.patient?.id || patient?.data?.id
-      : undefined;
+      : patient?.data?.id;
 
   const clientId = billId
     ? bill?.data?.client?.id
@@ -120,6 +124,13 @@ export function AddSale({
 
       setModal && setModal(false);
     } catch (err) {
+      if (
+        err instanceof BadRequestError &&
+        err?.error?.message?.includes("não existe no depósito")
+      ) {
+        setStockProducts(err?.error?.message?.replaceAll("=", "|").split("|"));
+        setStockProductsOpen(true);
+      }
       if (
         err instanceof BadRequestError &&
         err?.error?.message === "Desconto máximo foi excedido"
@@ -190,6 +201,21 @@ export function AddSale({
 
         <AddProduct />
       </FormHandler>
-    </S.AddSale>
+      <Modal
+        open={stockProductsOpen}
+        onClose={() => setStockProductsOpen(false)}
+        styles={{ width: "500px", padding: "20px" }}
+        children={
+          <>
+            <h4>Os seguintes produtos não possuem quantidade em estoque:</h4>
+            {stockProducts?.map((item, i) => {
+              if (i !== 0) {
+                return <li key={i}>{item}</li>;
+              }
+            })}
+          </>
+        }
+      />
+    </S.AddSale> 
   );
 }

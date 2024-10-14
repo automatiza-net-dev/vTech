@@ -178,7 +178,7 @@ export const FormChild = React.memo(function FormChild({
                       }))}
                       onlyOneValue
                       value={previousRace ? previousRace : data?.raceId?.value}
-                      onChangeSelect={async (value) => {
+                      onChangeInput={async (value) => {
                         setPreviousRace(false);
                         const choosed = races.find(
                           (option) => option.value === value
@@ -213,7 +213,7 @@ export const FormChild = React.memo(function FormChild({
                     ]}
                     onlyOneValue
                     value={data?.gender}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, gender: value });
                     }}
                   />
@@ -276,7 +276,7 @@ export const FormChild = React.memo(function FormChild({
                     ]}
                     onlyOneValue
                     value={data?.vaccineOrigin}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, vaccineOrigin: value });
                     }}
                   />
@@ -304,7 +304,7 @@ export const FormChild = React.memo(function FormChild({
                     ]}
                     onlyOneValue
                     value={data?.castrated}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, castrated: value });
                     }}
                   />
@@ -332,7 +332,7 @@ export const FormChild = React.memo(function FormChild({
                     }))}
                     onlyOneValue
                     value={data?.hairId}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({
                         ...data,
                         hairId: value,
@@ -363,7 +363,7 @@ export const FormChild = React.memo(function FormChild({
                     ]}
                     onlyOneValue
                     value={data?.death}
-                    onChangeSelect={async (value) => {
+                    onChangeInput={async (value) => {
                       setData({ ...data, death: value });
                     }}
                   />
@@ -406,7 +406,7 @@ export const FormChild = React.memo(function FormChild({
                   }))}
                   onlyOneValue
                   value={data?.holder?.id}
-                  onChangeSelect={async (value) => {
+                  onChangeInput={async (value) => {
                     const choosed = formatedTutors.find(
                       (option) => option.value === value
                     );

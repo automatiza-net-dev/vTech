@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useQueryClient } from "react-query";
 import { useLoadAllVaccinesProtocols } from "@/presentation";
 
 import { RemoteVaccine } from "@/data";
@@ -9,6 +10,7 @@ import { VaccineForm } from "../../vaccine-form";
 import { CreateProtocol } from "../create-protocol";
 import { ProtocolsTable } from "../../protocols-table";
 import { Modal, Button, useToast } from "infinity-forge";
+import * as S from "./styles";
 
 import { TypesAutomatiza, container } from "@/container";
 
@@ -21,6 +23,8 @@ export function CreateVaccine({ type }) {
     subgroupId: "",
     type,
   });
+
+  const queryClient = useQueryClient();
 
   const { createToast } = useToast();
   const vaccinesProtocols = useLoadAllVaccinesProtocols({
@@ -35,6 +39,8 @@ export function CreateVaccine({ type }) {
         .createVaccine(data);
 
       setVaccineId(response.id);
+
+      queryClient.invalidateQueries(["LoadAllVaccineProtocols"])
     } catch (err) {
       return createToast({
         message: "Verificar retorno de erros",
@@ -65,7 +71,7 @@ export function CreateVaccine({ type }) {
   };
 
   return (
-    <>
+    <S.CreateVaccine>
       <Modal
         open={open}
         onClose={() => {
@@ -73,18 +79,18 @@ export function CreateVaccine({ type }) {
           setVaccineId("");
         }}
         children={
-          <>
+          <div className='protocol-table-box'>
             <VaccineForm {...vaccineFormProps} />
             {vaccineId !== "" && (
-              <>
+              <div style={{ padding: "20px" }}>
                 <CreateProtocol vaccineId={vaccineId} />
                 <ProtocolsTable {...protocolsTableProps} />
-              </>
+              </div>
             )}
-          </>
+          </div>
         }
       />
       <Button text="Cadastrar" type="button" onClick={() => setOpen(true)} />
-    </>
+    </S.CreateVaccine>
   );
 }

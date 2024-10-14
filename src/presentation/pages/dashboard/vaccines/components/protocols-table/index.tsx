@@ -1,4 +1,3 @@
-
 import { useTable } from "infinity-forge";
 import { VaccineProtocol } from "@/domain";
 
@@ -32,7 +31,7 @@ export function ProtocolsTable(props: {
         totalPages: 1,
       },
       errorMessage: "Não há itens no momento",
-      tableData: props.data,
+      tableData: (props?.data || []) as any,
     },
   });
 

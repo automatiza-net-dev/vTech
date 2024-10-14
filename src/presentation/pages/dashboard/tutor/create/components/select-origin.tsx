@@ -29,7 +29,7 @@ export function SelectOrigin() {
             value: origin.id,
           })) || []
         }
-        onChangeSelect={(value) => {
+        onChangeInput={(value) => {
           const originSelected = data?.find((origin) => origin.id === value);
 
           if (!originSelected?.default) {

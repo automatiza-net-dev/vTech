@@ -100,72 +100,78 @@ export function AuthorizationSell({
 
         <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
 
-        <h1>Pagamentos</h1>
+        {paymentsDataSource?.length > 0 && <h1>Pagamentos</h1>}
+
         {paymentsDataSource?.length > 0 &&
           blockList.map((i) => {
             const paymentsList = paymentsDataSource?.filter(
               (item) => item?.block === i + 1
             );
             return (
-              <Collapse key={i} style={{ margin: "10px" }}>
-                <Panel
-                  key={i}
-                  header={
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        gap: "10px",
-                      }}
-                    >
-                      <div style={{ display: "flex", gap: "10px" }}>
-                        <div>
-                          {paymentsList[0]?.paymentMethod?.description}&nbsp;
-                          {paymentsList[0]?.qty_installments > 1
-                            ? "(Parcelado)"
-                            : ""}
-                          &nbsp;
-                          {paymentsList[0]?.flag?.description
-                            ? paymentsList[0]?.flag?.description
-                            : ""}
-                          &nbsp;
-                          {paymentsList[0]?.paymentMethod?.type}
+              <>
+                <Collapse key={i} style={{ margin: "10px" }}>
+                  <Panel
+                    key={i}
+                    header={
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: "10px",
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <div>
+                            {paymentsList?.[0]?.paymentMethod?.description}&nbsp;
+                            {paymentsList?.[0]?.qty_installments > 1
+                              ? "(Parcelado)"
+                              : ""}
+                            &nbsp;
+                            {paymentsList?.[0]?.flag?.description
+                              ? paymentsList?.[0]?.flag?.description
+                              : ""}
+                            &nbsp;
+                            {paymentsList?.[0]?.paymentMethod?.type}
+                          </div>
+                          <div>
+                            {currencyFormatter(
+                              paymentsList.reduce(
+                                (acc, current) => acc + current.total_value,
+                                0
+                              )
+                            )}
+                          </div>
+                          <div>{paymentsList?.length}x</div>
                         </div>
-                        <div>
-                          {currencyFormatter(
-                            paymentsList.reduce(
-                              (acc, current) => acc + current.total_value,
-                              0
-                            )
-                          )}
+                        <div style={{ display: "flex" }}>
+                          {paymentsList?.[0]?.pending && "Pendente"}
+                          {authorizationFormater(paymentsList?.[0], "payment")}
                         </div>
-                        <div>{paymentsList?.length}x</div>
                       </div>
-                      <div style={{ display: "flex" }}>
-                        {paymentsList[0]?.pending && "Pendente"}
-                        {authorizationFormater(paymentsList[0], "payment")}
-                      </div>
-                    </div>
-                  }
-                >
-                  <Table columns={paymentsColumns} dataSource={paymentsList} />
-                </Panel>
-              </Collapse>
+                    }
+                  >
+                    <Table
+                      columns={paymentsColumns}
+                      dataSource={paymentsList}
+                    />
+                  </Panel>
+                </Collapse>
+              </>
             );
           })}
-     
-          <AuthorizationPaymentForm
-            auth={'VEN16'}
-            bill={data}
-            onSuccess={async () => {
-              await queryClient.invalidateQueries({
-                queryKey: ["RemoteLoadBill", billId],
-              });
-              
-              setReload && setReload((prv) => !prv);
-              document?.querySelector<any>(".ant-modal-close")?.click();
-            }}
-          />
+
+        <AuthorizationPaymentForm
+          auth={"VEN16"}
+          bill={data}
+          onSuccess={async () => {
+            await queryClient.invalidateQueries({
+              queryKey: ["RemoteLoadBill", billId],
+            });
+
+            setReload && setReload((prv) => !prv);
+            document?.querySelector<any>(".ant-modal-close")?.click();
+          }}
+        />
       </S.AuthorizationSell>
     </Error>
   );

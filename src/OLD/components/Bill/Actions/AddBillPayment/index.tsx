@@ -252,6 +252,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     mutate(paylaod, {
       onSuccess: () => {
         queryClient.invalidateQueries(["bills"]);
+        queryClient.invalidateQueries(["RemotePatient"]);
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
           expirationDate: moment(),

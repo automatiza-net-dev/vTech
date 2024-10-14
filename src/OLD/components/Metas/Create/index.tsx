@@ -5,7 +5,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { metasService } from "@/OLD/services/metas.service";
 
-export const Create = memo(({ canCreate }) => {
+export const Create = ({ canCreate }) => {
   const queryClient = useQueryClient();
   const [payload, setPayload] = useState({
     description: "",
@@ -59,20 +59,21 @@ export const Create = memo(({ canCreate }) => {
   return (
     <div>
       {canCreate && (
-        <Button onClick={() => setVisible(true)} text="Criar nova meta" />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "10px",
+          }}
+        >
+          <Button onClick={() => setVisible(true)} text="Criar nova meta" />
+        </div>
       )}
       <Modal
         loading={loading}
-        title="Criar Raça"
+        title="Criar meta"
         visible={visible}
-        onCancel={() => {
-          setVisible(false);
-        }}
-        footer={
-          <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
-            <Button onClick={() => setVisible(false)} text="Cancelar" />
-          </div>
-        }
+        footer={null}
       >
         <Form
           layout="vertical"
@@ -89,7 +90,7 @@ export const Create = memo(({ canCreate }) => {
               }
             />
           </Form.Item>
-          <Form.Item label="Tipo Pelagem">
+          <Form.Item label="Tipo Meta">
             <Select
               onChange={(e) => setPayload({ ...payload, type: e })}
               value={payload?.type}
@@ -99,12 +100,13 @@ export const Create = memo(({ canCreate }) => {
               <Option value="Qtd">Quantidade</Option>
             </Select>
           </Form.Item>
-
+          <hr />
           <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
             <Button type="primary" htmlType="submit" text="Criar" />
+            <Button text="Cancelar" onClick={() => setVisible(false)} />
           </div>
         </Form>
       </Modal>
     </div>
   );
-});
+};

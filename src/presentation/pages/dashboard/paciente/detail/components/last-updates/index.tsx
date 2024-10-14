@@ -90,7 +90,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
           <div className="box-left">
             <FormHandler>
               <Select
-                onChangeSelect={(data: any) => {
+                onChangeInput={(data: any) => {
                   setTimeLineType(data);
                 }}
                 name="timeLineType"

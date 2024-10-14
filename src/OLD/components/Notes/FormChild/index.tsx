@@ -231,7 +231,6 @@ const FormChild = memo(function FormChild({
           <section>
             <div className="uk-width-1-1">
               <label>Produto</label>
-
               <AutoComplete
                 className="uk-width-1-1"
                 options={productOptions}

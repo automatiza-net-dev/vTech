@@ -212,27 +212,6 @@ function StatusColumns({
       <div className="uk-margin-small-top">
         {sortedOpportunities?.map((op) => (
           <div className="cards-container uk-box-shadow-medium">
-            {/*
-            <Tooltip
-              title={
-                <div>
-                  <div>
-                    Dt. Contato: {moment(op?.contactDate).format("DD/MM/YYYY")}
-                  </div>
-                  <div>
-                    Dt. Abertura: {moment(op?.openingDate).format("DD/MM/YYYY")}
-                  </div>
-                  <div>Tipo contato: {op?.contactType?.description}</div>
-                  <div>Origem Contato: {op?.clientOrigin?.description} </div>
-                  <div>Assunto Contato: {op?.contactSubject?.description}</div>
-                  <div>
-                    Valor oportunidade: {currencyFormatter(op?.value || 0)}
-                  </div>
-                  <div>Título: {op?.description}</div>
-                </div>
-              }
-            >
-              */}
             <div>
               <div
                 className="uk-width-1-1"

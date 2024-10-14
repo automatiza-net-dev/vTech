@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import { notification } from "antd";
-import { useAuthAdmin, Button } from "infinity-forge";
+import { Button } from "infinity-forge";
 
 import api from "@/OLD/services";
 
@@ -26,13 +26,10 @@ export function Step5(props) {
     password?: string;
     password_confirmation?: string;
   }>({
-    name: props.data.name,
-    email: props.data.email,
+    ...props.data,
     phone: props.data.phone.replace(/[^0-9]/g, ""),
   });
   const [loading, setLoading] = useState(false);
-
-  const { signIn } = useAuthAdmin();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -53,11 +50,6 @@ export function Step5(props) {
               ...data,
               email: props.data?.email,
               systemName: process.env.clientName,
-            });
-
-            await signIn({
-              emailAddress: props.data?.email,
-              password: data.password || "",
             });
 
             props.setData({

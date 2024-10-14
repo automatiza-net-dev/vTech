@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const VaccineForm = styled("div")`
   padding: 10px;
   min-width: 500px;
+  max-width: 700px;
 
   footer {
     display: flex;
@@ -12,5 +13,6 @@ export const VaccineForm = styled("div")`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    width: 100%;
   }
 `;

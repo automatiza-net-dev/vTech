@@ -92,7 +92,7 @@ export default function FormChild({
                   }))}
                   disabled={!modal}
                   onlyOneValue
-                  onChangeSelect={async (value) => {
+                  onChangeInput={async (value) => {
                     const optionSelected = allExams?.find(
                       (exam) => exam.id === value
                     );
@@ -173,7 +173,7 @@ export default function FormChild({
               <div className="uk-width-1-1">
                 <div className="editor-container uk-width-1-1">
                   <Editor editorState={report} setEditorState={setReport} />
-                  
+
                   <Print
                     patient={patient.data}
                     triggerComponent={
