@@ -26,6 +26,8 @@ export function VaccinesPanel({ patientId }: { patientId: Patient["id"] }) {
                   <span>Protocolo</span>
                   <span>Qtd Doses</span>
                   <span>Validade Protocolo</span>
+                  <span>Status Vacina</span>
+                  <span>Validade Vacina</span>
                 </div>
                 <div key={vaccine?.id} className="main-content">
                   <span>{businessUnitIdentification}</span>
@@ -35,6 +37,14 @@ export function VaccinesPanel({ patientId }: { patientId: Patient["id"] }) {
                   <span>{vaccine?.vacina?.nomeProtocolo}</span>
                   <span>{vaccine?.vacina?.qtdDosesProtocolo}</span>
                   <span>{vaccine?.vacina?.protocoloValidoPor}</span>
+                  <span>{vaccine?.vacina?.statusVacina}</span>
+                  <span>
+                    {vaccine?.vacina?.dataValido
+                      ? moment(vaccine?.vacina?.dataValido).format(
+                          "DD/MM/YYYY - hh:mm"
+                        )
+                      : "--"}
+                  </span>
                 </div>
                 <div>
                   <div className="secondary-header">
@@ -44,8 +54,6 @@ export function VaccinesPanel({ patientId }: { patientId: Patient["id"] }) {
                     <span>Laboratório</span>
                     <span>Lote</span>
                     <span>Status agendamento</span>
-                    <span>Status Vacina</span>
-                    <span>Validade Vacina</span>
                   </div>
                   {vaccine?.vacina?.vaccineCalendar?.map((vaccineSchedule) => (
                     <div
@@ -72,14 +80,6 @@ export function VaccinesPanel({ patientId }: { patientId: Patient["id"] }) {
                       </span>
                       <span>{vaccineSchedule?.loteAplicacao || "--"}</span>
                       <span>{vaccineSchedule?.statusAgendamentoVacina}</span>
-                      <span>{vaccineSchedule?.statusProtocolo}</span>
-                      <span>
-                        {vaccineSchedule?.validadeVacina
-                          ? moment(vaccineSchedule?.validadeVacina).format(
-                              "DD/MM/YYYY - hh:mm"
-                            )
-                          : "--"}
-                      </span>
                     </div>
                   ))}
                 </div>
