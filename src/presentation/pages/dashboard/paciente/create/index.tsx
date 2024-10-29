@@ -59,7 +59,7 @@ function Form({
   const initialData = data
     ? {
         ...data,
-        birthDate: data.birth_date,
+        birthDate: moment(data?.birth_date).add(1, "days").toDate(),
         death: String(data.death),
         castrated: String(data.castrated),
         holderId: data?.tutor?.id,
@@ -74,7 +74,7 @@ function Form({
           },
         ] as FileSystemType[],
       }
-    : { ...initialDataForm, birthDate: new Date() };
+    : { ...initialDataForm };
 
   if ((!data || isFetching) && patientId) {
     return <></>;
