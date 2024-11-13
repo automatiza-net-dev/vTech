@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Icon } from "infinity-forge"
+import { Icon } from "infinity-forge";
 
 import { DatePicker } from "@mui/x-date-pickers";
 import moment from "moment";
@@ -36,7 +36,7 @@ const Container = styled.div`
 export default function Date({
   selectedDate,
   setSelectedDate,
-  classCallback = false
+  classCallback = false,
 }) {
   return (
     <Container
@@ -50,10 +50,10 @@ export default function Date({
           setSelectedDate(moment(selectedDate).subtract(1, "days"))
         }
       >
-        <Icon name="NavLeftIcon" stroke="#fff" />
+        <Icon name="IconLeftNavigation" color="#fff" />
       </button>
       <DatePicker
-      slotProps={{ textField: { size: 'small' } }}
+        slotProps={{ textField: { size: "small" } }}
         value={selectedDate}
         onChange={(date) => {
           setSelectedDate(date);
@@ -65,10 +65,8 @@ export default function Date({
         className={`uk-button bgDarkCyan bgCyanHover ${process.env.clientName}-button`}
         onClick={() => setSelectedDate(moment(selectedDate).add(1, "days"))}
       >
-        
-        <Icon name="NavRightIcon" stroke="#fff"/>
+        <Icon name="IconRightNavigation" color="#fff" />
       </button>
     </Container>
   );
 }
-

@@ -12,7 +12,8 @@ export class RemoteMarketing
     domain.LoadMarketing,
     domain.UpdateMarketing,
     domain.DeleteMarketing,
-    domain.LoadCampaings
+    domain.LoadCampaings,
+    domain.LoadCampaingsReports
 {
   private url = "marketing-campaigns";
 
@@ -69,5 +70,15 @@ export class RemoteMarketing
     });
 
     return response as domain.DeleteMarketing.Model;
+  }
+
+  async loadCampaingsReports(params: domain.LoadCampaingsReports.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`reports/marketing-campaign`),
+      method: "get",
+      body: params,
+    });
+
+    return response as domain.LoadCampaingsReports.Model;
   }
 }

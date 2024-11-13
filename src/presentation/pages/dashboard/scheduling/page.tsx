@@ -32,11 +32,11 @@ function Scheduling() {
 
   const dateFormatted = DateToYYYYMMDD(selectedDate || new Date()) || "";
 
-  const { data, isFetching } = useLoadAllSchedulesUser(
-    dateFormatted,
-    dateFormatted,
-    listCancelledEvents
-  );
+  const { data, isFetching } = useLoadAllSchedulesUser({
+    to: dateFormatted,
+    from: dateFormatted,
+    lista_cancelados: listCancelledEvents,
+  });
 
   return (
     <S.Scheduling>

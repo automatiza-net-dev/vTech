@@ -19,6 +19,9 @@ const { Panel } = Collapse;
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
+import { container, TypesAutomatiza } from "@/container";
+import { RemoteBudget } from "@/data";
+import { AxiosError } from "axios";
 
 const AddPayments = memo(function AddPayments({
   receipt,
@@ -52,6 +55,7 @@ const AddPayments = memo(function AddPayments({
         if (method?.tef !== "NAO") {
           arr?.push({
             ...flag,
+            paymentMethodFlagId: flag?.id,
             type: method?.type,
             paymentMethodId: method?.id,
           });
@@ -80,36 +84,51 @@ const AddPayments = memo(function AddPayments({
         ?.reduce((acc, current) => acc + current?.valor_total, 0)
     : 0;
 
-  const submitBudgetPayment = useCallback(() => {
+  const submitBudgetPayment = useCallback(async () => {
     setLoading(true);
 
-    budgetService
-      .createBudgetPayments({
-        budgetId: budgetId,
-        items: [
-          {
-            paymentMethodId: data?.paymentMethodId,
-            tefAcquirerId: data?.tefAcquirerId,
-            tefFlagId: data?.tefFlagId,
-            installments: data?.installments,
-            totalValue: convertIntlCurrency(data?.installmentValue),
-          },
-        ],
-      })
-      .then((res) => {
+    const payload = {
+      budgetId: budgetId,
+      items: [
+        {
+          ...data,
+          totalValue: convertIntlCurrency(data?.installmentValue),
+        },
+      ],
+    };
+
+    try {
+      await container
+        .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
+        .createPayment(payload);
+
+      setLoading(false);
+      setPaymentsReload((prv) => !prv);
+      queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
+
+      return notification.success({
+        message: "Pagamento adicionado com sucesso!",
+      });
+    } catch (err) {
+      if (window.confirm(err?.error?.message)) {
+        await container
+          .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
+          .createPayment({
+            ...payload,
+            items: payload.items.map((item) => ({
+              ...item,
+              maxParcelas: true,
+            })),
+          });
+
         setLoading(false);
         setPaymentsReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
         return notification.success({
           message: "Pagamento adicionado com sucesso!",
         });
-      })
-      .catch((err) => {
-        setLoading(false);
-        return notification.error({
-          message: err?.response?.data?.message?.split(":")[1],
-        });
-      });
+      }
+    }
   }, [budget, data]);
 
   const removeBudgetPayment = (id) => {
@@ -127,46 +146,48 @@ const AddPayments = memo(function AddPayments({
       });
   };
 
-  const submitPayment = useCallback(() => {
+  const submitPayment = useCallback(async () => {
     setLoading(true);
 
-    receiptService
-      .createReceiptPayment({
-        receiptId: receipt?.id,
-        items: [
-          {
-            paymentMethodId: data?.paymentMethodId,
-            tefAcquirerId: data?.tefAcquirerId,
-            tefFlagId: data?.tefFlagId,
-            installments: data?.installments,
-            installmentValue: convertIntlCurrency(data?.installmentValue),
-            issueDate: moment().toISOString(),
-            expirationDate: moment(data?.expirationDate).toISOString(),
-            nsuDocument: data?.nsuDocument,
-            accountPlanId,
-          },
-        ],
-      })
-      .then((_res) => {
+    const payload = {
+      receiptId: receipt?.id,
+      items: [
+        {
+          ...data,
+          installmentValue: convertIntlCurrency(data?.installmentValue),
+          issueDate: moment().toISOString(),
+          expirationDate: moment(data?.expirationDate).toISOString(),
+          accountPlanId,
+        },
+      ],
+    };
+
+    try {
+      await receiptService.createReceiptPayment(payload);
+
+      setLoading(false);
+      setReload((prv) => !prv);
+      queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
+      return notification.success({
+        message: "Pagamento adicionado com sucesso!",
+      });
+    } catch (error) {
+      if (window.confirm(err?.error?.message)) {
+        await receiptService.createReceiptPayment({
+          ...payload,
+          items: payload.items.map((item) => ({
+            ...item,
+            maxParcelas: true,
+          })),
+        });
+
         setLoading(false);
         setReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-        return notification.success({
-          message: "Pagamento adicionado com sucesso!",
-        });
-      })
-      .catch((err) => {
-        setLoading(false);
-        err?.response?.data?.errors?.forEach((item) => {
-          createToast({ message: item?.message, status: "error" });
-          if (item?.field?.includes("accountPlanId")) {
-            createToast({
-              message: "Selecione um plano de contas",
-              status: "error",
-            });
-          }
-        });
-      });
+      }
+    }
+
+    setLoading(false);
   }, [data, accountPlanId]);
 
   const verifyRender = () => {
@@ -180,6 +201,14 @@ const AddPayments = memo(function AddPayments({
       }
     }
   };
+
+  const someRequiresConfirmation = Array.from(
+    Array(data?.maxInstallments)
+  ).some((_, i) => {
+    const requiresConfirmation = i + 1 > data?.installments_without_password;
+
+    return requiresConfirmation;
+  });
 
   return (
     <Container>
@@ -197,7 +226,7 @@ const AddPayments = memo(function AddPayments({
                       <div
                         onClick={() =>
                           setData({
-                            paymentMethodId: flag?.paymentMethodId,
+                            ...flag,
                             tefAcquirerId: flag?.acquirer?.id,
                             tefFlagId: flag?.flag?.id,
                             maxInstallments: flag?.max_installments,
@@ -242,7 +271,7 @@ const AddPayments = memo(function AddPayments({
                       <div
                         onClick={() =>
                           setData({
-                            paymentMethodId: flag?.paymentMethodId,
+                            ...flag,
                             tefAcquirerId: flag?.acquirer?.id,
                             tefFlagId: flag?.flag?.id,
                             maxInstallments: flag?.max_installments,
@@ -338,26 +367,34 @@ const AddPayments = memo(function AddPayments({
               </div>
             )}
             <div className="uk-flex uk-flex-center uk-margin-small-top uk-flex-wrap">
-              {Array.from(Array(data?.maxInstallments)).map((_, i) => (
-                <div
-                  onClick={() => {
-                    setData({
-                      ...data,
-                      installments: i + 1,
-                      paymentMethodFlagInstallmentId:
-                        data?.installmentsList?.find(
-                          (installment) => installment?.installment === i + 1
-                        ).id,
-                    });
-                  }}
-                  key={i}
-                  className={`uk-margin-right uk-margin-small-top uk-box-shadow-small installment-button  ${
-                    data?.installments === i + 1 && "selected-installments"
-                  }`}
-                >
-                  {i + 1}
-                </div>
-              ))}
+              {Array.from(Array(data?.maxInstallments)).map((_, i) => {
+                const requiresConfirmation =
+                  i + 1 > data?.installments_without_password;
+
+                return (
+                  <div
+                    style={{
+                      background: requiresConfirmation ? "#EFEC63" : "",
+                    }}
+                    onClick={() => {
+                      setData({
+                        ...data,
+                        installments: i + 1,
+                        paymentMethodFlagInstallmentId:
+                          data?.installmentsList?.find(
+                            (installment) => installment?.installment === i + 1
+                          ).id,
+                      });
+                    }}
+                    key={i}
+                    className={`uk-margin-right uk-margin-small-top uk-box-shadow-small installment-button  ${
+                      data?.installments === i + 1 && "selected-installments"
+                    }`}
+                  >
+                    {i + 1}
+                  </div>
+                );
+              })}
             </div>
             <div>
               <Button
@@ -367,6 +404,16 @@ const AddPayments = memo(function AddPayments({
                 classCallback="uk-margin-top"
                 text="Confirmar"
               />
+
+              {someRequiresConfirmation && (
+                <p
+                  style={{ marginTop: 5, textAlign: "start" }}
+                  className="font-14-regular"
+                >
+                  Parcelas marcadas em <strong>amarelo</strong> precisarão de
+                  autorização do supervisor para finalização da venda
+                </p>
+              )}
             </div>
           </div>
           <div className="uk-width-1-4 uk-text-center uk-margin-small-left">
@@ -469,7 +516,7 @@ const AddPayments = memo(function AddPayments({
                   </Popconfirm>
                 </div>
               </div>
-            ))}{" "}
+            ))}
         </div>
       )}
     </Container>

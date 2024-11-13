@@ -1,16 +1,9 @@
 import { Error } from "infinity-forge";
 
-interface IRace {
-  id: string;
-  description: string;
-  specie: {
-    description: string;
-  };
-}
 
-export function Race({ race }: { race: IRace }) {
+export function Race({ race }: any) {
   if (!race?.description || !race?.specie?.description) {
-    return "-";
+    return <>-</>;
   }
 
   return (

@@ -1,21 +1,22 @@
 import { Icon, Tooltip, useTable } from "infinity-forge";
-import { useQueryClient } from "react-query";
-import { Patient, Tutor } from "@/domain";
-import { Unlink } from "@/OLD/components/Tutor/unlink";
+
 import {
   FormCreateTutor,
-  useLoadSchedulesPatients,
   useVerifyPermissions,
+  useLoadSchedulesPatients,
 } from "@/presentation";
+import { Patient, Tutor } from "@/domain";
+
 import { columns } from "./columns";
 import { ActiveTutor } from "./actions";
+import { Unlink } from "@/OLD/components/Tutor/unlink";
+
 import * as S from "./styles";
 
 export function TutorsTable(props: Patient) {
-  const { data } = useLoadSchedulesPatients({
+  const { data, mutate } = useLoadSchedulesPatients({
     patientFilters: { tag: props.tag },
   });
-  const queryClient = useQueryClient();
 
   const hasPermission = useVerifyPermissions("PET04");
 
@@ -39,7 +40,7 @@ export function TutorsTable(props: Patient) {
                 backgroundColor: "#E1E1E1",
               }}
             >
-              <Icon name="IconEdit" fill="#828282" />
+              <Icon name="IconEdit" color="#828282" />
             </div>
           }
           isModal
@@ -57,15 +58,7 @@ export function TutorsTable(props: Patient) {
         idTooltip="unlink"
         content="Desvincular Tutor/Pet"
         trigger={
-          <Unlink
-            patientId={props.id}
-            tutorId={p.id}
-            customSubmit={async () =>
-              await queryClient.invalidateQueries({
-                queryKey: ["RemoteLoadSchedulesPatients"],
-              })
-            }
-          />
+          <Unlink patientId={props.id} tutorId={p.id} customSubmit={mutate} />
         }
       />
     ));

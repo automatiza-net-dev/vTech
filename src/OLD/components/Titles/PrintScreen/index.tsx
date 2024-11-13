@@ -3,9 +3,9 @@ import { memo, useRef } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import { Container, RowBox } from "./styles";
 import { Empty } from "antd";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { Container, RowBox } from "./styles";
+import { PrintHeader } from "@/presentation";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
@@ -17,7 +17,7 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
     <>
       <Container>
         <div className="clinic-header">
-          <PrintHeader unit={clinic} />
+          <PrintHeader />
           <div className="uk-text-center">
             <h4 className="">Relatório de vendas</h4>
           </div>

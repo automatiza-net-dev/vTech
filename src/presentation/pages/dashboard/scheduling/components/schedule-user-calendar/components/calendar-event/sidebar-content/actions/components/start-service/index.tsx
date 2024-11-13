@@ -4,7 +4,12 @@ import { Icon } from "infinity-forge";
 
 import { RemoteChangeStatus } from "@/data";
 import { container, patientTypes } from "@/container";
-import { DateToYYYYMMDD, PermissionItem, useLoadAllScheduleStatuses, useScheduling } from "@/presentation";
+import {
+  DateToYYYYMMDD,
+  PermissionItem,
+  useLoadAllScheduleStatuses,
+  useScheduling,
+} from "@/presentation";
 
 import { ActionSchedule } from "../../interface";
 
@@ -13,14 +18,14 @@ export function StartService({ event }: ActionSchedule) {
 
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const selectedDate = useScheduling(state => state.selectedDate)
+  const selectedDate = useScheduling((state) => state.selectedDate);
 
   const dateFormatted = DateToYYYYMMDD(selectedDate || new Date());
 
   async function handleClick() {
-    const statusId = scheduleStatuses.data?.find(
-      (status) => status.type === "ATEND"
-    )?.id || "";
+    const statusId =
+      scheduleStatuses.data?.find((status) => status.type === "ATEND")?.id ||
+      "";
 
     const response = await container
       .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)

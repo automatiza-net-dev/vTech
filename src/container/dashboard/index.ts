@@ -2,6 +2,7 @@ export * from "./crm";
 export * from "./user";
 export * from "./types";
 export * from "./sales";
+export * from "./metas";
 export * from "./patient";
 export * from "./container";
 export * from "./financial-services";

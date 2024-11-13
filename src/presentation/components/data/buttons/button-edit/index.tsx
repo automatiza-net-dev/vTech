@@ -12,7 +12,7 @@ export function ButtonEdit(props: ButtonHTMLAttributes<HTMLButtonElement>) {
           type="button"
           {...props}
         >
-          <Icon name="IconEdit" fill="#000" />
+          <Icon name="IconEdit" color="#000" />
         </button>
       }
     />

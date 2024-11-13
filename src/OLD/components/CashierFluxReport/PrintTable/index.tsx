@@ -3,9 +3,9 @@ import { memo, useRef, useState } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import { Container, RowBox } from "./styles";
 import { Button, Empty } from "antd";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { Container, RowBox } from "./styles";
+import { PrintHeader } from "@/presentation";
 
 import ReactToPrint from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -26,7 +26,7 @@ function PrintTable({ reports, filters, values }) {
       </div>
       <Container ref={componentRef}>
         <div className="clinic-header">
-          <PrintHeader unit={clinic} />
+          <PrintHeader />
           <div className="uk-text-center">
             <h4 className="">Relatório de fluxo de caixa</h4>
             {values?.clinicFantasyName && (

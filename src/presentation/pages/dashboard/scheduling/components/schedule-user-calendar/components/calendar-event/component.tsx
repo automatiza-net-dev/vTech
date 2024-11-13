@@ -35,8 +35,7 @@ export function CalendarEvent({
 
   const fullTime = timeTextStart + " - " + timeTextEnd;
 
-
-  if(!event) {
+  if (!event) {
     return;
   }
 
@@ -102,7 +101,7 @@ export function CalendarEvent({
               className="fc-event-title fc-sticky"
               style={{ fontSize: "12px" }}
             >
-              {event?.event?.holder?.name.split(" ")[0]} - {title}
+              {event?.event?.holder?.name?.split(" ")[0]} - {title}
             </div>
 
             {showNameScheduleUser && (

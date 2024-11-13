@@ -5,9 +5,10 @@ import { useMe } from "@/presentation";
 
 import { TimeLine } from "@/domain";
 
-import Editor from "@/OLD/components/Editor";
 import { Input, FormHandler, Button } from "infinity-forge";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+
+import Editor from "@/OLD/components/Editor";
+import { PrintHeader } from "@/presentation";
 
 import moment from "moment";
 
@@ -54,7 +55,7 @@ export function DischargeForm(props: TimeLine["timeline_info"]) {
             style={{ margin: "10px" }}
           >
             <div>
-              {user.data && <PrintHeader unit={user.data.unit} />}
+              <PrintHeader />
               <h3 style={{ marginTop: "20px", textAlign: "center" }}>
                 Relatório alta
               </h3>

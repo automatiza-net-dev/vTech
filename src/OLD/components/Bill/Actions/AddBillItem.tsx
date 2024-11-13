@@ -18,7 +18,7 @@ export default function AddBillItem({ bill }: { bill: Bill }) {
       </Modal>
 
       <Button type="button" style={{ background: "transparent", padding: 0, border: 0 }} onClick={() => setOpen(true)}>
-        <Icon name="IconEdit" fill="#000"  />
+        <Icon name="IconEdit" color="#000"  />
       </Button>
     </>
   );

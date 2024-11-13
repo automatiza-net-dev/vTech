@@ -25,7 +25,7 @@ export const InputBox = styled.div`
   input,
   .date-component,
   .select-component {
-    width: 100%;
+    width: 90%;
   }
 
   .custom-date-component {

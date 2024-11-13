@@ -308,7 +308,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
                     />
                   ) : (
                     <div style={{ width: "70px" }}>
-                      <Icon fill="#000" name="IconClip" />
+                      <Icon color="#000" name="IconClip" />
                     </div>
                   )}
                   <a

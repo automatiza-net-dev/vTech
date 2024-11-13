@@ -1,23 +1,25 @@
 import { useState } from "react";
 
-import { Button, useToast } from "infinity-forge";
+import { Button, useQueryClient, useToast } from "infinity-forge";
 
-import { useScheduling, PermissionItem, Pets, useAssignTutor } from "@/presentation";
+import {
+  Pets,
+  useScheduling,
+  PermissionItem,
+  useAssignTutor,
+  useLoadSchedulesPatientsKEY,
+} from "@/presentation";
+import { Tutor } from "@/domain";
 
 import { ModalSelectActiveTutor } from "../modal-select-active-tutor";
 
 import * as S from "./styles";
-import { Tutor } from "@/domain";
-import { useQueryClient } from "react-query";
 
 export function ButtonSetSchedulling(props) {
   const [modal, setModal] = useState(false);
 
   const modalPatients = useScheduling((state) => state.modalPatients);
-  const setCreateSchedulingArgs = useScheduling(
-    (state) => state.setCreateSchedulingArgs
-  );
-  const patientFilters = useScheduling((state) => state.patientsFilters);
+  const setCreateSchedulingArgs = useScheduling((state) => state.setCreateSchedulingArgs);
 
   const { createToast } = useToast();
 
@@ -31,10 +33,10 @@ export function ButtonSetSchedulling(props) {
 
   const tutor = mainTutor || avulseTutor;
 
-   const assignutor = useAssignTutor()
+  const assignutor = useAssignTutor();
 
-   const queryClient = useQueryClient()
-
+  const refetch = useQueryClient((state) => state.refetch);
+  const queryKeyLoadSchedulePatients = useLoadSchedulesPatientsKEY();
 
   return (
     <PermissionItem hash="AGE01">
@@ -48,11 +50,14 @@ export function ButtonSetSchedulling(props) {
                 await assignutor.mutateAsync({
                   holder: tutor.id,
                   patient: data.patientId,
-                })
+                });
 
-                await queryClient.invalidateQueries(["RemoteLoadSchedulesPatients", patientFilters])
+                refetch(queryKeyLoadSchedulePatients.toString());
 
-                createToast({ message: "Vinculado com sucesso", status: "success" })
+                createToast({
+                  message: "Vinculado com sucesso",
+                  status: "success",
+                });
               },
             }}
             tutor={tutor}

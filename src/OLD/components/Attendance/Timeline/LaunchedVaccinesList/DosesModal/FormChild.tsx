@@ -273,7 +273,7 @@ export default function FormChild({
                         padding: 0,
                       }}
                     >
-                      <Icon name="IconBlock" fill="#f10" />
+                      <Icon name="IconBlock" color="#f10" />
                     </button>
                   </span>
                 </div>

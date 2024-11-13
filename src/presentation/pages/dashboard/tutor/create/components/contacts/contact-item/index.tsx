@@ -8,11 +8,12 @@ export function ContactItem({
   type,
   main,
   index,
+  isCrm,
   notGiven,
-}: Contact & { index: number }) {
+}: Contact & { index: number; isCrm: boolean }) {
   const { values, setFieldValue } = useFormikContext<{ contacts: Contact[] }>();
   const types = [
-    { value: "email", label: "Email*" },
+    { value: "email", label: !isCrm ? "Email*" : "Email" },
     { value: "celular", label: "Celular*" },
     { value: "residencial", label: "Tel. Residencial" },
     { value: "comercial", label: "Tel. Comercial" },

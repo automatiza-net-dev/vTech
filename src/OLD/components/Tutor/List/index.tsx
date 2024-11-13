@@ -72,7 +72,7 @@ export function List({
   const [selectedPetToVinc, setSelectedPetToVinc] = useState(null);
 
   const { tutors: tutorsList, loading } = useTutor(filters, reload);
-  const { patients } = usePatients(false, false, vincPetVisible);
+  const { patients } = usePatients(false, false, {}, vincPetVisible);
 
   const router = useRouter();
 
@@ -395,7 +395,7 @@ export function List({
                 <FormCreateTutor
                   tutorId={tutor.id}
                   isModal
-                  trigger={<Icon name="IconEdit" fill="#000" />}
+                  trigger={<Icon name="IconEdit" color="#000" />}
                 />
 
                 {canDeleteTutor && (

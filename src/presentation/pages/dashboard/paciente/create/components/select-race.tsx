@@ -1,7 +1,8 @@
-import { useLoadAllRaces } from "@/presentation/hooks";
 import { Select } from "infinity-forge";
 
-export function SelectRace({ isRegister }: { isRegister: boolean }) {
+import { useLoadAllRaces } from "@/presentation/hooks";
+
+export function SelectRace({ required }: { required?: boolean }) {
   const { data, isFetching } = useLoadAllRaces({});
 
   return (
@@ -9,11 +10,7 @@ export function SelectRace({ isRegister }: { isRegister: boolean }) {
       onlyOneValue
       name="raceId"
       loading={isFetching}
-      label={
-        isRegister
-          ? "Espécie > Raça do paciente"
-          : "Espécie > Raça do paciente*"
-      }
+      label={`Espécie > Raça do paciente${required ? "*" : ""}`}
       options={
         data?.map((race) => ({
           label: race.specie.description + " > " + race.description,

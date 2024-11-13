@@ -7,7 +7,7 @@ import { Input, Select, FormHandler } from "infinity-forge";
 
 const dosageList = Array.from(Array(10), (_, i) => 10 - i);
 
-// TODO: Verificar tipagem React.dispatch, anterior: CreateVaccine.Params e tipagem de função submit
+import * as Yup from "yup";
 
 export function ProtocolForm(props: {
   data: CreateVaccineProtocol.Params | EditVaccineProtocol.Params;
@@ -16,11 +16,17 @@ export function ProtocolForm(props: {
 }) {
   const species = useLoadAllSpecies({});
 
+  const protocolSchema = {
+    name: Yup.string().required("Campo obrigatório"),
+  };
+
   return (
     <S.ProtocolForm>
       <FormHandler
+        schema={protocolSchema}
         initialData={props.data}
         onSucess={() => props.submit()}
+        cleanFieldsOnSubmit={false}
         customSubmit={[
           {
             action: () => props.submit(),

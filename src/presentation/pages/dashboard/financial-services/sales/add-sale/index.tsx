@@ -15,18 +15,21 @@ import {
   useLoadBill,
   SelectClient,
   SelectSeller,
-  SelectPatient,
   ErrorDailyBox,
   useLoadPatient,
   DeleteCartItems,
-  useLoadAllPatientTutor,
   useLoadAllDailyMovements,
+  useLoadAllPatientTutor,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
 import * as S from "./styles";
+import {
+  SelectBudgetClient,
+  SelectBudgetPatient,
+} from "../../budget/add-budget/components";
 
 export function AddSale({
   billId,
@@ -43,7 +46,8 @@ export function AddSale({
   const patient = useLoadPatient();
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
-  const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
+
+  const tutors = useLoadAllPatientTutor({ enabled: !patient })?.data;
 
   const { createToast } = useToast();
 
@@ -54,7 +58,6 @@ export function AddSale({
   if (
     dailyMovements.isFetching ||
     patient.isFetching ||
-    patientTutor.isFetching ||
     (billId && bill?.isFetching)
   ) {
     return (
@@ -88,9 +91,11 @@ export function AddSale({
     maxDiscount: false,
     clientId,
     patientId,
+    patientName: patient?.data?.name,
     clientName:
       bill?.data?.client?.name ||
-      patientTutor?.data?.find((tutor) => tutor.id === clientId)?.name,
+      patient?.data?.tutor?.name ||
+      patient?.data?.name,
     cart: bill?.data?.products,
     sellerId: bill?.data?.seller?.id,
     financialResponsibleId: bill?.data?.financialResponsible?.id,
@@ -159,25 +164,14 @@ export function AddSale({
         <h2 className="font-24-bold">{billId ? "Editar" : "Criar"} venda</h2>
 
         <div className="row">
-          <SelectClient
-            inputProps={{
-              label: "Cliente",
-              name: "clientId",
-              disabled: !!patient.data?.id || !!initialData?.clientId,
-            }}
-            allowClear={false}
-          />
+          <SelectBudgetClient tutors={tutors} />
 
           {process.env.client === "sancla" ? (
-            <SelectPatient />
+            <SelectBudgetPatient tutors={tutors} />
           ) : (
             <SelectClient
-              inputProps={{
-                label: "Responsável financeiro",
-                name: "financialResponsibleId",
-                disabled: false,
-              }}
-              allowClear={true}
+              name="financialResponsibleId"
+              label="Responsável financeiro"
             />
           )}
         </div>
@@ -187,12 +181,8 @@ export function AddSale({
 
           {process.env.client === "sancla" && (
             <SelectClient
-              inputProps={{
-                label: "Responsável financeiro",
-                name: "financialResponsibleId",
-                disabled: false,
-              }}
-              allowClear={true}
+              name="financialResponsibleId"
+              label="Responsável financeiro"
             />
           )}
 
@@ -201,6 +191,7 @@ export function AddSale({
 
         <AddProduct />
       </FormHandler>
+
       <Modal
         open={stockProductsOpen}
         onClose={() => setStockProductsOpen(false)}
@@ -216,6 +207,6 @@ export function AddSale({
           </>
         }
       />
-    </S.AddSale> 
+    </S.AddSale>
   );
 }

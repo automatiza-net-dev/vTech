@@ -8,7 +8,7 @@ import { columns, useTableMarketingActions } from "./table";
 import * as S from "./styles";
 
 export function CampanhasMkt() {
-  const { data, mutate } = useLoadMarketing();
+  const { data, mutate } = useLoadMarketing({ allCampaigns: false });
   const actions = useTableMarketingActions({ mutate });
 
   const { Table } = useTable<Marketing>({

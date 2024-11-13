@@ -17,7 +17,8 @@ export class RemoteSchedule
     domain.LoadAllSchedulesDashboard,
     domain.ReopenSchedule,
     domain.ChangeUpsertStatus,
-    domain.DeleteSchedule
+    domain.DeleteSchedule,
+    domain.LoadSyncableScheduleExecutions
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -74,7 +75,6 @@ export class RemoteSchedule
 
     return response as domain.LoadAllSchedulesDashboard.Model;
   }
-
 
   async confirm(params: domain.ConfirmSchedule.Params) {
     const response = await this.httpClient.request({
@@ -135,5 +135,17 @@ export class RemoteSchedule
     return response;
   }
 
+  async loadSyncableExecutions(
+    params: domain.LoadSyncableScheduleExecutions.Params
+  ) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(
+        `treatments/search-syncheable-schedule-executions/${params?.idPaciente}`
+      ),
+      method: "get",
+      body: { scheduled: params?.scheduled },
+    });
 
+    return response as domain.LoadSyncableScheduleExecutions.Model;
+  }
 }

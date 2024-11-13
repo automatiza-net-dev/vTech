@@ -2,7 +2,7 @@ import { ProductCart } from "@/domain";
 
 import { Cart } from "../interfaces";
 
-export  function formatCart(cart: Cart[], maxDiscount: boolean): ProductCart[] {
+export function formatCart(cart: Cart[], maxDiscount: boolean): ProductCart[] {
   if (!cart || cart.length === 0) {
     return [];
   }

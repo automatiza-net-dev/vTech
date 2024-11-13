@@ -1,10 +1,7 @@
-import { OpportunityReport } from "@/domain";
-
-import { useMe } from "@/presentation";
-
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
-
 import moment from "moment";
+
+import { OpportunityReport } from "@/domain";
+import { PrintHeader, useMe } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -13,7 +10,7 @@ export function PrintScreen({ reports }: { reports: OpportunityReport[] }) {
 
   return (
     <S.PrintScreen>
-      {user.data && <PrintHeader unit={user.data.unit} />}
+      <PrintHeader />
       <h2>Relatório de oportunidades CRM</h2>
       <table>
         <thead>

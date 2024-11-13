@@ -10,7 +10,7 @@ export function Aprroved(props: Product | Cart) {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
       <div style={{ width: "15px" }}>
-        <Icon name="CheckListIcon" fill="green" />
+        <Icon name="CheckListIcon" color="green" />
       </div>
       Aprovado por {props?.courtesyApprovedUser?.name || "Usuário não mapeado"}{" "}
       em {approvalDate}

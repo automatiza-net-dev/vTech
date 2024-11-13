@@ -14,13 +14,16 @@ export const ResultFileStyled = styled("div")`
     border-radius: 6px;
     border: 1px solid rgba(0, 0, 0, 0.2);
 
+    img {
+      width: 100%;
+    }
+
     > svg {
       width: 34px;
       height: auto;
       position: absolute;
       z-index: 23;
       display: none;
-      stroke: #fff !important;
     }
 
     &:before {

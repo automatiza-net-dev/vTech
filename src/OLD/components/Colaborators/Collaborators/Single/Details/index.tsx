@@ -52,7 +52,7 @@ export const Details = React.memo(function () {
               />
             </div>
             <Link
-              href={`/dashboard/colaborador/editar-colaborador/${user?.id}`}
+              href={`/dashboard/colaboradores/editar-colaborador/${user?.id}`}
             >
               <div>
                 <Button text="Editar colaborador" />

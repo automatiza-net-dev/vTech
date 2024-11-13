@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Table, Tag, Modal } from "antd";
+import { Table, Tag } from "antd";
 import Link from "next/link";
 import ActiveTutorsForm from "../ActiveTutorsForm";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ import { EditTwoTone } from "@ant-design/icons";
 // Utils
 import TutorVincForm from "./TutorVincForm";
 import { FormCreatePatient, SchedulingContextProvider } from "@/presentation";
-import { Icon, useToast } from "infinity-forge";
+import { Icon, useToast, Modal } from "infinity-forge";
 import { AddTutor } from "@/presentation/pages/dashboard/scheduling/context/components/modal-set-patients/form-set-patients/table/table-configurations/tutors/add-tutor";
 
 export function PatientList({
@@ -36,13 +36,12 @@ export function PatientList({
   querySchedule,
   origin = false,
 }) {
-  const [refreshList, setRefreshList] = useState();
+  const [refreshList, setRefreshList] = useState(false);
   const [data, setData] = useState<any>(null);
   const [activeTutorOpen, setActiveTutorOpen] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [patient, setPatient] = useState<any>("");
   const [patientSelected, setPatientSelected] = useState("");
-  const [newTutorOpen, setNewTutorOpen] = useState(false);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
 
@@ -95,8 +94,10 @@ export function PatientList({
                 ? patient.gender === "male"
                   ? "Macho"
                   : "Fêmea"
-                : "Gênero não informado",
-              birthDate: convertDate(patient.birthDate),
+                : "-",
+              birthDate: patient?.birthDate
+                ? convertDate(patient.birthDate)
+                : "-",
               tutors: (
                 <>
                   {patient?.tutors?.length > 0 &&
@@ -111,25 +112,8 @@ export function PatientList({
                     id={patient?.id}
                     tutors={patient?.tutors}
                     origin="Cadastro"
+                    refresh={() => setRefreshList((prv) => !prv)}
                   />
-                  {/* <svg
-                    viewBox="0 0 16 16"
-                    height="20"
-                    width="20"
-                    focusable="false"
-                    role="img"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="add-icon"
-                    onClick={() => {
-                      setPatientSelected(patient);
-                      setNewTutorOpen(true);
-                    }}
-                  >
-                    <title>PlusSquare icon</title>
-                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
-                  </svg> */}
                   &nbsp;
                   <span
                     className="uk-link"
@@ -145,7 +129,7 @@ export function PatientList({
               race:
                 patient?.race?.specie?.description && patient?.race?.description
                   ? `${patient?.race?.specie?.description} > ${patient?.race?.description}`
-                  : "Raça não informado",
+                  : "-",
               attendance: (
                 <div>
                   {patient?.name ? (
@@ -168,7 +152,8 @@ export function PatientList({
                     <FormCreatePatient
                       isModal
                       patientId={patient.id}
-                      trigger={<Icon name="IconEdit" fill="#000" />}
+                      trigger={<Icon name="IconEdit" color="#000" />}
+                      onSuccess={() => setRefreshList((prv) => !prv)}
                     />
                   )}
                 </div>
@@ -254,31 +239,10 @@ export function PatientList({
             ),
         }}
       />
-
       <Modal
-        title="Vincular tutor"
-        visible={newTutorOpen}
-        footer={null}
-        onCancel={() => {
-          setPatient("");
-          setNewTutorOpen(false);
-        }}
-      >
-        <TutorVincForm
-          visible={newTutorOpen}
-          reload={refreshList}
-          setReload={setRefreshList}
-          patient={patientSelected}
-          setVisible={setNewTutorOpen}
-          isButtonCreateTutor={true}
-          querySchedule={querySchedule}
-        />
-      </Modal>
-      <Modal
-        title="Selecionar tutor ativo"
-        visible={activeTutorOpen}
-        onCancel={() => setActiveTutorOpen(false)}
-        footer={null}
+        styles={{ width: 500, padding: "20px 0" }}
+        open={activeTutorOpen}
+        onClose={() => setActiveTutorOpen(false)}
       >
         <ActiveTutorsForm
           patient={patient}
@@ -289,10 +253,9 @@ export function PatientList({
       </Modal>
       {PatientDetails && (
         <Modal
-          visible={detailsVisible}
-          footer={null}
-          onCancel={() => setDetailsVisible(false)}
-          width={1200}
+          open={detailsVisible}
+          onClose={() => setDetailsVisible(false)}
+          styles={{ width: 1200 }}
         >
           <PatientDetails
             selectedId={selectedId}
@@ -303,10 +266,9 @@ export function PatientList({
       )}
       {editVisible && (
         <Modal
-          width={1200}
-          footer={null}
-          onCancel={() => setEditVisible(false)}
-          visible={editVisible}
+          styles={{ width: 1200 }}
+          onClose={() => setEditVisible(false)}
+          open={editVisible}
         >
           <Edit id={selectedId} setVisible={setEditVisible} />
         </Modal>

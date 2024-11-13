@@ -5,7 +5,7 @@ import { userService } from "@/OLD/services/user.service";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { useQueryClient } from "react-query";
 
-export const Delete = memo(({ id, onDelete, reload, setReload }) => {
+export function Delete ({ id, onDelete, reload, setReload }) {
   const handleDelete = useCallback(() => {
     userService
       .deleteWorkingDay(id)
@@ -43,4 +43,4 @@ export const Delete = memo(({ id, onDelete, reload, setReload }) => {
       </Popconfirm>
     </div>
   );
-});
+};

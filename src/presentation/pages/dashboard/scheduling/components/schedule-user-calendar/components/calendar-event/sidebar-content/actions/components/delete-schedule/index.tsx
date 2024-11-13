@@ -27,7 +27,7 @@ export function DeleteSchedule({ event, onExecuteAction }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE13">
       <button className="reset-button red" type="button" onClick={handleClick}>
-        <Icon name="CloseIcon" fill={"#fff"} />
+        <Icon name="IconClose" color={"#fff"} />
         <span>Remover agendamento</span>
       </button>
     </PermissionItem>

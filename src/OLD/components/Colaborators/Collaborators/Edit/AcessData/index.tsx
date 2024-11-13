@@ -12,10 +12,16 @@ import { adminService } from "@/OLD/services/admin.service";
 import { clinicService } from "@/OLD/services/clinic.service";
 
 // Components
-import { Container } from "./styles";
-import { Select, notification, Input, Checkbox } from "antd";
-import { Button } from "infinity-forge";
-const { Option } = Select;
+import {
+  Button,
+  Select,
+  Input,
+  useToast,
+  InputCheckbox,
+  FormHandler,
+} from "infinity-forge";
+
+import * as S from "./styles";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
@@ -24,7 +30,7 @@ function AccessData() {
   const router = useRouter();
   const userId = router.query.id;
   const [data, setData] = useState(false);
-  const [rolesStructure, setRolesStructure] = useState();
+  const [rolesStructure, setRolesStructure] = useState({});
   const [reload, setReload] = useState(false);
   const [roleIndex, setRoleIndex] = useState(false);
   const [allRoles, setAllRoles] = useState(false);
@@ -33,6 +39,8 @@ function AccessData() {
 
   const { units } = useUserBusinessUnits("", reload);
   const { data: deposits } = useDeposits("movements", {});
+
+  const { createToast } = useToast();
 
   const getAllRoles = useCallback(() => {
     setLoading(true);
@@ -44,8 +52,9 @@ function AccessData() {
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao recuperar os cargos disponíveis...",
+          status: "error",
         });
       })
       .finally(() => setLoading(false));
@@ -57,204 +66,163 @@ function AccessData() {
       .getCollabById(userId)
       .then((res) => {
         setData(res.data);
-        setRolesStructure(
-          res?.data?.roles.map((item) => {
-            return {
-              user_id: userId,
-              role_id: item?.id,
-              active: item?.active,
-              unit_id: item?.unit?.id,
-              default_sale_deposit_id: item?.deposit?.id,
-            };
-          })
-        );
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro ao recuperar as informações do colaborador...",
+          status: "error",
         });
       })
       .finally(() => setLoading(false));
-  }, [userId, reload]);
+  }, [userId, reload, units]);
 
   useEffect(() => {
     getAllRoles();
     getColabData();
   }, [getAllRoles, getColabData]);
 
-  const submitRoles = useCallback(() => {
+  function submitRoles(payload) {
     setLoading(true);
     clinicService
-      .updateUnitCollabRoles({ data: rolesStructure })
+      .updateUnitCollabRoles({
+        data: payload?.items
+          .map((item, index) => ({
+            ...item,
+            active: rolesStructure?.items[index]?.active,
+          }))
+          .filter((item) => item?.role_id),
+      })
       .then((res) =>
-        notification.success({ message: "Cargos atualizados com sucesso!" })
+        createToast({
+          message: "Cargos atualizados com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar os cargos do colaborador...",
+          status: "error",
         });
       })
       .finally(() => {
         setReload(!reload);
       });
-  }, [rolesStructure]);
+  }
+
+  useEffect(() => {
+    setRolesStructure(
+      units?.length > 0 &&
+        data?.roles && {
+          items: units.map((unit) => {
+            const unitUserData = data?.roles?.find(
+              (data) => data?.unit?.id === unit?.id
+            );
+
+            return {
+              unit_id: unit?.id,
+              unitIdentification: unit?.identification,
+              role_id: unitUserData?.id,
+              default_sale_deposit_id: unitUserData?.deposit?.id,
+              active: unitUserData?.active,
+              user_id: userId,
+            };
+          }),
+        }
+    );
+  }, [units, data]);
+
+  const rolesOptions =
+    allRoles?.length > 0 &&
+    allRoles?.map((role) => ({
+      value: role?.id,
+      label: role?.name,
+    }));
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        submitRoles();
-      }}
-      className=""
-    >
-      <Container className="uk-padding">
-        <h5 className="uk-heading-line">
-          <span>Dados de acesso</span>
-        </h5>
-        <div className="uk-flex uk-flex-center">
-          <div className="uk-width-1-4">
-            <div>
-              <label>Clinica</label>
-              {units &&
-                units.length > 0 &&
-                units.map((unit, i) => (
-                  <p className="uk-heading-line" key={i}>
-                    <span>{unit?.fantasyName}</span>
-                  </p>
-                ))}
-            </div>
-          </div>
-          <div className="uk-width-1-4 uk-margin-small-left">
-            <div className="">
-              <label>Cargo</label>
-              {units?.length > 0 &&
-                units?.map((unit, i) => (
+    <S.AccessData>
+      <h5 className="uk-heading-line">
+        <span>Dados de acesso</span>
+      </h5>
+      <div className="header-table">
+        <span>Clinica</span>
+        <span>Cargo</span>
+        <span>Depósito padrão para venda</span>
+        <span>Ativo</span>
+      </div>
+
+      {rolesStructure?.items?.length > 0 && (
+        <FormHandler
+          cleanFieldsOnSubmit={false}
+          initialData={rolesStructure}
+          customAction={{
+            Component: () => (
+              <Button text="Voltar" onClick={() => router.back()} />
+            ),
+          }}
+          customSubmit={[
+            {
+              action: (payload) => submitRoles(payload),
+              active: true,
+              props: {
+                text: "Salvar",
+              },
+            },
+          ]}
+        >
+          {rolesStructure?.items?.map((roleStructure, index) => {
+            const basePath = `items[${index}]`;
+            return (
+              <div className="body-table" key={roleStructure?.unit_id}>
+                <div>{roleStructure?.unitIdentification}</div>
+
+                {rolesOptions?.length > 0 && (
                   <Select
-                    key={i}
-                    onChange={(e) => {
-                      const existRole = rolesStructure?.find(
-                        (role) => role?.unit_id === unit?.id
-                      );
-                      let newArr = [...rolesStructure];
-                      if (existRole) {
-                        newArr.splice(rolesStructure.indexOf(existRole), 1);
-                        newArr.push({ ...existRole, role_id: e });
-                        setRolesStructure(newArr);
-                      } else {
-                        newArr.push({
-                          user_id: userId,
-                          role_id: e,
-                          unit_id: unit?.id,
-                          active: true,
-                        });
-                        setRolesStructure(newArr);
-                      }
-                    }}
-                    className="uk-width-1-1 uk-margin-small-top"
-                    value={
-                      rolesStructure?.find((role) => role?.unit_id === unit?.id)
-                        ?.role_id
-                    }
-                  >
-                    {allRoles.length > 0 &&
-                      allRoles.map((item, i) => (
-                        <Option value={item.id} key={i}>
-                          {item.name}
-                        </Option>
-                      ))}
-                  </Select>
-                ))}
-            </div>
-          </div>
-          <div className="uk-width-1-4 uk-margin-small-left">
-            <label>Depósito padrão para venda</label>
-            {units?.length > 0 &&
-              units?.map((unit, i) => (
-                <div className="">
+                    name={`${basePath}.role_id`}
+                    options={rolesOptions}
+                    onlyOneValue
+                  />
+                )}
+
+                {deposits && deposits?.length > 0 && (
                   <Select
-                    key={i}
+                    name={`${basePath}.default_sale_deposit_id`}
+                    options={deposits
+                      .filter(
+                        (deposit) =>
+                          deposit?.unit?.id === roleStructure?.unit_id
+                      )
+                      .map((deposit, i) => ({
+                        value: deposit?.id,
+                        label: deposit?.description,
+                      }))}
+                    onlyOneValue
+                  />
+                )}
+
+                <div className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={rolesStructure.items[index].active}
                     onChange={(e) => {
-                      const existRole = rolesStructure?.find(
-                        (role) => role?.unit_id === unit?.id
-                      );
-                      let newArr = [...rolesStructure];
-                      if (existRole) {
-                        newArr.splice(rolesStructure.indexOf(existRole), 1);
-                        newArr.push({
-                          ...existRole,
-                          default_sale_deposit_id: e,
-                        });
-                        setRolesStructure(newArr);
-                      } else {
-                        newArr.push({
-                          user_id: userId,
-                          default_sale_deposit_id: e,
-                          unit_id: unit?.id,
-                          active: true,
-                        });
-                        setRolesStructure(newArr);
-                      }
+                      const newObj = { ...rolesStructure };
+                      newObj.items.splice(index, 1, {
+                        ...rolesStructure?.items[index],
+                        active: e.target.checked,
+                      });
+
+                      setRolesStructure(newObj);
                     }}
-                    className="uk-width-1-1 uk-margin-small-top"
-                    value={
-                      rolesStructure?.find((role) => role?.unit_id === unit?.id)
-                        ?.default_sale_deposit_id
-                    }
-                  >
-                    {deposits?.length > 0 &&
-                      deposits
-                        ?.filter((dep) => dep?.unit?.id === unit?.id)
-                        ?.map((deposit, i) => (
-                          <Option value={deposit.id} key={i}>
-                            {deposit.description}
-                          </Option>
-                        ))}
-                  </Select>
+                  />
                 </div>
-              ))}
-          </div>
-          <div className="uk-margin-left">
-            <label>Ativo</label>
-            {units?.length > 0 &&
-              units?.map((unit, i) => {
-                const existRole = rolesStructure?.find(
-                  (role) => role?.unit_id === unit?.id
-                );
-                return (
-                  <p className="" key={i}>
-                    <Checkbox
-                      disabled={!existRole}
-                      onChange={(e) => {
-                        let newArr = [...rolesStructure];
-                        newArr.splice(rolesStructure.indexOf(existRole), 1);
-                        newArr.push({
-                          ...existRole,
-                          active: e.target.checked,
-                        });
-                        setRolesStructure(newArr);
-                      }}
-                      checked={
-                        rolesStructure?.find(
-                          (role) => role?.unit_id === unit?.id
-                        )?.active
-                      }
-                    />
-                  </p>
-                );
-              })}
-          </div>
-        </div>
-      </Container>
-      <footer
-        style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}
-      >
-        <Button type="submit" text="Salvar" />
-        <Button type="button" onClick={() => router.back()} text="Voltar" />
-      </footer>
-    </form>
+              </div>
+            );
+          })}
+        </FormHandler>
+      )}
+    </S.AccessData>
   );
 }
 

@@ -1,25 +1,26 @@
 import { useState } from "react";
-import { useQueryClient } from "react-query";
 
-import { CreateTutor } from "@/OLD/components/Tutor/Create";
+import { useQueryClient } from "infinity-forge";
+
+import { Modal, useLoadAllPatientTutorKEY } from "@/presentation";
+
 import AccessDenied from "@/OLD/components/AccessDenied";
-import { Modal } from "@/presentation";
-
+import { CreateTutor } from "@/OLD/components/Tutor/Create";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 export default function TutorCreatePage() {
   const [visible, setVisible] = useState(false);
 
-  const queryClient = useQueryClient();
   const listTutorsPermission = useUserHasPermission("TUT00");
+
+  const refetch = useQueryClient(state => state.refetch)
+  const patientTutorKey = useLoadAllPatientTutorKEY()
 
   const props = {
     setVisible,
     isSchedule: true,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["RemoteLoadAllPatientTutor"],
-      });
+      refetch(patientTutorKey)
     },
   };
 

@@ -15,7 +15,7 @@ export const columns = [
     key: "gender",
   },
   {
-    title: "Aniversário",
+    title: "Dt. Nascimento",
     dataIndex: "birthDate",
     key: "birthDate",
   },
@@ -63,7 +63,7 @@ export const customColumns = [
     key: "gender",
   },
   {
-    title: "Aniversário",
+    title: "Dt. Nascimento",
     dataIndex: "birthDate",
     key: "birthDate",
   },
@@ -101,7 +101,7 @@ export const opportunitiesColumns = [
     key: "gender",
   },
   {
-    title: "Aniversário",
+    title: "Dt. Nascimento",
     dataIndex: "birthDate",
     key: "birthDate",
   },

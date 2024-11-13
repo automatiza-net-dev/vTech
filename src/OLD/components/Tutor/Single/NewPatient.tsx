@@ -126,7 +126,7 @@ export const NewPatient = memo(({ isVisible, close }) => {
                     <option value="female">F</option>
                   </Select>
                 </Form.Item>
-                <Form.Item label="Aniversário" className="uk-width-1-2">
+                <Form.Item label="Dt. Nascimento" className="uk-width-1-2">
                   <Input
                     id={"birthDate"}
                     type="date"

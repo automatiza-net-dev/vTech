@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
-import PatientHeader from "@/OLD/components/mini-components/Print/PetHeader";
 import { Container } from "./styles";
+import { PrintHeader } from "@/presentation";
+import PatientHeader from "@/OLD/components/mini-components/Print/PetHeader";
 
 import moment from "moment";
 
@@ -46,7 +46,7 @@ const PrintContent = ({ obj, patient }) => {
   return (
     <Container>
       <div className="uk-text-center uk-margin-top">
-        <PrintHeader unit={clinic} />
+        <PrintHeader />
         <PatientHeader tutor={patient?.tutor} patient={patient?.patient} />
       </div>
       {obj.map((item) => {

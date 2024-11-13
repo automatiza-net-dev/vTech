@@ -264,7 +264,7 @@ export default function FastCreateTutor({
                 </>
               )}
               <div className="uk-margin-small">
-                <label>Nome</label>
+                <label>Nome *</label>
                 <input
                   className="uk-input"
                   type="text"
@@ -279,7 +279,7 @@ export default function FastCreateTutor({
                 />
               </div>
               <div className="uk-margin-small">
-                <label>Telefone</label>
+                <label>Telefone *</label>
                 <input
                   className="uk-input"
                   type="text"
@@ -306,32 +306,29 @@ export default function FastCreateTutor({
                 />
               </div>
               <div className="uk-margin-small">
-                <label>Como conheceu a clinica</label>
-                <AutoComplete
-                  className="uk-width-1-1"
-                  options={tutorOrigins?.map((origin) => ({
-                    ...origin,
-                    value: origin?.description,
-                    key: origin?.id,
-                  }))}
-                  value={data?.originDescription}
-                  onChange={(val) =>
-                    setData({ ...data, originDescription: val })
-                  }
-                  onSelect={(_, opt) => {
+                <label>Como conheceu a clinica *</label>
+                <select
+                  className="uk-select uk-width-1-1"
+                  value={data?.tutorOriginId || ""}
+                  onChange={(e) => {
+                    const selectedOption = tutorOrigins.find(
+                      (origin) => origin.id === e.target.value
+                    );
                     setData({
                       ...data,
-                      tutorOriginId: opt?.id,
-                      originDescription: opt?.value,
+                      tutorOriginId: selectedOption?.id,
+                      originDescription: selectedOption?.description,
                     });
-                    setSelectedOrigin(opt);
+                    setSelectedOrigin(selectedOption);
                   }}
-                  filterOption={(val, opt) =>
-                    normalizeStr(opt?.value.toUpperCase()).includes(
-                      normalizeStr(val?.toUpperCase())
-                    )
-                  }
-                />
+                >
+                  <option value="">Selecione uma opção</option>
+                  {(tutorOrigins || []).map((origin) => (
+                    <option key={origin.id} value={origin.id}>
+                      {origin.description}
+                    </option>
+                  ))}
+                </select>
               </div>
               {selectedOrigin?.default && (
                 <div>
@@ -369,7 +366,7 @@ export default function FastCreateTutor({
                 Paciente
                 <hr />
                 <div className="uk-margin-small">
-                  <label>Nome</label>
+                  <label>Nome*</label>
                   <br />
                   <AutoComplete
                     options={[

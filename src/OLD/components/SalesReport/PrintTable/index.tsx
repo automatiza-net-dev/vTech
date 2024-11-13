@@ -4,16 +4,16 @@ import { memo, useRef } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useAuth } from "@/OLD/hooks/useAuth";
 
-import { Container, RowBox } from "./styles";
 import { Button, Empty } from "antd";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { Container, RowBox } from "./styles";
+import { PrintHeader } from "@/presentation";
 
 import ReactToPrint from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 
-const PrintTable = memo(function PrintTable({ data = [], loading }) {
+function PrintTable({ data = [], loading }) {
   const { clinic } = useProfile();
 
   const componentRef = useRef();
@@ -110,7 +110,7 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
     <>
       <Container ref={componentRef}>
         <div className="clinic-header">
-          <PrintHeader unit={clinic} />
+          <PrintHeader />
           <div className="uk-text-center">
             <h4 className="">Relatório de vendas</h4>
           </div>
@@ -210,6 +210,6 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
       </div>
     </>
   );
-});
+};
 
 export default PrintTable;

@@ -32,7 +32,11 @@ export function useAuthorizationStatusProduct(
   return "dont-need-aprove";
 }
 
-export function AuthorizationStatusProduct({ item }: { item?: Product | Cart }) {
+export function AuthorizationStatusProduct({
+  item,
+}: {
+  item?: Product | Cart;
+}) {
   const status = useAuthorizationStatusProduct(item);
 
   if (status === "dont-need-aprove" || !item) return <></>;
@@ -46,6 +50,6 @@ export function AuthorizationStatusProduct({ item }: { item?: Product | Cart }) 
   }
 
   if (status === "waiting") {
-    return <Waiting {...item} />;
+    return <Waiting />;
   }
 }

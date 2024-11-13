@@ -1,8 +1,5 @@
 import { Vaccine } from "@/domain";
-
-import { useMe } from "@/presentation";
-
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader, useMe } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -15,7 +12,7 @@ export function PrintVaccinesVermifugeReport({
 
   return (
     <S.PrintVaccinesVermifuge>
-      {user.data && <PrintHeader unit={user.data.unit} />}
+      <PrintHeader />
       <h2>Relatório de {reports[0]?.vacina_vermifugo}</h2>
       <table>
         <thead>

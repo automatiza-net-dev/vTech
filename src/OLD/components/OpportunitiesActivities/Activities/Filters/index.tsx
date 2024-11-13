@@ -9,7 +9,7 @@ import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, InputBox } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, Icon, Tooltip } from "infinity-forge";
 const { Option } = Select;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
@@ -52,7 +52,7 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
               onChange={(val) => setFilters({ ...filters, toDate: val })}
             />
             <MdOutlineClear
-              size={25}
+              size={30}
               style={{
                 cursor: "pointer",
                 marginBottom: "5px",
@@ -65,6 +65,16 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
                   toDate: null,
                 }));
               }}
+            />
+            <Tooltip
+              trigger={<Icon name="IconInfo" />}
+              content={
+                <>
+                  Esta consulta retorna as atividades que estão agendadas para{" "}
+                  <br />
+                  execução dentro do Periodo Selecionado;
+                </>
+              }
             />
           </InputBox>
         </div>

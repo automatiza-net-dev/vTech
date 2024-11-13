@@ -228,7 +228,7 @@ function Single({ selectedId, setVisible }) {
         </div>
         <section className="uk-margin-small-top">
           <Accordion
-            closeIcon={"IconArrowTop"}
+            closeIcon={"IconTopNavigation"}
             openIcon={"IconArrowRight"}
             title="Tutores"
             key="tutors"
@@ -253,7 +253,7 @@ function Single({ selectedId, setVisible }) {
         </section>
         {patient?.id && (
           <Accordion
-            closeIcon={"IconArrowTop"}
+            closeIcon={"IconTopNavigation"}
             openIcon={"IconArrowRight"}
             title="Vacinas"
             key="vaccines"

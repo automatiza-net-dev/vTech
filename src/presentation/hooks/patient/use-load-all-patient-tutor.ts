@@ -1,24 +1,37 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteTutor } from "@/data";
 import { LoadAllPatientTutor } from "@/domain";
-import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
+import { useScheduling } from "@/presentation/pages";
 
-export function useLoadAllPatientTutor({ needFilterToCallApi = false, patientFilters }: {
+export function useLoadAllPatientTutor({
+  enabled = true,
+  patientFilters = null,
+}: {
+  enabled?: boolean;
   patientFilters?: LoadAllPatientTutor.Params | null;
-  needFilterToCallApi?: boolean;
-}) {
+} = {}) {
   async function fetcher() {
-    const response = await container.get<RemoteTutor>(patientTypes.RemoteTutor).loadAll(patientFilters || {});
-
+    const response = await container
+      .get<RemoteTutor>(patientTypes.RemoteTutor)
+      .loadAll(patientFilters || {});
     return response;
   }
 
+  const queryKey = useLoadAllPatientTutorKEY(patientFilters)
+
   return useQuery({
-    queryKey: ["RemoteLoadAllPatientTutor", patientFilters],
+    queryKey,
     queryFn: fetcher,
-    ...callApiOneTime,
-    enabled: needFilterToCallApi ? !!patientFilters : true,
+    enabled: enabled || patientFilters ? true : false,
   });
+}
+
+export function useLoadAllPatientTutorKEY(patientFilters?: LoadAllPatientTutor.Params | null) {
+  const contextPatientFilters = useScheduling((state) => state.patientsFilters);
+
+  const filters = patientFilters || contextPatientFilters
+
+  return "RemoteLoadAllPatientTutor" + (filters ? JSON.stringify(filters) : "")
 }

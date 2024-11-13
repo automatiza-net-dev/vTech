@@ -1,12 +1,13 @@
 import { Error } from "infinity-forge";
+import { useQueryClient } from "react-query";
 
 import { Tutor } from "@/domain";
+import { FormCreatePatient } from "@/presentation/pages/dashboard/paciente";
+
 import { AddTutor } from "./add-tutor";
 import { SelectActiveTutor } from "./select-active-tutor";
 
 import * as S from "./styles";
-import { FormCreatePatient } from "@/presentation/pages/dashboard/paciente";
-import { useQueryClient } from "react-query";
 
 export function Tutors({
   tutors,

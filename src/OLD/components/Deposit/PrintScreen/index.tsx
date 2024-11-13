@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 import { Container } from "./styles";
 
 const PrintScreen = memo(function PrintScreen({ data }) {
@@ -14,7 +14,7 @@ const PrintScreen = memo(function PrintScreen({ data }) {
   return (
     <Container>
       <div className="clinic-header">
-        <PrintHeader unit={clinic} />
+        <PrintHeader />
         <div className="uk-text-center">
           <h4 className="">Detalhes depósito - {data?.description}</h4>
         </div>

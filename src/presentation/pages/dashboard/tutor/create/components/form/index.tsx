@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 
 import { RemoteTutor } from "@/data";
-import { useLoadTutor } from "@/presentation";
+import { useLoadTutor, useMe } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 import { Pets } from "../pets";
@@ -27,8 +27,10 @@ import * as S from "./styles";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
+  const unitConfig = useMe()?.data?.unit?.unitConfig;
 
-  const { data, isFetching, refetch } = useLoadTutor(tutorId);
+  const { data, isFetching, mutate } = useLoadTutor(tutorId);
+
   const { createToast } = useToast();
 
   defineRequireFields(origin, ["CEP*"]);
@@ -36,7 +38,13 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   if ((!data || isFetching) && tutorId) {
     return <></>;
   }
+
   const isRegister = origin === "Cadastro";
+  const requiresDocument = isRegister
+    ? unitConfig?.requires_client_document
+      ? true
+      : false
+    : false;
 
   async function handleSuccess(data) {
     const payload = {
@@ -59,7 +67,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
       message: tutorId ? "Alterado com sucesso" : "Criado com sucesso",
     });
 
-    tutorId && refetch();
+    tutorId && mutate();
 
     setOpen && setOpen(false);
 
@@ -84,7 +92,6 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               ? "Novo Tutor"
               : "Novo Paciente"}
           </h2>
-
           <div className="row">
             <InputPhoto name="photo" isLocalFile multiple />
 
@@ -94,7 +101,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
                 <InputMask
                   name="document"
-                  label={isRegister ? "CPF*" : "CPF"}
+                  label={requiresDocument ? "CPF*" : "CPF"}
                   mask="___.___.___-__"
                 />
 
@@ -104,7 +111,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                   name="birthDate"
                   type="date"
                   label={
-                    isRegister ? "Data de nascimento*" : "Data de nascimento"
+                    isRegister ? "Data de nascimento" : "Data de nascimento"
                   }
                   max={moment().format("YYYY-MM-DD")}
                 />
@@ -164,6 +171,8 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             )}
           </div>
 
+          <Contacts origin={origin} />
+
           <h3 className="font-18-bold" style={{ marginBottom: 15 }}>
             Endereço
           </h3>
@@ -200,8 +209,6 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               },
             ]}
           />
-
-          <Contacts />
 
           <Pets tutor={data} {...props} handleSuccess={handleSuccess} />
         </FormHandler>

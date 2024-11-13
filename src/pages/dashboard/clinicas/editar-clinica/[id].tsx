@@ -38,8 +38,9 @@ function Page() {
   const [formData, setFormData] = useState<Partial<BusinessUnit>>({});
 
   const router = useRouter();
-  const { data, isLoading } = useLoadBusinessUnits();
+  const { data, isLoading, mutate } = useLoadBusinessUnits();
   const editPermission = useUserHasPermission("CLI02");
+
 
   if (!data) {
     return <></>;
@@ -60,6 +61,8 @@ function Page() {
       const phone = formatPhone(data.phone);
       const payload = { ...data, ...formData };
       await clinicService.upDateClinic(clinicId, { ...payload, phone });
+
+      mutate && mutate();
 
       notification.success({
         message: "Sucesso!",
@@ -211,6 +214,7 @@ function Page() {
                         <Input
                           id="postalCode"
                           type="number"
+                          value={formData?.postalCode || data?.postalCode}
                           min={0}
                           max={8}
                           onChange={(e) => getAddress(e.target.value)}
@@ -236,6 +240,7 @@ function Page() {
                         <Input
                           id="complement"
                           type="text"
+                          value={formData?.complement || data?.complement}
                           onChange={handleInputValue}
                         />
                       </Form.Item>

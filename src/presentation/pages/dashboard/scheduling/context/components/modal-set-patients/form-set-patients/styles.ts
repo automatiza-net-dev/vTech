@@ -3,6 +3,10 @@ import styled from "styled-components";
 export const FormSetClients = styled("div")`
   width: 100%;
 
+  .top-actions {
+    display: none;
+  }
+  
   .top {
     display: flex;
     align-items: center;

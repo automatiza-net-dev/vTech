@@ -5,7 +5,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container, RowBox } from "./styles";
 import { Button, Empty } from "antd";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import ReactToPrint from "react-to-print";
 
@@ -39,7 +39,7 @@ const PrintTable = memo(function PrintTable({ reports }) {
     <>
       <Container ref={componentRef} className="uk-margin-small-top">
         <div className="clinic-header">
-          <PrintHeader unit={clinic} />
+          <PrintHeader />
           <div className="uk-text-center">
             <h4 className="">Sugestão de compras</h4>
           </div>

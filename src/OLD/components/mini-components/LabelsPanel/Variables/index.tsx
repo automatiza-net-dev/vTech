@@ -15,10 +15,18 @@ const Variables = memo(function ({ body, setBody, templates }) {
         <div
           className="variable-item"
           onClick={() => {
-            quillObj.current.getEditor().insertText(
-              quillObj.current.getEditor().getSelection((prv) => prv),
-              template?.replacer
-            );
+            if (!template?.complex) {
+              quillObj.current.getEditor().insertText(
+                quillObj.current.getEditor().getSelection((prv) => prv),
+                template?.replacer
+              );
+            } else {
+              const toInsert = quillObj.current
+                .getEditor()
+                .clipboard.convert(body + `<ul>${template?.replacer}</ul>`);
+
+              quillObj.current.getEditor().setContents(toInsert);
+            }
             setTimeout(() => {
               quillObj?.current
                 ?.getEditor()

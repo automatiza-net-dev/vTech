@@ -9,7 +9,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Checkbox, AutoComplete, Select, Input } from "antd";
-import { Button } from "infinity-forge";
+import { Button, Icon, Tooltip } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { InputBox } from "./styles";
 const { Option } = Select;
@@ -19,7 +19,7 @@ import { sortItems } from "@/OLD/utils/sortItems";
 
 import { MdOutlineClear } from "react-icons/md";
 
-const Filters = memo(function Filters({ filters, setFilters, setReload }) {
+function Filters({ filters, setFilters, setReload }) {
   const [values, setValues] = useState({});
 
   const { patients } = usePatients(
@@ -101,6 +101,21 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
               }));
             }}
           />
+          <Tooltip
+            content={
+              <>
+                Esta consulta retorna todas as oportunidades que :
+                <li>Tem a Data de Abertura no Periodo Selecionado</li>
+                <li>Tem a Data de Contato no Periodo Selecionado</li>
+                <li>Estão Agendadas para o Periodo Selecionado</li>
+                <li>
+                  Foi feito o seu Agendamento dentro do Periodo Selecionado;
+                </li>
+                <li>Compareceram na Data dentro no Periodo Selecionado;</li>
+              </>
+            }
+            trigger={<Icon name="IconInfo" style={{ cursor: "pointer" }} />}
+          />
         </InputBox>
       </div>
       <div className="uk-width-1-4 uk-margin-right">
@@ -181,6 +196,18 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
               }));
             }}
           />
+          <Tooltip
+            trigger={<Icon name="IconInfo" />}
+            content={
+              <>
+                Esta consulta retorna as oportunidades que foram cadastradas no{" "}
+                <br />
+                Periodo Selecionado, ou seja, esta é a Data de Lançamento da{" "}
+                <br />
+                oportunidade no Crm
+              </>
+            }
+          />
         </InputBox>
       </div>
       <div className="uk-width-1-4">
@@ -248,6 +275,17 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
               }));
             }}
           />
+          <Tooltip
+            trigger={<Icon name="IconInfo" />}
+            content={
+              <>
+                Esta consulta retorna as oportunidades que tiveram o contato <br />
+                realizado pelo cliente dentro do Periodo Selecionado. Esta é a <br />
+                data que é selecionada no momento de cadastrar a oportunidade no <br />
+                Crm
+              </>
+            }
+          />
         </InputBox>
       </div>
       <div className="uk-width-1-4 uk-margin-left">
@@ -310,6 +348,6 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
       </div>
     </section>
   );
-});
+}
 
 export default Filters;

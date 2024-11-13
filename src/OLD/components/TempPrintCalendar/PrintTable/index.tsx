@@ -1,7 +1,7 @@
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container, RowBox } from "./styles";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import moment from "moment";
 import masks from "@/OLD/utils/masks";
@@ -30,7 +30,7 @@ const PrintTable = ({ data, date }) => {
   return (
     <Container >
       <div className="clinic-header">
-        <PrintHeader unit={clinic} />
+        <PrintHeader />
         {date && <h4 className="uk-text-center">Agendamento do dia {date}</h4>}
         <div className="header-table">
           <div className="small-width">Data</div>

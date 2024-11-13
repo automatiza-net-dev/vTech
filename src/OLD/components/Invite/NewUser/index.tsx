@@ -8,8 +8,9 @@ import api from "@/OLD/services";
 
 import masks from "@/OLD/utils/masks";
 import { useToast, Button } from "infinity-forge";
+import { Invite } from "@/domain";
 
-export default function NewUser() {
+export default function NewUser(props: Invite) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<{
     name?: string;
@@ -74,9 +75,20 @@ export default function NewUser() {
         }}
       >
         <section className="header-section">
-          <h2>Olá, bem vindo ao sistema {process.env.clientName}</h2>
+          <h2>
+            Olá, {props?.email}, bem vindo ao sistema de gestão{" "}
+            {process.env.clientName}
+          </h2>
+          <h2>
+            Você recebeu um convite de {props?.invitedBy?.name} para ter acesso
+            à unidade "{props?.businessUnit?.identification}"
+          </h2>
           <br />
-          Para Aceitar o convite preencha os dados abaixo e clique em confirmar:{" "}
+
+          <p>
+            para aceitar o convite preencha os dados abaixo e clique em
+            "Confirmar"
+          </p>
         </section>
 
         <div>

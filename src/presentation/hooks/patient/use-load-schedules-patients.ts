@@ -1,16 +1,16 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
-import { callApiOneTime } from "@/presentation";
+import { useScheduling } from "@/presentation";
 import { LoadSchedulesPatient } from "@/domain";
 import { RemoteLoadSchedulesPatient } from "@/data";
 import { container, patientTypes } from "@/container";
 
+type PatientFilterProps = (LoadSchedulesPatient.Params & { fetch?: boolean }) | null
+
 export function useLoadSchedulesPatients({
   patientFilters,
-  needFilterToCallApi = false,
 }: {
-  patientFilters?: LoadSchedulesPatient.Params | null;
-  needFilterToCallApi?: boolean;
+  patientFilters?: PatientFilterProps;
 }) {
   async function fetcher() {
     const response = await container
@@ -20,8 +20,17 @@ export function useLoadSchedulesPatients({
     return response;
   }
 
-  return useQuery(["RemoteLoadSchedulesPatients", patientFilters], fetcher, {
-    ...callApiOneTime,
-    enabled: needFilterToCallApi ? !!patientFilters : true,
+  const queryKey = useLoadSchedulesPatientsKEY(patientFilters);
+
+  return useQuery({
+    queryKey,
+    queryFn: fetcher,
+    enabled: !patientFilters ? false : true,
   });
+}
+
+export function useLoadSchedulesPatientsKEY(patientFilters?: PatientFilterProps) {
+  const contextPatientFilters = useScheduling((state) => state.patientsFilters);
+
+  return ["RemoteLoadSchedulesPatients", JSON.stringify(patientFilters || contextPatientFilters)]
 }

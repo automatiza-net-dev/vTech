@@ -16,7 +16,7 @@ export type ScheduleServiceItem = {
   economic_group_id: null;
   description: string;
   active: boolean;
-  type: "RETORNO";
+  type: "RETORNO" | "T"; 
   types: ScheduleService[];
 };
 

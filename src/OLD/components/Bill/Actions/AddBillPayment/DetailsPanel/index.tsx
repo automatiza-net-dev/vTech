@@ -11,7 +11,7 @@ import { Container } from "./styles";
 import { Button } from "infinity-forge";
 import { Input, Modal, notification } from "antd";
 
-const DetailsPanel = memo(function DetailsPanel({
+export const DetailsPanel = memo(function DetailsPanel({
   formData,
   setFormData,
   submit,
@@ -149,5 +149,3 @@ const DetailsPanel = memo(function DetailsPanel({
     </Container>
   );
 });
-
-export default DetailsPanel;

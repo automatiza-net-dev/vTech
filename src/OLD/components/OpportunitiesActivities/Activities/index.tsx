@@ -34,7 +34,7 @@ const detectClockColor = (date, duration) => {
   return "red";
 };
 
-const Activities = memo(function ({
+function Activities ({
   colaborators,
   actTypes,
   tutors,
@@ -144,6 +144,6 @@ const Activities = memo(function ({
       />
     </Container>
   );
-});
+};
 
 export default Activities;

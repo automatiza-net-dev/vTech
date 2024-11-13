@@ -4,7 +4,7 @@ import React, { forwardRef } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import moment from "moment";
 
@@ -14,7 +14,7 @@ const PrintTable = forwardRef(({ columns, dataSource, filters, unit }, ref) => {
 
   return (
     <div ref={ref}>
-      <PrintHeader unit={clinic} />
+      <PrintHeader />
       <h3 className="uk-margin-remove uk-text-center">Relatório de Títulos</h3>
       <section className="uk-text-center">
         {filtersList?.includes("fromIssueDate") && (

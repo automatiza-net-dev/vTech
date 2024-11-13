@@ -20,6 +20,9 @@ export type Event = {
     end_hour: string;
     start_hour: string;
     age: null;
+    reschedules: any[];
+    contacts: any[];
+    statusChanges: any[];
     endHour: string;
     on_duty: boolean;
     opportunity_id: null;

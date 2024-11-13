@@ -5,8 +5,10 @@ import { ContactItem } from "./contact-item";
 
 import * as S from "./styles";
 
-export function Contacts() {
+export function Contacts({ origin }) {
   const { values, setFieldValue } = useFormikContext<{ contacts: Contact[] }>();
+
+  const isCrm = origin === "Crm";
 
   const contacts = values["contacts"] || [];
 
@@ -15,7 +17,7 @@ export function Contacts() {
       <h3 className="font-18-bold">Contatos</h3>
 
       {contacts?.map((contact, index) => {
-        return <ContactItem key={index} {...contact} index={index} />;
+        return <ContactItem key={index} {...contact} index={index} isCrm={isCrm} />;
       })}
 
       <button

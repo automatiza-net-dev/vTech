@@ -1,11 +1,11 @@
 import moment from "moment";
 
 export function DateToDDMMYYYY(date: Date | string) {
-  if(!date) {
-    return null
+  if (!date) {
+    return null;
   }
 
-  const dataFormatada = moment(date.toLocaleString()).format("DD/MM/YYYY");
+  const dataFormatada = moment(date, "YYYY-MM-DD[T]HH:mm:ss").format("DD/MM/YYYY");
 
   return dataFormatada;
 }

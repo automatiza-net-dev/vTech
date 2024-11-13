@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useField, useFormikContext } from "formik";
 import { Button, InputControl, Modal, Select, useToast } from "infinity-forge";
 
-import { Patient, Tutor } from "@/domain";
 import {
   ClientPermission,
   FormCreatePatient,
   useLoadSchedulesPatients,
 } from "@/presentation";
+import { Patient, Tutor } from "@/domain";
 
 import { ICreateTutorFormProps } from "../form/interfaces";
 
@@ -28,9 +28,15 @@ export function Pets({
     addPet?.onInitOpenModalAddPet ? true : false
   );
 
+  const patientFilters = {
+    fetch: true,
+  };
+
   const { createToast } = useToast();
   const { values, setFieldValue } = useFormikContext<Tutor>();
-  const { data, isLoading, refetch } = useLoadSchedulesPatients({});
+  const { data, isLoading, mutate } = useLoadSchedulesPatients({
+    patientFilters,
+  });
 
   const options = data?.map((tutor) => {
     return { label: tutor.name, value: tutor.id };
@@ -163,12 +169,9 @@ export function Pets({
 
           <Modal open={modal} onClose={() => setModal(false)}>
             <FormCreatePatient
-              initialDataForm={{
-                holders: [{ id: tutor?.id || "", main: true }],
-              }}
               isModal={false}
               onSuccess={async (data: Patient) => {
-                await refetch();
+                await mutate();
 
                 setTimeout(() => {
                   setFieldValue("petId", data.id);

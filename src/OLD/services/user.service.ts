@@ -50,8 +50,8 @@ const deleteWorkingDay = async (id) => {
   return await api.delete(`/working-days/${id}`);
 };
 
-const editWorkingDay = async (id, data) => {
-  return await api.put(`/working-days/${id}`, data);
+const editWorkingDay = async (data) => {
+  return await api.put(`/working-days/many`, data);
 };
 
 const confirmToken = async (data) =>

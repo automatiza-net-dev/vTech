@@ -1,6 +1,5 @@
 import moment from "moment";
-import { useQueryClient } from "react-query";
-import { BadRequestError, useToast } from "infinity-forge";
+import { BadRequestError, useToast, useQueryClient } from "infinity-forge";
 
 import { RemoteCRM, RemoteSchedule } from "@/data";
 import { CrmTypes, container, patientTypes } from "@/container";
@@ -9,7 +8,7 @@ import {
   useScheduling,
   DateToYYYYMMDD,
   useVerifyPermissions,
-  useLoadAllSchedulesUser, 
+  useLoadAllSchedulesUser,
 } from "@/presentation";
 
 export function useSubmitSchedule() {
@@ -21,10 +20,10 @@ export function useSubmitSchedule() {
     setCreateSchedulingArgs,
   } = useScheduling((state) => state);
 
-  const scheduleUsers = useLoadAllSchedulesUser(
-    DateToYYYYMMDD(selectedDate || new Date()) || "",
-    DateToYYYYMMDD(selectedDate || new Date()) || ""
-  );
+  const scheduleUsers = useLoadAllSchedulesUser({
+    to: DateToYYYYMMDD(selectedDate || new Date()) || "",
+    from: DateToYYYYMMDD(selectedDate || new Date()) || "",
+  });
 
   const findBlokingEventsHours =
     scheduleUsers?.data
@@ -62,8 +61,8 @@ export function useSubmitSchedule() {
     return isEventoDentroDoRange;
   }
 
-  const { createToast} = useToast();
-  const queryClient = useQueryClient();
+  const { createToast } = useToast();
+  const clearCache = useQueryClient(state => state.clearCache)
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
   const overbookingPermission = useVerifyPermissions("AGE11");
@@ -80,6 +79,7 @@ export function useSubmitSchedule() {
       .format("YYYY-MM-DDTHH:mm:ssZ");
 
     const payload = {
+      items: data?.items,
       endHour: meridianEndHour,
       startHour: meridianStartHour,
       scheduleOriginId: data?.scheduleOriginId
@@ -90,7 +90,9 @@ export function useSubmitSchedule() {
       ignoreOverlapping: data?.ignoreOverlapping || false,
       userId: data?.userId[0],
       holderId: data.holderId ? data.holderId[0] : undefined,
+      holderName: data.holderName ? data.holderName[0] : undefined,
       patientId: data.patientId[0],
+      patientName: data.patientName[0],
       majorComplaint: data.majorComplaint,
       scheduleServiceTypeId: data.scheduleServiceTypeId[0],
     };
@@ -162,17 +164,9 @@ export function useSubmitSchedule() {
 
         createToast({ message: "Sucesso!!", status: "success" });
 
-        queryClient.invalidateQueries({ queryKey: "RemoteSchedules" });
-
-        const queryKeys = queryClient.getQueryCache().findAll();
-
-        const keysToInvalidate = queryKeys.filter((key) =>
-          key.queryKey.includes("RemoteLoadAllSchedulesUser")
-        );
-
-        keysToInvalidate.forEach((key) => {
-          queryClient.invalidateQueries(key);
-        });
+        setTimeout(() => {
+         clearCache()
+        }, 1000)
 
         setModalPatients(null);
         setCreateSchedulingArgs(null);
@@ -206,5 +200,5 @@ export function useSubmitSchedule() {
     }
   }
 
-  return { submit };
+  return { submit, scheduleUsers: scheduleUsers?.data };
 }

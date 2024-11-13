@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
-
 import {
   Input,
+  Select,
   useToast,
   FormHandler,
   LoaderCircle,
@@ -15,38 +14,35 @@ import {
   AddProduct,
   formatCart,
   SelectSeller,
-  SelectClient,
-  SelectPatient,
   useDictionary,
   useLoadBudget,
   ErrorDailyBox,
   useLoadPatient,
-  useLoadAllPatientTutor,
   useLoadAllDailyMovements,
+  useLoadAllPatientTutor,
 } from "@/presentation";
 import { RemoteBudget } from "@/data";
-import { Attendace, Budget } from "@/domain";
+import { SelectBudgetClient, SelectBudgetPatient } from "./components";
 import { TypesAutomatiza, container } from "@/container";
 
 import { DeleteCartItems } from "../../utils/delete-cart-items";
+
+import { IAddBudgetProps } from "./interfaces";
 
 import * as S from "./styles";
 
 export function AddBudgetNew({
   setModal,
   budgetId,
+  tutorsList,
   listCreated,
   attendanceId,
-}: {
-  budgetId?: Budget["id"];
-  attendanceId?: Attendace["id"];
-  setModal?: Dispatch<SetStateAction<boolean>>;
-  listCreated?: (id: Budget["id"]) => void | undefined;
-}) {
+}: IAddBudgetProps) {
   const patient = useLoadPatient();
   const budgetDetail = useLoadBudget({ id: budgetId || "" });
   const dailyMovements = useLoadAllDailyMovements();
-  const patientTutor = useLoadAllPatientTutor({ needFilterToCallApi: false });
+  const patientTutors = useLoadAllPatientTutor({ enabled: !patient })?.data;
+  const tutors =  tutorsList || patientTutors
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();
@@ -58,7 +54,6 @@ export function AddBudgetNew({
 
   const isFetching =
     dailyMovements.isFetching ||
-    patientTutor.isFetching ||
     (budgetId && (budgetDetail.isFetching || !budgetDetail.data));
 
   if (isFetching) {
@@ -73,6 +68,10 @@ export function AddBudgetNew({
 
   if ((!activeDailyMovement && !isFetching) || budgetDetail.error) {
     return <ErrorDailyBox />;
+  }
+
+  if (!tutors && !patient) {
+    return <></>;
   }
 
   const patientId =
@@ -91,11 +90,14 @@ export function AddBudgetNew({
   const initialData = {
     clientId,
     patientId,
+    patientName: patient?.data?.name || budgetDetail?.data?.patient?.name,
     expirationDate,
     maxDiscount: false,
     clientName:
       budgetDetail?.data?.client?.name ||
-      patientTutor?.data?.find((tutor) => tutor.id === clientId)?.name,
+      tutors?.find((tutor) => tutor.id === clientId)?.name ||
+      patient?.data?.tutor?.name ||
+      patient?.data?.name,
     cart: budgetDetail?.data?.items || [],
     sellerId: budgetDetail?.data?.seller?.id,
     reviewerId: budgetDetail?.data?.reviewer?.id,
@@ -105,7 +107,7 @@ export function AddBudgetNew({
 
   async function handleSubmit(data, _, initialValues) {
     try {
-      const verifyClientExist = patientTutor.data?.find(
+      const verifyClientExist = tutors?.find(
         (tutor) => tutor.id === data.clientId
       );
 
@@ -185,16 +187,11 @@ export function AddBudgetNew({
               />
             </div>
 
-            <SelectClient
-              inputProps={{
-                label: "Cliente",
-                name: "clientId",
-                disabled: !!patient.data?.id || !!initialData?.clientId,
-              }}
-              allowClear={false}
-            />
+            <SelectBudgetClient tutors={tutors} />
 
-            {process.env.client === "sancla" && <SelectPatient />}
+            {process.env.client === "sancla" && (
+              <SelectBudgetPatient tutors={tutors} />
+            )}
           </div>
 
           <SelectSeller />

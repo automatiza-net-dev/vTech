@@ -3,7 +3,7 @@ import React from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -19,7 +19,7 @@ export default function PrintScreen({ budget }) {
   return (
     <S.PrintScreen className="uk-container">
       <hr />
-      <PrintHeader unit={clinic} />
+      <PrintHeader />
       <section className="uk-margin-top uk-flex uk-flex-around">
         <div>
           <label>Cod. {getWord("Orçamento")}</label>

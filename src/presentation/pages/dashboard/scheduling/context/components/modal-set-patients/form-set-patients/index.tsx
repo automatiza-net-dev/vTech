@@ -1,10 +1,10 @@
-import { FormHandler, Input, InputMask } from "infinity-forge";
+import { BadRequestError, FormHandler, Input, InputMask } from "infinity-forge";
 
 import {
   useScheduling,
+  FormCreatePatient,
   useLoadAllPatientTutor,
   useLoadSchedulesPatients,
-  FormCreatePatient,
 } from "@/presentation";
 
 import { TableAnimals } from "./table";
@@ -16,25 +16,55 @@ export function FormSetClients() {
   const patientFilters = useScheduling((state) => state.patientsFilters);
   const setPatientsFilters = useScheduling((state) => state.setPatientsFilters);
 
-  const { data, isFetching } =
+  const { data, isFetching, mutate } =
     process.env.client === "sancla"
-      ? useLoadSchedulesPatients({
-          patientFilters,
-          needFilterToCallApi: true,
-        })
+      ? useLoadSchedulesPatients({ patientFilters })
       : useLoadAllPatientTutor({
           patientFilters,
-          needFilterToCallApi: true,
+          enabled: !patientFilters ? false : true,
         });
 
   return (
     <S.FormSetClients>
       <FormHandler
+        cleanFieldsOnSubmit={false}
         isStickyButtons
-        onSucess={async (data) => setPatientsFilters(data)}
+        onSucess={async (data: {
+          name: string;
+          document: string;
+          phone: string;
+          tag: string;
+          tutor: string;
+        }) => {
+          if (
+            data?.name?.length >= 2 ||
+            data?.tag?.length > 0 ||
+            data?.tutor?.length >= 3 ||
+            data?.phone?.length >= 3 ||
+            data?.document?.length >= 3
+          ) {
+            setPatientsFilters(data);
+
+            return;
+          }
+
+          throw new BadRequestError({
+            code: "400",
+            message:
+              process.env.client === "sancla"
+                ? `Preencha pelo menos um dos campos de filtro (Nome do pet 2 caracteres, Telefone 3 caracteres, CPF 3 caracteres, Tutor 3 caracteres, RG Pet 1 caractere)`
+                : "Preencha pelo menos um dos campos de filtro (Telefone 3 caracteres, CPF 3 caracteres, nome 3 caracteres)",
+          });
+        }}
         button={{ text: "Filtrar" }}
         customAction={{
-          Component: () => <FormCreatePatient isModal origin="Agenda" />,
+          Component: () => (
+            <FormCreatePatient
+              isModal
+              origin="Agenda"
+              onSuccess={(response) => setPatientsFilters({ id: response?.id })}
+            />
+          ),
         }}
       >
         {process.env.client === "sancla" && (
@@ -160,7 +190,6 @@ export function FormSetClients() {
             mask="___.___.___-__"
           />
         </div>
-
         <div className="table-box">
           <div className="table" data-cy="table_patients">
             {process.env.client === "sancla" && (

@@ -5,15 +5,15 @@ import { RemoteMarketing } from "@/data";
 import { MarketingTypes, container } from "@/container";
 import moment from "moment";
 
-export function useLoadMarketing() {
+export function useLoadMarketing(params: { allCampaigns: boolean }) {
   const router = useRouter();
 
-  const query = router.query as any;
+  const { query } = useRouter() as any;
 
   async function fetcher() {
     const response = await container
       .get<RemoteMarketing>(MarketingTypes.RemoteMarketing)
-      .load(query);
+      .load(params?.allCampaigns ? {} : query);
 
     return response.map((res) => {
       return {
@@ -26,7 +26,10 @@ export function useLoadMarketing() {
   }
 
   return useQuery({
-    queryKey: ["LoadMarketing", JSON.stringify(query || {})],
+    queryKey: [
+      "LoadMarketing",
+      params?.allCampaigns ? "" : JSON.stringify(query || {}),
+    ],
     queryFn: fetcher,
     enableCache: true,
     enabled: router.isReady,

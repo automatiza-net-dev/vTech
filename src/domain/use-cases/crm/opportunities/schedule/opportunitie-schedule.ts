@@ -2,6 +2,7 @@ export type OpportunitieSchedule = {
   id: number;
   scheduleId?: string;
   description: string;
+  contactDate: string;
   contact: {
     id: string;
     name: string;
