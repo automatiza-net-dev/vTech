@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Col, Row, notification, Checkbox } from "antd";
 import { useQuery, useQueryClient, useMutation } from "react-query";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 import { userService } from "@/OLD/services/user.service";
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -18,32 +18,61 @@ import { useWorkingDays } from "@/OLD/hooks/useWorkingDays";
 // Components
 import { Container } from "./styles";
 
+import moment from "moment";
+
 export function WorkingDay({ edit }) {
+  const [data, setData] = useState();
   const [reload, setReload] = useState(false);
-  const [rowEditing, setRowEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rowEditing, setRowEditing] = useState(false);
 
   const router = useRouter();
   const userId = router?.query?.id;
   const queryClient = useQueryClient();
   const { workingDays, loadingWorkingDays } = useWorkingDays(userId, reload);
   const { colaborator } = useColaborator(userId, reload);
+  const { createToast } = useToast();
 
-  /*
-  const { data, isLoading } = useQuery(
-    "workingDay",
-    userService.getWorkingDays,
-    {
-      onError: (error) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao buscar as escalas de trabalho",
+  useEffect(() => {
+    setData(
+      workingDays.map((day) => ({
+        ...day,
+        userId,
+        dayOfWeek: day?.week_day,
+        startHour: moment(day?.start_hour, "HH:mm"),
+        endHour: moment(day?.end_hour, "HH:mm"),
+      }))
+    );
+  }, [workingDays]);
+
+  const handleEdit = useCallback(() => {
+    userService
+      .editWorkingDay({
+        items: data?.map((day) => {
+          return {
+            ...day,
+            startHour: moment(day?.startHour).format("HH:mm"),
+            endHour: moment(day?.endHour).format("HH:mm"),
+          };
+        }),
+      })
+      .then((res) => {
+        setRowEditing(false);
+        createToast({
+          message: "Horários salvos com sucesso!",
+          status: "success",
         });
-      },
-      staleTime: 20000,
-      refetchInterval: 25000,
-    }
-  );*/
+      })
+      .catch((err) => {
+        createToast({
+          status: "error",
+          message: "Erro ao editar jornada de trabalho",
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [data, router]);
 
   const { loadingWorkingDays: isMutating, mutate } = useMutation(
     (_data) => userService.createWorkingDay(_data),
@@ -89,21 +118,23 @@ export function WorkingDay({ edit }) {
         <div>
           <h2>Colaborador: {colaborator?.name}</h2>
         </div>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <div>
-            <Button onClick={() => router.back()} text="Voltar" />
+        {!edit && (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <div>
+              <Button onClick={() => router.back()} text="Voltar" />
+            </div>
+            <div>
+              <Button
+                onClick={() =>
+                  router.push(
+                    `/dashboard/colaboradores/editar-colaborador/${colaborator?.id}`
+                  )
+                }
+                text="Editar Colaborador"
+              />
+            </div>
           </div>
-          <div>
-            <Button
-              onClick={() =>
-                router.push(
-                  `/dashboard/colaboradores/editar-colaborador/${colaborator?.id}`
-                )
-              }
-              text="Editar Colaborador"
-            />
-          </div>
-        </div>
+        )}
       </div>
       <div className="uk-card uk-card-body uk-width-1-1">
         <h4 className="uk-heading-line">Horário de agenda</h4>
@@ -120,9 +151,13 @@ export function WorkingDay({ edit }) {
           <div className="uk-flex uk-flex-right" type="primary">
             <Button
               onClick={() => {
-                setRowEditing((prv) => !prv);
-                rowEditing && setReload(!reload);
-                rowEditing && queryClient.invalidateQueries("workingDay");
+                if (rowEditing) {
+                  handleEdit();
+                  rowEditing && queryClient.invalidateQueries("workingDay");
+                } else {
+                  setRowEditing((prv) => !prv);
+                  rowEditing && setReload(!reload);
+                }
               }}
               text={!rowEditing ? "Editar" : "Concluir"}
             />
@@ -143,18 +178,14 @@ export function WorkingDay({ edit }) {
         {loadingWorkingDays ? (
           <LoadingSkeleton />
         ) : (
-          (workingDays ?? []).map((item, key) => {
-            return (
-              <RowTime
-                day={item}
-                key={key}
-                edit={edit}
-                reload={reload}
-                setReload={setReload}
-                rowEditing={rowEditing}
-              />
-            );
-          })
+          <RowTime
+            data={data}
+            edit={edit}
+            reload={reload}
+            setData={setData}
+            setReload={setReload}
+            rowEditing={rowEditing}
+          />
         )}
 
         <div className="uk-flex uk-flex-between">
@@ -169,7 +200,12 @@ export function WorkingDay({ edit }) {
       </div>
       {edit && (
         <footer
-          style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "flex-end",
+            marginTop: "10px",
+          }}
         >
           <Button
             onClick={() => {

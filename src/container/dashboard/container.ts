@@ -5,8 +5,9 @@ import {
   RemoteFinancesResume,
   RemoteCashiersResume,
   RemoteIndicators,
+  RemotePatient,
 } from "@/data";
-import { infraContainer } from "@/container";
+import { infraContainer, patientTypes } from "@/container";
 
 import { dashboardTypes } from "./types";
 

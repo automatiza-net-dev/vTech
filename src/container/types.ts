@@ -11,20 +11,24 @@ import {
   userDashboardTypes,
   dashboardTypes,
   financialServicesTypes,
+  metasTypes,
 } from "./dashboard";
 import { adminTypes } from "./admin";
 import { systemTypes } from "./system";
 import { businessUnitsTypes } from "./business-units";
 import { configurationTypes } from "./configuration";
+import { inviteTypes } from "./invite";
 
 export const TypesAutomatiza = {
   ...Types,
   ...CrmTypes,
   ...menuTypes,
+  ...metasTypes,
   ...InfraTypes,
   ...adminTypes,
   ...systemTypes,
   ...patientTypes,
+  ...inviteTypes,
   ...entriesTypes,
   ...subgroupTypes,
   ...dashboardTypes,

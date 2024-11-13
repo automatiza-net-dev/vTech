@@ -40,6 +40,8 @@ const ActiveTutorsForm = memo(function ({
 
   return (
     <Container>
+      <h2>Selecionar tutor ativo</h2>
+
       {patient?.tutors?.length > 0 &&
         patient?.tutors.map((tutor, i) => (
           <Popconfirm

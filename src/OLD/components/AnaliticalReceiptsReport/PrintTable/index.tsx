@@ -4,9 +4,9 @@ import { Button, Empty } from "antd";
 import * as XLSX from "xlsx/xlsx.mjs";
 import ReactToPrint from "react-to-print";
 
+import { PrintHeader } from "@/presentation";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
 
 import { Container } from "./styles";
 
@@ -41,7 +41,7 @@ const PrintTable = function PrintTable({
             <h4 className="">Relatório de entrada analitico</h4>
           </div>
           <div className="clinic-header">
-            <PrintHeader unit={clinic} />
+            <PrintHeader />
           </div>
           <div className="table-section">
             <div className="uk-flex content-box uk-flex-around">

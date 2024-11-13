@@ -11,7 +11,16 @@ import {
 export function SelectPatient() {
   const { values, setFieldError, initialValues } = useFormikContext<any>();
 
-  const patientTutors = useLoadAllPatientTutor({});
+  const initialValue = [
+    {
+      label: initialValues?.["patientName"]?.[0],
+      value: initialValues?.["patientId"]?.[0],
+    },
+  ];
+
+  const patientTutors = useLoadAllPatientTutor({
+    enabled: !initialValue,
+  });
 
   const { data, isFetching } = useLoadSchedulesPatients({
     patientFilters: {
@@ -27,8 +36,6 @@ export function SelectPatient() {
     }
   }, [data]);
 
-  const hasInitialValue = initialValues["patientId"]
-
   return (
     <Select
       label="Paciente"
@@ -37,12 +44,14 @@ export function SelectPatient() {
       isGroup={false}
       isMultiple={false}
       placeholder="Paciente"
-      disabled={(data && data.length === 0) || hasInitialValue}
+      disabled={(data && data.length === 0) || !!initialValue}
       options={
+        initialValue ||
         data?.map((patient) => ({
           label: patient.name,
           value: patient.id,
-        })) || []
+        })) ||
+        []
       }
     />
   );

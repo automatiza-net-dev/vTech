@@ -5,23 +5,20 @@ import {
   Modal,
   Button,
   Select,
-  InputFile,
-  InputSwitch,
-  FormHandler,
-  FileSystemType,
   useToast,
+  FormHandler,
+  InputSwitch,
+  FileSystemType,
 } from "infinity-forge";
+import moment from "moment";
 
-import { useQueryClient } from "react-query";
-
-import { Patient } from "@/domain";
-import { RemotePatient } from "@/data";
 import {
   FormCreateTutor,
+  isValidDate,
   useLoadPatient,
-  useScheduling,
   useVerifyPermissions,
 } from "@/presentation";
+import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
 import {
@@ -31,11 +28,11 @@ import {
   InputDeath,
   InputBirthday,
 } from "./components";
+import { InputPhoto } from "../../tutor/create/components/form/input-photo";
+
+import { IFormCreatePatientProps } from "./interfaces";
 
 import * as S from "./styles";
-import { InputPhoto } from "../../tutor/create/components/form/input-photo";
-import { defineRequireFields } from "../../tutor/create/components/form/utils/define-required-fields";
-import moment from "moment";
 
 function Form({
   origin = "Cadastro",
@@ -43,18 +40,12 @@ function Form({
   patientId,
   onSuccess,
   initialDataForm = {},
-}: {
-  origin?: "Cadastro" | "Crm" | "Agenda";
+}: Partial<IFormCreatePatientProps> & {
   setOpen?: Dispatch<SetStateAction<boolean>>;
-  onSuccess?: (data: any) => void;
-  patientId?: Patient["id"];
-  initialDataForm?: { [key: string]: any };
 }) {
   const { data, refetch, isFetching } = useLoadPatient(patientId);
 
   const { createToast } = useToast();
-
-  const isRegister = origin === "Cadastro";
 
   const initialData = data
     ? {
@@ -81,9 +72,11 @@ function Form({
   }
 
   async function handleSubmit(formData) {
+    
     const payload = {
       ...formData,
       origin,
+      birthDate: !isValidDate(formData?.birthDate) ? undefined : formData?.birthDate,
       photo:
         formData?.photo &&
         Array.isArray(formData?.photo) &&
@@ -91,6 +84,10 @@ function Form({
           ? formData?.photo[0]?.file
           : undefined,
     };
+
+    if (payload?.castrated === "null") {
+      delete payload?.castrated;
+    }
 
     const response = await container
       .get<RemotePatient>(TypesAutomatiza.RemotePatient)
@@ -107,6 +104,9 @@ function Form({
 
     setOpen && setOpen(false);
   }
+
+  const isRegister = origin === "Cadastro";
+  const isSchedule = origin === "Agenda";
 
   return (
     <S.Create>
@@ -128,7 +128,7 @@ function Form({
             <div className="row">
               <Input name="name" label="Nome*" />
 
-              <InputBirthday patientId={patientId} />
+              <InputBirthday patientId={patientId} required={isRegister} />
 
               <InputSwitch label="Comunidade Sanclá" name="community" />
 
@@ -136,10 +136,10 @@ function Form({
             </div>
 
             <div className="row">
-              <SelectRace isRegister={isRegister} />
+              <SelectRace required={isSchedule || isRegister} />
 
               <Select
-                label={isRegister ? "Gênero" : "Gênero*"}
+                label="Gênero"
                 name="gender"
                 options={[
                   { label: "Fêmea", value: "female" },
@@ -211,17 +211,7 @@ export function FormCreatePatient({
   onSuccess,
   buttonText,
   initialDataForm,
-}: {
-  origin?: "Cadastro" | "Crm" | "Agenda";
-  isModal: boolean;
-  onSuccess?: (data: any) => void;
-  trigger?: JSX.Element;
-  patientId?: Patient["id"];
-  buttonText?: string;
-  initialDataForm?: {
-    holders?: { id: string; main: boolean }[];
-  };
-}) {
+}: IFormCreatePatientProps) {
   const [open, setOpen] = useState(false);
 
   const canCreate = useVerifyPermissions(

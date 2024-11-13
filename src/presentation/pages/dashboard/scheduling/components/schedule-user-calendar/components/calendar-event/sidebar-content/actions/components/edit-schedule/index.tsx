@@ -1,24 +1,18 @@
 import moment from "moment";
+import { Icon } from "infinity-forge";
 
 import {
   useScheduling,
   PermissionItem,
   ScheduleActionType,
-  useLoadAllPatientTutor,
-  useLoadSchedulesPatients,
 } from "@/presentation";
 
 import { ActionSchedule } from "../../interface";
-import { Icon } from "infinity-forge";
 
 export function EditSchedule({ event, scheduleUser }: ActionSchedule) {
   const setCreateSchedulingArgs = useScheduling(
     (state) => state.setCreateSchedulingArgs
   );
-
-  const { data } = useLoadSchedulesPatients({});
-
-  const tutors = useLoadAllPatientTutor({});
 
   return (
     <PermissionItem hash="AGE02">
@@ -26,15 +20,7 @@ export function EditSchedule({ event, scheduleUser }: ActionSchedule) {
         className="reset-button"
         type="button"
         onClick={() => {
-          const itemToReschedule =
-            process.env.client === "sancla"
-              ? data?.find((item) => item.id === event.event.patient.id)
-              : tutors?.data?.find(
-                  (item) => item.id === event.event.patient.id
-                );
-
           const args = {
-            ...itemToReschedule as any,
             event,
             type: "edit" as ScheduleActionType,
             scheduleUser,

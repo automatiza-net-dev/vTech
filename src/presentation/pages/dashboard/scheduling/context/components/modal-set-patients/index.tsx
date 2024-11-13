@@ -25,7 +25,7 @@ export function ModalSetPatients() {
       styles={{
         maxWidth: "1200px",
         width: "100%",
-        maxHeight: "95vh"
+        maxHeight: "95vh",
       }}
       open={!!modalPatients}
       onClose={() => setModalPatients(null)}

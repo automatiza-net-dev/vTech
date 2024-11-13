@@ -2,7 +2,7 @@ import React, { memo, useState } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -32,7 +32,7 @@ export default function PrintScreen({ bill }: any) {
 
   return (
     <S.PrintScreen>
-      <PrintHeader unit={clinic} />
+      <PrintHeader />
       <hr />
       <section className="uk-flex uk-flex-around uk-margin-top">
         <div>

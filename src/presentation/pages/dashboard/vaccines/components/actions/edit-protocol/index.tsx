@@ -26,6 +26,17 @@ export function EditProtocol(props: VaccineProtocol) {
       const response = await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
         .editProtocol(data);
+
+      setData({
+        id: props.id,
+        vaccineId: props?.vaccine?.id,
+        specieId: props?.specie?.id,
+        name: props?.name,
+        doses: props?.doses,
+        interval: props?.interval,
+        active: props?.active,
+        expirationDays: props?.expirationDays,
+      });
     } catch (err: any) {
       if (err?.error) {
         return createToast({ message: err?.error?.message, status: "error" });

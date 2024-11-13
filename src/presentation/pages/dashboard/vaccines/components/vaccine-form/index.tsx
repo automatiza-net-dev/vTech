@@ -5,6 +5,8 @@ import { useLoadSubgroups } from "@/presentation";
 import { CreateVaccine, EditVaccine } from "@/domain";
 import React from "react";
 
+import * as Yup from "yup";
+
 import * as S from "./styles";
 
 // TODO: Verificar tipagem React.dispatch, anterior: CreateVaccine.Params e tipagem de função submit
@@ -19,6 +21,10 @@ export function VaccineForm(props: {
 }) {
   const subgroups = useLoadSubgroups({});
 
+  const vaccineSchema = {
+    name: Yup.string().required("Campo obrigatório"),
+  };
+
   return (
     <S.VaccineForm>
       <h2>
@@ -27,6 +33,7 @@ export function VaccineForm(props: {
           : `Editar ${props?.type === "vaccine" ? "Vacina" : "Vermifugo"}`}
       </h2>
       <FormHandler
+        schema={vaccineSchema}
         initialData={props.data}
         onChangeForm={{ callbackResult: (prv) => props.setData(prv) }}
         cleanFieldsOnSubmit={false}

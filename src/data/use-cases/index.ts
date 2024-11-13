@@ -4,6 +4,7 @@ export * from "./user";
 export * from "./auth";
 export * from "./sales";
 export * from "./system";
+export * from "./invites";
 export * from "./patient";
 export * from "./subgroups";
 export * from "./dashboard";

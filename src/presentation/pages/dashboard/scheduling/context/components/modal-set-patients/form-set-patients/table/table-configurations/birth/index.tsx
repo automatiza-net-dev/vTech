@@ -1,13 +1,17 @@
 import { Error } from "infinity-forge";
+
+import moment from "moment";
+
 import { DateToDDMMYYYY } from "@/presentation/utils";
 
-export function BirthDate({ birthDate }: { birthDate: string }) {
+export function BirthDate({ birthDate }: any) {
   if (!birthDate) {
-    return "-";
+    return <>-</>
   }
+
   return (
     <Error name="birthDate">
-      <span>{DateToDDMMYYYY(new Date(birthDate))}</span>
+      <span>{DateToDDMMYYYY(birthDate)}</span>
     </Error>
   );
 }

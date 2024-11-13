@@ -3,12 +3,12 @@ import { memo, useEffect, useState } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 import { Input } from "antd";
 import { Container } from "./styles";
 import moment from "moment";
 
-const PrintScreen = memo(function PrintScreen({ data }) {
+function PrintScreen({ data }) {
   const { clinic } = useProfile();
 
   useEffect(() => {}, [data]);
@@ -16,7 +16,7 @@ const PrintScreen = memo(function PrintScreen({ data }) {
   return (
     <Container>
       <div className="clinic-header">
-        <PrintHeader unit={clinic} />
+        <PrintHeader />
         <div className="uk-text-center">
           <h4 className="">Movimentações estoque{data?.description}</h4>
         </div>
@@ -68,6 +68,6 @@ const PrintScreen = memo(function PrintScreen({ data }) {
       ))}
     </Container>
   );
-});
+};
 
 export default PrintScreen;

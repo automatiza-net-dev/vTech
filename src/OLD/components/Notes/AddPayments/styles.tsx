@@ -2,6 +2,10 @@ import styled from "styled-components";
 
 export const Container = styled.section`
   margin-top: 20px;
+  .selected-installments {
+    background-color: var(--blue) !important;
+  }
+
   .budget-payment-desc {
     border: 1px #cacaca solid;
     padding: 10px;

@@ -27,6 +27,7 @@ input, textarea {
     gap: 20px; 
     border-top: 1px solid #ccc;
     padding-right: 0 !important;
+    z-index: 9 !important;
     
 
     button:last-child {

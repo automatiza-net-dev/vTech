@@ -13,10 +13,12 @@ import {
   dashboardContainer,
   financialServicesContainer,
   marketingContainer,
+  metasContainer,
 } from "./dashboard";
 import { systemContainer } from "./system";
 import { businessUnitsContainer } from "./business-units";
 import { configurationContainer } from "./configuration";
+import { inviteContainer } from "./invite";
 
 const container = Container.merge(
   crmContainer,
@@ -24,9 +26,11 @@ const container = Container.merge(
   adminContainer,
   infraContainer,
   systemContainer,
+  metasContainer,
   patientContainer,
   entriesContainer,
   subgroupContainer,
+  inviteContainer,
   dashboardContainer,
   marketingContainer,
   userDashboardContainer,

@@ -5,8 +5,13 @@ import { useRouter } from "next/router";
 import { Container, Body } from "./styles";
 import ExistentUser from "./ExistentUser";
 import NewUser from "./NewUser";
+import { Invite } from "@/domain";
 
-function Invites({ type }: { type: "accept" | "new" }) {
+interface IInvitesProps extends Invite {
+  type: "accept" | "new";
+}
+
+function Invites({ type, ...rest }: IInvitesProps) {
   const router = useRouter();
 
   const verifyImage = () => {
@@ -32,7 +37,7 @@ function Invites({ type }: { type: "accept" | "new" }) {
       </section>
       <section>
         <img className="logo" src={verifyImage().logo} />
-        {type === "accept" ? <ExistentUser /> : <NewUser />}
+        {type === "accept" ? <ExistentUser {...rest} /> : <NewUser {...rest} />}
       </section>
     </Container>
   );

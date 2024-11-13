@@ -14,7 +14,7 @@ export function ButtonDelete(
         {props.isLoading ? (
           <LoaderCircle size={12} color="#000" />
         ) : (
-          <Icon name="IconDelete" fill="#f10" />
+          <Icon name="IconDelete" color="#f10" />
         )}
       </button>
     </Tooltip>

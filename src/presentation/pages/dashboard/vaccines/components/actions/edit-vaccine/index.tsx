@@ -37,6 +37,10 @@ export function EditVaccine(props: VaccineProtocol) {
   });
 
   const updateVaccine = async () => {
+    if (!data?.name || data?.name === "") {
+      return createToast({ message: "nome obrigatório", status: "error" })
+    }
+
     try {
       await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)

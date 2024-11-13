@@ -4,15 +4,16 @@ import { memo, useRef, useState } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useAuth } from "@/OLD/hooks/useAuth";
 
-import { Container, RowBox } from "./styles";
 import { Button, Empty } from "antd";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import ReactToPrint from "react-to-print";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 
-const PrintTable = memo(function PrintTable({
+import { Container, RowBox } from "./styles";
+
+function PrintTable({
   schedules,
   filters,
   values,
@@ -139,7 +140,7 @@ const PrintTable = memo(function PrintTable({
     <>
       <Container ref={componentRef} className="uk-margin-small-top">
         <div className="clinic-header">
-          <PrintHeader unit={clinic} />
+          <PrintHeader />
           <div className="uk-text-center">
             <h4 className="">Relatório de agendamentos</h4>
           </div>
@@ -226,6 +227,6 @@ const PrintTable = memo(function PrintTable({
       </div>
     </>
   );
-});
+};
 
 export default PrintTable;

@@ -2,11 +2,16 @@ import { useEffect, useState } from "react";
 
 import moment from "moment";
 import { useFormikContext } from "formik";
-import { Input, InputSwitch, Select } from "infinity-forge";
+import { Input, Select } from "infinity-forge";
 
 import * as S from "./styles";
 
-export function InputBirthday({ patientId }) {
+interface IInputBirthdayProps {
+  patientId?: string;
+  required: boolean;
+}
+
+export function InputBirthday({ patientId, required }: IInputBirthdayProps) {
   const [datepickerType, setDatepickerType] = useState("normal");
 
   const { values, setFieldValue } = useFormikContext();
@@ -14,9 +19,6 @@ export function InputBirthday({ patientId }) {
   useEffect(() => {
     if (values && values["birthMonths"]) {
       setDatepickerType("month");
-      setFieldValue("birthDate_change", true);
-    } else {
-      setFieldValue("birthDate_change", false);
     }
   }, []);
 
@@ -26,7 +28,7 @@ export function InputBirthday({ patientId }) {
         <Input
           name="birthDate"
           type="date"
-          label="Data de nascimento"
+          label={`Data de nascimento${required ? "*" : ""}`}
           max={moment().format("YYYY-MM-DD")}
         />
       ) : (
@@ -47,23 +49,24 @@ export function InputBirthday({ patientId }) {
         </div>
       )}
       {!patientId && (
-        <div>
-          <InputSwitch
-            label="Idade"
-            onChangeInput={(ev) => {
-              setDatepickerType(ev ? "month" : "normal");
+        <Input
+          name="birthDate_change"
+          type="checkbox"
+          label={`informar idade${required ? "*" : ""}`}
+          onChangeInput={(ev) => {
+            const isFalse = ev ? ev === "false" : "false";
 
-              if (ev === true) {
-                setFieldValue("birthDate", undefined);
-              } else {
-                setFieldValue("birthYears", undefined);
-                setFieldValue("birthMonths", undefined);
-                setFieldValue("birthDays", undefined);
-              }
-            }}
-            name="birthDate_change"
-          />
-        </div>
+            setDatepickerType(isFalse ? "month" : "normal");
+
+            if (isFalse) {
+              setFieldValue("birthDate", undefined);
+            } else {
+              setFieldValue("birthYears", undefined);
+              setFieldValue("birthMonths", undefined);
+              setFieldValue("birthDays", undefined);
+            }
+          }}
+        />
       )}
     </S.InputBirthday>
   );

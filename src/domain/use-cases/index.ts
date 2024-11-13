@@ -3,6 +3,7 @@ export * from "./user";
 export * from "./auth";
 export * from "./sales";
 export * from "./roles";
+export * from "./invites";
 export * from "./system";
 export * from "./system";
 export * from "./patient";

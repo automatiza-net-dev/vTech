@@ -27,6 +27,12 @@ export const PrecoCard = styled("div")`
     color: #2b2b2b;
   }
 
+  .subitem-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
   @media only screen and (max-width: 1600px) {
     h3 {
       font-size: 17px;

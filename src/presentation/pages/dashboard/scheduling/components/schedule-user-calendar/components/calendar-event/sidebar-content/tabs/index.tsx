@@ -4,14 +4,12 @@ import moment from "moment";
 import { Tab, TabItem } from "infinity-forge";
 
 import { Event } from "@/domain";
-import { useLoadSchedule } from "@/presentation";
 
 import * as S from "./styles";
 
 export function SidebarTabs({ event }: { event: Event }) {
   const [showInfos, setShowInfos] = useState(false);
-
-  const { data } = useLoadSchedule(event?.event?.id);
+  const data = event?.event;
 
   function handleShowInfos() {
     setShowInfos(!showInfos);
@@ -30,7 +28,10 @@ export function SidebarTabs({ event }: { event: Event }) {
               </div>
 
               {data?.reschedules?.map((info) => (
-                <div className="schedule-content font-16-regular" key={info?.created_at}>
+                <div
+                  className="schedule-content font-16-regular"
+                  key={info?.created_at}
+                >
                   <p>
                     Data: {moment(info?.created_at).format("DD-MM-YYYY HH:mm")}
                   </p>
@@ -65,7 +66,10 @@ export function SidebarTabs({ event }: { event: Event }) {
               </div>
 
               {data?.contacts?.map((info) => (
-                <div className="schedule-content font-16-regular" key={info?.contact_date}>
+                <div
+                  className="schedule-content font-16-regular"
+                  key={info?.contact_date}
+                >
                   <p>
                     Data:{" "}
                     {moment(info?.contact_date).format("DD-MM-YYYY HH:mm")}

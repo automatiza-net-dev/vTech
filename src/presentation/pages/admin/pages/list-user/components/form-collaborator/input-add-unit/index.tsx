@@ -65,7 +65,7 @@ export function InputAddUnit() {
               onClick={addUnit}
               className={!selectUnit ? "disabled" : ""}
             >
-              <Icon name="IconPlusSharp" fill="#000" />
+              <Icon name="IconPlusSharp" color="#000" />
             </button>
           }
         />

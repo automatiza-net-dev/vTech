@@ -1,32 +1,30 @@
 import { convertDate } from "@/OLD/utils/convertDate";
 
-export const columns = () => {
-  return [
-    {
-      title: "Descrição",
-      dataIndex: "description",
-      key: "description",
+export const columns = [
+  {
+    label: "Descrição",
+    id: "description",
+  },
+  {
+    label: "Tipo",
+    id: "type",
+  },
+  {
+    label: "Ativo",
+    id: "active",
+    Component: {
+      Element: (props) => (props?.active ? "Sim" : "Não"),
+      props: {},
+      allProps: true,
     },
-    {
-      title: "Tipo",
-      dataIndex: "type",
-      key: "type",
+  },
+  {
+    label: "Criado em",
+    id: "created_at",
+    Component: {
+      Element: (props) => convertDate(props?.created_at),
+      props: {},
+      allProps: true,
     },
-    {
-      title: "Ativo",
-      dataIndex: "active",
-      key: "active",
-    },
-    {
-      title: "Criado em",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (createdAt) => convertDate(createdAt),
-    },
-    {
-      title: "Ações",
-      dataIndex: "actions",
-      key: "actions",
-    },
-  ];
-};
+  },
+];

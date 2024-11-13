@@ -3,6 +3,7 @@ import { Patient, Payment, Product } from "@/domain";
 export type Budget = {
   id: string;
   tag: string;
+  pending: boolean;
   budget_date?: string;
   status:
     | "CONFIRMADO"

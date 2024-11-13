@@ -54,6 +54,7 @@ export type DashboardCard = {
     description: string;
     value: number;
     percentage: string;
+    icone?: string;
   }[];
 };
 

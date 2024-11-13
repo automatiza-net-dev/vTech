@@ -48,7 +48,9 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
           />
         </Panel>
         <Panel
-          header={process.env.client !== "liftone" ? "Veterinário" : "Profissional"}
+          header={
+            process.env.client !== "liftone" ? "Veterinário" : "Profissional"
+          }
         >
           <Variables
             body={body}
@@ -64,6 +66,24 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
             setBody={setBody}
             templates={templates?.filter(
               (template) => template?.origin === "SCHEDULE"
+            )}
+          />
+        </Panel>
+        <Panel header="Contratos">
+          <Variables
+            body={body}
+            setBody={setBody}
+            templates={templates?.filter(
+              (template) => template?.origin === "CONTRACTS"
+            )}
+          />
+        </Panel>
+        <Panel header="Items venda">
+          <Variables
+            body={body}
+            setBody={setBody}
+            templates={templates?.filter(
+              (template) => template?.origin === "BILL_ITEMS"
             )}
           />
         </Panel>

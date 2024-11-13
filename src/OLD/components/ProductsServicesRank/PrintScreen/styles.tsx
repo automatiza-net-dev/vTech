@@ -48,7 +48,7 @@ export const Container = styled.div`
     }
 
     @page {
-      size: auto !important;/* auto is the initial value */
+      size: auto !important; /* auto is the initial value */
 
       /* this affects the margin in the printer settings */
     }

@@ -6,5 +6,6 @@ export * from "./confirm";
 export * from "./entities";
 export * from "./negotiations";
 export * from "./payments-preview";
+export * from "./create-budget-payment";
 export * from "./load-all-budgets-attendance";
 export * from "./auth-discount-pendency-selling-budget";

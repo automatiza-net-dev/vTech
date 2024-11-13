@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { container, patientTypes } from "@/container";
 import {
@@ -6,11 +6,17 @@ import {
   RemoteLoadAllSchedulesUsersWeek,
 } from "@/data";
 
-export function useLoadAllSchedulesUser(
-  to: string,
-  from: string,
-  lista_cancelados?: boolean
-) {
+export function useLoadAllSchedulesUser({
+  to,
+  from,
+  enabled = true,
+  lista_cancelados,
+}: {
+  to: string;
+  from: string;
+  lista_cancelados?: boolean;
+  enabled?: boolean;
+}) {
   async function fetcher() {
     const response = await container
       .get<RemoteLoadAllSchedulesUser>(patientTypes.RemoteLoadAllSchedulesUser)
@@ -22,7 +28,8 @@ export function useLoadAllSchedulesUser(
   return useQuery({
     queryKey: "RemoteLoadAllSchedulesUser" + to + lista_cancelados,
     queryFn: fetcher,
-    refetchOnWindowFocus: false
+    enableCache: true,
+    enabled,
   });
 }
 
@@ -57,15 +64,7 @@ export function useLoadAllSchedulesUserWeek(
     queryKey: refetchKeyWeekCalendar,
     queryFn: fetcher,
     enabled: users && users.length > 0,
-    refetchOnWindowFocus: false
   });
 
   return { ...query, refetchKeyWeekCalendar };
 }
-
-
-
-
-
-
- 

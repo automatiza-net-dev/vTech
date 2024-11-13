@@ -1,16 +1,15 @@
 import { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
 
-import { useMe } from "@/presentation";
+import moment from "moment";
+import { useReactToPrint } from "react-to-print";
+import { FormHandler, Input, Textarea, Button } from "infinity-forge";
 
 import { TimeLine } from "@/domain";
 
-import { FormHandler, Input, Textarea, Button } from "infinity-forge";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
-
-import moment from "moment";
+import { PrintHeader, useMe } from "@/presentation";
 
 import * as S from "./styles";
+
 
 export function HospitalizationForm(props: TimeLine["timeline_info"]) {
   const componentRef = useRef<HTMLDivElement>(null);
@@ -64,7 +63,7 @@ export function HospitalizationForm(props: TimeLine["timeline_info"]) {
             style={{ margin: "10px" }}
           >
             <div>
-              {user.data && <PrintHeader unit={user.data.unit} />}
+              <PrintHeader />
               <h3 style={{ marginTop: "20px", textAlign: "center" }}>
                 Entrada internação
               </h3>

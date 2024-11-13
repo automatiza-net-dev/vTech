@@ -1,10 +1,8 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "react-query";
-
 import { RemoteBusinessUnits } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { adminTypes, container } from "@/container";
+import { useQuery } from "infinity-forge";
 
 export function useLoadBusinessUnits() {
   const router = useRouter();
@@ -19,6 +17,7 @@ export function useLoadBusinessUnits() {
   return useQuery({
     queryKey: ["RemoteLoadBusinessUnits", id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enabled: !!id,
+    enableCache: true,
   });
 }

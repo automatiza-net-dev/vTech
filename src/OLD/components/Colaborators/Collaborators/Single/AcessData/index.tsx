@@ -4,9 +4,10 @@ import React, { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 // Components
-import { Container } from "./styles";
 import { notification } from "antd";
 import { Button } from "infinity-forge";
+
+import * as S from "./styles";
 
 // Services
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -42,23 +43,20 @@ export function AccessData() {
   }, [getColabData]);
 
   return (
-    <>
+    <S.AccessData>
       <div className="uk-flex uk-flex-between uk-margin-small-bottom">
         <div>
           <h2>Colaborador: {data?.name}</h2>
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
           <div>
-            <Button
-              onClick={() => router.back()}
-              text="Voltar"
-            />
+            <Button onClick={() => router.back()} text="Voltar" />
           </div>
           <div>
             <Button
               onClick={() =>
                 router.push(
-                  `/dashboard/colaborador/editar-colaborador/${data?.id}`
+                  `/dashboard/colaboradores/editar-colaborador/${data?.id}`
                 )
               }
               text="Editar Colaborador"
@@ -66,44 +64,36 @@ export function AccessData() {
           </div>
         </div>
       </div>
-      <Container className="uk-padding uk-margin-top">
-        <h4 className="uk-heading-line">
-          <span>Dados de acesso</span>
-        </h4>
-        <div className="uk-flex uk-flex-around">
-          <div className="uk-width-1-2">
-            <h4>Clinica, cargo e depósito padrão</h4>
-            <div>
-              {data?.roles?.length > 0 &&
-                data?.roles?.map((role, i) => (
-                  <div
-                    className="uk-flex uk-flex-between uk-margin-small-top"
-                    key={i}
-                  >
-                    <p
-                      className="uk-margin-remove uk-heading-line uk-width-1-2"
-                      key={i}
-                    >
-                      <span>{role?.unit?.name}</span>
-                    </p>
-                    <p
-                      className="uk-margin-remove uk-width-1-3 uk-heading-line"
-                      key={i}
-                    >
-                      <span className="uk-margin-small-left">{role?.name}</span>
-                    </p>
-                    <p className="uk-margin-remove uk-width-1-3" key={i}>
-                      <span className="uk-margin-small-left">
-                        {role?.deposit?.description}
-                      </span>
-                    </p>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </div>
-      </Container>
-    </>
+
+      <h4 className="uk-heading-line">
+        <span>Dados de acesso</span>
+      </h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Clinica</th>
+            <th>cargo </th>
+            <th>depósito padrão</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data?.roles?.length > 0 &&
+            data?.roles?.map((role, i) => (
+              <tr key={i}>
+                <td key={i}>
+                  <span>{role?.unit?.name}</span>
+                </td>
+                <td key={i}>
+                  <span>{role?.name}</span>
+                </td>
+                <td key={i}>
+                  <span>{role?.deposit?.description}</span>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </S.AccessData>
   );
 }
 

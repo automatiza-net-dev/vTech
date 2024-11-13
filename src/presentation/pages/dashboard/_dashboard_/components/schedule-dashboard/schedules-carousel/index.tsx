@@ -52,11 +52,11 @@ export function SchedulesCarousel({
 
         <div className="navigation">
           <Prev>
-            <Icon name="NavLeftIcon" />
+            <Icon name="IconLeftNavigation" />
           </Prev>
 
           <Next>
-            <Icon name="NavRightIcon" />
+            <Icon name="IconRightNavigation" />
           </Next>
         </div>
       </S.SchedulesCarousel>

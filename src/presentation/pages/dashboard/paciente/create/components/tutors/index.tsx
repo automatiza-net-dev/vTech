@@ -19,7 +19,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
   const [modalAddTutor, setModalAddTutor] = useState(false);
-  const { data, refetch } = useLoadAllPatientTutor({});
+  const { data, mutate } = useLoadAllPatientTutor({});
 
   const { values, setFieldValue } = useFormikContext<{
     holders: { id: string; main: boolean }[];
@@ -28,7 +28,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
   const [tutorField] = useField("holderId");
 
   const options = data?.map((tutor) => {
-    return { label: tutor.name, value: tutor.id };
+    return { label: `${tutor.name} // ${tutor.cellphone}`, value: tutor.id };
   });
 
   const holders = values["holders"] || [];
@@ -43,10 +43,12 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
     setFieldValue("holders", newHolders);
   };
 
+  const isRequired = origin === "Cadastro" || origin === "Agenda";
+
   return (
     <InputControl name="holders">
       <S.Tutors>
-        <h4 className="font-18-bold">Tutores</h4>
+        <h4 className="font-18-bold">Tutores{isRequired ? "*" : ""}</h4>
 
         {holders?.map((holder, index) => {
           return (
@@ -154,7 +156,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
             origin={origin}
             isModal={false}
             onSuccess={async (data: Tutor) => {
-              await refetch();
+              await mutate();
 
               setTimeout(() => {
                 setFieldValue("holderId", data.id);

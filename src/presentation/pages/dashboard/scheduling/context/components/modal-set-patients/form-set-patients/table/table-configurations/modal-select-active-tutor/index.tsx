@@ -1,17 +1,16 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { useQueryClient } from "react-query";
-
 import {
   Modal,
   Error,
   useToast,
   InputRadio,
   FormHandler,
+  useQueryClient
 } from "infinity-forge";
 
-import { SchedulePatient, Tutor } from "@/domain";
-import { useScheduling, useSetMainTutor } from "@/presentation";
+import { Tutor } from "@/domain";
+import { useLoadSchedulesPatientsKEY, useSetMainTutor } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -27,45 +26,19 @@ export function ModalSelectActiveTutor({
   setModal: Dispatch<SetStateAction<boolean>>;
 }) {
   const { createToast } = useToast();
-  const queryClient = useQueryClient();
-
   const setMainTutor = useSetMainTutor();
-  const patientsFilters = useScheduling((state) => state.patientsFilters);
+
+  const refetch  = useQueryClient(state => state.refetch);
+
+  const queryKeyLoadSchedulesPatients = useLoadSchedulesPatientsKEY();
 
   async function handleSuccess(params) {
     try {
-      const tutorId = params.holder;
 
       await setMainTutor.mutateAsync({
         ...params,
         patient: id,
       });
-
-      queryClient.setQueryData(
-        ["RemoteLoadSchedulesPatients", patientsFilters],
-        (state) => {
-          const queryData = state as SchedulePatient[];
-
-          const updatedCache = queryData.map((item) => {
-            if (item.id === id) {
-              return {
-                ...item,
-                tutors: item.tutors.map((tutor) => {
-                  if (tutor.id === tutorId) {
-                    return { ...tutor, isMain: true };
-                  }
-
-                  return { ...tutor, isMain: false };
-                }),
-              };
-            }
-
-            return item;
-          });
-
-          return updatedCache as SchedulePatient[];
-        }
-      );
 
       setModal(false);
 
@@ -73,6 +46,9 @@ export function ModalSelectActiveTutor({
         message: "Tutor ativo vinculado com sucesso!",
         status: "success",
       });
+
+      refetch(queryKeyLoadSchedulesPatients.toString())
+
     } catch (err) {
       console.log(err);
     }

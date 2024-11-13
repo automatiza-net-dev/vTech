@@ -6,7 +6,7 @@ import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button } from "infinity-forge";
+import { Button, Tooltip, Icon } from "infinity-forge";
 import { Container, InputBox } from "./styles";
 import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, AutoComplete, Select } from "antd";
@@ -19,13 +19,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { MdOutlineClear } from "react-icons/md";
 
-const Filters = memo(function Filters({
-  filters,
-  setFilters,
-  setReload,
-  crmStatus,
-  colaborators,
-}) {
+function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
   const [values, setValues] = useState({});
 
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -81,6 +75,20 @@ const Filters = memo(function Filters({
                   contactFrom: null,
                 }));
               }}
+            />
+            <Tooltip
+              trigger={<Icon name="IconInfo" />}
+              content={
+                <>
+                  Esta consulta retorna as oportunidades que tiveram o contato{" "}
+                  <br />
+                  realizado pelo cliente dentro do Periodo Selecionado. Esta é a{" "}
+                  <br />
+                  data que é selecionada no momento de cadastrar a oportunidade{" "}
+                  <br />
+                  no Crm
+                </>
+              }
             />
           </InputBox>
         </div>
@@ -232,6 +240,18 @@ const Filters = memo(function Filters({
                 }));
               }}
             />
+            <Tooltip
+              trigger={<Icon name="IconInfo" />}
+              content={
+                <>
+                  Esta consulta retorna as oportunidades que foram cadastradas{" "}
+                  <br />
+                  no Periodo Selecionado, ou seja, esta é a Data de Lançamento{" "}
+                  <br />
+                  da oportunidade no Crm
+                </>
+              }
+            />
           </InputBox>
         </div>
         <div className="uk-width-1-5">
@@ -360,6 +380,6 @@ const Filters = memo(function Filters({
       </section>
     </Container>
   );
-});
+}
 
 export default Filters;

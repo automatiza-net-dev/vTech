@@ -7,58 +7,31 @@ import { useQuery } from "react-query";
 import { metasService } from "@/OLD/services/metas.service";
 import { Edit } from "./Edit";
 import { Delete } from "./Delete";
+import { Details } from "./Details";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useTable } from "infinity-forge";
+import { useLoadAllMetas } from "@/presentation";
+import { IMeta } from "@/domain";
+import { useTableMetasActions } from "./table";
 
 const MetasManagement = memo(() => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["metas"],
-    queryFn: () => metasService.getAll(),
+  const { data, isLoading, mutate } = useLoadAllMetas();
+
+  const actions = useTableMetasActions({ mutate });
+
+  const { Table } = useTable<IMeta>({
+    columnsConfiguration: {
+      columns,
+      actions,
+    },
+    configs: {
+      disableRoutingUpdateFilters: true,
+      errorMessage: "Não há itens no momento",
+      tableData: data || [],
+    },
   });
 
-  const createMeta = useUserHasPermission("MET01");
-  const updateMeta = useUserHasPermission("MET02");
-  const deleteMeta = useUserHasPermission("MET03");
-
-  const mappedData = useMemo(() => {
-    if (!data) {
-      return [];
-    }
-
-    return data?.data.map((item) => ({
-      id: item.id,
-      description: item.description,
-      type: item.type,
-      active: item.active ? "Sim" : "Não",
-      createdAt: item.created_at,
-      actions: (
-        <div className="uk-flex" style={{ gap: "10px" }}>
-          <Edit item={item} canUpdate={updateMeta} />
-          <Delete id={item.id} canDelete={deleteMeta} />
-        </div>
-      ),
-    }));
-  }, [JSON.stringify(data)]);
-
-  return (
-    <PageWrapper title="Controle de metas">
-      <div style={{ padding: "20px" }}>
-        <div>
-          <Create canCreate={createMeta} />
-        </div>
-        <div>
-          <Table
-            locale={{
-              emptyText: "Nenhum registro encontrado para essa pesquisa",
-            }}
-            dataSource={mappedData}
-            loading={isLoading}
-            columns={columns()}
-          />
-        </div>
-      </div>
-    </PageWrapper>
-  );
+  return <PageWrapper title="Controle de metas">{Table}</PageWrapper>;
 });
 
 export default MetasManagement;

@@ -32,7 +32,7 @@ export function EndService({ event, onExecuteAction }: ActionSchedule) {
           .close({ idAtendimento: attendance.id })
       );
 
-      await Promise.all(promises)
+      await Promise.all(promises);
     }
 
     onExecuteAction();
@@ -43,7 +43,7 @@ export function EndService({ event, onExecuteAction }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE08">
       <button className="reset-button red" type="button" onClick={handleClick}>
-        <Icon name="CloseIcon" fill={"#fff"} />
+        <Icon name="IconClose" color={"#fff"} />
         <span>Encerrar atendimento</span>
       </button>
     </PermissionItem>

@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { User } from "@/domain";
 
 import { RemoteBills } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -8,7 +7,8 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import { Modal, useToast, Button, useAuthAdmin } from "infinity-forge";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+
+import { PrintHeader } from "@/presentation";
 
 import api from "@/OLD/services";
 
@@ -124,7 +124,7 @@ function ModalListagem({ bill }) {
       <section style={{ display: "none" }}>
         <div ref={componentRef}>
           <div style={{ margin: "10px !important", fontSize: "15px" }}>
-            <PrintHeader unit={user.unit} />
+            <PrintHeader />
             <div
               dangerouslySetInnerHTML={{
                 __html: template,

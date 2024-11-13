@@ -1,4 +1,4 @@
-import { Error,Icon } from "infinity-forge";
+import { Error, Icon } from "infinity-forge";
 
 import { Actions } from "./actions";
 import { UserInfos } from "./user-info";
@@ -42,7 +42,7 @@ export function SideBarContent({
             type="button"
             onClick={() => setOpen(false)}
           >
-            <Icon name="CloseIcon" />
+            <Icon name="IconClose" />
           </button>
 
           <span>{infos.title}</span>
@@ -62,7 +62,7 @@ export function SideBarContent({
           refetchKeyWeekCalendar={refetchKeyWeekCalendar}
         />
 
-        <SidebarTabs event={event} /> 
+        <SidebarTabs event={event} />
       </S.SideBarContent>
     </Error>
   );

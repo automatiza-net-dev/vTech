@@ -31,8 +31,8 @@ const createAbsence = async (data) => {
   return await api.post("/unavailable-days", data);
 };
 
-const getAbsences = async (id) => {
-  return (await api.get(`/unavailable-days?user=${id ? id : ""}`)).data;
+const getAbsences = async (params) => {
+  return (await api.get(`/unavailable-days`, { params })).data;
 };
 
 const editAbsence = async (id, data) => {

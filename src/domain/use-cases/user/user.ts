@@ -10,6 +10,7 @@ export type SystemUser = {
     unitConfig: {
       interval: number;
       alter_prices?: boolean;
+      requires_client_document?: boolean;
       allow_change_schedule_duration?: boolean;
     };
     phone?: string;

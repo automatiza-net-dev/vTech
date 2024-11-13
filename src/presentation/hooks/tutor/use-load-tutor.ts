@@ -1,9 +1,7 @@
-import { useQuery } from "react-query";
-
 import { RemoteTutor } from "@/data";
 import { Tutor } from "@/domain";
-import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
+import { useQuery } from "infinity-forge";
 
 export function useLoadTutor(tutorId?: Tutor["id"]) {
   return useQuery({
@@ -19,7 +17,7 @@ export function useLoadTutor(tutorId?: Tutor["id"]) {
 
       return response;
     },
-    ...callApiOneTime,
     enabled: !!tutorId,
+    enableCache: true,
   });
 }

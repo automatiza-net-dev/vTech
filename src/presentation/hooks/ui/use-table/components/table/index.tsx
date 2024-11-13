@@ -3,7 +3,7 @@ import Pagination from "@mui/material/Pagination";
 
 import { updateRoute } from "@/presentation";
 
-import {Error, Skeleton} from "infinity-forge"
+import { Error, Skeleton } from "infinity-forge";
 
 import { THeadItem } from "./thead-item";
 import { ScreenNotFound } from "@/presentation";
@@ -74,52 +74,54 @@ export function Table({
                   <tbody>
                     {tableData?.map((table, index) => {
                       return (
-                        <tr key={table.id + String(index)}>
-                          {columnsTable?.map((e, i) => {
-                            function getProps() {
-                              const props = Object.keys(
-                                e.Component?.props || {}
-                              ).reduce((reducer, propriedade) => {
-                                let newReducer = reducer;
+                        index < 20 && (
+                          <tr key={table.id + String(index)}>
+                            {columnsTable?.map((e, i) => {
+                              function getProps() {
+                                const props = Object.keys(
+                                  e.Component?.props || {}
+                                ).reduce((reducer, propriedade) => {
+                                  let newReducer = reducer;
 
-                                newReducer[propriedade] =
-                                  table[e.Component?.props[propriedade]];
+                                  newReducer[propriedade] =
+                                    table[e.Component?.props[propriedade]];
 
-                                return { ...newReducer };
-                              }, {});
+                                  return { ...newReducer };
+                                }, {});
 
-                              return props;
-                            }
+                                return props;
+                              }
 
-                            const props = e.Component?.allProps
-                              ? table
-                              : e.Component?.props
-                              ? getProps()
-                              : {};
+                              const props = e.Component?.allProps
+                                ? table
+                                : e.Component?.props
+                                ? getProps()
+                                : {};
 
-                            const defaultProps = e.Component?.defaultProps
-                              ? e.Component?.defaultProps
-                              : {};
+                              const defaultProps = e.Component?.defaultProps
+                                ? e.Component?.defaultProps
+                                : {};
 
-                            return (
-                              <Error
-                                name="Error_td"
-                                key={String(index) + String(i)}
-                              >
-                                <td key={String(index) + String(i)}>
-                                  {e.Component ? (
-                                    <e.Component.Element
-                                      {...props}
-                                      {...defaultProps}
-                                    />
-                                  ) : (
-                                    table[e.id]
-                                  )}
-                                </td>
-                              </Error>
-                            );
-                          })}
-                        </tr>
+                              return (
+                                <Error
+                                  name="Error_td"
+                                  key={String(index) + String(i)}
+                                >
+                                  <td key={String(index) + String(i)}>
+                                    {e.Component ? (
+                                      <e.Component.Element
+                                        {...props}
+                                        {...defaultProps}
+                                      />
+                                    ) : (
+                                      table[e.id]
+                                    )}
+                                  </td>
+                                </Error>
+                              );
+                            })}
+                          </tr>
+                        )
                       );
                     })}
                   </tbody>
@@ -129,7 +131,10 @@ export function Table({
 
           {configs?.isFetching && (
             <Error name="Skeleton">
-              <Skeleton type="line" size={{ height: "500px", width: "100%", margin: "0" }} />
+              <Skeleton
+                type="line"
+                size={{ height: "500px", width: "100%", margin: "0" }}
+              />
             </Error>
           )}
         </div>

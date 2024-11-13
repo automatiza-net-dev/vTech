@@ -1,6 +1,7 @@
 import moment from "moment";
+
+import { PrintHeader } from "@/presentation";
 import { Bill, Payment, PaymentReceipt } from "@/domain";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
 
 import * as S from "./styles";
 
@@ -15,7 +16,7 @@ export function PrintPaymentReceipts({
 }) {
   return (
     <S.PrintPaymentReceipts>
-      <PrintHeader unit={bill?.businessUnit} />
+      <PrintHeader />
       <section className="print-section">
         <h2>Recibo de pagamento</h2>
         <div>

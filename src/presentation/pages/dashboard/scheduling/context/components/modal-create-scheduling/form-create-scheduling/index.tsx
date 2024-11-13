@@ -1,53 +1,47 @@
 import moment from "moment";
 import { Input, Select, Textarea, FormHandler } from "infinity-forge";
 
+import { useMe, useScheduling } from "@/presentation";
+
 import {
-  SelectHolder,
-  SelectPatient,
   SelectServices,
   SelectReturnable,
   SelectRescheduleReason,
 } from "./components";
-
-import {
-  useMe,
-  useScheduling,
-  DateToYYYYMMDD,
-  useLoadAllSchedulesUser,
-} from "@/presentation";
 import { useSubmitSchedule } from "./handleSubmit";
 
 import * as S from "./styles";
 
 export function FormCreateScheduling() {
   const me = useMe();
-  const { submit } = useSubmitSchedule();
-  const selectedDate = useScheduling((state) => state.selectedDate);
-  const { data } = useLoadAllSchedulesUser(
-    DateToYYYYMMDD(selectedDate || new Date()) || "",
-    DateToYYYYMMDD(selectedDate || new Date()) || ""
-  );
+  const { submit, scheduleUsers } = useSubmitSchedule();
+
   const createSchedulingArgs = useScheduling(
     (state) => state.createSchedulingArgs
   );
 
   const initialData = {
     userId: createSchedulingArgs?.scheduleUser?.id
-      ? [createSchedulingArgs?.scheduleUser?.id]
+      ? [createSchedulingArgs.scheduleUser.id]
       : [],
     majorComplaint: createSchedulingArgs?.event?.event?.major_complaint || "",
     scheduleServiceTypeId: createSchedulingArgs?.event?.event?.serviceType
-      ? [createSchedulingArgs?.event?.event?.serviceType?.id]
+      ? [createSchedulingArgs.event.event.serviceType.id]
       : [],
     holderId:
       process.env.client === "sancla"
         ? createSchedulingArgs?.event?.event?.holder?.id
-          ? [createSchedulingArgs?.event?.event?.holder?.id || ""]
+          ? [createSchedulingArgs.event.event.holder.id]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
-          ? [
-              createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id ||
-                "",
-            ]
+          ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.id]
+          : []
+        : undefined,
+    holderName:
+      process.env.client === "sancla"
+        ? createSchedulingArgs?.event?.event?.holder?.name
+          ? [createSchedulingArgs.event.event.holder.name]
+          : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
+          ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.name]
           : []
         : undefined,
     time: createSchedulingArgs?.date.toLocaleTimeString([], {
@@ -67,14 +61,29 @@ export function FormCreateScheduling() {
           ? [createSchedulingArgs?.id]
           : []
         : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
-        ? [
-            createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id ||
-              "",
-          ]
+        ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
         : [],
+    patientName:
+      process.env.client === "liftone"
+        ? [
+            createSchedulingArgs?.event?.event?.patient?.name ||
+              createSchedulingArgs?.name,
+          ]
+        : process.env.client === "sancla"
+        ? createSchedulingArgs?.event?.event?.patient?.name
+          ? [createSchedulingArgs.event.event.patient.name]
+          : createSchedulingArgs?.name
+          ? [createSchedulingArgs?.name]
+          : []
+        : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
+        ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.name]
+        : [],
+    items: [],
   };
-
-  const users = data?.map((user) => ({ label: user.name, value: user.id }));
+  const users = scheduleUsers?.map((user) => ({
+    label: user.name,
+    value: user.id,
+  }));
 
   return (
     <S.FormCreateScheduling>
@@ -120,9 +129,17 @@ export function FormCreateScheduling() {
         </div>
 
         <div className="row">
-          <SelectHolder />
+          <Input
+            name={
+              process.env.client === "sancla" ? "holderName" : "patientName"
+            }
+            disabled
+            label={process.env.client === "sancla" ? "Tutor" : "Cliente"}
+          />
 
-          {process.env.client === "sancla" && <SelectPatient />}
+          {process.env.client === "sancla" && (
+            <Input name="patientName" disabled label="Paciente" />
+          )}
         </div>
 
         {createSchedulingArgs?.type === "reschedule" && (

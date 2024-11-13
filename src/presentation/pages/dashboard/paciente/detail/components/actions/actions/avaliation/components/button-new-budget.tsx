@@ -2,18 +2,18 @@ import { useState } from "react";
 
 import moment from "moment";
 import {
-  FormHandler,
   Input,
   Select,
-  InputCurrency,
   Button,
+  FormHandler,
+  InputCurrency,
 } from "infinity-forge";
 
 import {
-  useLoadAllPatientTutor,
-  useLoadPatient,
   Modal,
   useDictionary,
+  useLoadPatient,
+  useLoadAllPatientTutor,
 } from "@/presentation";
 
 export function ButtonNewBudget() {
@@ -22,9 +22,7 @@ export function ButtonNewBudget() {
   const [modalProducts, setModalProducts] = useState(false);
 
   const patient = useLoadPatient();
-  const { data, isFetching } = useLoadAllPatientTutor({
-    needFilterToCallApi: false,
-  });
+  const { data, isFetching } = useLoadAllPatientTutor({});
 
   const { getWord } = useDictionary();
 

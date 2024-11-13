@@ -4,6 +4,8 @@ import { RemoteCRM } from "@/data";
 import { CrmTypes, container } from "@/container";
 import { Modal, useScheduling } from "@/presentation";
 
+import moment from "moment";
+
 import * as S from "./styles";
 
 export function ModalOpportunitie() {
@@ -29,6 +31,8 @@ export function ModalOpportunitie() {
             <tr>
               <td>Oportunidade</td>
 
+              <td>Data contato</td>
+
               <td>Cliente</td>
 
               {oppotunities.find((item) => item?.client?.name) && (
@@ -45,6 +49,12 @@ export function ModalOpportunitie() {
                 <tr>
                   {oppotunitie?.description && (
                     <td>{oppotunitie.description}</td>
+                  )}
+
+                  {oppotunitie?.contactDate && (
+                    <td>
+                      {moment(oppotunitie?.contactDate).format("DD/MM/YYYY")}
+                    </td>
                   )}
 
                   {oppotunitie?.contact?.name && (

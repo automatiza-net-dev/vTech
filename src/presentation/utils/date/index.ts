@@ -1,3 +1,4 @@
+export * from "./is-invaid-date";
 export * from "./date-to-day-name";
 export * from "./date-to-yyyy-mm-dd";
 export * from "./date-to-dd-mm-yyyy";

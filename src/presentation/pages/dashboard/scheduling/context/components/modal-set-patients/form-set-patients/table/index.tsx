@@ -1,19 +1,18 @@
-import { useTable } from "@/presentation";
 
-import { columnsTable } from "./table-configurations";
+import { useTable } from "infinity-forge";
+import { columns } from "./table-configurations";
 
 export function TableAnimals({ data, isLoading }) {
 
   const { Table } = useTable({
-    columnsTable,
-    tableKey: "/route",
+    columnsConfiguration: {
+      columns,
+    },
     configs: {
-      tableData: data,
-      isFetching: isLoading,
+      tableData: data || [],
+      isLoading: isLoading,
       errorMessage: "Nenhum paciente encontrado",
-      enableInifniteScrollPagination: true,
-      disableOrdenationTable: true,
-      disablePagination: true
+      // pagination: data.pagination
     },
   });
 

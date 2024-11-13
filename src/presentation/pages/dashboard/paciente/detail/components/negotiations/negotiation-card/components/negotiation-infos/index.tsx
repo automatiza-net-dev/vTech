@@ -19,7 +19,7 @@ export function NegotiationInfos({
           <h2>
             Avaliação {moment(negotiation.created_at).format("DD/MM/YYYY")}
           </h2>
-          <Icon name="IconArrowTop" />
+          <Icon name="IconTopChevron" />
         </div>
 
         <div className="main_content">

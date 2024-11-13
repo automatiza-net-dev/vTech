@@ -15,7 +15,8 @@ export class RemoteBudget
     domain.LoadAllBudgetsAttendance,
     domain.LoadPaymentsPreview,
     domain.DeletePaymentPreview,
-    domain.DeleteBudgetItem
+    domain.DeleteBudgetItem,
+    domain.CreateBudgetPayment
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -40,6 +41,16 @@ export class RemoteBudget
     });
 
     return response as domain.CreateBudget.Model;
+  }
+
+  async createPayment(params: domain.CreateBudgetPayment.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`budgets/create-payments`),
+      method: "post",
+      body: params,
+    });
+
+    return response as domain.CreateBudgetPayment.Model;
   }
 
   async update(params: domain.CreateBudget.Params) {

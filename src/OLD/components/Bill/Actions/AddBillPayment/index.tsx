@@ -26,7 +26,7 @@ import CardPanel from "./CardPanel";
 import { Container } from "./styles";
 import NonTefPanel from "./NonTefPanel";
 import ResumePanel from "./ResumePanel";
-import DetailsPanel from "./DetailsPanel";
+import { DetailsPanel } from "./DetailsPanel";
 import { PaymentsPreviewComponent } from "@/presentation";
 import RemoveBillPayment from "./RemoveBillPayment";
 import ProductsPanel from "../Details/ProductsPanel";
@@ -74,7 +74,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
   const { createToast } = useToast();
   const { mutate } = useCreateBillPayment();
   const { data } = useShowBill(billId, true);
-  const users = useLoadAllPatientTutor(false, {});
+  const users = useLoadAllPatientTutor({});
   const { paymentMethods } = usePaymentMethods(filters);
   const { cashiers } = useDailyCasher(false, cashierFilters);
 
@@ -235,18 +235,9 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     }
 
     const paylaod = {
-      budgetPaymentId: formData?.budgetPaymentId,
-      installments: formData?.installments,
+      ...formData,
       installmentsValue: convertIntlCurrency(formData?.installmentsValue),
       billId,
-      expirationDate: formData.expirationDate,
-      paymentMethodId: formData.paymentMethodId,
-      acquirerId: formData?.acquirerId,
-      installments_without_password: formData?.installments_without_password,
-      flagId: formData?.flagId,
-      paymentMethodFlagId: formData?.paymentMethodFlagId,
-      nsuDocument: formData?.nsuDocument,
-      paymentMethodFlagInstallmentId: formData?.paymentMethodFlagInstallmentId,
     };
 
     mutate(paylaod, {

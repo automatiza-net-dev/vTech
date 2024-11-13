@@ -34,13 +34,16 @@ export function CreateVaccine({ type }) {
 
   const createVaccine = async () => {
     try {
+      if (!data?.name || data?.name === "") {
+        return createToast({ message: "Nome obrigatório", status: "error" });
+      }
       const response = await container
         .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
         .createVaccine(data);
 
       setVaccineId(response.id);
 
-      queryClient.invalidateQueries(["LoadAllVaccineProtocols"])
+      queryClient.invalidateQueries(["LoadAllVaccineProtocols"]);
     } catch (err) {
       return createToast({
         message: "Verificar retorno de erros",
@@ -79,7 +82,7 @@ export function CreateVaccine({ type }) {
           setVaccineId("");
         }}
         children={
-          <div className='protocol-table-box'>
+          <div className="protocol-table-box">
             <VaccineForm {...vaccineFormProps} />
             {vaccineId !== "" && (
               <div style={{ padding: "20px" }}>

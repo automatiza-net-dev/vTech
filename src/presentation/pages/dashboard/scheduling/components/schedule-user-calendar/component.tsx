@@ -41,12 +41,26 @@ export function ScheduleUserCalendar({
       };
     });
 
-    const intervalMinutes = data?.unit?.unitConfig?.interval;
-    const duration = intervalMinutes && moment.duration(intervalMinutes, 'minutes');
-    const formattedDuration = duration && moment.utc(duration.asMilliseconds()).format("HH:mm:ss");
+  const intervalMinutes = data?.unit?.unitConfig?.interval;
+  const duration =
+    intervalMinutes && moment.duration(intervalMinutes, "minutes");
+  const formattedDuration =
+    duration && moment.utc(duration.asMilliseconds()).format("HH:mm:ss");
 
   return (
-    <S.ScheduleUserCalendar $height={intervalMinutes ? intervalMinutes === 15 ? 25 : intervalMinutes === 30 ? 54 : intervalMinutes === 60 ? 50 : 40 : 40}>
+    <S.ScheduleUserCalendar
+      $height={
+        intervalMinutes
+          ? intervalMinutes === 15
+            ? 25
+            : intervalMinutes === 30
+            ? 54
+            : intervalMinutes === 60
+            ? 50
+            : 40
+          : 40
+      }
+    >
       <div className="top-name">
         <h3>{scheduleUser?.name}</h3>
       </div>
@@ -57,7 +71,9 @@ export function ScheduleUserCalendar({
         slotDuration={formattedDuration || "00:15:00"}
         slotLabelInterval={formattedDuration || "00:15:00"}
         events={events}
-        dateClick={({ date }) => setModalPatients({ date, scheduleUser, type: "create" })}
+        dateClick={({ date }) =>
+          setModalPatients({ date, scheduleUser, type: "create" })
+        }
         slotMaxTime={rangeProfessionalWorking?.end ?? "23:59"}
         slotMinTime={rangeProfessionalWorking?.start ?? "00:00"}
         initialDate={selectedDate}

@@ -193,7 +193,9 @@ export function AddProduct() {
                         });
 
                         if (
-                          Number(value) > variation.maximum_discount_percentage
+                          Number(value) >=
+                          (variation.maximum_discount_percentage / 100) *
+                            variation.saleValue
                         ) {
                           handleInputChange({
                             indexVariation,

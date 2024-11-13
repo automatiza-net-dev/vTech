@@ -1,3 +1,4 @@
+import moment from "moment";
 import { FileSystemType } from "infinity-forge";
 
 import { Contact } from "@/domain";
@@ -6,7 +7,7 @@ export const initialData = ({ data, tutorId }) => {
   return data
     ? {
         ...data,
-        birthDate: new Date(data?.birthDate),
+        birthDate: moment(data?.birthDate).add("day", 1).utc(true).toDate(),
         id: tutorId,
         photo: [
           {

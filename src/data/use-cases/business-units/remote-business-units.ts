@@ -30,7 +30,7 @@ export class RemoteBusinessUnits
 
   async load(params: domain.LoadBusinessUnits.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`business-units/${params.id}`),
+      url: this.makeApiURL.make(`business-units/${params?.id}`),
       method: "get",
     });
 

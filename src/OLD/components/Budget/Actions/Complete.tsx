@@ -113,7 +113,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
     internalObservation,
   });
 
-  const res = useLoadAllPatientTutor({ needFilterToCallApi: false });
+  const res = useLoadAllPatientTutor({});
   const tutors = res.data;
 
   const { createToast } = useToast();
@@ -579,20 +579,20 @@ export default function CompleteBudget({ budget, setReload = false }) {
           </TabPane>
         </Tabs>
         <ModalInfinityForge
-        open={stockProductsOpen}
-        onClose={() => setStockProductsOpen(false)}
-        styles={{ width: "500px", padding: "20px" }}
-        children={
-          <>
-            <h4>Os seguintes produtos não possuem quantidade em estoque:</h4>
-            {stockProducts?.map((item, i) => {
-              if (i !== 0) {
-                return <li key={i}>{item}</li>;
-              }
-            })}
-          </>
-        }
-      />
+          open={stockProductsOpen}
+          onClose={() => setStockProductsOpen(false)}
+          styles={{ width: "500px", padding: "20px" }}
+          children={
+            <>
+              <h4>Os seguintes produtos não possuem quantidade em estoque:</h4>
+              {stockProducts?.map((item, i) => {
+                if (i !== 0) {
+                  return <li key={i}>{item}</li>;
+                }
+              })}
+            </>
+          }
+        />
       </Modal>
     </>
   );

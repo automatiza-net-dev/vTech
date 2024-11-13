@@ -1,23 +1,9 @@
 import { useState } from "react";
 
-import { useQueryClient } from "react-query";
-import {
-  Error,
-  Select,
-  Modal,
-  useToast,
-  FormHandler,
-  LoaderCircle,
-} from "infinity-forge";
+import { Error, Modal } from "infinity-forge";
 
-import {
-  useScheduling,
-  useAssignTutor,
-  useSetMainTutor,
-  useLoadAllPatientTutor,
-} from "@/presentation";
 import { Tutor } from "@/domain";
-import { ButtonCreateTutor } from "./button-create-tutor";
+import { AddTutorContent } from "./content";
 
 import * as S from "./styles";
 
@@ -30,43 +16,6 @@ export function AddTutor({
   origin?: "Cadastro" | "Crm" | "Agenda";
 }) {
   const [modal, setModal] = useState(false);
-  const [initialHolder, setInitialHolder] = useState(null);
-
-  const { createToast } = useToast();
-  const assignutor = useAssignTutor();
-  const queryClient = useQueryClient();
-  const setMainTutor = useSetMainTutor();
-
-  const patientsFilters = useScheduling((state) => state.patientsFilters);
-
-  const { data, refetch, isLoading } = useLoadAllPatientTutor({});
-
-  async function hanldeOnSuccess(param) {
-    await assignutor.mutateAsync({
-      ...param,
-      patient: id,
-    });
-
-    await setMainTutor.mutateAsync({
-      holder: param.holder,
-      patient: id,
-    });
-
-    await queryClient.invalidateQueries({
-      queryKey: ["RemoteLoadSchedulesPatients", patientsFilters],
-    });
-
-    await queryClient.invalidateQueries({
-      queryKey: "RemoteLoadAllPatientTutor",
-    });
-
-    createToast({
-      message: "Tutor vinculado com sucesso!",
-      status: "success",
-    });
-
-    setModal(false);
-  }
 
   return (
     <Error name="AddTutor">
@@ -81,44 +30,13 @@ export function AddTutor({
         open={modal}
         onClose={() => setModal(false)}
       >
-        {isLoading ? (
-          <LoaderCircle size={20} />
-        ) : (
-          <S.ModalContent>
-            <FormHandler
-              isStickyButtons
-              onSucess={hanldeOnSuccess}
-              button={{ text: "Vincular" }}
-              customAction={
-                {
-                  props: { refetch, setInitialHolder, origin },
-                  Component: ButtonCreateTutor,
-                } as any
-              }
-              initialData={{ holder: initialHolder }}
-            >
-              <div className="select-box">
-                <Select
-                  label="Selecione o tutor a ser vinculado"
-                  loading={isLoading}
-                  name="holder"
-                  onlyOneValue
-                  options={
-                    data?.map((item) => ({
-                      label:
-                        item?.name +
-                        " / " +
-                        item?.document +
-                        " / " +
-                        item?.cellphone,
-                      value: item.id || "",
-                    })) || []
-                  }
-                />
-              </div>
-            </FormHandler>
-          </S.ModalContent>
-        )}
+        <S.ModalContent>
+          <AddTutorContent
+            id={id}
+            setModal={setModal}
+            origin={origin}
+          />
+        </S.ModalContent>
       </Modal>
 
       <S.AddTutor onClick={() => setModal(true)} data-cy="add_tutor">

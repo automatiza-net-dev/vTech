@@ -10,16 +10,27 @@ export function PrecoCard(props) {
       <S.PrecoCard>
         {props?.items?.length > 0 &&
           props?.items?.map((subItem) => (
-            <div key={subItem?.description} className="subitem-box ">
-              <h3 className="poppins-semibold">
-                <strong>
-                  {subItem?.description === "Tendencia"
-                    ? `${subItem?.percentage} - ${subItem?.value}`
-                    : subItem?.value}
-                </strong>
-              </h3>
+            <div key={subItem?.description} className="subitem-box">
+              <div>
+                <h3 className="poppins-semibold">
+                  <strong>
+                    {subItem?.description === "Tendencia"
+                      ? `${subItem?.percentage} - ${subItem?.value}`
+                      : subItem?.value}
+                  </strong>
+                </h3>
 
-              <p>{subItem.description}</p>
+                <p>{subItem.description}</p>
+              </div>
+              {subItem?.icone && (
+                <div
+                  style={{ width: "50px" }}
+                  className="icon-container"
+                  dangerouslySetInnerHTML={{
+                    __html: subItem?.icone,
+                  }}
+                ></div>
+              )}
             </div>
           ))}
       </S.PrecoCard>

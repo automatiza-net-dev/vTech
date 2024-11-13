@@ -12,8 +12,14 @@ export const Container = styled.div`
 
   .header-section {
     font-size: 14px;
+
     h2 {
       color: #fff;
+      width: max-content;
+    }
+
+    p {
+      width: max-content;
     }
   }
 

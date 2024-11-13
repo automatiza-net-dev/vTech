@@ -8,7 +8,7 @@ import ReactToPrint from "react-to-print";
 
 import PrintFooter from "./PrintFooter";
 import PatientHeader from "./PetHeader";
-import PrintHeader from "./PrintHeader";
+import { PrintHeader } from "@/presentation";
 import { Container, PrintScreen } from "./styles";
 
 export default function Print({
@@ -34,7 +34,7 @@ export default function Print({
       <div style={{ display: "none" }}>
         <PrintScreen ref={componentRef as any} className="uk-padding-small">
           <div className="uk-text-center uk-margin-top">
-            <PrintHeader unit={clinic} />
+            <PrintHeader />
           </div>
 
           {process.env.client !== "liftone" && patient && (

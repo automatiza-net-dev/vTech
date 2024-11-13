@@ -4,18 +4,18 @@ import { memo } from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import PrintHeader from "@/OLD/components/mini-components/Print/PrintHeader";
+import { PrintHeader } from "@/presentation";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 
-const PrintScreen = memo(function PrintScreen({ reports }) {
+function PrintScreen({ reports }) {
   const { clinic } = useProfile();
 
   return (
     <Container>
       <div className="clinic-header">
-        <PrintHeader unit={clinic} />
+        <PrintHeader />
         <div className="uk-text-center">
           <h4 className="">Relatório de vendas analítico</h4>
         </div>
@@ -273,6 +273,6 @@ const PrintScreen = memo(function PrintScreen({ reports }) {
       ))}
     </Container>
   );
-});
+};
 
 export default PrintScreen;

@@ -15,50 +15,37 @@ import { memo, useState, useCallback, useEffect } from "react";
 
 import moment from "moment";
 
-export const RowTime = memo(
-  ({ day, edit, reload, setReload, rowEditing = false }) => {
-    const router = useRouter();
-    const userId = router?.query?.innerpage;
-    const [showSave, setShowSave] = useState(true);
-    const [data, setData] = useState({
-      userId,
-      dayOfWeek: day?.week_day,
-      startHour: moment(day?.start_hour, "HH:mm"),
-      endHour: moment(day?.end_hour, "HH:mm"),
-    });
+export function RowTime({
+  day,
+  edit,
+  reload,
+  setReload,
+  rowEditing = false,
+  data,
+  setData,
+}) {
+  const router = useRouter();
 
-    const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState();
 
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    const handleEdit = useCallback(() => {
-      userService
-        .editWorkingDay(day.id, {
-          ...data,
-          startHour: moment(data?.startHour).format("HH:mm"),
-          endHour: moment(data?.endHour).format("HH:mm"),
-        })
-        .then((res) => {
-          setShowSave(false);
-        })
-        .catch((err) => {
-          notification.error({
-            message: "Erro",
-            description: "Erro ao editar jornada de trabalho",
-          });
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }, [data, router]);
-
+  return data?.map((item, index) => {
     return (
       <Row className="uk-margin-small-bottom">
         <Col span={5}>
-          {rowEditing && showSave ? (
+          {rowEditing ? (
             <Select
-              defaultValue={data?.dayOfWeek ? data?.dayOfWeek : data?.week_day}
-              onChange={(e) => setData({ ...data, dayOfWeek: e })}
+              defaultValue={item?.dayOfWeek ? item?.dayOfWeek : item?.week_day}
+              onChange={(e) => {
+                const obj = [...data];
+                obj.splice(index, 1, {
+                  ...item,
+                  dayOfWeek: e,
+                });
+
+                setData(obj);
+              }}
               className="uk-border-pill"
             >
               <option value="segunda">Segunda</option>
@@ -66,7 +53,7 @@ export const RowTime = memo(
               <option value="quarta">Quarta</option>
               <option value="quinta">Quinta</option>
               <option value="sexta">Sexta</option>
-              <option value="sabado">Sabádo</option>
+              <option value="sabado">Sábado</option>
               <option value="domingo">Domingo</option>
             </Select>
           ) : (
@@ -74,7 +61,7 @@ export const RowTime = memo(
               className="uk-margin-remove"
               style={{ textTransform: "capitalize" }}
             >
-              {data?.dayOfWeek ? data?.dayOfWeek : data?.week_day}
+              {item?.dayOfWeek ? item?.dayOfWeek : item?.week_day}
             </h5>
           )}
         </Col>
@@ -83,11 +70,16 @@ export const RowTime = memo(
             <TimePicker
               slotProps={{ textField: { variant: "standard" } }}
               className="uk-border-pill"
-              disabled={!rowEditing && showSave}
-              value={data?.startHour}
-              onChange={(val) => {
-                setShowSave(true);
-                setData({ ...data, startHour: val });
+              disabled={!rowEditing}
+              value={item.startHour}
+              onChange={(e) => {
+                const obj = [...data];
+                obj.splice(index, 1, {
+                  ...item,
+                  startHour: e,
+                });
+
+                setData(obj);
               }}
             />
           </div>
@@ -96,45 +88,30 @@ export const RowTime = memo(
           <div style={{ paddingRight: "60px" }}>
             <TimePicker
               slotProps={{ textField: { variant: "standard" } }}
-              disabled={!rowEditing && showSave}
+              disabled={!rowEditing}
               className="uk-border-pill"
-              value={data?.endHour}
-              onChange={(val) => {
-                setShowSave(true);
-                setData({ ...data, endHour: val });
+              value={item.endHour}
+              onChange={(e) => {
+                const obj = [...data];
+                obj.splice(index, 1, {
+                  ...item,
+                  endHour: e,
+                });
+
+                setData(obj);
               }}
             />
           </div>
         </Col>
         <Col span={2}>
-          {rowEditing && (
-            <>
-              {showSave ? (
-                <Button
-                  className="uk-border-pill"
-                  onClick={() => {
-                    handleEdit();
-                    setShowSave(false);
-                  }}
-                  disabled={loading}
-                >
-                  {loading ? <LoadingSpin /> : "Salvar"}
-                </Button>
-              ) : (
-                <AiOutlineCheck size={25} />
-              )}
-            </>
-          )}
-          {edit && (
-            <Delete
-              id={day.id}
-              onDelete={() => queryClient.invalidateQueries("workingDay")}
-              reload={reload}
-              setReload={setReload}
-            />
-          )}
+          <Delete
+            id={item.id}
+            onDelete={() => queryClient.invalidateQueries("workingDay")}
+            reload={reload}
+            setReload={setReload}
+          />
         </Col>
       </Row>
     );
-  }
-);
+  });
+}

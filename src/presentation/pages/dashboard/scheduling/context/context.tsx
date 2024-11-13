@@ -42,10 +42,10 @@ function SchedulingContextProvider({
 
 function useScheduling<T>(selector: (state: ScheduleStoreState) => T): T {
   const store = useContext(ConfigurationsEcommerceContext);
+  
   if (!store)
-    throw new Error(
-      "Missing ConfigurationsEcommerceContext.Provider in the tree"
-    );
+    return {} as T;
+
   return useStore(store, selector);
 }
 

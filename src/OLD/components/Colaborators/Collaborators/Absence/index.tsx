@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { useState } from "react";
 import { notification, Table } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,27 +15,25 @@ import moment from "moment";
 
 // Components
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, Select, FormHandler } from "infinity-forge";
 
 export const Absence = ({ edit }) => {
   const router = useRouter();
   const userId = router?.query?.id;
+  const [params, setParams] = useState({ user: userId });
   const { colaborator } = useColaborator(userId, false);
 
-  const { data, loading } = useQuery(
-    ["getAbsences", userId],
-    () => calendarService.getAbsences(userId),
-    {
-      onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao buscar ausencias e indisponibilidades",
-        });
-      },
-      staleTime: 1000 * 20,
-      refetchInterval: 1500 * 20,
-    }
-  );
+  const { data, loading } = useQuery({
+    queryKey: ["getAbsences", params],
+    queryFn: () => calendarService.getAbsences(params),
+    refetchOnWindowFocus: false,
+    onError: () => {
+      notification.error({
+        message: "Erro",
+        description: "Erro ao buscar ausencias e indisponibilidades",
+      });
+    },
+  });
 
   return (
     <>
@@ -42,24 +41,54 @@ export const Absence = ({ edit }) => {
         <div>
           <h2>Colaborador: {colaborator?.name}</h2>
         </div>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <div>
-            <Button onClick={() => router.back()} text="Voltar" />
+        {!edit && (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <div>
+              <Button onClick={() => router.back()} text="Voltar" />
+            </div>
+            <div>
+              <Button
+                onClick={() =>
+                  router.push(
+                    `/dashboard/colaboradores/editar-colaborador/${colaborator?.id}`
+                  )
+                }
+                text="Editar Colaborador"
+              />
+            </div>
           </div>
-          <div>
-            <Button
-              onClick={() =>
-                router.push(
-                  `/dashboard/colaboradores/editar-colaborador/${colaborator?.id}`
-                )
-              }
-              text="Editar Colaborador"
-            />
-          </div>
-        </div>
+        )}
       </div>
       <Container className="uk-padding">
         <h3 className="uk-margin-remove">Bloqueios de agenda</h3>
+        <div style={{ display: "flex", justifyContent: "right" }}>
+          <FormHandler
+            initialData={params}
+            onChangeForm={{
+              callbackResult: (payload) => {
+                if (payload?.active !== "all") {
+                  setParams({ user: userId, active: payload?.active });
+                } else {
+                  setParams({
+                    user: userId,
+                  });
+                }
+              },
+            }}
+          >
+            <Select
+              label="Status"
+              onlyOneValue
+              name="active"
+              menuPlacement="bottom"
+              options={[
+                { value: "true", label: "Ativo" },
+                { value: "false", label: "Inativo" },
+                { value: "all", label: "Todos" },
+              ]}
+            />
+          </FormHandler>
+        </div>
         <div className="uk-margin-top">
           <Table
             dataSource={data?.map((item) => ({

@@ -84,11 +84,7 @@ export function IconsBar() {
       <div className="list-icons">
         {listIcons.map((component) => (
           <div className="icon-box" key={component}>
-            <Icon
-              name={component}
-              fill={theme?.primaryColor}
-              stroke={theme?.primaryColor}
-            />
+            <Icon name={component} color={theme?.primaryColor} />
 
             <span>{component}</span>
           </div>

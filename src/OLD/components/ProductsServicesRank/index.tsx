@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { memo, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
@@ -17,7 +17,7 @@ import { PageWrapper } from "infinity-forge";
 import ReactToPrint from "react-to-print";
 import * as XLSX from "xlsx/xlsx.mjs";
 
-function ProductsServicesRank() {
+export function ProductsServicesRank() {
   const [filters, setFilters] = useState({});
   const [reload, setReload] = useState(false);
   const [cities, setCities] = useState([]);
@@ -112,47 +112,6 @@ function ProductsServicesRank() {
           </InputBox>
         </section>
         <section className="uk-margin-small-top uk-flex uk-flex-around">
-          {/*
-        <InputBox className="uk-width-1-5">
-          <label>Grupo de negócios</label>
-          <Select
-            mode="multiple"
-            className="uk-width-1-1"
-            value={filters?.economicGroups}
-            onChange={(val) => setFilters({ ...filters, economicGroups: val })}
-          >
-            {allEconomicGroup?.map((group) => (
-              <Option value={group?.id}>{group?.fantasy_name}</Option>
-            ))}
-          </Select>
-        </InputBox>
-        <InputBox className="uk-width-1-5">
-          <label>UF</label>
-          <Select
-            mode="multiple"
-            className="uk-width-1-1"
-            value={filters?.businessStates}
-            onChange={(val) => setFilters({ ...filters, businessStates: val })}
-          >
-            {places?.map((state) => (
-              <Option value={state?.value}>{state?.value}</Option>
-            ))}
-          </Select>
-        </InputBox>
-        <InputBox className="uk-width-1-5">
-          <label>Municipio</label>
-          <Select
-            mode="multiple"
-            className="uk-width-1-1"
-            value={filters?.businessCities}
-            onChange={(val) => setFilters({ ...filters, businessCities: val })}
-          >
-            {cities?.map((city) => (
-              <Option value={city?.value}>{city?.value}</Option>
-            ))}
-          </Select>
-        </InputBox>
-            */}
           <InputBox className="uk-width-1-5">
             <label>Tipo</label>
             <Select
@@ -206,5 +165,3 @@ function ProductsServicesRank() {
     </PageWrapper>
   );
 }
-
-export default ProductsServicesRank;

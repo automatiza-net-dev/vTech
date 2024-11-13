@@ -397,7 +397,7 @@ function Budgets() {
         >
           <Button
             onClick={() => setModalCriar(true)}
-            text={`  Novo ${getWord("Orçamento")}`}
+            text={`Novo ${getWord("Orçamento")}`}
           />
 
           <ModalInfinityForge
@@ -415,7 +415,11 @@ function Budgets() {
             open={modalCriar}
             onClose={() => setModalCriar(false)}
           >
-            <AddBudgetNew setModal={setModalCriar} listCreated={listCreated} />
+            <AddBudgetNew
+              setModal={setModalCriar}
+              listCreated={listCreated}
+              tutorsList={tutors}
+            />
           </ModalInfinityForge>
 
           <Button

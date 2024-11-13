@@ -1,6 +1,6 @@
 export type Marketing = {
-  id?: string;
-  description?: string;
+  id: string;
+  description: string;
   startDate?: Date;
   endDate?: Date;
   investmentValue?: number;

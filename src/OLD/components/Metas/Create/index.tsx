@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Select } from "antd";
-import { Button } from "infinity-forge";
+import { Form, Input, Modal, Select } from "antd";
+import { Button, useToast } from "infinity-forge";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { metasService } from "@/OLD/services/metas.service";
@@ -11,6 +11,9 @@ export const Create = ({ canCreate }) => {
     description: "",
     type: "R$",
   });
+
+  const { createToast } = useToast();
+
   const [visible, setVisible] = useState(false);
   const { Option } = Select;
 
@@ -29,26 +32,21 @@ export const Create = ({ canCreate }) => {
     onSuccess: () => {
       setVisible(false);
       setPayload({});
-      notification.success({
-        message: "Sucesso",
-        description: "Meta criada!",
-      });
       queryClient.invalidateQueries("metas");
-    },
-    onError: (_error) => {
-      const errorData = _error?.response?.data;
-      if (errorData && errorData.message === "E_ERR: Meta já cadastrada") {
-        notification.error({
-          message: "Erro",
-          description: "Meta já existe!",
-        });
-        return;
-      }
-
-      notification.error({
-        message: "Erro",
-        description: "Erro ao criar Meta!",
+      return createToast({
+        message: "Meta criada com sucesso",
+        status: "success",
       });
+    },
+    onError: (error) => {
+      const errorData = error?.response?.data;
+
+      if (errorData && errorData?.message?.includes("Meta já cadastrada")) {
+        return createToast({
+          message: "Meta existente com a descrição informada",
+          status: "error",
+        });
+      }
     },
   });
 
@@ -103,7 +101,7 @@ export const Create = ({ canCreate }) => {
           <hr />
           <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
             <Button type="primary" htmlType="submit" text="Criar" />
-            <Button text="Cancelar" onClick={() => setVisible(false)} />
+            <Button text="Cancelar" type="button" onClick={() => setVisible(false)} />
           </div>
         </Form>
       </Modal>
