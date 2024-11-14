@@ -14,7 +14,7 @@ import {
 
 import { PermissionItem } from "@/presentation/components";
 import { PrintVaccinesVermifugeReport } from "./components";
-import { FormHandler, Select, InputDatePicker, Button } from "infinity-forge";
+import { FormHandler, Select, Button, RangeDatePicker } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -25,13 +25,23 @@ export function VaccinesVermifugeReport({
   type: "vaccine" | "vermifuge";
   permission: "REL13" | "REL14";
 }) {
+  const initialData = {
+    type,
+    schedulingDate: {
+      startDate: String(moment()),
+      endDate: String(moment()),
+    },
+    applicationDate: {
+      startDate: undefined,
+      endDate: undefined,
+    },
+  };
+
   const [filtersData, setFiltersData] = useState({
     type,
     units: [],
     fromScheduling: moment().format("DD/MM/YYYY"),
     toScheduling: moment().format("DD/MM/YYYY"),
-    fromApplication: moment().format("DD/MM/YYYY"),
-    toApplication: moment().format("DD/MM/YYYY"),
   });
 
   const router = useRouter();
@@ -76,23 +86,20 @@ export function VaccinesVermifugeReport({
     <S.VaccinesVermifuge>
       <PermissionItem hash={permission}>
         <FormHandler
-          initialData={filtersData}
+          initialData={initialData}
           onChangeForm={{
             callbackResult: (dataForm) => {
+              const { schedulingDate, applicationDate, ...rest } = dataForm;
+
+              const formatDate = (date) =>
+                date ? moment(date).format("DD/MM/YYYY") : null;
+
               setFiltersData({
-                ...dataForm,
-                fromApplication: moment(dataForm.fromApplication).format(
-                  "YYYY-MM-DD"
-                ),
-                toApplication: moment(dataForm.toApplication).format(
-                  "YYYY-MM-DD"
-                ),
-                fromScheduling: moment(dataForm.fromScheduling).format(
-                  "YYYY-MM-DD"
-                ),
-                toScheduling: moment(dataForm.toScheduling).format(
-                  "YYYY-MM-DD"
-                ),
+                ...rest,
+                fromScheduling: formatDate(schedulingDate.startDate),
+                toScheduling: formatDate(schedulingDate.endDate),
+                toApplication: formatDate(applicationDate.startDate),
+                fromApplication: formatDate(applicationDate.endDate),
               });
             },
           }}
@@ -137,49 +144,29 @@ export function VaccinesVermifugeReport({
               </div>
             )}
             <div className="date-container">
-              <div>
-                <InputDatePicker
-                  language="pt"
-                  label="Data de agendamento"
-                  name="fromScheduling"
-                  mode="date"
-                  date={{}}
-                />
-              </div>
-              <div style={{ marginTop: "20px" }}>
-                <InputDatePicker
-                  language="pt"
-                  name="toScheduling"
-                  mode="date"
-                  date={{}}
-                />
-              </div>
+              <RangeDatePicker
+                name="schedulingDate"
+                label="Data de agendamento"
+                language="pt"
+                mode="date"
+              />
             </div>
+
             <div className="date-container">
-              <div>
-                <InputDatePicker
-                  language="pt"
-                  label="Data de aplicação"
-                  name="fromApplication"
-                  mode="date"
-                  date={{}}
-                />
-              </div>
-              <div style={{ marginTop: "20px" }}>
-                <InputDatePicker
-                  className="to-picker"
-                  language="pt"
-                  name="toApplication"
-                  mode="date"
-                  date={{}}
-                />
-              </div>
+              <RangeDatePicker
+                name="applicationDate"
+                label="Data de aplicação"
+                language="pt"
+                mode="date"
+              />
             </div>
           </section>
           <section className="custom-row">
             {vaccines.data && vaccines.data?.length > 0 && (
               <div>
                 <Select
+                  isClearable
+                  onlyOneValue
                   label="Vacina"
                   name="vaccine"
                   options={vaccines.data.map((vaccine) => ({
@@ -192,6 +179,8 @@ export function VaccinesVermifugeReport({
             {vaccineProtocols.data && vaccineProtocols.data?.length > 0 && (
               <div>
                 <Select
+                  isClearable
+                  onlyOneValue
                   label="Protocolo"
                   name="protocol"
                   options={vaccineProtocols.data.map((protocol) => ({
@@ -203,6 +192,7 @@ export function VaccinesVermifugeReport({
             )}
             <div>
               <Select
+                isClearable
                 label="Status"
                 name="status"
                 options={[
@@ -223,6 +213,7 @@ export function VaccinesVermifugeReport({
             </div>
             <div>
               <Select
+                isClearable
                 label="Odenação"
                 name="order"
                 onlyOneValue

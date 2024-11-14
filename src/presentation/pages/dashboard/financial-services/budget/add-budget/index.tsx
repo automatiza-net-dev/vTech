@@ -42,7 +42,7 @@ export function AddBudgetNew({
   const budgetDetail = useLoadBudget({ id: budgetId || "" });
   const dailyMovements = useLoadAllDailyMovements();
   const patientTutors = useLoadAllPatientTutor({ enabled: !patient })?.data;
-  const tutors =  tutorsList || patientTutors
+  const tutors = tutorsList || patientTutors;
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();
@@ -107,17 +107,11 @@ export function AddBudgetNew({
 
   async function handleSubmit(data, _, initialValues) {
     try {
-      const verifyClientExist = tutors?.find(
-        (tutor) => tutor.id === data.clientId
-      );
-
       const formatItemsCart = formatCart(data.cart, data.maxDiscount);
 
       const payload = {
         ...data,
         id: budgetId,
-        clientId: verifyClientExist ? data.clientId : "",
-        clientName: data.clientName || verifyClientExist ? "" : data.clientId,
         attendanceId,
         items: formatItemsCart,
         budgetDate: new Date().toISOString(),
