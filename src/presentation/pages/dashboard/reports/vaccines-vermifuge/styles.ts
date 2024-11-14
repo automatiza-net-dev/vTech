@@ -9,10 +9,6 @@ export const VaccinesVermifuge = styled("div")`
       grid-column-start: 1;
       grid-column-end: 3;
     }
-    .date-container {
-      display: flex;
-      gap: 5px;
-    }
   }
   .actions-box {
     margin-top: 10px;
@@ -21,6 +17,25 @@ export const VaccinesVermifuge = styled("div")`
     justify-content: flex-end;
     button {
       background-color: ${(props) => props.theme.primaryColor} !important;
+    }
+  }
+
+  .react-daterange-picker__inputGroup {
+    width: 100% !important;
+  }
+  .date-container {
+    width: 100%;
+
+    button {
+      min-width: 22px;
+
+      &:last-child {
+        min-width: 30px;
+      }
+    }
+
+    .react-daterange-picker {
+      width: 100%;
     }
   }
 `;

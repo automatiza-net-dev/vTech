@@ -78,8 +78,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: 4.6.4
-        version: 4.6.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
+        specifier: 4.6.6
+        version: 4.6.6(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -2541,8 +2541,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@4.6.4:
-    resolution: {integrity: sha512-fdxt0JhajcbU0gcCgGCZ0Zq1D1cwtXwQK3TNJzwTeYuGyzY5HKEtn/CKe9XtneKns4kmH5S/dNj6AOc2HOeFgA==}
+  infinity-forge@4.6.6:
+    resolution: {integrity: sha512-Ftei7Wld0n2UOyMXEu/W3Lkk7AN6N/Q1La2wUTztEJu56NWS1/5wz0+9zThdhvjzAy3IBM0XV7qA1D79h1+1AA==}
     peerDependencies:
       react: '>=16'
 
@@ -7248,7 +7248,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@4.6.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
+  infinity-forge@4.6.6(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
     dependencies:
       '@types/lodash': 4.17.7
       '@wojtekmaj/react-daterange-picker': 6.0.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

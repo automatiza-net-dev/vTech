@@ -1,5 +1,4 @@
-import { useQueryClient } from "react-query";
-import { Error } from "infinity-forge";
+import { Error, useQueryClient } from "infinity-forge";
 
 import { Event, ScheduleUser } from "@/domain";
 import { DateToYYYYMMDD, useScheduling } from "@/presentation";
@@ -35,7 +34,7 @@ export function Actions({
   scheduleUser: ScheduleUser;
   refetchKeyWeekCalendar?: string;
 }) {
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((state) => state.refetch);
   const selectedDate = useScheduling((state) => state.selectedDate);
   const listCancelledEvents = useScheduling(
     (state) => state.listCancelledEvents
@@ -44,24 +43,19 @@ export function Actions({
   const description = event?.event?.serviceStatus?.description;
 
   async function onExecuteAction(params?: any) {
-    await queryClient.invalidateQueries({ queryKey: "RemoteSchedules" });
+    await refetch("RemoteSchedules");
 
     params?.scheduleId &&
-      (await queryClient.invalidateQueries({
-        queryKey: ["RemoteLoadSchedules", params.scheduleId],
-      }));
+      (await refetch("RemoteLoadSchedules" + params.scheduleId));
 
     if (viewCalendar !== "day") {
-      await queryClient.invalidateQueries({
-        queryKey: refetchKeyWeekCalendar || "-",
-      });
+      await refetch(refetchKeyWeekCalendar || "-");
     } else {
-      await queryClient.invalidateQueries({
-        queryKey:
-          "RemoteLoadAllSchedulesUser" +
+      await refetch(
+        "RemoteLoadAllSchedulesUser" +
           DateToYYYYMMDD(selectedDate || new Date()) +
-          listCancelledEvents,
-      });
+          listCancelledEvents
+      );
     }
   }
 
@@ -88,17 +82,14 @@ export function Actions({
         <div className="actions-infos">
           {Object.keys(infos).map((key) => {
             const item = infos[key];
-
             return (
               <span key={key}>
                 {item?.icon}
-
                 <span>{item?.text}</span>
               </span>
             );
           })}
         </div>
-
         {isCancelled && (
           <div className="canceled-box">
             <strong>Dados Cancelamento:</strong>
@@ -117,7 +108,6 @@ export function Actions({
             )}
           </div>
         )}
-
         {!isCancelled && (
           <div className="buttons-box">
             {description === "Agendado (Não confirmado)" && (
@@ -155,7 +145,7 @@ export function Actions({
             {description === "Em atendimento" && (
               <EndService {...propsActions} />
             )}
-            
+
             <ChangeUpsertStatusAction {...propsActions} />
 
             <DeleteSchedule {...propsActions} />

@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-
 import { Input, Select } from "infinity-forge";
 import { useFormikContext } from "formik";
 
 import { Tutor } from "@/domain";
 
 export function SelectBudgetPatient({ tutors }: { tutors: Tutor[] }) {
-  const { values, setFieldValue, initialValues } = useFormikContext<Tutor>();
+  const { values, initialValues } = useFormikContext<Tutor>();
   const initialValue = initialValues["patientName"];
 
   const options =
@@ -17,12 +15,6 @@ export function SelectBudgetPatient({ tutors }: { tutors: Tutor[] }) {
         value: dependent.id,
       })) || [];
 
-  useEffect(() => {
-    if (options.length === 0) {
-      setFieldValue("patientId", null);
-    }
-  }, [values["clientId"]]);
-
   return initialValue ? (
     <Input label="Paciente" name="patientName" disabled />
   ) : (
@@ -30,7 +22,7 @@ export function SelectBudgetPatient({ tutors }: { tutors: Tutor[] }) {
       name="patientId"
       label="Paciente"
       placeholder="Selecionar Paciente"
-      disabled={options.length === 0}
+      disabled={initialValue}
       onlyOneValue
       options={options}
     />

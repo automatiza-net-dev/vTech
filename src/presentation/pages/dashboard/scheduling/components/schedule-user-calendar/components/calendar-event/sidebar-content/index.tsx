@@ -53,7 +53,6 @@ export function SideBarContent({
         </div>
 
         <UserInfos event={event} setOpen={setOpen} />
-
         <Actions
           event={event}
           isCancelled={isCancelled}
