@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { Select } from "infinity-forge";
+import { Select, formatNumberToCurrency } from "infinity-forge";
 
 import { useLoadAllProducts } from "@/presentation";
 
@@ -15,12 +15,30 @@ export function SelectProduct() {
   const productsList = useLoadAllProducts();
 
   const options =
-    productsList.data?.map((product) => ({
-      label:
+    productsList.data?.map((product) => {
+      const sanclaDescription =
         product.description +
-        (product.reference_code ? " - Cod: " + product.reference_code : ""),
-      value: product.id,
-    })) || [];
+        (product.reference_code
+          ? " - Cod: " +
+            product.reference_code +
+            " | " +
+            formatNumberToCurrency(
+              product?.variations?.[0]?.businessUnitProducts?.[0]?.price
+            )
+          : "");
+
+      const liftOneDescription =
+        product.description +
+        (product.reference_code ? " - Cod: " + product.reference_code : "");
+
+      return {
+        label:
+          process.env.client === "sancla"
+            ? sanclaDescription
+            : liftOneDescription,
+        value: product.id,
+      };
+    }) || [];
 
   function handleChange(value) {
     const findProduct = productsList.data?.find(
