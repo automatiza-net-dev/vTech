@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useServices } from "@/OLD/hooks/useServices";
 
 import { Container } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, formatNumberToCurrency } from "infinity-forge";
 import { Table, Tooltip, Modal } from "antd";
 import Filters from "./Filters";
 import Actions from "./Actions";
@@ -44,6 +44,7 @@ const Services = memo(function Services() {
               actions: <Actions service={service} setReload={setReload} />,
               subgroup: service?.subgroup?.description,
               type: service?.type,
+              value: formatNumberToCurrency(service?.price?.value) || "-",
             };
           })
         )
@@ -85,11 +86,6 @@ const Services = memo(function Services() {
           <Button
             onClick={() => {
               setCreateVisible(true);
-              {
-                /*
-            router.push("/dashboard/servicos/cadastrar");
-          */
-              }
             }}
             disabled={!canCreateService}
             text="Cadastrar"
