@@ -30,6 +30,11 @@ export const servicesColumns = [
     dataIndex: "courtesy",
   },
   {
+    title: "Preço",
+    key: "value",
+    dataIndex: "value",
+  },
+  {
     title: "Dt. Criação",
     key: "createdAt",
     dataIndex: "createdAt",
