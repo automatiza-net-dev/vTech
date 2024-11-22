@@ -4,7 +4,7 @@ export const TimelineContainer = styled.div`
   font-size: 16px;
   margin-top: 15px;
   padding: 20px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
 
   .inf-tag {
     background-color: #e1e1e1;
@@ -58,6 +58,16 @@ export const TimelineContainer = styled.div`
         margin-top: 12px;
       }
     }
+  }
+
+  .death {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  .weight-tag {
+    background-color: #422e02;
+    color: #ffffff;
   }
 `;
 
