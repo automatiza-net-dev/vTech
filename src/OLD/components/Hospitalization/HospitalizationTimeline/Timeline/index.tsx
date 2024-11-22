@@ -87,7 +87,8 @@ const renderTimeline = (obj, functions, allowEdit) => {
                 {risks?.find((item) => item?.id === obj?.data?.risk)?.value}
               </span>
               <span>
-                <strong>Queixa:&nbsp;</strong>{obj?.data?.complaint}
+                <strong>Queixa:&nbsp;</strong>
+                {obj?.data?.complaint}
               </span>
             </section>
             <section>
@@ -198,7 +199,8 @@ const renderTimeline = (obj, functions, allowEdit) => {
           <section className="desc-box">
             <section>
               <span>
-                <strong>Tipo:&nbsp;</strong>{obj?.data?.prescription_type}
+                <strong>Tipo:&nbsp;</strong>
+                {obj?.data?.prescription_type}
               </span>
               <span>
                 <strong>Inicio execução:&nbsp;</strong>
@@ -236,10 +238,12 @@ const renderTimeline = (obj, functions, allowEdit) => {
             </section>
             <section>
               <span>
-                <strong>Descrição:&nbsp;</strong>{obj?.data?.description}
+                <strong>Descrição:&nbsp;</strong>
+                {obj?.data?.description}
               </span>
               <span>
-                <strong>Resumo:&nbsp;</strong>{obj?.data?.resume}
+                <strong>Resumo:&nbsp;</strong>
+                {obj?.data?.resume}
               </span>
             </section>
           </section>
@@ -292,7 +296,8 @@ const renderTimeline = (obj, functions, allowEdit) => {
               </strong>
             </p>
             <p className="uk-margin-remove">
-              <strong>Resumo:&nbsp;</strong>{obj?.data?.resume}
+              <strong>Resumo:&nbsp;</strong>
+              {obj?.data?.resume}
             </p>
             <div className="uk-flex uk-flex-wrap uk-flex-middle uk-margin-remove">
               <p style={{ marginRight: "3px" }}>
@@ -309,58 +314,52 @@ const renderTimeline = (obj, functions, allowEdit) => {
       );
     case "weight_occurrence":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
+        <TimelineContainer>
+          <span className="inf-tag weight-tag">Peso</span>
+          <span className="inf-tag">
             {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
+            &nbsp;às&nbsp;
             {moment(obj?.createdAt).format("HH:mm")}
-          </div>
-          <div className="uk-width-1-1">
-            <h4 className="type-title uk-margin-remove">
-              Registro de peso - {obj?.data?.technician?.name}
-            </h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                <strong>Peso:&nbsp;</strong>{obj?.data?.resume}Kg
-              </p>
-              <div className="uk-flex uk-flex-wrap uk-flex-middle">
-                <p style={{ marginRight: "3px" }}>
-                  <strong>Descrição:&nbsp;</strong>
-                </p>
+          </span>
 
-                <p
-                  className="uk-margin-remove"
-                  dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
-                ></p>
-              </div>
+          <span className="inf-tag">{obj?.data?.technician?.name}</span>
+          <div className="desc-box">
+            <section className="">
+              <span>
+                <strong>Peso:&nbsp;</strong>
+                {obj?.data?.resume}Kg
+              </span>
+              <span>
+                <strong>Descrição:&nbsp;</strong>
+              </span>
+              <p
+                dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
+              ></p>
             </section>
           </div>
         </TimelineContainer>
       );
     case "death_occurrence":
       return (
-        <TimelineContainer className="uk-flex uk-margin-top">
-          <div className="uk-width-1-5">
+        <TimelineContainer>
+          <span className="inf-tag death">Obito</span>
+          <span className="inf-tag">
             {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            <br />
+            &nbsp;às&nbsp;
             {moment(obj?.createdAt).format("HH:mm")}
-          </div>
-          <div className="uk-width-1-1">
-            <h4 className="death-title uk-margin-remove">Óbito</h4>
-            <section className="">
-              <p className="uk-margin-remove">
-                Data do óbito:{" "}
+          </span>
+          <span className="inf-tag">{obj?.data?.technician?.name}</span>
+          <div className="desc-box">
+            <section>
+              <span>
+                <strong>Data do óbito:</strong>&nbsp;
                 {moment(obj?.data?.realizedAt).format("DD/MM/YYYY - HH:mm")}
-              </p>
-              <p className="uk-margin-remove">
-                Profissional responsável: {obj?.data?.technician?.name}
-              </p>
-              <br />
-              <p className="uk-margin-remove">
+              </span>
+
+              <span>
                 <strong>Relatório óbito:&nbsp;</strong>
-              </p>
+              </span>
               <p
-                className="uk-margin-remove"
                 dangerouslySetInnerHTML={{ __html: obj?.data?.description }}
               ></p>
             </section>

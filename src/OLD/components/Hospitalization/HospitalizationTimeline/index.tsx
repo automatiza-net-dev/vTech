@@ -1,13 +1,17 @@
 // @ts-nocheck
 import React, { useState, useRef } from "react";
+
+import { Button } from "infinity-forge";
+import ReactToPrint from "react-to-print";
+import { DatePicker, Modal, Select } from "antd";
+
 import {
   useTimeline,
   useCompleteHospitalizationsTimeline,
 } from "@/OLD/hooks/useTimeline";
-import { DatePicker, Modal, Select } from "antd";
-import { Button } from "infinity-forge";
+
 import Timeline from "./Timeline";
-import ReactToPrint from "react-to-print";
+import { PrintHeader } from "@/presentation";
 import PrintContent from "../HospitalizationTimeline/Print";
 
 const { Option } = Select;
@@ -84,42 +88,47 @@ export function HospitalizationTimeline({
       : filteredTimelineData;
 
   return modal ? (
-    <div ref={componentRef}>
-      <Modal
-        width={1000}
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        title="Registros de internação"
-        footer={null}
-      >
-        <div className="uk-flex">
-          <Select
-            mode="multiple"
-            style={{ width: "50%" }}
-            placeholder="Selecione os filtros"
-            onChange={handleFilterChange}
-            value={selectedFilters}
-          >
-            {filterOptions.map((option) => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>
-          <DatePicker.RangePicker
-            className="uk-margin-small-right"
-            format="DD/MM/YYYY"
-            style={{ marginLeft: "16px" }}
-            onChange={handleDateRangeChange}
-          />
-          <ReactToPrint
-            trigger={() => (
-              <Button style={{ marginTop: "00px" }} text="Imprimir" />
-            )}
-            content={() => componentRef.current}
-          />
+    <Modal
+      width={1000}
+      visible={visible}
+      onCancel={() => setVisible(false)}
+      title="Registros de internação"
+      footer={null}
+    >
+      <div className="uk-flex">
+        <Select
+          mode="multiple"
+          style={{ width: "50%" }}
+          placeholder="Selecione os filtros"
+          onChange={handleFilterChange}
+          value={selectedFilters}
+        >
+          {filterOptions.map((option) => (
+            <Option key={option.value} value={option.value}>
+              {option.label}
+            </Option>
+          ))}
+        </Select>
+        <DatePicker.RangePicker
+          className="uk-margin-small-right"
+          format="DD/MM/YYYY"
+          style={{ marginLeft: "16px" }}
+          onChange={handleDateRangeChange}
+        />
+        <ReactToPrint
+          trigger={() => (
+            <Button style={{ marginTop: "00px" }} text="Imprimir" />
+          )}
+          content={() => componentRef.current}
+        />
+      </div>
+      <div ref={componentRef}>
+        <div style={{ display: "none" }}>
+          <div>
+            <PrintHeader />
+            <h4>Registros de internação</h4>
+          </div>
         </div>
-
         <Timeline
           data={filteredAndDateRangeTimelineData}
           setVisible={setVisible}
@@ -136,11 +145,11 @@ export function HospitalizationTimeline({
             />
           </div>
         </div>
-        <footer className="uk-flex uk-flex-right">
-          <Button onClick={() => setVisible(false)} text="Fechar" />
-        </footer>
-      </Modal>
-    </div>
+      </div>
+      <footer className="uk-flex uk-flex-right">
+        <Button onClick={() => setVisible(false)} text="Fechar" />
+      </footer>
+    </Modal>
   ) : (
     <Timeline
       data={completeTimeline}

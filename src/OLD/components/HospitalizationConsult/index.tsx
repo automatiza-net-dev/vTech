@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { Container, PatientBox } from "./styles";
 import Filters from "./Filters";
 import { Dropdown, Menu, Modal, Input } from "antd";
-import HospitalizationTimeline from "@/OLD/components/Hospitalization/HospitalizationTimeline";
+import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/HospitalizationTimeline";
 import { Button, PageWrapper } from "infinity-forge";
 import HospitalizationControl from "@/OLD/components/Hospitalization/Control";
 import HeaderForm from "@/OLD/components/Hospitalization/HeaderForm";
@@ -98,11 +98,10 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
                               `/dashboard/paciente/${hospitalization?.patient?.id}`
                             ),
                         },
-                        {
+                        !hospitalization?.finishedAt && {
                           key: "hospitalizationSchedules",
                           label: "Agenda internações",
                           onClick: () => {
-                            window.alert("Verificar tela");
                             router.push("/dashboard/internacao");
                           },
                         },
@@ -206,8 +205,9 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
           <Modal
             title="Dados da internação"
             visible={!!hospitalizationData}
+            onCancel={() => setHospitalizationData(false)}
             footer={
-              <footer>
+              <footer style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   onClick={() => setHospitalizationData(false)}
                   text="Fechar"
