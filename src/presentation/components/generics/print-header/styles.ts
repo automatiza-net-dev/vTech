@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const PrintHeader = styled("section")`
   display: flex;
   font-size: 1em;
+  text-align: right;
   justify-content: space-between;
 
   p {
