@@ -16,7 +16,8 @@ export const Container = styled.div`
 export const PrintScreen = styled.div`
   word-wrap: break-word;
   width: 100%;
-  font-size: 1.8em;
+  font-size: 1.5em;
+  margin: 5px 5px 5px 5px;
 
   @media print {
     p {
@@ -26,7 +27,6 @@ export const PrintScreen = styled.div`
     @page {
       size: auto !important; /* auto is the initial value */
       /* this affects the margin in the printer settings */
-      padding: 2.5cm 2.5cm 2.5cm 2.5cm;
 
       .print-footer {
         position: fixed;

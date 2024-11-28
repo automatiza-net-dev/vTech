@@ -34,7 +34,7 @@ export default function Print({
       />
       <div style={{ display: "none" }}>
         <PrintScreen ref={componentRef as any} className="uk-padding-small">
-          <div className="uk-text-center uk-margin-top">
+          <div className="">
             <PrintHeader />
           </div>
 
