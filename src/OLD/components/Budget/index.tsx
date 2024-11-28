@@ -115,8 +115,7 @@ function Budgets() {
   const [reload, setReload] = React.useState(false);
   const [modalCriar, setModalCriar] = React.useState(false);
   const { data, refetch } = useFindPartialBudgets(filters, reload);
-  const { patients } = usePatients();
-  const { tutors } = useTutor();
+
   const { colaborators } = useColaborators();
 
   const [patientSearch, setPatientSearch] = React.useState("");
@@ -255,7 +254,9 @@ function Budgets() {
               <label>Código</label>
               <AntInput
                 value={filters.tag}
-                onChange={(e) => setFilters({ tag: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, tag: e.target.value })
+                }
               />
             </Input>
           </div>
@@ -265,56 +266,20 @@ function Budgets() {
           >
             <Input style={{ width: "100%" }}>
               <Label>Cliente</Label>
-              <AutoComplete
-                className="uk-width-1-1"
-                value={values?.clientName}
-                options={tutors?.map((tutor) => ({
-                  ...tutor,
-                  value: tutor?.name,
-                }))}
-                onChange={(val) => {
-                  setValues((prv) => ({ ...prv, clientName: val }));
-                  if (val === "") {
-                    const newObj = { ...filters };
-                    delete newObj.client;
-                    setFilters(newObj);
-                  }
-                }}
-                onSelect={(_, option) => {
-                  setValues((prv) => ({ ...prv, clientName: option?.name }));
-                  setFilters({ ...filters, client: option?.id });
-                }}
-                filterOption={(val, opt) =>
-                  normalizeStr(opt?.name.toUpperCase()).includes(
-                    normalizeStr(val.toUpperCase())
-                  )
+              <AntInput
+                value={filters.clientName}
+                onChange={(e) =>
+                  setFilters({ ...filters, clientName: e.target.value })
                 }
               />
             </Input>
             {process.env.client !== "liftone" && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
-                <AutoComplete
-                  className="uk-width-1-1"
-                  value={patientSearch}
-                  options={patients?.map((patient) => ({
-                    ...patient,
-                    value: patient?.name,
-                  }))}
-                  onChange={(val) => {
-                    setPatientSearch(val);
-                    if (val === "") {
-                      const newObj = { ...filters };
-                      delete newObj.patient;
-                      setFilters(newObj);
-                    }
-                  }}
-                  onSelect={(_, option) => {
-                    setPatientSearch(option?.name);
-                    setFilters({ ...filters, patient: option?.id });
-                  }}
-                  filterOption={(val, opt) =>
-                    normalizeStr(opt?.name).includes(normalizeStr(val))
+                <AntInput
+                  value={filters.patientName}
+                  onChange={(e) =>
+                    setFilters({ ...filters, patientName: e.target.value })
                   }
                 />
               </Input>
@@ -415,11 +380,7 @@ function Budgets() {
             open={modalCriar}
             onClose={() => setModalCriar(false)}
           >
-            <AddBudgetNew
-              setModal={setModalCriar}
-              listCreated={listCreated}
-              tutorsList={tutors}
-            />
+            <AddBudgetNew setModal={setModalCriar} listCreated={listCreated} />
           </ModalInfinityForge>
 
           <Button

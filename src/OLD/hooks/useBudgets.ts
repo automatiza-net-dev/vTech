@@ -81,7 +81,12 @@ export const useConfirmBudget = (id) => {
 export const useCompleteBudget = (id, enabled = false) => {
   return useQuery(
     ["budgets", "show", id],
-    () => budgetService.getCompleteBudget(id),
+    () => {
+      if (!id) {
+        return {};
+      }
+      return budgetService.getCompleteBudget(id);
+    },
     {
       enabled,
     }

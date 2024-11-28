@@ -22,7 +22,7 @@ export function SelectBudgetPatient({ tutors }: { tutors: Tutor[] }) {
       name="patientId"
       label="Paciente"
       placeholder="Selecionar Paciente"
-      disabled={initialValue}
+      disabled={initialValue || options?.length === 0}
       onlyOneValue
       options={options}
     />

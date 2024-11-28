@@ -113,7 +113,6 @@ export class RemoteBudget
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(`budgets/${params.id}`),
       method: "get",
-      body: params,
     });
 
     return response as domain.LoadBudget.Model;

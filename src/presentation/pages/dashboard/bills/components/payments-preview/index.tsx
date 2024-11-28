@@ -22,18 +22,8 @@ export function PaymentsPreviewComponent(
   const queryClient = useQueryClient();
   const paymentsPreview = useLoadPaymentsPreview({
     budgetId: props?.budget?.id,
-    fetch: true,
+    fetch: !!props?.budget?.id,
   });
-
-  const verifyTotalPayed = () => {
-    let totalPayed = 0;
-
-    for (let i = 0; i < props?.payments?.length; i += 1) {
-      totalPayed += props?.payments[i]?.total_value;
-    }
-
-    return totalPayed;
-  };
 
   return (
     paymentsPreview?.data &&

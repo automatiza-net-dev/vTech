@@ -28,55 +28,59 @@ function Page() {
   const canDeleteClinic = useUserHasPermission("CLI03");
 
   const getAllClinics = useCallback(() => {
-    setLoading(true);
+    if (filters?.fetch) {
+      setLoading(true);
 
-    clinicService
-      .getClinicsByUser(filters)
-      .then((res) =>
-        setData(
-          res.data.map((item) => {
-            return {
-              ...item,
-              actions: (
-                <div className="uk-flex uk-flex-middle uk-flex-around">
-                  {canEditClinic && (
-                    <Link
-                      href={`/dashboard/clinicas/editar-clinica/${item.id}`}
-                    >
-                      <EditTwoTone />
-                    </Link>
-                  )}
+      clinicService
+        .getClinicsByUser(filters)
+        .then((res) =>
+          setData(
+            res.data.map((item) => {
+              return {
+                ...item,
+                actions: (
+                  <div className="uk-flex uk-flex-middle uk-flex-around">
+                    {canEditClinic && (
+                      <Link
+                        href={`/dashboard/clinicas/editar-clinica/${item.id}`}
+                      >
+                        <EditTwoTone />
+                      </Link>
+                    )}
 
-                  {canDeleteClinic && <Delete />}
-                </div>
-              ),
-              identification: (
-                <Link href={`/dashboard/clinicas/detalhe/${item.id}`}>
-                  <CustomLink> {item.identification} </CustomLink>
-                </Link>
-              ),
-              company_name: (
-                <Link href={`/dashboard/clinicas/${item.id}`}>
-                  <CustomLink> {item.company_name} </CustomLink>
-                </Link>
-              ),
-              fantasy_name: (
-                <Link href={`/dashboard/clinicas/${item.id}`}>
-                  <CustomLink> {item.fantasy_name} </CustomLink>
-                </Link>
-              ),
-            };
-          })
+                    {canDeleteClinic && <Delete />}
+                  </div>
+                ),
+                identification: (
+                  <Link href={`/dashboard/clinicas/${item.id}`}>
+                    <CustomLink>
+                      {`${item.companyName} - ${item?.fantasyName}`}
+                    </CustomLink>
+                  </Link>
+                ),
+                company_name: (
+                  <Link href={`/dashboard/clinicas/${item.id}`}>
+                    <CustomLink> {item.company_name} </CustomLink>
+                  </Link>
+                ),
+                fantasy_name: (
+                  <Link href={`/dashboard/clinicas/${item.id}`}>
+                    <CustomLink> {item.fantasy_name} </CustomLink>
+                  </Link>
+                ),
+              };
+            })
+          )
         )
-      )
-      .catch(() => {
-        notification.error({
-          message: "Houve um problema ao recuperar as clinicas vinculadas",
-        });
-        setLoading(false);
-      })
-      .finally(() => setLoading(false));
-  }, [filters]);
+        .catch(() => {
+          notification.error({
+            message: "Houve um problema ao recuperar as clinicas vinculadas",
+          });
+          setLoading(false);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [filters?.reload]);
 
   useEffect(() => {
     getAllClinics();
@@ -91,7 +95,7 @@ function Page() {
               <Input>
                 <input
                   type="search"
-                  placeholder="Busque Identificação"
+                  placeholder="Busque por Identificação"
                   onChange={(e) =>
                     setFilters({ ...filters, identification: e.target.value })
                   }
@@ -100,33 +104,43 @@ function Page() {
               <Input>
                 <input
                   type="search"
+                  placeholder="Busque por Razão Social ou Nome Fantasia"
+                  onChange={(e) =>
+                    setFilters({ ...filters, name: e.target.value })
+                  }
+                />
+              </Input>
+              <Input>
+                <input
+                  type="search"
                   placeholder="Busque por Cnpj"
+                  type="number"
                   onChange={(e) =>
                     setFilters({ ...filters, document: e.target.value })
                   }
                 />
               </Input>
-              <Input>
-                <input
-                  type="search"
-                  placeholder="Busque por Razão social"
-                  onChange={(e) =>
-                    setFilters({ ...filters, name: e.target.value })
-                  }
-                />
-              </Input>
-              <Input>
-                <input
-                  type="search"
-                  placeholder="Busque por Nome fantasia"
-                  onChange={(e) =>
-                    setFilters({ ...filters, name: e.target.value })
-                  }
-                />
-              </Input>
             </div>
 
-            <div className="uk-margin-right uk-flex uk-flex-right uk-margin-small-top">
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                justifyContent: "flex-end",
+                marginTop: "10px",
+              }}
+            >
+              
+              <Button
+                text="Filtrar"
+                onClick={() =>
+                  setFilters((prv) => ({
+                    ...prv,
+                    reload: !prv?.reload,
+                    fetch: true,
+                  }))
+                }
+              />
               <Tooltip title={canCreateClinic ? "-" : "Você não tem acesso"}>
                 <Link href="/dashboard/clinicas/cadastrar-clinica">
                   <Button text="Cadastrar" />

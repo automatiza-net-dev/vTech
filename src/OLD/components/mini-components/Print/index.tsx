@@ -27,6 +27,7 @@ export default function Print({
   return (
     <>
       <ReactToPrint
+        ignoreGlobalStyles
         trigger={() => triggerComponent}
         content={() => componentRef.current}
         onBeforePrint={() => onBeforePrint && onBeforePrint()}

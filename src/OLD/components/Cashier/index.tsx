@@ -28,8 +28,10 @@ const Cashier = memo(function Cashier() {
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
   const [dailyCasher, setDailyCasher] = useState([]);
-  const [filters, setFilters] = useState({ id: router?.query?.subpage });
   const router = useRouter();
+
+  const [filters, setFilters] = useState({ id: router?.query?.innerpage });
+
   const { cashiers } = useDailyCasher(reload, filters);
 
   useEffect(() => {

@@ -56,7 +56,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
           <h5
             className="uk-margin-remove"
             style={{
-              backgroundColor: "#000000",
               color: "#ffffff",
               textAlign: "center",
             }}
@@ -93,7 +92,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
           <h5
             className="uk-margin-remove custom-title"
             style={{
-              backgroundColor: "#000000",
               color: "#ffffff",
               textAlign: "center",
             }}
@@ -133,7 +131,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
             <h5
               className="uk-margin-remove custom-title"
               style={{
-                backgroundColor: "#000000",
                 color: "#ffffff",
                 textAlign: "center",
               }}
@@ -275,7 +272,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
           <h5
             className="uk-margin-remove custom-title"
             style={{
-              backgroundColor: "#000000",
               color: "#ffffff",
               textAlign: "center",
             }}
@@ -287,7 +283,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
               <h5
                 className="uk-margin-remove custom-title"
                 style={{
-                  backgroundColor: "#000000",
                   color: "#ffffff",
                   textAlign: "center",
                 }}
@@ -297,7 +292,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
               <h5
                 className="uk-margin-remove custom-title"
                 style={{
-                  backgroundColor: "#000000",
                   color: "#ffffff",
                   textAlign: "center",
                 }}
@@ -368,7 +362,6 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
           <h5
             className="uk-margin-remove custom-title"
             style={{
-              backgroundColor: "#000000",
               color: "#ffffff",
               textAlign: "center",
             }}

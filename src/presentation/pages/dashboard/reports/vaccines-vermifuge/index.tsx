@@ -3,18 +3,20 @@ import { useRef, useState } from "react";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 import { useRouter } from "next/router";
-import { useReactToPrint } from "react-to-print";
+
+import { FormHandler, Select, Button, RangeDatePicker } from "infinity-forge";
 
 import {
-  useLoadVaccinesReport,
-  useLoadAllAvailableUnits,
+  PermissionItem,
   useLoadAllVaccines,
+  useLoadAllAvailableUnits,
   useLoadAllVaccinesProtocols,
-} from "@/presentation/hooks";
+} from "@/presentation";
+import { RemoteVaccine } from "@/data";
+import { container, TypesAutomatiza } from "@/container";
 
-import { PermissionItem } from "@/presentation/components";
+import { usePrint } from "./hooks/use-print";
 import { PrintVaccinesVermifugeReport } from "./components";
-import { FormHandler, Select, Button, RangeDatePicker } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -48,15 +50,21 @@ export function VaccinesVermifugeReport({
   const vaccines = useLoadAllVaccines({});
   const businessUnits = useLoadAllAvailableUnits();
   const componentRef = useRef<HTMLDivElement>(null);
-  const vaccinesReport = useLoadVaccinesReport(filtersData);
+
+  const { vaccinesReport, setVaccinesReport } = usePrint({ componentRef });
   const vaccineProtocols = useLoadAllVaccinesProtocols({ fetch: true });
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+  async function handleExport() {
+    const response = await container
+      .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
+      .loadVaccinesReport(filtersData);
 
-  const handleExport = () => {
-    const formatted = vaccinesReport.data?.map((item) => ({
+    if (response.length === 0) {
+      window.alert("Nenhum resultado encontrado.");
+      return;
+    }
+
+    const formatted = response?.map((item) => ({
       unidade: item?.unidade,
       tutor: item?.tutor,
       telefone: item?.contato_tutor,
@@ -66,9 +74,9 @@ export function VaccinesVermifugeReport({
       descricao_vacina_vermifugo: item?.descricao_vacina,
       protocolo: item?.nome_protocolo,
       especie: item?.especie,
-      data_agendamento: item?.data_agendamento ? item?.data_agendamento : "-",
+      data_agendamento: item?.data_agendamento ?? "-",
       dose: item.dose,
-      data_aplicacao: item?.data_aplicacao ? item?.data_aplicacao : "-",
+      data_aplicacao: item?.data_aplicacao ?? "-",
       laboratorio: item?.laboratorio,
       lote: item?.lote,
       status: item.status,
@@ -80,7 +88,20 @@ export function VaccinesVermifugeReport({
     XLSX.utils.book_append_sheet(wb, ws, "Pág " + "1");
 
     XLSX.writeFile(wb, "Relatório vacinas/vermifugos" + ".xlsx");
-  };
+  }
+
+  async function handlePrint() {
+    const response = await container
+      .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
+      .loadVaccinesReport(filtersData);
+
+    if (response.length === 0) {
+      window.alert("Nenhum resultado encontrado.");
+      return;
+    }
+
+    setVaccinesReport(response);
+  }
 
   return (
     <S.VaccinesVermifuge>
@@ -107,24 +128,8 @@ export function VaccinesVermifugeReport({
             Component: () => (
               <div className="actions-box">
                 <Button text="Voltar" onClick={() => router.back()} />
-                <Button
-                  text="Imprimir"
-                  onMouseEnter={() => {
-                    vaccinesReport.refetch();
-                  }}
-                  onClick={() => {
-                    handlePrint();
-                  }}
-                />
-                <Button
-                  text="Exportar (Excel)"
-                  onMouseEnter={() => {
-                    vaccinesReport.refetch();
-                  }}
-                  onClick={() => {
-                    handleExport();
-                  }}
-                />
+                <Button text="Imprimir" onClick={handlePrint} />
+                <Button text="Exportar (Excel)" onClick={handleExport} />
               </div>
             ),
           }}
@@ -227,10 +232,11 @@ export function VaccinesVermifugeReport({
             </div>
           </section>
         </FormHandler>
+
         <div style={{ display: "none" }}>
           <div ref={componentRef}>
-            {vaccinesReport?.data && vaccinesReport?.data && (
-              <PrintVaccinesVermifugeReport reports={vaccinesReport.data} />
+            {vaccinesReport && (
+              <PrintVaccinesVermifugeReport reports={vaccinesReport} />
             )}
           </div>
         </div>

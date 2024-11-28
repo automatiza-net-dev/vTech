@@ -73,6 +73,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
 
   const { createToast } = useToast();
   const { mutate } = useCreateBillPayment();
+
   const { data } = useShowBill(billId, true);
   const users = useLoadAllPatientTutor({});
   const { paymentMethods } = usePaymentMethods(filters);

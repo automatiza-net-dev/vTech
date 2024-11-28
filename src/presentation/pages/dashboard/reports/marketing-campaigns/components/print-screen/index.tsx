@@ -33,10 +33,8 @@ export function PrintScreen({ reports }) {
                     <td>{campaign?.description}</td>
                     <td>{moment(campaign?.startDate).format("DD/MM/YYYY")}</td>
                     <td>{moment(campaign?.endDate).format("DD/MM/YYYY")}</td>
-                    <td>
-                      {formatNumberToCurrency(campaign?.investimentValue)}
-                    </td>
-                    <td>[verificar]</td>
+                    <td>{formatNumberToCurrency(campaign?.investmentValue)}</td>
+                    <td>{campaign?.qtyOpportunities}</td>
                     <td>{formatNumberToCurrency(campaign?.cpl)}</td>
                     <td>
                       {formatNumberToCurrency(campaign?.sumOpportunityProfit)}

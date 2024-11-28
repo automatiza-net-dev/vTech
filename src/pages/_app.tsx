@@ -33,6 +33,7 @@ import "antd/dist/antd.css";
 import "@/OLD/styles/uikit.css";
 import "infinity-forge/dist/infinity-forge.css";
 import Link from "next/link";
+import { PermissionsProvider } from "@/presentation/context/permissions";
 
 const queryClient = new QueryClient();
 
@@ -111,11 +112,13 @@ export default function App({ Component, pageProps }) {
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <ConfigProvider locale={ptBR}>
                 <AppProvider>
-                  <Head>
-                    <title>{process.env.clientName}</title>
-                  </Head>
+                  <PermissionsProvider>
+                    <Head>
+                      <title>{process.env.clientName}</title>
+                    </Head>
 
-                  <Component {...pageProps} />
+                    <Component {...pageProps} />
+                  </PermissionsProvider>
                 </AppProvider>
               </ConfigProvider>
             </LocalizationProvider>

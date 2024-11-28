@@ -6,8 +6,6 @@ import {
   TableActionCreate,
 } from "infinity-forge";
 
-import moment from "moment";
-
 import {
   DateToYYYYMMDD,
   useLoadTutorOrigins,

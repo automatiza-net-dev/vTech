@@ -122,7 +122,7 @@ export function HospitalizationTimeline({
           content={() => componentRef.current}
         />
       </div>
-      <div ref={componentRef}>
+      <div>
         <div style={{ display: "none" }}>
           <div>
             <PrintHeader />

@@ -1,5 +1,7 @@
 // @ts-nocheck
-import { Button, DatePicker, Input, Modal, Select, Tooltip } from "antd";
+import { Button, DatePicker, Input, Modal, Select } from "antd";
+import { Tooltip } from "infinity-forge";
+
 import moment from "moment";
 import * as React from "react";
 import { useQueryClient } from "react-query";
@@ -11,28 +13,28 @@ import { useDictionary } from "@/presentation";
 
 const CancelBudget = React.memo(function CancelBudget({
   budget,
-  setReload = false
+  setReload = false,
 }) {
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
 
   const queryClient = useQueryClient();
   const [visible, setVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({
-    finishedAt: moment()
+    finishedAt: moment(),
   });
-
 
   const cancelBudgetPermission = useUserHasPermission("ORC04");
 
   const { data: reasons } = useGetAllReasons({
     enabled: visible,
-    params: { type: "OR" }
+    params: { type: "OR" },
   });
   const { mutate, isLoading } = useCancelBudget(budget.id);
 
-
   const validBudget =
-    budget.status === "ABERTO" || budget.status === `Orçamento em aberto` || budget.status === "Nao Aprovada";
+    budget.status === "ABERTO" ||
+    budget.status === `Orçamento em aberto` ||
+    budget.status === "Nao Aprovada";
 
   const submit = React.useCallback(() => {
     if (!validBudget) {
@@ -43,33 +45,37 @@ const CancelBudget = React.memo(function CancelBudget({
       onSuccess: () => {
         setVisible(false);
         setFormData({
-          finishedAt: moment()
+          finishedAt: moment(),
         });
         queryClient.invalidateQueries(["budgets"]);
         setReload && setReload((prv) => !prv);
-      }
+      },
     });
   }, [validBudget, formData]);
 
   React.useEffect(() => {
     setFormData({
-      finishedAt: moment()
+      finishedAt: moment(),
     });
   }, [visible]);
 
   return (
     <>
       {cancelBudgetPermission && (
-        <Tooltip title={`Cancelar ${getWord("Orçamento")}`}>
-          <BsXCircle
-            className="icon"
-            size={20}
-            onClick={() =>
-              validBudget ? setVisible((prevState) => !prevState) : null
-            }
-            style={{ opacity: validBudget ? 1 : 0.5 }}
-          />
-        </Tooltip>
+        <Tooltip
+          enableHover
+          content={`Cancelar ${getWord("Orçamento")}`}
+          trigger={
+            <BsXCircle
+              className="icon"
+              size={20}
+              onClick={() =>
+                validBudget ? setVisible((prevState) => !prevState) : null
+              }
+              style={{ opacity: validBudget ? 1 : 0.5 }}
+            />
+          }
+        />
       )}
 
       <Modal
@@ -97,7 +103,7 @@ const CancelBudget = React.memo(function CancelBudget({
               style={{ width: "100%" }}
               options={reasons?.map((reason) => ({
                 label: reason.reason,
-                value: reason.id
+                value: reason.id,
               }))}
             />
           </div>
@@ -112,7 +118,7 @@ const CancelBudget = React.memo(function CancelBudget({
               onChange={(value) => {
                 setFormData((prev) => ({
                   ...prev,
-                  finishedAt: value
+                  finishedAt: value,
                 }));
               }}
             />
@@ -126,7 +132,7 @@ const CancelBudget = React.memo(function CancelBudget({
               onChange={(e) =>
                 setFormData((prevState) => ({
                   ...prevState,
-                  canceledObservation: e.target.value
+                  canceledObservation: e.target.value,
                 }))
               }
             />
@@ -139,7 +145,7 @@ const CancelBudget = React.memo(function CancelBudget({
               onChange={(e) =>
                 setFormData((prevState) => ({
                   ...prevState,
-                  internalObservation: e.target.value
+                  internalObservation: e.target.value,
                 }))
               }
             />
@@ -154,7 +160,7 @@ const CancelBudget = React.memo(function CancelBudget({
               <Button
                 onClick={() => {
                   setFormData({
-                    finishedAt: moment()
+                    finishedAt: moment(),
                   });
                   setVisible((prevState) => !prevState);
                 }}

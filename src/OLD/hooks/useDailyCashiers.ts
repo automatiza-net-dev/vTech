@@ -17,16 +17,16 @@ export const useDailyCasher = (
 
     const newObj = {
       ...filters,
-      fromOpening: moment(filters?.fromOpening).toISOString(),
-      toOpening: moment(filters?.toOpening).toISOString(),
+      fromOpening: moment(filters?.fromBill).toISOString(),
+      toOpening: moment(filters?.toBill).toISOString(),
     };
 
     if (isComplete) {
       newObj.complete = "1";
     }
 
-    !filters?.fromOpening && delete newObj.fromOpening;
-    !filters?.toOpening && delete newObj.toOpening;
+    !filters?.fromBill && delete newObj.fromOpening;
+    !filters?.toBill && delete newObj.toOpening;
 
     dailyCasherService
       .listDailyCashiers(newObj)

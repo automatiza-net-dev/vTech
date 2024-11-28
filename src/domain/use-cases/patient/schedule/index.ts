@@ -16,6 +16,7 @@ export * from "./load-all-schedule-statuses";
 export * from "./load-professionals-schedule";
 export * from "./load-all-schedules-dashboard";
 export * from "./load-all-schedules-users-week";
+export * from "./load-all-schedulling-to-movement";
 export * from "./load-all-schedule-service-groups";
 export * from "./load-returnables-schedule-patient";
 export * from "./load-syncable-schedule-executions";

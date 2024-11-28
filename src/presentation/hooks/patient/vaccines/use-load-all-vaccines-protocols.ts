@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteVaccine } from "@/data";
 import { LoadVaccineProtocols } from "@/domain";
@@ -16,17 +16,17 @@ export function useLoadAllVaccinesProtocols(
       type: router?.pathname?.includes("vacinas") ? "vaccine" : "vermifuge",
     };
 
-    if (params.fetch) {
-      const response = await container
-        .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
-        .loadAllProtocols(newObj);
+    const response = await container
+      .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
+      .loadAllProtocols(newObj);
 
-      return response;
-    }
+    return response;
   }
 
   return useQuery({
     queryKey: ["LoadAllVaccineProtocols", params],
     queryFn: fetcher,
+    enableCache: true,
+    enabled: params?.fetch ?? false,
   });
 }
