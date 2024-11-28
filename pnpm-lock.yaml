@@ -78,8 +78,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: 4.6.6
-        version: 4.6.6(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
+        specifier: 4.7.9
+        version: 4.7.9(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
       inversify:
         specifier: ^6.0.2
         version: 6.0.2
@@ -271,8 +271,8 @@ packages:
     resolution: {integrity: sha512-4IXXzcCdLdlXuCG+8UKEwLA1T1NHqUfanhXYHiQTn+6sfWCZXduqbtXDGceg3Ce5QxTGo7EqmbV6Bi+aqKuClQ==}
     engines: {node: '>=18.0.0'}
 
-  '@azure/storage-blob@12.25.0':
-    resolution: {integrity: sha512-oodouhA3nCCIh843tMMbxty3WqfNT+Vgzj3Xo5jqR9UPnzq3d7mzLjlHAYz7lW+b4km3SIgz+NAgztvhm7Z6kQ==}
+  '@azure/storage-blob@12.26.0':
+    resolution: {integrity: sha512-SriLPKezypIsiZ+TtlFfE46uuBIap2HeaQVS78e1P7rz5OSbq0rsd52WE1mC5f7vAeLiXqv7I7oRhL3WFZEw3Q==}
     engines: {node: '>=18.0.0'}
 
   '@babel/code-frame@7.24.7':
@@ -2541,8 +2541,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@4.6.6:
-    resolution: {integrity: sha512-Ftei7Wld0n2UOyMXEu/W3Lkk7AN6N/Q1La2wUTztEJu56NWS1/5wz0+9zThdhvjzAy3IBM0XV7qA1D79h1+1AA==}
+  infinity-forge@4.7.9:
+    resolution: {integrity: sha512-cFTh7zPXWMyKRrvQdLd0YF+chyxgTBr/9THFujrLd5dJfnNtmhlePIHoJoOk26qNEqCBFrtSryh5ieOBKM3JvQ==}
     peerDependencies:
       react: '>=16'
 
@@ -4691,7 +4691,7 @@ snapshots:
     dependencies:
       tslib: 2.7.0
 
-  '@azure/storage-blob@12.25.0':
+  '@azure/storage-blob@12.26.0':
     dependencies:
       '@azure/abort-controller': 2.1.2
       '@azure/core-auth': 1.8.0
@@ -7248,15 +7248,18 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@4.6.6(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
+  infinity-forge@4.7.9(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
     dependencies:
+      '@azure/storage-blob': 12.26.0
       '@types/lodash': 4.17.7
       '@wojtekmaj/react-daterange-picker': 6.0.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       axios: 1.7.7
+      bcryptjs: 2.4.3
       chroma-js: 2.4.2
       cpx: 1.5.0
       formik: 2.4.6(react@18.3.1)
       inversify: 6.0.2
+      jsonwebtoken: 9.0.2
       lodash: 4.17.21
       messageprovider: 0.1.9(express@4.21.0)(prisma@5.20.0)
       moment: 2.30.1
@@ -7700,7 +7703,7 @@ snapshots:
 
   messageprovider@0.1.9(express@4.21.0)(prisma@5.20.0):
     dependencies:
-      '@azure/storage-blob': 12.25.0
+      '@azure/storage-blob': 12.26.0
       '@getbrevo/brevo': 2.2.0
       '@nestjs/axios': 3.0.3(@nestjs/common@10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.7)(rxjs@7.8.1)
       '@nestjs/common': 10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -9524,7 +9527,7 @@ snapshots:
 
   zeusapi@0.0.9(@nestjs/core@10.4.4(@nestjs/common@10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/microservices@10.4.4)(@nestjs/platform-express@10.4.4)(reflect-metadata@0.2.2)(rxjs@7.8.1))(class-transformer@0.5.1):
     dependencies:
-      '@azure/storage-blob': 12.25.0
+      '@azure/storage-blob': 12.26.0
       '@nestjs/axios': 3.0.3(@nestjs/common@10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.7)(rxjs@7.8.1)
       '@nestjs/common': 10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/platform-express': 10.4.4(@nestjs/common@10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.4(@nestjs/common@10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/microservices@10.4.4)(@nestjs/platform-express@10.4.4)(reflect-metadata@0.2.2)(rxjs@7.8.1))

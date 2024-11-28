@@ -1,5 +1,6 @@
 export * from "./animal";
 export * from "./detail";
+export * from "./reports";
 export * from "./vaccines";
 export * from "./use-load-returns";
 export * from "./use-assign-tutor";

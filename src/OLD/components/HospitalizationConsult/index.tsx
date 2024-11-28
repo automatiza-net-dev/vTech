@@ -92,7 +92,7 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
                         },
                         {
                           key: "patientAttendances",
-                          label: "Ficha do patiente",
+                          label: "Ficha do paciente",
                           onClick: () =>
                             router.push(
                               `/dashboard/paciente/${hospitalization?.patient?.id}`

@@ -87,6 +87,10 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
               ? moment(item?.ultima_avaliacao).format("DD/MM/YYYY")
               : "-",
             avaliador: item?.avaliador,
+            data_venda_anterior: item?.data_venda_anterior
+              ? moment(item?.data_venda_anterior).format("DD/MM/YYYY")
+              : "-",
+            usuario_agendamento: item?.usuario_agenda_origem_venda || "-"
           }))
         : reports?.map((item) => ({
             sistema: item?.sistema,
@@ -126,10 +130,9 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
             valor_desconto_item: item?.valor_desconto_item,
             valor_liq_item: item?.valor_liquido_item,
             ultima_avaliacao: item?.ultima_avaliacao
-            ? moment(item?.ultima_avaliacao).format("DD/MM/YYYY")
-            : "-",
-          avaliador: item?.avaliador,
-
+              ? moment(item?.ultima_avaliacao).format("DD/MM/YYYY")
+              : "-",
+            avaliador: item?.avaliador,
           }));
 
     let wb = XLSX.utils.book_new(),

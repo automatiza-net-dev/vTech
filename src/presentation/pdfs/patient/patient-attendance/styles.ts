@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const PdfPatientAttendance = styled("div")`
+  margin-top: 20px !important;
+
   .row {
     display: flex;
     align-items: flex-start;
@@ -8,14 +10,14 @@ export const PdfPatientAttendance = styled("div")`
     margin-bottom: 10px;
 
     svg {
-        width: auto;
-        height: 20px;
-        fill: ${props => props.theme.primaryColor};
-        margin-right: 5px;
+      width: auto;
+      height: 20px;
+      fill: ${(props) => props.theme.primaryColor};
+      margin-right: 5px;
     }
 
     strong {
-        margin-right: 5px;
+      margin-right: 5px;
     }
 
     span:last-child {
@@ -25,14 +27,13 @@ export const PdfPatientAttendance = styled("div")`
 
   .attendance {
     h3 {
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 5px;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 5px;
     }
 
     > div {
-        border: 1px solid #000;
-        padding: 10px;
+      padding: 10px;
     }
   }
 

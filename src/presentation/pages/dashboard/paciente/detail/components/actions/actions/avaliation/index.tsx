@@ -25,6 +25,7 @@ import {
   AddBudgetNew,
   PdfPatientAttendance,
   Print,
+  PrintHeader,
   useDictionary,
   useLoadSchedule,
 } from "@/presentation";
@@ -34,6 +35,7 @@ import { DropdownComponentProps } from "../dropdown-item";
 import { AttendanceBudgets, SelectTypeService } from "./components";
 
 import * as S from "./styles";
+import PatientHeader from "@/OLD/components/mini-components/Print/PetHeader";
 
 export function Avaliation(props: DropdownComponentProps) {
   const [modal, setModal] = useState(false);
@@ -46,6 +48,7 @@ export function Avaliation(props: DropdownComponentProps) {
   const { getWord } = useDictionary();
   const { createToast } = useToast();
   const queryClient = useQueryClient();
+
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
 
   const { user } = useAuthAdmin();
@@ -166,7 +169,7 @@ export function Avaliation(props: DropdownComponentProps) {
                   handlePrint();
                 },
                 props: {
-                  text: "Imprimir",
+                  text: "IMPRIMIR",
                 },
                 active: !!props.timeline_id,
               },
@@ -285,6 +288,10 @@ export function Avaliation(props: DropdownComponentProps) {
         )}
         <div style={{ display: "none" }}>
           <div ref={componentRef}>
+            <div className="uk-text-center uk-margin-top">
+              <PrintHeader />
+            </div>
+
             <PdfPatientAttendance {...timeLine?.timeline_info} />
           </div>
         </div>

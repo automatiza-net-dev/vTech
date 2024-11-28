@@ -13,4 +13,10 @@ export const Container = styled.div`
   .selected-installments {
     background-color: var(--blue) !important;
   }
+
+  footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 `;

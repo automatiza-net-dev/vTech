@@ -19,19 +19,21 @@ export function useLoadAllPatientTutor({
     return response;
   }
 
-  const queryKey = useLoadAllPatientTutorKEY(patientFilters)
+  const queryKey = useLoadAllPatientTutorKEY(patientFilters);
 
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enabled: enabled || patientFilters ? true : false,
+    enabled: enabled,
   });
 }
 
-export function useLoadAllPatientTutorKEY(patientFilters?: LoadAllPatientTutor.Params | null) {
+export function useLoadAllPatientTutorKEY(
+  patientFilters?: LoadAllPatientTutor.Params | null
+) {
   const contextPatientFilters = useScheduling((state) => state.patientsFilters);
 
-  const filters = patientFilters || contextPatientFilters
+  const filters = patientFilters || contextPatientFilters;
 
-  return "RemoteLoadAllPatientTutor" + (filters ? JSON.stringify(filters) : "")
+  return "RemoteLoadAllPatientTutor" + (filters ? JSON.stringify(filters) : "");
 }

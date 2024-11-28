@@ -67,6 +67,10 @@ function PrintTable({ data = [], loading }) {
             data_obito_dep: item?.patient?.deathDate
               ? moment(item?.patient?.deathDate).format("DD/MM/YYYY")
               : "-",
+            data_venda_anterior: item?.pastSaleDate
+              ? moment(item?.pastSaleDate).format("DD/MM/YYYY")
+              : "-",
+            usuario_agendamento: item?.originUser || "-",
           }))
         : data?.map((item) => ({
             unidade_de_negocios: item?.unit?.identification,
@@ -96,6 +100,10 @@ function PrintTable({ data = [], loading }) {
             bairro_endereco_cliente: item?.client?.district,
             cidade_cliente: item?.client?.city,
             uf_cliente: item?.client?.state,
+            data_venda_anterior: item?.pastSaleDate
+              ? moment(item?.pastSaleDate).format("DD/MM/YYYY")
+              : "-",
+            usuario_agendamento: item?.originUser || "-",
           }));
 
     let wb = XLSX.utils.book_new(),
@@ -210,6 +218,6 @@ function PrintTable({ data = [], loading }) {
       </div>
     </>
   );
-};
+}
 
 export default PrintTable;

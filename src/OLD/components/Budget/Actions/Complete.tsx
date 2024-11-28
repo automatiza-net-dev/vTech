@@ -1,15 +1,5 @@
 // @ts-nocheck
-import {
-  Button,
-  Checkbox,
-  DatePicker,
-  Input,
-  Modal,
-  Select,
-  Table,
-  Tooltip,
-  Tabs,
-} from "antd";
+import { Button, Checkbox, DatePicker, Input, Select, Table } from "antd";
 import moment from "moment";
 import * as React from "react";
 import { useRouter } from "next/router";
@@ -22,19 +12,10 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 import Negotiation from "@/OLD/components/Budget/Negotiation";
-import { Modal as ModalInfinityForge } from "infinity-forge";
+import { Modal } from "infinity-forge";
 
-import {
-  CheckIcon,
-  CloseIcon,
-} from "@/OLD/components/Bill/Actions/Details/icons";
-
-import { useDictionary, useLoadAllPatientTutor } from "@/presentation";
-import {
-  FormHandler,
-  Select as InfinityForgeSelect,
-  useToast,
-} from "infinity-forge";
+import { useDictionary } from "@/presentation";
+import { useToast, Tooltip } from "infinity-forge";
 import {
   financialServicesContainer,
   financialServicesTypes,
@@ -43,7 +24,6 @@ import { RemoteBudget } from "@/data";
 import { AuthorizationStatusProduct } from "@/presentation";
 
 const { TextArea } = Input;
-const { TabPane } = Tabs;
 
 const columns = [
   {
@@ -113,16 +93,12 @@ export default function CompleteBudget({ budget, setReload = false }) {
     internalObservation,
   });
 
-  const res = useLoadAllPatientTutor({});
-  const tutors = res.data;
-
   const { createToast } = useToast();
   const { data } = useCompleteBudget(budget.id, visible);
   const { data: reasons } = useGetAllReasons({
     enabled: visible,
     params: { type: "OR" },
   });
-  // const { mutate, isLoading, data } = useConfirmBudget(budget.id);
 
   const { getWord } = useDictionary();
 
@@ -303,282 +279,250 @@ export default function CompleteBudget({ budget, setReload = false }) {
     return [];
   }, [data?.items, formData.notConfirmedItems]);
 
-  const tutorsList =
-    tutors?.map((tutor) => ({
-      label: tutor?.name,
-      value: tutor?.id,
-    })) || [];
-
   return (
     <>
       {confirmBudgetPermission && (
-        <Tooltip title={`Confirmar ${getWord("Orçamento")}`}>
-          <BsCheckCircle
-            className="icon"
-            size={20}
-            onClick={() =>
-              validBudget ? setVisible((prevState) => !prevState) : null
-            }
-            style={{ opacity: validBudget ? 1 : 0.5 }}
-          />
-        </Tooltip>
+        <Tooltip
+          enableHover
+          content={`Confirmar ${getWord("Orçamento")}`}
+          trigger={
+            <BsCheckCircle
+              className="icon"
+              size={20}
+              onClick={() =>
+                validBudget ? setVisible((prevState) => !prevState) : null
+              }
+              style={{ opacity: validBudget ? 1 : 0.5 }}
+            />
+          }
+        />
       )}
 
       <Modal
-        visible={visible}
-        footer={null}
-        title={`Confirmar ${getWord("Orçamento")} - ${budget?.tag}`}
-        width={1300}
-        onCancel={() => setVisible((prevState) => !prevState)}
+        open={visible}
+        styles={{ maxWidth: 1300, padding: "15px 0 " }}
+        onClose={() => setVisible((prevState) => !prevState)}
       >
-        <Tabs
-          defaultActiveKey="0"
-          activeKey={activeTab}
-          onChange={(key) => setActiveTab(key)}
+        <h2
+          style={{
+            fontSize: 16,
+            borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+            paddingBottom: 10,
+            marginBottom: 10,
+          }}
+          className="title"
+        >{`Confirmar ${getWord("Orçamento")} - ${budget?.tag}`}</h2>
+
+        <div
+          className="uk-flex uk-flex-between"
+          style={{ paddingBottom: "1rem" }}
         >
-          <TabPane tab="Confirmar" key="0">
-            <div
-              className="uk-flex uk-flex-between"
-              style={{ paddingBottom: "1rem" }}
-            >
-              <div className="uk-flex uk-flex-column uk-width-1-1 uk-margin-small-right">
-                <span className="uk-text-small">Cliente</span>
-                {data?.client ? (
-                  <span className="uk-text-default">{data?.client?.name}</span>
-                ) : (
-                  <FormHandler initialData={{ tutor: data?.client_name }}>
-                    <InfinityForgeSelect
-                      value={client?.id}
-                      name="tutor"
-                      onlyOneValue
-                      onChangeInput={(value: string) => {
-                        updateClient(value);
-                        setClient({
-                          name: tutorsList.find((t) => t.value === value)
-                            ?.label,
-                          id: value,
-                        });
-                      }}
-                      options={
-                        tutorsList && tutorsList.length > 0
-                          ? [
-                              ...tutorsList,
-                              {
-                                label: data?.client_name,
-                                value: data?.client_name,
-                              },
-                            ]
-                          : []
-                      }
-                    />
-                  </FormHandler>
-                )}
-              </div>
-              {process.env.client !== "liftone" && (
-                <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Paciente</span>
-                  <span className="uk-text-default">
-                    {data?.patient?.name ?? ""}
-                  </span>
-                </div>
+          <div className="uk-flex uk-flex-column uk-width-1-1 uk-margin-small-right">
+            <span className="uk-text-small">Cliente</span>
+            {data?.client && (
+              <span className="uk-text-default">{data?.client?.name}</span>
+            )}
+          </div>
+          {process.env.client !== "liftone" && (
+            <div className="uk-flex uk-flex-column uk-width-1-1">
+              <span className="uk-text-small">Paciente</span>
+              <span className="uk-text-default">
+                {data?.patient?.name ?? ""}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
+          }}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
+          <div className="uk-flex uk-flex-column">
+            <Table
+              columns={columns}
+              dataSource={productsData}
+              pagination={false}
+              scroll={{ y: 300 }}
+            />
+          </div>
+          <div
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "5px",
+              display: "flex",
+              width: "100%",
+              padding: "20px",
+            }}
+          >
+            <div style={{ width: "15%" }}>
+              <strong>Totais:</strong>
+            </div>
+            <div style={{ width: "15%" }}>
+              {productsData.reduce(
+                (acc, current) =>
+                  !formData?.notConfirmedItems.includes(current?.key)
+                    ? acc + current.quantity
+                    : acc,
+                0
               )}
             </div>
+            <div style={{ width: "15%" }}>
+              {currencyFormatter(
+                productsData.reduce(
+                  (acc, current) =>
+                    !formData?.notConfirmedItems.includes(current?.key)
+                      ? acc +
+                        convertIntlCurrency(current.total) +
+                        convertIntlCurrency(current.discount)
+                      : acc,
+                  0
+                )
+              )}
+            </div>
+            <div style={{ width: "15%" }}>
+              {currencyFormatter(
+                productsData.reduce(
+                  (acc, current) =>
+                    !formData?.notConfirmedItems.includes(current?.key)
+                      ? acc + convertIntlCurrency(current.discount)
+                      : 0,
+                  0
+                )
+              )}
+            </div>
+            <div style={{ width: "15%" }}>
+              {currencyFormatter(
+                productsData.reduce(
+                  (acc, current) =>
+                    !formData?.notConfirmedItems.includes(current?.key)
+                      ? acc +
+                        (convertIntlCurrency(current.total) -
+                          convertIntlCurrency(current?.discount))
+                      : 0,
+                  0
+                )
+              )}
+            </div>
+          </div>
+          <section className="uk-flex" style={{ gap: "10px" }}>
+            <div className="uk-width-1-2">
+              <label>Observação</label>
+              <TextArea
+                value={observation}
+                onChange={(e) => setObservation(e.target.value)}
+              />
+            </div>
+            <div className="uk-width-1-2">
+              <label>Observação Interna</label>
+              <TextArea
+                value={internalObservation}
+                onChange={(e) => setInternalObservation(e.target.value)}
+              />
+            </div>
+          </section>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                submit();
-              }}
-              style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-            >
-              <div className="uk-flex uk-flex-column">
-                <Table
-                  columns={columns}
-                  dataSource={productsData}
-                  pagination={false}
-                  scroll={{ y: 300 }}
+          <div className="uk-flex">
+            <div className="uk-width-1-2 uk-margin-small-right">
+              <label>Hora</label>
+              <DatePicker
+                showTime
+                format="HH:mm DD/MM/YYYY"
+                style={{ width: "100%" }}
+                value={
+                  formData?.finishedAt ? moment(formData.finishedAt) : null
+                }
+                onChange={(value) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    finishedAt: value.toISOString(),
+                  }));
+                }}
+              />
+            </div>
+            <div className="uk-width-1-2">
+              <label>Tipo</label>
+              <Select
+                placeholder="Tipo"
+                value={formData?.type}
+                onChange={(value) =>
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    type: value,
+                  }))
+                }
+                style={{ width: "100%" }}
+                options={[
+                  { label: "Total", value: "TOTAL" },
+                  { label: "Parcial", value: "PARCIAL" },
+                ]}
+              />
+            </div>
+          </div>
+
+          {formData?.type === "PARCIAL" && (
+            <>
+              <div className="uk-width-1-1">
+                <label>Motivo</label>
+                <Select
+                  placeholder="Motivo"
+                  value={formData?.reasonId}
+                  onChange={(value) =>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      reasonId: value,
+                    }))
+                  }
+                  style={{ width: "100%" }}
+                  options={reasons?.map((reason) => ({
+                    label: reason.reason,
+                    value: reason.id,
+                  }))}
                 />
               </div>
-              <div
-                style={{
-                  backgroundColor: "#F5F5F5",
-                  borderRadius: "5px",
-                  display: "flex",
-                  width: "100%",
-                  padding: "20px",
+
+              <div className="uk-width-1-1">
+                <label>Observação</label>
+                <Input.TextArea
+                  rows={2}
+                  value={formData?.canceledObservation}
+                  onChange={(e) =>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      canceledObservation: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </>
+          )}
+
+          <hr />
+          <footer className="uk-flex uk-flex-right">
+            <div className="uk-width-1-2 uk-flex uk-flex-around">
+              <Button htmlType="submit" type="primary" disabled={isLoading}>
+                Salvar
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setFormData({
+                    notConfirmedItems: [],
+                    type: "TOTAL",
+                    finishedAt: moment(),
+                  });
+                  setVisible((prevState) => !prevState);
                 }}
               >
-                <div style={{ width: "15%" }}>
-                  <strong>Totais:</strong>
-                </div>
-                <div style={{ width: "15%" }}>
-                  {productsData.reduce(
-                    (acc, current) =>
-                      !formData?.notConfirmedItems.includes(current?.key)
-                        ? acc + current.quantity
-                        : acc,
-                    0
-                  )}
-                </div>
-                <div style={{ width: "15%" }}>
-                  {currencyFormatter(
-                    productsData.reduce(
-                      (acc, current) =>
-                        !formData?.notConfirmedItems.includes(current?.key)
-                          ? acc +
-                            convertIntlCurrency(current.total) +
-                            convertIntlCurrency(current.discount)
-                          : acc,
-                      0
-                    )
-                  )}
-                </div>
-                <div style={{ width: "15%" }}>
-                  {currencyFormatter(
-                    productsData.reduce(
-                      (acc, current) =>
-                        !formData?.notConfirmedItems.includes(current?.key)
-                          ? acc + convertIntlCurrency(current.discount)
-                          : 0,
-                      0
-                    )
-                  )}
-                </div>
-                <div style={{ width: "15%" }}>
-                  {currencyFormatter(
-                    productsData.reduce(
-                      (acc, current) =>
-                        !formData?.notConfirmedItems.includes(current?.key)
-                          ? acc +
-                            (convertIntlCurrency(current.total) -
-                              convertIntlCurrency(current?.discount))
-                          : 0,
-                      0
-                    )
-                  )}
-                </div>
-              </div>
-              <section className="uk-flex" style={{ gap: "10px" }}>
-                <div className="uk-width-1-2">
-                  <label>Observação</label>
-                  <TextArea
-                    value={observation}
-                    onChange={(e) => setObservation(e.target.value)}
-                  />
-                </div>
-                <div className="uk-width-1-2">
-                  <label>Observação Interna</label>
-                  <TextArea
-                    value={internalObservation}
-                    onChange={(e) => setInternalObservation(e.target.value)}
-                  />
-                </div>
-              </section>
+                Cancelar
+              </Button>
+            </div>
+          </footer>
+        </form>
 
-              <div className="uk-flex">
-                <div className="uk-width-1-2 uk-margin-small-right">
-                  <label>Hora</label>
-                  <DatePicker
-                    showTime
-                    format="HH:mm DD/MM/YYYY"
-                    style={{ width: "100%" }}
-                    value={
-                      formData?.finishedAt ? moment(formData.finishedAt) : null
-                    }
-                    onChange={(value) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        finishedAt: value.toISOString(),
-                      }));
-                    }}
-                  />
-                </div>
-                <div className="uk-width-1-2">
-                  <label>Tipo</label>
-                  <Select
-                    placeholder="Tipo"
-                    value={formData?.type}
-                    onChange={(value) =>
-                      setFormData((prevState) => ({
-                        ...prevState,
-                        type: value,
-                      }))
-                    }
-                    style={{ width: "100%" }}
-                    options={[
-                      { label: "Total", value: "TOTAL" },
-                      { label: "Parcial", value: "PARCIAL" },
-                    ]}
-                  />
-                </div>
-              </div>
-
-              {formData?.type === "PARCIAL" && (
-                <>
-                  <div className="uk-width-1-1">
-                    <label>Motivo</label>
-                    <Select
-                      placeholder="Motivo"
-                      value={formData?.reasonId}
-                      onChange={(value) =>
-                        setFormData((prevState) => ({
-                          ...prevState,
-                          reasonId: value,
-                        }))
-                      }
-                      style={{ width: "100%" }}
-                      options={reasons?.map((reason) => ({
-                        label: reason.reason,
-                        value: reason.id,
-                      }))}
-                    />
-                  </div>
-
-                  <div className="uk-width-1-1">
-                    <label>Observação</label>
-                    <Input.TextArea
-                      rows={2}
-                      value={formData?.canceledObservation}
-                      onChange={(e) =>
-                        setFormData((prevState) => ({
-                          ...prevState,
-                          canceledObservation: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                </>
-              )}
-
-              <hr />
-              <footer className="uk-flex uk-flex-right">
-                <div className="uk-width-1-2 uk-flex uk-flex-around">
-                  <Button htmlType="submit" type="primary" disabled={isLoading}>
-                    Salvar
-                  </Button>
-
-                  <Button
-                    onClick={() => {
-                      setFormData({
-                        notConfirmedItems: [],
-                        type: "TOTAL",
-                        finishedAt: moment(),
-                      });
-                      setVisible((prevState) => !prevState);
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                </div>
-              </footer>
-            </form>
-          </TabPane>
-
-          <TabPane tab="Pagamentos" key="1">
-            <Negotiation budgetId={budget?.id} />
-          </TabPane>
-        </Tabs>
-        <ModalInfinityForge
+        <Modal
           open={stockProductsOpen}
           onClose={() => setStockProductsOpen(false)}
           styles={{ width: "500px", padding: "20px" }}

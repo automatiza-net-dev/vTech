@@ -1,7 +1,10 @@
 import { useState } from "react";
-import AddBudgetItem from "@/OLD/components/Budget/Actions/AddBudgetItem";
-import { BudgetAttendance } from "@/domain";
+
 import moment from "moment";
+
+import { Modal } from "infinity-forge";
+import { BudgetAttendance } from "@/domain";
+import { AddBudgetNew } from "@/presentation";
 
 export function BudgetItem(props: BudgetAttendance) {
   const [visible, setVisible] = useState(false);
@@ -36,13 +39,23 @@ export function BudgetItem(props: BudgetAttendance) {
         )}
       </div>
 
-      <AddBudgetItem
-        budget={props}
-        setExternVisible={setVisible}
-        externVisible={visible}
-        setReload={undefined}
-        tableRender={false}
-      />
+      <Modal
+        styles={{
+          overflow: "auto",
+          height: "95vh",
+          maxWidth: "1400px",
+          minHeight: "600px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+        stylesContent={{ height: "100%", width: "100%" }}
+        open={visible}
+        onClose={() => setVisible(false)}
+      >
+        <AddBudgetNew setModal={setVisible} budgetId={props?.id} />
+      </Modal>
     </>
   );
 }

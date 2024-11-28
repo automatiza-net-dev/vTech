@@ -319,7 +319,7 @@ const renderTimeline = (obj, functions, allowEdit) => {
           <span className="inf-tag">
             {moment(obj?.createdAt).format("DD/MM/YYYY")}
             &nbsp;às&nbsp;
-            {moment(obj?.createdAt).format("HH:mm")}
+            {moment(obj?.data?.issuedAt).format("HH:mm")}
           </span>
 
           <span className="inf-tag">{obj?.data?.technician?.name}</span>

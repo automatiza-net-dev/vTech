@@ -7,6 +7,7 @@ export const patientTypes = {
   RemoteAttachments: Symbol.for("RemoteAttachments"),
   RemoteChangeStatus: Symbol.for("RemoteChangeStatus"),
   RemotePatientAnimal: Symbol.for("RemotePatientAnimal"),
+  RemotePatientReports: Symbol.for("RemotePatientReports"),
   RemoteLoadAllReasons: Symbol.for("RemoteLoadAllReasons"),
   RemoteLoadAllSchedulesUser: Symbol.for("RemoteLoadAllSchedulesUser"),
   RemoteLoadSchedulesPatient: Symbol.for("RemoteLoadSchedulesPatient"),

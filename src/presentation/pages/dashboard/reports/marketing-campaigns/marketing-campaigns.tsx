@@ -1,9 +1,6 @@
 import { useRef } from "react";
-
 import { useRouter } from "next/router";
 
-import moment from "moment";
-import { useReactToPrint } from "react-to-print";
 import {
   Select,
   PageWrapper,
@@ -11,69 +8,71 @@ import {
   updateRoute,
   RangeDatePicker,
 } from "infinity-forge";
+import moment from "moment";
 
-import {
-  useLoadMarketing,
-  useLoadCampaingsReports,
-  useLoadAllAvailableUnits,
-} from "@/presentation";
 import { PrintScreen } from "./components";
+
+import { RemoteMarketing } from "@/data";
+import { usePrint } from "./hooks/use-print";
+import { container, MarketingTypes } from "@/container";
+import { useLoadMarketing, useLoadAllAvailableUnits } from "@/presentation";
 
 import * as S from "./styles";
 
 export function MarketingCampaignsReports() {
   const campaigns = useLoadMarketing({ allCampaigns: true });
   const businessUnits = useLoadAllAvailableUnits();
+
   const componentRef = useRef<HTMLDivElement>(null);
-  const campaingsReports = useLoadCampaingsReports();
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
-
+  const { campaingsReports, setCampaingsReports } = usePrint({ componentRef });
   const router = useRouter();
 
   const initialData = {
-    units: [],
-    campaign: "",
-    period: "",
-    active: "",
+    ...router?.query,
+    campaign: Number(router?.query.campaign) || "",
+    units: Array.isArray(router?.query.units)
+      ? router?.query.units
+      : [router?.query?.units ?? []],
+    period: {
+      startDate: router?.query?.startDate,
+      endDate: router?.query?.endDate,
+    },
   };
+
+  async function handleSubmit(payload) {
+    const fromDate = payload?.period?.startDate
+      ? moment(payload?.period?.startDate).format("YYYY-MM-DD")
+      : null;
+    const toDate = payload?.period?.endDate
+      ? moment(payload?.period?.endDate).format("YYYY-MM-DD")
+      : null;
+
+    const data = {
+      ...payload,
+      fromDate,
+      toDate,
+    };
+
+    const response = await container
+      .get<RemoteMarketing>(MarketingTypes.RemoteMarketing)
+      .loadCampaingsReports(data);
+
+    updateRoute({
+      router: router,
+      params: data,
+    });
+
+    setCampaingsReports(response);
+  }
 
   return (
     <S.MarketingCampaignsReports>
       <PageWrapper title="Relatórios de campanha de marketing">
         <FormHandler
-          cleanFieldsOnSubmit={false}
           initialData={initialData}
-          customSubmit={[
-            {
-              action: (payload) => {
-                const fromDate = moment(payload?.period?.startDate).format(
-                  "YYYY-MM-DD"
-                );
-
-                const toDate = moment(payload?.period?.endDate).format(
-                  "YYYY-MM-DD"
-                );
-
-                updateRoute({
-                  params: {
-                    ...payload,
-                    fromDate,
-                    toDate,
-                  },
-                  router,
-                });
-
-                handlePrint();
-              },
-              active: true,
-              props: {
-                text: "Imprimir",
-              },
-            },
-          ]}
+          cleanFieldsOnSubmit={false}
+          button={{ text: "Imprimir" }}
+          onSucess={handleSubmit}
         >
           <div className="filter-container">
             {businessUnits?.data && (
@@ -91,6 +90,7 @@ export function MarketingCampaignsReports() {
 
             {campaigns?.data && (
               <Select
+                isClearable
                 label="Campanha"
                 menuPlacement="bottom"
                 name="campaign"
@@ -103,6 +103,7 @@ export function MarketingCampaignsReports() {
             )}
 
             <Select
+              isClearable
               label="Ativo"
               menuPlacement="bottom"
               name="active"
@@ -122,11 +123,10 @@ export function MarketingCampaignsReports() {
             <RangeDatePicker name="period" mode="date" label="Período" />
           </div>
         </FormHandler>
+
         <div style={{ display: "none" }}>
           <div ref={componentRef}>
-            {campaingsReports?.data && campaingsReports?.data && (
-              <PrintScreen reports={campaingsReports.data} />
-            )}
+            {campaingsReports && <PrintScreen reports={campaingsReports} />}
           </div>
         </div>
       </PageWrapper>

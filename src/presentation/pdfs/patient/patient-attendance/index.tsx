@@ -96,7 +96,7 @@ export function PdfPatientAttendance(
         </span>
       </div>
 
-      <div className="attendance">
+      <div className="attendance font-16">
         <h3>{props.service?.description}</h3>
 
         <div dangerouslySetInnerHTML={{ __html: props.protocol || "---" }} />

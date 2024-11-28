@@ -234,6 +234,10 @@ const PrintContent = ({ obj, patient }) => {
                     <p className="uk-margin-remove">
                       Peso: {item?.data?.resume}
                     </p>
+                    <p className="uk-margin-remove">
+                      Veterinário responsável:&nbsp;
+                      {item?.data?.technician?.name}
+                    </p>
                     <div className="uk-flex uk-flex-wrap uk-flex-middle">
                       <p style={{ marginRight: "3px" }}>Descrição:</p>
 

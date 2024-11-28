@@ -2,6 +2,7 @@
 import React from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 
 import { PrintHeader } from "@/presentation";
 
@@ -11,10 +12,15 @@ import moment from "moment";
 import { currencyFormatter } from "..";
 import { useDictionary } from "@/presentation";
 
-export default function PrintScreen({ budget }) {
+export default function PrintScreen({ printDetails, budgetData }) {
   const { clinic } = useProfile();
 
-  const {getWord} = useDictionary()
+  const { getWord } = useDictionary();
+
+  const budget =
+    printDetails?.origin !== "show"
+      ? useCompleteBudget(printDetails?.budgetId, printDetails?.hookEnable)
+      : { data: budgetData };
 
   return (
     <S.PrintScreen className="uk-container">
@@ -23,33 +29,35 @@ export default function PrintScreen({ budget }) {
       <section className="uk-margin-top uk-flex uk-flex-around">
         <div>
           <label>Cod. {getWord("Orçamento")}</label>
-          <p className="ukk-margin-remove">{budget?.tag}</p>
+          <p className="ukk-margin-remove">{budget?.data?.tag}</p>
         </div>
         <div>
           <label>Cliente</label>
-          <p className="ukk-margin-remove">{budget?.client?.name}</p>
+          <p className="ukk-margin-remove">{budget?.data?.client?.name}</p>
         </div>
 
         <div>
-          <label>Data  {getWord("Orçamento")}</label>
+          <label>Data {getWord("Orçamento")}</label>
           <p className="ukk-margin-remove">
-            {moment(budget?.budget_date).format("DD/MM/YYYY - HH:mm")}
+            {moment(budget?.data?.budget_date).format("DD/MM/YYYY - HH:mm")}
           </p>
         </div>
         <div>
           <label>Data validade</label>
           <p className="ukk-margin-remove">
-            {moment(budget?.expiration_date).format("DD/MM/YYYY - HH:mm")}
+            {moment(budget?.data?.expiration_date).format("DD/MM/YYYY - HH:mm")}
           </p>
         </div>
         <div>
           <label>Status</label>
-          <p className="ukk-margin-remove">{budget?.status.toLowerCase()}</p>
+          <p className="ukk-margin-remove">
+            {budget?.data?.status.toLowerCase()}
+          </p>
         </div>
         {process.env.client !== "liftone" && (
           <div>
             <label>Paciente</label>
-            <p className="ukk-margin-remove">{budget?.patient?.name}</p>
+            <p className="ukk-margin-remove">{budget?.data?.patient?.name}</p>
           </div>
         )}
       </section>
@@ -57,165 +65,240 @@ export default function PrintScreen({ budget }) {
         <strong>Itens confirmados</strong>
       </h4>
       <section>
-        <div className="uk-flex uk-flex-around uk-width-1-1">
-          <p className="uk-margin-remove uk-width-1-7">Código</p>
-          <p className="uk-margin-remove uk-width-1-1">Descrição</p>
-          <p className="uk-margin-remove uk-width-1-1">Quantidade</p>
-          <p className="uk-margin-remove uk-width-1-7">R$ Unitário</p>
-          <p className="uk-margin-remove uk-width-1-7 ">R$ Desconto</p>
-          <p className="uk-margin-remove uk-width-1-7">R$ Total</p>
-        </div>
-        {budget?.items.map(
-          (item) =>
-            item?.status === "ABERTO" && (
-              <div className="uk-flex uk-flex-around uk-width-1-1 uk-margin-small-top">
-                <p className="uk-margin-remove uk-width-1-7">
-                  {item?.productVariation?.product?.reference_code}
-                </p>
-                <p className="uk-margin-remove uk-width-1-1">
-                  {item?.productVariation?.product?.description}
-                </p>
-                <p className="uk-margin-remove uk-width-1-1 uk-flex uk-flex-center">
-                  {item?.quantity}
-                </p>
-                <p className="uk-margin-remove uk-width-1-7">
-                  {currencyFormatter(item?.unitary_value)}
-                </p>
-                <p className="uk-margin-remove uk-width-1-7">
-                  {currencyFormatter(item?.discount_value)}
-                </p>
-                <p className="uk-margin-remove uk-width-1-7">
-                  {currencyFormatter(item?.total_value)}
-                </p>
-              </div>
-            )
-        )}
-        <div className="uk-flex uk-margin-top">
-          <div className="uk-margin-remove uk-flex uk-flex-center uk-width-1-1">
-            <p className="uk-margin-remove uk-width-1-4">
-              <strong>Total confirmados:&nbsp;</strong>
-            </p>
-            <p className="uk-margin-remove uk-width-1-4">
-              {currencyFormatter(
-                budget?.items.reduce(
-                  (acc, current) =>
-                    current?.status === "ABERTO"
-                      ? acc + current?.total_value + current?.discount_value
-                      : acc,
-                  0
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descrição</th>
+              <th>Quantidade</th>
+              <th>R$ Unitário</th>
+              <th>R$ Desconto</th>
+              <th>R$ Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {budget?.data?.items?.map(
+              (item) =>
+                item?.status === "ABERTO" && (
+                  <tr>
+                    <td>{item?.productVariation?.product?.reference_code}</td>
+                    <td>{item?.productVariation?.product?.description}</td>
+                    <td>{item?.quantity}</td>
+                    <td>
+                      {!item?.courtesy
+                        ? currencyFormatter(item?.unitary_value)
+                        : currencyFormatter(item?.sale_value)}
+                    </td>
+                    <td>{currencyFormatter(item?.discount_value)}</td>
+                    <td>
+                      {!item?.courtesy
+                        ? currencyFormatter(item?.total_value)
+                        : `${currencyFormatter(
+                            item?.sale_value * item?.quantity
+                          )} (Cortesia)`}
+                    </td>
+                  </tr>
                 )
-              )}
-            </p>
-            <p className="uk-margin-remove uk-width-1-4">
-              {currencyFormatter(
-                budget?.items.reduce(
-                  (acc, current) =>
-                    current?.status === "ABERTO"
-                      ? acc + current?.discount_value
-                      : acc,
-                  0
-                )
-              )}
-            </p>
-            <p className="uk-margin-remove uk-width-1-4">
-              {currencyFormatter(
-                budget?.items.reduce(
-                  (acc, current) =>
-                    current?.status === "ABERTO"
-                      ? acc + current?.total_value
-                      : acc,
-                  0
-                )
-              )}
-            </p>
-          </div>
-        </div>
+            )}
+            <tr>
+              <td style={{ paddingTop: "20px" }}>
+                <strong>Total confirmados:&nbsp;</strong>
+              </td>
+              <td></td>
+              <td></td>
+              <td style={{ paddingTop: "20px" }}>
+                {" "}
+                {currencyFormatter(
+                  budget?.data?.items?.reduce(
+                    (acc, current) =>
+                      current?.status === "ABERTO"
+                        ? acc + current?.total_value + current?.discount_value
+                        : acc,
+                    0
+                  )
+                )}
+              </td>
+              <td style={{ paddingTop: "20px" }}>
+                {currencyFormatter(
+                  budget?.data?.items?.reduce(
+                    (acc, current) =>
+                      current?.status === "ABERTO"
+                        ? acc + current?.discount_value
+                        : acc,
+                    0
+                  )
+                )}
+              </td>
+              <td style={{ paddingTop: "20px" }}>
+                {" "}
+                {currencyFormatter(
+                  budget?.data?.items?.reduce(
+                    (acc, current) =>
+                      current?.status === "ABERTO"
+                        ? acc + current?.total_value
+                        : acc,
+                    0
+                  )
+                )}
+              </td>
+            </tr>
+            {budget?.data?.items?.find(
+              (item) => item?.status === "ABERTO" && item?.courtesy
+            ) && (
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  Total de Cortesias:
+                  {currencyFormatter(
+                    budget?.data?.items?.reduce(
+                      (acc, current) =>
+                        current?.status === "ABERTO" && current?.courtesy
+                          ? acc + current?.sale_value
+                          : acc,
+                      0
+                    )
+                  )}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </section>
       <hr />
-      <h4 className="uk-margin-top uk-text-center">
-        <strong>Itens não confirmados</strong>
-      </h4>
-      <section>
-        <div className="uk-flex uk-flex-around uk-width-1-1">
-          <p className="uk-margin-remove uk-width-1-7">Código</p>
-          <p className="uk-margin-remove uk-width-1-1">Descrição</p>
-          <p className="uk-margin-remove uk-width-1-1">Quantidade</p>
-          <p className="uk-margin-remove uk-width-1-7">R$ Unitário</p>
-          <p className="uk-margin-remove uk-width-1-7 ">R$ Desconto</p>
-          <p className="uk-margin-remove uk-width-1-7">R$ Total</p>
-        </div>
-        {budget?.items.map(
-          (item) =>
-            item?.status !== "ABERTO" && (
-              <div className="uk-flex uk-flex-around uk-width-1-1 uk-margin-small-top">
-                <p className="uk-margin-remove uk-width-1-7">
-                  {item?.productVariation?.product?.reference_code}
-                </p>
-                <p className="uk-margin-remove uk-width-1-1">
-                  {item?.productVariation?.product?.description}
-                </p>
-                <p className="uk-margin-remove uk-width-1-1 uk-flex uk-flex-center">
-                  {item?.quantity}
-                </p>
-                <p className="uk-margin-remove uk-width-1-7">
-                  {currencyFormatter(item?.unitary_value)}
-                </p>
-                <p className="uk-margin-remove uk-width-1-7">
-                  {currencyFormatter(item?.discount_value)}
-                </p>
-                <p className="uk-margin-remove uk-width-1-7">
-                  {currencyFormatter(item?.total_value)}
-                </p>
-              </div>
-            )
-        )}
-        <div className="uk-flex uk-flex-right uk-margin-top">
-          <div className="uk-margin-remove uk-flex uk-flex-center uk-width-1-1">
-            <p className="uk-margin-remove uk-width-1-4">
-              <strong>Totais não confirmados:&nbsp;</strong>
-            </p>
-            <p className="uk-margin-remove uk-width-1-4">
-              {currencyFormatter(
-                budget?.items.reduce(
-                  (acc, current) =>
-                    current?.status !== "ABERTO"
-                      ? acc + current?.total_value + current?.discount_value
-                      : acc,
-                  0
-                )
+      {printDetails?.complete && (
+        <>
+          <h4 className="uk-margin-top uk-text-center">
+            <strong>Itens não confirmados</strong>
+          </h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>R$ Unitário</th>
+                <th>R$ Desconto</th>
+                <th>R$ Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {budget?.data?.items?.map(
+                (item) =>
+                  item?.status !== "ABERTO" && (
+                    <tr>
+                      <td>{item?.productVariation?.product?.reference_code}</td>
+                      <td>{item?.productVariation?.product?.description}</td>
+                      <td>{item?.quantity}</td>
+                      <td>
+                        {!item?.courtesy
+                          ? currencyFormatter(item?.unitary_value)
+                          : currencyFormatter(item?.sale_value)}
+                      </td>
+                      <td>{currencyFormatter(item?.discount_value)}</td>
+                      <td>
+                        {!item?.courtesy
+                          ? currencyFormatter(item?.total_value)
+                          : `${currencyFormatter(
+                              item?.sale_value * item?.quantity
+                            )} (Cortesia)`}
+                      </td>
+                    </tr>
+                  )
               )}
-            </p>
-            <p className="uk-margin-remove uk-width-1-4">
-              {currencyFormatter(
-                budget?.items.reduce(
-                  (acc, current) =>
-                    current?.status !== "ABERTO"
-                      ? acc + current?.discount_value
-                      : acc,
-                  0
-                )
+              <tr>
+                <td style={{ paddingTop: "20px" }}>
+                  <strong>Totais não confirmados:&nbsp;</strong>
+                </td>
+                <td></td>
+                <td></td>
+                <td style={{ paddingTop: "20px" }}>
+                  {currencyFormatter(
+                    budget?.data?.items?.reduce(
+                      (acc, current) =>
+                        current?.status !== "ABERTO"
+                          ? acc + current?.total_value + current?.discount_value
+                          : acc,
+                      0
+                    )
+                  )}
+                </td>
+                <td style={{ paddingTop: "20px" }}>
+                  {" "}
+                  {currencyFormatter(
+                    budget?.data?.items?.reduce(
+                      (acc, current) =>
+                        current?.status !== "ABERTO"
+                          ? acc + current?.discount_value
+                          : acc,
+                      0
+                    )
+                  )}
+                </td>
+              </tr>
+              {budget?.data?.items?.find(
+                (item) => item?.status !== "ABERTO" && item?.courtesy
+              ) && (
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    Total de Cortesias:
+                    {currencyFormatter(
+                      budget?.data?.items?.reduce(
+                        (acc, current) =>
+                          current?.status !== "ABERTO" && current?.courtesy
+                            ? acc + current?.sale_value
+                            : acc,
+                        0
+                      )
+                    )}
+                  </td>
+                </tr>
               )}
-            </p>
-            <p className="uk-margin-remove uk-width-1-4">
-              {currencyFormatter(
-                budget?.items.reduce(
-                  (acc, current) =>
-                    current?.status !== "ABERTO"
-                      ? acc + current?.total_value
-                      : acc,
-                  0
-                )
-              )}
-            </p>
-          </div>
-        </div>
-      </section>
-      <hr />
-      <section>
-        <h4 className="uk-margin-top uk-text-center">
-          <strong>Motivo Cancelamento / Confirmação Parcial</strong>
-        </h4>
-      </section>
+            </tbody>
+          </table>
+          <hr />
+        </>
+      )}
+      {budget?.data?.payments?.length > 0 && (
+        <>
+          <h4 className="uk-margin-top uk-text-center">
+            <strong>Previa de pagamentos</strong>
+          </h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Descrição </th>
+                <th>Parcelas</th>
+                <th>Valor total</th>
+              </tr>
+            </thead>
+            {budget?.data?.payments?.map((payment) => (
+              <tbody>
+                <tr>
+                  <td>[verificar]</td>
+                  <td>{payment?.installments}</td>
+                  <td>{currencyFormatter(payment?.total_value)}</td>
+                </tr>
+              </tbody>
+            ))}
+          </table>
+        </>
+      )}
+      {budget?.data?.status !== "ABERTO" && printDetails?.complete && (
+        <section>
+          <h4 className="uk-margin-top uk-text-center">
+            <strong>Motivo Cancelamento / Confirmação Parcial</strong>
+          </h4>
+        </section>
+      )}
     </S.PrintScreen>
   );
 }

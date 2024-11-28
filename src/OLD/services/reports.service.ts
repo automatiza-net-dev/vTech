@@ -46,8 +46,12 @@ const getReceiptsReport = async (params) =>
 const getAnaliticalReceiptsReport = async (params) =>
   await api.get("/reports/receipt-analytics", { params });
 
+const getIssuedInvoices = async (params) =>
+  await api.get("/reports/issued-nfe", { params });
+
 export const reportsService = {
   getFlowReports,
+  getIssuedInvoices,
   getCheckingAccountsReports,
   getExpiredReports,
   getSalesReports,
@@ -61,5 +65,5 @@ export const reportsService = {
   getCashierRegimeReports,
   getBuySuggestionReport,
   getReceiptsReport,
-  getAnaliticalReceiptsReport
+  getAnaliticalReceiptsReport,
 };

@@ -41,7 +41,7 @@ const AddPayments = memo(function AddPayments({
   const { data: budget } = useCompleteBudget(budgetId, origin === "budgets");
   const { data: budgetPayments } = useLoadPaymentsPreview({
     budgetId: budget?.id,
-    fetch: origin !== "receipts",
+    fetch: origin !== "receipts" && !!budget?.id,
   });
 
   const queryClient = useQueryClient();
@@ -396,7 +396,7 @@ const AddPayments = memo(function AddPayments({
                 );
               })}
             </div>
-            <div>
+            <footer>
               <Button
                 onClick={() =>
                   origin !== "budgets" ? submitPayment() : submitBudgetPayment()
@@ -414,7 +414,7 @@ const AddPayments = memo(function AddPayments({
                   autorização do supervisor para finalização da venda
                 </p>
               )}
-            </div>
+            </footer>
           </div>
           <div className="uk-width-1-4 uk-text-center uk-margin-small-left">
             <h4 className="uk-margin-remove">Resumo de valores</h4>

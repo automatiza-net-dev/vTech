@@ -52,7 +52,7 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
                 text="Filtrar"
                 style={{ marginTop: "10px" }}
                 onClick={() => {
-                  vaccinesProtocols.refetch();
+                  vaccinesProtocols.mutate();
                   setParams((prv) => ({ ...prv, fetch: true }));
                 }}
               />

@@ -9,7 +9,6 @@ import {
   useLoadSchedule,
   useLoadAllScheduleServicesGroups,
 } from "@/presentation";
-import { User } from "@/domain";
 import { RemoteSystem } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
@@ -42,7 +41,7 @@ export function SelectTypeService({
     const response = await container
       .get<RemoteSystem>(TypesAutomatiza.RemoteSystem)
       .replace({
-        businessUnitId: user.unit?.id,
+        businessUnitId: user?.unit?.id,
         dependentId: patient?.data?.id,
         tutorId: patient?.data?.tutor?.id,
         userId: user?.user?.id,
@@ -83,11 +82,12 @@ export function SelectTypeService({
           return [
             ...reducer,
             {
-              label: result.description,
-              options: result.types.map((type) => ({
-                value: type.id,
-                label: type.description,
-              })),
+              label: result?.description,
+              options:
+                result?.types?.map((type) => ({
+                  value: type?.id,
+                  label: type?.description,
+                })) || [],
             },
           ];
         }, []) || []

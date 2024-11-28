@@ -20,6 +20,7 @@ import {
   RemoteLoadProfessionalsSchedule,
   RemoteLoadAllScheduleServicesGroups,
   RemoteLoadReturnablesSchedulePatient,
+  RemotePatientReports,
 } from "@/data";
 
 const patientContainer = new Container({
@@ -38,6 +39,7 @@ patientContainer.bind(patientTypes.RemoteAttachments).to(RemoteAttachments);
 patientContainer.bind(patientTypes.RemoteChangeStatus).to(RemoteChangeStatus);
 patientContainer.bind(patientTypes.RemotePatientAnimal).to(RemotePatientAnimal);
 patientContainer.bind(patientTypes.RemoteLoadAllReasons).to(RemoteLoadAllReasons);
+patientContainer.bind(patientTypes.RemotePatientReports).to(RemotePatientReports);
 patientContainer.bind(patientTypes.RemoteLoadAllSchedulesUser).to(RemoteLoadAllSchedulesUser);
 patientContainer.bind(patientTypes.RemoteLoadSchedulesPatient).to(RemoteLoadSchedulesPatient);
 patientContainer.bind(patientTypes.RemoteLoadAllScheduleStatuses).to(RemoteLoadAllScheduleStatuses);

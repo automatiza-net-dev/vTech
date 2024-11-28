@@ -22,12 +22,13 @@ export function PrecoCard(props) {
 
                 <p>{subItem.description}</p>
               </div>
-              {subItem?.icone && (
+              {subItem?.color && (
                 <div
-                  style={{ width: "50px" }}
-                  className="icon-container"
-                  dangerouslySetInnerHTML={{
-                    __html: subItem?.icone,
+                  style={{
+                    width: "15px",
+                    height: "15px",
+                    backgroundColor: subItem?.color,
+                    borderRadius: '50px'
                   }}
                 ></div>
               )}

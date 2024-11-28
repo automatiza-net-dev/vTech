@@ -2,6 +2,13 @@ import styled from "styled-components";
 
 export const Container = styled.section`
   margin-top: 20px;
+
+  footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
   .selected-installments {
     background-color: var(--blue) !important;
   }

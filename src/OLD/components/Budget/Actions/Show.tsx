@@ -4,11 +4,13 @@ import {
   Checkbox,
   Modal,
   Table,
-  Tooltip,
   AutoComplete,
   Collapse,
   Popconfirm,
 } from "antd";
+
+import { Tooltip } from "infinity-forge";
+
 const { TabPane } = Tabs;
 import * as React from "react";
 import { budgetStatusFormatter, currencyFormatter, dateFormatter } from "..";
@@ -34,7 +36,7 @@ import { useAuthAdmin, Button, Icon } from "infinity-forge";
 import { SystemUser } from "@/domain";
 
 import moment from "moment";
-import { AuthorizationStatusProduct } from '@/presentation'
+import { AuthorizationStatusProduct } from "@/presentation";
 import { useDictionary } from "@/presentation";
 
 import * as S from "./styles";
@@ -121,6 +123,10 @@ export default function ShowBudget({ budget, setReload }: any) {
   const [visible, setVisible] = React.useState(false);
   const [payload, setPayload] = React.useState<any>({});
   const [activeTab, setActiveTab] = React.useState("0");
+  const [printDetails, setPrintDetails] = React.useState({
+    hookEnable: false,
+    origin: "show",
+  });
   const [editFields, setEditFields] = React.useState({
     seller: false,
     reviewer: false,
@@ -210,15 +216,19 @@ export default function ShowBudget({ budget, setReload }: any) {
 
   return (
     <>
-      <Tooltip title={`Detalhes ${getWord("Orçamento")}`}>
-        <CgDetailsMore
-          className="icon"
-          size={30}
-          onClick={() => {
-            setVisible((prevState) => !prevState);
-          }}
-        />
-      </Tooltip>
+      <Tooltip
+        enableHover
+        content={`Detalhes ${getWord("Orçamento")}`}
+        trigger={
+          <CgDetailsMore
+            className="icon"
+            size={30}
+            onClick={() => {
+              setVisible((prevState) => !prevState);
+            }}
+          />
+        }
+      />
 
       <Modal
         visible={visible}
@@ -547,13 +557,41 @@ export default function ShowBudget({ budget, setReload }: any) {
                 >
                   <div style={{ display: "none" }}>
                     <div ref={componentRef as any}>
-                      <PrintScreen budget={data as any} />
+                      <PrintScreen
+                        budgetData={data as any}
+                        printDetails={printDetails}
+                      />
                     </div>
                   </div>
 
                   <ReactToPrint
                     content={() => componentRef.current as any}
-                    trigger={() => <Button text="Imprimir" />}
+                    trigger={() => (
+                      <Button
+                        text="Impressão Completa"
+                        onMouseOver={() =>
+                          setPrintDetails((prv) => ({
+                            ...prv,
+                            complete: true,
+                          }))
+                        }
+                      />
+                    )}
+                  />
+
+                  <ReactToPrint
+                    content={() => componentRef.current as any}
+                    trigger={() => (
+                      <Button
+                        text="Impressão Simplificada"
+                        onMouseOver={() =>
+                          setPrintDetails((prv) => ({
+                            ...prv,
+                            complete: false,
+                          }))
+                        }
+                      />
+                    )}
                   />
 
                   <Button

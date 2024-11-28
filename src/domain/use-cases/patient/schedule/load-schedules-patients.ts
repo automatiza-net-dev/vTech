@@ -5,6 +5,8 @@ export type LoadSchedulesPatient = {
 };
 
 export type SchedulePatient = {
+  description: string; // Verificar tipagem LoadSchedulingToMovement
+  start_hour: string; // Verificar tipagem LoadSchedulingToMovement
   birthDate: string;
   castrated: boolean;
   gender: "female" | "male";

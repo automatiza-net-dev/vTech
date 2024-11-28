@@ -20,6 +20,7 @@ import {
   DeleteCartItems,
   useLoadAllDailyMovements,
   useLoadAllPatientTutor,
+  SelectSchedule,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
@@ -47,7 +48,9 @@ export function AddSale({
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
 
-  const tutors = useLoadAllPatientTutor({ enabled: !patient })?.data;
+  const tutors = useLoadAllPatientTutor({
+    enabled: !patient || !bill?.data?.patient,
+  })?.data;
 
   const { createToast } = useToast();
 
@@ -91,7 +94,7 @@ export function AddSale({
     maxDiscount: false,
     clientId,
     patientId,
-    patientName: patient?.data?.name,
+    patientName: patient?.data?.name || bill?.data?.patient?.name,
     clientName:
       bill?.data?.client?.name ||
       patient?.data?.tutor?.name ||
@@ -169,26 +172,26 @@ export function AddSale({
           {process.env.client === "sancla" ? (
             <SelectBudgetPatient tutors={tutors} />
           ) : (
-            <SelectClient
-              name="financialResponsibleId"
-              label="Responsável financeiro"
-            />
+            <>
+              <SelectClient
+                name="financialResponsibleId"
+                label="Responsável financeiro"
+              />
+              <SelectSchedule />
+            </>
           )}
-        </div>
-
-        <div className="row">
-          <SelectSeller />
-
           {process.env.client === "sancla" && (
             <SelectClient
               name="financialResponsibleId"
               label="Responsável financeiro"
             />
           )}
-
+        </div>
+        <div className="row">
+          <SelectSeller />
+          {process?.env?.client === "sancla" && <SelectSchedule />}
           <Input label="Observação" name="additionalInformation" />
         </div>
-
         <AddProduct />
       </FormHandler>
 

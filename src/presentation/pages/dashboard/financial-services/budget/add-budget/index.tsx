@@ -1,6 +1,5 @@
 import {
   Input,
-  Select,
   useToast,
   FormHandler,
   LoaderCircle,
@@ -34,15 +33,16 @@ import * as S from "./styles";
 export function AddBudgetNew({
   setModal,
   budgetId,
-  tutorsList,
   listCreated,
   attendanceId,
 }: IAddBudgetProps) {
   const patient = useLoadPatient();
   const budgetDetail = useLoadBudget({ id: budgetId || "" });
   const dailyMovements = useLoadAllDailyMovements();
-  const patientTutors = useLoadAllPatientTutor({ enabled: !patient })?.data;
-  const tutors = tutorsList || patientTutors;
+  const patientTutors = useLoadAllPatientTutor({
+    enabled: !patient?.data,
+  })?.data;
+  const tutors = patientTutors;
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();

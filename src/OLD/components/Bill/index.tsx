@@ -4,75 +4,48 @@ import * as React from "react";
 
 // Hooks
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
-import { usePatients } from "@/OLD/hooks/usePatients";
 import { useRouter } from "next/router";
 
 // Utils
 import { Columns, LiftColumns } from "./Columns";
 import moment from "moment";
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Icons
 import { MdOutlineClear } from "react-icons/md";
 
 // Components
-import {
-  Input as AntInput,
-  Select,
-  Table,
-  AutoComplete,
-  Modal as ModalANTD,
-} from "antd";
+import { Input as AntInput, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { ModalListagemDocumentosVenda } from "./Actions/modal-listagem-documentos-venda";
 
-import { useQuery } from "react-query";
 import { useGetAllBills } from "../../../OLD/hooks/useBills";
-import { petsService } from "../../../OLD/services/patient.service";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 
-import { AddSale, TriggerModal, useVerifyPermissions } from "@/presentation";
-import Link from "next/link";
-import { AuthorizationSell } from "./authorization-sell";
+import { AddSale } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
+import { usePermission } from "@/presentation/context/permissions";
 
 export default function Bills() {
+  const hasBillsPermission = usePermission("VEN00");
+  const hasCreatePermission = usePermission("VEN01");
+
   const [visible, setVisible] = React.useState(false);
   const [filters, setFilters] = React.useState({
     fromBill: moment(),
     toBill: moment(),
     noSearch: true,
   });
-  const [patientSearch, setPatientSearch] = React.useState("");
-  const [clientSearch, setClientSearch] = React.useState("");
-  const [cashierFilters, setCashierFilters] = React.useState({
-    from: moment(new Date()).startOf("day"),
-    to: moment(new Date()).endOf("day"),
-    status: "ABERTO",
-  });
   const [reload, setReload] = React.useState(false);
 
-  const { data, refetch } = useGetAllBills(filters, reload);
-  const { patients } = usePatients();
-  const { cashiers } = useDailyCasher(cashierFilters);
+  const { data } = useGetAllBills(filters, reload);
 
-  const createPermission = useVerifyPermissions("VEN01");
-  const listBillsPermission = useVerifyPermissions("VEN00");
+  const { cashiers } = useDailyCasher(false, filters);
+
   const router = useRouter();
-
-  const { data: tutors } = useQuery(
-    ["tutors"],
-    async () => {
-      const { data } = await petsService.getTutors();
-
-      return data ?? [];
-    },
-    { refetchOnWindowFocus: false }
-  );
 
   const mapper = (data = [], cashiers) => {
     data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
@@ -122,8 +95,8 @@ export default function Bills() {
     }
   }, [router.query]);
 
-  return !listBillsPermission || listBillsPermission === "loading" ? (
-    <AccessDenied loading={listBillsPermission} />
+  return !hasBillsPermission ? (
+    <AccessDenied />
   ) : (
     <>
       <PageWrapper title="Vendas">
@@ -194,69 +167,6 @@ export default function Bills() {
                 </Select>
               </Input>
 
-              <Input style={{ width: "100%" }}>
-                <Label>Cliente</Label>
-                <AutoComplete
-                  className="uk-width-1-1"
-                  value={clientSearch}
-                  options={tutors?.map((tutor) => ({
-                    ...tutor,
-                    value: tutor?.name,
-                  }))}
-                  onChange={(val) => {
-                    setClientSearch(val);
-                    if (val === "") {
-                      const newObj = { ...filters };
-                      delete newObj.client;
-                      setFilters(newObj);
-                    }
-                  }}
-                  onSelect={(_, option) => {
-                    setClientSearch(option?.name);
-                    setFilters({ ...filters, client: option?.id });
-                  }}
-                  filterOption={(val, opt) =>
-                    normalizeStr(opt?.name.toUpperCase()).includes(
-                      normalizeStr(val.toUpperCase())
-                    )
-                  }
-                />
-              </Input>
-            </div>
-            <div
-              className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
-              style={{ gap: "1rem" }}
-            >
-              {process.env.client !== "liftone" && (
-                <Input style={{ width: "100%" }}>
-                  <Label>Paciente</Label>
-                  <AutoComplete
-                    className="uk-width-1-1"
-                    value={patientSearch}
-                    options={patients?.map((patient) => ({
-                      ...patient,
-                      value: patient?.name,
-                    }))}
-                    onChange={(val) => {
-                      setPatientSearch(val);
-                      if (val === "") {
-                        const newObj = { ...filters };
-                        delete newObj.patient;
-                        setFilters(newObj);
-                      }
-                    }}
-                    onSelect={(_, option) => {
-                      setPatientSearch(option?.name);
-                      setFilters({ ...filters, patient: option?.id });
-                    }}
-                    filterOption={(val, opt) =>
-                      normalizeStr(opt?.name.toUpperCase()).includes(
-                        normalizeStr(val.toUpperCase())
-                      )
-                    }
-                  />
-                </Input>
-              )}
               <Input style={{ width: "70%" }}>
                 <label>Código</label>
                 <AntInput
@@ -266,6 +176,32 @@ export default function Bills() {
                   }
                 />
               </Input>
+            </div>
+            <div
+              className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
+              style={{ gap: "1rem" }}
+            >
+              <Input style={{ width: "100%" }}>
+                <Label>Cliente</Label>
+                <AntInput
+                  value={filters.clientName}
+                  onChange={(e) =>
+                    setFilters({ ...filters, clientName: e.target.value })
+                  }
+                />
+              </Input>
+
+              {process.env.client !== "liftone" && (
+                <Input style={{ width: "100%" }}>
+                  <Label>Paciente</Label>
+                  <AntInput
+                    value={filters.patientName}
+                    onChange={(e) =>
+                      setFilters({ ...filters, patientName: e.target.value })
+                    }
+                  />
+                </Input>
+              )}
 
               <Input style={{ width: "100%" }}>
                 <Label>Pendências</Label>
@@ -294,10 +230,10 @@ export default function Bills() {
                   width: "100%",
                   display: "flex",
                   justifyContent: "right",
-                  gap: "10px"
+                  gap: "10px",
                 }}
               >
-                {createPermission && (
+                {hasCreatePermission && (
                   <>
                     <Button
                       onClick={() => {

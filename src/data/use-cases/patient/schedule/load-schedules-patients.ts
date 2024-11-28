@@ -6,7 +6,9 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 import * as domain from "@/domain";
 
 @injectable()
-export class RemoteLoadSchedulesPatient implements domain.LoadSchedulesPatient {
+export class RemoteLoadSchedulesPatient
+  implements domain.LoadSchedulesPatient, domain.LoadAllSchedullingToMovement
+{
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
@@ -20,6 +22,17 @@ export class RemoteLoadSchedulesPatient implements domain.LoadSchedulesPatient {
     });
 
     return response;
+  }
 
+  async loadSchedullingToMovement(
+    params: domain.LoadAllSchedullingToMovement.Params
+  ) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make("schedules/search-to-movement"),
+      method: "get",
+      body: params,
+    });
+
+    return response;
   }
 }

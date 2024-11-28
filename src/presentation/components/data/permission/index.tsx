@@ -1,16 +1,15 @@
 import { useVerifyPermissions } from "@/presentation/hooks";
 
-export function PermissionItem({
-  hash,
-  children,
-}: {
+type PermissionItemProps = {
   hash: string;
-  children: React.ReactNode;
-}) {
+  children?: React.ReactNode;
+};
+
+export function PermissionItem({ hash, children }: PermissionItemProps) {
   const hasPermission = useVerifyPermissions(hash);
 
   if (!hasPermission) {
-    return <></>;
+    return null;
   }
 
   return children;
