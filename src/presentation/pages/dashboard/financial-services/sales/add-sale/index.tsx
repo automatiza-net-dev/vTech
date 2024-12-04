@@ -18,9 +18,9 @@ import {
   ErrorDailyBox,
   useLoadPatient,
   DeleteCartItems,
-  useLoadAllDailyMovements,
-  useLoadAllPatientTutor,
   SelectSchedule,
+  useLoadAllPatientTutor,
+  useLoadAllDailyMovements,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
@@ -167,7 +167,7 @@ export function AddSale({
         <h2 className="font-24-bold">{billId ? "Editar" : "Criar"} venda</h2>
 
         <div className="row">
-          <SelectBudgetClient tutors={tutors} />
+          <SelectBudgetClient tutors={tutors} origin={'bill'} />
 
           {process.env.client === "sancla" ? (
             <SelectBudgetPatient tutors={tutors} />
