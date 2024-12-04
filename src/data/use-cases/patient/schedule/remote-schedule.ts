@@ -18,7 +18,9 @@ export class RemoteSchedule
     domain.ReopenSchedule,
     domain.ChangeUpsertStatus,
     domain.DeleteSchedule,
-    domain.LoadSyncableScheduleExecutions
+    domain.LoadSyncableScheduleExecutions,
+    domain.LoadAllReturnableEvents,
+    domain.LoadScheduleIdMock
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -147,5 +149,24 @@ export class RemoteSchedule
     });
 
     return response as domain.LoadSyncableScheduleExecutions.Model;
+  }
+
+  async loadAllReturnableEvents(params: domain.LoadAllReturnableEvents.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make("schedules/search-events"),
+      method: "get",
+      body: params,
+    });
+
+    return response;
+  }
+
+  async loadScheduleIdMock(params: domain.LoadScheduleIdMock.Params) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(`schedules/schedules-attendances/${params.id}`),
+      method: "get",
+    });
+
+    return response as domain.LoadScheduleIdMock.Model;
   }
 }

@@ -4,7 +4,12 @@ import { useRouter } from "next/router";
 import { Error, Icon } from "infinity-forge";
 
 import { Event } from "@/domain";
-import { FormCreateTutor, PermissionItem } from "@/presentation";
+import {
+  DateToYYYYMMDD,
+  FormCreateTutor,
+  PermissionItem,
+  useScheduling,
+} from "@/presentation";
 
 import { ContactForm } from "./contact-form";
 
@@ -14,6 +19,10 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
   const [showContact, setShowContact] = useState(false);
 
   const router = useRouter();
+
+  const selectedDate = useScheduling((state) => state.selectedDate);
+
+  const dateFormatted = DateToYYYYMMDD(selectedDate || new Date());
 
   const contactInfo = {
     user: {
@@ -65,8 +74,11 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
     fichaPaciente: {
       className: "ficha",
       text: "Ficha paciente",
-      onClick: () =>
-        router.push(`/dashboard/paciente/${event?.event?.patient?.id}`),
+      onClick: () => {
+        router.push(
+          `/dashboard/paciente/${event.event.patient.id}?scheduleId=${event.event.id}&scheduleDate=${dateFormatted}`
+        );
+      },
     },
     contato: {
       className: "contact",

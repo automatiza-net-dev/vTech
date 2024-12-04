@@ -1,6 +1,5 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
-import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
 import { LoadAllScheduleServicesGroups } from "@/domain";
 import { RemoteLoadAllScheduleServicesGroups } from "@/data";
@@ -21,6 +20,6 @@ export function useLoadAllScheduleServicesGroups(
   return useQuery({
     queryKey: ["RemoteLoadAllScheduleServicesGroups", params],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true,
   });
 }

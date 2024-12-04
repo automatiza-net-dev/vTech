@@ -17,8 +17,9 @@ import {
   useLoadBudget,
   ErrorDailyBox,
   useLoadPatient,
-  useLoadAllDailyMovements,
+  SelectSchedule,
   useLoadAllPatientTutor,
+  useLoadAllDailyMovements,
 } from "@/presentation";
 import { RemoteBudget } from "@/data";
 import { SelectBudgetClient, SelectBudgetPatient } from "./components";
@@ -184,13 +185,16 @@ export function AddBudgetNew({
             <SelectBudgetClient tutors={tutors} />
 
             {process.env.client === "sancla" && (
-              <SelectBudgetPatient tutors={tutors} />
+              <>
+                <SelectBudgetPatient tutors={tutors} />
+              </>
             )}
+            <SelectSeller />
           </div>
 
-          <SelectSeller />
-
           <div className="row">
+            <SelectSchedule />
+
             <Input label="Observação" name="observation" />
 
             <Input label="Observação interna" name="internalObservation" />

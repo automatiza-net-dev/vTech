@@ -93,9 +93,7 @@ export default function PrintScreen({ printDetails, budgetData }) {
                     <td>
                       {!item?.courtesy
                         ? currencyFormatter(item?.total_value)
-                        : `${currencyFormatter(
-                            item?.sale_value * item?.quantity
-                          )} (Cortesia)`}
+                        : `${currencyFormatter(0)} (Cortesia)`}
                     </td>
                   </tr>
                 )
@@ -112,8 +110,11 @@ export default function PrintScreen({ printDetails, budgetData }) {
                   budget?.data?.items?.reduce(
                     (acc, current) =>
                       current?.status === "ABERTO"
-                        ? acc + current?.total_value + current?.discount_value
+                        ? !current?.courtesy
+                          ? acc + current?.total_value + current?.discount_value
+                          : acc + current?.sale_value
                         : acc,
+
                     0
                   )
                 )}
@@ -220,7 +221,11 @@ export default function PrintScreen({ printDetails, budgetData }) {
                     budget?.data?.items?.reduce(
                       (acc, current) =>
                         current?.status !== "ABERTO"
-                          ? acc + current?.total_value + current?.discount_value
+                          ? !current?.courtesy
+                            ? acc +
+                              current?.total_value +
+                              current?.discount_value
+                            : acc + current?.sale_value
                           : acc,
                       0
                     )
@@ -283,7 +288,7 @@ export default function PrintScreen({ printDetails, budgetData }) {
             {budget?.data?.payments?.map((payment) => (
               <tbody>
                 <tr>
-                  <td>[verificar]</td>
+                  <td>{payment?.paymentMethod?.description}</td>
                   <td>{payment?.installments}</td>
                   <td>{currencyFormatter(payment?.total_value)}</td>
                 </tr>
