@@ -182,7 +182,7 @@ export function AddBudgetNew({
               />
             </div>
 
-            <SelectBudgetClient tutors={tutors} />
+            <SelectBudgetClient tutors={tutors} origin={"budget"} />
 
             {process.env.client === "sancla" && (
               <>
