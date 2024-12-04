@@ -2,7 +2,6 @@ import("next").NextConfig;
 
 const nextConfig = {
   env: {
-    api: process.env.api,
     NEXT_PUBLIC_API: process.env.NEXT_PUBLIC_API,
     SYSTEM_URL: process.env.SYSTEM_URL,
     plataform: process.env.plataform,
