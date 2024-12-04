@@ -41,7 +41,7 @@ function PrintTable({ data = [], loading }) {
               ? moment(item?.client?.createdAt).format("DD/MM/YYYY")
               : "-",
             nome_cliente: item?.client?.name,
-            cpf_cnpj: item?.client.document,
+            cpf_cnpj: item?.client?.document,
             celular_cliente: item?.client?.cellphone,
             origem_cliente: item?.client?.origin,
             profissao_cliente: item?.client?.profession,

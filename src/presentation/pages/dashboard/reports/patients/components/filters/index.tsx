@@ -1,19 +1,10 @@
 import { LoadAllPatientReports } from "@/domain";
 
-import {
-  FormHandler,
-  Select,
-  updateRoute,
-  useQueryClient,
-} from "infinity-forge";
+import { FormHandler, Select, updateRoute } from "infinity-forge";
 
 import { useRouter } from "next/router";
 
-import {
-  useLoadAllRaces,
-  useLoadAllSpecies,
-  useLoadAllPatientReports,
-} from "@/presentation";
+import { useLoadAllRaces, useLoadAllSpecies } from "@/presentation";
 import { ExportButton } from "../export-button";
 
 import * as S from "./styles";
@@ -64,14 +55,16 @@ export function Filters() {
           <Select
             label="Genêro"
             name="gender"
+            isClearable
             options={[
-              { label: "Femea", value: "Femea" },
+              { label: "Fêmea", value: "Femea" },
               { label: "Macho", value: "Macho" },
             ]}
           />
           <Select
             label="Castrado"
             name="castrated"
+            isClearable
             options={[
               { label: "Sim", value: "Sim" },
               { label: "Não", value: "Nao" },
@@ -80,6 +73,7 @@ export function Filters() {
           <Select
             label="Protocolos"
             name="protocol"
+            isClearable
             options={[
               { label: "Protocolos atrasados", value: "Protocolos Atrasados" },
               { label: "Protocolos Vencidos", value: "Protocolos Vencidos" },
@@ -95,6 +89,7 @@ export function Filters() {
           <Select
             label="Óbito"
             name="death"
+            isClearable
             options={[
               { label: "Sim", value: "Sim" },
               { label: "Não", value: "Nao" },
@@ -103,6 +98,7 @@ export function Filters() {
           <Select
             label="Microchip"
             name="microchip"
+            isClearable
             options={[
               { label: "Sim", value: "Sim" },
               { label: "Não", value: "Nao" },
@@ -111,6 +107,7 @@ export function Filters() {
           <Select
             label="Comunidade Sancla"
             name="community"
+            isClearable
             options={[
               { label: "Sim", value: "Sim" },
               { label: "Não", value: "Nao" },
@@ -119,9 +116,10 @@ export function Filters() {
           <Select
             label="Vacinado"
             name="vaccineOrigin"
+            isClearable
             options={[
               { label: "Vacinado", value: "Vacinado" },
-              { label: "Nao Vacinado", value: "Nao vacinado" },
+              { label: "Não Vacinado", value: "Nao vacinado" },
             ]}
           />
           <ExportButton />

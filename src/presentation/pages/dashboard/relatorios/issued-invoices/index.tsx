@@ -14,8 +14,12 @@ import { reportsService } from "@/OLD/services/reports.service";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 
 import * as S from "./styles";
+import { usePermission } from "@/presentation/context";
+import { AccessDenied } from "@/presentation/components";
 
 export function IssuedInvoices() {
+  const hasPermission = usePermission("REL17");
+
   const { createToast } = useToast();
   const { businessUnits } = useBusinessUnitsByUser(false, false);
 
@@ -82,6 +86,10 @@ export function IssuedInvoices() {
       }
       createToast({ status: "error", message: "Erro ao exportar." });
     }
+  }
+
+  if (!hasPermission) {
+    return <AccessDenied />;
   }
 
   return (

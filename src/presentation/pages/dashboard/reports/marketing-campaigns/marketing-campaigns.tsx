@@ -29,7 +29,7 @@ export function MarketingCampaignsReports() {
 
   const initialData = {
     ...router?.query,
-    campaign: Number(router?.query.campaign) || "",
+    marketingCampaign: Number(router?.query?.marketingCampaign) || "",
     units: Array.isArray(router?.query.units)
       ? router?.query.units
       : [router?.query?.units ?? []],
@@ -40,15 +40,17 @@ export function MarketingCampaignsReports() {
   };
 
   async function handleSubmit(payload) {
-    const fromDate = payload?.period?.startDate
-      ? moment(payload?.period?.startDate).format("YYYY-MM-DD")
+    const { period, ...rest } = payload;
+
+    const fromDate = period?.startDate
+      ? moment(period?.startDate).format("YYYY-MM-DD")
       : null;
-    const toDate = payload?.period?.endDate
-      ? moment(payload?.period?.endDate).format("YYYY-MM-DD")
+    const toDate = period?.endDate
+      ? moment(period?.endDate).format("YYYY-MM-DD")
       : null;
 
     const data = {
-      ...payload,
+      ...rest,
       fromDate,
       toDate,
     };
@@ -93,7 +95,7 @@ export function MarketingCampaignsReports() {
                 isClearable
                 label="Campanha"
                 menuPlacement="bottom"
-                name="campaign"
+                name="marketingCampaign"
                 onlyOneValue
                 options={campaigns?.data?.map((campaign) => ({
                   value: campaign?.id,

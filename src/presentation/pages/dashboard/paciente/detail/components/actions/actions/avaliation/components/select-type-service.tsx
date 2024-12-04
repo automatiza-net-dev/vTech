@@ -1,16 +1,14 @@
 import { useEffect, Dispatch, SetStateAction } from "react";
-import { useRouter } from "next/router";
 
-import { useFormikContext } from "formik";
 import { Select, useAuthAdmin } from "infinity-forge";
 
 import {
   useLoadPatient,
-  useLoadSchedule,
   useLoadAllScheduleServicesGroups,
 } from "@/presentation";
 import { RemoteSystem } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
+import { useFormikContext } from "formik";
 
 export function SelectTypeService({
   initialService,
@@ -19,13 +17,11 @@ export function SelectTypeService({
   initialService?: string;
   setBody?: Dispatch<SetStateAction<string>>;
 }) {
-  const router = useRouter();
-  const scheduleId = router.query?.scheduleId as string | undefined;
+  const { values } = useFormikContext<any>();
+  const initialValue = values["scheduleServiceId"][0];
 
   const patient = useLoadPatient();
   const { user } = useAuthAdmin();
-  const schedule = useLoadSchedule(scheduleId);
-  const { setFieldValue } = useFormikContext();
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups({});
 
@@ -52,12 +48,10 @@ export function SelectTypeService({
   }
 
   useEffect(() => {
-    const initialServiceTypeId = schedule?.data?.serviceType?.id;
-
-    if (schedule && initialServiceTypeId && router.isReady) {
-      AddInitialValueInResumeInput(initialServiceTypeId);
+    if (initialValue && data) {
+      AddInitialValueInResumeInput(initialValue);
     }
-  }, [router.isReady]);
+  }, [data, initialValue]);
 
   if (!data || isFetching) {
     return <></>;

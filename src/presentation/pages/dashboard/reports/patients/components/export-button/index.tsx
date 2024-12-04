@@ -1,16 +1,20 @@
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
+import { LoadAllPatientReports } from "@/domain";
+
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
-import { useQueryClient, Button } from "infinity-forge";
+import { Button } from "infinity-forge";
 
-import {
-  useLoadAllPatientReportsKEY,
-  useLoadAllPatientReports,
-} from "@/presentation";
+import { useLoadAllPatientReports } from "@/presentation";
 
 export function ExportButton() {
-  const refetch = useQueryClient((state) => state.refetch);
+  const [filters, setFilters] = useState<LoadAllPatientReports.Params>({});
 
-  const patientReports = useLoadAllPatientReports();
+  const patientReports = useLoadAllPatientReports(filters);
+
+  const router = useRouter();
 
   async function handleExport() {
     const data = patientReports?.data?.map((report) => ({
@@ -55,11 +59,18 @@ export function ExportButton() {
     XLSX.writeFile(wb, "relatório-pacientes" + ".xlsx");
   }
 
+  useEffect(() => {
+    if (patientReports?.data) {
+      handleExport();
+    }
+  }, [patientReports?.data]);
+
   return (
     <Button
       text="Exportar Excel"
-      onMouseOver={() => refetch(useLoadAllPatientReportsKEY())}
-      onClick={() => handleExport()}
+      onClick={async () => {
+        setFilters(router.query);
+      }}
     />
   );
 }

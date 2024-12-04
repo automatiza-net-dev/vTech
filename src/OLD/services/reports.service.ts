@@ -49,8 +49,11 @@ const getAnaliticalReceiptsReport = async (params) =>
 const getIssuedInvoices = async (params) =>
   await api.get("/reports/issued-nfe", { params });
 
+const getNFENFC = async (params) => await api.get("/focus/search", { params });
+
 export const reportsService = {
   getFlowReports,
+  getNFENFC,
   getIssuedInvoices,
   getCheckingAccountsReports,
   getExpiredReports,
