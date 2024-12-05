@@ -12,5 +12,6 @@ export * from "./use-load-all-patient-tutor";
 export * from "./use-load-all-schedules-user";
 export * from "./use-load-schedules-patients";
 export * from "./use-load-all-schedule-statuses";
+export * from "./use-load-all-returnable-events";
 export * from "./use-load-professionals-schedule";
 export * from "./use-load-all-schedule-service-groups";

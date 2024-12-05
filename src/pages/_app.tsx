@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import React from "react";
+import { useRouter } from "next/router";
 
 import Head from "next/head";
 
@@ -38,6 +39,8 @@ import { PermissionsProvider } from "@/presentation/context/permissions";
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
+  const router = useRouter();
+
   return (
     <QueryClientProvider client={queryClient}>
       <IpProvider>
@@ -75,6 +78,8 @@ export default function App({ Component, pageProps }) {
                 onSignOut: (user: any) => {
                   queryClient.clear();
                   queryClient.removeQueries();
+
+                  router.push("/")
 
                   if (user?.isThirdParty) {
                     window.location.href =

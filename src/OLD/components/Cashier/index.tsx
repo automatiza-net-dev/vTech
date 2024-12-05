@@ -30,7 +30,9 @@ const Cashier = memo(function Cashier() {
   const [dailyCasher, setDailyCasher] = useState([]);
   const router = useRouter();
 
-  const [filters, setFilters] = useState({ id: router?.query?.innerpage });
+  const id = router?.query?.innerpage;
+
+  const [filters, setFilters] = useState({ id });
 
   const { cashiers } = useDailyCasher(reload, filters);
 
@@ -39,8 +41,8 @@ const Cashier = memo(function Cashier() {
   }, [cashiers]);
 
   useEffect(() => {
-    setFilters({ id: router?.query?.subpage });
-  }, [router.query.subpage]);
+    setFilters({ id });
+  }, [id]);
 
   const createReceipt = useCallback(() => {
     setLoading(true);
@@ -80,7 +82,7 @@ const Cashier = memo(function Cashier() {
       .expenseDailyCasher(dailyCasher?.id, {
         entryDate: moment(new Date()).toISOString(),
         description: data?.description,
-        value: Masks.noMoney(data?.value),
+        value: Masks?.noMoney(data?.value),
         paymentMethodId: data?.paymentMethodId,
         accountPlanId: data?.accountPlanId,
         fiscalNote: data?.fiscalNote,

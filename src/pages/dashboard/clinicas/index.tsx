@@ -54,7 +54,7 @@ function Page() {
                 identification: (
                   <Link href={`/dashboard/clinicas/${item.id}`}>
                     <CustomLink>
-                      {`${item.companyName} - ${item?.fantasyName}`}
+                      {`${item.companyName} - ${item?.identification}`}
                     </CustomLink>
                   </Link>
                 ),

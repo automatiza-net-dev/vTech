@@ -1,20 +1,13 @@
-import { useEffect } from "react";
-
 import { useRouter } from "next/router";
 
-import {
-  Error,
-  Layout,
-  QueryState,
-  PrivatePage,
-  updateRoute,
-  useAuthAdmin,
-} from "infinity-forge";
+import { Error, Layout, PrivatePage, useAuthAdmin } from "infinity-forge";
 
-import { User } from "@/domain";
 import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { DictionaryQueryProvider, useLoadAllAvailableUnits } from "@/presentation";
+import {
+  DictionaryQueryProvider,
+  useLoadAllAvailableUnits,
+} from "@/presentation";
 
 import * as S from "./styles";
 
@@ -33,6 +26,7 @@ function LayoutPage({ children }) {
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
   const { user } = useAuthAdmin();
+
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({
       img: "",

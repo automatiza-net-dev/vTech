@@ -1,12 +1,18 @@
-import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { notification } from "antd";
-import { useAuthAdmin } from "infinity-forge";
-import { Button } from "infinity-forge";
-import { sessionService } from "@/OLD/services/session.service";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useState } from "react";
+
 import { container, TypesAutomatiza } from "@/container";
-import { Container } from "./styles";
+
+import moment from 'moment';
+import { notification } from "antd";
+import { useAuthAdmin, Button } from "infinity-forge";
+
+import { sessionService } from "@/OLD/services/session.service";
+
 import { Storage } from "@/infra";
+
+import { Container } from "./styles";
 
 export function SignIn() {
   const [data, setData] = useState({
@@ -16,6 +22,8 @@ export function SignIn() {
   });
   const [saveAccess, setSaveAccess] = useState(false);
   const { loadUser } = useAuthAdmin();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (process.browser) {
@@ -67,6 +75,11 @@ export function SignIn() {
           });
         }
 
+        router.push(
+          `/dashboard?fromDate=${moment().format(
+            "YYYY-MM-DD"
+          )}&toDate=${moment().format("YYYY-MM-DD")}`
+        );
         loadUser();
       } catch (err: any) {
         notification.error({

@@ -28,6 +28,7 @@ export const AddBudget = styled("div")`
   }
 
   .expirationDate {
+    width: 50%;
     .date_picker_container {
       background-color: transparent;
       border: 1px solid #ccc;

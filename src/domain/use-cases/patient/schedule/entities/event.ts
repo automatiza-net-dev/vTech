@@ -30,6 +30,7 @@ export type Event = {
     observation: string;
     reason: {
       reason: string;
+      id?: string;
     };
     patient: Patient;
     serviceStatus: {

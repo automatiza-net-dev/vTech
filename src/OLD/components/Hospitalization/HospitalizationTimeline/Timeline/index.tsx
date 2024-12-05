@@ -317,9 +317,9 @@ const renderTimeline = (obj, functions, allowEdit) => {
         <TimelineContainer>
           <span className="inf-tag weight-tag">Peso</span>
           <span className="inf-tag">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
+            {moment(obj?.realizedAt).format("DD/MM/YYYY")}
             &nbsp;às&nbsp;
-            {moment(obj?.data?.issuedAt).format("HH:mm")}
+            {moment(obj?.data?.realizedAt).format("HH:mm")}
           </span>
 
           <span className="inf-tag">{obj?.data?.technician?.name}</span>

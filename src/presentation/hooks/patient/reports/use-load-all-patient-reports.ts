@@ -1,29 +1,20 @@
-import { useRouter } from "next/router";
 import { useQuery } from "infinity-forge";
 
 import { RemotePatientReports } from "@/data";
 import { container, patientTypes } from "@/container";
 import { LoadAllPatientReports } from "@/domain";
 
-export function useLoadAllPatientReports() {
-  const router = useRouter();
-
+export function useLoadAllPatientReports(params: LoadAllPatientReports.Params) {
   async function fetcher() {
     const response = await container
       .get<RemotePatientReports>(patientTypes.RemotePatientReports)
-      .loadAllPatientReports(router.query);
+      .loadAllPatientReports(params);
     return response;
   }
 
-  const queryKey = useLoadAllPatientReportsKEY();
-
   return useQuery({
-    queryKey,
+    queryKey: ["RemoteLoadAllPatientReports", JSON.stringify(params)],
     queryFn: fetcher,
-    enabled: true,
+    enabled: Object.keys(params).length > 0,
   });
-}
-
-export function useLoadAllPatientReportsKEY() {
-  return "RemoteLoadAllPatientReports";
 }
