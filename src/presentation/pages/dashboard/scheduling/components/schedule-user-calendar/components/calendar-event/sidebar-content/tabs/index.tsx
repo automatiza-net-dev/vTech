@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import { LoadAllReturnableEvents } from "@/domain";
+
+import { useLoadAllReturnableEvents, useMe } from "@/presentation/hooks";
+
 import moment from "moment";
 import { Tab, TabItem } from "infinity-forge";
 
@@ -9,11 +13,20 @@ import * as S from "./styles";
 
 export function SidebarTabs({ event }: { event: Event }) {
   const [showInfos, setShowInfos] = useState(false);
-  const data = event?.event;
+  const [params, setParams] = useState<LoadAllReturnableEvents.Params>({});
+
+  const returnableEvents = useLoadAllReturnableEvents(params);
+  const user = useMe();
 
   function handleShowInfos() {
+    setParams({
+      scheduleId: event?.event?.id,
+      businessUnitId: user?.data?.unit?.id,
+    });
     setShowInfos(!showInfos);
   }
+
+  const data = returnableEvents?.data?.events[0]?.event;
 
   const tabs: TabItem[] = [
     {
@@ -30,15 +43,15 @@ export function SidebarTabs({ event }: { event: Event }) {
               {data?.reschedules?.map((info) => (
                 <div
                   className="schedule-content font-16-regular"
-                  key={info?.created_at}
+                  key={info?.createdAt}
                 >
                   <p>
-                    Data: {moment(info?.created_at).format("DD-MM-YYYY HH:mm")}
+                    Data: {moment(info?.createdAt).format("DD-MM-YYYY HH:mm")}
                   </p>
 
                   <p>Motivo: {info?.reason.reason}</p>
 
-                  <p>Observação: {info?.observation}</p>
+                  {info?.observation && <p>Observação: {info?.observation}</p>}
                 </div>
               ))}
             </div>
@@ -101,13 +114,13 @@ export function SidebarTabs({ event }: { event: Event }) {
                 <h5>Status:</h5>
               </div>
 
-              {data?.statusChanges?.reverse()?.map((info) => (
+              {data?.status_changes?.reverse()?.map((info) => (
                 <div className="schedule-content font-16-regular" key={info.id}>
                   <p>
                     Data: {moment(info?.created_at).format("DD-MM-YYYY HH:mm")}
                   </p>
 
-                  <p>Status: {info?.status?.description}</p>
+                  <p>Status: {info?.status}</p>
                 </div>
               ))}
             </div>

@@ -18,9 +18,9 @@ import {
   ErrorDailyBox,
   useLoadPatient,
   DeleteCartItems,
-  useLoadAllDailyMovements,
-  useLoadAllPatientTutor,
   SelectSchedule,
+  useLoadAllPatientTutor,
+  useLoadAllDailyMovements,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";

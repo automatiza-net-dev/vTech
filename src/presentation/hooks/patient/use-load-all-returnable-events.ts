@@ -1,21 +1,23 @@
 import { useQuery } from "infinity-forge";
 
 import { RemoteSchedule } from "@/data";
+import { LoadAllReturnableEvents } from "@/domain";
 import { container, patientTypes } from "@/container";
 
-export function useLoadSchedule(scheduleId) {
+export function useLoadAllReturnableEvents(
+  params: LoadAllReturnableEvents.Params
+) {
   async function fetcher() {
     const response = await container
       .get<RemoteSchedule>(patientTypes.RemoteSchedule)
-      .load({ scheduleId });
+      .loadAllReturnableEvents(params);
 
     return response;
   }
 
   return useQuery({
-    queryKey: ["RemoteLoadSchedules", scheduleId],
+    queryKey: ["LoadAllReturnableEvents", params],
     queryFn: fetcher,
-    enabled: !!scheduleId,
-    enableCache: true,
+    enabled: !!params?.scheduleId
   });
 }
