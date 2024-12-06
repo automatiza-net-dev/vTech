@@ -48,7 +48,7 @@ export function SelectTypeService({
   }
 
   useEffect(() => {
-    if (initialValue && data) {
+    if (!initialValue) {
       AddInitialValueInResumeInput(initialValue);
     }
   }, [data, initialValue]);
