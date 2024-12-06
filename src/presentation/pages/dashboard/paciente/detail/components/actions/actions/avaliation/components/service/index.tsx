@@ -138,7 +138,7 @@ export function Service({ scheduleId, mutate, ...props }) {
 
   const initialData = {
     ...timeLine.timeline_info,
-    internalObservations: timeLine?.timeline_info?.internalObservation
+    internalObservation: timeLine?.timeline_info?.internalObservation
       ? timeLine?.timeline_info?.internalObservation
       : schedule?.data?.serviceType?.description || "",
     scheduleServiceId: timeLine?.timeline_info?.service?.id

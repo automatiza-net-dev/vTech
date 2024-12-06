@@ -21,6 +21,7 @@ import { PageWrapper } from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
+import { LaunchRelatedSale } from "./launch-related-sale";
 
 const Container = styled.div`
   display: flex;
@@ -127,6 +128,7 @@ const BillActions = React.memo(function BillActions({
         bill?.status === "Nao Aprovada") && (
         <>
           <AddBillItem bill={bill} />
+
           {addPaymentPermission && (
             <Tooltip title="Adicionar Pagamento">
               <MdMonetizationOn
@@ -174,6 +176,8 @@ const BillActions = React.memo(function BillActions({
       {convertTreatmentPermission && (
         <ConvertBillToTreatment bill={bill} setReload={setReload} />
       )}
+
+      <LaunchRelatedSale billId={bill.id} internalCode={bill?.internalCode} />
 
       <Tooltip title="Detalhes da nota">
         <CgDetailsMore

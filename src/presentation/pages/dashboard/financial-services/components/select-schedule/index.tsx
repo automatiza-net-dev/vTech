@@ -1,16 +1,12 @@
 import { useState } from "react";
 
+import moment from "moment";
+import { Select } from "infinity-forge";
+import { useFormikContext } from "formik";
+
 import { LoadAllSchedullingToMovement } from "@/domain";
 
-import moment from "moment";
-import { useFormikContext } from "formik";
-import { Select, useQueryClient } from "infinity-forge";
-
-import {
-  useLoadSchedulesToMovement,
-  useLoadSchedulesToMovementKEY,
-  useMe,
-} from "@/presentation";
+import { useLoadSchedulesToMovement, useMe } from "@/presentation";
 
 export function SelectSchedule() {
   const user = useMe();
