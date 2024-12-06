@@ -38,8 +38,11 @@ export function Pets({
     patientFilters,
   });
 
-  const options = data?.map((tutor) => {
-    return { label: tutor.name, value: tutor.id };
+  const options = data?.map((patient) => {
+    return {
+      label: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
+      value: patient.id,
+    };
   });
 
   const [petId] = useField("petId");

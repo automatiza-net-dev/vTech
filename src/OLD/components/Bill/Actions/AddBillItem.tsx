@@ -14,20 +14,23 @@ export default function AddBillItem({ bill }: { bill: Bill }) {
         open={open}
         styles={{ maxWidth: "1200px" }}
       >
-        <AddSale setModal={setOpen} billId={bill?.id} />
+        <AddSale setModal={setOpen} billId={bill?.id} type="edit" />
       </Modal>
 
-      <Button type="button" style={{ background: "transparent", padding: 0, border: 0 }} onClick={() => setOpen(true)}>
-        <Icon name="IconEdit" color="#000"  />
+      <Button
+        type="button"
+        style={{ background: "transparent", padding: 0, border: 0 }}
+        onClick={() => setOpen(true)}
+      >
+        <Icon name="IconEdit" color="#000" />
       </Button>
     </>
   );
 }
- 
-export const Button = styled.button`
 
+export const Button = styled.button`
   svg {
     height: 20px;
     width: auto;
   }
-`
+`;
