@@ -417,7 +417,9 @@ function TitlesForm({
           );
         })}
       <hr />
-      <footer className="uk-flex uk-margin-top uk-flex-right">
+      <footer
+        style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+      >
         {!loading ? (
           <Button type="submit" text="salvar" />
         ) : (

@@ -287,8 +287,8 @@ export function FormChild({
                     menuPlacement="bottom"
                     name="gender"
                     options={[
-                      { label: "Feminino", value: "female" },
-                      { value: "male", label: "Masculino" },
+                      { label: "Feminino", value: "Feminino" },
+                      { label: "Masculino", value: "Masculino" },
                     ]}
                     onlyOneValue
                     value={data?.gender}
