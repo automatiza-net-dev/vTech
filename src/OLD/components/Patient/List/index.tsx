@@ -90,11 +90,7 @@ export function PatientList({
                 </div>
               ),
               tag: patient.tag ?? "-",
-              gender: patient.gender
-                ? patient.gender === "male"
-                  ? "Macho"
-                  : "Fêmea"
-                : "-",
+              gender: patient.gender,
               birthDate: patient?.birthDate
                 ? convertDate(patient.birthDate)
                 : "-",

@@ -142,8 +142,8 @@ function Form({
                 label="Gênero"
                 name="gender"
                 options={[
-                  { label: "Fêmea", value: "female" },
-                  { value: "male", label: "Macho" },
+                  { label: "Fêmea", value: "Femea" },
+                  { label: "Macho", value: "Macho" },
                 ]}
                 onlyOneValue
               />

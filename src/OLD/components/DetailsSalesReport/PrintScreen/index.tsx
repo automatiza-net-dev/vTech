@@ -223,7 +223,7 @@ function PrintScreen({ reports }) {
               <div>
                 Genero:
                 <br />
-                {item?.genero_dep === "female" ? "Femea" : "Macho"}
+                {item?.genero_dep}
               </div>
             </div>
             <div className="uk-flex uk-flex-around content-box">

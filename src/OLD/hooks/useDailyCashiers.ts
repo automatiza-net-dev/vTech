@@ -17,8 +17,8 @@ export const useDailyCasher = (
 
     const newObj = {
       ...filters,
-      fromOpening: moment(filters?.fromBill).toISOString(),
-      toOpening: moment(filters?.toBill).toISOString(),
+      fromOpening: moment(filters?.fromBill).subtract(3, "hours").toISOString(),
+      toOpening: moment(filters?.toBill).subtract(3, "hours").toISOString(),
     };
 
     if (isComplete) {

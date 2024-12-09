@@ -11,7 +11,7 @@ export type SchedulePatient = {
   start_hour: string; // Verificar tipagem LoadSchedulingToMovement
   birthDate: string;
   castrated: boolean;
-  gender: "female" | "male";
+  gender: "Macho" | "Femea";
   id: string;
   name: string;
   tag: string;

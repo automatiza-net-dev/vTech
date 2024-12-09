@@ -32,7 +32,7 @@ const Container = styled.div`
   }
 `;
 
-const BillActions = React.memo(function BillActions({
+function BillActions({
   bill,
   client,
   setReload = false,
@@ -226,6 +226,6 @@ const BillActions = React.memo(function BillActions({
       )}
     </Container>
   );
-});
+};
 
 export default BillActions;

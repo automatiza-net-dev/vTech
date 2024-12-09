@@ -1,41 +1,37 @@
 // @ts-nocheck
-// Core
 import React, { memo, useState, useCallback, useEffect } from "react";
-import { useProfile } from "@/OLD/hooks/useProfile";
 
-// Services
-import { hospitalizationOccurences } from "@/OLD/services/hospitalizationsOcurrences.service";
-import { hospitalizationService } from "@/OLD/services/hospitalization.service";
+import moment from "moment";
+import {
+  Button,
+  Modal,
+  Select,
+  InputDatePicker,
+  Input,
+  useToast,
+  FormHandler,
+} from "infinity-forge";
+
+import { useLoadDashboard } from "@/presentation";
+import { useProfile } from "@/OLD/hooks/useProfile";
 import { clinicService } from "@/OLD/services/clinic.service";
+import { hospitalizationService } from "@/OLD/services/hospitalization.service";
+import { hospitalizationOccurences } from "@/OLD/services/hospitalizationsOcurrences.service";
+
+import Details from "./Details";
+import HeaderForm from "../HeaderForm";
+import UploadArquives from "../Arquives";
+import Editor from "@/OLD/components/Editor";
+import Print from "@/OLD/components/mini-components/Print";
+import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
+
+import * as S from "./styles";
 
 const dischargeTypes = [
   { id: 1, value: "AI" },
   { id: 2, value: "AO" },
   { id: 3, value: "AU" },
 ];
-
-// Components
-import {
-  Modal,
-  AutoComplete,
-  DatePicker,
-  TimePicker,
-  Input,
-  notification,
-  Select,
-} from "antd";
-import { Button } from "infinity-forge";
-import HeaderForm from "../HeaderForm";
-import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
-import Editor from "@/OLD/components/Editor";
-import UploadArquives from "../Arquives";
-import Details from "./Details";
-import Print from "@/OLD/components/mini-components/Print";
-const { Option } = Select;
-
-// Utils
-import moment from "moment";
-import { useLoadDashboard } from "@/presentation";
 
 const detectForm = (str) => {
   switch (str) {
@@ -68,18 +64,21 @@ function BaseForm({
   const [dischargeType, setDischargeType] = useState("");
   const [allVets, setAllVets] = useState([]);
   const { user } = useProfile();
+  const { createToast } = useToast();
 
   const finalizeHospitalization = useCallback(() => {
     hospitalizationService
       .finalizeHospitalization(patientData?.id)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Hospitalização finalizada com sucesso!",
+          status: "success",
         })
       )
       .catch((err) =>
-        notification.error({
+        createToast({
           message: "Houve um erro ao finalizar a hospitalização do paciente",
+          status: "error",
         })
       )
       .finally(() => {
@@ -93,8 +92,9 @@ function BaseForm({
       .getAllBaseOccurrences()
       .then((res) => setAllOccurrences(res.data))
       .catch((_err) => {
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao buscar as ocorrências para registro",
+          status: "error",
         });
       });
   }, []);
@@ -107,16 +107,17 @@ function BaseForm({
         setAllVets(
           res.data.map((item) => {
             return {
-              value: item?.name,
-              id: item?.id,
+              label: item?.name,
+              value: item?.id,
             };
           })
         )
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Não foi possível buscar os veterinários disponíveis.",
+          status: "error",
         });
       })
       .finally(() => {
@@ -127,6 +128,7 @@ function BaseForm({
   const occurrenceFormat = (data) => {
     const formData = new FormData();
     formData.append("hospitalizationId", patientData?.id);
+    formData.append("userId", data.userId);
     formData.append(
       "occurrenceId",
       allOccurrences.find((item) => item?.type === "OC")?.id
@@ -141,7 +143,6 @@ function BaseForm({
     formData.append("previewedAt", moment(new Date()).toISOString());
     formData.append("resume", data?.description);
     formData.append("description", body);
-    formData.append("userId", data?.selectedVetId);
 
     if (fileList.length > 0) {
       fileList.forEach((item) =>
@@ -155,6 +156,7 @@ function BaseForm({
   const weightFormat = (data) => {
     const formData = new FormData();
     formData.append("hospitalizationId", patientData?.id);
+    formData.append("userId", data.userId);
     formData.append(
       "occurrenceId",
       allOccurrences.find((item) => item?.type === "P")?.id
@@ -178,6 +180,7 @@ function BaseForm({
       occurrenceId: allOccurrences.find((item) => item?.type === dischargeType)
         ?.id,
       description: body,
+      userId: data.userId,
       resume: `Alta (${dischargeType}) - ${data?.dischargeType}`,
       executedAt: moment(data?.executedAt)
         .hours(parseInt(moment(data?.hour).format("HH")))
@@ -193,13 +196,13 @@ function BaseForm({
       hospitalizationId: patientData?.id,
       occurrenceId: allOccurrences.find((item) => item?.type === "OB")?.id,
       description: body,
+      userId: data.userId,
       resume: "Óbito (OB)",
       executedAt: moment(data?.executedAt)
         .hours(parseInt(moment(data?.hour).format("HH")))
         .minutes(parseInt(moment(data?.hour).format("mm")))
         .toISOString(),
       previewedAt: moment(new Date()).toISOString(),
-      userId: data?.selectedVetId,
     };
   };
 
@@ -209,12 +212,12 @@ function BaseForm({
       occurrenceId: allOccurrences.find((item) => item?.type === "RM")?.id,
       description: body,
       resume: "Relatório médico",
+      userId: data.userId,
       executedAt: moment(data?.executedAt)
         .hours(parseInt(moment(data?.hour).format("HH")))
         .minutes(parseInt(moment(data?.hour).format("mm")))
         .toISOString(),
       previewedAt: moment(new Date()).toISOString(),
-      userId: data?.selectedVetId,
     };
   };
 
@@ -258,15 +261,17 @@ function BaseForm({
 
       if (occurrencesEvents.includes("Alta Observação")) {
         setVisible(false);
-        return notification.warning({
+        return createToast({
           message: "Paciente já recebeu alta, ação indisponível",
+          status: "error",
         });
       }
 
       if (patientData?.death_at) {
         setVisible(false);
-        return notification.warning({
+        return createToast({
           message: "Paciente veio a óbito, ação indisponível",
+          status: "error",
         });
       }
     }
@@ -277,35 +282,15 @@ function BaseForm({
     await hospitalizationOccurences
       .createOccurrence(formTreatment(formType, data))
       .then((res) => {
-        notification.success({
+        createToast({
           message: `${title} salvo com sucesso!`,
+          status: "success",
         });
 
         if (["Óbito", "Alta"].includes(title)) {
-          return notification.warning({
-            key: "discharge",
-            message: (
-              <div>
-                <p className="uk-margin-remvoe">
-                  Deseja finalizar a internação?
-                </p>
-                <div className="uk-flex uk-flex-around">
-                  <Button
-                    onClick={() => {
-                      finalizeHospitalization();
-                      notification.destroy({ key: "discharge" });
-                    }}
-                    text="Sim"
-                  />
-
-                  <Button
-                    onClick={() => notification.destroy({ key: "discharge" })}
-                    text="Não"
-                  />
-                </div>
-              </div>
-            ),
-          });
+          if (confirm("Deseja finalizar a internação ?")) {
+            finalizeHospitalization();
+          }
         }
       });
 
@@ -320,153 +305,133 @@ function BaseForm({
 
   return (
     <Modal
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      title={title}
-      footer={null}
-    >
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          try {
-            await submitOccurrenceFormData();
-            notification.success({
-              message: `Ocorrência gerada com sucesso!`,
-            });
-          } catch (error) {
-            notification.error({
-              message: `Ocorreu um erro ao gerar a ocorrência.`,
-            });
-          }
-        }}
-      >
-        <HeaderForm patientData={patient} />
-        {formType !== "details" ? (
-          <>
-            <div className="uk-width-1-1">
-              <label>Veterinário responsável</label>
-              <AutoComplete
-                className="uk-width-1-1"
-                options={allVets}
-                value={data?.user}
-                onSelect={(e, option) =>
-                  setData({ ...data, user: e, selectedVetId: option.id })
-                }
-                onChange={(e) => setData({ ...data, user: e })}
-                filterOption={(inputValue, option) =>
-                  option.value.toUpperCase().includes(inputValue.toUpperCase())
-                    ? option
-                    : null
-                }
-              />
-            </div>
-            <div className="uk-margin-top uk-flex uk-flex-between">
-              <div>
-                <label>Data</label>
-                <br />
-                <DatePicker
-                  format={"DD/MM/YYYY"}
-                  onChange={(e) => setData({ ...data, executedAt: e })}
-                  value={
-                    data?.executedAt
-                      ? moment(data?.executedAt)
-                      : moment(data?.executedAt)
-                  }
+      open={visible}
+      styles={{ padding: "10px" }}
+      onClose={() => setVisible(false)}
+      children={
+        <S.BaseForm>
+          <FormHandler
+            onChangeForm={{ callbackResult: (payload) => setData(payload) }}
+            customAction={{
+              Component: () => (
+                <Button
+                  onClick={() => {
+                    setVisible(false);
+                  }}
+                  style={{ backgroundColor: "#ff7b5a" }}
+                  text="Cancelar"
                 />
-              </div>
-              <div>
-                <label>Hora</label>
-                <br />
-                <TimePicker
-                  format={"HH:mm"}
-                  onChange={(e) => setData({ ...data, hour: e })}
-                  value={moment(data?.hour)}
-                />
-              </div>
-            </div>
-            {formType === "discharge" && (
-              <div className="uk-margin-top">
-                <label>Tipo Alta</label>
-                <Select
-                  className="uk-width-1-1"
-                  onChange={(val) => setData({ ...data, dischargeType: val })}
-                >
-                  <Option value="Alta indicada">Alta indicada</Option>
-                  <Option value="Não indicada">Alta sem indicação</Option>
-                </Select>
-              </div>
-            )}
-            {detectForm(formType) && (
-              <div className="uk-margin-top">
-                <label>{detectForm(formType)}</label>
-                <Input
-                  onChange={(e) =>
-                    setData({ ...data, description: e.target.value })
-                  }
-                  type={formType === "weight" ? "number" : "text"}
-                  value={data?.description}
-                />
-              </div>
-            )}
-            <div className="uk-margin-top">
-              <label>{report}</label>
-              <Editor
-                editorState={body}
-                setEditorState={setBody}
-                value={body}
-              />
-            </div>
-            {formType === "occurrence" && (
-              <UploadArquives fileList={fileList} setFileList={setFileList} />
-            )}
-            {report === "Relatório médico" && (
-              <Print
-                tutor={patient?.tutor}
-                patient={patient?.patient}
-                triggerComponent={
-                  <Button style={{ marginTop: "10px" }} text="Imprimir" />
-                }
-                content={body}
-                title={"Relatório médico"}
-                string={true}
-                onBeforePrint={async () => {
+              ),
+            }}
+            customSubmit={[
+              {
+                action: async () => {
                   try {
                     await submitOccurrenceFormData();
-                    return true;
-                  } catch (error) {
-                    notification.error({
-                      message: `Preencha todos os campos.`,
+                    createToast({
+                      message: `Ocorrência gerada com sucesso!`,
+                      status: "success",
                     });
-                    throw new Error(error?.message);
+                  } catch (error) {
+                    createToast({
+                      message: `Ocorreu um erro ao gerar a ocorrência.`,
+                      status: "error",
+                    });
                   }
-                }}
-              />
+                },
+                active: true,
+                props: {
+                  text: "Salvar",
+                },
+              },
+            ]}
+          >
+            <h2>{title}</h2>
+            <HeaderForm patientData={patient} />
+            {formType !== "details" ? (
+              <>
+                <div>
+                  <Select
+                    onlyOneValue
+                    name="userId"
+                    label="Veterinário responsável"
+                    options={allVets}
+                  />
+                </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <InputDatePicker name="executedAt" label="Data" />
+
+                  <InputDatePicker mode="timer" label="Hora" name="hour" />
+                </div>
+                {formType === "discharge" && (
+                  <div>
+                    <Select
+                      onlyOneValue
+                      label="Tipo Alta"
+                      name="dischargeType"
+                      options={[
+                        { label: "Alta indicada", value: "Alta indicada" },
+                        { label: "Alta não indicada", value: "Não indicada" },
+                      ]}
+                    />
+                  </div>
+                )}
+                {detectForm(formType) && (
+                  <div>
+                    <Input
+                      label={detectForm(formType)}
+                      name="description"
+                      type={formType === "weight" ? "number" : "text"}
+                    />
+                  </div>
+                )}
+                <div>
+                  <label>{report}</label>
+                  <Editor
+                    editorState={body}
+                    setEditorState={setBody}
+                    value={body}
+                  />
+                </div>
+                {formType === "occurrence" && (
+                  <UploadArquives
+                    fileList={fileList}
+                    setFileList={setFileList}
+                  />
+                )}
+                {report === "Relatório médico" && (
+                  <Print
+                    tutor={patient?.tutor}
+                    patient={patient?.patient}
+                    triggerComponent={
+                      <Button style={{ marginTop: "10px" }} text="Imprimir" />
+                    }
+                    content={body}
+                    title={"Relatório médico"}
+                    string={true}
+                    onBeforePrint={async () => {
+                      try {
+                        await submitOccurrenceFormData();
+                        return true;
+                      } catch (error) {
+                        createToast({
+                          message: `Preencha todos os campos.`,
+                          status: "error",
+                        });
+                        throw new Error(error?.message);
+                      }
+                    }}
+                  />
+                )}
+              </>
+            ) : (
+              <Details patient={patient} setVisible={setVisible} />
             )}
-            <FormFooter setVisible={setVisible} />
-          </>
-        ) : (
-          <Details patient={patient} setVisible={setVisible} />
-        )}
-      </form>
-    </Modal>
+          </FormHandler>
+        </S.BaseForm>
+      }
+    />
   );
 }
 
 export default BaseForm;
-
-// crmDashboard=true
-
-// async function GetDashbooad() {
-
-//   switch(type === "crm") {
-
-//     case "crm": return service.crm.dashboard()
-
-//     case "franqueado": return service.franqueado.dashboard()
-
-//     default "dashboard": return service.dashboard.dashboard()
-//   }
-// }
-
-// useLoadDashboard()
-// useLoadDashboard({ type: "crm" })
