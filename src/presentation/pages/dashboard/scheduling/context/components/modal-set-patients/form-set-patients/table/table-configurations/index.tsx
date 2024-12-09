@@ -35,7 +35,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element: (props) => (
         <>
-          {props.gender ? (props.gender === "female" ? "Fêmea" : "Macho") : "-"}
+          {props.gender ? props.gender : "-"}
         </>
       ),
       props: {},

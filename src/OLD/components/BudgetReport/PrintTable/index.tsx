@@ -63,8 +63,7 @@ function PrintTable({ reports }) {
             data_nasc_dependente: item?.patient?.birthDate
               ? moment(item?.patient?.birthDate).utc().format("DD/MM/YYYY")
               : "-",
-            genero_dependente:
-              item?.patient?.gender === "female" ? "Fêmea" : "Macho",
+            genero_dependente: item?.patient?.gender,
             especie_dep: item?.patient?.race?.specie?.description,
             raca_dep: item?.patient?.race?.description,
             castrado_dep: item?.patient?.castrated ? "Sim" : "Não",
@@ -225,6 +224,6 @@ function PrintTable({ reports }) {
       </div>
     </>
   );
-};
+}
 
 export default PrintTable;

@@ -27,12 +27,18 @@ const vetech: DefaultThemeInfinityForge = {
   primaryColor: "#13C2C2",
 };
 
+const clinicas: DefaultThemeInfinityForge = {
+  ...generalTheme,
+  primaryColor: "#7F7F7F",
+}
+
 const themes: {
-  [key in "liftone" | "sancla" | "vetech"]: DefaultThemeInfinityForge;
+  [key in "liftone" | "sancla" | "vetech" | "clinicas"]: DefaultThemeInfinityForge;
 } = {
   liftone,
   sancla,
   vetech,
+  clinicas
 };
 
 export { themes };

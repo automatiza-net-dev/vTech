@@ -317,7 +317,7 @@ export const FormChild = React.memo(function FormChild({
                 >
                   <option value="Masculino">Masculino</option>
                   <option value="Feminino">Feminino</option>
-                  <option value="Feminino">Outros</option>
+                  <option value="Outros">Outros</option>
                 </Select>
               </Form.Item>
               <Form.Item
