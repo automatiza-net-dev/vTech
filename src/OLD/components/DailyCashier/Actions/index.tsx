@@ -25,7 +25,7 @@ import FormChild from "./FormChild";
 import CashierReport from "../CashierReport";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-const Actions = memo(function Actions({ casher, reload, setReload }) {
+const Actions = memo(function Actions(casher) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const [obsVisible, setObsVisible] = useState(false);
@@ -54,7 +54,6 @@ const Actions = memo(function Actions({ casher, reload, setReload }) {
           message: "Caixa fechado com sucesso!",
         });
 
-        setReload(!reload);
         setData({});
         setObsVisible(false);
         setSubmitFunc(null);
@@ -87,7 +86,6 @@ const Actions = memo(function Actions({ casher, reload, setReload }) {
 
         setSubmitFunc(null);
         setLoading(false);
-        setReload(!reload);
         setData({});
         setObsVisible(false);
       })
@@ -119,7 +117,6 @@ const Actions = memo(function Actions({ casher, reload, setReload }) {
         setSubmitFunc(null);
         setLoading(false);
         setData({});
-        setReload(!reload);
         setObsVisible(false);
       })
       .catch((err) => {
@@ -149,7 +146,7 @@ const Actions = memo(function Actions({ casher, reload, setReload }) {
 
   useEffect(() => {
     setData({ cashierTotal: currencyFormatter(0) });
-  }, [reload]);
+  }, []);
 
   useEffect(() => {
     document.addEventListener("keypress", submitFuncControll);

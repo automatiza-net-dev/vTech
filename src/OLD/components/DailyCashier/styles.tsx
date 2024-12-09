@@ -1,20 +1,50 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+export const DailyCashier = styled("div")`
+  .right {
+    height: fit-content;
+    min-width: max-content;
+    margin: auto 0 0;
 
-export const Input = styled.div`
-  display: flex;
-  align-items: center;
-  height: 40px;
-  width: 40%;
-  background-color: #fff;
-  border-radius: 40px;
-  padding: 0 20px;
-  margin: 2px;
+    button {
+      border: none;
+      height: 40px;
+    }
+  }
 
-  .date-input {
-    margin-left: 10px;
+  .form-button {
+    button {
+      height: 40px;
+    }
+  }
+
+  form {
+    margin-right: 5px;
+
+    .container-switch {
+      width: 100%;
+    }
+  }
+
+  form > div {
     border: none;
-    width: 100%;
+    padding: 0;
+
+    > div:first-child {
+      button {
+        background: none !important;
+        min-width: 16px;
+        min-height: 16px;
+        padding: 0;
+      }
+    }
+
+    .react-daterange-picker {
+      width: 400px;
+    }
+
+    .react-daterange-picker__inputGroup {
+      width: 100% !important;
+    }
   }
 `;

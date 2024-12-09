@@ -514,7 +514,7 @@ export function List({
             options={patients?.map((patient) => ({
               ...patient,
               key: patient?.id,
-              value: patient?.name,
+              value: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
             }))}
             value={selectedPetToVinc?.name}
             onChange={(val) => setSelectedPetToVinc({ name: val })}
