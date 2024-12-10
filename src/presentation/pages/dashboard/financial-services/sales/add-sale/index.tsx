@@ -6,6 +6,7 @@ import {
   useToast,
   FormHandler,
   LoaderCircle,
+  useAuthAdmin,
   BadRequestError,
 } from "infinity-forge";
 
@@ -58,6 +59,11 @@ export function AddSale({
   })?.data;
 
   const { createToast } = useToast();
+  const { user } = useAuthAdmin();
+
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const hasSyncScheduleMovements =
+    user?.unit?.unitConfig?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
     (movement) => movement.status === "Aberto"
@@ -176,7 +182,7 @@ export function AddSale({
         </h2>
 
         <div className="row">
-          <SelectBudgetClient tutors={tutors} />
+          <SelectBudgetClient tutors={tutors} hideCheckbox />
 
           {process.env.client === "sancla" ? (
             <SelectBudgetPatient tutors={tutors} />
@@ -186,7 +192,8 @@ export function AddSale({
                 name="financialResponsibleId"
                 label="Responsável financeiro"
               />
-              <SelectSchedule />
+
+              {hasSyncScheduleMovements && <SelectSchedule />}
             </>
           )}
 
@@ -197,16 +204,20 @@ export function AddSale({
             />
           )}
 
-          <Input
-            label="Código Interno"
-            name="internalCode"
-            disabled={!!internalCode}
-          />
+          {hasInternalCode && (
+            <Input
+              label="Código Interno"
+              name="internalCode"
+              disabled={!!internalCode}
+            />
+          )}
         </div>
 
         <div className="row">
           <SelectSeller />
-          {process?.env?.client === "sancla" && <SelectSchedule />}
+          {process?.env?.client === "sancla" && hasSyncScheduleMovements && (
+            <SelectSchedule />
+          )}
           <Input label="Observação" name="additionalInformation" />
         </div>
 

@@ -28,7 +28,7 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useAuthAdmin } from "infinity-forge";
 import { Table, Tooltip, Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "./Actions";
@@ -73,6 +73,9 @@ export default function Titles({ type }: any) {
   const { clinics } = useClinic(Reload);
   const { titles, setTitles } = useAuth();
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
+  const { user } = useAuthAdmin();
+
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   const createTitlePermission = useUserHasPermission(
     `${accessControlTitles(type)}01`
@@ -203,6 +206,7 @@ export default function Titles({ type }: any) {
                 }`
               : "-",
           nsu: finance?.nsu_document || "-",
+          internalCode: finance?.internal_code || "-",
           actions:
             finance?.source === "FINANCE" ? (
               <FinancesActions
@@ -303,6 +307,7 @@ export default function Titles({ type }: any) {
     if (finance?.length > 0 && updateOpen) {
       setData({
         id: data?.id[0],
+        internalCode: finance[0]?.internalCode,
         installment: finance[0]?.installment,
         value: currencyFormatter(finance[0]?.value),
         feeValue: finance[0]?.fee_value
@@ -399,7 +404,13 @@ export default function Titles({ type }: any) {
         )}
         <Table
           pagination={{ onChange: (page) => setCurrentPage(page) }}
-          columns={Columns(selectAllFinances)}
+          columns={
+            hasInternalCode
+              ? Columns(selectAllFinances)
+              : Columns(selectAllFinances).filter(
+                  (column) => column.key !== "internalCode"
+                )
+          }
           dataSource={formatedFinances}
           footer={() => (
             <footer className="uk-flex uk-flex-center">

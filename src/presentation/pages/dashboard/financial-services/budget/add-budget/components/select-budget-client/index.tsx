@@ -7,7 +7,13 @@ import { Tutor } from "@/domain";
 
 import * as S from "./styles";
 
-export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
+export function SelectBudgetClient({
+  tutors,
+  hideCheckbox,
+}: {
+  tutors: Tutor[];
+  hideCheckbox?: boolean;
+}) {
   const [clientExists, setClientExists] = useState<boolean>(true);
 
   const { initialValues, setValues } = useFormikContext<Tutor>();
@@ -31,20 +37,26 @@ export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
       ) : (
         <Input name="clientName" label="Cliente (não existente na base)" />
       )}
-      <div className="checkbox-box" style={{ marginTop: "20px" }}>
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            setClientExists(!e.target.checked);
-            if (e.target.checked) {
-              setValues((prv) => ({ ...prv, clientId: "", patientId: "" }));
-            } else {
-              setValues((prv) => ({ ...prv, clientName: "", patientName: "" }));
-            }
-          }}
-        />{" "}
-        <label>Cliente não cadastrado</label>
-      </div>
+      {!hideCheckbox && (
+        <div className="checkbox-box" style={{ marginTop: "20px" }}>
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              setClientExists(!e.target.checked);
+              if (e.target.checked) {
+                setValues((prv) => ({ ...prv, clientId: "", patientId: "" }));
+              } else {
+                setValues((prv) => ({
+                  ...prv,
+                  clientName: "",
+                  patientName: "",
+                }));
+              }
+            }}
+          />{" "}
+          <label>Cliente não cadastrado</label>
+        </div>
+      )}
     </S.SelectBudgetClient>
   );
 }

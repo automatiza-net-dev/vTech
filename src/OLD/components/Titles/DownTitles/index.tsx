@@ -66,6 +66,7 @@ function DownTitles({ setVisible, setReload }: any) {
             discountValue: currencyFormatter(0),
             paymentValue: currencyFormatter(title?.value),
             agency: title?.agency,
+            internalCode: title?.internalCode,
             bank: title?.bank,
             account: title?.account,
             userDocument: title?.user_document,
