@@ -76,6 +76,7 @@ const Actions = memo(function Actions({
   useEffect(() => {
     finance &&
       setData({
+        internalCode: finance[0]?.internalCode,
         installment: finance[0]?.installment,
         value: currencyFormatter(finance[0]?.value),
         feeValue: finance[0]?.fee_value

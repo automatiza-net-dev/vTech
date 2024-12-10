@@ -9,7 +9,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, useAuthAdmin } from "infinity-forge";
 import { DatePicker, Input, Select, notification } from "antd";
 const { Option } = Select;
 
@@ -26,6 +26,9 @@ function TitlesForm({
   setVisible,
 }) {
   const router = useRouter();
+  const { user } = useAuthAdmin();
+
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   return (
     <form
@@ -263,6 +266,22 @@ function TitlesForm({
                         ))}
                     </Select>
                   </div>
+
+                  {hasInternalCode && (
+                    <div
+                      style={{ marginLeft: 10 }}
+                      className="uk-width-1-4 uk-margin-small-right"
+                    >
+                      <label>Código interno</label>
+                      <Input
+                        disabled={true}
+                        value={data?.internalCode}
+                        onChange={(e) =>
+                          setData({ ...data, internalCode: e.target.value })
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="uk-flex uk-margin-top">
                   <div className="uk-margin-small-right uk-width-1-6">

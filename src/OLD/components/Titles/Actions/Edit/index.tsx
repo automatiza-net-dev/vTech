@@ -15,6 +15,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 // Components
 import { Input, Select, Button, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
+import { useAuthAdmin } from "infinity-forge";
 const { Option } = Select;
 
 const Edit = memo(function Edit({
@@ -28,6 +29,8 @@ const Edit = memo(function Edit({
   setEdit = false,
   source = false,
 }) {
+  const { user } = useAuthAdmin();
+
   const [flags, setFlags] = useState([]);
 
   const { checkingAccounts } = useCheckingAccounts();
@@ -39,6 +42,8 @@ const Edit = memo(function Edit({
   const editPaymentMethodPermission = useUserHasPermission(
     `${accessControlTitles(data?.type)}10`
   );
+
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   useEffect(() => {
     setFlags(
@@ -279,7 +284,21 @@ const Edit = memo(function Edit({
             onChange={(e) => setData({ ...data, nsuDocument: e.target.value })}
           />
         </div>
+
+        {hasInternalCode && (
+          <div className="uk-width-1-4 uk-margin-small-right">
+            <label>Código interno</label>
+            <Input
+              disabled={true}
+              value={data?.internalCode}
+              onChange={(e) =>
+                setData({ ...data, internalCode: e.target.value })
+              }
+            />
+          </div>
+        )}
       </div>
+
       <div className="uk-flex uk-margin-top">
         <div className="uk-width-1-4 uk-margin-small-right">
           <label>Plano Contas</label>
