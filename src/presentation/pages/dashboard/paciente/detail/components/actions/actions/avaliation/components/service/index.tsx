@@ -164,12 +164,12 @@ export function Service({ scheduleId, mutate, ...props }) {
         initialData={initialData}
         customSubmit={[
           {
-            action: async () => {
-              handlePrint();
+            action: () => {
+              return handlePrint();
             },
-            props: {
+            props: () => ({
               text: "IMPRIMIR",
-            },
+            }),
             active: !!props.timeline_id,
           },
           {
@@ -193,7 +193,7 @@ export function Service({ scheduleId, mutate, ...props }) {
 
               mutate && mutate();
             },
-            props: { text: "EXCLUIR" },
+            props: () => ({ text: "EXCLUIR" }),
             active: !!props.timeline_id,
           },
           {
@@ -202,7 +202,9 @@ export function Service({ scheduleId, mutate, ...props }) {
                 setModal(true);
               });
             },
-            props: { text: `NOVO ${getWord("Orçamento").toUpperCase()}` },
+            props: () => ({
+              text: `NOVO ${getWord("Orçamento").toUpperCase()}`,
+            }),
             active: true,
           },
           {
@@ -212,7 +214,7 @@ export function Service({ scheduleId, mutate, ...props }) {
                 queryClient.invalidateQueries(["LastUpdates"]);
               });
             },
-            props: { text: "SALVAR" },
+            props: () => ({ text: "SALVAR" }),
             active: true,
           },
         ].filter((item) => item.active)}

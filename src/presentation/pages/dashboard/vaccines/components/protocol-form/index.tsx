@@ -31,9 +31,9 @@ export function ProtocolForm(props: {
           {
             action: () => props.submit(),
             active: true,
-            props: {
+            props: () => ({
               text: "Salvar",
-            },
+            }),
           },
         ]}
         onChangeForm={{ callbackResult: (prv) => props.setData(prv) }}

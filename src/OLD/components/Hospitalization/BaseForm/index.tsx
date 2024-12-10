@@ -340,9 +340,9 @@ function BaseForm({
                   }
                 },
                 active: true,
-                props: {
+                props: () => ({
                   text: "Salvar",
-                },
+                }),
               },
             ]}
           >
