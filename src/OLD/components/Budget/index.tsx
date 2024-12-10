@@ -117,7 +117,6 @@ function Budgets() {
   const { data, refetch } = useFindPartialBudgets(filters, reload);
 
   const { colaborators } = useColaborators();
-  const user = useMe();
 
   const [patientSearch, setPatientSearch] = React.useState("");
   const [values, setValues] = React.useState({});
@@ -290,7 +289,7 @@ function Budgets() {
                 />
               </Input>
             )}
-            {user?.data?.unit?.system?.type !== "vet" && userIsReviewer && (
+            {user?.unit?.system?.type !== "vet" && userIsReviewer && (
               <Input style={{ width: "100%" }}>
                 <label>Avaliador</label>
                 <AutoComplete
