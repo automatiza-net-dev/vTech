@@ -115,9 +115,9 @@ export function AuthorizationPaymentForm({
         {
           action: (payload) => sendAuthorization(false, payload),
           active: true,
-          props: {
+          props: () => ({
             text: "Não Autorizar",
-          },
+          }),
         },
       ]}
     >
