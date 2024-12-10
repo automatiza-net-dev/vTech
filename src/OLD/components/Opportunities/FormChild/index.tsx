@@ -345,8 +345,8 @@ export default function FormChild({
                 value={data?.gender}
                 onChange={(e) => setData({ ...data, gender: e })}
               >
-                <option value="Macho">Macho</option>
-                <option value="Femea">Fêmea</option>
+                <option value="macho">Macho</option>
+                <option value="femea">Fêmea</option>
               </SelectAnt>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">

@@ -5,6 +5,8 @@ import { Input, Select } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 
+import * as S from "./styles";
+
 export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
   const [clientExists, setClientExists] = useState<boolean>(true);
 
@@ -14,7 +16,7 @@ export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
   return initialValue ? (
     <Input label="Cliente" name="clientName" disabled />
   ) : (
-    <>
+    <S.SelectBudgetClient>
       {clientExists ? (
         <Select
           onlyOneValue
@@ -29,20 +31,20 @@ export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
       ) : (
         <Input name="clientName" label="Cliente (não existente na base)" />
       )}
-      <div style={{ marginTop: "20px", width: "50%" }}>
+      <div className="checkbox-box" style={{ marginTop: "20px" }}>
         <input
           type="checkbox"
           onChange={(e) => {
             setClientExists(!e.target.checked);
             if (e.target.checked) {
-              setValues((prv) => ({ ...prv, clientId: "" }));
+              setValues((prv) => ({ ...prv, clientId: "", patientId: "" }));
             } else {
-              setValues((prv) => ({ ...prv, clientName: "" }));
+              setValues((prv) => ({ ...prv, clientName: "", patientName: "" }));
             }
           }}
         />{" "}
         <label>Cliente não cadastrado</label>
       </div>
-    </>
+    </S.SelectBudgetClient>
   );
 }

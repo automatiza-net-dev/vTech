@@ -122,8 +122,8 @@ export const NewPatient = memo(({ isVisible, close }) => {
                     required
                     onChange={(e) => setPayload({ ...payload, gender: e })}
                   >
-                    <option value="Macho">Macho</option>
-                    <option value="Femea">Femea</option>
+                    <option value="macho">Macho</option>
+                    <option value="femea">Femea</option>
                   </Select>
                 </Form.Item>
                 <Form.Item label="Dt. Nascimento" className="uk-width-1-2">

@@ -57,8 +57,8 @@ export function Filters() {
             name="gender"
             isClearable
             options={[
-              { label: "Fêmea", value: "Femea" },
-              { label: "Macho", value: "Macho" },
+              { label: "Fêmea", value: "femea" },
+              { label: "Macho", value: "macho" },
             ]}
           />
           <Select
