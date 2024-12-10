@@ -189,7 +189,7 @@ export function WorkingDay({ edit }) {
         )}
 
         <div className="uk-flex uk-flex-between">
-          {edit && !rowEditing && (
+          {(
             <Button
               text="Adicionar Horário de agenda"
               onClick={() => mutate(defaultData)}

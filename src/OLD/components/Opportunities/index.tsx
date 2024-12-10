@@ -6,6 +6,7 @@ import { useOpportunities } from "@/OLD/hooks/useOpportunities";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
+import { useMe } from "@/presentation";
 
 import { Container } from "./styles";
 import { Button } from "infinity-forge";
@@ -37,7 +38,7 @@ const Opportunities = memo(function Opportunities({
   });
   const [formattedOpportunities, setFormattedOpportunities] = useState([]);
 
-  const { user } = useProfile();
+  const user = useMe();
 
   const viewAllOpportunitiesPermission = useUserHasPermission("CRM09");
 
@@ -55,7 +56,6 @@ const Opportunities = memo(function Opportunities({
     opportunities?.sort((a, b) =>
       moment(b.openingDate).diff(moment(a.openingDate))
     );
-
 
     setFormattedOpportunities(
       opportunities.map((opp) => ({
@@ -99,7 +99,7 @@ const Opportunities = memo(function Opportunities({
 
   useEffect(() => {
     !viewAllOpportunitiesPermission &&
-      setFilters({ ...filters, technician: user?.id });
+      setFilters({ ...filters, technician: user?.data?.id });
     setReload((prv) => !prv);
   }, [viewAllOpportunitiesPermission]);
 
@@ -127,14 +127,20 @@ const Opportunities = memo(function Opportunities({
       <hr className="" />
       <Table
         columns={
-          process.env.client !== "liftone"
+          user?.data?.unit?.system?.type === "Vet"
             ? opportunitiesColumns
             : liftOneOpportunitiesColumns
         }
         dataSource={formattedOpportunities}
         loading={loadingOpportunities}
       />
-      <footer style={{ display: "flex", justifyContent: "flex-end", marginTop: "5px" }}>
+      <footer
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "5px",
+        }}
+      >
         <Button onClick={() => router.back()} text="Voltar" />
       </footer>
     </Container>

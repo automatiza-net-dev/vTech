@@ -3,10 +3,10 @@
 import * as React from "react";
 import { useEffect } from "react";
 
-// Hooks
-
 import { Modal as ModalInfinityForge } from "infinity-forge";
 
+// Hooks
+import { useMe } from "@/presentation";
 import { useFindPartialBudgets } from "@/OLD/hooks/useBudgets";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";
@@ -24,7 +24,7 @@ import BudgetActions from "./Actions/Container";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
-import { Button } from "infinity-forge";
+import { Button, useAuthAdmin } from "infinity-forge";
 import { Input as AntInput, Select, Table, AutoComplete } from "antd";
 
 import moment from "moment/moment";
@@ -117,6 +117,7 @@ function Budgets() {
   const { data, refetch } = useFindPartialBudgets(filters, reload);
 
   const { colaborators } = useColaborators();
+  const user = useMe();
 
   const [patientSearch, setPatientSearch] = React.useState("");
   const [values, setValues] = React.useState({});
@@ -147,9 +148,14 @@ function Budgets() {
     setReload((prv) => !prv);
   };
 
-  const columns = process.env.client !== "liftone" ? Columns() : LiftColumns();
+  const columns =
+    user?.data?.unit?.system?.type === "Vet" ? Columns() : LiftColumns();
 
   const { getWord } = useDictionary();
+
+  const { user } = useAuthAdmin();
+
+  const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
 
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
@@ -273,7 +279,7 @@ function Budgets() {
                 }
               />
             </Input>
-            {process.env.client !== "liftone" && (
+            {user?.data?.unit?.system?.type === "vet" && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
                 <AntInput
@@ -284,7 +290,7 @@ function Budgets() {
                 />
               </Input>
             )}
-            {process.env.client === "liftone" && (
+            {user?.data?.unit?.system?.type !== "vet" && userIsReviewer && (
               <Input style={{ width: "100%" }}>
                 <label>Avaliador</label>
                 <AutoComplete
@@ -399,7 +405,11 @@ function Budgets() {
         <hr />
         <div className="uk-margin-top">
           <Table
-            columns={columns}
+            columns={
+              userIsReviewer
+                ? columns
+                : columns.filter((column) => column.key !== "evaluator")
+            }
             dataSource={mapper(data, setReload)}
             footer={() =>
               data?.length > 0 && (

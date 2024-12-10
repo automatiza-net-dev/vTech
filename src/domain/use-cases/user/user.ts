@@ -13,6 +13,10 @@ export type SystemUser = {
       requires_client_document?: boolean;
       allow_change_schedule_duration?: boolean;
     };
+    system: {
+      id: number;
+      type: "Clinicas" | "Vet";
+    };
     phone?: string;
     fantasy_name?: string;
     address?: string;

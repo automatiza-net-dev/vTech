@@ -5,6 +5,7 @@ import {
   LoaderCircle,
   InputDatePicker,
   BadRequestError,
+  useAuthAdmin,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
@@ -48,6 +49,12 @@ export function AddBudgetNew({
   const { getWord } = useDictionary();
   const { createToast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuthAdmin();
+
+  const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const hasSyncScheduleMovements =
+    user?.unit?.unitConfig?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
     (movement) => movement.status === "Aberto"
@@ -89,6 +96,7 @@ export function AddBudgetNew({
     : moment(new Date()).add({ day: 1 }).toDate();
 
   const initialData = {
+    internalCode: budgetDetail?.data?.internalCode,
     clientId,
     patientId,
     patientName: patient?.data?.name || budgetDetail?.data?.patient?.name,
@@ -190,11 +198,19 @@ export function AddBudgetNew({
                 <SelectBudgetPatient tutors={tutors} />
               </>
             )}
-            <SelectSeller />
+            <SelectSeller userIsReviewer={userIsReviewer} />
+
+            {hasInternalCode && (
+              <Input
+                name="internalCode"
+                label="Código interno"
+                disabled={!!budgetDetail?.data?.internalCode}
+              />
+            )}
           </div>
 
           <div className="row">
-            <SelectSchedule />
+            {hasSyncScheduleMovements && <SelectSchedule />}
 
             <Input label="Observação" name="observation" />
 

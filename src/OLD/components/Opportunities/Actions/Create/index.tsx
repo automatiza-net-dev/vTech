@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import { useRouter } from "next/router";
 import { useAuth } from "@/OLD/hooks/useAuth";
+import { useMe } from "@/presentation";
 
 import FormChild from "../../FormChild";
 import { Container } from "../../styles";
@@ -31,7 +32,8 @@ export default function Create({
   const [patientListVisible, setPatientListVisible] = useState(true);
   const [reload, setReload] = useState(false);
 
-  const { clinic, user } = useProfile();
+  const user = useMe();
+  const { clinic } = useProfile();
   const { crmData, setCrmData } = useAuth();
 
   const router = useRouter();
@@ -69,8 +71,8 @@ export default function Create({
       ...data,
       contactDate: moment(new Date()),
       value: currencyFormatter(0),
-      userId: user?.id,
-      collabName: user?.name,
+      userId: user?.data?.id,
+      collabName: user?.data?.name,
       statusId: crmStatus?.find((st) => st?.tag === "N")?.id,
     });
   }, [user, crmStatus]);
@@ -105,7 +107,8 @@ export default function Create({
           />
         )}
 
-        {process.env.client === "sancla" && (
+        {(process.env.client === "sancla" ||
+          user?.data?.unit?.system?.type === "Vet") && (
           <Modal
             title={"Selecionar paciente"}
             width={1200}
@@ -125,7 +128,8 @@ export default function Create({
             />
           </Modal>
         )}
-        {process.env.client === "liftone" && (
+        {(process.env.client === "liftone" ||
+          user?.data?.unit?.system?.type !== "vet") && (
           <Modal
             title={"Selecionar Cliente"}
             width={1200}

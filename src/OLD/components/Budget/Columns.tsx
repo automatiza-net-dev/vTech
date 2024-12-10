@@ -1,118 +1,115 @@
 import { useDictionary } from "@/presentation";
 
-export const Columns = ()  => {
+export const Columns = () => {
   const { getWord } = useDictionary();
 
   return [
     {
       title: `Data ${getWord("Orçamento")}`,
       dataIndex: "budget_date",
-      key: "budget_date"
+      key: "budget_date",
     },
     {
       title: "Data Validade",
       dataIndex: "expiration_date",
-      key: "expiration_date"
+      key: "expiration_date",
     },
     {
       title: "Data Conf/Canc.",
       dataIndex: "finished_at",
-      key: "finished_at"
+      key: "finished_at",
     },
     {
       title: "Código",
       dataIndex: "tag",
-      key: "tag"
+      key: "tag",
     },
     {
       title: "Vendedor",
       dataIndex: "user_name",
-      key: "user_name"
-    },
-    {
-      title: "Tutor",
-      dataIndex: "client_name",
-      key: "client_name"
-    },
-    {
-      title: "Paciente",
-      dataIndex: "pet_name",
-      key: "pet_name"
-    },
-    {
-      title: "Total",
-      dataIndex: "total_value",
-      key: "total_value"
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status"
-    },
-    {
-      title: "Ações",
-      dataIndex: "actions",
-      key: "actions"
-    }
-  ];
-}
-
-
-export const LiftColumns = () => {
-  const { getWord } = useDictionary();
-  
-  return [
-    {
-      title: `Data ${getWord("Orçamento")}`,
-      dataIndex: "budget_date",
-      key: "budget_date"
-    },
-    {
-      title: "Data Validade",
-      dataIndex: "expiration_date",
-      key: "expiration_date"
-    },
-    {
-      title: "Data Conf/Canc.",
-      dataIndex: "finished_at",
-      key: "finished_at"
-    },
-    {
-      title: "Código",
-      dataIndex: "tag",
-      key: "tag"
-    },
-    {
-      title: "Avaliador",
-      dataIndex: "evaluator",
-      key: "evaluator"
-    },
-    {
-      title: "Vendedor",
-      dataIndex: "seller_name",
-      key: "seller_name"
+      key: "user_name",
     },
     {
       title: "Cliente",
       dataIndex: "client_name",
-      key: "client_name"
+      key: "client_name",
+    },
+    {
+      title: "Paciente",
+      dataIndex: "pet_name",
+      key: "pet_name",
     },
     {
       title: "Total",
       dataIndex: "total_value",
-      key: "total_value"
+      key: "total_value",
     },
     {
       title: "Status",
       dataIndex: "status",
-      key: "status"
+      key: "status",
     },
     {
       title: "Ações",
       dataIndex: "actions",
-      key: "actions"
-    }
+      key: "actions",
+    },
   ];
-} 
+};
 
+export const LiftColumns = () => {
+  const { getWord } = useDictionary();
 
+  return [
+    {
+      title: `Data ${getWord("Orçamento")}`,
+      dataIndex: "budget_date",
+      key: "budget_date",
+    },
+    {
+      title: "Data Validade",
+      dataIndex: "expiration_date",
+      key: "expiration_date",
+    },
+    {
+      title: "Data Conf/Canc.",
+      dataIndex: "finished_at",
+      key: "finished_at",
+    },
+    {
+      title: "Código",
+      dataIndex: "tag",
+      key: "tag",
+    },
+    {
+      title: "Avaliador",
+      dataIndex: "evaluator",
+      key: "evaluator",
+    },
+    {
+      title: "Vendedor",
+      dataIndex: "seller_name",
+      key: "seller_name",
+    },
+    {
+      title: "Cliente",
+      dataIndex: "client_name",
+      key: "client_name",
+    },
+    {
+      title: "Total",
+      dataIndex: "total_value",
+      key: "total_value",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Ações",
+      dataIndex: "actions",
+      key: "actions",
+    },
+  ];
+};
