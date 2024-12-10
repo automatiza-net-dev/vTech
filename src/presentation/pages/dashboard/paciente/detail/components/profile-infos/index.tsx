@@ -46,7 +46,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       id: 4,
       icon: "IconGender",
       color: "#FF7A00",
-      title: patient.genderText,
+      title: patient.gender,
       subTitle: "Sexo",
       active: true,
     },

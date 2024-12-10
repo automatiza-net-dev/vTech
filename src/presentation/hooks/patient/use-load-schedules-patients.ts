@@ -25,7 +25,7 @@ export function useLoadSchedulesPatients({
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enabled: !patientFilters ? false : true,
+    enabled: patientFilters?.fetch,
   });
 }
 

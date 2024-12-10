@@ -1,10 +1,10 @@
 export const opportunitiesActivitiesColumnsComplete = [
   {
-    title: "Tutor",
+    title: "Cliente",
     dataIndex: "contactName",
     key: "contactName"
   },
-  { title: "Telefone tutor", dataIndex: "phone", key: "phone" },
+  { title: "Telefone", dataIndex: "phone", key: "phone" },
   { title: "Pet", dataIndex: "patientName", key: "patientName" },
   {
     title: "Responsável atividade",
@@ -54,7 +54,7 @@ export const liftOneOpportunitiesActivitiesColumnsComplete = [
     dataIndex: "contactName",
     key: "contactName"
   },
-  { title: "Fone cliente", dataIndex: "phone", key: "phone" },
+  { title: "Fone", dataIndex: "phone", key: "phone" },
   {
     title: "Responsável atividade",
     dataIndex: "user",

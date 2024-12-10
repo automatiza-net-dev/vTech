@@ -4,6 +4,7 @@ import { useState, memo } from "react";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useAuth } from "@/OLD/hooks/useAuth";
+import { useMe } from "@/presentation";
 
 import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, AutoComplete, Select } from "antd";
@@ -20,6 +21,7 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
   const [values, setValues] = useState({});
 
+  const user = useMe();
   const allBusinessUnits = useBusinessUnitsByUser();
 
   const viewAllActivitiesPermission = useUserHasPermission("CRM09");
@@ -165,9 +167,7 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
           </div>
         )}
         <div>
-          <label>
-            Nome {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
-          </label>
+          <label>Cliente</label>
           <InputBox>
             <Input
               value={filters?.contactName}
@@ -178,9 +178,7 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
           </InputBox>
         </div>
         <div>
-          <label>
-            Telefone {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
-          </label>
+          <label>Fone</label>
           <InputBox>
             <Input
               onChange={(e) =>
@@ -189,7 +187,7 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
             />
           </InputBox>
         </div>
-        {process.env.client !== "liftone" && (
+        {user?.data?.unit?.system?.type === 'vet' && (
           <div>
             <label>Nome pet</label>
             <InputBox>

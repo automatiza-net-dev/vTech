@@ -29,7 +29,7 @@ export function Pets({
   );
 
   const patientFilters = {
-    fetch: true,
+    fetch: modalAddPet,
   };
 
   const { createToast } = useToast();

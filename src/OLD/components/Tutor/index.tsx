@@ -13,6 +13,7 @@ import { Modal } from "antd";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePatientTutors } from "@/OLD/hooks/usePatientTutors";
+import { useMe } from "@/presentation";
 
 import { Button, PageWrapper } from "infinity-forge";
 import { FormCreateTutor } from "@/presentation";
@@ -36,6 +37,7 @@ export function Tutor({
   const [createTutorVisible, setCreateTutorVisible] = useState(false);
 
   const { fetchPatientTutors } = usePatientTutors(filters);
+  const user = useMe();
 
   const router = useRouter();
 
@@ -45,7 +47,7 @@ export function Tutor({
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <PageWrapper
-      title={process.env.client === "liftone" ? "Clientes" : "Tutores"}
+      title={user?.data?.unit?.system?.type === "vet" ? "Tutores" : "Clientes"}
     >
       <div>
         <div className="uk-flex uk-margin-bottom uk-flex-between uk-width-1-1">
@@ -55,7 +57,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Nome ${
-                    process.env.client === "liftone" ? "Cliente" : "Tutor"
+                    user?.data?.unit?.system?.type === 'vet' ? "Tutor" : "Cliente"
                   }`}
                   onChange={(e) =>
                     setFilters({
@@ -69,14 +71,14 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Telefone ${
-                    process.env.client === "liftone" ? "Cliente" : "Tutor"
+                    user?.data?.unit?.system?.type === 'vet' ? "Tutor" : "Cliente"
                   }`}
                   onChange={(e) =>
                     setFilters({ ...filters, phone: e.target.value })
                   }
                 />
               </Input>
-              {process.env.client !== "liftone" && (
+              {user?.data?.unit?.system?.type === 'vet' && (
                 <Input>
                   <input
                     type="search"
@@ -94,7 +96,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`CPF ${
-                    process.env.client === "liftone" ? "Cliente" : "Tutor"
+                    user?.data?.unit?.system?.type === 'vet' ? "Tutor" : "Cliente"
                   }`}
                   onChange={(e) =>
                     setFilters({ ...filters, document: e.target.value })

@@ -3,10 +3,10 @@
 import * as React from "react";
 import { useEffect } from "react";
 
-// Hooks
-
 import { Modal as ModalInfinityForge } from "infinity-forge";
 
+// Hooks
+import { useMe } from "@/presentation";
 import { useFindPartialBudgets } from "@/OLD/hooks/useBudgets";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";
@@ -117,6 +117,7 @@ function Budgets() {
   const { data, refetch } = useFindPartialBudgets(filters, reload);
 
   const { colaborators } = useColaborators();
+  const user = useMe();
 
   const [patientSearch, setPatientSearch] = React.useState("");
   const [values, setValues] = React.useState({});
@@ -147,7 +148,8 @@ function Budgets() {
     setReload((prv) => !prv);
   };
 
-  const columns = process.env.client !== "liftone" ? Columns() : LiftColumns();
+  const columns =
+    user?.data?.unit?.system?.type === "Vet" ? Columns() : LiftColumns();
 
   const { getWord } = useDictionary();
 
@@ -273,7 +275,7 @@ function Budgets() {
                 }
               />
             </Input>
-            {process.env.client !== "liftone" && (
+            {user?.data?.unit?.system?.type === 'vet' && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
                 <AntInput
@@ -284,7 +286,7 @@ function Budgets() {
                 />
               </Input>
             )}
-            {process.env.client === "liftone" && (
+            {user?.data?.unit?.system?.type !== 'vet' && (
               <Input style={{ width: "100%" }}>
                 <label>Avaliador</label>
                 <AutoComplete

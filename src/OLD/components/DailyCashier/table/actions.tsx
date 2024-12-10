@@ -5,7 +5,14 @@ import { AxiosError } from "axios";
 import Actions from "@/OLD/components/DailyCashier/Actions";
 
 import moment from "moment";
-import { useToast, FetcherParams, Modal, Button } from "infinity-forge";
+import {
+  useToast,
+  FetcherParams,
+  Modal,
+  Button,
+  useAuthAdmin,
+  InputDatePicker,
+} from "infinity-forge";
 
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
@@ -46,7 +53,7 @@ export function useDailyCashierTableActions({
 }) {
   const createDailyCashierPermission = usePermission("CAI01");
 
-  const { data: userData } = useMe();
+  const { user } = useAuthAdmin();
   const { data: dailyMovements } = useSearchDailyMovements({
     status: "Aberto",
   });
@@ -55,18 +62,22 @@ export function useDailyCashierTableActions({
 
   const { createToast } = useToast();
 
-  const action = {
+  const action = user?.user && {
     Custom: !hasDailyMevements && CustomAction,
     title: "Abrir Caixa",
     text: "Abrir novo caixa",
     debugMode: true,
     initialDataIsTableItem: true,
+    initialData: {
+      userId: user?.user?.id,
+      openingDate: moment(new Date()),
+      initialBalance: 0,
+    },
     button: { text: "Salvar" },
     isStickyButtons: true,
     onSucess: async (data) => {
       const payload = {
-        openingDate: moment(new Date()),
-        userId: userData?.user?.id,
+        ...data,
         dailyMovementId: dailyMovements?.[0]?.id,
         initialBalance: Number(data?.initialBalance),
       };
@@ -101,19 +112,24 @@ export function useDailyCashierTableActions({
       [
         {
           name: "openingDate",
-          InputComponent: "Input",
+          InputComponent: "InputDatePicker",
           label: "Caixa do dia",
           disabled: true,
-          placeholder: moment(new Date()).format("DD/MM/YYYY - HH:mm"),
         },
       ],
       [
         {
           name: "userId",
-          InputComponent: "Input",
+          InputComponent: "Select",
           label: "Responsável",
           disabled: true,
-          placeholder: userData?.user?.name,
+          onlyOneValue: true,
+          options: [
+            {
+              label: user?.user?.name,
+              value: user?.user?.id,
+            },
+          ],
         },
       ],
       [
@@ -121,7 +137,6 @@ export function useDailyCashierTableActions({
           name: "initialBalance",
           InputComponent: "InputCurrency",
           label: "Saldo inicial",
-          placeholder: "R$ 0,00",
         },
       ],
     ],

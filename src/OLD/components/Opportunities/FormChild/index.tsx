@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { animalServices } from "@/OLD/services/animal.service";
 
-import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
+import { useMe } from "@/presentation";
 
 import { FormHandler, Select, Button } from "infinity-forge";
 import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
@@ -60,6 +60,7 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
+  const user = useMe();
   const { data: uniqueOrigins } = useLoadCampaings({
     active: true,
     clientOriginId: data?.originId,
@@ -146,13 +147,7 @@ export default function FormChild({
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
-                <Tooltip
-                  title={
-                    process.env.client !== "liftone"
-                      ? "Clique para editar dados do tutor"
-                      : "Clique para editar os dados do cliente"
-                  }
-                >
+                <Tooltip title={"Clique para editar os dados do cliente"}>
                   <label
                     className="uk-link"
                     style={{
@@ -161,7 +156,7 @@ export default function FormChild({
                       justifyContent: "flex-start",
                     }}
                   >
-                    {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
+                    Cliente
                   </label>
                 </Tooltip>
               }
@@ -203,9 +198,9 @@ export default function FormChild({
               </div>
             )}
           </div>
-        </div>
-
-        {process.env.client === "sancla" && (
+          </div>
+        {(process.env.client === "sancla" ||
+          user?.data?.unit?.system?.type === "Vet") && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">

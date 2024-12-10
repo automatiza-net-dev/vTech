@@ -30,7 +30,7 @@ export const Columns = ()  => {
       key: "user_name"
     },
     {
-      title: "Tutor",
+      title: "Cliente",
       dataIndex: "client_name",
       key: "client_name"
     },

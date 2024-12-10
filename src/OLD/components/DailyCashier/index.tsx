@@ -1,4 +1,4 @@
-import React from "react";
+import { useRouter } from "next/router";
 import { PageWrapper, useTable } from "infinity-forge";
 
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -11,6 +11,7 @@ import { columns, useDailyCashierTableActions } from "./table";
 import * as S from "./styles";
 
 export function DailyCashier() {
+  const router = useRouter();
   const listDailyCashierPermission = usePermission("CAI00");
 
   const { data, isFetching, mutate } = useDailyCashier();
@@ -45,6 +46,7 @@ export function DailyCashier() {
           InputComponent: "Select",
           label: "Status",
           isClearable: true,
+          value: "ABERTO",
           onlyOneValue: true,
           options: [
             {
