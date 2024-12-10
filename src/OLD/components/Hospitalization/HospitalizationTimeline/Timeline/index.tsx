@@ -125,11 +125,9 @@ const renderTimeline = (obj, functions, allowEdit) => {
           <div>
             <span className="inf-tag medical-report">{obj?.data?.type}</span>
             <span className="inf-tag">
-              {moment(obj?.createdAt).format("DD/MM/YYYY")}
-              &nbsp;às&nbsp;
-              {moment(obj?.createdAt).format("HH:mm")}
+              {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")} às{" "}
+              {moment(obj?.data?.realizedAt).format("HH:mm")}
             </span>
-
             <span className="inf-tag">{obj?.data?.technician?.name}</span>
             {allowEdit && (
               <Button
@@ -190,11 +188,10 @@ const renderTimeline = (obj, functions, allowEdit) => {
           <div>
             <span className="inf-tag medical-presc">Prescrição médica</span>
             <span className="inf-tag">
-              {moment(obj?.createdAt).format("DD/MM/YYYY")}
-              &nbsp;às&nbsp;
-              {moment(obj?.createdAt).format("HH:mm")}
+              {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")} às{" "}
+              {moment(obj?.data?.realizedAt).format("HH:mm")}
             </span>
-            <span className="inf-tag">{obj?.data?.technician?.name}</span>
+            <span className="inf-tag">{obj?.data?.creationUser?.name}</span>
           </div>
           <section className="desc-box">
             <section>
@@ -254,12 +251,11 @@ const renderTimeline = (obj, functions, allowEdit) => {
         <TimelineContainer>
           <span className="inf-tag occurrence-tag">Ocorrência</span>
           <span className="inf-tag">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            às
-            {moment(obj?.createdAt).format("HH:mm")}
+            {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")} às{" "}
+            {moment(obj?.data?.realizedAt).format("HH:mm")}
           </span>
 
-          <span className="inf-tag">{obj?.data?.technician?.name}</span>
+          <span className="inf-tag">{obj?.data?.creationUser?.name}</span>
 
           {allowEdit && (
             <Button
@@ -317,12 +313,11 @@ const renderTimeline = (obj, functions, allowEdit) => {
         <TimelineContainer>
           <span className="inf-tag weight-tag">Peso</span>
           <span className="inf-tag">
-            {moment(obj?.realizedAt).format("DD/MM/YYYY")}
-            &nbsp;às&nbsp;
+            {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")} às{" "}
             {moment(obj?.data?.realizedAt).format("HH:mm")}
           </span>
 
-          <span className="inf-tag">{obj?.data?.technician?.name}</span>
+          <span className="inf-tag">{obj?.data?.creationUser?.name}</span>
           <div className="desc-box">
             <section className="">
               <span>
@@ -344,11 +339,10 @@ const renderTimeline = (obj, functions, allowEdit) => {
         <TimelineContainer>
           <span className="inf-tag death">Obito</span>
           <span className="inf-tag">
-            {moment(obj?.createdAt).format("DD/MM/YYYY")}
-            &nbsp;às&nbsp;
-            {moment(obj?.createdAt).format("HH:mm")}
+            {moment(obj?.data?.realizedAt).format("DD/MM/YYYY")} às{" "}
+            {moment(obj?.data?.realizedAt).format("HH:mm")}
           </span>
-          <span className="inf-tag">{obj?.data?.technician?.name}</span>
+          <span className="inf-tag">{obj?.data?.creationUser?.name}</span>
           <div className="desc-box">
             <section>
               <span>
@@ -460,12 +454,7 @@ const renderTimeline = (obj, functions, allowEdit) => {
   }
 };
 
-const Timeline = memo(function Timeline({
-  data,
-  patientData,
-  setReload,
-  allowEdit,
-}) {
+function Timeline({ data, patientData, setReload, allowEdit }) {
   const [occurrenceVisible, setOccurrenceVisible] = useState(false);
   const [occurrenceData, setOccurrenceData] = useState({});
 
@@ -496,6 +485,6 @@ const Timeline = memo(function Timeline({
       />
     </Container>
   );
-});
+}
 
 export default Timeline;

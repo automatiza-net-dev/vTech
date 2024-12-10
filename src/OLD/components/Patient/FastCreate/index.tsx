@@ -100,8 +100,8 @@ const FastCreatePatient = React.memo(function FastCreatePatient({
             value={data?.gender}
             onChange={(e) => setData({ ...data, gender: e.target.value })}
           >
-            <option value="Macho">Macho</option>
-            <option value="Femea">Fêmea</option>
+            <option value="macho">Macho</option>
+            <option value="femea">Fêmea</option>
           </select>
         </div>
         <button className="uk-hidden" type="submit" ref={submitButton}></button>

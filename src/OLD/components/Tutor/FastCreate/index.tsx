@@ -449,8 +449,8 @@ export default function FastCreateTutor({
                     }
                   >
                     <option>Selecione</option>
-                    <option value="Macho">Macho</option>
-                    <option value="Femea">Fêmea</option>
+                    <option value="macho">Macho</option>
+                    <option value="femea">Fêmea</option>
                   </select>
                 </div>
               </section>

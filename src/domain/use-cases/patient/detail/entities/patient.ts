@@ -9,7 +9,7 @@ export interface PatientHuman {
   photo: string | null;
   vaccineOrigin?: string;
   holders?: Tutor[];
-  gender: "Feminino" | "Masculino";
+  gender: "feminino" | "masculino";
   genderText: string;
   tags: string;
   birth_date: string;

@@ -96,6 +96,7 @@ export function AddBudgetNew({
     maxDiscount: false,
     clientName:
       budgetDetail?.data?.client?.name ||
+      budgetDetail?.data?.client_name ||
       tutors?.find((tutor) => tutor.id === clientId)?.name ||
       patient?.data?.tutor?.name ||
       patient?.data?.name,
