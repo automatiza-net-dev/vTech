@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useMe } from "@/presentation";
 
@@ -10,7 +10,7 @@ import { Container } from "../../styles";
 import { notification, Modal } from "antd";
 import { Patient } from "@/OLD/components/Patient";
 import { Tutor } from "@/OLD/components/Tutor";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useAuthAdmin } from "infinity-forge";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
@@ -33,7 +33,7 @@ export default function Create({
   const [patientListVisible, setPatientListVisible] = useState(true);
   const [reload, setReload] = useState(false);
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
   const { clinic } = useProfile();
   const { crmData, setCrmData } = useAuth();
 
@@ -55,10 +55,11 @@ export default function Create({
     try {
       await opportunitiesService.create(newObj);
 
-      router.back();
-      return notification.success({
+      notification.success({
         message: "Oportunidade cadastrada com sucesso!",
       });
+
+      router.back();
     } catch (error) {
       if (error instanceof AxiosError) {
         return notification.error({
@@ -77,8 +78,8 @@ export default function Create({
       ...data,
       contactDate: moment(new Date()),
       value: currencyFormatter(0),
-      userId: user?.data?.id,
-      collabName: user?.data?.name,
+      userId: user?.id,
+      collabName: user?.name,
       statusId: crmStatus?.find((st) => st?.tag === "N")?.id,
     });
   }, [user, crmStatus]);
@@ -114,7 +115,7 @@ export default function Create({
         )}
 
         {(process.env.client === "sancla" ||
-          user?.data?.unit?.system?.type === "Vet") && (
+          user?.unit?.system?.type === "Vet") && (
           <Modal
             title={"Selecionar paciente"}
             width={1200}
@@ -135,7 +136,7 @@ export default function Create({
           </Modal>
         )}
         {(process.env.client === "liftone" ||
-          user?.data?.unit?.system?.type !== "Vet") && (
+          user?.unit?.system?.type !== "Vet") && (
           <Modal
             title={"Selecionar Cliente"}
             width={1200}
