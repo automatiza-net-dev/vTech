@@ -14,16 +14,17 @@ export function SelectBudgetClient({
   tutors: Tutor[];
   hideCheckbox?: boolean;
 }) {
-  const [clientExists, setClientExists] = useState<boolean>(true);
+  const [clientExists, setClientExists] = useState<boolean>(false);
 
   const { initialValues, setValues } = useFormikContext<Tutor>();
-  const initialValue = initialValues["clientName"];
+  const initialValue = initialValues["clientId"];
+  const hasClientName = initialValues["clientName"];
 
   return initialValue ? (
     <Input label="Cliente" name="clientName" disabled />
   ) : (
     <S.SelectBudgetClient>
-      {clientExists ? (
+      {(hasClientName ? clientExists : !clientExists) ? (
         <Select
           onlyOneValue
           isClearable={true}
@@ -41,14 +42,16 @@ export function SelectBudgetClient({
         <div className="checkbox-box" style={{ marginTop: "20px" }}>
           <input
             type="checkbox"
+            checked={hasClientName && !clientExists}
             onChange={(e) => {
-              setClientExists(!e.target.checked);
+              setClientExists(
+                hasClientName ? !e.target.checked : e.target.checked
+              );
               if (e.target.checked) {
                 setValues((prv) => ({ ...prv, clientId: "", patientId: "" }));
               } else {
                 setValues((prv) => ({
                   ...prv,
-                  clientName: "",
                   patientName: "",
                 }));
               }
