@@ -35,7 +35,7 @@ export function SelectBudgetClient({
           }))}
         />
       ) : (
-        <Input name="clientName" label="Cliente (não existente na base)" />
+        <Input name="clientName" label="Cliente" />
       )}
       {!hideCheckbox && (
         <div className="checkbox-box" style={{ marginTop: "20px" }}>
