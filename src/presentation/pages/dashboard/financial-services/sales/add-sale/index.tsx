@@ -123,7 +123,7 @@ export function AddSale({
       const payload = {
         ...data,
         billId: type === "edit" ? billId : null,
-        origin_bill_id: (internalCode && billId) ?? null,
+        originBillId: (internalCode && billId) ?? null,
         cart: undefined,
         items: formatItemsCart,
         billDate: new Date().toISOString(),

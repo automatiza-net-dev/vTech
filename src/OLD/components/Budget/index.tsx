@@ -117,6 +117,7 @@ function Budgets() {
   const { data, refetch } = useFindPartialBudgets(filters, reload);
 
   const { colaborators } = useColaborators();
+  const { user } = useAuthAdmin();
 
   const [patientSearch, setPatientSearch] = React.useState("");
   const [values, setValues] = React.useState({});
@@ -148,11 +149,9 @@ function Budgets() {
   };
 
   const columns =
-    user?.data?.unit?.system?.type === "Vet" ? Columns() : LiftColumns();
+    user?.unit?.system?.type === "Vet" ? Columns() : LiftColumns();
 
   const { getWord } = useDictionary();
-
-  const { user } = useAuthAdmin();
 
   const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
 
@@ -278,7 +277,7 @@ function Budgets() {
                 }
               />
             </Input>
-            {user?.data?.unit?.system?.type === "vet" && (
+            {user?.unit?.system?.type === "vet" && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
                 <AntInput

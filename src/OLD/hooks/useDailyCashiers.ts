@@ -51,8 +51,14 @@ export const useDailyCasher = (
 
     const newObj = {
       ...filters,
-      fromOpening: moment(filters?.fromBill).subtract(3, "hours").toISOString(),
-      toOpening: moment(filters?.toBill).subtract(3, "hours").toISOString(),
+      fromOpening: moment(filters?.fromBill)
+        .subtract(3, "hours")
+        .startOf("day")
+        .toISOString(),
+      toOpening: moment(filters?.toBill)
+        .subtract(3, "hours")
+        .endOf("day")
+        .toISOString(),
     };
 
     if (isComplete) {
@@ -76,6 +82,10 @@ export const useDailyCasher = (
       })
       .finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [reload])
 
   return { cashiers, cashiersLoading: loading, fetchDailyCashiers: fetchData };
 };
