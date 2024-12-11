@@ -1,10 +1,9 @@
-// @ts-nocheck
-import { memo, useState, useEffect } from "react";
+//@ts-nocheck
+import { useState, useEffect } from "react";
 
-import { useShowActivities } from "@/OLD/hooks/useOpportunities";
-import { useAuth } from "@/OLD/hooks/useAuth";
-import { useProfile } from "@/OLD/hooks/useProfile";
+import { useMe } from "@/presentation";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useShowActivities } from "@/OLD/hooks/useOpportunities";
 
 import { Table } from "antd";
 import { Container } from "./styles";
@@ -34,7 +33,7 @@ const detectClockColor = (date, duration) => {
   return "red";
 };
 
-function Activities ({
+function Activities({
   colaborators,
   actTypes,
   tutors,
@@ -50,15 +49,14 @@ function Activities ({
   const [reload, setReload] = useState(false);
   const [formattedActivities, setFormattedActivities] = useState(false);
 
+  const user = useMe();
+
   const { allActivities } = useShowActivities(
     filters,
     reload,
     currentKanbanTab === "3"
   );
-  
-  const { user } = useProfile();
 
-  
   const viewAllActivitiesPermission = useUserHasPermission("CRM09");
 
   const formatActivities = () => {
@@ -111,7 +109,7 @@ function Activities ({
 
   useEffect(() => {
     !viewAllActivitiesPermission &&
-      setFilters({ ...filters, technicianName: user?.name });
+      setFilters({ ...filters, technicianName: user?.data?.firstName });
     setReload((prv) => !prv);
   }, [viewAllActivitiesPermission]);
 
@@ -136,7 +134,7 @@ function Activities ({
       <Table
         className="uk-margin-small-top"
         columns={
-          process.env.client !== "liftone"
+          user?.data?.unit?.system?.type === "Vet"
             ? opportunitiesActivitiesColumnsComplete
             : liftOneOpportunitiesActivitiesColumnsComplete
         }
@@ -144,6 +142,6 @@ function Activities ({
       />
     </Container>
   );
-};
+}
 
 export default Activities;
