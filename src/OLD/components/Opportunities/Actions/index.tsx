@@ -19,6 +19,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { BsXCircle } from "react-icons/bs";
 import { BsCheckCircle, BsArrowCounterclockwise } from "react-icons/bs";
+import { AxiosError } from "axios";
 
 const Actions = memo(function ({
   setReload,
@@ -34,9 +35,6 @@ const Actions = memo(function ({
   const [newActivityVisible, setNewActivityVisible] = useState(false);
   const [formData, setFormData] = useState(false);
 
-  
-
-  
   const editOpportunityPermission = useUserHasPermission("CRM02");
   const removeOpportunityPermission = useUserHasPermission("CRM03");
   const newActivityPermission = useUserHasPermission("CRM06");
@@ -44,21 +42,26 @@ const Actions = memo(function ({
   const addLossPermission = useUserHasPermission("CRM05");
   const reopenOpportunityPermission = useUserHasPermission("CRM10");
 
-  const removeOpportunity = (id) => {
-    opportunitiesService
-      .removeOpportunity(id)
-      .then((_res) => {
-        setReload((prv) => !prv);
-        return notification.success({
-          message: "oportunidade removida com sucesso!",
-        });
-      })
-      .catch((err) =>
+  async function removeOpportunity(id) {
+    try {
+      await opportunitiesService.removeOpportunity(id);
+
+      notification.success({
+        message: "oportunidade removida com sucesso!",
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
         notification.error({
-          message: "Houve um erro ao remover a oportunidade",
-        })
-      );
-  };
+          message: error?.response?.data?.message,
+        });
+        return;
+      }
+
+      notification.error({
+        message: "Houve um erro ao remover a oportunidade",
+      });
+    }
+  }
 
   const router = useRouter();
 

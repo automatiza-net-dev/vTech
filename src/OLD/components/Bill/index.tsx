@@ -192,7 +192,7 @@ export default function Bills() {
                 />
               </Input>
 
-              {user?.data?.unit?.system?.type === 'vet' && (
+              {user?.data?.unit?.system?.type === "Vet" && (
                 <Input style={{ width: "100%" }}>
                   <Label>Paciente</Label>
                   <AntInput
@@ -260,7 +260,9 @@ export default function Bills() {
           <hr />
           <div className="uk-margin-top">
             <Table
-              columns={user?.data?.unit?.system?.type === 'vet' ? Columns : LiftColumns}
+              columns={
+                user?.data?.unit?.system?.type === "Vet" ? Columns : LiftColumns
+              }
               dataSource={mapper(data, cashiers)}
               footer={() => (
                 <section className="uk-flex uk-flex-center">

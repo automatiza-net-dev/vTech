@@ -294,7 +294,7 @@ function Filters({ filters, setFilters, setReload }) {
         </InputBox>
       </div>
       <div className="uk-width-1-4 uk-margin-left">
-        {user?.data?.unit?.system?.type === "vet" && (
+        {user?.data?.unit?.system?.type === "Vet" && (
           <>
             <label>Paciente</label>
             <InputBox className="">
@@ -320,7 +320,7 @@ function Filters({ filters, setFilters, setReload }) {
             <Option value="contactDate">Data Contato</Option>
             <Option value="openingDate">Data Abertura</Option>
             <Option value="contact">Nome cliente</Option>
-            {user?.data?.unit?.system?.type === "vet" && (
+            {user?.data?.unit?.system?.type === "Vet" && (
               <Option value="client">Paciente</Option>
             )}
           </Select>

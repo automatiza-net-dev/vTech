@@ -47,7 +47,7 @@ export function Tutor({
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <PageWrapper
-      title={user?.data?.unit?.system?.type === "vet" ? "Tutores" : "Clientes"}
+      title={user?.data?.unit?.system?.type === "Vet" ? "Tutores" : "Clientes"}
     >
       <div>
         <div className="uk-flex uk-margin-bottom uk-flex-between uk-width-1-1">
@@ -57,7 +57,9 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Nome ${
-                    user?.data?.unit?.system?.type === 'vet' ? "Tutor" : "Cliente"
+                    user?.data?.unit?.system?.type === "Vet"
+                      ? "Tutor"
+                      : "Cliente"
                   }`}
                   onChange={(e) =>
                     setFilters({
@@ -71,14 +73,16 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Telefone ${
-                    user?.data?.unit?.system?.type === 'vet' ? "Tutor" : "Cliente"
+                    user?.data?.unit?.system?.type === "Vet"
+                      ? "Tutor"
+                      : "Cliente"
                   }`}
                   onChange={(e) =>
                     setFilters({ ...filters, phone: e.target.value })
                   }
                 />
               </Input>
-              {user?.data?.unit?.system?.type === 'vet' && (
+              {user?.data?.unit?.system?.type === "Vet" && (
                 <Input>
                   <input
                     type="search"
@@ -96,7 +100,9 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`CPF ${
-                    user?.data?.unit?.system?.type === 'vet' ? "Tutor" : "Cliente"
+                    user?.data?.unit?.system?.type === "Vet"
+                      ? "Tutor"
+                      : "Cliente"
                   }`}
                   onChange={(e) =>
                     setFilters({ ...filters, document: e.target.value })

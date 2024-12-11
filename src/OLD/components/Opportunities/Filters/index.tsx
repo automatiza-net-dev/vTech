@@ -112,8 +112,8 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
               }}
             >
               <Option value="all">Todos</Option>
-              {crmStatus.length > 0 &&
-                crmStatus.map((status) => (
+              {crmStatus?.length > 0 &&
+                crmStatus?.map((status) => (
                   <Option value={status?.id} key={status?.id}>
                     {status?.description}
                   </Option>
@@ -311,7 +311,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
             />
           </InputBox>
         </div>
-        {user?.data?.unit?.system?.type === "vet" && (
+        {user?.data?.unit?.system?.type === "Vet" && (
           <div className="uk-width-1-5">
             <label>Nome pet</label>
             <InputBox className="uk-width-1-1">
