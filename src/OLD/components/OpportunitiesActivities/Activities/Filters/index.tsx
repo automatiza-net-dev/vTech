@@ -187,7 +187,7 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
             />
           </InputBox>
         </div>
-        {user?.data?.unit?.system?.type === 'vet' && (
+        {user?.data?.unit?.system?.type === 'Vet' && (
           <div>
             <label>Nome pet</label>
             <InputBox>

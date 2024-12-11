@@ -79,7 +79,7 @@ const OpActivities = memo(function OpActivities({
       raceId: opportunity?.race?.id,
       gender: opportunity?.gender,
       raceDescription: `${opportunity?.race?.specie?.description} > ${opportunity?.race?.description}`,
-      castrated: JSON.stringify(opportunity?.castrated),
+      castrated: opportunity?.castrated,
       patient: op?.client,
       contact: opportunity?.contact,
       weight: opportunity?.client?.weight,
@@ -126,7 +126,7 @@ const OpActivities = memo(function OpActivities({
       : setActivities([]);
   }, [opportunity, op, actTypes, colaborators]);
 
-  const updateOpportunity = useCallback(() => {
+  async function updateOpportunity() {
     setLoading(true);
 
     const formattedData = {
@@ -145,7 +145,7 @@ const OpActivities = memo(function OpActivities({
       originId: opportunitiesData?.originId,
       weight: opportunitiesData?.weight,
       gender: opportunitiesData?.gender,
-      castrated: opportunitiesData?.castrated,
+      castrated: opportunitiesData?.castrated ?? null,
       raceId: opportunitiesData?.raceId,
       marketingCampaignId: opportunitiesData?.marketingCampaignId,
       clientOriginItemDescription:
@@ -171,11 +171,7 @@ const OpActivities = memo(function OpActivities({
             "Houve um erro ao atualizar as informações da oportunidade, verifique os campos informados",
         });
       });
-  }, [
-    JSON.stringify(opportunitiesData),
-    clinic?.id,
-    JSON.stringify(opportunity),
-  ]);
+  }
 
   return (
     <Container className={`${origin === "none" && "uk-padding"} uk-width-1-1`}>

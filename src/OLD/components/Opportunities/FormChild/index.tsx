@@ -132,9 +132,11 @@ export default function FormChild({
 
   return (
     <Container
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        verifyFields() === "ok" && submit();
+
+        verifyFields() === "ok" && (await submit());
+
         setEdit && setEdit(false);
       }}
     >
@@ -198,7 +200,7 @@ export default function FormChild({
               </div>
             )}
           </div>
-          </div>
+        </div>
         {(process.env.client === "sancla" ||
           user?.data?.unit?.system?.type === "Vet") && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">

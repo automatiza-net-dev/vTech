@@ -20,6 +20,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
+import { AxiosError } from "axios";
 
 export default function Create({
   clients,
@@ -38,7 +39,7 @@ export default function Create({
 
   const router = useRouter();
 
-  const createOpportunity = useCallback(() => {
+  async function createOpportunity() {
     const newObj = {
       ...data,
       businessUnitId: clinic?.id,
@@ -51,20 +52,25 @@ export default function Create({
       delete newObj.castrated;
     }
 
-    opportunitiesService
-      .create(newObj)
-      .then((_res) => {
-        router.back();
-        return notification.success({
-          message: "Oportunidade cadastrada com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        return notification.error({
-          message: "Verifique os campos informados...",
-        });
+    try {
+      await opportunitiesService.create(newObj);
+
+      router.back();
+      return notification.success({
+        message: "Oportunidade cadastrada com sucesso!",
       });
-  }, [data, clinic]);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return notification.error({
+          message: error?.response?.data?.title,
+        });
+      }
+
+      return notification.error({
+        message: "Verifique os campos informados...",
+      });
+    }
+  }
 
   useEffect(() => {
     setData({
@@ -129,7 +135,7 @@ export default function Create({
           </Modal>
         )}
         {(process.env.client === "liftone" ||
-          user?.data?.unit?.system?.type !== "vet") && (
+          user?.data?.unit?.system?.type !== "Vet") && (
           <Modal
             title={"Selecionar Cliente"}
             width={1200}
