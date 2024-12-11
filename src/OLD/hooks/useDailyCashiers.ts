@@ -3,6 +3,40 @@ import { useEffect, useState } from "react";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
 import moment from "moment";
+import { useQuery } from "infinity-forge";
+import { useRouter } from "next/router";
+
+export function useDailyCashier() {
+  const router = useRouter();
+  const params = router?.query;
+
+  const resul = {
+    ...params,
+    fromOpening: params?.fromOpening ? moment(params?.fromOpening) : "",
+    toOpening: params?.toOpening ? moment(params?.toOpening) : "",
+  };
+
+  const hasRequiredKeys = [
+    "period",
+    "status",
+    "tag",
+    "fromOpening",
+    "toOpening",
+  ].some((key) => params.hasOwnProperty(key));
+
+  async function fetcher() {
+    const response = await dailyCasherService.listDailyCashiers(resul);
+
+    return response.data;
+  }
+
+  return useQuery({
+    queryKey: ["LoadCashier", JSON.stringify(params)],
+    queryFn: fetcher,
+    enabled: !!(params && hasRequiredKeys && router.isReady),
+    enableCache: true,
+  });
+}
 
 export const useDailyCasher = (
   reload = false,
@@ -17,8 +51,14 @@ export const useDailyCasher = (
 
     const newObj = {
       ...filters,
-      fromOpening: moment(filters?.fromBill).toISOString(),
-      toOpening: moment(filters?.toBill).toISOString(),
+      fromOpening: moment(filters?.fromBill)
+        .subtract(3, "hours")
+        .startOf("day")
+        .toISOString(),
+      toOpening: moment(filters?.toBill)
+        .subtract(3, "hours")
+        .endOf("day")
+        .toISOString(),
     };
 
     if (isComplete) {
@@ -45,7 +85,7 @@ export const useDailyCasher = (
 
   useEffect(() => {
     fetchData();
-  }, [reload, filters]);
+  }, [reload])
 
   return { cashiers, cashiersLoading: loading, fetchDailyCashiers: fetchData };
 };
