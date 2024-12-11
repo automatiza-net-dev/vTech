@@ -312,10 +312,7 @@ const AddPayments = memo(function AddPayments({
               <hr />
               {paymentMethods?.length > 0 &&
                 paymentMethods
-                  ?.filter(
-                    (method) =>
-                      method?.flags?.length === 0 && method?.tef === "NAO"
-                  )
+                  ?.filter((method) => method?.tef === "NAO")
                   ?.map((method) => (
                     <div
                       onClick={() =>
