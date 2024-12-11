@@ -277,7 +277,7 @@ function Budgets() {
                 }
               />
             </Input>
-            {user?.unit?.system?.type === "vet" && (
+            {user?.unit?.system?.type === "Vet" && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
                 <AntInput
@@ -288,7 +288,7 @@ function Budgets() {
                 />
               </Input>
             )}
-            {user?.unit?.system?.type !== "vet" && userIsReviewer && (
+            {user?.unit?.system?.type !== "Vet" && userIsReviewer && (
               <Input style={{ width: "100%" }}>
                 <label>Avaliador</label>
                 <AutoComplete
