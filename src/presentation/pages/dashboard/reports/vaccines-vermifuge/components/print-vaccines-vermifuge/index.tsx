@@ -8,7 +8,6 @@ export function PrintVaccinesVermifugeReport({
 }: {
   reports: Vaccine[];
 }) {
-  const user = useMe();
 
   return (
     <S.PrintVaccinesVermifuge>

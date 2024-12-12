@@ -1,8 +1,6 @@
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
-import { useMe } from "@/presentation";
-
 import { TimeLine } from "@/domain";
 
 import { Input, FormHandler, Button } from "infinity-forge";
@@ -16,7 +14,6 @@ import * as S from "./styles";
 
 export function DischargeForm(props: TimeLine["timeline_info"]) {
   const componentRef = useRef<HTMLDivElement>(null);
-  const user = useMe();
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,

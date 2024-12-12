@@ -7,13 +7,12 @@ import { useQueryClient } from "react-query";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Collapse, Table } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useAuthAdmin } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Panel } = Collapse;
 import RemoveBillPayment from "../../AddBillPayment/RemoveBillPayment";
 import {
   useBillPaymentsReceipts,
-  useMe,
   PrintPaymentReceipts,
 } from "@/presentation";
 
@@ -31,15 +30,16 @@ const ProductsPanel = memo(function ProductsPanel({
 }) {
   const componentRef = useRef();
   const SinglecomponentRef = useRef();
-  const user = useMe();
+  const { user } = useAuthAdmin();
   const [singlePayment, setSinglePayment] = useState([]);
   const [formatedPayments, setFormatedPayments] = useState([]);
   const [editExpirationDate, setEditExpirationDate] = useState(false);
   const [billPaymentReceiptsFilters, setBillPaymentReceiptsFilters] = useState({
     fetch: false,
-    businessUnitId: user.data.unit.id,
+    businessUnitId: user.unit.id,
     billId: bill?.id,
   });
+
   const [data, setData] = useState([]);
 
   const billReceipts = useBillPaymentsReceipts(billPaymentReceiptsFilters);
@@ -171,7 +171,7 @@ const ProductsPanel = memo(function ProductsPanel({
                     queryClient.invalidateQueries(["billPaymentsReceipts"]);
                     setBillPaymentReceiptsFilters((prv) => ({
                       fetch: true,
-                      businessUnitId: user.data.unit.id,
+                      businessUnitId: user.unit.id,
                       billId: bill?.id,
                       block: payments[0]?.block,
                     }));
