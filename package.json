@@ -45,7 +45,7 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.6",
     "html-react-parser": "^3.0.8",
-    "infinity-forge": "5.2.3",
+    "infinity-forge": "5.2.7",
     "inversify": "^6.0.2",
     "moment": "^2.29.1",
     "next": "^14.2.3",
