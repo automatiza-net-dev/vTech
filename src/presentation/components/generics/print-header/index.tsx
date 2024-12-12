@@ -1,13 +1,13 @@
 import React from "react";
 
-import { useMe } from "@/presentation";
+import { useAuthAdmin } from 'infinity-forge'
 
 import masks from "@/OLD/utils/masks";
 
 import * as S from './styles';
 
 export function PrintHeader() {
-  const unit = useMe()?.data?.unit;
+  const unit = useAuthAdmin()?.user?.unit;
 
   return (
     <S.PrintHeader>

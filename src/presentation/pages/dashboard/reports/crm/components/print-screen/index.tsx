@@ -6,7 +6,6 @@ import { PrintHeader, useMe } from "@/presentation";
 import * as S from "./styles";
 
 export function PrintScreen({ reports }: { reports: OpportunityReport[] }) {
-  const user = useMe();
 
   return (
     <S.PrintScreen>

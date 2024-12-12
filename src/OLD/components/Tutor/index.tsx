@@ -13,9 +13,8 @@ import { Modal } from "antd";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePatientTutors } from "@/OLD/hooks/usePatientTutors";
-import { useMe } from "@/presentation";
 
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useAuthAdmin } from "infinity-forge";
 import { FormCreateTutor } from "@/presentation";
 import { useRouter } from "next/router";
 
@@ -37,7 +36,7 @@ export function Tutor({
   const [createTutorVisible, setCreateTutorVisible] = useState(false);
 
   const { fetchPatientTutors } = usePatientTutors(filters);
-  const user = useMe();
+  const { user } = useAuthAdmin();
 
   const router = useRouter();
 
@@ -47,7 +46,7 @@ export function Tutor({
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <PageWrapper
-      title={user?.data?.unit?.system?.type === "Vet" ? "Tutores" : "Clientes"}
+      title={user?.unit?.system?.type === "Vet" ? "Tutores" : "Clientes"}
     >
       <div>
         <div className="uk-flex uk-margin-bottom uk-flex-between uk-width-1-1">
@@ -57,7 +56,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Nome ${
-                    user?.data?.unit?.system?.type === "Vet"
+                    user?.unit?.system?.type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
@@ -73,7 +72,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Telefone ${
-                    user?.data?.unit?.system?.type === "Vet"
+                    user?.unit?.system?.type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
@@ -82,7 +81,7 @@ export function Tutor({
                   }
                 />
               </Input>
-              {user?.data?.unit?.system?.type === "Vet" && (
+              {user?.unit?.system?.type === "Vet" && (
                 <Input>
                   <input
                     type="search"
@@ -100,7 +99,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`CPF ${
-                    user?.data?.unit?.system?.type === "Vet"
+                    user?.unit?.system?.type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}

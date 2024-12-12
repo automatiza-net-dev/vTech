@@ -6,14 +6,13 @@ import { FormHandler, Input, Textarea, Button } from "infinity-forge";
 
 import { TimeLine } from "@/domain";
 
-import { PrintHeader, useMe } from "@/presentation";
+import { PrintHeader } from "@/presentation";
 
 import * as S from "./styles";
 
 
 export function HospitalizationForm(props: TimeLine["timeline_info"]) {
   const componentRef = useRef<HTMLDivElement>(null);
-  const user = useMe();
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,

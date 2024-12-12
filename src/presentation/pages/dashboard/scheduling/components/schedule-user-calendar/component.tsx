@@ -1,8 +1,10 @@
 import moment from "moment";
 import FullCalendar from "@fullcalendar/react";
 
+import { useAuthAdmin } from 'infinity-forge'
+
 import { CalendarEvent } from "./components";
-import { combineDateAndTime, useMe, useScheduling } from "@/presentation";
+import { combineDateAndTime, useScheduling } from "@/presentation";
 
 import { calendarConfigurations } from "./calendar-configurations";
 
@@ -14,7 +16,7 @@ export function ScheduleUserCalendar({
   scheduleUser,
   viewCalendar,
 }: IScheduleUserCalendarProps) {
-  const { data } = useMe();
+  const data = useAuthAdmin();
   const selectedDate = useScheduling((state) => state.selectedDate);
   const setModalPatients = useScheduling((state) => state.setModalPatients);
 
@@ -41,7 +43,7 @@ export function ScheduleUserCalendar({
       };
     });
 
-  const intervalMinutes = data?.unit?.unitConfig?.interval;
+  const intervalMinutes = data?.user?.unitConfig?.interval;
   const duration =
     intervalMinutes && moment.duration(intervalMinutes, "minutes");
   const formattedDuration =

@@ -4,13 +4,12 @@ import { useState, memo } from "react";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useAuth } from "@/OLD/hooks/useAuth";
-import { useMe } from "@/presentation";
 
 import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, InputBox } from "./styles";
-import { Button, Icon, Tooltip } from "infinity-forge";
+import { Button, Icon, Tooltip, useAuthAdmin } from "infinity-forge";
 const { Option } = Select;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
@@ -21,7 +20,7 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
   const [values, setValues] = useState({});
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
   const allBusinessUnits = useBusinessUnitsByUser();
 
   const viewAllActivitiesPermission = useUserHasPermission("CRM09");
@@ -187,7 +186,7 @@ function Filters({ filters, setFilters, setReload, actTypes, colaborators }) {
             />
           </InputBox>
         </div>
-        {user?.data?.unit?.system?.type === 'Vet' && (
+        {user?.unit?.system?.type === "Vet" && (
           <div>
             <label>Nome pet</label>
             <InputBox>

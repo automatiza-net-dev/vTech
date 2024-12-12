@@ -1,7 +1,8 @@
 //@ts-nocheck
 import { useState, useEffect } from "react";
 
-import { useMe } from "@/presentation";
+import { useAuthAdmin } from "infinity-forge";
+
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useShowActivities } from "@/OLD/hooks/useOpportunities";
 
@@ -49,7 +50,7 @@ function Activities({
   const [reload, setReload] = useState(false);
   const [formattedActivities, setFormattedActivities] = useState(false);
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
 
   const { allActivities } = useShowActivities(
     filters,
@@ -109,7 +110,7 @@ function Activities({
 
   useEffect(() => {
     !viewAllActivitiesPermission &&
-      setFilters({ ...filters, technicianName: user?.data?.firstName });
+      setFilters({ ...filters, technicianName: user?.firstName });
     setReload((prv) => !prv);
   }, [viewAllActivitiesPermission]);
 
@@ -134,7 +135,7 @@ function Activities({
       <Table
         className="uk-margin-small-top"
         columns={
-          user?.data?.unit?.system?.type === "Vet"
+          user?.unit?.system?.type === "Vet"
             ? opportunitiesActivitiesColumnsComplete
             : liftOneOpportunitiesActivitiesColumnsComplete
         }
