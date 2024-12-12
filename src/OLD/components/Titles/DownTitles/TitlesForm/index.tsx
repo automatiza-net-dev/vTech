@@ -14,6 +14,7 @@ import { DatePicker, Input, Select, notification } from "antd";
 const { Option } = Select;
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
+import { usePermission } from "@/presentation";
 
 function TitlesForm({
   plans,
@@ -29,6 +30,12 @@ function TitlesForm({
   const { user } = useAuthAdmin();
 
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+
+  const editFieldsPermission = (title) =>
+    usePermission(`${accessControlTitles(title)}02`);
+
+  const editPaymentMethodPermission = (title) =>
+    usePermission(`${accessControlTitles(title)}10`);
 
   return (
     <form
@@ -56,16 +63,11 @@ function TitlesForm({
             (method) => method?.id === title?.paymentMethodId
           )?.flags;
 
-          const editFieldsPermission = useUserHasPermission(
-            `${accessControlTitles(title?.type)}02`
-          );
-
-          const editPaymentMethodPermission = useUserHasPermission(
-            `${accessControlTitles(title?.type)}10`
-          );
-
           const allowPaymentMethodEdit = () => {
-            if (editFieldsPermission && editPaymentMethodPermission) {
+            if (
+              editFieldsPermission(title?.type) &&
+              editPaymentMethodPermission(title?.type)
+            ) {
               return false;
             }
             return true;
@@ -275,7 +277,7 @@ function TitlesForm({
                       <label>Código interno</label>
                       <Input
                         disabled={true}
-                        value={data?.internalCode}
+                        value={title?.internalCode}
                         onChange={(e) =>
                           setData({ ...data, internalCode: e.target.value })
                         }

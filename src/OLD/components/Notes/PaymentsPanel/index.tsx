@@ -376,23 +376,23 @@ function PaymentsPanel({
               <Panel
                 header={
                   <div>
-                    {paymentsList?.[0]?.paymentMethodDescription?.type ===
-                      "DEBITO" ||
-                    paymentsList?.[0]?.paymentMethodDescription?.type ===
-                      "CREDITO"
+                    {paymentsList?.[0]?.paymentMethodDescription?.tef !== "NAO"
                       ? `
                       ${
-                        paymentsList?.[0]?.paymentMethodDescription?.tef !== "NAO"
+                        paymentsList?.[0]?.paymentMethodDescription?.tef !==
+                        "NAO"
                           ? paymentsList?.[0]?.paymentMethodDescription?.tef
                           : ""
                       }\n
                       CARTÃO ${
                         paymentsList?.[0]?.paymentMethodDescription?.type
-                      } - ${paymentsList?.[0]?.flagDescription?.description}
+                      } - ${
+                          paymentsList?.[0]?.flagDescription?.description || ""
+                        }
                       `
                       : paymentsList?.[0]?.paymentMethodDescription
                           ?.description}{" "}
-                    {currencyFormatter(
+                    {' '}{currencyFormatter(
                       paymentsList?.reduce(
                         (acc, current) =>
                           acc + convertIntlCurrency(current?.originValue),
