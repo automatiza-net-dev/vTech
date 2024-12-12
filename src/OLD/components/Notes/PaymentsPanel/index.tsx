@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { receiptService } from "@/OLD/services/receipt.service";
 
 import { useRouter } from "next/router";
-import { useMe } from "@/presentation/hooks";
 import { usePlans } from "@/OLD/hooks/usePlans";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
@@ -12,7 +11,7 @@ import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import AddPayments from "../AddPayments";
 import { FormHandler } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "infinity-forge";
+import { Button, useAuthAdmin } from "infinity-forge";
 import {
   Collapse,
   Table,
@@ -50,7 +49,7 @@ function PaymentsPanel({
   const [formattedPayments, setFormattedPayments] = useState([]);
   const [plansFilters, setPlansFilter] = useState({ type: "DEBITO" });
 
-  const me = useMe();
+  const me = useAuthAdmin();
   const { plans } = usePlans(plansFilters);
   const { paymentMethods } = usePaymentMethods();
 
@@ -59,7 +58,7 @@ function PaymentsPanel({
   const updatePaymentsPermission = useUserHasPermission("ENT05");
   const removePaymentsPermission = useUserHasPermission("ENT06");
   const generatesFinancesOnReceiptsFinish =
-    me?.data?.unit?.unitConfig?.generates_finances_on_receipts_finish;
+    me?.user?.unit?.unitConfig?.generates_finances_on_receipts_finish;
 
   sortItems(paymentMethods, "description");
 

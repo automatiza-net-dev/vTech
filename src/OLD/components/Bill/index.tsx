@@ -2,8 +2,9 @@
 // Core
 import * as React from "react";
 
+import { useAuthAdmin } from "infinity-forge";
+
 // Hooks
-import { useMe } from "@/presentation";
 import { useRouter } from "next/router";
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 
@@ -42,9 +43,9 @@ export default function Bills() {
   });
   const [reload, setReload] = React.useState(false);
 
+  const { user } = useAuthAdmin();
   const { data } = useGetAllBills(filters, reload);
   const { cashiers } = useDailyCasher(false, filters);
-  const user = useMe();
 
   const router = useRouter();
 
@@ -191,8 +192,7 @@ export default function Bills() {
                   }
                 />
               </Input>
-
-              {user?.data?.unit?.system?.type === "Vet" && (
+              {user?.unit?.system?.type === "Vet" && (
                 <Input style={{ width: "100%" }}>
                   <Label>Paciente</Label>
                   <AntInput
@@ -261,7 +261,7 @@ export default function Bills() {
           <div className="uk-margin-top">
             <Table
               columns={
-                user?.data?.unit?.system?.type === "Vet" ? Columns : LiftColumns
+                user?.unit?.system?.type === "Vet" ? Columns : LiftColumns
               }
               dataSource={mapper(data, cashiers)}
               footer={() => (

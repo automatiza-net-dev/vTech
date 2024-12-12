@@ -1,7 +1,7 @@
 import moment from "moment";
-import { Input, Select, Textarea, FormHandler } from "infinity-forge";
+import { Input, Select, Textarea, FormHandler, useAuthAdmin } from "infinity-forge";
 
-import { useMe, useScheduling } from "@/presentation";
+import { useScheduling } from "@/presentation";
 
 import {
   SelectServices,
@@ -13,7 +13,7 @@ import { useSubmitSchedule } from "./handleSubmit";
 import * as S from "./styles";
 
 export function FormCreateScheduling() {
-  const me = useMe();
+  const me = useAuthAdmin();
   const { submit, scheduleUsers } = useSubmitSchedule();
 
   const createSchedulingArgs = useScheduling(
@@ -121,7 +121,7 @@ export function FormCreateScheduling() {
               type="number"
               name="duration"
               readOnly={
-                !me?.data?.unit?.unitConfig?.allow_change_schedule_duration
+                !me?.user?.unit?.unitConfig?.allow_change_schedule_duration
               }
               label="Duração consulta (minutos)"
             />

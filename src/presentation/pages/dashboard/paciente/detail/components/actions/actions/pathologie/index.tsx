@@ -5,13 +5,14 @@ import {
   TextEditor,
   FormHandler,
   useToast,
+  useAuthAdmin
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
 
 import { RemotePatientAnimal } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { useLoadAllPathologies, useLoadPatient, useMe } from "@/presentation";
+import { useLoadAllPathologies, useLoadPatient } from "@/presentation";
 
 import * as Type from "../dropdown-item";
 
@@ -22,7 +23,7 @@ export function Pathologie({
   _id,
   timeline_info,
 }: Type.DropdownComponentProps) {
-  const me = useMe();
+  const me = useAuthAdmin();
   const patient = useLoadPatient();
   const { createToast } = useToast();
   const { data, isFetching } = useLoadAllPathologies();
@@ -42,7 +43,7 @@ export function Pathologie({
               id: _id,
               tag: patient.data?.id,
               realizedAt: moment(),
-              technicianId: me.data?.user.id,
+              technicianId: me.user.id,
             };
 
          await container

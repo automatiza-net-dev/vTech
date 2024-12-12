@@ -1,15 +1,15 @@
 import { useState } from "react";
 
 import moment from "moment";
-import { Select } from "infinity-forge";
+import { Select, useAuthAdmin } from "infinity-forge";
 import { useFormikContext } from "formik";
 
 import { LoadAllSchedullingToMovement } from "@/domain";
 
-import { useLoadSchedulesToMovement, useMe } from "@/presentation";
+import { useLoadSchedulesToMovement } from "@/presentation";
 
 export function SelectSchedule() {
-  const user = useMe();
+  const { user } = useAuthAdmin();
   const { values } = useFormikContext<any>();
   const [filters, setFilters] = useState<LoadAllSchedullingToMovement.Params>({
     type: "bill",
@@ -29,7 +29,7 @@ export function SelectSchedule() {
               process.env.client === "sancla"
                 ? values?.patientId
                 : values?.clientId,
-            businessUnitId: user.data.unit.id,
+            businessUnitId: user.unit.id,
           })
         }
       >

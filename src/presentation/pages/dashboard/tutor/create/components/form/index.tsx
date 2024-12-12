@@ -8,11 +8,12 @@ import {
   InputMask,
   FormHandler,
   InputSwitch,
+  useAuthAdmin
 } from "infinity-forge";
 import moment from "moment";
 
 import { RemoteTutor } from "@/data";
-import { useLoadTutor, useMe } from "@/presentation";
+import { useLoadTutor } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 import { Pets } from "../pets";
@@ -27,7 +28,7 @@ import * as S from "./styles";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
-  const unitConfig = useMe()?.data?.unit?.unitConfig;
+  const unitConfig = useAuthAdmin()?.user?.unit?.unitConfig;
 
   const { data, isFetching, mutate } = useLoadTutor(tutorId);
 

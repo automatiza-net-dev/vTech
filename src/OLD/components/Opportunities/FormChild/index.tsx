@@ -3,9 +3,7 @@ import { useRouter } from "next/router";
 
 import { animalServices } from "@/OLD/services/animal.service";
 
-import { useMe } from "@/presentation";
-
-import { FormHandler, Select, Button } from "infinity-forge";
+import { FormHandler, Select, Button, useAuthAdmin } from "infinity-forge";
 import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
 
 import {
@@ -60,7 +58,7 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
   const { data: uniqueOrigins } = useLoadCampaings({
     active: true,
     clientOriginId: data?.originId,
@@ -202,7 +200,7 @@ export default function FormChild({
           </div>
         </div>
         {(process.env.client === "sancla" ||
-          user?.data?.unit?.system?.type === "Vet") && (
+          user?.unit?.system?.type === "Vet") && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">

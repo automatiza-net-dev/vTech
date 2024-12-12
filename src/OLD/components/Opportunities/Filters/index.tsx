@@ -2,12 +2,11 @@
 import React, { useState, memo, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { useMe } from "@/presentation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 
-import { Button, Tooltip, Icon } from "infinity-forge";
+import { Button, Tooltip, Icon, useAuthAdmin } from "infinity-forge";
 import { Container, InputBox } from "./styles";
 import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, AutoComplete, Select } from "antd";
@@ -23,7 +22,7 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
   const [values, setValues] = useState({});
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
   const { businessUnits } = useBusinessUnitsByUser(false);
 
   const router = useRouter();
@@ -311,7 +310,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
             />
           </InputBox>
         </div>
-        {user?.data?.unit?.system?.type === "Vet" && (
+        {user?.unit?.system?.type === "Vet" && (
           <div className="uk-width-1-5">
             <label>Nome pet</label>
             <InputBox className="uk-width-1-1">
