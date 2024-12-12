@@ -34,7 +34,7 @@ importers:
         version: 6.1.15(@fullcalendar/core@6.1.15)
       '@hookform/resolvers':
         specifier: ^2.9.7
-        version: 2.9.11(react-hook-form@7.53.1(react@18.3.1))
+        version: 2.9.11(react-hook-form@7.52.1(react@18.3.1))
       '@mui/icons-material':
         specifier: ^5.15.4
         version: 5.16.7(@mui/material@5.16.7(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.12)(react@18.3.1)
@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: 5.2.7
-        version: 5.2.7(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
+        specifier: 5.3.1
+        version: 5.3.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(express@4.21.1)(prisma@5.22.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
       inversify:
         specifier: ^6.0.2
         version: 6.0.3
@@ -100,7 +100,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-hook-form:
         specifier: ^7.34.0
-        version: 7.53.1(react@18.3.1)
+        version: 7.52.1(react@18.3.1)
       react-icons:
         specifier: ^4.4.0
         version: 4.12.0(react@18.3.1)
@@ -2467,8 +2467,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@5.2.7:
-    resolution: {integrity: sha512-8QAu2ST3MpLKBBTKBuTChlY2yZQQ2rc4uJJEjcAKSqMqSqxiNnR7n5wfH6loa+Et1SXQZkPFCgf9Kard7zOt1A==}
+  infinity-forge@5.3.1:
+    resolution: {integrity: sha512-lps0t3NaF5iHuN3BayR0jYRN5WYY4gg0hbpyRmSqGG9me2zR4nFVtfUnGyZLzWs4GNpNLIAhb/oeZw2daFK0zQ==}
     peerDependencies:
       react: '>=16'
 
@@ -3549,16 +3549,6 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  react-calendar@4.8.0:
-    resolution: {integrity: sha512-qFgwo+p58sgv1QYMI1oGNaop90eJVKuHTZ3ZgBfrrpUb+9cAexxsKat0sAszgsizPMVo7vOXedV7Lqa0GQGMvA==}
-    peerDependencies:
-      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-
   react-calendar@5.1.0:
     resolution: {integrity: sha512-09o/rQHPZGEi658IXAJtWfra1N69D1eFnuJ3FQm9qUVzlzNnos1+GWgGiUeSs22QOpNm32aoVFOimq0p3Ug9Eg==}
     peerDependencies:
@@ -3674,12 +3664,6 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-
-  react-slick@0.30.2:
-    resolution: {integrity: sha512-XvQJi7mRHuiU3b9irsqS9SGIgftIfdV5/tNcURTb5LdIokRA5kIIx3l4rlq2XYHfxcSntXapoRg/GxaVOM1yfg==}
-    peerDependencies:
-      react: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
   react-to-print@2.15.1:
     resolution: {integrity: sha512-1foogIFbCpzAVxydkhBiDfMiFYhIMphiagDOfcG4X/EcQ+fBPqJ0rby9Wv/emzY1YLkIQy/rEgOrWQT+rBKhjw==}
@@ -4777,9 +4761,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@hookform/resolvers@2.9.11(react-hook-form@7.53.1(react@18.3.1))':
+  '@hookform/resolvers@2.9.11(react-hook-form@7.52.1(react@18.3.1))':
     dependencies:
-      react-hook-form: 7.53.1(react@18.3.1)
+      react-hook-form: 7.52.1(react@18.3.1)
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -7015,15 +6999,15 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@5.2.7(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
+  infinity-forge@5.3.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(express@4.21.1)(prisma@5.22.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
     dependencies:
-      '@types/lodash': 4.17.7
-      '@wojtekmaj/react-daterange-picker': 6.0.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/lodash': 4.17.13
+      '@wojtekmaj/react-daterange-picker': 6.0.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       axios: 1.7.7
-      chroma-js: 2.4.2
+      chroma-js: 2.6.0
       cpx: 1.5.0
       formik: 2.4.6(react@18.3.1)
-      inversify: 6.0.2
+      inversify: 6.0.3
       lodash: 4.17.21
       messageprovider: 0.1.9(express@4.21.1)(prisma@5.22.0)
       moment: 2.30.1
@@ -7033,8 +7017,9 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-ga: 3.3.1(prop-types@15.8.1)(react@18.3.1)
       react-is: 18.3.1
+      react-quill: 2.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-rte: 0.16.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-select: 5.8.2(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       reflect-metadata: 0.2.2
       sharp: 0.33.5
       styled-components: 6.1.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -7473,7 +7458,7 @@ snapshots:
       jsonwebtoken: 9.0.2
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
-      swagger-generator-codie: 0.1.4
+      swagger-generator-codie: 0.1.1
       swagger-ui-express: 5.0.1(express@4.21.1)
       uuid: 10.0.0
       yaml: 2.6.0
@@ -8246,19 +8231,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-calendar@4.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@wojtekmaj/date-utils': 1.5.1
-      clsx: 2.1.1
-      get-user-locale: 2.3.2
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      warning: 4.0.3
-    optionalDependencies:
-      '@types/react': 18.3.3
-
-  react-calendar@5.1.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-calendar@5.1.0(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@wojtekmaj/date-utils': 1.5.1
       clsx: 2.1.1
@@ -8392,16 +8365,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
-
-  react-slick@0.30.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      classnames: 2.5.1
-      enquire.js: 2.1.6
-      json2mq: 0.2.0
-      lodash.debounce: 4.0.8
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      resize-observer-polyfill: 1.5.1
 
   react-to-print@2.15.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
