@@ -116,6 +116,7 @@ function DownTitles({ setVisible, setReload }: any) {
       competenceDate: item?.competenceDate,
       paymentMethodId: item?.paymentMethodId,
       tefFlagId: item?.flagId,
+      internalCode: item?.internalCode,
     }));
 
     financesService

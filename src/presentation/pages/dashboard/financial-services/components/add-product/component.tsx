@@ -109,8 +109,6 @@ export function AddProduct() {
           return (
             <div key={indexProduct}>
               {product?.variations?.map((variation, indexVariation) => {
-                console.log(variation);
-
                 const pathName = `cart[${indexProduct}].variations[${indexVariation}]`;
 
                 const maxDiscount =

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { userService } from "@/OLD/services/user.service";
 
 export const useProfile = (type = false, reload = false) => {
@@ -8,9 +8,8 @@ export const useProfile = (type = false, reload = false) => {
       const res = await userService.getUser();
       return res?.data;
     },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchInterval: 1000 * 60, // 60s
+    interval: 1000 * 60, // 60s
+    enableCache: true,
   });
 
   return {

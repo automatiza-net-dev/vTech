@@ -14,10 +14,6 @@ export function LaunchRelatedSale({
 }) {
   const [modal, setModal] = useState(false);
 
-  if (!internalCode) {
-    return null;
-  }
-
   return (
     <S.LaunchRelatedSale>
       <Tooltip
