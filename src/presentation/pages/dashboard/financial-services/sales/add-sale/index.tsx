@@ -6,6 +6,7 @@ import {
   useToast,
   FormHandler,
   LoaderCircle,
+  useAuthAdmin,
   BadRequestError,
 } from "infinity-forge";
 
@@ -26,18 +27,21 @@ import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
-import * as S from "./styles";
 import {
   SelectBudgetClient,
   SelectBudgetPatient,
 } from "../../budget/add-budget/components";
 
+import * as S from "./styles";
+
 export function AddSale({
+  type = "create",
   billId,
   setModal,
   listCreated,
 }: {
   billId?: Bill["id"];
+  type?: "edit" | "create";
   setModal?: Dispatch<SetStateAction<boolean>>;
   listCreated?: (id: Bill["id"]) => void | undefined;
 }) {
@@ -48,11 +52,18 @@ export function AddSale({
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
 
+  const internalCode = bill?.data?.internalCode;
+
   const tutors = useLoadAllPatientTutor({
     enabled: !patient || !bill?.data?.patient,
   })?.data;
 
   const { createToast } = useToast();
+  const { user } = useAuthAdmin();
+
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const hasSyncScheduleMovements =
+    user?.unit?.unitConfig?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
     (movement) => movement.status === "Aberto"
@@ -93,13 +104,14 @@ export function AddSale({
   const initialData = {
     maxDiscount: false,
     clientId,
+    internalCode,
     patientId,
     patientName: patient?.data?.name || bill?.data?.patient?.name,
     clientName:
       bill?.data?.client?.name ||
       patient?.data?.tutor?.name ||
       patient?.data?.name,
-    cart: bill?.data?.products,
+    cart: type === "edit" ? bill?.data?.products : [],
     sellerId: bill?.data?.seller?.id,
     financialResponsibleId: bill?.data?.financialResponsible?.id,
   };
@@ -110,7 +122,8 @@ export function AddSale({
 
       const payload = {
         ...data,
-        billId,
+        billId: type === "edit" ? billId : null,
+        originBillId: (internalCode && billId) ?? null,
         cart: undefined,
         items: formatItemsCart,
         billDate: new Date().toISOString(),
@@ -119,7 +132,7 @@ export function AddSale({
 
       const response = await container
         .get<RemoteBills>(TypesAutomatiza.RemoteBills)
-        [billId ? "update" : "create"](payload);
+        [type === "edit" ? "update" : "create"](payload);
 
       await DeleteCartItems(initialValues.cart, data.cart, true);
 
@@ -164,10 +177,12 @@ export function AddSale({
         onSucess={handleSubmit}
         cleanFieldsOnSubmit={false}
       >
-        <h2 className="font-24-bold">{billId ? "Editar" : "Criar"} venda</h2>
+        <h2 className="font-24-bold">
+          {type === "edit" ? "Editar" : "Criar"} venda
+        </h2>
 
         <div className="row">
-          <SelectBudgetClient tutors={tutors} />
+          <SelectBudgetClient tutors={tutors} hideCheckbox />
 
           {process.env.client === "sancla" ? (
             <SelectBudgetPatient tutors={tutors} />
@@ -177,21 +192,35 @@ export function AddSale({
                 name="financialResponsibleId"
                 label="Responsável financeiro"
               />
-              <SelectSchedule />
+
+              {hasSyncScheduleMovements && <SelectSchedule />}
             </>
           )}
+
           {process.env.client === "sancla" && (
             <SelectClient
               name="financialResponsibleId"
               label="Responsável financeiro"
             />
           )}
+
+          {hasInternalCode && (
+            <Input
+              label="Código Interno"
+              name="internalCode"
+              disabled={!!internalCode}
+            />
+          )}
         </div>
+
         <div className="row">
           <SelectSeller />
-          {process?.env?.client === "sancla" && <SelectSchedule />}
+          {process?.env?.client === "sancla" && hasSyncScheduleMovements && (
+            <SelectSchedule />
+          )}
           <Input label="Observação" name="additionalInformation" />
         </div>
+
         <AddProduct />
       </FormHandler>
 

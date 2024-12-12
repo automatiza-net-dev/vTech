@@ -57,7 +57,7 @@ function PrintTable({ data = [], loading }) {
             data_nasc_dep: item?.patient?.birthDate
               ? moment(item?.patient?.birthDate).format("DD/MM/YYYYY")
               : "-",
-            genero_dep: item?.patient?.gender === "female" ? "Fêmea" : "Macho",
+            genero_dep: item?.patient?.gender,
             especie_dep: item?.patient?.race?.specie?.description,
             raca_dep: item?.patient?.race?.description,
             castrado_dep: item?.patient?.castrated ? "Sim" : "Não",

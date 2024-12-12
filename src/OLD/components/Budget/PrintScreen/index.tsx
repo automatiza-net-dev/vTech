@@ -33,7 +33,9 @@ export default function PrintScreen({ printDetails, budgetData }) {
         </div>
         <div>
           <label>Cliente</label>
-          <p className="ukk-margin-remove">{budget?.data?.client?.name}</p>
+          <p className="ukk-margin-remove">
+            {budget?.data?.client?.name || budget?.data?.client_name}
+          </p>
         </div>
 
         <div>

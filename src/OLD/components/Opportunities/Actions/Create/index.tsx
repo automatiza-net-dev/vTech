@@ -1,15 +1,16 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/OLD/hooks/useAuth";
+import { useMe } from "@/presentation";
 
 import FormChild from "../../FormChild";
 import { Container } from "../../styles";
 import { notification, Modal } from "antd";
 import { Patient } from "@/OLD/components/Patient";
 import { Tutor } from "@/OLD/components/Tutor";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useAuthAdmin } from "infinity-forge";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
@@ -19,6 +20,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
+import { AxiosError } from "axios";
 
 export default function Create({
   clients,
@@ -31,12 +33,13 @@ export default function Create({
   const [patientListVisible, setPatientListVisible] = useState(true);
   const [reload, setReload] = useState(false);
 
-  const { clinic, user } = useProfile();
+  const { user } = useAuthAdmin();
+  const { clinic } = useProfile();
   const { crmData, setCrmData } = useAuth();
 
   const router = useRouter();
 
-  const createOpportunity = useCallback(() => {
+  async function createOpportunity() {
     const newObj = {
       ...data,
       businessUnitId: clinic?.id,
@@ -49,20 +52,26 @@ export default function Create({
       delete newObj.castrated;
     }
 
-    opportunitiesService
-      .create(newObj)
-      .then((_res) => {
-        router.back();
-        return notification.success({
-          message: "Oportunidade cadastrada com sucesso!",
-        });
-      })
-      .catch((_err) => {
-        return notification.error({
-          message: "Verifique os campos informados...",
-        });
+    try {
+      await opportunitiesService.create(newObj);
+
+      notification.success({
+        message: "Oportunidade cadastrada com sucesso!",
       });
-  }, [data, clinic]);
+
+      router.back();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return notification.error({
+          message: error?.response?.data?.title,
+        });
+      }
+
+      return notification.error({
+        message: "Verifique os campos informados...",
+      });
+    }
+  }
 
   useEffect(() => {
     setData({
@@ -105,7 +114,8 @@ export default function Create({
           />
         )}
 
-        {process.env.client === "sancla" && (
+        {(process.env.client === "sancla" ||
+          user?.unit?.system?.type === "Vet") && (
           <Modal
             title={"Selecionar paciente"}
             width={1200}
@@ -125,7 +135,8 @@ export default function Create({
             />
           </Modal>
         )}
-        {process.env.client === "liftone" && (
+        {(process.env.client === "liftone" ||
+          user?.unit?.system?.type !== "Vet") && (
           <Modal
             title={"Selecionar Cliente"}
             width={1200}

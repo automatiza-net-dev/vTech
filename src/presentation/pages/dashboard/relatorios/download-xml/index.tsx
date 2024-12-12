@@ -47,7 +47,7 @@ export function DownloadXML() {
       if (error instanceof AxiosError) {
         createToast({
           status: "error",
-          message: error?.response?.data?.message,
+          message: "Não existe arquivo disponível para download.",
         });
         return;
       }

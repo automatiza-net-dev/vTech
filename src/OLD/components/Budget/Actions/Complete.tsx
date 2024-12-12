@@ -15,7 +15,7 @@ import Negotiation from "@/OLD/components/Budget/Negotiation";
 import { Modal } from "infinity-forge";
 
 import { useDictionary } from "@/presentation";
-import { useToast, Tooltip } from "infinity-forge";
+import { useToast, Tooltip, LoaderCircle } from "infinity-forge";
 import {
   financialServicesContainer,
   financialServicesTypes,
@@ -80,10 +80,16 @@ export default function CompleteBudget({ budget, setReload = false }) {
   const [visible, setVisible] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [observation, setObservation] = React.useState("Sem observações");
-  const [client, setClient] = React.useState({});
   const [activeTab, setActiveTab] = React.useState("0");
   const [internalObservation, setInternalObservation] =
     React.useState("Sem observações");
+
+  const { createToast } = useToast();
+  const { data, isLoading: loadingBudget } = useCompleteBudget(
+    budget.id,
+    visible
+  );
+
   const [formData, setFormData] = React.useState({
     id: budget?.id,
     notConfirmedItems: [],
@@ -93,8 +99,6 @@ export default function CompleteBudget({ budget, setReload = false }) {
     internalObservation,
   });
 
-  const { createToast } = useToast();
-  const { data } = useCompleteBudget(budget.id, visible);
   const { data: reasons } = useGetAllReasons({
     enabled: visible,
     params: { type: "OR" },
@@ -152,7 +156,10 @@ export default function CompleteBudget({ budget, setReload = false }) {
 
       const result = await financialServicesContainer
         .get<RemoteBudget>(financialServicesTypes.RemoteBudget)
-        .confirm(formData);
+        .confirm({
+          ...formData,
+          name: data?.client_name || data?.client?.name,
+        });
 
       await queryClient.invalidateQueries(["budgets"]);
       setReload && setReload((prv) => !prv);
@@ -235,7 +242,6 @@ export default function CompleteBudget({ budget, setReload = false }) {
     data?.observation && setObservation(data?.observation);
     data?.internal_observation &&
       setInternalObservation(data?.internal_observation);
-    !data?.client && setClient({ name: data?.client_name });
   }, [data]);
 
   const productsData = React.useMemo(() => {
@@ -319,8 +325,10 @@ export default function CompleteBudget({ budget, setReload = false }) {
         >
           <div className="uk-flex uk-flex-column uk-width-1-1 uk-margin-small-right">
             <span className="uk-text-small">Cliente</span>
-            {data?.client && (
-              <span className="uk-text-default">{data?.client?.name}</span>
+            {data && (
+              <span className="uk-text-default">
+                {data?.client?.name || data?.client_name}
+              </span>
             )}
           </div>
           {process.env.client !== "liftone" && (

@@ -3,8 +3,9 @@
 import * as React from "react";
 
 // Hooks
-import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
+import { useMe } from "@/presentation";
 import { useRouter } from "next/router";
+import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 
 // Utils
 import { Columns, LiftColumns } from "./Columns";
@@ -42,8 +43,8 @@ export default function Bills() {
   const [reload, setReload] = React.useState(false);
 
   const { data } = useGetAllBills(filters, reload);
-
   const { cashiers } = useDailyCasher(false, filters);
+  const user = useMe();
 
   const router = useRouter();
 
@@ -191,7 +192,7 @@ export default function Bills() {
                 />
               </Input>
 
-              {process.env.client !== "liftone" && (
+              {user?.data?.unit?.system?.type === "Vet" && (
                 <Input style={{ width: "100%" }}>
                   <Label>Paciente</Label>
                   <AntInput
@@ -259,7 +260,9 @@ export default function Bills() {
           <hr />
           <div className="uk-margin-top">
             <Table
-              columns={process.env.client !== "liftone" ? Columns : LiftColumns}
+              columns={
+                user?.data?.unit?.system?.type === "Vet" ? Columns : LiftColumns
+              }
               dataSource={mapper(data, cashiers)}
               footer={() => (
                 <section className="uk-flex uk-flex-center">

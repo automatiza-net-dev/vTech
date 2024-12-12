@@ -315,17 +315,21 @@ const AddPayments = memo(function AddPayments({
                   ?.filter((method) => method?.tef === "NAO")
                   ?.map((method) => (
                     <div
-                      onClick={() =>
+                      onClick={() => {
                         setData({
-                          installments: 1,
+                          maxInstallments: method?.max_installments,
+                          installments:
+                            method?.flags?.[0]?.max_installments === 1
+                              ? 1
+                              : method?.flags?.[0]?.installments,
                           paymentMethodId: method?.id,
                           installmentValue: currencyFormatter(
                             origin !== "budgets"
                               ? totalValue - totalPayed
                               : totalBudget - totalBudgetPayed
                           ),
-                        })
-                      }
+                        });
+                      }}
                       className={`uk-margin-remove uk-width-1-1 uk-box-shadow-small card-box uk-padding-small uk-text-center ${
                         data?.paymentMethodId === method?.id && "flag-selected"
                       }`}

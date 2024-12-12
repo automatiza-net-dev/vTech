@@ -46,7 +46,7 @@ function PrintTable({ reports }) {
             data_cadastro_cliente: item?.client?.createdAt
               ? moment(item?.client?.createdAt).format("DD/MM/YYYY")
               : "-",
-            nome_cliente: item?.client?.name,
+            nome_cliente: item?.client?.name || item?.clientName,
             telefone: item?.client?.cellphone,
             cpf_cliente: item?.client?.document,
             origem_cliente: item?.client?.origin,
@@ -63,8 +63,7 @@ function PrintTable({ reports }) {
             data_nasc_dependente: item?.patient?.birthDate
               ? moment(item?.patient?.birthDate).utc().format("DD/MM/YYYY")
               : "-",
-            genero_dependente:
-              item?.patient?.gender === "female" ? "Fêmea" : "Macho",
+            genero_dependente: item?.patient?.gender,
             especie_dep: item?.patient?.race?.specie?.description,
             raca_dep: item?.patient?.race?.description,
             castrado_dep: item?.patient?.castrated ? "Sim" : "Não",
@@ -99,7 +98,7 @@ function PrintTable({ reports }) {
             data_cadastro_cliente: item?.client?.createdAt
               ? moment(item?.client?.createdAt).utc().format("DD/MM/YYYY")
               : "-",
-            nome_cliente: item?.client?.name,
+            nome_cliente: item?.client?.name || item?.clientName,
             telefone: item?.client?.cellphone,
             cpf_cliente: item?.client?.document,
             origem_cliente: item?.client?.origin,
@@ -186,7 +185,7 @@ function PrintTable({ reports }) {
                         ? currencyFormatter(item?.totalValue)
                         : "-"}
                     </div>
-                    <div>{item?.client?.name}</div>
+                    <div>{item?.client?.name || item?.clientName}</div>
                     <div>{item?.client?.cellphone}</div>
                     <div>{item?.client?.origin}</div>
                     <div>{item?.patient?.name}</div>
@@ -225,6 +224,6 @@ function PrintTable({ reports }) {
       </div>
     </>
   );
-};
+}
 
 export default PrintTable;

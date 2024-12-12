@@ -315,8 +315,9 @@ export const FormChild = React.memo(function FormChild({
                   value={data?.gender}
                   onChange={(e) => setData({ ...data, gender: e })}
                 >
-                  <option value="male">Masculino</option>
-                  <option value="female">Feminino</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="feminino">Feminino</option>
+                  <option value="outros">Outros</option>
                 </Select>
               </Form.Item>
               <Form.Item

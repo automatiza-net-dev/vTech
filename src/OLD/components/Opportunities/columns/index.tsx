@@ -15,17 +15,17 @@ export const opportunitiesColumns = [
     key: "status"
   },
   {
-    title: "Nome Pet",
+    title: "Pet",
     dataIndex: "patientName",
     key: "patientName"
   },
   {
-    title: "Nome Tutor",
+    title: "Cliente",
     dataIndex: "contactName",
     key: "contactName"
   },
   {
-    title: "Fone Tutor",
+    title: "Fone",
     dataIndex: "phone",
     key: "phone"
   },
@@ -73,12 +73,12 @@ export const liftOneOpportunitiesColumns = [
     key: "status"
   },
   {
-    title: "Nome Cliente",
+    title: "Cliente",
     dataIndex: "contactName",
     key: "contactName"
   },
   {
-    title: "Fone Cliente",
+    title: "Fone",
     dataIndex: "phone",
     key: "phone"
   },

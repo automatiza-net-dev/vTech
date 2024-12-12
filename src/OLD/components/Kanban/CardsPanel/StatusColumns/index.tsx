@@ -10,7 +10,8 @@ import OpActivities from "@/OLD/components/OpportunitiesActivities";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
 import UpdateActivity from "@/OLD/components/OpportunitiesActivities/Update";
 import FormControll from "../FormControll";
-import { Tooltip, Modal, Menu, Dropdown, Button } from "antd";
+import { Tooltip, Menu, Dropdown, Button } from "antd";
+import { Modal } from "infinity-forge";
 import SyncOpportunity from "../SyncOpportunity";
 
 import { SideBarContent } from "@/presentation";
@@ -335,38 +336,40 @@ function StatusColumns({
         ))}
       </div>
       <Modal
-        footer={false}
-        width={1000}
-        onCancel={() => {
+        open={opportunityVisible}
+        styles={{ width: "1000px", padding: "20px" }}
+        onClose={() => {
           setOpportunityVisible(false);
           setSelectedOpportunity(false);
-          // setReload((prv) => !prv);
         }}
-        visible={opportunityVisible}
-      >
-        <OpActivities
-          clients={clients}
-          colaborators={colaborators}
-          crmStatus={crmStatus}
-          contactTypes={contactTypes}
-          subjects={subjects}
-          origin={"kanban"}
-          op={selectedOpportunity}
-          refresh={() => setReload((prv) => !prv)}
-          actTypes={actTypes}
-        />
-        <hr />
-        <footer className="uk-flex uk-flex-right">
-          <Button
-            onClick={() => {
-              setOpportunityVisible(false);
-              setSelectedOpportunity(false);
-            }}
-          >
-            Fechar
-          </Button>
-        </footer>
-      </Modal>
+        children={
+          <>
+            <OpActivities
+              clients={clients}
+              colaborators={colaborators}
+              crmStatus={crmStatus}
+              contactTypes={contactTypes}
+              subjects={subjects}
+              origin={"kanban"}
+              op={selectedOpportunity}
+              refresh={() => setReload((prv) => !prv)}
+              actTypes={actTypes}
+            />
+            <hr />
+            <footer className="uk-flex uk-flex-right">
+              <Button
+                onClick={() => {
+                  setOpportunityVisible(false);
+                  setSelectedOpportunity(false);
+                }}
+              >
+                Fechar
+              </Button>
+            </footer>
+          </>
+        }
+      />
+
       {formData?.form === "newActivity" && (
         <>
           <CreateActivity
@@ -396,20 +399,23 @@ function StatusColumns({
       )}
       {syncOpportunityVisible && (
         <Modal
-          onCancel={() => setSyncOpportunityVisible(false)}
-          title={`Vincular agendamentos - ${
-            selectedOpportunity?.client?.name ||
-            selectedOpportunity?.contact?.name
-          }`}
-          visible={syncOpportunityVisible}
-          footer={null}
-        >
-          <SyncOpportunity
-            data={selectedOpportunity}
-            setVisible={setSyncOpportunityVisible}
-            setReload={setReload}
-          />
-        </Modal>
+          open={syncOpportunityVisible}
+          onClose={() => setSyncOpportunityVisible(false)}
+          styles={{ width: "700px", padding: "20px" }}
+          children={
+            <>
+              {`Vincular agendamentos - ${
+                selectedOpportunity?.client?.name ||
+                selectedOpportunity?.contact?.name
+              }`}
+              <SyncOpportunity
+                data={selectedOpportunity}
+                setVisible={setSyncOpportunityVisible}
+                setReload={setReload}
+              />
+            </>
+          }
+        />
       )}
       <FormControll
         formData={formData}

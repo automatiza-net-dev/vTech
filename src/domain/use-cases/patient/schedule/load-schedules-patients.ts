@@ -1,7 +1,9 @@
 import { Tutor, Patient } from "@/domain";
 
 export type LoadSchedulesPatient = {
-  load: (params: LoadSchedulesPatient.Params) => Promise<LoadSchedulesPatient.Model>;
+  load: (
+    params: LoadSchedulesPatient.Params
+  ) => Promise<LoadSchedulesPatient.Model>;
 };
 
 export type SchedulePatient = {
@@ -9,16 +11,17 @@ export type SchedulePatient = {
   start_hour: string; // Verificar tipagem LoadSchedulingToMovement
   birthDate: string;
   castrated: boolean;
-  gender: "female" | "male";
+  gender: "Macho" | "Femea";
   id: string;
   name: string;
   tag: string;
   tutors: Tutor[];
   weight: number;
   race?: {
+    description?: string;
     specie?: {
       description?: string;
-    }
+    };
   };
 };
 
@@ -29,7 +32,7 @@ export namespace LoadSchedulesPatient {
     tutor?: string;
     phone?: string;
     document?: string;
-    id?: Patient['id'];
+    id?: Patient["id"];
   };
 
   export type Model = SchedulePatient[];

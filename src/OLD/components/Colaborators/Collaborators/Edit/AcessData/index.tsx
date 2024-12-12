@@ -166,9 +166,9 @@ function AccessData() {
             {
               action: (payload) => submitRoles(payload),
               active: true,
-              props: {
+              props: () => ({
                 text: "Salvar",
-              },
+              }),
             },
           ]}
         >

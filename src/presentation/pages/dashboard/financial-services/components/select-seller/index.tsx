@@ -2,7 +2,7 @@ import { Select } from "infinity-forge";
 
 import { useLoadAllBusinessUsers } from "@/presentation";
 
-export function SelectSeller() {
+export function SelectSeller({ userIsReviewer }: { userIsReviewer?: boolean }) {
   const users = useLoadAllBusinessUsers();
 
   return (
@@ -22,18 +22,20 @@ export function SelectSeller() {
             onlyOneValue
           />
 
-          <Select
-            name="reviewerId"
-            label="Avaliador"
-            loading={users.isFetching}
-            options={
-              users.data?.map((user) => ({
-                label: user.name,
-                value: user.id,
-              })) || []
-            }
-            onlyOneValue
-          />
+          {userIsReviewer && (
+            <Select
+              name="reviewerId"
+              label="Avaliador"
+              loading={users.isFetching}
+              options={
+                users.data?.map((user) => ({
+                  label: user.name,
+                  value: user.id,
+                })) || []
+              }
+              onlyOneValue
+            />
+          )}
         </div>
       )}
     </>

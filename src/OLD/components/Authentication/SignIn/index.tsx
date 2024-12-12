@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { container, TypesAutomatiza } from "@/container";
 
-import moment from 'moment';
+import moment from "moment";
 import { notification } from "antd";
 import { useAuthAdmin, Button } from "infinity-forge";
 
@@ -102,6 +102,8 @@ export function SignIn() {
         src={
           process.env.client === "sancla"
             ? "/img/Imagem_Logo_Gato.png"
+            : process.env.client === "clinicas"
+            ? "/img/clinicas_temp.png"
             : "/img/lo-logo-green.png"
         }
         width="500"

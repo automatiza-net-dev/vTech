@@ -5,6 +5,8 @@ export type Budget = {
   tag: string;
   pending: boolean;
   budget_date?: string;
+  internalCode?: string;
+  client_name?: string;
   status:
     | "CONFIRMADO"
     | "ABERTO"

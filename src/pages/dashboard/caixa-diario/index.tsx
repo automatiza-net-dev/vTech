@@ -1,4 +1,4 @@
-import DailyCashier from "@/OLD/components/DailyCashier";
+import { DailyCashier } from "@/OLD/components/DailyCashier";
 import { LayoutDashboard } from "@/presentation";
 import { PrivatePage } from "infinity-forge";
 

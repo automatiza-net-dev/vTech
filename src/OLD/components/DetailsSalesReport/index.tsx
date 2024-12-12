@@ -65,7 +65,7 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
             dt_nasc_dep: item?.data_nasc_dep
               ? moment(item?.data_nasc_dep).format("DD/MM/YYYY")
               : "-",
-            genero_dep: item?.genero_dep === "female" ? "Femea" : "Macho",
+            genero_dep: item?.genero_dep,
             especie_dep: item?.especie_dep || "-",
             raca_dep: item?.raca_dep || "-",
             castrado: item?.castrado_dep || "-",

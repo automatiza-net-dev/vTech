@@ -9,8 +9,10 @@ type PatientFilterProps = (LoadSchedulesPatient.Params & { fetch?: boolean }) | 
 
 export function useLoadSchedulesPatients({
   patientFilters,
+  enabled
 }: {
   patientFilters?: PatientFilterProps;
+  enabled?: boolean
 }) {
   async function fetcher() {
     const response = await container
@@ -25,7 +27,7 @@ export function useLoadSchedulesPatients({
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enabled: !patientFilters ? false : true,
+    enabled: enabled,
   });
 }
 

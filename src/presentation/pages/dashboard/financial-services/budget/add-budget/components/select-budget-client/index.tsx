@@ -5,17 +5,26 @@ import { Input, Select } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 
-export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
-  const [clientExists, setClientExists] = useState<boolean>(true);
+import * as S from "./styles";
+
+export function SelectBudgetClient({
+  tutors,
+  hideCheckbox,
+}: {
+  tutors: Tutor[];
+  hideCheckbox?: boolean;
+}) {
+  const [clientExists, setClientExists] = useState<boolean>(false);
 
   const { initialValues, setValues } = useFormikContext<Tutor>();
-  const initialValue = initialValues["clientName"];
+  const initialValue = initialValues["clientId"];
+  const hasClientName = initialValues["clientName"];
 
   return initialValue ? (
     <Input label="Cliente" name="clientName" disabled />
   ) : (
-    <>
-      {clientExists ? (
+    <S.SelectBudgetClient>
+      {(hasClientName ? clientExists : !clientExists) ? (
         <Select
           onlyOneValue
           isClearable={true}
@@ -27,22 +36,30 @@ export function SelectBudgetClient({ tutors }: { tutors: Tutor[] }) {
           }))}
         />
       ) : (
-        <Input name="clientName" label="Cliente (não existente na base)" />
+        <Input name="clientName" label="Cliente" />
       )}
-      <div style={{ marginTop: "20px", width: "50%" }}>
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            setClientExists(!e.target.checked);
-            if (e.target.checked) {
-              setValues((prv) => ({ ...prv, clientId: "" }));
-            } else {
-              setValues((prv) => ({ ...prv, clientName: "" }));
-            }
-          }}
-        />{" "}
-        <label>Cliente não cadastrado</label>
-      </div>
-    </>
+      {!hideCheckbox && (
+        <div className="checkbox-box" style={{ marginTop: "20px" }}>
+          <input
+            type="checkbox"
+            checked={hasClientName && !clientExists}
+            onChange={(e) => {
+              setClientExists(
+                hasClientName ? !e.target.checked : e.target.checked
+              );
+              if (e.target.checked) {
+                setValues((prv) => ({ ...prv, clientId: "", patientId: "" }));
+              } else {
+                setValues((prv) => ({
+                  ...prv,
+                  patientName: "",
+                }));
+              }
+            }}
+          />{" "}
+          <label>Cliente não cadastrado</label>
+        </div>
+      )}
+    </S.SelectBudgetClient>
   );
 }

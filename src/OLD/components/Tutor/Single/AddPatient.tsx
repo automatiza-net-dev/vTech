@@ -94,7 +94,7 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
               {data?.map((patient, key) => {
                 return (
                   <Option key={key} value={patient.name}>
-                    {patient.name}
+                     {patient?.name} - RG:{patient?.tag} - Raça:{patient?.race?.specie?.description} {'>'} {patient?.race?.description}`,
                   </Option>
                 );
               })}

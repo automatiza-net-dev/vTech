@@ -124,8 +124,9 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                   label={isRegister ? "Gênero*" : "Gênero"}
                   name="gender"
                   options={[
-                    { label: "Feminino", value: "female" },
-                    { value: "male", label: "Masculino" },
+                    { value: "feminino", label: "Feminino" },
+                    { value: "masculino", label: "Masculino" },
+                    { value: "outro", label: "Outros" },
                   ]}
                   onlyOneValue
                 />

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const Input = styled.div`
+
   display: flex;
   align-items: center;
   height: 40px;

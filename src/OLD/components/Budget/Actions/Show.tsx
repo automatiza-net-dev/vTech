@@ -283,7 +283,9 @@ export default function ShowBudget({ budget, setReload }: any) {
               >
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <span className="uk-text-small">Cliente</span>
-                  <span className="uk-text-default">{data?.client?.name}</span>
+                  <span className="uk-text-default">
+                    {data?.client?.name || data?.client_name}
+                  </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">

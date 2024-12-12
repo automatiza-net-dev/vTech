@@ -41,7 +41,7 @@ export default function PatientHeader({ patient, tutor }) {
                 )}`
               : "-"}
           </div>
-          <div>Sexo: {patient?.gender === "male" ? "Macho" : "Fêmea"}</div>
+          <div>Sexo: {patient?.gender}</div>
           <div>Idade: {convertToAge(years)}</div>
           <div>
             Chip:{" "}

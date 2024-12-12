@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { memo, useState, useEffect } from "react";
 
+import { useMe } from "@/presentation";
 import { usePatients } from "@/OLD/hooks/usePatients";
 // import { useTutor } from "@/OLD/hooks/useTutor";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
@@ -22,20 +23,21 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload }) {
   const [values, setValues] = useState({});
 
+  const user = useMe();
+
   const { patients } = usePatients(
     false,
     false,
-    process.env.client !== "sancla"
+    user?.data?.unit?.system?.type === "clinicas"
   );
   const { colaborators } = useColaborators();
   const { businessUnits } = useBusinessUnitsByUser(false);
-  const { user } = useProfile();
 
   const viewAllOpportunitiesPermission = useUserHasPermission("CRM09");
 
   useEffect(() => {
     if (!viewAllOpportunitiesPermission) {
-      setFilters({ ...filters, technician: user?.id, noSearch: false });
+      setFilters({ ...filters, technician: user?.data?.id, noSearch: false });
       setReload((prv) => !prv);
     } else {
       setFilters({ ...filters, noSearch: false });
@@ -51,7 +53,7 @@ function Filters({ filters, setFilters, setReload }) {
   return (
     <section style={{ display: "flex", gap: "10px" }}>
       <div className="uk-margin-right uk-width-1-4">
-        <label>{process.env.client === "liftone" ? "Cliente" : "Tutor"}</label>
+        <label>Cliente</label>
         <InputBox>
           <Input
             value={filters?.contactName}
@@ -279,9 +281,12 @@ function Filters({ filters, setFilters, setReload }) {
             trigger={<Icon name="IconInfo" />}
             content={
               <>
-                Esta consulta retorna as oportunidades que tiveram o contato <br />
-                realizado pelo cliente dentro do Periodo Selecionado. Esta é a <br />
-                data que é selecionada no momento de cadastrar a oportunidade no <br />
+                Esta consulta retorna as oportunidades que tiveram o contato{" "}
+                <br />
+                realizado pelo cliente dentro do Periodo Selecionado. Esta é a{" "}
+                <br />
+                data que é selecionada no momento de cadastrar a oportunidade no{" "}
+                <br />
                 Crm
               </>
             }
@@ -289,7 +294,7 @@ function Filters({ filters, setFilters, setReload }) {
         </InputBox>
       </div>
       <div className="uk-width-1-4 uk-margin-left">
-        {process.env.client !== "liftone" && (
+        {user?.data?.unit?.system?.type === "Vet" && (
           <>
             <label>Paciente</label>
             <InputBox className="">
@@ -315,7 +320,7 @@ function Filters({ filters, setFilters, setReload }) {
             <Option value="contactDate">Data Contato</Option>
             <Option value="openingDate">Data Abertura</Option>
             <Option value="contact">Nome cliente</Option>
-            {process.env.client !== "liftone" && (
+            {user?.data?.unit?.system?.type === "Vet" && (
               <Option value="client">Paciente</Option>
             )}
           </Select>

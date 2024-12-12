@@ -8,8 +8,7 @@ import { BudgetItem } from "./budget-item";
 import * as S from "./styles";
 
 export function AttendanceBudgets(props: LoadAllBudgetsAttendance.Params) {
-
-  const {getWord} = useDictionary();
+  const { getWord } = useDictionary();
   const { data, isFetching } = useLoadAllBudgetAttendances(props);
 
   if (!data || data.length === 0) {

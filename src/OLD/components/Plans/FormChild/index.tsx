@@ -72,8 +72,8 @@ const FormChild = memo(function FormChild({
                 setFilters({ ...filters, type: val });
                 setData({
                   ...data,
-                  accountPlanGroupId: "",
-                  parentId: "",
+                  accountPlanGroupId: undefined,
+                  parentId: undefined,
                   type: val,
                 });
               }
