@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { memo, useEffect, useState } from "react";
 
-import { useMe } from "@/presentation";
 import { usePlans } from "@/OLD/hooks/usePlans";
 import { useReceipt } from "@/OLD/hooks/useReceipts";
 import { useFiscalData } from "@/OLD/hooks/useBills";
@@ -10,7 +9,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { Input } from "antd";
 import { Container } from "./styles";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Select, FormHandler, LoaderCircle } from "infinity-forge";
+import { Select, FormHandler, LoaderCircle, useAuthAdmin } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
 
@@ -35,10 +34,10 @@ export default function AddPaymentsScreen({
   const { plans } = usePlans(plansFilters);
 
   const addPaymentsPermission = useUserHasPermission("ENT04");
-  const me = useMe();
+  const me = useAuthAdmin();
 
   const generatesFinancesOnReceiptsFinish =
-    me?.data?.unit?.unitConfig?.generates_finances_on_receipts_finish;
+    me?.user?.unit?.unitConfig?.generates_finances_on_receipts_finish;
 
   useEffect(() => {
     setIds({ ids: [id] });

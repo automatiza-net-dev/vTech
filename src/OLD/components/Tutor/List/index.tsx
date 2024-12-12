@@ -6,7 +6,6 @@ import Link from "next/link";
 import { petsService } from "@/OLD/services/patient.service";
 
 // Hooks
-import { useMe } from "@/presentation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { usePatients } from "@/OLD/hooks/usePatients";
@@ -38,7 +37,12 @@ import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FormCreatePatient, FormCreateTutor } from "@/presentation";
-import { Icon, Modal as InfinityForgeModal, Button } from "infinity-forge";
+import {
+  Icon,
+  Modal as InfinityForgeModal,
+  Button,
+  useAuthAdmin,
+} from "infinity-forge";
 
 export function List({
   filters,
@@ -74,7 +78,7 @@ export function List({
 
   const { tutors: tutorsList, loading } = useTutor(filters, reload);
   const { patients } = usePatients(false, false, {}, vincPetVisible);
-  const user = useMe();
+  const { user } = useAuthAdmin();
 
   const router = useRouter();
 
@@ -438,7 +442,7 @@ export function List({
     <Container>
       <Table
         columns={
-          user?.data?.unit?.system?.type === "Vet"
+          user?.unit?.system?.type === "Vet"
             ? petToVinc
               ? selectTutorColumns
               : columns

@@ -6,10 +6,9 @@ import { useOpportunities } from "@/OLD/hooks/useOpportunities";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
-import { useMe } from "@/presentation";
 
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, useAuthAdmin } from "infinity-forge";
 import { Table } from "antd";
 import Actions from "./Actions";
 import Filters from "./Filters";
@@ -38,7 +37,7 @@ const Opportunities = memo(function Opportunities({
   });
   const [formattedOpportunities, setFormattedOpportunities] = useState([]);
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
 
   const viewAllOpportunitiesPermission = useUserHasPermission("CRM09");
 
@@ -99,7 +98,7 @@ const Opportunities = memo(function Opportunities({
 
   useEffect(() => {
     !viewAllOpportunitiesPermission &&
-      setFilters({ ...filters, technician: user?.data?.id });
+      setFilters({ ...filters, technician: user?.id });
     setReload((prv) => !prv);
   }, [viewAllOpportunitiesPermission]);
 
@@ -127,7 +126,7 @@ const Opportunities = memo(function Opportunities({
       <hr className="" />
       <Table
         columns={
-          user?.data?.unit?.system?.type === "Vet"
+          user?.unit?.system?.type === "Vet"
             ? opportunitiesColumns
             : liftOneOpportunitiesColumns
         }

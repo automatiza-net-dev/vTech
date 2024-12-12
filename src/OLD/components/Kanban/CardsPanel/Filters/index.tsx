@@ -10,7 +10,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Checkbox, AutoComplete, Select, Input } from "antd";
-import { Button, Icon, Tooltip } from "infinity-forge";
+import { Button, Icon, Tooltip, useAuthAdmin } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { InputBox } from "./styles";
 const { Option } = Select;
@@ -23,12 +23,12 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload }) {
   const [values, setValues] = useState({});
 
-  const user = useMe();
+  const { user } = useAuthAdmin();
 
   const { patients } = usePatients(
     false,
     false,
-    user?.data?.unit?.system?.type === "clinicas"
+    user?.unit?.system?.type === "clinicas"
   );
   const { colaborators } = useColaborators();
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -37,7 +37,7 @@ function Filters({ filters, setFilters, setReload }) {
 
   useEffect(() => {
     if (!viewAllOpportunitiesPermission) {
-      setFilters({ ...filters, technician: user?.data?.id, noSearch: false });
+      setFilters({ ...filters, technician: user?.id, noSearch: false });
       setReload((prv) => !prv);
     } else {
       setFilters({ ...filters, noSearch: false });
@@ -294,7 +294,7 @@ function Filters({ filters, setFilters, setReload }) {
         </InputBox>
       </div>
       <div className="uk-width-1-4 uk-margin-left">
-        {user?.data?.unit?.system?.type === "Vet" && (
+        {user?.unit?.system?.type === "Vet" && (
           <>
             <label>Paciente</label>
             <InputBox className="">
@@ -320,7 +320,7 @@ function Filters({ filters, setFilters, setReload }) {
             <Option value="contactDate">Data Contato</Option>
             <Option value="openingDate">Data Abertura</Option>
             <Option value="contact">Nome cliente</Option>
-            {user?.data?.unit?.system?.type === "Vet" && (
+            {user?.unit?.system?.type === "Vet" && (
               <Option value="client">Paciente</Option>
             )}
           </Select>

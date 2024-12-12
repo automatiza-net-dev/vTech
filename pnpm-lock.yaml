@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@18.3.1)
       infinity-forge:
-        specifier: 5.2.3
-        version: 5.2.3(@types/react-dom@18.3.1)(@types/react@18.3.12)(express@4.21.1)(prisma@5.22.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
+        specifier: 5.2.7
+        version: 5.2.7(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
       inversify:
         specifier: ^6.0.2
         version: 6.0.3
@@ -2467,8 +2467,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@5.2.3:
-    resolution: {integrity: sha512-luOHn36HGP8n+UKAnpbF3cTPMvrdIqcMmsp386+ZXdx1ShKst0NtIBloXQUBWhxuERm9FyGKRoEuyXmZ+3bDIg==}
+  infinity-forge@5.2.7:
+    resolution: {integrity: sha512-8QAu2ST3MpLKBBTKBuTChlY2yZQQ2rc4uJJEjcAKSqMqSqxiNnR7n5wfH6loa+Et1SXQZkPFCgf9Kard7zOt1A==}
     peerDependencies:
       react: '>=16'
 
@@ -3549,6 +3549,16 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
+  react-calendar@4.8.0:
+    resolution: {integrity: sha512-qFgwo+p58sgv1QYMI1oGNaop90eJVKuHTZ3ZgBfrrpUb+9cAexxsKat0sAszgsizPMVo7vOXedV7Lqa0GQGMvA==}
+    peerDependencies:
+      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   react-calendar@5.1.0:
     resolution: {integrity: sha512-09o/rQHPZGEi658IXAJtWfra1N69D1eFnuJ3FQm9qUVzlzNnos1+GWgGiUeSs22QOpNm32aoVFOimq0p3Ug9Eg==}
     peerDependencies:
@@ -3602,9 +3612,9 @@ packages:
       prop-types: ^15.6.0
       react: ^15.6.2 || ^16.0 || ^17 || ^18
 
-  react-hook-form@7.53.1:
-    resolution: {integrity: sha512-6aiQeBda4zjcuaugWvim9WsGqisoUk+etmFEsSUMm451/Ic8L/UAb7sRtMj3V+Hdzm6mMjU1VhiSzYUZeBm0Vg==}
-    engines: {node: '>=18.0.0'}
+  react-hook-form@7.52.1:
+    resolution: {integrity: sha512-uNKIhaoICJ5KQALYZ4TOaOLElyM+xipord+Ha3crEFhTntdLvWZqVY49Wqd/0GiVCA/f9NjemLeiNPjG7Hpurg==}
+    engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
@@ -3664,6 +3674,12 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  react-slick@0.30.2:
+    resolution: {integrity: sha512-XvQJi7mRHuiU3b9irsqS9SGIgftIfdV5/tNcURTb5LdIokRA5kIIx3l4rlq2XYHfxcSntXapoRg/GxaVOM1yfg==}
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
   react-to-print@2.15.1:
     resolution: {integrity: sha512-1foogIFbCpzAVxydkhBiDfMiFYhIMphiagDOfcG4X/EcQ+fBPqJ0rby9Wv/emzY1YLkIQy/rEgOrWQT+rBKhjw==}
@@ -4012,8 +4028,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  swagger-generator-codie@0.1.4:
-    resolution: {integrity: sha512-AUC1Ky/0lEBHJb/2LeVHqss91XMdtv9yguH70iPLUzdYGYnAiV6r2KffFd/7sS4br3u0aRm28yuhDDqdreQb5w==}
+  swagger-generator-codie@0.1.1:
+    resolution: {integrity: sha512-rbC3jGNLF15//wc7ej192qxvAG4hP4KD0w/5IKfztyb9FzjnWv1i0a+7RVnbx8tlRZnp1VezR/0rV00wf0TuPA==}
 
   swagger-ui-dist@5.17.14:
     resolution: {integrity: sha512-CVbSfaLpstV65OnSjbXfVd6Sta3q3F7Cj/yYuvHMp1P90LztOLs6PfUnKEVAeiIVQt9u2SaPwv0LiH/OyMjHRw==}
@@ -6999,15 +7015,15 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@5.2.3(@types/react-dom@18.3.1)(@types/react@18.3.12)(express@4.21.1)(prisma@5.22.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
+  infinity-forge@5.2.7(@types/react-dom@18.3.0)(@types/react@18.3.3)(express@4.21.0)(prisma@5.20.0)(prop-types@15.8.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1)):
     dependencies:
-      '@types/lodash': 4.17.13
-      '@wojtekmaj/react-daterange-picker': 6.0.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/lodash': 4.17.7
+      '@wojtekmaj/react-daterange-picker': 6.0.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       axios: 1.7.7
-      chroma-js: 2.6.0
+      chroma-js: 2.4.2
       cpx: 1.5.0
       formik: 2.4.6(react@18.3.1)
-      inversify: 6.0.3
+      inversify: 6.0.2
       lodash: 4.17.21
       messageprovider: 0.1.9(express@4.21.1)(prisma@5.22.0)
       moment: 2.30.1
@@ -7018,7 +7034,7 @@ snapshots:
       react-ga: 3.3.1(prop-types@15.8.1)(react@18.3.1)
       react-is: 18.3.1
       react-rte: 0.16.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-select: 5.8.2(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       reflect-metadata: 0.2.2
       sharp: 0.33.5
       styled-components: 6.1.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8230,7 +8246,19 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-calendar@5.1.0(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-calendar@4.8.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@wojtekmaj/date-utils': 1.5.1
+      clsx: 2.1.1
+      get-user-locale: 2.3.2
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      warning: 4.0.3
+    optionalDependencies:
+      '@types/react': 18.3.3
+
+  react-calendar@5.1.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@wojtekmaj/date-utils': 1.5.1
       clsx: 2.1.1
@@ -8287,7 +8315,7 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
 
-  react-hook-form@7.53.1(react@18.3.1):
+  react-hook-form@7.52.1(react@18.3.1):
     dependencies:
       react: 18.3.1
 
@@ -8364,6 +8392,16 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
+
+  react-slick@0.30.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      classnames: 2.5.1
+      enquire.js: 2.1.6
+      json2mq: 0.2.0
+      lodash.debounce: 4.0.8
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      resize-observer-polyfill: 1.5.1
 
   react-to-print@2.15.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -8831,7 +8869,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger-generator-codie@0.1.4:
+  swagger-generator-codie@0.1.1:
     dependencies:
       fs: 0.0.1-security
 
