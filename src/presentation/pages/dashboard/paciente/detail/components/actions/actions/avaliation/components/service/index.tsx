@@ -138,7 +138,7 @@ export function Service({ scheduleId, mutate, ...props }) {
 
   const initialData = {
     ...timeLine.timeline_info,
-    internalObservations: timeLine?.timeline_info?.internalObservation
+    internalObservation: timeLine?.timeline_info?.internalObservation
       ? timeLine?.timeline_info?.internalObservation
       : schedule?.data?.serviceType?.description || "",
     scheduleServiceId: timeLine?.timeline_info?.service?.id
@@ -167,9 +167,9 @@ export function Service({ scheduleId, mutate, ...props }) {
             action: async () => {
               handlePrint();
             },
-            props: {
+            props: () => ({
               text: "IMPRIMIR",
-            },
+            }),
             active: !!props.timeline_id,
           },
           {
@@ -193,7 +193,7 @@ export function Service({ scheduleId, mutate, ...props }) {
 
               mutate && mutate();
             },
-            props: { text: "EXCLUIR" },
+            props: () => ({ text: "EXCLUIR" }),
             active: !!props.timeline_id,
           },
           {
@@ -202,7 +202,7 @@ export function Service({ scheduleId, mutate, ...props }) {
                 setModal(true);
               });
             },
-            props: { text: `NOVO ${getWord("Orçamento").toUpperCase()}` },
+            props:() =>  ({ text: `NOVO ${getWord("Orçamento").toUpperCase()}` }),
             active: true,
           },
           {
@@ -212,7 +212,7 @@ export function Service({ scheduleId, mutate, ...props }) {
                 queryClient.invalidateQueries(["LastUpdates"]);
               });
             },
-            props: { text: "SALVAR" },
+            props:() => ({ text: "SALVAR" }),
             active: true,
           },
         ].filter((item) => item.active)}

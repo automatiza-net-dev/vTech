@@ -1,4 +1,12 @@
-import { BusinessUnit, User, Patient, Tutor, Product, Budget, Payment } from "@/domain";
+import {
+  BusinessUnit,
+  User,
+  Patient,
+  Tutor,
+  Product,
+  Budget,
+  Payment,
+} from "@/domain";
 
 export type BillItem = Product & {};
 
@@ -6,6 +14,7 @@ export type Bill = {
   id: string;
   bill_date: Date;
   product_value: number;
+  internalCode: string;
   service_value: number;
   discount_value: number;
   fee_value: number | null;

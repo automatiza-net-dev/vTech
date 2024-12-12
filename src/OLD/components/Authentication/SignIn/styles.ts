@@ -8,7 +8,11 @@ export const Container = styled.div`
     process.env.client === "sancla" ? 'url("/img/bg-sancla.jpg")' : "none"};
   padding: 40px 80px;
   min-height: 100vh;
-  background-color: ${process.env.client === "liftone" ? "var(--lo-blue)" : "var(--orange-light-1)"};
+  background-color: ${process.env.client === "liftone"
+    ? "var(--lo-blue)"
+    : process.env.client === "clinicas"
+    ? "#7f7f7f"
+    : "var(--orange-light-1)"};
 
   display: flex;
   align-items: center;

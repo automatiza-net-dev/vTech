@@ -46,12 +46,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       id: 4,
       icon: "IconGender",
       color: "#FF7A00",
-      title:
-        process.env.client === "sancla"
-          ? patient.gender === "male"
-            ? "Macho"
-            : "Fêmea"
-          : patient.genderText,
+      title: patient.gender,
       subTitle: "Sexo",
       active: true,
     },

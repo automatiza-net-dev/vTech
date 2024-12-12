@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { animalServices } from "@/OLD/services/animal.service";
 
-import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
+import { useMe } from "@/presentation";
 
 import { FormHandler, Select, Button } from "infinity-forge";
 import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
@@ -60,6 +60,7 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
+  const user = useMe();
   const { data: uniqueOrigins } = useLoadCampaings({
     active: true,
     clientOriginId: data?.originId,
@@ -131,9 +132,11 @@ export default function FormChild({
 
   return (
     <Container
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        verifyFields() === "ok" && submit();
+
+        verifyFields() === "ok" && (await submit());
+
         setEdit && setEdit(false);
       }}
     >
@@ -146,13 +149,7 @@ export default function FormChild({
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
-                <Tooltip
-                  title={
-                    process.env.client !== "liftone"
-                      ? "Clique para editar dados do tutor"
-                      : "Clique para editar os dados do cliente"
-                  }
-                >
+                <Tooltip title={"Clique para editar os dados do cliente"}>
                   <label
                     className="uk-link"
                     style={{
@@ -161,7 +158,7 @@ export default function FormChild({
                       justifyContent: "flex-start",
                     }}
                   >
-                    {process.env.client !== "liftone" ? "Tutor" : "Cliente"}
+                    Cliente
                   </label>
                 </Tooltip>
               }
@@ -204,8 +201,8 @@ export default function FormChild({
             )}
           </div>
         </div>
-
-        {process.env.client === "sancla" && (
+        {(process.env.client === "sancla" ||
+          user?.data?.unit?.system?.type === "Vet") && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">
@@ -345,8 +342,8 @@ export default function FormChild({
                 value={data?.gender}
                 onChange={(e) => setData({ ...data, gender: e })}
               >
-                <option value="male">Macho</option>
-                <option value="female">Fêmea</option>
+                <option value="macho">Macho</option>
+                <option value="femea">Fêmea</option>
               </SelectAnt>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
@@ -354,7 +351,7 @@ export default function FormChild({
               <SelectAnt
                 disabled={!footer ? !edit : false}
                 className="uk-width-1-1"
-                value={data?.castrated || false}
+                value={data?.castrated || null}
                 onChange={(val) => setData({ ...data, castrated: val })}
               >
                 <Option value="true">Sim</Option>

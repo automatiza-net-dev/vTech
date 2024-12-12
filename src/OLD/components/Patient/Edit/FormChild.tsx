@@ -208,8 +208,8 @@ export const FormChild = React.memo(function FormChild({
                     menuPlacement="bottom"
                     name="gender"
                     options={[
-                      { label: "Fêmea", value: "female" },
-                      { value: "male", label: "Macho" },
+                      { label: "Fêmea", value: "femea" },
+                      { label: "Macho", value: "macho" },
                     ]}
                     onlyOneValue
                     value={data?.gender}

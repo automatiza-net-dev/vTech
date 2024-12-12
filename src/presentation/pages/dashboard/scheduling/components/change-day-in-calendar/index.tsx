@@ -67,5 +67,5 @@ function DatePickerSchedule() {
     }
   }, [selectedDate]);
 
-  return <InputDatePicker language="pt" name="date" mode="year" date={{}} />;
+  return <InputDatePicker language="pt" name="date" mode="date" date={{}} />;
 }

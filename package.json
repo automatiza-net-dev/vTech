@@ -46,7 +46,7 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.6",
     "html-react-parser": "^3.0.8",
-    "infinity-forge": "4.7.9",
+    "infinity-forge": "5.2.7",
     "inversify": "^6.0.2",
     "jose": "^5.6.3",
     "jsonwebtoken": "^9.0.2",

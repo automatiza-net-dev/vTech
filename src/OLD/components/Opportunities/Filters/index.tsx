@@ -1,10 +1,11 @@
 // @ts-nocheck
 import React, { useState, memo, useEffect } from "react";
-
 import { useRouter } from "next/router";
-import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
+
+import { useMe } from "@/presentation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 
 import { Button, Tooltip, Icon } from "infinity-forge";
 import { Container, InputBox } from "./styles";
@@ -22,6 +23,7 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
   const [values, setValues] = useState({});
 
+  const user = useMe();
   const { businessUnits } = useBusinessUnitsByUser(false);
 
   const router = useRouter();
@@ -110,8 +112,8 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
               }}
             >
               <Option value="all">Todos</Option>
-              {crmStatus.length > 0 &&
-                crmStatus.map((status) => (
+              {crmStatus?.length > 0 &&
+                crmStatus?.map((status) => (
                   <Option value={status?.id} key={status?.id}>
                     {status?.description}
                   </Option>
@@ -255,9 +257,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
           </InputBox>
         </div>
         <div className="uk-width-1-5">
-          <label>
-            {process.env.client !== "liftone" ? "Nome tutor" : "Nome Cliente"}
-          </label>
+          <label>Cliente</label>
           <InputBox className="uk-width-1-1">
             <Input
               value={filters?.contactName}
@@ -301,9 +301,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
           </InputBox>
         </div>
         <div>
-          <label>
-            {process.env.client !== "liftone" ? "Fone Tutor" : "Fone cliente"}
-          </label>
+          <label>Fone</label>
           <InputBox>
             <Input
               value={filters?.contactPhone}
@@ -313,7 +311,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
             />
           </InputBox>
         </div>
-        {process.env.client !== "liftone" && (
+        {user?.data?.unit?.system?.type === "Vet" && (
           <div className="uk-width-1-5">
             <label>Nome pet</label>
             <InputBox className="uk-width-1-1">

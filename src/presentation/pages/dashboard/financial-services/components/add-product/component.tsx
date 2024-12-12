@@ -152,7 +152,6 @@ export function AddProduct() {
                     />
 
                     <InputCurrency
-                      type="number"
                       name={pathName + `.unitaryValue`}
                       readOnly={!isPossibleChangePricesProducs}
                       onChangeInput={(value) => {
@@ -173,7 +172,6 @@ export function AddProduct() {
                       controlledInitialValue={{
                         value: String(variation?.discountValue),
                       }}
-                      type="number"
                       name={pathName + `.discountValue`}
                       max={maxDiscount}
                       errorMessageMax={() =>
@@ -228,7 +226,6 @@ export function AddProduct() {
                     <div className="total">
                       <div>
                         <InputCurrency
-                          type="number"
                           controlledInitialValue={{
                             value: String(variation?.total),
                           }}

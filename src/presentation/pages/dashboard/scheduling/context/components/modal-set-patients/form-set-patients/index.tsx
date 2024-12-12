@@ -18,7 +18,10 @@ export function FormSetClients() {
 
   const { data, isFetching, mutate } =
     process.env.client === "sancla"
-      ? useLoadSchedulesPatients({ patientFilters })
+      ? useLoadSchedulesPatients({
+          patientFilters,
+          enabled: !patientFilters ? false : true,
+        })
       : useLoadAllPatientTutor({
           patientFilters,
           enabled: !patientFilters ? false : true,

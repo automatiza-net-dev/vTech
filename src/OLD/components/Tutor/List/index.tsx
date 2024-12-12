@@ -6,6 +6,7 @@ import Link from "next/link";
 import { petsService } from "@/OLD/services/patient.service";
 
 // Hooks
+import { useMe } from "@/presentation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { usePatients } from "@/OLD/hooks/usePatients";
@@ -73,6 +74,7 @@ export function List({
 
   const { tutors: tutorsList, loading } = useTutor(filters, reload);
   const { patients } = usePatients(false, false, {}, vincPetVisible);
+  const user = useMe();
 
   const router = useRouter();
 
@@ -436,13 +438,13 @@ export function List({
     <Container>
       <Table
         columns={
-          process.env.client === "liftone"
-            ? origin === "opportunities"
-              ? crmLiftoneColumns
-              : liftColumns
-            : petToVinc
-            ? selectTutorColumns
-            : columns
+          user?.data?.unit?.system?.type === "Vet"
+            ? petToVinc
+              ? selectTutorColumns
+              : columns
+            : origin === "opportunities"
+            ? crmLiftoneColumns
+            : liftColumns
         }
         dataSource={data}
         loading={loading}
@@ -514,7 +516,7 @@ export function List({
             options={patients?.map((patient) => ({
               ...patient,
               key: patient?.id,
-              value: patient?.name,
+              value: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
             }))}
             value={selectedPetToVinc?.name}
             onChange={(val) => setSelectedPetToVinc({ name: val })}
