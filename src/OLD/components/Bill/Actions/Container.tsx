@@ -32,12 +32,7 @@ const Container = styled.div`
   }
 `;
 
-function BillActions({
-  bill,
-  client,
-  setReload = false,
-  cashiers,
-}) {
+function BillActions({ bill, client, setReload = false, cashiers }) {
   const [filters, setFilters] = React.useState({});
   const [selectedId, setSelectedId] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
@@ -135,11 +130,11 @@ function BillActions({
                 className="icon"
                 size={20}
                 onClick={() => {
-                  if (cashiers.length === 0) {
+                  /*if (cashiers.length === 0) {
                     return notification.warning({
                       message: "Nenhum caixa diário aberto",
                     });
-                  }
+                  }*/
                   setSelectedId(bill?.id);
                   setPaymentsVisible(true);
                 }}
@@ -226,6 +221,6 @@ function BillActions({
       )}
     </Container>
   );
-};
+}
 
 export default BillActions;
