@@ -11,12 +11,11 @@ import {
   Modal,
   Button,
   useAuthAdmin,
-  InputDatePicker,
 } from "infinity-forge";
 
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
-import { useMe, usePermission, useSearchDailyMovements } from "@/presentation";
+import { usePermission, useSearchDailyMovements } from "@/presentation";
 
 function CustomAction() {
   const hasDMPermission = usePermission("MOV00");
@@ -145,6 +144,6 @@ export function useDailyCashierTableActions({
   return {
     modalStyles: { maxWidth: 1024 },
     create: createDailyCashierPermission && action,
-    custom: [(props) => <Actions {...props} />],
+    custom: [(props) => <Actions {...props} mutate={mutate} />],
   };
 }

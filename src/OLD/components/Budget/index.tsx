@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { Modal as ModalInfinityForge } from "infinity-forge";
 
 // Hooks
-import { useMe } from "@/presentation";
 import { useFindPartialBudgets } from "@/OLD/hooks/useBudgets";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";

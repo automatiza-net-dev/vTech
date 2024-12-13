@@ -8,7 +8,7 @@ import {
   InputMask,
   FormHandler,
   InputSwitch,
-  useAuthAdmin
+  useAuthAdmin,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -41,11 +41,9 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   }
 
   const isRegister = origin === "Cadastro";
-  const requiresDocument = isRegister
-    ? unitConfig?.requires_client_document
-      ? true
-      : false
-    : false;
+
+  const requiresDocument =
+    (isRegister && unitConfig?.requires_client_document) || isRegister;
 
   async function handleSuccess(data) {
     const payload = {
@@ -112,7 +110,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                   name="birthDate"
                   type="date"
                   label={
-                    isRegister ? "Data de nascimento" : "Data de nascimento"
+                    isRegister ? "Data de nascimento*" : "Data de nascimento"
                   }
                   max={moment().format("YYYY-MM-DD")}
                 />
