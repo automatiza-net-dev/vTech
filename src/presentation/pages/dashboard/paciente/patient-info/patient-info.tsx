@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useLoadPatient } from "@/presentation";
+import { DateToDDMMYYYY, useLoadPatient } from "@/presentation";
 import { Button, PageWrapper, Accordion } from "infinity-forge";
 import { petsService } from "@/OLD/services/patient.service";
 import { notification, Table, Modal, Tooltip, Tag } from "antd";
@@ -22,7 +22,6 @@ function Single({ selectedId, setVisible }) {
   const patientData = useLoadPatient(selectedId);
   const [patient, setPatient] = useState<any>();
   const [loading, setLoading] = useState(false);
-  const [photoSrc, setPhotoSrc] = useState("");
   const [newTutorOpen, setNewTutorOpen] = useState(false);
   const [reload, setReload] = useState(false);
 
@@ -106,10 +105,8 @@ function Single({ selectedId, setVisible }) {
     handleGetSinglePatient();
   }, [reload, patientData?.data]);
 
-  useEffect(() => {
-    patientData?.data?.photo &&
-      setPhotoSrc(process.env.NEXT_PUBLIC_API + patientData?.data?.photo);
-  }, [patientData]);
+  const patientPhoto =
+    patientData?.data?.photo || "/images/logo/sancla-default-profile.png";
 
   return loading ? (
     <LoadingSkeleton />
@@ -151,10 +148,14 @@ function Single({ selectedId, setVisible }) {
                 width: "115px",
                 height: "115px",
                 border: "solid 3px var(--darkBlue)",
+                overflow: "hidden",
               }}
             >
               {patient?.photo && (
-                <img width="115px" height="115px" src={photoSrc} />
+                <img
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  src={patientPhoto}
+                />
               )}
             </div>
             <br />
@@ -201,8 +202,12 @@ function Single({ selectedId, setVisible }) {
                     Espécie {">"} Raça: {patient?.race} {">"} {patient?.specie}
                   </p>
                   <p>
-                    Peso: {patient?.weight} em{" "}
-                    {moment(patient?.weightDate).format("DD/MM/YYYY")}
+                    Peso:{" "}
+                    {patient?.weight && patient?.weightDate
+                      ? `${patient?.weight} em ${DateToDDMMYYYY(
+                          patient?.weightDate
+                        )}`
+                      : "-"}
                   </p>
                   <p>Óbito: {patient?.death ? "Sim" : "Não"}</p>
 
