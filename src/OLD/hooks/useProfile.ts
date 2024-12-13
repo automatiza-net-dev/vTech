@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery, useAuthAdmin } from "infinity-forge";
 import { userService } from "@/OLD/services/user.service";
 
 export const useProfile = (type = false, reload = false) => {
@@ -21,6 +21,7 @@ export const useProfile = (type = false, reload = false) => {
 };
 
 export const useUserHasPermission = (cl) => {
-  const { cls, loadingProfile } = useProfile();
-  return loadingProfile ? "loading" : cls.includes(cl);
+  const cls = useAuthAdmin();
+
+  return cls.user.cl.includes(cl);
 };
