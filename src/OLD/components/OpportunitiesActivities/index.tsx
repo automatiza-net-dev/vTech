@@ -79,7 +79,7 @@ const OpActivities = memo(function OpActivities({
       raceId: opportunity?.race?.id,
       gender: opportunity?.gender,
       raceDescription: `${opportunity?.race?.specie?.description} > ${opportunity?.race?.description}`,
-      castrated: opportunity?.castrated,
+      castrated: opportunity?.castrated || false,
       patient: op?.client,
       contact: opportunity?.contact,
       weight: opportunity?.client?.weight,
@@ -145,7 +145,7 @@ const OpActivities = memo(function OpActivities({
       originId: opportunitiesData?.originId,
       weight: opportunitiesData?.weight,
       gender: opportunitiesData?.gender,
-      castrated: opportunitiesData?.castrated ?? null,
+      castrated: opportunitiesData?.castrated || false,
       raceId: opportunitiesData?.raceId,
       marketingCampaignId: opportunitiesData?.marketingCampaignId,
       clientOriginItemDescription:

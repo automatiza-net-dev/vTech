@@ -15,8 +15,6 @@ export function DailyCashier() {
   const { data, isFetching, mutate } = useDailyCashier();
   const actions = useDailyCashierTableActions({ mutate }) as any;
 
-  console.log(data, "<< data")
-
   const { Table } = useTable({
     columnsConfiguration: {
       columns,

@@ -190,7 +190,7 @@ export function PatientList({
                       raceId: patient?.race?.id,
                       raceDescription: patient?.race?.description,
                       gender: patient?.gender,
-                      castrated: patient?.castrated,
+                      castrated: patient?.castrated || "false",
                       weight: patient?.weight,
                       contact: { tutor },
                     }));
