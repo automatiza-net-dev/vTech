@@ -78,7 +78,7 @@ export function useDailyCashierTableActions({
       const payload = {
         ...data,
         dailyMovementId: dailyMovements?.[0]?.id,
-        initialBalance: Number(data?.initialBalance),
+        initialBalance: parseFloat(data?.initialBalance.replace(",", ".")),
       };
 
       try {
