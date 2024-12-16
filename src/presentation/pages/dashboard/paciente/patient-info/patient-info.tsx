@@ -106,7 +106,7 @@ function Single({ selectedId, setVisible }) {
   }, [reload, patientData?.data]);
 
   const patientPhoto =
-    patientData?.data?.photo || "/images/logo/sancla-default-profile.png";
+    patient?.photo || "/images/logo/sancla-default-profile.png";
 
   return loading ? (
     <LoadingSkeleton />
@@ -151,12 +151,10 @@ function Single({ selectedId, setVisible }) {
                 overflow: "hidden",
               }}
             >
-              {patient?.photo && (
-                <img
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  src={patientPhoto}
-                />
-              )}
+              <img
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                src={patientPhoto}
+              />
             </div>
             <br />
             <section style={{ width: "90%" }}>
