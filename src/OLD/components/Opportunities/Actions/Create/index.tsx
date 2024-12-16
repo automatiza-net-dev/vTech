@@ -42,6 +42,7 @@ export default function Create({
   async function createOpportunity() {
     const newObj = {
       ...data,
+      castrated: JSON.parse(data?.castrated),
       businessUnitId: clinic?.id,
       contactDate: moment(data?.contactDate).toISOString(),
       value: convertIntlCurrency(data?.value),

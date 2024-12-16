@@ -23,7 +23,6 @@ import {
   Tooltip,
   notification,
   Table,
-  Modal,
   Dropdown,
   Menu,
   AutoComplete,
@@ -37,12 +36,7 @@ import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FormCreatePatient, FormCreateTutor } from "@/presentation";
-import {
-  Icon,
-  Modal as InfinityForgeModal,
-  Button,
-  useAuthAdmin,
-} from "infinity-forge";
+import { Icon, Modal, Button, useAuthAdmin } from "infinity-forge";
 
 export function List({
   filters,
@@ -461,11 +455,11 @@ export function List({
             ),
         }}
       />
-      <InfinityForgeModal
+      <Modal
         open={createPetVisible}
         onClose={() => setCreatePetVisible(false)}
         styles={{
-          maxWidth: "1400px",
+          width: "1200px",
         }}
       >
         <FormCreatePatient
@@ -478,69 +472,71 @@ export function List({
           isModal={false}
           origin="aa"
         />
-      </InfinityForgeModal>
+      </Modal>
 
       {detailsVisible && (
         <Modal
-          visible={detailsVisible}
-          onCancel={() => setDetailsVisible(false)}
-          width={1200}
+          open={detailsVisible}
+          onClose={() => setDetailsVisible(false)}
+          styles={{ width: "1200px" }}
           footer={null}
-        >
-          <Single
-            selectedId={selectedId}
-            setVisible={setDetailsVisible}
-            setEditVisible={setEditVisible}
-            setCreatePetVisible={setCreatePetVisible}
-            setVincPetVisible={setVincPetVisible}
-          />
-        </Modal>
+          children={
+            <Single
+              selectedId={selectedId}
+              setVisible={setDetailsVisible}
+              setEditVisible={setEditVisible}
+              setCreatePetVisible={setCreatePetVisible}
+              setVincPetVisible={setVincPetVisible}
+            />
+          }
+        />
       )}
       {editVisible && (
         <Modal
-          width={1200}
-          visible={editVisible}
-          onCancel={() => setEditVisible(false)}
-          footer={null}
-        >
-          <Edit tutorId={selectedId} setVisible={setEditVisible} />
-        </Modal>
+          styles={{ wdith: "1200px" }}
+          open={editVisible}
+          onClose={() => setEditVisible(false)}
+          children={<Edit tutorId={selectedId} setVisible={setEditVisible} />}
+        />
       )}
 
       {vincPetVisible && (
         <Modal
-          visible={vincPetVisible}
-          title={`Vincular pet - Tutor: ${selectedTutor?.name}`}
-          onCancel={() => setVincPetVisible(false)}
-          footer={null}
-        >
-          <label>Selecionar pet</label>
-          <AutoComplete
-            className="uk-width-1-1"
-            options={patients?.map((patient) => ({
-              ...patient,
-              key: patient?.id,
-              value: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
-            }))}
-            value={selectedPetToVinc?.name}
-            onChange={(val) => setSelectedPetToVinc({ name: val })}
-            onSelect={(_, opt) => setSelectedPetToVinc(opt)}
-            filterOption={(val, opt) =>
-              normalizeStr(opt?.value.toUpperCase()).includes(
-                normalizeStr(val.toUpperCase())
-              )
-            }
-          />
-          <hr />
-          <footer className="uk-flex uk-flex-right">
-            <Button
-              onClick={() =>
-                assignPetToTutor(selectedTutor?.id, selectedPetToVinc?.id)
-              }
-              text="Vincular"
-            />
-          </footer>
-        </Modal>
+          open={vincPetVisible}
+          onClose={() => setVincPetVisible(false)}
+          children={
+            <>
+              <h2>Vincular pet - Tutor: ${selectedTutor?.name}</h2>
+
+              <label>Selecionar pet</label>
+              <AutoComplete
+                className="uk-width-1-1"
+                options={patients?.map((patient) => ({
+                  ...patient,
+                  key: patient?.id,
+                  value: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
+                }))}
+                value={selectedPetToVinc?.name}
+                onChange={(val) => setSelectedPetToVinc({ name: val })}
+                onSelect={(_, opt) => setSelectedPetToVinc(opt)}
+                filterOption={(val, opt) =>
+                  normalizeStr(opt?.value.toUpperCase()).includes(
+                    normalizeStr(val.toUpperCase())
+                  )
+                }
+              />
+              <hr />
+              <footer className="uk-flex uk-flex-right">
+                <Button
+                  onClick={() =>
+                    assignPetToTutor(selectedTutor?.id, selectedPetToVinc?.id)
+                  }
+                  text="Vincular"
+                />
+              </footer>
+            </>
+          }
+        />
       )}
     </Container>
   );

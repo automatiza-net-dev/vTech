@@ -349,7 +349,7 @@ export default function FormChild({
               <SelectAnt
                 disabled={!footer ? !edit : false}
                 className="uk-width-1-1"
-                value={data?.castrated || null}
+                value={data?.castrated}
                 onChange={(val) => setData({ ...data, castrated: val })}
               >
                 <Option value="true">Sim</Option>

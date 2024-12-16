@@ -204,7 +204,7 @@ function Single({ selectedId, setVisible }) {
                   <p>
                     Peso:{" "}
                     {patient?.weight && patient?.weightDate
-                      ? `${patient?.weight} em ${DateToDDMMYYYY(
+                      ? `${patient?.weight + " kg"} em ${DateToDDMMYYYY(
                           patient?.weightDate
                         )}`
                       : "-"}
