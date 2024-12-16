@@ -14,7 +14,7 @@ export function useDailyCashier() {
     ...params,
     fromOpening: params?.fromOpening ? moment(params?.fromOpening) : "",
     toOpening: params?.toOpening ? moment(params?.toOpening) : "",
-        status: params?.status || "ABERTO"
+    status: params?.status || "ABERTO",
   };
 
   const hasRequiredKeys = [
@@ -27,8 +27,6 @@ export function useDailyCashier() {
 
   async function fetcher() {
     const response = await dailyCasherService.listDailyCashiers(resul);
-
-    console.log(response, "<<<<");
 
     return response.data;
   }
@@ -86,7 +84,7 @@ export const useDailyCasher = (
 
   useEffect(() => {
     fetchData();
-  }, [reload])
+  }, [reload]);
 
   return { cashiers, cashiersLoading: loading, fetchDailyCashiers: fetchData };
 };
