@@ -272,7 +272,7 @@ export default function ExecutionForm({ data, reload, setReload }) {
                     className="uk-width-1-1"
                   />
                 </div>
-                {execution?.scheduleDate && (
+                {execution?.scheduleDate && !execution?.executionDate ? (
                   <div className={`uk-margin-small-left uk-flex`}>
                     {submitExecutionPermission && (
                       <HiOutlinePencilAlt
@@ -330,7 +330,7 @@ export default function ExecutionForm({ data, reload, setReload }) {
                       }}
                     />
                   </div>
-                )}
+                ) : null}
               </div>
               <div className="uk-margin-small-top">
                 <label>Observação</label>
