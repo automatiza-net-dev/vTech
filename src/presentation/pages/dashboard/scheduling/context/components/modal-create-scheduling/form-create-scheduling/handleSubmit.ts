@@ -76,9 +76,9 @@ export function useSubmitSchedule() {
 
     const meridianEndHour = moment(meridianStartHour)
       .add(Number(data.duration), "minutes")
-      .format("YYYY-MM-DDTHH:mm:ssZ");
+      .format("YYYY-MM-DDTHH:mm:ssZ")
 
-    if (data?.executions.length === 0) {
+    if (data?.hasServicesStage && data?.executions.length === 0) {
       return createToast({
         message:
           "Selecione um ou mais itens de procedimentos disponíveis ou troque o serviço do agendamento",
