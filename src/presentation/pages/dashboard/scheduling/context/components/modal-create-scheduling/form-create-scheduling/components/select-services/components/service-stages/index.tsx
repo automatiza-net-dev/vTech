@@ -19,7 +19,7 @@ export function ServiceStages() {
       {isFetching && <LoaderCircle size={30} color="#000" />}
 
       <div className="radio-box">
-        {data?.map((item) => {
+        {data?.map((item, index) => {
           const aditionalInformation = {
             label: `${item?.itemProdutividade || ""} ${
               item.executionDate !== "-"
@@ -41,19 +41,23 @@ export function ServiceStages() {
           const id =
             item?.treatmentId +
             item?.treatmentItemId +
-            item?.treatmentExecutionId;
+            item?.treatmentExecutionId +
+            index;
 
           return (
-            <div key={id} className="content">
+            <div key={String(id)} className="content">
               <div className="input-box">
                 <input
+                  id={String(id)}
                   type="checkbox"
                   disabled={aditionalInformation?.disabled()}
-                  checked={!!values?.items?.find((item) => item?.id === id)}
+                  checked={
+                    !!values?.executions?.find((item) => item?.id === id)
+                  }
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setFieldValue("items", [
-                        ...values?.items,
+                      setFieldValue("executions", [
+                        ...values?.executions,
                         {
                           ...item,
                           id,
@@ -61,15 +65,15 @@ export function ServiceStages() {
                       ]);
                     } else {
                       setFieldValue(
-                        "items",
-                        values?.items?.filter((item) => item?.id !== id)
+                        "executions",
+                        values?.executions?.filter((item) => item?.id !== id)
                       );
                     }
                   }}
                 />
               </div>
 
-              <label htmlFor="">
+              <label htmlFor={String(id)}>
                 {item?.produto} - {aditionalInformation?.label}
               </label>
             </div>

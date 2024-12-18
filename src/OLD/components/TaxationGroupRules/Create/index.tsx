@@ -4,6 +4,7 @@ import * as crypto from "crypto";
 import { memo, useCallback, useEffect, useState } from "react";
 
 // Services
+import { useLoadAllStates } from "@/presentation";
 import { clinicService } from "@/OLD/services/clinic.service";
 import { taxOperationService } from "@/OLD/services/tax-operation.service";
 import { taxationGroupRulesService } from "@/OLD/services/taxation-group-rules.service";
@@ -28,14 +29,13 @@ import {
   PIS_COFINS_CST_SAIDA,
 } from "../data/pis_cofins_cst";
 
-const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
-  visible,
-  hide,
-}) {
+function CreateTaxationGroupRule({ visible, hide }) {
   const queryClient = useQueryClient();
 
   const [data, setData] = useState({});
   const [selectedState, setSelectedState] = useState(null);
+
+  const states = useLoadAllStates();
 
   const { data: taxOperations } = useQuery(
     ["tax-operations"],
@@ -206,6 +206,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
     <Modal
       visible={visible}
       footer={null}
+      onCancel={close}
       title="Cadastro de regra de grupo de impostos"
       width={1250}
     >
@@ -304,13 +305,13 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
 
         <div className="uk-margin-top">
           <div className="uk-flex-col" style={{ gap: "0.75rem" }}>
-            <label>Estados</label>
+            <label>Selecione o estado de origem da regra</label>
             <Select
               placeholder="Selecione um tipo de categoria"
               value={selectedState}
               onChange={(value) => setSelectedState(value)}
               style={{ width: "100%" }}
-              options={uniqueStates.map((state) => ({
+              options={states?.data?.map((state) => ({
                 label: state,
                 value: state,
               }))}
@@ -401,7 +402,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <div className="uk-flex uk-flex-column uk-width-1-1">
                     <label>Cst Icms</label>
                     <Select
-                      value={data?.[selectedState].icmsCst}
+                      value={data?.[selectedState]?.icmsCst}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -427,7 +428,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <div className="uk-flex uk-flex-column uk-width-1-4">
                     <label>% Icms</label>
                     <InputNumber
-                      value={data?.[selectedState].icmsPerc}
+                      value={data?.[selectedState]?.icmsPerc}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -462,14 +463,14 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "202",
                         "203",
                         "900",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                     />
                   </div>
 
                   <div className="uk-flex uk-flex-column uk-width-1-4">
                     <label>Cod. Benef. Fiscal</label>
                     <Input
-                      value={data?.[selectedState].taxBenefitCode}
+                      value={data?.[selectedState]?.taxBenefitCode}
                       onChange={(e) => {
                         const stateData = data[selectedState];
 
@@ -492,7 +493,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <div className="uk-flex uk-flex-column uk-width-1-4">
                     <label>% Fcp</label>
                     <InputNumber
-                      value={data?.[selectedState].fcpPerc}
+                      value={data?.[selectedState]?.fcpPerc}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -511,7 +512,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <div className="uk-flex uk-flex-column uk-width-1-4">
                     <label>% Red. Aliq. Icms</label>
                     <InputNumber
-                      value={data?.[selectedState].icmsPercRedAliquota}
+                      value={data?.[selectedState]?.icmsPercRedAliquota}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -546,14 +547,14 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "60",
                         "70",
                         "90",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                     />
                   </div>
 
                   <div className="uk-flex uk-flex-column uk-width-1-4">
                     <label>% Red. Base Calc. Icms</label>
                     <InputNumber
-                      value={data?.[selectedState].icmsPercRedBaseCalculo}
+                      value={data?.[selectedState]?.icmsPercRedBaseCalculo}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -567,7 +568,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       }}
                       style={{ width: "100%" }}
                       required={["20", "70"].includes(
-                        data?.[selectedState].icmsCst
+                        data?.[selectedState]?.icmsCst
                       )}
                       disabled={[
                         "101",
@@ -586,14 +587,14 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "41",
                         "50",
                         "60",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                     />
                   </div>
 
                   <div className="uk-flex uk-flex-column uk-width-1-4">
                     <label>% Diferimento Icms</label>
                     <InputNumber
-                      value={data?.[selectedState].icmsPercDiferimento}
+                      value={data?.[selectedState]?.icmsPercDiferimento}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -627,7 +628,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "60",
                         "70",
                         "90",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                     />
                   </div>
                 </div>
@@ -639,7 +640,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <div className="uk-flex uk-flex-column uk-width-1-1">
                     <label>% Iva Icms ST</label>
                     <InputNumber
-                      value={data?.[selectedState].ivaIcmsSt}
+                      value={data?.[selectedState]?.ivaIcmsSt}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -661,7 +662,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "900",
                         "70",
                         "90",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                       disabled={[
                         "101",
                         "102",
@@ -676,14 +677,14 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "50",
                         "51",
                         "60",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                     />
                   </div>
 
                   <div className="uk-flex uk-flex-column uk-width-1-1">
                     <label>% Red. B. C. Icms ST</label>
                     <InputNumber
-                      value={data?.[selectedState].icmsPercRedBaseCalculoST}
+                      value={data?.[selectedState]?.icmsPercRedBaseCalculoST}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -697,7 +698,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       }}
                       style={{ width: "100%" }}
                       required={["201", "202", "203"].includes(
-                        data?.[selectedState].icmsCst
+                        data?.[selectedState]?.icmsCst
                       )}
                       disabled={[
                         "101",
@@ -713,7 +714,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         "50",
                         "51",
                         "60",
-                      ].includes(data?.[selectedState].icmsCst)}
+                      ].includes(data?.[selectedState]?.icmsCst)}
                     />
                   </div>
                 </div>
@@ -725,7 +726,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <div className="uk-flex uk-flex-column uk-width-1-1">
                     <label>Cst. Ipi</label>
                     <Select
-                      value={data?.[selectedState].ipiCst}
+                      value={data?.[selectedState]?.ipiCst}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -752,7 +753,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <label>% Ipi</label>
                     <InputNumber
                       required
-                      value={data?.[selectedState].ipiPerc}
+                      value={data?.[selectedState]?.ipiPerc}
                       onChange={(value) => {
                         const stateData = data[selectedState];
 
@@ -774,7 +775,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <label>Cst Pis</label>
                   <Select
-                    value={data?.[selectedState].pisCst}
+                    value={data?.[selectedState]?.pisCst}
                     onChange={(value) => {
                       const stateData = data[selectedState];
 
@@ -800,7 +801,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <label>% Pis</label>
                   <InputNumber
                     required
-                    value={data?.[selectedState].pisPerc}
+                    value={data?.[selectedState]?.pisPerc}
                     onChange={(value) => {
                       const stateData = data[selectedState];
 
@@ -821,7 +822,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <label>Cst Cofins</label>
                   <Select
-                    value={data?.[selectedState].cofinsCst}
+                    value={data?.[selectedState]?.cofinsCst}
                     onChange={(value) => {
                       const stateData = data[selectedState];
 
@@ -848,7 +849,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                   <label>% Cofins</label>
                   <InputNumber
                     required
-                    value={data?.[selectedState].cofinsPerc}
+                    value={data?.[selectedState]?.cofinsPerc}
                     onChange={(value) => {
                       const stateData = data[selectedState];
 
@@ -875,7 +876,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                 <Button onClick={addState}>Adicionar</Button>
               </div>
 
-              {Object.keys(data?.[selectedState]?.extras).map((extra) => (
+              {/* {Object.keys(data?.[selectedState]?.extras).map((extra) => (
                 <div className="uk-margin-top" key={extra}>
                   <div
                     className="uk-margin-top uk-flex"
@@ -989,7 +990,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <label>Cst Icms</label>
                       <Select
-                        value={data?.[selectedState]?.extras[extra].icmsCst}
+                        value={data?.[selectedState]?.extras[extra]?.icmsCst}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1020,7 +1021,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-4">
                       <label>% Icms</label>
                       <InputNumber
-                        value={data?.[selectedState]?.extras[extra].icmsPerc}
+                        value={data?.[selectedState]?.extras[extra]?.icmsPerc}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1060,7 +1061,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "202",
                           "203",
                           "900",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                       />
                     </div>
 
@@ -1068,7 +1069,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <label>Cod. Benef. Fiscal</label>
                       <Input
                         value={
-                          data[selectedState]?.extras[extra].taxBenefitCode
+                          data[selectedState]?.extras[extra]?.taxBenefitCode
                         }
                         onChange={(e) => {
                           const stateData = data[selectedState];
@@ -1097,7 +1098,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <label>% Fcp</label>
                       <InputNumber
-                        value={data?.[selectedState]?.extras[extra].fcpPerc}
+                        value={data?.[selectedState]?.extras[extra]?.fcpPerc}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1122,7 +1123,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <label>% Red. Aliq. Icms</label>
                       <InputNumber
                         value={
-                          data[selectedState]?.extras[extra].icmsPercRedAliquota
+                          data[selectedState]?.extras[extra]?.icmsPercRedAliquota
                         }
                         onChange={(value) => {
                           const stateData = data[selectedState];
@@ -1163,7 +1164,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "60",
                           "70",
                           "90",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                       />
                     </div>
 
@@ -1172,7 +1173,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <InputNumber
                         value={
                           data[selectedState]?.extras[extra]
-                            .icmsPercRedBaseCalculo
+                            ?.icmsPercRedBaseCalculo
                         }
                         onChange={(value) => {
                           const stateData = data[selectedState];
@@ -1192,7 +1193,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         }}
                         style={{ width: "100%" }}
                         required={["20", "70"].includes(
-                          data?.[selectedState].icmsCst
+                          data?.[selectedState]?.icmsCst
                         )}
                         disabled={[
                           "101",
@@ -1211,7 +1212,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "41",
                           "50",
                           "60",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                       />
                     </div>
 
@@ -1219,7 +1220,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <label>% Diferimento Icms</label>
                       <InputNumber
                         value={
-                          data[selectedState]?.extras[extra].icmsPercDiferimento
+                          data[selectedState]?.extras[extra]?.icmsPercDiferimento
                         }
                         onChange={(value) => {
                           const stateData = data[selectedState];
@@ -1259,7 +1260,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "60",
                           "70",
                           "90",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                       />
                     </div>
                   </div>
@@ -1271,7 +1272,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <label>% Iva Icms ST</label>
                       <InputNumber
-                        value={data[selectedState]?.extras[extra].ivaIcmsSt}
+                        value={data[selectedState]?.extras[extra]?.ivaIcmsSt}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1298,7 +1299,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "900",
                           "70",
                           "90",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                         disabled={[
                           "101",
                           "102",
@@ -1313,7 +1314,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "50",
                           "51",
                           "60",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                       />
                     </div>
 
@@ -1322,7 +1323,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <InputNumber
                         value={
                           data[selectedState]?.extras[extra]
-                            .icmsPercRedBaseCalculoST
+                            ?.icmsPercRedBaseCalculoST
                         }
                         onChange={(value) => {
                           const stateData = data[selectedState];
@@ -1342,7 +1343,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                         }}
                         style={{ width: "100%" }}
                         required={["201", "202", "203"].includes(
-                          data?.[selectedState].icmsCst
+                          data?.[selectedState]?.icmsCst
                         )}
                         disabled={[
                           "101",
@@ -1358,7 +1359,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                           "50",
                           "51",
                           "60",
-                        ].includes(data?.[selectedState].extras[extra].icmsCst)}
+                        ].includes(data?.[selectedState].extras[extra]?.icmsCst)}
                       />
                     </div>
                   </div>
@@ -1370,7 +1371,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <label>Cst. Ipi</label>
                       <Select
-                        value={data?.[selectedState]?.extras[extra].ipiCst}
+                        value={data?.[selectedState]?.extras[extra]?.ipiCst}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1400,7 +1401,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <label>% Ipi</label>
                       <InputNumber
                         required
-                        value={data?.[selectedState]?.extras[extra].ipiPerc}
+                        value={data?.[selectedState]?.extras[extra]?.ipiPerc}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1429,7 +1430,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <label>Cst Pis</label>
                       <Select
-                        value={data?.[selectedState]?.extras[extra].pisCst}
+                        value={data?.[selectedState]?.extras[extra]?.pisCst}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1458,7 +1459,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <label>% Pis</label>
                       <InputNumber
                         required
-                        value={data?.[selectedState]?.extras[extra].pisPerc}
+                        value={data?.[selectedState]?.extras[extra]?.pisPerc}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1487,7 +1488,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                     <div className="uk-flex uk-flex-column uk-width-1-1">
                       <label>Cst Cofins</label>
                       <Select
-                        value={data?.[selectedState]?.extras[extra].cofinsCst}
+                        value={data?.[selectedState]?.extras[extra]?.cofinsCst}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1516,7 +1517,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
                       <label>% Cofins</label>
                       <InputNumber
                         required
-                        value={data?.[selectedState]?.extras[extra].cofinsPerc}
+                        value={data?.[selectedState]?.extras[extra]?.cofinsPerc}
                         onChange={(value) => {
                           const stateData = data[selectedState];
                           const extraData = stateData.extras[extra];
@@ -1540,7 +1541,7 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
 
                   <hr />
                 </div>
-              ))}
+              ))} */}
             </>
           )}
         </div>
@@ -1557,6 +1558,6 @@ const CreateTaxationGroupRule = memo(function CreateTaxationGroupRule({
       </form>
     </Modal>
   );
-});
+}
 
 export default CreateTaxationGroupRule;

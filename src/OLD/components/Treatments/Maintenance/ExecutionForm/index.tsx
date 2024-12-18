@@ -23,7 +23,6 @@ import {
 } from "antd";
 import { Container } from "./styles";
 
-
 const { TextArea } = Input;
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
@@ -34,7 +33,7 @@ import { BiTrashAlt } from "react-icons/bi";
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
-export default  function ExecutionForm({ data, reload, setReload }) {
+export default function ExecutionForm({ data, reload, setReload }) {
   const [visible, setVisible] = useState(false);
   const [newScheduleVisible, setNewScheduleVisible] = useState(false);
   const [quantity, setQuantity] = useState(0);
@@ -50,12 +49,7 @@ export default  function ExecutionForm({ data, reload, setReload }) {
   const [reasonVisible, setReasonVisible] = useState(false);
   const [removePayload, setRemovePayload] = useState({});
 
-  
-  const { schedules } = useSchedulesByPatient(
-    process.env.client !== "liftone"
-      ? data?.patient?.id
-      : data?.tutor?.id
-  );
+  const { schedules } = useSchedulesByPatient(data?.treatment?.client?.id);
   const { colaborators } = useColaborators();
   const { user } = useProfile();
 
@@ -154,7 +148,7 @@ export default  function ExecutionForm({ data, reload, setReload }) {
         executionId: execution?.id,
         treatmentItemId: execution?.item?.id,
         treatmentId: data?.treatment?.id,
-        quantityExecuted: execution?.quantityExecuted,
+        quantityExecuted: 1,
         quantity: execution?.quantityExecuted,
         executionDate: moment(execution?.date).toISOString(),
         observations: execution?.observation,
@@ -220,19 +214,6 @@ export default  function ExecutionForm({ data, reload, setReload }) {
                     </span>
                   </Tooltip>
                 </div>
-                {execution?.status === "Confirmado" ? (
-                  <div>
-                    <label>Qtd. Executada</label>
-                    <br />
-                    {execution?.quantityExecuted || 0}
-                  </div>
-                ) : (
-                  <div>
-                    <label>Qtd. agendada</label>
-                    <br />
-                    {execution?.scheduledQuantity || 0}
-                  </div>
-                )}
                 <div className="uk-margin-small-right">
                   <label>Profissional Responsável</label>
                   <AutoComplete
@@ -291,100 +272,65 @@ export default  function ExecutionForm({ data, reload, setReload }) {
                     className="uk-width-1-1"
                   />
                 </div>
-                <div className="uk-width-1-5">
-                  <label>Qtd. executada</label>
-                  <Input
-                    disabled={!(execution?.id === selectedId)}
-                    value={
-                      executionPayload.find((pay) => pay?.id === execution?.id)
-                        ?.quantityExecuted
-                    }
-                    onChange={(e) => {
-                      const obj = [...executionPayload];
-                      obj.splice(i, 1, {
-                        ...executionPayload[i],
-                        quantityExecuted: e.target.value,
-                      });
-                      setExecutionPayload(obj);
-                    }}
-                  />
-                </div>
-                <div className={`uk-margin-small-left uk-flex`}>
-                  {submitExecutionPermission && (
-                    <HiOutlinePencilAlt
+                {execution?.scheduleDate && (
+                  <div className={`uk-margin-small-left uk-flex`}>
+                    {submitExecutionPermission && (
+                      <HiOutlinePencilAlt
+                        className={`pointer-icon ${
+                          selectedId === execution?.id
+                            ? "inactive-icon"
+                            : "active-edit-icon"
+                        }`}
+                        size={25}
+                        onClick={() => {
+                          if (!execution?.executionUser) {
+                            setSelectedId(execution?.id);
+                            const obj = [...executionPayload];
+                            obj.splice(i, 1, {
+                              ...executionPayload[i],
+                              colabName: user?.name,
+                              executionUser: user?.id,
+                              date: moment(new Date()),
+                              quantityExecuted: execution?.scheduledQuantity,
+                            });
+                            setExecutionPayload(obj);
+                          } else {
+                            return notification.warning({
+                              message: "Execução já efetuada",
+                            });
+                          }
+                        }}
+                      />
+                    )}
+                    <AiOutlineCheckCircle
                       className={`pointer-icon ${
                         selectedId === execution?.id
-                          ? "inactive-icon"
-                          : "active-edit-icon"
+                          ? "confirm-icon"
+                          : "inactive-icon"
                       }`}
                       size={25}
                       onClick={() => {
-                        if (!execution?.executionUser) {
-                          setSelectedId(execution?.id);
-                          const obj = [...executionPayload];
-                          obj.splice(i, 1, {
-                            ...executionPayload[i],
-                            colabName: user?.name,
-                            executionUser: user?.id,
-                            date: moment(new Date()),
-                            quantityExecuted: execution?.scheduledQuantity,
-                          });
-                          setExecutionPayload(obj);
-                        } else {
-                          return notification.warning({
-                            message: "Execução já efetuada",
-                          });
+                        if (selectedId === execution?.id) {
+                          submitExecution();
                         }
                       }}
                     />
-                  )}
-                  <AiOutlineCheckCircle
-                    className={`pointer-icon ${
-                      selectedId === execution?.id
-                        ? "confirm-icon"
-                        : "inactive-icon"
-                    }`}
-                    size={25}
-                    onClick={() => {
-                      if (selectedId === execution?.id) {
-                        submitExecution();
-                      }
-                    }}
-                  />
-                  <ImCancelCircle
-                    className={`pointer-icon ${
-                      selectedId === execution?.id
-                        ? "cancel-icon"
-                        : "inactive-icon"
-                    }`}
-                    size={23}
-                    onClick={() => {
-                      if (selectedId === execution?.id) {
-                        setSelectedId(false);
-                        setReload((prv) => !prv);
-                      }
-                    }}
-                  />
-                  {removeExecutionPermission && (
-                    <BiTrashAlt
-                      onClick={() => {
-                        if (!execution?.executionUser) {
-                          setRemovePayload({
-                            treatmentId: data?.treatment?.id,
-                            treatmentExecutionId: execution?.id,
-                          });
-                          setReasonVisible(true);
-                        } else {
-                          return notification.warning({
-                            message: "Execução já finalizada",
-                          });
-                        }
-                      }}
-                      className="cancel-icon pointer-icon"
+                    <ImCancelCircle
+                      className={`pointer-icon ${
+                        selectedId === execution?.id
+                          ? "cancel-icon"
+                          : "inactive-icon"
+                      }`}
                       size={23}
+                      onClick={() => {
+                        if (selectedId === execution?.id) {
+                          setSelectedId(false);
+                          setReload((prv) => !prv);
+                        }
+                      }}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               <div className="uk-margin-small-top">
                 <label>Observação</label>
@@ -407,21 +353,6 @@ export default  function ExecutionForm({ data, reload, setReload }) {
               <hr />
             </div>
           ))}
-        </div>
-      )}
-      {schedulingExecutionPermission && (
-        <div className="uk-flex uk-flex-right uk-margin-small-top">
-          {data?.treatmentItem?.quantity >
-            data?.treatmentItem?.scheduledQuantity && (
-            <Button
-              onClick={() => {
-                setQuantity(data?.treatmentItem?.quantity);
-                setVisible(true);
-              }}
-            >
-              Agendar Execução
-            </Button>
-          )}
         </div>
       )}
       <Modal

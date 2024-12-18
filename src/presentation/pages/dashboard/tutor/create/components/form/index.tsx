@@ -7,6 +7,7 @@ import {
   useToast,
   InputMask,
   FormHandler,
+  InputCpfCnpj,
   InputSwitch,
   useAuthAdmin,
 } from "infinity-forge";
@@ -96,12 +97,11 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
             <div>
               <div className="row">
-                <Input name="name" label="Nome*" />
+                <Input name="corporateName" label="Nome / Razão Social*" />
 
-                <InputMask
+                <InputCpfCnpj
                   name="document"
-                  label={requiresDocument ? "CPF*" : "CPF"}
-                  mask="___.___.___-__"
+                  label={requiresDocument ? "cpf/cnpj*" : "cpf/cnpj"}
                 />
 
                 <InputMask name="inscription" label="RG" mask="__.___.___-_" />
@@ -117,7 +117,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               </div>
 
               <div className="row">
-                <SelectProfession origin={origin} />
+                <Input name="name" label="Nome Social / Nome Fantasia" />
 
                 <Select
                   label={isRegister ? "Gênero*" : "Gênero"}
@@ -148,20 +148,24 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               </div>
 
               <div className="row">
-                <SelectOrigin />
+                <SelectProfession origin={origin} />
 
-                <Input name="tags" label="Tag" />
+                <SelectOrigin />
+              </div>
+
+              <div className="row">
+                <Input name="tags" label="Tag / Observação" />
+
+                {process.env.client === "liftone" && (
+                  <>
+                    <InputSwitch label="Diabetes" name="diabetes" />
+
+                    <InputSwitch label="Hipertensão" name="hypertension" />
+                  </>
+                )}
               </div>
             </div>
           </div>
-
-          {process.env.client === "liftone" && (
-            <>
-              <InputSwitch label="Diabetes" name="diabetes" />
-
-              <InputSwitch label="Hipertensão" name="hypertension" />
-            </>
-          )}
 
           <div className="file">
             {tutorId && (
