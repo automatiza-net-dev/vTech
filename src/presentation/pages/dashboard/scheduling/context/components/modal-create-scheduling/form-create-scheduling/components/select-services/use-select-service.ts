@@ -43,6 +43,7 @@ export function useSelectService({
     )?.reserved_minutes;
 
     setFieldValue("duration", reserved_minutes);
+    setFieldValue("hasServicesStage", selectedValue?.type === "T");
   }
 
   const initialValue = initialValues["scheduleServiceTypeId"];
