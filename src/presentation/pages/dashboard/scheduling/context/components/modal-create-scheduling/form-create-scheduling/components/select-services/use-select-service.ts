@@ -24,7 +24,8 @@ export function useSelectService({
       {
         label: result.description,
         hasServicesStage: !!options?.find(
-          (b) => b.type === "T" && b.value === values["scheduleServiceTypeId"][0]
+          (b) =>
+            b.type === "T" && b.value === values["scheduleServiceTypeId"][0]
         ),
         options,
       },
@@ -58,7 +59,7 @@ export function useSelectService({
 
   useEffect(() => {
     if (!hasServicesStage) {
-      setFieldValue("items", []);
+      setFieldValue("executions", []);
     }
   }, [hasServicesStage]);
 

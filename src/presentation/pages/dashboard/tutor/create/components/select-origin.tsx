@@ -16,7 +16,7 @@ export function SelectOrigin() {
   }, []);
 
   return (
-    <div>
+    <div style={{ display: "flex", gap: 15 }}>
       <Select
         onlyOneValue
         menuPlacement="bottom"
