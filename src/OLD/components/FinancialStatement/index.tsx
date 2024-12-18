@@ -72,7 +72,6 @@ const FinancialSteatment = memo(function Titles({ type }) {
   const [groupDetailsVisible, setGroupDetailsVisible] = useState(false);
   const [groupData, setGroupData] = useState({});
   const [checkingAccountId, setCheckingAccountId] = useState(false);
-  const [unit, setUnit] = useState({ unit: clinic?.id });
   const [createTitleVisible, setCreateTitleVisible] = useState(false);
   const [id, setId] = useState([]);
 
@@ -87,6 +86,7 @@ const FinancialSteatment = memo(function Titles({ type }) {
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
   const { balance } = useFinancesBalance(filters);
   const { clinic } = useProfile();
+  const [unit, setUnit] = useState({ unit: clinic?.id });
   const { checkingAccounts } = useCheckingAccounts(unit);
 
   const createTitlePermission = useUserHasPermission(
