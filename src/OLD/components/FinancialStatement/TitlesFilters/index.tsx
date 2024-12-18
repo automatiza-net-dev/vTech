@@ -17,6 +17,7 @@ import { MdOutlineClear } from "react-icons/md";
 import { Container, InputBox } from "./styles";
 import { Input, Select, Radio, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
+import { DateFilter } from "../../mini-components";
 const { Option } = Select;
 const { Group } = Radio;
 
