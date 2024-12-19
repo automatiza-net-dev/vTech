@@ -7,6 +7,7 @@ export type DeleteSchedule = {
 export namespace DeleteSchedule {
   export type Params = {
     id: Event["event"]["id"];
+    ignoreConflict?: boolean;
   };
 
   export type Model = {};
