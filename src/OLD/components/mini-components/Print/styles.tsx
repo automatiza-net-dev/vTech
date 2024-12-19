@@ -17,7 +17,6 @@ export const PrintScreen = styled.div`
   word-wrap: break-word;
   width: 100%;
   font-size: 1.5em;
-  margin: 5px 5px 5px 5px;
 
   @media print {
     p {

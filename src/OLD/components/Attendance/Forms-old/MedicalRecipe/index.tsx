@@ -1,18 +1,17 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
-import { useProfile } from "@/OLD/hooks/useProfile";
 
-import FormChild from "./FormChild";
+import moment from "moment";
 import { useToast } from "infinity-forge";
+import { useQueryClient } from "react-query";
 
 import { recipeServices } from "@/OLD/services/recipes.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 import { textReplaceService } from "@/OLD/services/textReplace.service";
 
-import { useLoadPatient } from "@/presentation/hooks";
+import { useLoadPatient, useMe } from "@/presentation/hooks";
 
-import moment from "moment";
-import { useQueryClient } from "react-query";
+import FormChild from "./FormChild";
 
 function AddMedicalRecipe({
   modal,
@@ -25,7 +24,8 @@ function AddMedicalRecipe({
   const [loading, setLoading] = useState(false);
   const [recipeId, setRecipeId] = useState(false);
   const [recipeSearch, setRecipeSearch] = useState("");
-  const { user, clinic } = useProfile();
+
+  const userInfo = useMe();
   const { createToast } = useToast();
   const patient = useLoadPatient();
 
@@ -38,8 +38,8 @@ function AddMedicalRecipe({
     textReplaceService
       .replaceText({
         base: str,
-        businessUnitId: clinic?.id,
-        userId: user?.id,
+        businessUnitId: userInfo?.data?.unit?.id,
+        userId: userInfo?.data?.id,
         tutorId:
           systemName !== "LiftOne"
             ? patient?.data?.tutor?.id
@@ -94,7 +94,7 @@ function AddMedicalRecipe({
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,
         realizedAt: moment(new Date()),
-        technicianId: user?.id,
+        technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
         setModal(false);
@@ -117,7 +117,7 @@ function AddMedicalRecipe({
           status: "error",
         });
       });
-  }, [patient?.data?.id, recipeId, user?.id, body]);
+  }, [patient?.data?.id, recipeId, userInfo, body]);
 
   const submitUpdate = useCallback(() => {
     setLoading(true);
@@ -127,7 +127,7 @@ function AddMedicalRecipe({
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,
         realizedAt: moment(new Date()),
-        technicianId: user?.id,
+        technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
         queryClient.invalidateQueries({
@@ -148,7 +148,7 @@ function AddMedicalRecipe({
       .finally(() => {
         setLoading(false);
       });
-  }, [updateData, patient?.data?.id, recipeId, user?.id, body]);
+  }, [updateData, patient?.data?.id, recipeId, userInfo, body]);
 
   const submitUpdatePrint = useCallback(() => {
     setLoading(true);
@@ -158,7 +158,7 @@ function AddMedicalRecipe({
         name: allRecipes.find((item) => item.id === recipeId)?.title,
         recipe: body,
         realizedAt: moment(new Date()),
-        technicianId: user?.id,
+        technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
         queryClient.invalidateQueries({
@@ -178,7 +178,7 @@ function AddMedicalRecipe({
           status: "error",
         });
       });
-  }, [updateData, patient?.data?.id, recipeId, user?.id, body]);
+  }, [updateData, patient?.data?.id, recipeId, userInfo, body]);
 
   const removeData = (id) => {
     setLoading(true);

@@ -11,7 +11,7 @@ import { RemotePatient } from "@/data";
 import { container, patientTypes } from "@/container";
 
 // Hooks
-import { useProfile } from "@/OLD/hooks/useProfile";
+import { useMe } from "@/presentation/hooks";
 import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
@@ -34,11 +34,12 @@ export default function Documents({
   const [allDocuments, setAllDocuments] = useState([]);
   const [data, setData] = useState({});
   const [document, setDocument] = useState(false);
-  const { user, clinic } = useProfile();
+  // const { user, clinic } = useProfile();
   const [documentSearch, setDocumentSearch] = useState("");
   const [value, setValue] = useState(false);
 
   const { createToast } = useToast();
+  const userInfo = useMe();
 
   const router = useRouter();
   const patient = useLoadPatient();
@@ -67,15 +68,15 @@ export default function Documents({
     textReplaceService
       .replaceText({
         base: str,
-        businessUnitId: clinic?.id,
-        userId: user?.id,
+        businessUnitId: userInfo?.data?.unit?.id,
+        userId: userInfo?.data?.id,
         tutorId:
           process.env.client == "sancla"
-            ? patient.data?.tutor.id
-            : patient.data?.id,
-        dependentId: patient.data?.id,
+            ? patient?.data?.tutor?.id
+            : patient?.data?.id,
+        dependentId: patient?.data?.id,
         documentId: id,
-        tag: patient.data?.id,
+        tag: patient?.data?.id,
       })
       .then((res) => {
         setBody(res.data.text);
@@ -132,7 +133,7 @@ export default function Documents({
         tag: patient.data?.id,
         type: allDocuments.find((item) => item.id === document?.id)?.title,
         value: document?.type !== "pdf" ? body : value,
-        technicianId: user?.id,
+        technicianId: userInfo?.data?.id,
         realizedAt: moment(new Date()),
         message: ".",
       })
@@ -167,7 +168,7 @@ export default function Documents({
           tag: patient.data?.id,
           type: updateData.timeline_info.type,
           value: body,
-          technicianId: user?.id,
+          technicianId: userInfo?.data?.id,
           realizedAt: moment(new Date()),
         })
         .then((_res) => {
@@ -191,7 +192,7 @@ export default function Documents({
           });
         });
     },
-    [data, patient, updateData?.id, allDocuments, body, user]
+    [data, patient, updateData?.id, allDocuments, body, userInfo]
   );
 
   const removeData = (id) => {
