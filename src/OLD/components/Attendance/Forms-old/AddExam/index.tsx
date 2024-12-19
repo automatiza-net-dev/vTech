@@ -10,7 +10,7 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
-import { useProfile } from "@/OLD/hooks/useProfile";
+import { useMe } from "@/presentation/hooks";
 import { useLoadPatient } from "@/presentation";
 
 // Utils
@@ -50,8 +50,10 @@ export default function LaunchExam({
   const router = useRouter();
   const eventId = router.query.innerpage;
 
-  const { user, clinic } = useProfile();
+  const userInfo = useMe();
   const { createToast } = useToast();
+
+  console.log(userInfo);
 
   const systemName = process.env.clientName;
 
@@ -60,8 +62,8 @@ export default function LaunchExam({
     textReplaceService
       .replaceText({
         base: str,
-        businessUnitId: clinic?.id,
-        userId: user?.id,
+        businessUnitId: userInfo?.data?.unit?.id,
+        userId: userInfo?.data?.id,
         tutorId:
           systemName !== "LiftOne" ? patient.data?.tutor?.id : patient.data?.id,
         dependentId: patient.data?.id,
@@ -167,13 +169,13 @@ export default function LaunchExam({
       patientExamsService
         .launchExam({
           laboratory: selectedExam?.own_laboratory
-            ? clinic.fantasy_name
+            ? userInfo?.data?.unit?.fantasy_name
             : data?.laboratory,
           report: request,
           examId: selectedExam?.id,
           patientId: patient.data?.id,
           scheduleId: eventId,
-          solicitorId: user?.id,
+          solicitorId: userInfo?.data?.id,
           status: report,
         })
         .then((res) => {
@@ -214,7 +216,7 @@ export default function LaunchExam({
           }
         });
     },
-    [selectedExam, clinic, data, request, report, user, fileList]
+    [selectedExam, data, request, report, userInfo, fileList]
   );
 
   const submitUpdatePatientExam = useCallback(
@@ -328,7 +330,7 @@ export default function LaunchExam({
         setFileList={setFileList}
         submitExamLauching={submitExamLauching}
         submitUpdatePatientExam={submitUpdatePatientExam}
-        clinic={clinic}
+        clinic={userInfo?.data?.unit}
         modal={modal}
         update={examPatientData}
         viewArquives={viewArquives}
@@ -451,7 +453,7 @@ export default function LaunchExam({
         submitExamLauching={submitExamLauching}
         submitUpdatePatientExam={submitUpdatePatientExam}
         modal={modal}
-        clinic={clinic}
+        clinic={userInfo?.data?.unit}
         update={examPatientData}
         viewArquives={viewArquives}
         replaceText={replaceText}
