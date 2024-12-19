@@ -48,7 +48,7 @@ const menu = (setFormData, op, permissions) => {
           onClick: () => {
             setFormData({ form: "newActivity", op });
           },
-          label: "Adicionar atividadeeee",
+          label: "Adicionar atividade",
         },
         permissions?.addGainPermission && {
           key: "2",
@@ -75,19 +75,22 @@ const menu = (setFormData, op, permissions) => {
             }),
           label: "informar perda",
         },
-        permissions?.changeStatusAndTechnicianPermission && {
-          key: "4",
-          onClick: () =>
-            setFormData({
-              op,
-              form: "changeStatus",
-              title: "Troca de status da oportunidade",
-              actualField: "Status atual",
-              actualValue: op?.status?.description,
-              selectField: "Novo status",
-            }),
-          label: "Alterar status",
-        },
+        permissions?.changeStatusAndTechnicianPermission &&
+        permissions?.alterStatusOpportunity
+          ? {
+              key: "4",
+              onClick: () =>
+                setFormData({
+                  op,
+                  form: "changeStatus",
+                  title: "Troca de status da oportunidade",
+                  actualField: "Status atual",
+                  actualValue: op?.status?.description,
+                  selectField: "Novo status",
+                }),
+              label: "Alterar status",
+            }
+          : null,
         permissions?.changeStatusAndTechnicianPermission && {
           key: "5",
           onClick: () =>
@@ -130,12 +133,13 @@ function StatusColumns({
 
   const { schedule } = useSchedule(scheduleDetailsVisible);
 
-  const newOpportunityPermission = useUserHasPermission("CRM01");
-  const changeStatusAndTechnicianPermission = useUserHasPermission("CRM02");
   const addGainPermission = useUserHasPermission("CRM04");
   const addLossPermission = useUserHasPermission("CRM05");
   const addActivityPermission = useUserHasPermission("CRM06");
+  const alterStatusPermission = useUserHasPermission("CRM12");
   const viewActivitiesPermission = useUserHasPermission("CRM07");
+  const newOpportunityPermission = useUserHasPermission("CRM01");
+  const changeStatusAndTechnicianPermission = useUserHasPermission("CRM02");
 
   const router = useRouter();
 
@@ -261,6 +265,10 @@ function StatusColumns({
                     addLossPermission:
                       addLossPermission && op?.status?.perda ? true : false,
                     changeStatusAndTechnicianPermission,
+                    alterStatusOpportunity:
+                      alterStatusPermission && !op?.status?.syncSchedules
+                        ? true
+                        : false,
                   })}
                 >
                   <PlusOutline size={15} />

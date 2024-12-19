@@ -1,10 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
+import React, { useEffect, useState, useCallback } from "react";
 
-import { animalServices } from "@/OLD/services/animal.service";
-
-import { FormHandler, Select, Button, useAuthAdmin } from "infinity-forge";
-import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
+import { RemoteCRM } from "@/data";
 
 import {
   Input,
@@ -17,21 +14,28 @@ import {
   Modal,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-const { TextArea } = Input;
-const { Option } = SelectAnt;
-import { Container } from "./styles";
+import { FormHandler, Select, Button, useAuthAdmin } from "infinity-forge";
 
-import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { currencyFormatter } from "@/OLD/components/Budget";
-import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { animalServices } from "@/OLD/services/animal.service";
+
 import {
   FormCreatePatient,
   FormCreateTutor,
   useLoadCampaings,
 } from "@/presentation";
-import { container, TypesAutomatiza } from "@/container";
-import { RemoteCRM } from "@/data";
 import { SelectMidia } from "./select-midia";
+import { container, TypesAutomatiza } from "@/container";
+import { Edit as EditPatient } from "@/OLD/components/Patient/Edit";
+
+import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { currencyFormatter } from "@/OLD/components/Budget";
+import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+
+import { Container } from "./styles";
+
+const { TextArea } = Input;
+const { Option } = SelectAnt;
 
 export default function FormChild({
   op,
@@ -65,6 +69,8 @@ export default function FormChild({
   });
 
   const router = useRouter();
+  const statusChangePermission = useUserHasPermission("CRM12");
+  const editOpportunityPermission = useUserHasPermission("CRM02");
 
   const getAllRaces = useCallback(() => {
     animalServices
@@ -122,9 +128,7 @@ export default function FormChild({
     type === "create" &&
       setData({
         ...data,
-        statusId: crmStatus.find(
-          (st) => st?.description === "Nova Oportunidade"
-        )?.id,
+        statusId: crmStatus.find((st) => st?.tag === "N")?.id,
       });
   }, [type, crmStatus]);
 
@@ -185,11 +189,13 @@ export default function FormChild({
               >
                 {!edit && (
                   <>
-                    {data?.closingDate === "-" && !data?.balance && (
-                      <div>
-                        <Button onClick={() => setEdit(true)} text="Editar" />
-                      </div>
-                    )}
+                    {data?.closingDate === "-" &&
+                      !data?.balance &&
+                      editOpportunityPermission && (
+                        <div>
+                          <Button onClick={() => setEdit(true)} text="Editar" />
+                        </div>
+                      )}
                     <div>
                       <Button onClick={() => router.back()} text="Voltar" />
                     </div>
@@ -408,17 +414,32 @@ export default function FormChild({
           </div>
           <div className="uk-width-1-3 uk-margin-small-right">
             <label>Status</label>
-            <SelectAnt
-              disabled={!footer ? !edit : false}
-              className="uk-width-1-1"
-              value={data?.statusId}
-              onChange={(val) => setData({ ...data, statusId: val })}
-            >
-              {crmStatus.length > 0 &&
-                crmStatus?.map((status) => (
-                  <Option value={status?.id}>{status?.description}</Option>
-                ))}
-            </SelectAnt>
+            {statusChangePermission ? (
+              <SelectAnt
+                disabled={
+                  !op?.status?.syncSchedules ? (!footer ? !edit : true) : true
+                }
+                className="uk-width-1-1"
+                value={data?.statusId}
+                onChange={(val) => setData({ ...data, statusId: val })}
+              >
+                {crmStatus.length > 0 &&
+                  crmStatus?.map((status) => (
+                    <Option value={status?.id}>{status?.description}</Option>
+                  ))}
+              </SelectAnt>
+            ) : (
+              <SelectAnt
+                disabled={true}
+                className="uk-width-1-1"
+                value={data?.statusId}
+              >
+                {crmStatus.length > 0 &&
+                  crmStatus?.map((status) => (
+                    <Option value={status?.id}>{status?.description}</Option>
+                  ))}
+              </SelectAnt>
+            )}
           </div>
           {type === "update" && (
             <div className="uk-flex uk-flex-right">

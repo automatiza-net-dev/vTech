@@ -18,7 +18,7 @@ import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import masks from "@/OLD/utils/masks";
 
-const Opportunities = memo(function Opportunities({
+function Opportunities({
   title = true,
   clients,
   colaborators,
@@ -144,6 +144,6 @@ const Opportunities = memo(function Opportunities({
       </footer>
     </Container>
   );
-});
+};
 
 export default Opportunities;
