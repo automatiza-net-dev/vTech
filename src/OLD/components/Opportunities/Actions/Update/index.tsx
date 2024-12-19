@@ -114,6 +114,7 @@ const Update = memo(function ({
       title="Alterar Oportunidade"
     >
       <FormChild
+        op={opportunity}
         clients={clients}
         colaborators={colaborators}
         crmStatus={crmStatus}
