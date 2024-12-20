@@ -1,31 +1,27 @@
 // @ts-nocheck
-// Core
-import React, { memo, useState, useCallback, useEffect } from "react";
+
+import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
-// Icons
-import { GiConfirmed } from "react-icons/gi";
-import { VscLock, VscUnlock, VscCheckAll, VscBook } from "react-icons/vsc";
+import moment from "moment";
+import { useAuthAdmin } from "infinity-forge";
+import { Tooltip, notification, Modal } from "antd";
 
-// Hooks
-import { useProfile } from "@/OLD/hooks/useProfile";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-
-// Services
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
-// Utils
-import moment from "moment";
-import Masks from "@/OLD/utils/masks";
-
-// Components
-import { Container } from "./styles";
-import { Tooltip, notification, Modal } from "antd";
 import FormChild from "./FormChild";
 import CashierReport from "../CashierReport";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-const Actions = memo(function Actions(casher) {
+import { GiConfirmed } from "react-icons/gi";
+import { VscLock, VscUnlock, VscCheckAll, VscBook } from "react-icons/vsc";
+
+import Masks from "@/OLD/utils/masks";
+
+import { Container } from "./styles";
+
+function Actions(casher) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const [obsVisible, setObsVisible] = useState(false);
@@ -33,7 +29,7 @@ const Actions = memo(function Actions(casher) {
   const [numberInput, setNumberInput] = useState(true);
   const [reportVisible, setReportVisible] = useState(false);
 
-  const { user } = useProfile();
+  const { user } = useAuthAdmin();
 
   const router = useRouter();
   const closeDailyCashierPermission = useUserHasPermission("CAI02");
@@ -57,6 +53,7 @@ const Actions = memo(function Actions(casher) {
         setData({});
         setObsVisible(false);
         setSubmitFunc(null);
+        casher.mutate();
       })
       .catch((err) => {
         setLoading(false);
@@ -88,6 +85,7 @@ const Actions = memo(function Actions(casher) {
         setLoading(false);
         setData({});
         setObsVisible(false);
+        casher.mutate();
       })
       .catch((err) => {
         setLoading(false);
@@ -118,6 +116,7 @@ const Actions = memo(function Actions(casher) {
         setLoading(false);
         setData({});
         setObsVisible(false);
+        casher.mutate();
       })
       .catch((err) => {
         setLoading(false);
@@ -253,6 +252,6 @@ const Actions = memo(function Actions(casher) {
       </Modal>
     </Container>
   );
-});
+}
 
 export default Actions;
