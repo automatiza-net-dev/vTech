@@ -82,6 +82,7 @@ export const DetailsPanel = memo(function DetailsPanel({
             <label>Nº Comprovante / NSU</label>
             <Input
               required={formData?.requiresDocument}
+              type="number"
               onChange={(e) =>
                 setFormData({ ...formData, nsuDocument: e.target.value })
               }

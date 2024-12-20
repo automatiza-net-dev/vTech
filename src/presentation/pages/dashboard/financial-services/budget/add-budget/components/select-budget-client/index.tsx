@@ -48,11 +48,17 @@ export function SelectBudgetClient({
                 hasClientName ? !e.target.checked : e.target.checked
               );
               if (e.target.checked) {
-                setValues((prv) => ({ ...prv, clientId: "", patientId: "" }));
+                setValues((prv) => ({
+                  ...prv,
+                  clientId: "",
+                  patientId: "",
+                  clientName: "",
+                }));
               } else {
                 setValues((prv) => ({
                   ...prv,
-                  patientName: "",
+                  clientName: "",
+                  clientId: "",
                 }));
               }
             }}

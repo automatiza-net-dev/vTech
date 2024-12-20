@@ -84,19 +84,6 @@ function Maintenance() {
                       <div className="uk-margin-right">
                         <strong>{item?.productVariation?.description}</strong>
                       </div>
-                      <div className="uk-margin-left">
-                        <span>Quantidade: {item?.quantity}</span>
-                      </div>
-                      <div className="uk-margin-left">
-                        <span>
-                          Quantidade Agendada: {item?.scheduledQuantity || 0}{" "}
-                        </span>
-                      </div>
-                      <div className="uk-margin-left">
-                        <span>
-                          Quantidade Executada: {item?.quantityExecuted || 0}{" "}
-                        </span>
-                      </div>
                     </div>
                   }
                 >
@@ -115,7 +102,13 @@ function Maintenance() {
               </Collapse>
             ))}
         </section>
-        <footer style={{ marginTop: "5px", display: "flex", justifyContent: "flex-end" }}>
+        <footer
+          style={{
+            marginTop: "5px",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
           <Button onClick={() => router.back()} text="Salvar" />
         </footer>
       </Container>

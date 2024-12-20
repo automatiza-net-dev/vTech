@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { PageWrapper, useTable } from "infinity-forge";
 
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -11,11 +10,9 @@ import { columns, useDailyCashierTableActions } from "./table";
 import * as S from "./styles";
 
 export function DailyCashier() {
-  const router = useRouter();
   const listDailyCashierPermission = usePermission("CAI00");
 
   const { data, isFetching, mutate } = useDailyCashier();
-
   const actions = useDailyCashierTableActions({ mutate }) as any;
 
   const { Table } = useTable({

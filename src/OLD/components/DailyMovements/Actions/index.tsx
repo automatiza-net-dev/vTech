@@ -1,32 +1,25 @@
 // @ts-nocheck
-// Core
 import React, { memo, useCallback, useState } from "react";
 
-// Services
-import { dailyMovementsService } from "@/OLD/services/dailyMovements.service";
-
-// Utils
 import moment from "moment";
 
-// Icons
-import { GiConfirmed } from "react-icons/gi";
-import { VscLock, VscUnlock, VscCheckAll, VscBook } from "react-icons/vsc";
-
-// Hooks
-import { useProfile } from "@/OLD/hooks/useProfile";
+import { useMe } from "@/presentation/hooks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { dailyMovementsService } from "@/OLD/services/dailyMovements.service";
 
-// Components
 import { Container } from "./styles";
 import { Tooltip, notification, Modal } from "antd";
 import FormChild from "../FormChild";
 
-const Actions = memo(function ({ movement, reload, setReload, setReport }) {
+import { GiConfirmed } from "react-icons/gi";
+import { VscLock, VscUnlock, VscCheckAll, VscBook } from "react-icons/vsc";
+
+function Actions ({ movement, reload, setReload, setReport }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const [obsVisible, setObsVisible] = useState(false);
   const [submitFunc, setSubmitFunc] = useState(null);
-  const { user } = useProfile();
+  const userInfo = useMe();
 
   const closeDailyMovementPermission = useUserHasPermission("MOV02");
   const checkDailyMovementPermission = useUserHasPermission("MOV03");
@@ -36,7 +29,7 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
     dailyMovementsService
       .closeDailyMovement(movement?.id, {
         closingDate: moment(new Date()).toISOString(),
-        userId: user?.id,
+        userId: userInfo?.data?.id,
         observations: data?.observations,
       })
       .then((_res) =>
@@ -61,7 +54,7 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
         setReload(!reload);
         setObsVisible(false);
       });
-  }, [data, movement?.id, user?.id]);
+  }, [data, movement?.id, userInfo?.data?.id]);
 
   const reopenDailyMovement = useCallback(() => {
     setLoading(true);
@@ -69,7 +62,7 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
       .reopenDailyMovement(movement?.id, {
         observations: data?.observations,
         reopeningDate: moment(new Date()).toISOString(),
-        userId: user?.id,
+        userId: userInfo?.data?.id,
       })
       .then((res) =>
         notification.success({
@@ -92,7 +85,7 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
         setObsVisible(false);
         setReload(!reload);
       });
-  }, [data, movement?.id, user?.id]);
+  }, [data, movement?.id, userInfo?.data?.id]);
 
   const checkDailyMovement = useCallback(() => {
     setLoading(true);
@@ -100,7 +93,7 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
       .checkDailyMovement(movement?.id, {
         observations: data?.observations,
         checkingDate: moment(new Date()).toISOString(),
-        userId: user?.id,
+        userId: userInfo?.data?.id,
       })
       .then((_res) =>
         notification.success({
@@ -124,7 +117,7 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
         setObsVisible(false);
         setReload(!reload);
       });
-  }, [data, movement?.id, user?.id]);
+  }, [data, movement?.id, userInfo?.data?.id]);
 
   return (
     <Container className="uk-flex uk-flex-around">
@@ -198,6 +191,6 @@ const Actions = memo(function ({ movement, reload, setReload, setReport }) {
       </Modal>
     </Container>
   );
-});
+};
 
 export default Actions;

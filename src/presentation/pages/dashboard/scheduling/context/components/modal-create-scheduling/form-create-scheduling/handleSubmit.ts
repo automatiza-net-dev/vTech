@@ -62,7 +62,7 @@ export function useSubmitSchedule() {
   }
 
   const { createToast } = useToast();
-  const clearCache = useQueryClient(state => state.clearCache)
+  const clearCache = useQueryClient((state) => state.clearCache);
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
   const overbookingPermission = useVerifyPermissions("AGE11");
@@ -76,10 +76,18 @@ export function useSubmitSchedule() {
 
     const meridianEndHour = moment(meridianStartHour)
       .add(Number(data.duration), "minutes")
-      .format("YYYY-MM-DDTHH:mm:ssZ");
+      .format("YYYY-MM-DDTHH:mm:ssZ")
+
+    if (data?.hasServicesStage && data?.executions.length === 0) {
+      return createToast({
+        message:
+          "Selecione um ou mais itens de procedimentos disponíveis ou troque o serviço do agendamento",
+        status: "error",
+      });
+    }
 
     const payload = {
-      items: data?.items,
+      executions: data?.executions,
       endHour: meridianEndHour,
       startHour: meridianStartHour,
       scheduleOriginId: data?.scheduleOriginId
@@ -165,8 +173,8 @@ export function useSubmitSchedule() {
         createToast({ message: "Sucesso!!", status: "success" });
 
         setTimeout(() => {
-         clearCache()
-        }, 1000)
+          clearCache();
+        }, 1000);
 
         setModalPatients(null);
         setCreateSchedulingArgs(null);

@@ -1,5 +1,11 @@
 import moment from "moment";
-import { Input, Select, Textarea, FormHandler, useAuthAdmin } from "infinity-forge";
+import {
+  Input,
+  Select,
+  Textarea,
+  FormHandler,
+  useAuthAdmin,
+} from "infinity-forge";
 
 import { useScheduling } from "@/presentation";
 
@@ -78,7 +84,7 @@ export function FormCreateScheduling() {
         : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
         ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.name]
         : [],
-    items: [],
+    executions: [],
   };
   const users = scheduleUsers?.map((user) => ({
     label: user.name,

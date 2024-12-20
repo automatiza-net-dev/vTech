@@ -39,7 +39,7 @@ const detectClockColor = (date, duration) => {
   return "red";
 };
 
-const menu = (setFormData, op, permissions, renderGain) => {
+const menu = (setFormData, op, permissions) => {
   return (
     <Menu
       items={[
@@ -50,20 +50,19 @@ const menu = (setFormData, op, permissions, renderGain) => {
           },
           label: "Adicionar atividade",
         },
-        renderGain &&
-          permissions?.addGainPermission && {
-            key: "2",
-            onClick: () =>
-              setFormData({
-                op,
-                form: "gain",
-                title: "Ganho oportunidade",
-                currencyField: "Valor do ganho (R$)",
-                selectField: "Motivo Ganho",
-                areaField: "Observações",
-              }),
-            label: "Informar ganho",
-          },
+        permissions?.addGainPermission && {
+          key: "2",
+          onClick: () =>
+            setFormData({
+              op,
+              form: "gain",
+              title: "Ganho oportunidade",
+              currencyField: "Valor do ganho (R$)",
+              selectField: "Motivo Ganho",
+              areaField: "Observações",
+            }),
+          label: "Informar ganho",
+        },
         permissions?.addLossPermission && {
           key: "3",
           onClick: () =>
@@ -76,19 +75,22 @@ const menu = (setFormData, op, permissions, renderGain) => {
             }),
           label: "informar perda",
         },
-        permissions?.changeStatusAndTechnicianPermission && {
-          key: "4",
-          onClick: () =>
-            setFormData({
-              op,
-              form: "changeStatus",
-              title: "Troca de status da oportunidade",
-              actualField: "Status atual",
-              actualValue: op?.status?.description,
-              selectField: "Novo status",
-            }),
-          label: "Alterar status",
-        },
+        permissions?.changeStatusAndTechnicianPermission &&
+        permissions?.alterStatusOpportunity
+          ? {
+              key: "4",
+              onClick: () =>
+                setFormData({
+                  op,
+                  form: "changeStatus",
+                  title: "Troca de status da oportunidade",
+                  actualField: "Status atual",
+                  actualValue: op?.status?.description,
+                  selectField: "Novo status",
+                }),
+              label: "Alterar status",
+            }
+          : null,
         permissions?.changeStatusAndTechnicianPermission && {
           key: "5",
           onClick: () =>
@@ -131,12 +133,13 @@ function StatusColumns({
 
   const { schedule } = useSchedule(scheduleDetailsVisible);
 
-  const newOpportunityPermission = useUserHasPermission("CRM01");
-  const changeStatusAndTechnicianPermission = useUserHasPermission("CRM02");
   const addGainPermission = useUserHasPermission("CRM04");
   const addLossPermission = useUserHasPermission("CRM05");
   const addActivityPermission = useUserHasPermission("CRM06");
+  const alterStatusPermission = useUserHasPermission("CRM12");
   const viewActivitiesPermission = useUserHasPermission("CRM07");
+  const newOpportunityPermission = useUserHasPermission("CRM01");
+  const changeStatusAndTechnicianPermission = useUserHasPermission("CRM02");
 
   const router = useRouter();
 
@@ -166,22 +169,6 @@ function StatusColumns({
         })
       );
     }
-  };
-
-  const renderGain = () => {
-    if (process.env.client !== "liftone" && addGainPermission) {
-      return true;
-    }
-
-    if (
-      process.env.client === "liftone" &&
-      addGainPermission &&
-      column?.title === "Fechado"
-    ) {
-      return true;
-    }
-
-    return false;
   };
 
   useEffect(() => {
@@ -271,17 +258,18 @@ function StatusColumns({
                 <Dropdown
                   trigger="click"
                   placement="bottom"
-                  overlay={menu(
-                    setFormData,
-                    op,
-                    {
-                      addActivityPermission,
-                      addGainPermission,
-                      addLossPermission,
-                      changeStatusAndTechnicianPermission,
-                    },
-                    renderGain()
-                  )}
+                  overlay={menu(setFormData, op, {
+                    addActivityPermission,
+                    addGainPermission:
+                      addGainPermission && op?.status?.ganho ? true : false,
+                    addLossPermission:
+                      addLossPermission && op?.status?.perda ? true : false,
+                    changeStatusAndTechnicianPermission,
+                    alterStatusOpportunity:
+                      alterStatusPermission && !op?.status?.syncSchedules
+                        ? true
+                        : false,
+                  })}
                 >
                   <PlusOutline size={15} />
                 </Dropdown>

@@ -5,5 +5,6 @@ export const CreateTutorForm = styled.div`
 
   .row {
     display: flex;
+    align-items: center;
   }
 `;

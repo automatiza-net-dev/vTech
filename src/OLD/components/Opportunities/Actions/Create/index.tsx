@@ -1,26 +1,24 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 
+import moment from "moment";
+import { AxiosError } from "axios";
+import { PageWrapper, useAuthAdmin } from "infinity-forge";
+
+import { useMe } from "@/presentation";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/OLD/hooks/useAuth";
-import { useMe } from "@/presentation";
+import { useProfile } from "@/OLD/hooks/useProfile";
+import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
 import FormChild from "../../FormChild";
 import { Container } from "../../styles";
 import { notification, Modal } from "antd";
 import { Patient } from "@/OLD/components/Patient";
 import { Tutor } from "@/OLD/components/Tutor";
-import { PageWrapper, useAuthAdmin } from "infinity-forge";
 
-import { opportunitiesService } from "@/OLD/services/opportunities.service";
-
-import { useProfile } from "@/OLD/hooks/useProfile";
-
-import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-
-import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { AxiosError } from "axios";
+import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 export default function Create({
   clients,
@@ -42,6 +40,7 @@ export default function Create({
   async function createOpportunity() {
     const newObj = {
       ...data,
+      castrated: JSON.parse(data?.castrated),
       businessUnitId: clinic?.id,
       contactDate: moment(data?.contactDate).toISOString(),
       value: convertIntlCurrency(data?.value),

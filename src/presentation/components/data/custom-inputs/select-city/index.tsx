@@ -1,6 +1,7 @@
+import { useEffect } from "react";
+
 import { useFormikContext } from "formik";
 import { Select, useLoadCities } from "infinity-forge";
-import { useEffect } from "react";
 
 export function SelectCity() {
   const { values, setFieldValue } = useFormikContext<{ state: string }>();

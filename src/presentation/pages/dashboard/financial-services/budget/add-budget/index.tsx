@@ -118,7 +118,16 @@ export function AddBudgetNew({
   async function handleSubmit(data, _, initialValues) {
     try {
       const formatItemsCart = formatCart(data.cart, data.maxDiscount);
-
+      if (
+        (data?.clientName === "" || !data?.clientName) &&
+        (data?.clientId === "" || !data?.clientId)
+      ) {
+        return createToast({
+          message: "Campo cliente obrigatório",
+          status: "error",
+        });
+      }
+      
       const payload = {
         ...data,
         id: budgetId,

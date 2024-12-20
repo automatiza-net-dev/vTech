@@ -59,8 +59,9 @@ export class RemoteSchedule
 
   async delete(params: domain.DeleteSchedule.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`schedules/${params?.id}`),
-      method: "delete",
+      url: this.makeApiURL.make(`schedules/exclude`),
+      method: "put",
+      body: params,
     });
 
     return response;
