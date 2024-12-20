@@ -6,9 +6,9 @@ import React, { memo, useEffect, useState, useCallback } from "react";
 import { dailyMovementsService } from "@/OLD/services/dailyMovements.service";
 
 // Hooks
-import { useDailyMovementsSearch } from "@/OLD/hooks/useDailyMovements";
-import { useProfile } from "@/OLD/hooks/useProfile";
+import { useMe } from "@/presentation/hooks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useDailyMovementsSearch } from "@/OLD/hooks/useDailyMovements";
 
 // Utils
 import { Columns } from "./Columns";
@@ -24,15 +24,15 @@ import Report from "./DailyMovementReport";
 import AccessDenied from "@/OLD/components/AccessDenied";
 const { Option } = Select;
 
-const DailyMovements = memo(function DailyMovements() {
+function DailyMovements() {
   const [reload, setReload] = useState(false);
   const [filters, setFilters] = useState({ status: "Aberto" });
   const [loading, setLoading] = useState(false);
   const [formatedMovements, setFormatedMovements] = useState([]);
   const [report, setReport] = useState(false);
 
+  const userInfo = useMe();
   const { movements } = useDailyMovementsSearch(filters, reload);
-  const { user } = useProfile();
 
   const createMovimentationPermission = useUserHasPermission("MOV01");
   const listDailyMovPermission = useUserHasPermission("MOV00");
@@ -89,7 +89,7 @@ const DailyMovements = memo(function DailyMovements() {
     setLoading(true);
     dailyMovementsService
       .openDailyMovement({
-        userId: user?.id,
+        userId: userInfo?.data?.id,
         openingDate: moment(new Date()).toISOString(),
       })
       .then(() =>
@@ -108,7 +108,7 @@ const DailyMovements = memo(function DailyMovements() {
         setReload(!reload);
         setLoading(false);
       });
-  }, [user]);
+  }, [userInfo]);
 
   return !listDailyMovPermission || listDailyMovPermission === "loading" ? (
     <AccessDenied loading={listDailyMovPermission} />
@@ -173,6 +173,6 @@ const DailyMovements = memo(function DailyMovements() {
       </Container>
     </PageWrapper>
   );
-});
+}
 
 export default DailyMovements;
