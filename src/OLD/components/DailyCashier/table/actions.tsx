@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import Link from "next/link";
 import { AxiosError } from "axios";
 
@@ -11,15 +12,15 @@ import {
   Modal,
   Button,
   useAuthAdmin,
-  InputDatePicker,
 } from "infinity-forge";
 
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
-import { useMe, usePermission, useSearchDailyMovements } from "@/presentation";
+import { usePermission, useSearchDailyMovements } from "@/presentation";
 
 function CustomAction() {
   const hasDMPermission = usePermission("MOV00");
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -71,7 +72,7 @@ export function useDailyCashierTableActions({
     initialData: {
       userId: user?.user?.id,
       openingDate: moment(new Date()),
-      initialBalance: 0,
+      initialBalance: "0",
     },
     button: { text: "Salvar" },
     isStickyButtons: true,
@@ -79,7 +80,9 @@ export function useDailyCashierTableActions({
       const payload = {
         ...data,
         dailyMovementId: dailyMovements?.[0]?.id,
-        initialBalance: parseFloat(data?.initialBalance.replace(",", ".")),
+        initialBalance: parseFloat(
+          data?.initialBalance.replace(",", ".")
+        ),
       };
 
       try {
@@ -136,7 +139,7 @@ export function useDailyCashierTableActions({
         {
           name: "initialBalance",
           InputComponent: "InputCurrency",
-          label: "Saldo inicial",
+          label: "Saldo inicial (R$):",
         },
       ],
     ],
@@ -145,6 +148,6 @@ export function useDailyCashierTableActions({
   return {
     modalStyles: { maxWidth: 1024 },
     create: createDailyCashierPermission && action,
-    custom: [(props) => <Actions {...props} />],
+    custom: [(props) => <Actions {...props} mutate={mutate} />],
   };
 }
