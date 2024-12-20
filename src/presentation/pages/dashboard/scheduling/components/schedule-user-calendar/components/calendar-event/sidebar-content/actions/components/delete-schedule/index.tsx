@@ -13,22 +13,46 @@ export function DeleteSchedule({ event, onExecuteAction }: ActionSchedule) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { createToast } = useToast();
 
-  async function handleClick() {
+  async function handleClick(ignoreConflict) {
     const scheduleId = event.event.id;
 
-    await container.get<RemoteSchedule>(patientTypes.RemoteSchedule).delete({
-      id: scheduleId,
-      ignoreConflict: false
-    });
+    try {
+      await container.get<RemoteSchedule>(patientTypes.RemoteSchedule).delete({
+        id: scheduleId,
+        ignoreConflict,
+      });
 
-    onExecuteAction();
+      onExecuteAction();
 
-    setConfirmDelete(false);
+      setConfirmDelete(false);
 
-    createToast({
-      message: "Agendamento removido com sucesso!",
-      status: "success",
-    });
+      createToast({
+        message: "Agendamento removido com sucesso!",
+        status: "success",
+      });
+    } catch (err: any) {
+      if (
+        err?.error?.message
+          .split(":")[1]
+          .includes("Deseja excluir mesmo assim?")
+      ) {
+        if (window.confirm(err?.error?.message.split(":")[1])) {
+          handleClick(true);
+        }
+      }
+
+      if (
+        err?.error?.message
+          .split(":")[1]
+          .includes("Este agendamento não pode ser excluído")
+      ) {
+        onExecuteAction();
+        return createToast({
+          message: err?.error?.message.split(":")[1],
+          status: "error",
+        });
+      }
+    }
   }
 
   return (
@@ -53,7 +77,7 @@ export function DeleteSchedule({ event, onExecuteAction }: ActionSchedule) {
           </p>
 
           <div className="actions">
-            <Button text="REMOVER" onClick={handleClick} />
+            <Button text="REMOVER" onClick={() => handleClick(false)} />
             <Button text="CANCELAR" onClick={() => setConfirmDelete(false)} />
           </div>
         </S.ConfirmDelete>
