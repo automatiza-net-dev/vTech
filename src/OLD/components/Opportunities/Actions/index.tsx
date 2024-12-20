@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
@@ -21,7 +21,7 @@ import { BsXCircle } from "react-icons/bs";
 import { BsCheckCircle, BsArrowCounterclockwise } from "react-icons/bs";
 import { AxiosError } from "axios";
 
-const Actions = memo(function ({
+function Actions({
   setReload,
   opportunity,
   clients,
@@ -81,22 +81,6 @@ const Actions = memo(function ({
       );
   }, [opportunity]);
 
-  const renderGain = () => {
-    if (process.env.client !== "liftone" && addGainPermission) {
-      return true;
-    }
-
-    if (
-      process.env.client === "liftone" &&
-      addGainPermission &&
-      opportunity?.status?.description === "Fechado"
-    ) {
-      return true;
-    }
-
-    return false;
-  };
-
   return (
     <Container className="uk-flex uk-flex-around">
       {!opportunity?.balance && (
@@ -113,7 +97,7 @@ const Actions = memo(function ({
               />
             </Tooltip>
           )}
-          {renderGain() && (
+          {addGainPermission && opportunity?.status?.ganho ? (
             <Tooltip title="informar ganho">
               <BsCheckCircle
                 className="custom-cursor"
@@ -129,8 +113,8 @@ const Actions = memo(function ({
                 }
               />
             </Tooltip>
-          )}
-          {addLossPermission && (
+          ) : null}
+          {addLossPermission && opportunity?.status?.perda ? (
             <Tooltip title="informar perda" className="custom-cursor">
               <BsXCircle
                 onClick={() =>
@@ -144,7 +128,7 @@ const Actions = memo(function ({
                 }
               />
             </Tooltip>
-          )}
+          ) : null}
         </>
       )}
       {reopenOpportunityPermission && opportunity?.balance && (
@@ -201,6 +185,6 @@ const Actions = memo(function ({
       />
     </Container>
   );
-});
+}
 
 export default Actions;

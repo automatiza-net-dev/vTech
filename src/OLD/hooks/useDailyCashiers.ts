@@ -14,6 +14,7 @@ export function useDailyCashier() {
     ...params,
     fromOpening: params?.fromOpening ? moment(params?.fromOpening) : "",
     toOpening: params?.toOpening ? moment(params?.toOpening) : "",
+    status: params?.status || "ABERTO",
   };
 
   const hasRequiredKeys = [
@@ -33,8 +34,6 @@ export function useDailyCashier() {
   return useQuery({
     queryKey: ["LoadCashier", JSON.stringify(params)],
     queryFn: fetcher,
-    enabled: !!(params && hasRequiredKeys && router.isReady),
-    enableCache: true,
   });
 }
 
@@ -85,7 +84,7 @@ export const useDailyCasher = (
 
   useEffect(() => {
     fetchData();
-  }, [reload])
+  }, [reload]);
 
   return { cashiers, cashiersLoading: loading, fetchDailyCashiers: fetchData };
 };

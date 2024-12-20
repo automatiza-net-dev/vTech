@@ -18,6 +18,7 @@ export type Tutor = {
   id: string;
   inscription: string;
   name: string;
+  corporateName: string;
   nationality: string;
   profession: {
     id: number;

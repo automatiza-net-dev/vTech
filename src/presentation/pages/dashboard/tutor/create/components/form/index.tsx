@@ -7,8 +7,9 @@ import {
   useToast,
   InputMask,
   FormHandler,
+  InputCpfCnpj,
   InputSwitch,
-  useAuthAdmin
+  useAuthAdmin,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -41,11 +42,9 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   }
 
   const isRegister = origin === "Cadastro";
-  const requiresDocument = isRegister
-    ? unitConfig?.requires_client_document
-      ? true
-      : false
-    : false;
+
+  const requiresDocument =
+    (isRegister && unitConfig?.requires_client_document) || isRegister;
 
   async function handleSuccess(data) {
     const payload = {
@@ -98,12 +97,11 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
             <div>
               <div className="row">
-                <Input name="name" label="Nome*" />
+                <Input name="corporateName" label="Nome / Razão Social*" />
 
-                <InputMask
+                <InputCpfCnpj
                   name="document"
-                  label={requiresDocument ? "CPF*" : "CPF"}
-                  mask="___.___.___-__"
+                  label={requiresDocument ? "cpf/cnpj*" : "cpf/cnpj"}
                 />
 
                 <InputMask name="inscription" label="RG" mask="__.___.___-_" />
@@ -112,14 +110,14 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                   name="birthDate"
                   type="date"
                   label={
-                    isRegister ? "Data de nascimento" : "Data de nascimento"
+                    isRegister ? "Data de nascimento*" : "Data de nascimento"
                   }
                   max={moment().format("YYYY-MM-DD")}
                 />
               </div>
 
               <div className="row">
-                <SelectProfession origin={origin} />
+                <Input name="name" label="Nome Social / Nome Fantasia" />
 
                 <Select
                   label={isRegister ? "Gênero*" : "Gênero"}
@@ -150,20 +148,24 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               </div>
 
               <div className="row">
-                <SelectOrigin />
+                <SelectProfession origin={origin} />
 
-                <Input name="tags" label="Tag" />
+                <SelectOrigin />
+              </div>
+
+              <div className="row">
+                <Input name="tags" label="Tag / Observação" />
+
+                {process.env.client === "liftone" && (
+                  <>
+                    <InputSwitch label="Diabetes" name="diabetes" />
+
+                    <InputSwitch label="Hipertensão" name="hypertension" />
+                  </>
+                )}
               </div>
             </div>
           </div>
-
-          {process.env.client === "liftone" && (
-            <>
-              <InputSwitch label="Diabetes" name="diabetes" />
-
-              <InputSwitch label="Hipertensão" name="hypertension" />
-            </>
-          )}
 
           <div className="file">
             {tutorId && (

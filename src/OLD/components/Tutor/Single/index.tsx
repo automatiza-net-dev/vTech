@@ -1,16 +1,21 @@
 // @ts-nocheck
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { petsService } from "@/OLD/services/patient.service";
-import { useAuth } from "@/OLD/hooks/useAuth";
-import { notification, Table } from "antd";
-import { LoadingSkeleton } from "@/OLD/components/mini-components";
+
 import Link from "next/link";
-import { convertDate } from "@/OLD/utils/convertDate";
-import { AddPatient } from "./AddPatient";
-import { FormCreateTutor, useVerifyPermissions } from "@/presentation";
+import { useRouter } from "next/router";
+import { Button, Modal } from "infinity-forge";
+import { notification, Table } from "antd";
+
+import { useAuth } from "@/OLD/hooks/useAuth";
+import { petsService } from "@/OLD/services/patient.service";
+
 import { Unlink } from "../unlink";
-import { Button } from "infinity-forge";
+import { AddPatient } from "./AddPatient";
+import { LoadingSkeleton } from "@/OLD/components/mini-components";
+import { FormCreateTutor, useVerifyPermissions } from "@/presentation";
+import PatientDetails from "@/presentation/pages/dashboard/paciente/patient-info/patient-info";
+
+import { convertDate } from "@/OLD/utils/convertDate";
 
 export function Single({
   selectedId,
@@ -24,6 +29,8 @@ export function Single({
   const [patients, setPatients] = useState();
   const [photoSrc, setPhotoSrc] = useState(false);
   const [reload, setReload] = useState(false);
+  const [patientDetailsOpen, setPatientDetailsOpen] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState(false);
 
   const router = useRouter();
   const hasPermission = useVerifyPermissions("PET04");
@@ -88,9 +95,14 @@ export function Single({
                     />
                   )}
                 </div>
-                <Link href={`/dashboard/paciente/visualizar/${patient?.id}`}>
-                  <div>{patient?.name}</div>
-                </Link>
+                <a
+                  onClick={() => {
+                    setSelectedPatientId(patient?.id);
+                    setPatientDetailsOpen(true);
+                  }}
+                >
+                  {patient?.name}
+                </a>
               </div>
             ),
             gender: patient?.gender,
@@ -259,7 +271,7 @@ export function Single({
                   : convertDate(tutor?.birth_date)}
               </span>
               <span>
-                CPF:{" "}
+                CPF/CNPJ:{" "}
                 {tutor?.tutor?.document === ""
                   ? "Nenhum documento cadastrado"
                   : tutor?.tutor?.document}
@@ -270,6 +282,9 @@ export function Single({
                   ? "Nenhum documento cadastrado"
                   : tutor?.tutor?.inscription}
               </span>
+
+              {tutor?.gender && <span>Gênero: {tutor?.gender}</span>}
+
               <span>
                 Profissão:{" "}
                 {tutor?.tutor?.profession &&
@@ -350,6 +365,17 @@ export function Single({
           <Table columns={columns} dataSource={patients} />
         </>
       )}
+      <Modal
+        open={patientDetailsOpen}
+        onClose={() => setPatientDetailsOpen(false)}
+        styles={{ width: '1100px' }}
+        children={
+          <PatientDetails
+            selectedId={selectedPatientId}
+            setVisible={setPatientDetailsOpen}
+          />
+        }
+      />
     </div>
   );
 }

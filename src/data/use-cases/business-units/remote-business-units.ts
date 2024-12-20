@@ -10,7 +10,8 @@ export class RemoteBusinessUnits
   implements
     domain.SwapUnit,
     domain.LoadAllBusinessUnits,
-    domain.LoadAllBusinessUsers
+    domain.LoadAllBusinessUsers,
+    domain.LoadAllStates
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -67,5 +68,14 @@ export class RemoteBusinessUnits
     });
 
     return response as { id: string; identification: string; group: string }[];
+  }
+
+  async loadAllStates() {
+    const response = this.httpClient.request({
+      url: this.makeApiURL.make("business-units/states"),
+      method: "get",
+    });
+
+    return response;
   }
 }
