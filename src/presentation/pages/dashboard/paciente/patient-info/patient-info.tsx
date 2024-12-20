@@ -1,22 +1,23 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { DateToDDMMYYYY, useLoadPatient } from "@/presentation";
-import { Button, PageWrapper, Accordion } from "infinity-forge";
-import { petsService } from "@/OLD/services/patient.service";
-import { notification, Table, Modal, Tooltip, Tag } from "antd";
-import { LoadingSkeleton } from "@/OLD/components/mini-components";
-import { convertDate } from "@/OLD/utils/convertDate";
-import TutorVincForm from "./components/tutor-vinc-form";
-import { VaccinesPanel } from "./components";
 
-// Utils
 import moment from "moment";
+import { useRouter } from "next/router";
+import { Button, PageWrapper, Accordion } from "infinity-forge";
+import { notification, Table, Modal, Tooltip, Tag } from "antd";
 
-// Icons
-import { GiConfirmed } from "react-icons/gi";
-import { FormCreatePatient, useVerifyPermissions } from "@/presentation";
+import { petsService } from "@/OLD/services/patient.service";
+
+import { VaccinesPanel } from "./components";
 import { Unlink } from "@/OLD/components/Tutor/unlink";
+import TutorVincForm from "./components/tutor-vinc-form";
+import { DateToDDMMYYYY, useLoadPatient } from "@/presentation";
+import { LoadingSkeleton } from "@/OLD/components/mini-components";
+import { FormCreatePatient, useVerifyPermissions } from "@/presentation";
+
+import { convertDate } from "@/OLD/utils/convertDate";
+
+import { GiConfirmed } from "react-icons/gi";
 
 function Single({ selectedId, setVisible }) {
   const patientData = useLoadPatient(selectedId);
@@ -116,6 +117,7 @@ function Single({ selectedId, setVisible }) {
         style={{
           gap: "10px",
           display: "flex",
+          padding: '10px',
           justifyContent: "flex-end",
         }}
       >
