@@ -53,8 +53,6 @@ export default function LaunchExam({
   const userInfo = useMe();
   const { createToast } = useToast();
 
-  console.log(userInfo);
-
   const systemName = process.env.clientName;
 
   const replaceText = (str, setState) => {
