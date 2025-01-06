@@ -11,6 +11,7 @@ import { Button } from "infinity-forge";
 import { notification, Modal } from "antd";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
+import DownTitles from "../../Titles/DownTitles";
 
 const ButtonsPanel = memo(function ButtonsPanel({
   setReload,
@@ -18,6 +19,7 @@ const ButtonsPanel = memo(function ButtonsPanel({
   setFilters,
 }) {
   const [loading, setLoading] = useState(false);
+  const [showBaixaModal, setShowBaixaModal] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -118,12 +120,23 @@ const ButtonsPanel = memo(function ButtonsPanel({
       >
         <p>Deseja realizar a conferência?</p>
       </Modal>
+
+      <Modal
+        title="Baixa de títulos"
+        visible={showBaixaModal}
+        width={1200}
+        onCancel={() => setShowBaixaModal(false)}
+        footer={null}
+      >
+        <DownTitles setVisible={setShowBaixaModal} setReload={setReload} />
+      </Modal>
+
       <section className="uk-flex uk-flex-around uk-margin-bottom">
         {downTitlesPermission && (
           <Button
             onClick={() => {
               filterTitles();
-              router.push("/dashboard/titulos/baixa");
+              setShowBaixaModal(true);
             }}
             text="Baixar"
           />
