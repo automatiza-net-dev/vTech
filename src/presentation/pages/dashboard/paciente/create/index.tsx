@@ -118,7 +118,7 @@ function Form({
         onSucess={handleSubmit}
       >
         <h2 className="font-22-bold">
-          {patientId ? `Editar - ${data?.name}` : "Novo Pet"}
+          {patientId ? `Editar - ${data?.name} (RG: ${data?.tag})` : "Novo Pet"}
         </h2>
 
         <div className="row-main">
