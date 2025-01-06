@@ -79,10 +79,9 @@ const RemoveBillPayment = memo(function ({
   }, [data, editExpirationDate]);
 
   return (
-    <div className="uk-flex uk-flex-right uk-margin-bottom">
+    <div className="uk-flex uk-flex-right uk-margin-bottom" style={{ gap: '10px' }}>
       {updateExpirationDatePermission && (
         <Button
-          classCallback="uk-margin-right"
           onClick={() => updateBillExpirationDate()}
           text={
             !editExpirationDate
