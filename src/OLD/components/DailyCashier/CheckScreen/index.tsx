@@ -25,7 +25,7 @@ import { checkingCashierColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 
-const CheckScreen = memo(function CheckScreen() {
+function CheckScreen() {
   const [formattedPayments, setFormattedPayments] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -282,6 +282,6 @@ const CheckScreen = memo(function CheckScreen() {
       </Modal>
     </Container>
   );
-});
+};
 
 export default CheckScreen;
