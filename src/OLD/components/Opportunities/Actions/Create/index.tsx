@@ -38,9 +38,10 @@ export default function Create({
   const router = useRouter();
 
   async function createOpportunity() {
+    console.log(data?.castrated);
     const newObj = {
       ...data,
-      castrated: JSON.parse(data?.castrated),
+      castrated: data?.castrated ? JSON.parse(data?.castrated) : "false",
       businessUnitId: clinic?.id,
       contactDate: moment(data?.contactDate).toISOString(),
       value: convertIntlCurrency(data?.value),

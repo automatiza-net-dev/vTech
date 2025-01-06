@@ -36,7 +36,7 @@ export function DailyCashier() {
           name: "tag",
           InputComponent: "Input",
           type: "text",
-          label: "Tag",
+          label: "Cod.",
         },
         {
           name: "status",
