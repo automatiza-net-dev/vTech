@@ -1,4 +1,9 @@
+import { useState } from "react";
+
+import moment from "moment";
 import { Error, useQueryClient } from "infinity-forge";
+
+import { useLoadSynchedTreatmentsItems } from "@/presentation";
 
 import { Event, ScheduleUser } from "@/domain";
 import { DateToYYYYMMDD, useScheduling } from "@/presentation";
@@ -34,6 +39,11 @@ export function Actions({
   scheduleUser: ScheduleUser;
   refetchKeyWeekCalendar?: string;
 }) {
+  const [treatmentItensOpen, setTreatmentItensOpen] = useState(false);
+  const [synchedItemsFilter, setSynchedItemsFilter] = useState({});
+
+  const synchedItems = useLoadSynchedTreatmentsItems(synchedItemsFilter);
+
   const refetch = useQueryClient((state) => state.refetch);
   const selectedDate = useScheduling((state) => state.selectedDate);
   const listCancelledEvents = useScheduling(
@@ -85,7 +95,40 @@ export function Actions({
             return (
               <span key={key}>
                 {item?.icon}
-                <span>{item?.text}</span>
+                <span>
+                  {item?.text === "Procedimento" && (
+                    <>
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          setTreatmentItensOpen((prv) => !prv);
+                          setSynchedItemsFilter({ eventId: event?.event?.id });
+                        }}
+                      >
+                        {item?.text} - Mostrar itens tratamento
+                      </span>
+
+                      {treatmentItensOpen && synchedItems?.data && (
+                        <div>
+                          {synchedItems?.data?.map(({ executions }) => (
+                            <span>
+                              - {executions?.productDescription} -{" "}
+                              {executions?.productivityItemdescription}
+                              {executions?.executionDate
+                                ? ` - executado em: ${moment(
+                                    executions?.executionDate
+                                  ).format("DD/MM/YYYY - HH:mm")}`
+                                : ""}
+                              {executions?.executionUserName
+                                ? `por ${executions?.executionUserName}`
+                                : ""}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </span>
               </span>
             );
           })}

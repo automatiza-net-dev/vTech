@@ -20,7 +20,8 @@ export class RemoteSchedule
     domain.DeleteSchedule,
     domain.LoadSyncableScheduleExecutions,
     domain.LoadAllReturnableEvents,
-    domain.LoadScheduleIdMock
+    domain.LoadScheduleIdMock,
+    domain.LoadAllSynchedTreatmentItems
 {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
@@ -169,5 +170,18 @@ export class RemoteSchedule
     });
 
     return response as domain.LoadScheduleIdMock.Model;
+  }
+
+  async loadSynchedTreatmentItems(
+    params: domain.LoadSynchedTreatmentItems.Params
+  ) {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make(
+        `treatments/schedules-treatment-executions/${params.eventId}`
+      ),
+      method: "get",
+    });
+
+    return response as domain.LoadSynchedTreatmentItems.Model;
   }
 }

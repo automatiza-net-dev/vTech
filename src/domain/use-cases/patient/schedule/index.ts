@@ -22,3 +22,4 @@ export * from "./load-all-schedulling-to-movement";
 export * from "./load-all-schedule-service-groups";
 export * from "./load-returnables-schedule-patient";
 export * from "./load-syncable-schedule-executions";
+export * from "./load-all-synched-treatment-items";
