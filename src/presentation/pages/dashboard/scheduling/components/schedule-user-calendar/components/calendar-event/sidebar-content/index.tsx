@@ -60,7 +60,6 @@ export function SideBarContent({
           scheduleUser={scheduleUser}
           refetchKeyWeekCalendar={refetchKeyWeekCalendar}
         />
-
         <SidebarTabs event={event} />
       </S.SideBarContent>
     </Error>

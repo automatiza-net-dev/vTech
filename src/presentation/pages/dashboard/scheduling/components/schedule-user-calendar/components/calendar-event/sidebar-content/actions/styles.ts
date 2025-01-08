@@ -90,4 +90,8 @@ export const Actions = styled.div`
       }
     }
   }
+
+  h2 {
+    font-size: 15px;
+  }
 `;

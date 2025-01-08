@@ -131,7 +131,6 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
             })}
           </div>
         </div>
-
         <div className="bottom">
           {Object.keys(actions).map((key) => {
             const item = actions[key];
