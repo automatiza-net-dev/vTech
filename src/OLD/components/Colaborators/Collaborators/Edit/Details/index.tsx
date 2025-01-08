@@ -98,11 +98,12 @@ function EditColaborator() {
     setLoading(false);
     delete data.roles;
 
-    data.phone
-      .replace("(", "")
-      .replace(")", "")
-      .replace("-", "")
-      .replace("-", "");
+    data?.phone &&
+      data.phone
+        .replace("(", "")
+        .replace(")", "")
+        .replace("-", "")
+        .replace("-", "");
 
     data?.document?.replaceAll(".", "").replace("-", "");
 
