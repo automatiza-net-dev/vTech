@@ -97,12 +97,13 @@ function EditColaborator() {
   const submitUpdate = useCallback(() => {
     setLoading(false);
     delete data.roles;
-
-    data.phone
-      .replace("(", "")
-      .replace(")", "")
-      .replace("-", "")
-      .replace("-", "");
+    
+    data?.phone &&
+      data.phone
+        .replace("(", "")
+        .replace(")", "")
+        .replace("-", "")
+        .replace("-", "");
 
     data?.document?.replaceAll(".", "").replace("-", "");
 
@@ -320,7 +321,12 @@ function EditColaborator() {
           </div>
         </Container>
         <footer
-          style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "flex-end",
+            marginTop: "10px",
+          }}
         >
           <Button loading={loading} type="submit" text="Salvar" />
           <Button type="button" onClick={() => router.back()} text="Voltar" />
