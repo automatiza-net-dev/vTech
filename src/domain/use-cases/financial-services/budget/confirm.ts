@@ -6,6 +6,7 @@ export type ConfirmBudget = {
 
 export namespace ConfirmBudget {
   export type Params = {
+    financialResponsibleId: User['id'];
     id: Budget["id"];
     type: "TOTAL";
     notConfirmedItems: [];

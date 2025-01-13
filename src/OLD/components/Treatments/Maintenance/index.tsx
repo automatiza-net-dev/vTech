@@ -1,6 +1,5 @@
 // @ts-nocheck
 import React, { memo, useState } from "react";
-import { useRouter } from "next/router";
 
 import { useTreatment } from "@/OLD/hooks/useTreatment";
 import { useShowBill } from "@/OLD/hooks/useBills";
@@ -13,12 +12,10 @@ const { Panel } = Collapse;
 
 import moment from "moment";
 
-function Maintenance() {
+function Maintenance({ treatmentId, close }) {
   const [reload, setReload] = useState(false);
-
-  const router = useRouter();
-
-  const { treatment } = useTreatment(router.query.id, reload);
+  
+  const { treatment } = useTreatment(treatmentId, reload);
 
   return (
     <PageWrapper title="Tratamentos">
@@ -109,7 +106,7 @@ function Maintenance() {
             justifyContent: "flex-end",
           }}
         >
-          <Button onClick={() => router.back()} text="Salvar" />
+          <Button onClick={() => close()} text="Salvar" />
         </footer>
       </Container>
     </PageWrapper>

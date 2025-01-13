@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { useFormikContext } from "formik";
 
+import { Tutor } from "@/domain";
+
 import {
   Icon,
   Input,
@@ -18,7 +20,13 @@ import { FormData } from "./interfaces";
 import { AddBudgetNew } from "@/presentation";
 import { budgetStatusFormatter } from "@/OLD/components/Budget";
 
-export function BudgetsList({ hasOpenedBudget }: { hasOpenedBudget: boolean }) {
+export function BudgetsList({
+  hasOpenedBudget,
+  tutors,
+}: {
+  hasOpenedBudget: boolean;
+  tutors?: Tutor[];
+}) {
   const [open, setOpen] = useState(false);
 
   const { data, isFetching } = useLoadAllReasons("OR");
@@ -110,14 +118,31 @@ export function BudgetsList({ hasOpenedBudget }: { hasOpenedBudget: boolean }) {
                     setFieldValue(`budgets[${index}].checked`, !budget.checked);
                   }}
                   style={{
-                    height: 30,
-                    width: 30,
-                    border: "1px solid #000",
-                    backgroundColor: budget.checked ? "#000" : "#fff",
+                    height: "30px",
+                    width: "30px",
+
+                    cursor: "pointer",
                   }}
-                ></div>
+                >
+                  <input
+                    type="checkbox"
+                    checked={budget?.checked}
+                    style={{ height: "30px" }}
+                  />
+                </div>
               )}
             </div>
+            {tutors && hasOpenedBudget && (
+              <Select
+                label="Responsável Financeiro"
+                name={pathName + `.financialResponsibleId`}
+                onlyOneValue
+                options={tutors?.map((tutor) => ({
+                  label: tutor?.name,
+                  value: tutor?.id,
+                }))}
+              />
+            )}
 
             {showObservations && (
               <div className="form_budget">

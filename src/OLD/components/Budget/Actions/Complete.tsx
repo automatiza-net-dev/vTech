@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Button, Checkbox, DatePicker, Input, Select, Table } from "antd";
+import { Button, Checkbox, DatePicker, Input, Table } from "antd";
 import moment from "moment";
 import * as React from "react";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import { currencyFormatter } from "..";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { useCompleteBudget, useConfirmBudget } from "@/OLD/hooks/useBudgets";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
+import { useLoadAllPatientTutor } from "@/presentation/hooks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
@@ -15,7 +16,13 @@ import Negotiation from "@/OLD/components/Budget/Negotiation";
 import { Modal } from "infinity-forge";
 
 import { useDictionary } from "@/presentation";
-import { useToast, Tooltip, LoaderCircle } from "infinity-forge";
+import {
+  useToast,
+  Tooltip,
+  LoaderCircle,
+  Select,
+  FormHandler,
+} from "infinity-forge";
 import {
   financialServicesContainer,
   financialServicesTypes,
@@ -84,6 +91,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
   const [internalObservation, setInternalObservation] =
     React.useState("Sem observações");
 
+  const tutors = useLoadAllPatientTutor({});
   const { createToast } = useToast();
   const { data, isLoading: loadingBudget } = useCompleteBudget(
     budget.id,
@@ -434,10 +442,10 @@ export default function CompleteBudget({ budget, setReload = false }) {
 
           <div className="uk-flex">
             <div className="uk-width-1-2 uk-margin-small-right">
-              <label>Hora</label>
+              <label>Data</label>
               <DatePicker
                 showTime
-                format="HH:mm DD/MM/YYYY"
+                format="DD/MM/YYYY HH:mm"
                 style={{ width: "100%" }}
                 value={
                   formData?.finishedAt ? moment(formData.finishedAt) : null
@@ -450,47 +458,73 @@ export default function CompleteBudget({ budget, setReload = false }) {
                 }}
               />
             </div>
-            <div className="uk-width-1-2">
-              <label>Tipo</label>
-              <Select
-                placeholder="Tipo"
-                value={formData?.type}
-                onChange={(value) =>
-                  setFormData((prevState) => ({
-                    ...prevState,
-                    type: value,
-                  }))
-                }
-                style={{ width: "100%" }}
-                options={[
-                  { label: "Total", value: "TOTAL" },
-                  { label: "Parcial", value: "PARCIAL" },
-                ]}
-              />
+            <div style={{ width: "100%" }}>
+              <FormHandler
+                initialData={{ type: formData?.type }}
+                onChangeForm={{
+                  callbackResult: (payload) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ...payload,
+                    }));
+                  },
+                }}
+              >
+                <div style={{ display: "flex", width: "100%", gap: '10px' }}>
+                  <div style={{ width: "100%" }}>
+                    <Select
+                      name="type"
+                      label="tipo"
+                      onlyOneValue
+                      options={[
+                        { label: "Total", value: "TOTAL" },
+                        { label: "Parcial", value: "PARCIAL" },
+                      ]}
+                    />
+                  </div>
+                  {tutors?.data && (
+                    <div style={{ width: "100%" }}>
+                      <Select
+                        name="financialResponsibleId"
+                        label="Responsável Financeiro"
+                        onlyOneValue
+                        options={tutors?.data?.map((tutor) => ({
+                          value: tutor?.id,
+                          label: tutor?.name,
+                        }))}
+                      />
+                    </div>
+                  )}
+                </div>
+              </FormHandler>
             </div>
           </div>
 
           {formData?.type === "PARCIAL" && (
             <>
-              <div className="uk-width-1-1">
-                <label>Motivo</label>
-                <Select
-                  placeholder="Motivo"
-                  value={formData?.reasonId}
-                  onChange={(value) =>
-                    setFormData((prevState) => ({
-                      ...prevState,
-                      reasonId: value,
-                    }))
-                  }
-                  style={{ width: "100%" }}
-                  options={reasons?.map((reason) => ({
-                    label: reason.reason,
-                    value: reason.id,
-                  }))}
-                />
+              <div>
+                <FormHandler
+                  initialData={{ reasonId: formData?.reasonId }}
+                  onChangeForm={{
+                    callbackResult: (payload) => {
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        reasonId: payload?.reasonId,
+                      }));
+                    },
+                  }}
+                >
+                  <Select
+                    name="reasonId"
+                    onlyOneValue
+                    label="Motivo"
+                    options={reasons?.map((reason) => ({
+                      label: reason.reason,
+                      value: reason.id,
+                    }))}
+                  />
+                </FormHandler>
               </div>
-
               <div className="uk-width-1-1">
                 <label>Observação</label>
                 <Input.TextArea
