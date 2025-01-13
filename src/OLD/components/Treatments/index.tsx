@@ -43,7 +43,7 @@ const Treatments = memo(function Treatments() {
   return !listTreatmentsPermission || listTreatmentsPermission === "loading" ? (
     <AccessDenied loading={listTreatmentsPermission} />
   ) : (
-    <PageWrapper title="Tratamentos">
+    <PageWrapper title="Tratamento">
       <Container>
         <Filters filters={filters} setFilters={setFilters} />
         <hr />

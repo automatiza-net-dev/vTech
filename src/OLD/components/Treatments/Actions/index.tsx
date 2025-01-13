@@ -1,16 +1,24 @@
 // @ts-nocheck
-import React, { memo } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
+
+import { Modal } from "infinity-forge";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Tooltip } from "antd";
+import TreatmentsMaintenance from "@/OLD/components/Treatments/Maintenance";
+
+import { IoIosTimer } from "react-icons/io";
+import { GrHostMaintenance } from "react-icons/gr";
+
 import { Container } from "./styles";
 
-import { GrHostMaintenance } from "react-icons/gr";
-import { IoIosTimer } from "react-icons/io";
+function Actions({ treatment }) {
+  const [treatmentsMaintenanceOpen, setTreatmentsMaintenanceOpen] =
+    useState(false);
+  const [treatmentId, setTreatmentId] = useState("");
 
-const Actions = memo(function Actions({ treatment }) {
   const router = useRouter();
 
   const dayExecutionsPermission = useUserHasPermission("TRA02");
@@ -21,9 +29,10 @@ const Actions = memo(function Actions({ treatment }) {
         <GrHostMaintenance
           className="custom-icon"
           size={15}
-          onClick={() =>
-            router.push(`/dashboard/tratamentos/agendamento/${treatment?.id}`)
-          }
+          onClick={() => {
+            setTreatmentId(treatment?.id);
+            setTreatmentsMaintenanceOpen(true);
+          }}
         />
       </Tooltip>
       {dayExecutionsPermission && (
@@ -39,8 +48,21 @@ const Actions = memo(function Actions({ treatment }) {
           />
         </Tooltip>
       )}
+      <Modal
+        styles={{ width: '1200px', padding: '10px' }}
+        open={treatmentsMaintenanceOpen}
+        onClose={() => {
+          setTreatmentsMaintenanceOpen(false);
+        }}
+        children={
+          <TreatmentsMaintenance
+            treatmentId={treatmentId}
+            close={() => setTreatmentsMaintenanceOpen(false)}
+          />
+        }
+      />
     </Container>
   );
-});
+}
 
 export default Actions;

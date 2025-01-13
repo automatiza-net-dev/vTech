@@ -1,7 +1,10 @@
 import { useState } from "react";
 
 import { Negotiation } from "@/domain";
-import { useLoadOpenNegotiations } from "@/presentation";
+import {
+  useLoadOpenNegotiations,
+  useLoadAllPatientTutor,
+} from "@/presentation";
 
 import { NegotiationCard } from "./negotiation-card";
 
@@ -12,12 +15,15 @@ export function Negotiations() {
 
   const { data, isFetching } = useLoadOpenNegotiations();
 
+  const tutors = useLoadAllPatientTutor();
+
   return (
     <S.Negotiations>
       <div className="list">
         {data &&
           data.map((item) => (
             <NegotiationCard
+              tutors={tutors?.data}
               key={item.id}
               isFetching={isFetching}
               negotiation={negotiation}

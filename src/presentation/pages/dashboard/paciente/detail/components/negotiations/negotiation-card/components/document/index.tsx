@@ -15,12 +15,23 @@ export function Document(props: IDocument) {
 
   return (
     <S.Document className="document">
-      {props?.documentTemplate?.description}
-
+      <div>{props?.documentTemplate?.description}</div>
       <div>
-        {props.printUser?.name && <h4>{props.printUser?.name}</h4>}
+        {props?.generationUser?.name} -{" "}
+        {moment(props?.created_at).format("DD/MM/YYYY - HH:mm")}h
+      </div>
+      <div style={{ justifyContent: "right" }}>
         <span>
-          {moment(props?.printed_at).locale("pt-br").format("DD/MM/YYYY HH:mm")}
+          {props?.printed_at ? (
+            <>
+              Impresso por {props.printUser?.name} em <br />
+              {moment(props?.printed_at)
+                .locale("pt-br")
+                .format("DD/MM/YYYY HH:mm")}
+            </>
+          ) : (
+            "Documento não impresso"
+          )}
         </span>
 
         <Print
@@ -45,11 +56,7 @@ export function Document(props: IDocument) {
           <Button
             className={props?.printed_at ? "printed" : ""}
             type="button"
-            svg={
-              props?.printUser || props.printUser?.name
-                ? "IconPrint"
-                : undefined
-            }
+            svg={"IconPrint"}
             text="Imprimir"
           />
         </Print>

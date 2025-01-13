@@ -4,12 +4,9 @@ export const ItemsExecutions = styled.div`
   width: 100%;
   display: grid;
   align-items: center;
-  gap: 30px;
-  grid-template-columns: 300px max-content;
-
-  & + & {
-    margin-top: 10px;
-  }
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-left: 10px;
+  text-align: center;
 
   .title {
     display: flex;

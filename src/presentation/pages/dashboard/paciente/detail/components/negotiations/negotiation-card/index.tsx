@@ -60,7 +60,10 @@ export function NegotiationCard(props: NegotiationCardProps) {
             }
           >
             <div className="budgets">
-              <BudgetsList hasOpenedBudget={hasOpenedBudget} />
+              <BudgetsList
+                hasOpenedBudget={hasOpenedBudget}
+                tutors={props?.tutors}
+              />
             </div>
           </FormHandler>
         )}
@@ -86,6 +89,7 @@ export function NegotiationCard(props: NegotiationCardProps) {
         <div className="list">
           <div className="head">
             <h3>Documentos</h3>
+            <h3>Gerado por</h3>
             <h3 className="dados">Dados impressão</h3>
           </div>
 
@@ -102,16 +106,24 @@ export function NegotiationCard(props: NegotiationCardProps) {
           <div className="list">
             <div className="head">
               <h3>Itens e Execuções</h3>
-              <div></div>
+              <h3>Dados Agendamento</h3>
+              <h3>Dados Execução</h3>
             </div>
-
             <div className="body">
               {treatments.map((treatment) =>
-                treatment?.executions.map((execution) => (
-                  <ItemsExecutions
-                    execution={execution}
-                    key={"treatment-card" + execution?.schedule_id}
-                  />
+                treatment?.items.map((item, i) => (
+                  <div
+                    className="executions-box"
+                    key={item?.description + treatment?.id + i}
+                  >
+                    <h3>{item?.description}</h3>
+                    {item?.executions?.map((execution) => (
+                      <ItemsExecutions
+                        execution={execution}
+                        key={"treatment-card" + execution?.schedule_id}
+                      />
+                    ))}
+                  </div>
                 ))
               )}
             </div>

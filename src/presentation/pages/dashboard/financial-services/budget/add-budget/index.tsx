@@ -127,7 +127,14 @@ export function AddBudgetNew({
           status: "error",
         });
       }
-      
+
+      if (data?.reviewerId === "" || !data?.reviewerId) {
+        return createToast({
+          message: "Campo avaliador obrigatório",
+          status: "error",
+        });
+      }
+
       const payload = {
         ...data,
         id: budgetId,
