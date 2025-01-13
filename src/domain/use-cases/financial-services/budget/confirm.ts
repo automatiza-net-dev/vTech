@@ -1,3 +1,4 @@
+import { User } from '@/domain';
 import { Budget } from "./entities";
 
 export type ConfirmBudget = {
