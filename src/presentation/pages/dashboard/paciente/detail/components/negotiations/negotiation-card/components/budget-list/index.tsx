@@ -132,39 +132,41 @@ export function BudgetsList({
                 </div>
               )}
             </div>
-            {tutors && hasOpenedBudget && (
-              <Select
-                label="Responsável Financeiro"
-                name={pathName + `.financialResponsibleId`}
-                onlyOneValue
-                options={tutors?.map((tutor) => ({
-                  label: tutor?.name,
-                  value: tutor?.id,
-                }))}
-              />
-            )}
 
-            {showObservations && (
-              <div className="form_budget">
-                <Select
-                  onlyOneValue
-                  label="Motivo"
-                  loading={isFetching}
-                  name={pathName + `.motivo`}
-                  options={
-                    data?.map((option) => ({
-                      label: option.reason,
-                      value: option.id,
-                    })) || []
-                  }
-                />
-
-                <Input name={pathName + `.observacao`} label="Observação" />
-              </div>
-            )}
             <Modal open={open} onClose={() => setOpen(false)}>
               {open && <AddBudgetNew budgetId={budget.id} setModal={setOpen} />}
             </Modal>
+            {showObservations && (
+              <div>
+                {tutors && (
+                  <Select
+                    label="Responsável Financeiro"
+                    name={pathName + `.financialResponsibleId`}
+                    onlyOneValue
+                    options={tutors?.map((tutor) => ({
+                      label: tutor?.name,
+                      value: tutor?.id,
+                    }))}
+                  />
+                )}
+                <div className="form_budget">
+                  <Select
+                    onlyOneValue
+                    label="Motivo"
+                    loading={isFetching}
+                    name={pathName + `.motivo`}
+                    options={
+                      data?.map((option) => ({
+                        label: option.reason,
+                        value: option.id,
+                      })) || []
+                    }
+                  />
+
+                  <Input name={pathName + `.observacao`} label="Observação" />
+                </div>
+              </div>
+            )}
           </div>
         );
       })}

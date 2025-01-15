@@ -27,7 +27,7 @@ export function ItemsExecutions({ execution }) {
       <div>
         <span className="font-14-regular">
           {execution?.schedule_date
-            ? moment(execution?.schedule_date).format("DD/MM/YYYY - HH:mm")
+            ? `${moment(execution?.schedule_date, "YYYY-MM-DD[T]HH:mm:ss").format("DD/MM/YYYY - HH:mm")}h`
             : "Não agendado"}
         </span>
       </div>
@@ -35,10 +35,10 @@ export function ItemsExecutions({ execution }) {
         <span className="font-14-regular">
           {execution?.execution_date ? (
             <>
-              Executado por {execution?.user} em
+              Executado por {execution?.user?.name} em
               {moment(execution?.execution_date).format(
                 "DD/MM/YYYY - HH:mm"
-              )}{" "}
+              )}h{" "}
             </>
           ) : (
             "Não executado"

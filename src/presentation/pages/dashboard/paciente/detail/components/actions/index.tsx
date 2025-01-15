@@ -37,6 +37,7 @@ export function ActionsPatient() {
           {schedule?.data &&
             schedule?.data?.serviceStatus?.description === "Na recepção" && (
               <StartService
+                buttonTitle="INICIAR ATENDIMENTO"
                 onSuccess={() => {
                   schedule.mutate();
                   return createToast({

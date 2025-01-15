@@ -99,13 +99,20 @@ export function Actions({
                   {item?.text === "Procedimento" && (
                     <>
                       <span
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          cursor: "pointer",
+                          display: "flex",
+                          gap: "5px",
+                        }}
                         onClick={() => {
                           setTreatmentItensOpen((prv) => !prv);
                           setSynchedItemsFilter({ eventId: event?.event?.id });
                         }}
                       >
-                        {item?.text} - Mostrar itens tratamento
+                        {item?.text} -{" "}
+                        <span className="custom-span">
+                          Mostrar itens tratamento
+                        </span>
                       </span>
 
                       {treatmentItensOpen && synchedItems?.data && (
@@ -114,14 +121,17 @@ export function Actions({
                             <span>
                               - {executions?.productDescription} -{" "}
                               {executions?.productivityItemdescription}
-                              {executions?.executionDate
-                                ? ` - executado em: ${moment(
-                                    executions?.executionDate
-                                  ).format("DD/MM/YYYY - HH:mm")}`
-                                : ""}
-                              {executions?.executionUserName
-                                ? `por ${executions?.executionUserName}`
-                                : ""}
+                              <br />
+                              <span style={{ marginLeft: "20px" }}>
+                                {executions?.executionDate
+                                  ? `executado em: ${moment(
+                                      executions?.executionDate
+                                    ).format("DD/MM/YYYY - HH:mm")}h`
+                                  : ""}
+                                {executions?.executionUserName
+                                  ? ` por ${executions?.executionUserName}`
+                                  : ""}
+                              </span>
                             </span>
                           ))}
                         </div>
@@ -163,6 +173,7 @@ export function Actions({
 
             {description === "Na recepção" && (
               <StartService
+                buttonTitle="Dar inicio ao atendimento"
                 eventId={event.event.id}
                 patientId={event.event.patient.id}
               />

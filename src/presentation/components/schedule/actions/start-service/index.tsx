@@ -17,10 +17,12 @@ export function StartService({
   patientId,
   eventId,
   onSuccess,
+  buttonTitle
 }: {
   patientId: Patient["id"];
   eventId: Event["event"]["id"];
   onSuccess?: any;
+  buttonTitle: string;
 }) {
   const { push } = useRouter();
 
@@ -54,12 +56,12 @@ export function StartService({
   return (
     <PermissionItem hash="AGE07">
       <button
-        className="reset-button orange"
+        className="reset-button orange start-attendance"
         type="button"
         onClick={handleClick}
       >
         <Icon name="PlayIcon" />
-        <span>Dar ínicio ao atendimento</span>
+        <span>{buttonTitle}</span>
       </button>
     </PermissionItem>
   );
