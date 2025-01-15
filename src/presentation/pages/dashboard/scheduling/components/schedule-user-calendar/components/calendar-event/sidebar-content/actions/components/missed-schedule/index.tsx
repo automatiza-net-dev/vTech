@@ -28,12 +28,15 @@ export function MissedSchedule({ event, onExecuteAction }: ActionSchedule) {
           statusId,
         });
 
-      await onExecuteAction();
+      onExecuteAction && (await onExecuteAction());
 
       createToast({ message: "Ação efetuada com sucesso!", status: "success" });
     } catch (err) {
       if (err instanceof BadRequestError) {
-        createToast({ message: err?.error?.message || "Um erro inesperado aconteceu", status: "error" });
+        createToast({
+          message: err?.error?.message || "Um erro inesperado aconteceu",
+          status: "error",
+        });
       }
     } finally {
       setLoading(false);
@@ -43,7 +46,11 @@ export function MissedSchedule({ event, onExecuteAction }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE16">
       <button className="reset-button" type="button" onClick={handleClick}>
-        {loading ? <LoaderCircle size={20} color="#000" /> : <span>Não compareceu</span>}
+        {loading ? (
+          <LoaderCircle size={20} color="#000" />
+        ) : (
+          <span>Não compareceu</span>
+        )}
       </button>
     </PermissionItem>
   );

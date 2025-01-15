@@ -1,7 +1,10 @@
-// @ts-nocheck
+//@ts-nocheck
 // Core
 import { useRouter } from "next/router";
-import { memo, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import { RemoteChangeStatus } from "@/data";
+import { container, patientTypes } from "@/container";
 
 // Services
 import { examService } from "@/OLD/services/exams.service";
@@ -11,7 +14,7 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useMe } from "@/presentation/hooks";
-import { useLoadPatient } from "@/presentation";
+import { useLoadPatient, useLoadAllScheduleStatuses } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -33,6 +36,7 @@ export default function LaunchExam({
   setModal,
   examPatientData = false,
   setSelectedPatientExam = false,
+  reloadSchedule,
 }: any) {
   const [photosOpen, setPhotosOpen] = useState(false);
   const [data, setData] = useState({});
@@ -52,6 +56,7 @@ export default function LaunchExam({
 
   const userInfo = useMe();
   const { createToast } = useToast();
+  const scheduleStatuses = useLoadAllScheduleStatuses();
 
   const systemName = process.env.clientName;
 
@@ -183,6 +188,25 @@ export default function LaunchExam({
                 message: "Exame solicitado com sucesso!",
                 status: "success",
               });
+
+          if (
+            router?.query?.scheduleId &&
+            patient?.data?.scheduleId &&
+            !patient?.data?.scheduleStartedAt
+          ) {
+            const statusId =
+              scheduleStatuses.data?.find((status) => status.type === "ATEND")
+                ?.id || "";
+
+            container
+              .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
+              .change({
+                scheduleId: router.query.scheduleId as string,
+                statusId,
+              });
+
+            reloadSchedule && reloadSchedule();
+          }
         })
         .catch((err) => {
           error = true;

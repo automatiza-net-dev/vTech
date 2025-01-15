@@ -6,7 +6,7 @@ import React from "react";
 import { PlusOutline } from "styled-icons/evaicons-outline";
 
 // Components
-import { Button, FormHandler } from "infinity-forge";
+import { Button, FormHandler, useToast } from "infinity-forge";
 import { NewAttachments } from "@/presentation";
 import { Upload, Input, Select, Popconfirm } from "antd";
 
@@ -27,6 +27,8 @@ function FormChild({
   remove,
 }) {
   const systemName = process.env.clientName;
+
+  const { createToast } = useToast();
 
   return (
     <FormHandler isStickyButtons>
@@ -71,6 +73,13 @@ function FormChild({
               showUploadList={false}
               fileList={fileList}
               onChange={(info) => {
+                if (!info?.file?.type?.includes("image")) {
+                  return createToast({
+                    message:
+                      "Nesta Opção são permitidos apenas arquivos de Fotos e Videos. Para anexar outros tipos de arquivo adicionar um registro de 'Observações'",
+                    status: "error",
+                  });
+                }
                 setFileList(info.fileList);
               }}
             >

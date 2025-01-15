@@ -3,7 +3,7 @@ import { Patient, Race, Specie } from "../../detail";
 export type Event = {
   end: string;
   start: string;
-  type: "working" | "unavailable" | "schedule";
+  type?: "working" | "unavailable" | "schedule";
   event: {
     attendances?: {
       id: number;

@@ -22,12 +22,14 @@ import {
   PrintHeader,
   AddBudgetNew,
   useDictionary,
+  useLoadPatient,
   useLoadSchedule,
   PdfPatientAttendance,
+  useLoadAllScheduleStatuses,
 } from "@/presentation";
 import { TimeLine } from "@/domain";
-import { RemoteAttendances } from "@/data";
-import { TypesAutomatiza, container } from "@/container";
+import { RemoteAttendances, RemoteChangeStatus } from "@/data";
+import { TypesAutomatiza, container, patientTypes } from "@/container";
 
 import Editor from "@/OLD/components/Editor";
 
@@ -36,7 +38,7 @@ import { SelectTypeService } from "../select-type-service";
 
 import * as S from "./styles";
 
-export function Service({ scheduleId, mutate, ...props }) {
+export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   const [modal, setModal] = useState(false);
   const [attendance, setAttendance] = useState<TimeLine | null>(null);
   const [body, setBody] = useState("");
@@ -44,9 +46,12 @@ export function Service({ scheduleId, mutate, ...props }) {
   const componentRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
-  const { getWord } = useDictionary();
   const { createToast } = useToast();
+  const { getWord } = useDictionary();
+
+  const patient = useLoadPatient();
   const queryClient = useQueryClient();
+  const scheduleStatuses = useLoadAllScheduleStatuses();
 
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
 
@@ -101,8 +106,6 @@ export function Service({ scheduleId, mutate, ...props }) {
 
       setAttendance(attendanceResponse);
 
-      onSuccess && onSuccess();
-
       if (scheduleDate) {
         queryClient.invalidateQueries({
           queryKey: "RemoteLoadAllSchedulesUser" + scheduleDate + "true",
@@ -120,7 +123,28 @@ export function Service({ scheduleId, mutate, ...props }) {
         status: "success",
       });
 
+      if (
+        router?.query?.scheduleId &&
+        patient?.data?.scheduleId &&
+        !patient?.data?.scheduleStartedAt
+      ) {
+        const statusId =
+          scheduleStatuses.data?.find((status) => status.type === "ATEND")
+            ?.id || "";
+
+        container
+          .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
+          .change({
+            scheduleId: router.query.scheduleId as string,
+            statusId,
+          });
+
+        reloadSchedule && reloadSchedule();
+      }
+
       mutate && mutate();
+      onSuccess && onSuccess();
+      reloadSchedule && reloadSchedule();
     } catch (err: any) {
       if (err?.error?.message) {
         return createToast({ status: "error", message: err?.error?.message });
@@ -202,7 +226,9 @@ export function Service({ scheduleId, mutate, ...props }) {
                 setModal(true);
               });
             },
-            props:() =>  ({ text: `NOVO ${getWord("Orçamento").toUpperCase()}` }),
+            props: () => ({
+              text: `NOVO ${getWord("Orçamento").toUpperCase()}`,
+            }),
             active: true,
           },
           {
@@ -212,7 +238,7 @@ export function Service({ scheduleId, mutate, ...props }) {
                 queryClient.invalidateQueries(["LastUpdates"]);
               });
             },
-            props:() => ({ text: "SALVAR" }),
+            props: () => ({ text: "SALVAR" }),
             active: true,
           },
         ].filter((item) => item.active)}

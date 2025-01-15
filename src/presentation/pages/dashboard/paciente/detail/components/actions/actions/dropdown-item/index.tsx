@@ -9,6 +9,7 @@ export type DropdownComponentProps = {
   modal?: boolean;
   setModal?: Dispatch<SetStateAction<boolean>>;
   value?: string;
+  reloadSchedule?: any;
 } & Partial<TimeLine>;
 
 export type DropdownItemActionProps = {
@@ -17,6 +18,7 @@ export type DropdownItemActionProps = {
   customModalStyles?: {};
   Component?: (props: DropdownComponentProps) => JSX.Element;
   value?: string;
+  reloadSchedule?: any;
 };
 
 export function DropdownItemAction({
@@ -24,6 +26,7 @@ export function DropdownItemAction({
   label,
   Component,
   value,
+  reloadSchedule,
 }: DropdownItemActionProps) {
   const [open, setOpen] = useState(false);
 
@@ -40,7 +43,12 @@ export function DropdownItemAction({
       >
         <S.ModalContent>
           {Component && (
-            <Component modal={open} setModal={setOpen} value={value} />
+            <Component
+              modal={open}
+              setModal={setOpen}
+              value={value}
+              reloadSchedule={reloadSchedule}
+            />
           )}
         </S.ModalContent>
       </Modal>

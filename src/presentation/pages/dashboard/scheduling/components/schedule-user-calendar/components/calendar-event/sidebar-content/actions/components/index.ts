@@ -1,5 +1,4 @@
 export * from "./end-service";
-export * from "./start-service";
 export * from "./edit-schedule";
 export * from "./cancel-schedule";
 export * from "./missed-schedule";

@@ -5,7 +5,7 @@ import { DropdownItemAction } from "./dropdown-item";
 
 import * as S from "./styles";
 
-export function Actions() {
+export function Actions({ reloadSchedule }: { reloadSchedule: any }) {
   const actionsPatient = useActionsPatient();
 
   return (
@@ -16,7 +16,11 @@ export function Actions() {
 
           <div className="sub_menu">
             {actionsPatient.activeActions.map((option) => (
-              <DropdownItemAction key={option.value} {...option} />
+              <DropdownItemAction
+                key={option.value}
+                {...option}
+                reloadSchedule={reloadSchedule}
+              />
             ))}
           </div>
         </div>

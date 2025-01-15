@@ -44,7 +44,7 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
           statusId,
         });
 
-      onExecuteAction();
+      onExecuteAction && onExecuteAction();
 
       createToast({ message: "Agendamento confirmado!", status: "success" });
 
@@ -62,9 +62,9 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
         <button
           className="reset-button"
           type="button"
-          onClick={() => setShowForm(state => !state)}
+          onClick={() => setShowForm((state) => !state)}
         >
-          <Icon name="IconCalendar"/>
+          <Icon name="IconCalendar" />
 
           <span>Confirmar agendamento</span>
         </button>

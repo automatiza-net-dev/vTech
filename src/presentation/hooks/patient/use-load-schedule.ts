@@ -13,9 +13,8 @@ export function useLoadSchedule(scheduleId) {
   }
 
   return useQuery({
-    queryKey: ["RemoteLoadSchedules", scheduleId],
+    queryKey: ["RemoteLoadSchedule", scheduleId],
     queryFn: fetcher,
     enabled: !!scheduleId,
-    enableCache: true,
   });
 }

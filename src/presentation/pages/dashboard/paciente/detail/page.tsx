@@ -88,9 +88,8 @@ export function PacientePage() {
   return (
     <S.Paciente>
       <ProfileInfos patient={data} />
-
+      
       <ActionsPatient />
-
       <Tab tabs={tabs} />
     </S.Paciente>
   );

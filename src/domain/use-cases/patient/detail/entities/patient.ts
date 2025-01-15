@@ -1,3 +1,4 @@
+import { Event } from "@/domain";
 import { Tutor } from "../../tutor";
 import { PatientAnimal } from "../animal";
 
@@ -35,6 +36,8 @@ export interface PatientHuman {
   specie_id?: string;
   cellphone?: string;
   email?: string;
+  scheduleId?: Event["event"]["id"];
+  scheduleStartedAt?: string;
   tutor: Tutor;
   community: boolean;
   patientAnimal: PatientAnimal;

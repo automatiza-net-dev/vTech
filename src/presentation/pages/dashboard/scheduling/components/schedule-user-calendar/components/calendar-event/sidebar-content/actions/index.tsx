@@ -11,7 +11,6 @@ import { DateToYYYYMMDD, useScheduling } from "@/presentation";
 import {
   EndService,
   EditSchedule,
-  StartService,
   DeleteSchedule,
   CancelSchedule,
   MissedSchedule,
@@ -21,6 +20,7 @@ import {
   RescheduleAppointment,
   ChangeUpsertStatusAction,
 } from "./components";
+import { StartService } from "@/presentation/components/schedule/actions";
 
 import { IconComment, IconHospital } from "../icons";
 
@@ -162,7 +162,10 @@ export function Actions({
             )}
 
             {description === "Na recepção" && (
-              <StartService {...propsActions} />
+              <StartService
+                eventId={event.event.id}
+                patientId={event.event.patient.id}
+              />
             )}
 
             {description !== "Atendimento finalizado" &&

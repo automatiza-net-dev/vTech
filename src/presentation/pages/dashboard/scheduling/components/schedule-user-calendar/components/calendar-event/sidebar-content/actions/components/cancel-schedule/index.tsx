@@ -41,7 +41,7 @@ export function CancelSchedule({ event, onExecuteAction }: ActionSchedule) {
 
     createToast({ message: "Cancelado com sucesso!", status: "success" });
 
-    onExecuteAction();
+    onExecuteAction && onExecuteAction();
   }
 
   return (

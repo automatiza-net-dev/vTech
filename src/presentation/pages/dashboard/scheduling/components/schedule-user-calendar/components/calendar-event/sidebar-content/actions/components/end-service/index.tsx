@@ -35,7 +35,7 @@ export function EndService({ event, onExecuteAction }: ActionSchedule) {
       await Promise.all(promises);
     }
 
-    onExecuteAction();
+    onExecuteAction && onExecuteAction();
 
     createToast({ message: "informado com sucesso!", status: "success" });
   }

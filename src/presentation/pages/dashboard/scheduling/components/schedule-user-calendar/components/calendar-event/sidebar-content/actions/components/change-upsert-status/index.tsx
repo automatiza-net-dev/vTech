@@ -25,13 +25,13 @@ export function ChangeUpsertStatusAction({
     const payload = {
       ...data,
       scheduleId: event.event.id,
-    }
+    };
 
     await container
       .get<RemoteSchedule>(patientTypes.RemoteSchedule)
       .changeUpsert(payload);
 
-    await onExecuteAction(payload);
+    onExecuteAction && (await onExecuteAction(payload));
 
     createToast({ message: "Status alterado com sucesso!", status: "success" });
   }
@@ -42,7 +42,7 @@ export function ChangeUpsertStatusAction({
         <button
           type="button"
           className="reset-button"
-          onClick={() => setShowForm(state => !state)}
+          onClick={() => setShowForm((state) => !state)}
         >
           <span>Alterar status</span>
         </button>
