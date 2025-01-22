@@ -6,7 +6,7 @@ import { servicesService } from "@/OLD/services/services.service";
 
 import { Container } from "./styles";
 import { Table, notification } from "antd";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, Error, PageWrapper } from "infinity-forge";
 import Header from "./Header";
 import Edit from "./Edit";
 
@@ -71,18 +71,18 @@ const Single = memo(function Single({
 
   const formatServiceUnits = () => {
     service?.variations?.length > 0 &&
-      service?.variations[0]?.businessUnitProducts?.length > 0 &&
-      service?.variations[0]?.businessUnitProducts.sort((a, b) => {
+      service?.variations?.[0]?.businessUnitProducts?.length > 0 &&
+      service?.variations?.[0]?.businessUnitProducts?.sort((a, b) => {
         if (
-          a.businessUnit?.fantasy_name.toLowerCase() <
-          b.businessUnit?.fantasy_name.toLowerCase()
+          a.businessUnit?.fantasy_name?.toLowerCase() <
+          b.businessUnit?.fantasy_name?.toLowerCase()
         ) {
           return -1;
         }
 
         if (
-          a.businessUnit?.fantasy_name.toLowerCase() >
-          b.businessUnit?.fantasy_name.toLowerCase()
+          a.businessUnit?.fantasy_name?.toLowerCase() >
+          b.businessUnit?.fantasy_name?.toLowerCase()
         ) {
           return 1;
         }
@@ -95,7 +95,7 @@ const Single = memo(function Single({
       setFormatedServiceUnits(
         service?.variations[0]?.businessUnitProducts?.map((item) => {
           return {
-            unit: item?.businessUnit?.fantasy_name,
+            unit: item?.businessUnit?.identification,
             maxDiscountPercentage: `${item?.maximum_discount_percentage}%`,
             maxDiscountValue: currencyFormatter(item?.maximum_discount_value),
             costPrice: currencyFormatter(item?.cost_price),
@@ -142,21 +142,23 @@ const Single = memo(function Single({
       title={`Detalhes do serviço - ${service?.originalDescription}`}
     >
       <Container>
-        <div
-          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
-        >
-          <Button text="Voltar" onClick={() => setVisible(false)} />
+        <Error name="error_on_read_unit">
+          <div
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <Button text="Voltar" onClick={() => setVisible(false)} />
 
-          <Button onClick={submitUpdate} text="Salvar" />
-        </div>
+            <Button onClick={submitUpdate} text="Salvar" />
+          </div>
 
-        <hr />
-        <Header service={service} setService={setService} />
-        <hr />
-        <Table
-          columns={servicesDetailsColumns}
-          dataSource={formatedServiceUnits}
-        />
+          <hr />
+          <Header service={service} setService={setService} />
+          <hr />
+          <Table
+            columns={servicesDetailsColumns}
+            dataSource={formatedServiceUnits}
+          />
+        </Error>
       </Container>
     </PageWrapper>
   );
