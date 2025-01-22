@@ -130,7 +130,7 @@ export function AddBudgetNew({
         });
       }
 
-      if (data?.reviewerId === "" || !data?.reviewerId) {
+      if (user?.unit?.unitConfig?.reviewer === "O" && (data?.reviewerId === "" || !data?.reviewerId)) {
         return createToast({
           message: "Campo avaliador obrigatório",
           status: "error",
@@ -188,7 +188,7 @@ export function AddBudgetNew({
   }
 
   return (
-    <S.AddBudget>
+    <S.AddBudget id="add_budget_new">
       <FormHandler
         isStickyButtons
         disableEnterKeySubmitForm
