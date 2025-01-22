@@ -12,12 +12,11 @@ import {
 import { LayoutDashboard, useMe, usePermission } from "@/presentation";
 
 function Page() {
+  const canEditClinic = usePermission("CLI02");
+  const canCreateClinic = usePermission("CLI01");
+  const canDeleteClinic = usePermission("CLI03");
 
-  const canEditClinic = usePermission("CLI02")
-  const canCreateClinic = usePermission("CLI01")
-  const canDeleteClinic = usePermission("CLI03")
-
-  const user = useMe()
+  const user = useMe();
   const { createToast } = useToast();
 
   const { data, isFetching } = useQuery({
@@ -38,8 +37,7 @@ function Page() {
     initialDataIsTableItem: true,
     initialData: { economic_group_id: user?.data?.unit?.economicGroup?.id },
     onSucess: async (data) => {
-
-      console.log(data)
+      console.log(data);
 
       await api({
         url: data.id ? `business-units/${data.id}` : `business-units`,
@@ -110,25 +108,33 @@ function Page() {
           name: "InputCep",
           InputComponent: "InputCep",
           nameZipCode: "postalCode",
-        }
-      ]
+        },
+      ],
     ],
   } as TableActionCreate<any> & TableActionEdit<any>;
 
   const { Table } = useTable({
     columnsConfiguration: {
-      columns: [{ id: "identification", label: "Identificação" }],
+      columns: [
+        { id: "identification", label: "Identificação" },
+        { id: "document", label: "CNPJ" },
+        { id: "companyName", label: "Razão social" },
+        { id: "fantasyName", label: "Nome Fantasia" },
+        { id: "phone", label: "Telefone" },
+      ],
       actions: {
-        create: canCreateClinic ? {
-          text: "Criar nova clinica",
-          ...dynamicFormHandler
-        } : undefined,
-        edit: canEditClinic ? dynamicFormHandler : undefined, 
+        create: canCreateClinic
+          ? {
+              text: "Criar nova clinica",
+              ...dynamicFormHandler,
+            }
+          : undefined,
+        edit: canEditClinic ? dynamicFormHandler : undefined,
         delete: canDeleteClinic ? () => {} : undefined,
         modalStyles: {
           maxWidth: "900px",
-          width: "100%"
-        }
+          width: "100%",
+        },
       },
     },
     configs: {

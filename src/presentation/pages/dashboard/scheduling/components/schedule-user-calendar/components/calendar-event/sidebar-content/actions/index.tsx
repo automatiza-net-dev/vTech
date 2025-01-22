@@ -92,11 +92,16 @@ export function Actions({
         <div className="actions-infos">
           {Object.keys(infos).map((key) => {
             const item = infos[key];
+
+            if(!item.text) {
+              return <></>
+            }
+
             return (
               <span key={key}>
                 {item?.icon}
                 <span>
-                  {item?.text === "Procedimento" && (
+                  {item?.text === "Procedimentodocarlao" ? (
                     <>
                       <span
                         style={{
@@ -137,7 +142,7 @@ export function Actions({
                         </div>
                       )}
                     </>
-                  )}
+                  ) : item.text}
                 </span>
               </span>
             );
