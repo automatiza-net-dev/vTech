@@ -9,7 +9,7 @@ export function SelectUF() {
       name="state"
       label="UF"
       placeholder="UF"
-      options={data || []}
+      options={data?.sort((a, b) => a.value.localeCompare(b.value)) || []}
     />
   );
 }

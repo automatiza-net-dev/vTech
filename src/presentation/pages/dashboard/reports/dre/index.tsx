@@ -1,102 +1,75 @@
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 import {
+  api,
+  useQuery,
   FormHandler,
-  Select,
-  Button,
-  InputDatePicker,
   PageWrapper,
-  updateRoute,
+  InputDatePicker,
+  LoaderCircle,
 } from "infinity-forge";
+import moment from "moment";
+
+import { ReportDRE } from "./report";
 
 import * as S from "./styles";
 
-import { useLoadAllAvailableUnits, useLoadDreReport } from "@/presentation";
-
-import axios from "axios";
-
 export function DreReport() {
-  const router = useRouter();
-  const reports = useLoadDreReport();
-  const businessUnits = useLoadAllAvailableUnits();
+  const [dateDRE, setDateDRE] = useState(null);
+
+  const { data, mutate, isFetching } = useQuery({
+    queryKey: ["DRE", dateDRE],
+    queryFn: async () => {
+      const response = await api({
+        url: `reports/dre-groups?period=${moment(dateDRE).format(
+          "MM/YYYY"
+        )}&v2=true`,
+        method: "get",
+      });
+
+      return response
+    },
+    enableCache: true,
+  });
+
 
   return (
-    <PageWrapper title="Relatório DRE">
+    <PageWrapper
+      title={
+        !dateDRE
+          ? "Relatório DRE"
+          : `Relatório DRE período ${moment(dateDRE).format("MM/YYYY")}`
+      }
+      breadCrumb={[]}
+    >
       <S.DreReport>
-        <FormHandler
-          initialData={{ competence: new Date() }}
-          onChangeForm={{
-            callbackResult: (data) => {
-              updateRoute({
-                params: { ...data, competence: data?.competenceundefined },
-                router,
-              });
-              reports.remove();
-            },
-          }}
-        >
-          <div className="filters-container">
-            <InputDatePicker
-              language="pt"
-              label="Competencia"
-              name="competence"
-              mode="month"
-            />
-            {businessUnits.data && (
-              <Select
-                options={businessUnits.data.map((unit) => ({
-                  value: unit.id,
-                  label: unit.identification,
-                }))}
-                name="unit"
-                placeholder="Unidade"
-                label="Unidade"
+        {!dateDRE && (
+          <FormHandler
+            initialData={{ competence: dateDRE }}
+            onSucess={async (data) => {
+              console.log(data);
+              setDateDRE(data.competence);
+            }}
+            button={{ text: "CARREGAR DRE" }}
+          >
+            <div className="filters-container">
+              <InputDatePicker
+                language="pt"
+                date={{ maxDate: new Date() }}
+                label="Competencia"
+                name="competence"
+                mode="month"
               />
-            )}
-          </div>
-        </FormHandler>
-        {!reports?.data?.result ? (
-          <Button
-            text="Gerar arquivo"
-            loading={reports.isFetching}
-            onClick={async () => {
-              const reportsResponse = await reports.refetch();
-
-              const response = await axios.get(reportsResponse?.data?.result, {
-                method: "get",
-                responseType: "blob",
-              });
-
-              const blob = new Blob([response.data], {
-                type: "application/pdf",
-              });
-
-              const blobURL = URL.createObjectURL(blob);
-
-              window.open(blobURL);
-            }}
-          />
-        ) : (
-          <Button
-            text="imprimir"
-            onClick={async () => {
-              const response = await axios.get(reports.data.result, {
-                method: "get",
-                responseType: "blob",
-              });
-              const blob = new Blob([response.data], {
-                type: "application/pdf",
-              });
-              const blobURL = URL.createObjectURL(blob);
-              window.open(blobURL);
-            }}
-          />
+            </div>
+          </FormHandler>
         )}
-        <span>
-          *Verifique se o navegador está bloqueado para abertura de janelas
-          popup
-        </span>
+
+        {isFetching && <LoaderCircle size={30} color="#000" />}
       </S.DreReport>
+
+      {data && dateDRE && !isFetching && (
+        <ReportDRE dre={data as any} mutate={mutate} setDateDRE={setDateDRE} />
+      )}
     </PageWrapper>
   );
 }

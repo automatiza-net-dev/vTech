@@ -18,6 +18,7 @@ export function useNegotiation() {
     const promises = dataForm.budgets.map(async (budget) => {
       if (budget.checked) {
         return containerBudget.confirm({
+          financialResponsibleId: budget?.financialResponsibleId,
           id: budget.id,
           finishedAt: new Date(),
           notConfirmedItems: [],

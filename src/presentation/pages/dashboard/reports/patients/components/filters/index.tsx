@@ -1,31 +1,26 @@
+import { useState } from "react";
+
+import { FormHandler, Select } from "infinity-forge";
+
 import { LoadAllPatientReports } from "@/domain";
-
-import { FormHandler, Select, updateRoute } from "infinity-forge";
-
-import { useRouter } from "next/router";
-
 import { useLoadAllRaces, useLoadAllSpecies } from "@/presentation";
+
 import { ExportButton } from "../export-button";
 
 import * as S from "./styles";
 
 export function Filters() {
-  const initialData = {};
+  const [exportData, setExportData] = useState<LoadAllPatientReports.Params>({}) 
 
-  const router = useRouter();
   const races = useLoadAllRaces({});
   const species = useLoadAllSpecies({});
 
   return (
     <S.Filters>
       <FormHandler
-        initialData={initialData}
         onChangeForm={{
           callbackResult: (payload: LoadAllPatientReports.Params) => {
-            updateRoute({
-              params: payload,
-              router,
-            });
+            setExportData(payload)
           },
         }}
       >
@@ -70,7 +65,7 @@ export function Filters() {
               { label: "Não", value: "Nao" },
             ]}
           />
-          <Select
+          {/* <Select
             label="Protocolos"
             name="protocol"
             isClearable
@@ -83,7 +78,7 @@ export function Filters() {
                 value: "Protocolos para agendar",
               },
             ]}
-          />
+          /> */}
         </section>
         <section>
           <Select
@@ -119,10 +114,10 @@ export function Filters() {
             isClearable
             options={[
               { label: "Vacinado", value: "Vacinado" },
-              { label: "Não Vacinado", value: "Nao vacinado" },
+              { label: "Não Vacinado", value: "Nao Vacinado" },
             ]}
           />
-          <ExportButton />
+          <ExportButton exportData={exportData}/>
         </section>
       </FormHandler>
     </S.Filters>

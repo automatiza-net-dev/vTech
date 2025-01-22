@@ -30,7 +30,7 @@ export function InformCustomerArrival({
         statusId,
       });
 
-    onExecuteAction();
+      onExecuteAction && onExecuteAction();
 
     createToast({ message: "informado com sucesso!", status: "success" });
   }

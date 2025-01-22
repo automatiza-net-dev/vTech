@@ -1,4 +1,4 @@
-{
+a {
 "include": ["src/**/*"],
 "compilerOptions": {
 "lib": ["es2021", "dom"],
@@ -21,7 +21,7 @@
 }
 a
 a
-102030 a
+102030
 controller@liftone.com.br
 
 # LIFTONE - PROdd
@@ -68,9 +68,6 @@ controller@liftone.com.br
 
 # Sancla - HMG
 
-<<<<<<< HEAD
-aa
-=======
 # api=https://vetech-api.creativecode.dev.br/
 
 # NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
@@ -82,4 +79,6 @@ aa
 # client=sancla
 
 # clientName=Sanclá
->>>>>>> development
+
+
+<!-- https://sancla-dev.vercel.app -->

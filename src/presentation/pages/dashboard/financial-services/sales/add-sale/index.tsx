@@ -151,7 +151,10 @@ export function AddSale({
       ) {
         setStockProducts(err?.error?.message?.replaceAll("=", "|").split("|"));
         setStockProductsOpen(true);
+
+        return;
       }
+
       if (
         err instanceof BadRequestError &&
         err?.error?.message === "Desconto máximo foi excedido"
@@ -163,7 +166,11 @@ export function AddSale({
         ) {
           handleSubmit({ ...data, maxDiscount: true }, _, initialValues);
         }
+
+        return;
       }
+
+      throw err
     }
   }
 

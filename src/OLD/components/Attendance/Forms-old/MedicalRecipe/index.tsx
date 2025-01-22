@@ -1,15 +1,23 @@
-// @ts-nocheck
+//@ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 
 import moment from "moment";
+import { useRouter } from "next/router";
 import { useToast } from "infinity-forge";
 import { useQueryClient } from "react-query";
+
+import { RemoteChangeStatus } from "@/data";
+import { container, patientTypes } from "@/container";
 
 import { recipeServices } from "@/OLD/services/recipes.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 import { textReplaceService } from "@/OLD/services/textReplace.service";
 
-import { useLoadPatient, useMe } from "@/presentation/hooks";
+import {
+  useLoadPatient,
+  useMe,
+  useLoadAllScheduleStatuses,
+} from "@/presentation/hooks";
 
 import FormChild from "./FormChild";
 
@@ -18,6 +26,7 @@ function AddMedicalRecipe({
   setModal,
   setSelectedUpdate = false,
   updateData = false,
+  reloadSchedule,
 }: any) {
   const [body, setBody] = useState("");
   const [allRecipes, setAllRecipes] = useState([]);
@@ -26,8 +35,10 @@ function AddMedicalRecipe({
   const [recipeSearch, setRecipeSearch] = useState("");
 
   const userInfo = useMe();
-  const { createToast } = useToast();
+  const router = useRouter();
   const patient = useLoadPatient();
+  const { createToast } = useToast();
+  const scheduleStatuses = useLoadAllScheduleStatuses();
 
   const systemName = process.env.clientName;
 
@@ -97,6 +108,25 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
+        if (
+          router?.query?.scheduleId &&
+          patient?.data?.scheduleId &&
+          !patient?.data?.scheduleStartedAt
+        ) {
+          const statusId =
+            scheduleStatuses.data?.find((status) => status.type === "ATEND")
+              ?.id || "";
+
+          container
+            .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
+            .change({
+              scheduleId: router.query.scheduleId as string,
+              statusId,
+            });
+
+          reloadSchedule && reloadSchedule();
+        }
+
         setModal(false);
         setLoading(false);
         setBody("");

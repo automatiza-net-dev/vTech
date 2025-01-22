@@ -20,29 +20,19 @@ export function ServiceStages() {
 
       <div className="radio-box">
         {data?.map((item, index) => {
-          const aditionalInformation = {
-            label: `${item?.itemProdutividade || ""} ${
-              item.executionDate !== "-"
-                ? item?.executionDate
-                : item.scheduleDate !== "-"
-                ? item?.scheduleDate
-                : ""
-            }`,
-
-            disabled: () => {
-              if (item?.executionDate !== "-" || item?.scheduleDate !== "-") {
-                return true;
-              } else {
-                return false;
-              }
-            },
-          };
+          const label = `${item?.itemProdutividade || ""} ${
+            item.executionDate !== "-"
+              ? item?.executionDate
+              : item.scheduleDate !== "-"
+              ? item?.scheduleDate
+              : ""
+          }`;
 
           const id =
-            item?.treatmentId +
-            item?.treatmentItemId +
-            item?.treatmentExecutionId +
-            index;
+            String(item?.treatmentId) +
+            String(item?.treatmentItemId) +
+            String(item?.treatmentExecutionId) +
+            String(index);
 
           return (
             <div key={String(id)} className="content">
@@ -50,7 +40,11 @@ export function ServiceStages() {
                 <input
                   id={String(id)}
                   type="checkbox"
-                  disabled={aditionalInformation?.disabled()}
+                  disabled={
+                    !!(
+                      item?.executionDate !== "-" || item?.scheduleDate !== "-"
+                    )
+                  }
                   checked={
                     !!values?.executions?.find((item) => item?.id === id)
                   }
@@ -60,6 +54,7 @@ export function ServiceStages() {
                         ...values?.executions,
                         {
                           ...item,
+                          checked: true,
                           id,
                         },
                       ]);
@@ -74,7 +69,7 @@ export function ServiceStages() {
               </div>
 
               <label htmlFor={String(id)}>
-                {item?.produto} - {aditionalInformation?.label}
+                {item?.produto} - {label}
               </label>
             </div>
           );

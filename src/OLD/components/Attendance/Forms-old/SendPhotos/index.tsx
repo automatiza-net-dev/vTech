@@ -1,13 +1,12 @@
 // @ts-nocheck
 // Core
-import { useLoadPatient } from "@/presentation";
-import { useProfile } from "@/OLD/hooks/useProfile";
+import { useLoadPatient, useMe } from "@/presentation";
 import React, { memo, useState, useCallback, useEffect } from "react";
 
 // Services
-import { timelineService } from "@/OLD/services/timeline.service";
 import { RemoteAttachments } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
+import { timelineService } from "@/OLD/services/timeline.service";
 
 // Components
 import { Button } from "antd";
@@ -31,7 +30,8 @@ export default function SendPhotos({
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [photosVisible, setPhotosVisible] = useState(false);
-  const { user } = useProfile();
+  
+  const user = useMe();
   const { createToast } = useToast();
 
   const patient = useLoadPatient();
@@ -68,7 +68,7 @@ export default function SendPhotos({
     formData.append("title", data?.title);
     formData.append("tag", patient?.data?.id);
     formData.append("observation", data?.note);
-    formData.append("technicianId", user?.id);
+    formData.append("technicianId", user?.data?.id);
 
     fileList.forEach((file) => {
       formData.append("photos[]", file.originFileObj);
@@ -105,7 +105,7 @@ export default function SendPhotos({
           status: "error",
         });
       });
-  }, [patient?.data?.id, data?.note, user?.id, fileList]);
+  }, [patient?.data?.id, data?.note, user?.data?.id, fileList]);
 
   const submitUpdate = useCallback(() => {
     setLoading(true);

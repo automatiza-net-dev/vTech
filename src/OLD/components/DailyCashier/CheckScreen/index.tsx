@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 import { billService } from "@/OLD/services/bills.service";
 
+import { useMe } from "@/presentation";
 import { useInfoDailyCasher } from "@/OLD/hooks/useDailyCashiers";
-import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
 import Header from "./Header";
@@ -25,7 +25,7 @@ import { checkingCashierColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 
-const CheckScreen = memo(function CheckScreen() {
+function CheckScreen() {
   const [formattedPayments, setFormattedPayments] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ const CheckScreen = memo(function CheckScreen() {
   const router = useRouter();
 
   const { info } = useInfoDailyCasher(router.query.innerpage);
-  const { user } = useProfile();
+  const user = useMe();
 
   const formatPayments = () => {
     setFormattedPayments(
@@ -132,7 +132,7 @@ const CheckScreen = memo(function CheckScreen() {
     setLoading(true);
     dailyCasherService
       .checkDailyCasher(router.query.innerpage, {
-        userId: user?.id,
+        userId: user?.data?.id,
         checkingDate: moment(new Date()).toISOString(),
         observations: observationsData?.observation,
       })
@@ -149,7 +149,7 @@ const CheckScreen = memo(function CheckScreen() {
   const submitReviewCashier = (observationsData) => {
     dailyCasherService
       .reviewDailyCasher(router.query.innerpage, {
-        userId: user?.id,
+        userId: user?.data?.id,
         revisionDate: moment(new Date()).toISOString(),
         observations: observationsData?.observation,
       })
@@ -228,15 +228,7 @@ const CheckScreen = memo(function CheckScreen() {
           className="uk-margin-small-right"
           type="primary"
           onClick={() => {
-            if (
-              formattedPayments
-                .map((item) => {
-                  if (!data?.includes(`${item?.bill_id}-${item?.block}`)) {
-                    return `${item?.bill_id}-${item?.block}`;
-                  }
-                })
-                .filter((item) => item).length > 0
-            ) {
+            if (data?.filter((item) => !item.conference)?.length > 0) {
               return notification.warning({
                 message: "Ainda há pagamentos pendentes para conferência",
               });
@@ -282,6 +274,6 @@ const CheckScreen = memo(function CheckScreen() {
       </Modal>
     </Container>
   );
-});
+}
 
 export default CheckScreen;

@@ -397,7 +397,16 @@ const AddPayments = memo(function AddPayments({
                 );
               })}
             </div>
-            <footer>
+            <footer
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
               <Button
                 onClick={() =>
                   origin !== "budgets" ? submitPayment() : submitBudgetPayment()
@@ -491,7 +500,7 @@ const AddPayments = memo(function AddPayments({
           {budgetPayments?.length > 0 &&
             budgetPayments?.map((item) => (
               <div className="budget-payment-desc">
-                <div>
+                <div className="font-16-regular">
                   {`${item?.descricao_forma_pagamento} - ${
                     item?.descricao_adquirente_tef
                       ? item?.descricao_adquirente_tef + " - "

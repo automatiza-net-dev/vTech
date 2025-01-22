@@ -8,7 +8,7 @@ export const useProfile = (type = false, reload = false) => {
       const res = await userService.getUser();
       return res?.data;
     },
-    interval: 1000 * 60, // 60s
+    interval: 1000 * 60, 
     enableCache: true,
   });
 
@@ -23,5 +23,5 @@ export const useProfile = (type = false, reload = false) => {
 export const useUserHasPermission = (cl) => {
   const cls = useAuthAdmin();
 
-  return cls.user.cl.includes(cl);
+  return cls?.user?.cl?.includes(cl);
 };

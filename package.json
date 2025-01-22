@@ -20,7 +20,7 @@
     "@types/react-dom": "^18.2.19",
     "@types/styled-components": "^5.1.26",
     "cypress": "^12.17.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
@@ -45,7 +45,7 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.6",
     "html-react-parser": "^3.0.8",
-    "infinity-forge": "5.4.3",
+    "infinity-forge": "5.2.5",
     "inversify": "^6.0.2",
     "moment": "^2.29.1",
     "next": "^14.2.3",

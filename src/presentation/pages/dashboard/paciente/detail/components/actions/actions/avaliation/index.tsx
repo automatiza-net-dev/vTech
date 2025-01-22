@@ -18,5 +18,12 @@ export function Avaliation(props: DropdownComponentProps) {
     return <AvailableSchedules data={data} setMockScheduleId={setScheduleId} />;
   }
 
-  return <Service {...props} scheduleId={scheduleId} mutate={!id && mutate} />;
+  return (
+    <Service
+      {...props}
+      scheduleId={scheduleId}
+      mutate={!id && mutate}
+      reloadSchedule={props?.reloadSchedule}
+    />
+  );
 }

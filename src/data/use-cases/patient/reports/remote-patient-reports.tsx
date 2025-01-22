@@ -14,10 +14,12 @@ export class RemotePatientReports implements domain.LoadAllPatientReports {
   ) {}
 
   async loadAllPatientReports(params: domain.LoadAllPatientReports.Params) {
-    return await this.httpClient.request({
+   const response = await this.httpClient.request({
       url: this.makeApiURL.make(`reports/patients`),
       method: "get",
       body: params,
     });
+
+    return response
   }
 }

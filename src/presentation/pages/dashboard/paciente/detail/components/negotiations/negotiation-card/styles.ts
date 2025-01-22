@@ -6,6 +6,11 @@ export const NegotiationCard = styled("div")`
   overflow: hidden;
   display: block;
 
+  .custom-head {
+    display: flex;
+    justify-content: space-around;
+  }
+
   .budgets {
     padding-left: 15px;
     margin-bottom: 15px;
@@ -146,5 +151,9 @@ export const NegotiationCard = styled("div")`
     .document + .document {
       margin-top: 5px !important;
     }
+  }
+
+  .executions-box {
+    margin-top: 20px;
   }
 `;

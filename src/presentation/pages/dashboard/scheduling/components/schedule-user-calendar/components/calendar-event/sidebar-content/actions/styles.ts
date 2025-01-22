@@ -90,4 +90,14 @@ export const Actions = styled.div`
       }
     }
   }
+
+  .custom-span {
+    margin-right: 10px;
+    color: #00ced1;
+    text-decoration: underline;
+  }
+
+  h2 {
+    font-size: 15px;
+  }
 `;

@@ -2,8 +2,10 @@ import { useRouter } from "next/router";
 
 import { Icon } from "infinity-forge";
 
+import { Patient, Event } from "@/domain";
 import { RemoteChangeStatus } from "@/data";
 import { container, patientTypes } from "@/container";
+
 import {
   DateToYYYYMMDD,
   PermissionItem,
@@ -11,9 +13,17 @@ import {
   useScheduling,
 } from "@/presentation";
 
-import { ActionSchedule } from "../../interface";
-
-export function StartService({ event }: ActionSchedule) {
+export function StartService({
+  patientId,
+  eventId,
+  onSuccess,
+  buttonTitle
+}: {
+  patientId: Patient["id"];
+  eventId: Event["event"]["id"];
+  onSuccess?: any;
+  buttonTitle: string;
+}) {
   const { push } = useRouter();
 
   const scheduleStatuses = useLoadAllScheduleStatuses();
@@ -30,13 +40,15 @@ export function StartService({ event }: ActionSchedule) {
     const response = await container
       .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
       .change({
-        scheduleId: event.event.id,
+        scheduleId: eventId,
         statusId,
       });
 
+    onSuccess && onSuccess();
+
     if (response.id) {
       push(
-        `/dashboard/paciente/${event.event.patient.id}?scheduleId=${event.event.id}&scheduleDate=${dateFormatted}`
+        `/dashboard/paciente/${patientId}?scheduleId=${eventId}&scheduleDate=${dateFormatted}`
       );
     }
   }
@@ -44,12 +56,12 @@ export function StartService({ event }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE07">
       <button
-        className="reset-button orange"
+        className="reset-button orange start-attendance"
         type="button"
         onClick={handleClick}
       >
         <Icon name="PlayIcon" />
-        <span>Dar ínicio ao atendimento</span>
+        <span>{buttonTitle}</span>
       </button>
     </PermissionItem>
   );

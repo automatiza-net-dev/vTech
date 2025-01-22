@@ -46,20 +46,20 @@ export type Treatments = {
     scheduled_quantity: number;
     observations: string | null;
     status: "Ativo";
-  }[];
-  executions: {
-    schedule_id: Event["event"]["id"];
-    schedule_date: string | null;
-    scheduled_quantity: number;
-    quantity_executed: number;
-    execution_date: string | null;
-    observations: string | null;
-    status: "Ativo";
-    user: string | null;
-    productivitItem: {
-      id: number;
-      description: string;
-    };
+    executions: {
+      schedule_id: Event["event"]["id"];
+      schedule_date: string | null;
+      scheduled_quantity: number;
+      quantity_executed: number;
+      execution_date: string | null;
+      observations: string | null;
+      status: "Ativo";
+      user: string | null;
+      productivitItem: {
+        id: number;
+        description: string;
+      };
+    }[];
   }[];
 };
 

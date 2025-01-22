@@ -25,7 +25,7 @@ export const AddSale = styled("div")`
   }
 
   .error-form {
-    font-size: 17px;
+    font-size: 15px;
   }
 
   .expirationDate {

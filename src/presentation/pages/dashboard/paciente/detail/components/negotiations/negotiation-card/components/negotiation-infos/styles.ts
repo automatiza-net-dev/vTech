@@ -1,6 +1,12 @@
 import styled from "styled-components";
 
 export const NegotiationInfos = styled.div`
+  .form-button {
+    button:first-child {
+      background-color: ${(props) => props.theme.primaryColor};
+    }
+  }
+
   h2,
   h3 {
     font-size: 17px;

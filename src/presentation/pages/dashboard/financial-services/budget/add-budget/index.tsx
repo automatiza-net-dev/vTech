@@ -51,6 +51,8 @@ export function AddBudgetNew({
   const queryClient = useQueryClient();
   const { user } = useAuthAdmin();
 
+  console.log(user?.unit?.unitConfig?.reviewer)
+
   const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
   const hasSyncScheduleMovements =
@@ -127,7 +129,14 @@ export function AddBudgetNew({
           status: "error",
         });
       }
-      
+
+      if (data?.reviewerId === "" || !data?.reviewerId) {
+        return createToast({
+          message: "Campo avaliador obrigatório",
+          status: "error",
+        });
+      }
+
       const payload = {
         ...data,
         id: budgetId,
@@ -170,7 +179,11 @@ export function AddBudgetNew({
         ) {
           handleSubmit({ ...data, maxDiscount: true }, _, initialValues);
         }
+
+        return;
       }
+
+      throw err
     }
   }
 

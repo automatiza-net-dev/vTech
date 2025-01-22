@@ -46,6 +46,10 @@ export const useTreatment = (id, reload) => {
   const fetchData = () => {
     setLoading(true);
 
+    if (!id) {
+      return []
+    }
+
     treatmentService
       .showTreatment(id)
       .then((res) => setTreatment(res.data[0]))

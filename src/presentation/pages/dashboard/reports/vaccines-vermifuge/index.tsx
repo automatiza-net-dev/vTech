@@ -119,8 +119,8 @@ export function VaccinesVermifugeReport({
                 ...rest,
                 fromScheduling: formatDate(schedulingDate.startDate),
                 toScheduling: formatDate(schedulingDate.endDate),
-                toApplication: formatDate(applicationDate.startDate),
-                fromApplication: formatDate(applicationDate.endDate),
+                toApplication: formatDate(applicationDate.endDate),
+                fromApplication:  formatDate(applicationDate.startDate),
               });
             },
           }}
@@ -216,7 +216,7 @@ export function VaccinesVermifugeReport({
                 ]}
               />
             </div>
-            <div>
+            {/* <div>
               <Select
                 isClearable
                 label="Odenação"
@@ -229,7 +229,7 @@ export function VaccinesVermifugeReport({
                   },
                 ]}
               />
-            </div>
+            </div> */}
           </section>
         </FormHandler>
 

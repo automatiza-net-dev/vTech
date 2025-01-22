@@ -31,7 +31,7 @@ export const Actions = styled("div")`
       color: ${(props) => props.theme.primaryColor} !important;
 
       svg {
-        fill: ${props => props.theme.primaryColor};
+        fill: ${(props) => props.theme.primaryColor};
       }
     }
 
@@ -42,6 +42,10 @@ export const Actions = styled("div")`
       justify-content: center;
       gap: 8px;
     }
+  }
+
+  .start-attendance {
+    width: 200px !important;
   }
 
   .item {

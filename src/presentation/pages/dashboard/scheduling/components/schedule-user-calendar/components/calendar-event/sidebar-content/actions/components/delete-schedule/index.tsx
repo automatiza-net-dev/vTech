@@ -22,7 +22,7 @@ export function DeleteSchedule({ event, onExecuteAction }: ActionSchedule) {
         ignoreConflict,
       });
 
-      onExecuteAction();
+      onExecuteAction && onExecuteAction();
 
       setConfirmDelete(false);
 
@@ -46,7 +46,7 @@ export function DeleteSchedule({ event, onExecuteAction }: ActionSchedule) {
           .split(":")[1]
           .includes("Este agendamento não pode ser excluído")
       ) {
-        onExecuteAction();
+        onExecuteAction && onExecuteAction();
         return createToast({
           message: err?.error?.message.split(":")[1],
           status: "error",

@@ -51,7 +51,6 @@ export function SideBarContent({
         <div className="status">
           <span>{infos.status}</span>
         </div>
-
         <UserInfos event={event} setOpen={setOpen} />
         <Actions
           event={event}
@@ -60,7 +59,6 @@ export function SideBarContent({
           scheduleUser={scheduleUser}
           refetchKeyWeekCalendar={refetchKeyWeekCalendar}
         />
-
         <SidebarTabs event={event} />
       </S.SideBarContent>
     </Error>

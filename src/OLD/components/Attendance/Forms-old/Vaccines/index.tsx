@@ -1,10 +1,12 @@
-// @ts-nocheck
+//@ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import { vaccinesService } from "@/OLD/services/vaccine-service";
 
-import { useLoadPatient } from "@/presentation";
+import { RemoteChangeStatus } from "@/data";
+import { useLoadPatient, useLoadAllScheduleStatuses } from "@/presentation";
+import { container, patientTypes } from "@/container";
 
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -14,7 +16,7 @@ import { useQueryClient } from "react-query";
 import { Select, FormHandler, Button, useToast } from "infinity-forge";
 import { Container } from "./styles";
 
-function Vaccines({ modal, setModal, value }) {
+function Vaccines({ modal, setModal, value, reloadSchedule }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [allProtocols, setAllProtocols] = useState([]);
@@ -23,9 +25,10 @@ function Vaccines({ modal, setModal, value }) {
 
   const { createToast } = useToast();
 
-  const patient = useLoadPatient();
   const router = useRouter();
-  const eventId = router.query.innerpage;
+  const patient = useLoadPatient();
+  const eventId = router.query.scheduleId;
+  const scheduleStatuses = useLoadAllScheduleStatuses();
 
   const queryClient = useQueryClient();
 
@@ -92,6 +95,26 @@ function Vaccines({ modal, setModal, value }) {
         queryClient.invalidateQueries({
           queryKey: ["LoadAllVaccines", patient.data?.id],
         });
+
+        if (
+          router?.query?.scheduleId &&
+          patient?.data?.scheduleId &&
+          !patient?.data?.scheduleStartedAt
+        ) {
+          const statusId =
+            scheduleStatuses.data?.find((status) => status.type === "ATEND")
+              ?.id || "";
+
+          container
+            .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
+            .change({
+              scheduleId: router.query.scheduleId as string,
+              statusId,
+            });
+
+          reloadSchedule && reloadSchedule();
+        }
+
         return createToast({
           message: "Vacina lançada com sucesso!",
           status: "success",

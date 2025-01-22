@@ -32,7 +32,7 @@ export function ReactivateSchedule({ event, onExecuteAction }: ActionSchedule) {
       .get<RemoteSchedule>(patientTypes.RemoteSchedule)
       .reopen(payload);
 
-    await onExecuteAction();
+    onExecuteAction && (await onExecuteAction());
 
     createToast({ message: "Reativado com sucesso!", status: "success" });
   }
@@ -43,7 +43,7 @@ export function ReactivateSchedule({ event, onExecuteAction }: ActionSchedule) {
         <button
           type="button"
           className="reset-button"
-          onClick={() => setShowForm(state => !state)}
+          onClick={() => setShowForm((state) => !state)}
         >
           <span>Reativar agendamento</span>
         </button>

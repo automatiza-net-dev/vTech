@@ -272,7 +272,7 @@ export default function ShowBudget({ budget, setReload }: any) {
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <span className="uk-text-small">Status</span>
                   <span className="uk-text-default">
-                    {budgetStatusFormatter(data?.status)}
+                    {budgetStatusFormatter(data)}
                   </span>
                 </div>
               </div>
@@ -486,6 +486,16 @@ export default function ShowBudget({ budget, setReload }: any) {
                         {data?.cancelationReason.reason}
                       </span>
                     </div>
+                    {data?.status === "NAO_CONFIRMADO__CANCELADO" && (
+                      <div className="uk-flex uk-flex-column uk-width-1-1">
+                        <span className="uk-text-small">
+                          Observação cancelamento
+                        </span>
+                        <span className="uk-text-default">
+                          {data?.canceled_observation}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </>
               )}

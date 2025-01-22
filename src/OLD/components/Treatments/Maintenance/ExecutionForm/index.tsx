@@ -189,17 +189,19 @@ export default function ExecutionForm({ data, reload, setReload }) {
         <span className="uk-text-muted">Nenhuma execução agendada</span>
       ) : (
         <div>
+          <div className="custom-head">
+            <span>Item execução</span>
+            <span>Data Agendamento</span>
+            <span>Profissional responsável</span>
+            <span>Data Execução</span>
+            <span>Observação</span>
+            <span>Ações</span>
+          </div>
           {executionPayload.map((execution, i) => (
-            <div className="uk-margin-small-top">
-              <div className="uk-flex uk-flex-around">
+            <div>
+              <div className="fields-box">
+                <div>{execution?.productivityItem?.description || "-"}</div>
                 <div>
-                  <label>Item Execução</label>
-                  <br />
-                  {execution?.productivityItem?.description || "-"}
-                </div>
-                <div className="">
-                  <label>Data agendamento</label>
-                  <br />
                   <Tooltip title="Clique para acessar os detalhes do agendamento">
                     <span
                       className="uk-link"
@@ -215,7 +217,6 @@ export default function ExecutionForm({ data, reload, setReload }) {
                   </Tooltip>
                 </div>
                 <div className="uk-margin-small-right">
-                  <label>Profissional Responsável</label>
                   <AutoComplete
                     disabled={!(execution?.id === selectedId)}
                     className="uk-width-1-1"
@@ -252,7 +253,6 @@ export default function ExecutionForm({ data, reload, setReload }) {
                   />
                 </div>
                 <div className="uk-margin-small-right">
-                  <label>Data Execução</label>
                   <DatePicker
                     disabled={!(execution?.id === selectedId)}
                     format="DD/MM/YYYY - HH:mm"
@@ -270,6 +270,23 @@ export default function ExecutionForm({ data, reload, setReload }) {
                       setExecutionPayload(obj);
                     }}
                     className="uk-width-1-1"
+                  />
+                </div>
+                <div>
+                  <Input
+                    disabled={!(execution?.id === selectedId)}
+                    value={
+                      executionPayload.find((pay) => pay?.id === execution?.id)
+                        ?.observation
+                    }
+                    onChange={(e) => {
+                      const obj = [...executionPayload];
+                      obj.splice(i, 1, {
+                        ...executionPayload[i],
+                        observation: e.target.value,
+                      });
+                      setExecutionPayload(obj);
+                    }}
                   />
                 </div>
                 {execution?.scheduleDate && !execution?.executionDate ? (
@@ -332,25 +349,6 @@ export default function ExecutionForm({ data, reload, setReload }) {
                   </div>
                 ) : null}
               </div>
-              <div className="uk-margin-small-top">
-                <label>Observação</label>
-                <TextArea
-                  disabled={!(execution?.id === selectedId)}
-                  value={
-                    executionPayload.find((pay) => pay?.id === execution?.id)
-                      ?.observation
-                  }
-                  onChange={(e) => {
-                    const obj = [...executionPayload];
-                    obj.splice(i, 1, {
-                      ...executionPayload[i],
-                      observation: e.target.value,
-                    });
-                    setExecutionPayload(obj);
-                  }}
-                />
-              </div>
-              <hr />
             </div>
           ))}
         </div>

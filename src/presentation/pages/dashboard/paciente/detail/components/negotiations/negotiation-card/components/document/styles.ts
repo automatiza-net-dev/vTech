@@ -13,6 +13,7 @@ export const Document = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 20%;
 
     button {
       width: fit-content;
