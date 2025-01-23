@@ -12,6 +12,8 @@ export function InputTotal({ tag, total }: any) {
   async function onChangeInputCurrency(value: number | string) {
     setFieldValue(`dreFlatten.${tag}.total`, value);
 
+    console.log(tag)
+
     const newListFlattenUpdateWithNewValue: { [key in string]: Agrupamento } =
       Object.keys(values.dreFlatten as { [key in string]: Agrupamento }).reduce(
         (reducer, item) => {
@@ -52,7 +54,7 @@ export function InputTotal({ tag, total }: any) {
   }
 
   useEffect(() => {
-    if (total && total > 0) {
+    if (total) {
       onChangeInputCurrency(total);
     }
   }, []);
