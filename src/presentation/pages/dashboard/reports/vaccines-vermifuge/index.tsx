@@ -122,6 +122,62 @@ export function VaccinesVermifugeReport({
           }}
         >
           <section>
+            <div className="date-container">
+              <label htmlFor="" className="font-18-regular">
+                Data de agendamento
+              </label>
+              <div className="row">
+                <div className="row" style={{ alignItems: "center" }}>
+                  <InputDatePicker
+                    name="fromScheduling"
+                    language="pt"
+                    mode="date"
+                  />
+                  <div
+                    className="font-20-bold"
+                    style={{ marginBottom: 10, width: 20 }}
+                  >
+                    -
+                  </div>
+                  <InputDatePicker
+                    name="toScheduling"
+                    label=" "
+                    language="pt"
+                    mode="date"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="date-container">
+              <label htmlFor="" className="font-18-regular">
+                Data de aplicação
+              </label>
+
+              <div className="row">
+                <div className="row" style={{ alignItems: "center" }}>
+                  <InputDatePicker
+                    name="toApplication"
+                    language="pt"
+                    mode="date"
+                  />
+                  <div
+                    className="font-20-bold"
+                    style={{ marginBottom: 10, width: 20 }}
+                  >
+                    -
+                  </div>
+                  <InputDatePicker
+                    name="fromApplication"
+                    label=" "
+                    language="pt"
+                    mode="date"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+          <section className="custom-row">
             {businessUnits.data && businessUnits.data?.length > 0 && (
               <div className="custom-grid-box">
                 <Select
@@ -135,51 +191,7 @@ export function VaccinesVermifugeReport({
                 />
               </div>
             )}
-            <div className="date-container">
-              <label htmlFor="" className="font-18-regular">
-                Data de agendamento
-              </label>
-              <div className="row" style={{ alignItems: "center" }}>
-                <InputDatePicker
-                  name="fromScheduling"
-                  language="pt"
-                  mode="date"
-                />
-                <div className="font-20-bold" style={{ marginBottom: 10 }}>
-                  -
-                </div>
-                <InputDatePicker
-                  name="toScheduling"
-                  label=" "
-                  language="pt"
-                  mode="date"
-                />
-              </div>
-            </div>
 
-            <div className="date-container">
-              <label htmlFor="" className="font-18-regular">
-                Data de aplicação
-              </label>
-              <div className="row" style={{ alignItems: "center" }}>
-                <InputDatePicker
-                  name="toApplication"
-                  language="pt"
-                  mode="date"
-                />
-                <div className="font-20-bold" style={{ marginBottom: 10 }}>
-                  -
-                </div>
-                <InputDatePicker
-                  name="fromApplication"
-                  label=" "
-                  language="pt"
-                  mode="date"
-                />
-              </div>
-            </div>
-          </section>
-          <section className="custom-row">
             {vaccines.data && vaccines.data?.length > 0 && (
               <div>
                 <Select

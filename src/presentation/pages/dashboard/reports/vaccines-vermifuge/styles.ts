@@ -2,14 +2,15 @@ import styled from "styled-components";
 
 export const VaccinesVermifuge = styled("div")`
   section {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    display: flex;
     gap: 10px;
-    .custom-grid-box {
-      grid-column-start: 1;
-      grid-column-end: 3;
+    width: 100%;
+
+    > div {
+      width: 100%;
     }
   }
+
   .actions-box {
     margin-top: 10px;
     display: flex;
