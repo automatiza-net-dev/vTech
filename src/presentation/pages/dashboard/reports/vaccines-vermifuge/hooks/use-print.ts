@@ -13,6 +13,16 @@ export function usePrint({
 
   const print = useReactToPrint({
     content: () => componentRef.current,
+    pageStyle: `
+    @page {
+      size: A4 landscape; 
+      margin: 10mm;
+    }
+
+    body {
+      font-family: sans-serif;
+    }
+  `,
   });
 
   useEffect(() => {

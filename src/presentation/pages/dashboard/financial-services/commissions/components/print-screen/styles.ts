@@ -11,9 +11,16 @@ export const PrintScreen = styled("div")`
   table {
     margin-top: 50px;
     width: 100%;
-    text-align: center;
+    text-align: left;
+
     thead {
       border-bottom: solid 2px black;
+    }
+
+    tbody {
+      td {
+        /* padding: 10px 30px 0; */
+      }
     }
   }
 `;

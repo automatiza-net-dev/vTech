@@ -4,7 +4,13 @@ import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 import { useRouter } from "next/router";
 
-import { FormHandler, Select, Button, RangeDatePicker } from "infinity-forge";
+import {
+  FormHandler,
+  Select,
+  Button,
+  RangeDatePicker,
+  InputDatePicker,
+} from "infinity-forge";
 
 import {
   PermissionItem,
@@ -27,24 +33,7 @@ export function VaccinesVermifugeReport({
   type: "vaccine" | "vermifuge";
   permission: "REL13" | "REL14";
 }) {
-  const initialData = {
-    type,
-    schedulingDate: {
-      startDate: String(moment()),
-      endDate: String(moment()),
-    },
-    applicationDate: {
-      startDate: undefined,
-      endDate: undefined,
-    },
-  };
-
-  const [filtersData, setFiltersData] = useState({
-    type,
-    units: [],
-    fromScheduling: moment().format("DD/MM/YYYY"),
-    toScheduling: moment().format("DD/MM/YYYY"),
-  });
+  const [filtersData, setFiltersData] = useState<any>({});
 
   const router = useRouter();
   const vaccines = useLoadAllVaccines({});
@@ -107,20 +96,18 @@ export function VaccinesVermifugeReport({
     <S.VaccinesVermifuge>
       <PermissionItem hash={permission}>
         <FormHandler
-          initialData={initialData}
           onChangeForm={{
             callbackResult: (dataForm) => {
-              const { schedulingDate, applicationDate, ...rest } = dataForm;
-
               const formatDate = (date) =>
-                date ? moment(date).format("DD/MM/YYYY") : null;
+                date ? moment(date).format("YYYY/MM/DD") : null;
 
               setFiltersData({
-                ...rest,
-                fromScheduling: formatDate(schedulingDate.startDate),
-                toScheduling: formatDate(schedulingDate.endDate),
-                toApplication: formatDate(applicationDate.endDate),
-                fromApplication:  formatDate(applicationDate.startDate),
+                ...dataForm,
+                type,
+                fromScheduling: formatDate(dataForm?.fromScheduling),
+                toScheduling: formatDate(dataForm?.toScheduling),
+                toApplication: formatDate(dataForm?.toApplication),
+                fromApplication: formatDate(dataForm?.fromApplication),
               });
             },
           }}
@@ -149,21 +136,47 @@ export function VaccinesVermifugeReport({
               </div>
             )}
             <div className="date-container">
-              <RangeDatePicker
-                name="schedulingDate"
-                label="Data de agendamento"
-                language="pt"
-                mode="date"
-              />
+              <label htmlFor="" className="font-18-regular">
+                Data de agendamento
+              </label>
+              <div className="row" style={{ alignItems: "center" }}>
+                <InputDatePicker
+                  name="fromScheduling"
+                  language="pt"
+                  mode="date"
+                />
+                <div className="font-20-bold" style={{ marginBottom: 10 }}>
+                  -
+                </div>
+                <InputDatePicker
+                  name="toScheduling"
+                  label=" "
+                  language="pt"
+                  mode="date"
+                />
+              </div>
             </div>
 
             <div className="date-container">
-              <RangeDatePicker
-                name="applicationDate"
-                label="Data de aplicação"
-                language="pt"
-                mode="date"
-              />
+              <label htmlFor="" className="font-18-regular">
+                Data de aplicação
+              </label>
+              <div className="row" style={{ alignItems: "center" }}>
+                <InputDatePicker
+                  name="toApplication"
+                  language="pt"
+                  mode="date"
+                />
+                <div className="font-20-bold" style={{ marginBottom: 10 }}>
+                  -
+                </div>
+                <InputDatePicker
+                  name="fromApplication"
+                  label=" "
+                  language="pt"
+                  mode="date"
+                />
+              </div>
             </div>
           </section>
           <section className="custom-row">
@@ -216,20 +229,6 @@ export function VaccinesVermifugeReport({
                 ]}
               />
             </div>
-            {/* <div>
-              <Select
-                isClearable
-                label="Odenação"
-                name="order"
-                onlyOneValue
-                options={[
-                  {
-                    label: "Protocolo",
-                    value: "Protocolo",
-                  },
-                ]}
-              />
-            </div> */}
           </section>
         </FormHandler>
 

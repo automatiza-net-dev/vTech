@@ -20,9 +20,7 @@ export function PrintVaccinesVermifugeReport({
             <th>Tutor</th>
             <th>Telefone</th>
             <th>Paciente</th>
-            <th>Tipo</th>
             <th>Nome {reports[0]?.vacina_vermifugo}</th>
-            <th>Descrição {reports[0]?.vacina_vermifugo}</th>
             <th>Protocolo</th>
             <th>Especie</th>
             <th>Data agendamento</th>
@@ -41,9 +39,7 @@ export function PrintVaccinesVermifugeReport({
                 <td>{item?.tutor}</td>
                 <td>{item?.contato_tutor}</td>
                 <td>{item?.paciente}</td>
-                <td>{item?.vacina_vermifugo}</td>
                 <td>{item?.nome_vacina}</td>
-                <td>{item?.descricao_vacina}</td>
                 <td>{item?.nome_protocolo}</td>
                 <td>{item?.especie}</td>
                 <td>{item?.data_agendamento ? item?.data_agendamento : "-"}</td>
