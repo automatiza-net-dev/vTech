@@ -1,3 +1,4 @@
+import { numberUtils } from "@/presentation/utils";
 import { DreItem } from "../types";
 
 export function flattenHierarchyToObject(dreData?: DreItem[]) {
@@ -16,8 +17,12 @@ export function flattenHierarchyToObject(dreData?: DreItem[]) {
       parentId,
       refs: group?.refs,
       basear: group?.basear || null,
-      total: group?.total || 0,
+      total: group?.total,
     };
+
+    if(group.type) {
+      console.log(payload.total)
+    }
 
     dreFlatten[group.tag] = payload;
     dreSplittedArray.push(payload);

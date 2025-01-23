@@ -6,25 +6,21 @@ export function Percentage({ tag }) {
 
   const dreFlatten = values["dreFlatten"];
 
-  const baserTag = Object.keys(dreFlatten).find(tag =>  {
-    const dre = dreFlatten[tag];
-
-    return dre.basear
-  })
-
-  const basearObject = baserTag && dreFlatten[baserTag]
-
   const value = dreFlatten[tag];
-  const custoBasear = basearObject?.total;
+  const refCustoBasear = values["basear"]?.refCusto;
+
+  const custoBasear = calcRefCusto(refCustoBasear, dreFlatten, true);
 
   const percentage = (
-    (Number(value?.total || 0) / Number(custoBasear || 1)) *
+    (Number(value?.total || 0) / Number(custoBasear || 0)) *
     100
   ).toFixed(1);
 
   return (
     <span className="font-14-regular">
-      {isNaN(Number(percentage))
+      {tag === values["basear"]?.tag
+        ? "100"
+        : isNaN(Number(percentage))
         ? 0
         : percentage}
       %

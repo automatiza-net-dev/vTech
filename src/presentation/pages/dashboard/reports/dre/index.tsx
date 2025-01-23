@@ -32,7 +32,6 @@ export function DreReport() {
     enableCache: true,
   });
 
-
   return (
     <PageWrapper
       title={

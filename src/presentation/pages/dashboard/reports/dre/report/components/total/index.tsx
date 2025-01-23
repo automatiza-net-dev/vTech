@@ -1,12 +1,12 @@
+import { useEffect } from "react";
+import { useFormikContext } from "formik";
 import { InputCurrency } from "infinity-forge";
 
 import { Percentage } from "./percentage";
-import { calcRefCusto } from "../../utils";
-import { useEffect } from "react";
-import { useFormikContext } from "formik";
 import { Agrupamento } from "../../types";
+import { calcRefCusto } from "../../utils";
 
-export function InputTotal({ tag, total, initialFlattenList }: any) {
+export function InputTotal({ tag, total }: any) {
   const { values, setFieldValue } = useFormikContext<any>();
 
   async function onChangeInputCurrency(value: number | string) {
@@ -46,7 +46,7 @@ export function InputTotal({ tag, total, initialFlattenList }: any) {
           true
         );
 
-        setFieldValue(`dreFlatten.${dre.tag}.total`, costDreFather);
+        setFieldValue(`dreFlatten.${dre.tag}.total`, costDreFather?.toFixed(2));
       }
     }
   }
@@ -56,8 +56,6 @@ export function InputTotal({ tag, total, initialFlattenList }: any) {
       onChangeInputCurrency(total);
     }
   }, []);
-
-  const refCusto = initialFlattenList[tag]?.refCusto;
 
   return (
     <div className="group_values">
