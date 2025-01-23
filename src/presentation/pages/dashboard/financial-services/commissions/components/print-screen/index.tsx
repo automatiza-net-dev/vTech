@@ -10,9 +10,9 @@ export function PrintScreen({ consolidated }) {
       <PrintHeader />
       <section className="title-section">
         <h1>Relatório de comissão por vendedor</h1>
-        {moment(consolidated?.data?.[0]?.dataInicio).format(
+        {moment(consolidated?.[0]?.dataInicio).format(
           "DD/MM/YYYY"
-        )} à {moment(consolidated?.data?.[0]?.dataFim).format("DD/MM/YYYY")}
+        )} à {moment(consolidated?.[0]?.dataFim).format("DD/MM/YYYY")}
       </section>
       <table>
         <thead>
