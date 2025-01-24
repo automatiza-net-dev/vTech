@@ -1,61 +1,56 @@
-import { useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
+
 import { useFormikContext } from "formik";
 import { InputCurrency } from "infinity-forge";
 
-import { Percentage } from "./percentage";
 import { Agrupamento } from "../../types";
 import { calcRefCusto } from "../../utils";
 
-export function InputTotal({ tag, total }: any) {
+import { Percentage } from "./percentage";
+
+function InputTotal({
+  tag,
+  total,
+}: Agrupamento & { initialFlattenList: any }) {
   const { values, setFieldValue } = useFormikContext<any>();
 
-  async function onChangeInputCurrency(value: number | string) {
-    setFieldValue(`dreFlatten.${tag}.total`, value);
+ const findItemIsGroupToExtraRefCusto = useCallback((refCusto: string) => {
+    return refCusto.split(" ")
+    .filter((item) => !isNaN(Number(item)) || /^[+\-*/]$/.test(item.trim()))
+    .filter((item) => item !== "" && !isNaN(Number(item))).reduce((reducer, item) => {
+      const valueItem = values.dreFlatten[item];
 
-    console.log(tag)
 
-    const newListFlattenUpdateWithNewValue: { [key in string]: Agrupamento } =
-      Object.keys(values.dreFlatten as { [key in string]: Agrupamento }).reduce(
-        (reducer, item) => {
-          const itemValue = values.dreFlatten[item];
+      if(valueItem && valueItem.itens && valueItem.itens.length > 0) {
+        const newRef = reducer + valueItem.refCusto
+      
+        return findItemIsGroupToExtraRefCusto(newRef)
+      }
 
-          if (String(tag) === String(item)) {
-            return {
-              ...reducer,
-              [item]: {
-                ...itemValue,
-                total: Number(value),
-              },
-            };
-          }
+      return reducer + ` + ${item}`
+    }, "");
+  }, [])
+ 
+  useEffect(() => {
+    if(total && total > 0) {
 
-          return { ...reducer, [item]: itemValue };
-        },
-        {}
+      const groupDresById = values.dreFlattenArray.filter(
+        (dre) => dre.refs && dre.refs.map((r) => String(r)).includes(tag)
       );
 
-    const groupDresById = values.dreFlattenArray.filter(
-      (dre) => dre.refs && dre.refs.map((r) => String(r)).includes(tag)
-    );
+      if (groupDresById && groupDresById.length > 0) {
+        for (const dre of groupDresById) {
+          const fatherRefCusto =  findItemIsGroupToExtraRefCusto(dre.refCusto)
 
-    if (groupDresById && groupDresById.length > 0) {
-      for (const dre of groupDresById) {
-        const fatherRefCusto = dre.refCusto;
-
-        const costDreFather = calcRefCusto(
-          fatherRefCusto,
-          newListFlattenUpdateWithNewValue,
-          true
-        );
-
-        setFieldValue(`dreFlatten.${dre.tag}.total`, costDreFather?.toFixed(2));
+          const costDreFather = calcRefCusto(
+            fatherRefCusto,
+            values.dreFlatten,
+            true
+          );
+  
+          setFieldValue(`dreFlatten.${dre.tag}.total`, costDreFather?.toFixed(2));
+        }
       }
-    }
-  }
-
-  useEffect(() => {
-    if (total) {
-      onChangeInputCurrency(total);
     }
   }, []);
 
@@ -67,3 +62,5 @@ export function InputTotal({ tag, total }: any) {
     </div>
   );
 }
+
+export default memo(InputTotal)

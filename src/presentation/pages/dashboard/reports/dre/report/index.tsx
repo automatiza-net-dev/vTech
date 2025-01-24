@@ -1,4 +1,4 @@
-import { api, FormHandler } from "infinity-forge";
+import { api, FormHandler, LoaderCircle } from "infinity-forge";
 
 import { InputRefCusto } from "./components";
 import { flattenHierarchyToObject } from "./utils";
@@ -6,14 +6,40 @@ import { flattenHierarchyToObject } from "./utils";
 import { Agrupamento, DreItem } from "./types";
 
 import * as S from "./styles";
-import { InputTotal } from "./components/total";
+import InputTotal from "./components/total";
+import { useEffect, useState } from "react";
 
 export function ReportDRE(props: {
   dre?: DreItem[];
   mutate: () => void;
   setDateDRE: any;
+  dateDRE?: string;
+  // dreLastMonth?: DreItem[];
+  // setDataLastMonth: any;
 }) {
+  const [loading, setLoading] = useState(false);
+
   const flatten = flattenHierarchyToObject(props.dre);
+  // const flattenLastMonth =
+  //   props?.dreLastMonth && flattenHierarchyToObject(props.dreLastMonth);
+
+  // useEffect(() => {
+  //   if (
+  //     props.dateDRE &&
+  //     props.dreLastMonth &&
+  //     Array.isArray(props.dreLastMonth)
+  //   ) {
+  //     setLoading(true);
+
+  //     setTimeout(() => {
+  //       setLoading(false);
+  //     }, 2000);
+  //   }
+  // }, [props.dateDRE, props.dreLastMonth]);
+
+  // if (loading) {
+  //   return <LoaderCircle size={30} color="#000" />;
+  // }
 
   return (
     <S.ReportDRE>
@@ -26,7 +52,10 @@ export function ReportDRE(props: {
           Component: () => (
             <button
               type="button"
-              onClick={() => props.setDateDRE(null)}
+              onClick={() => {
+                props.setDateDRE(null);
+                // props.setDataLastMonth(null);
+              }}
               className="cancel"
             >
               Cancelar
@@ -52,12 +81,17 @@ export function ReportDRE(props: {
                     accountPlans:
                       dreFlatten &&
                       Object.keys(dreFlatten)
-                        .map((flattenId) => dreFlatten[flattenId])
-                        ?.filter((item) => item.refs?.length === 0)
+                        .map((tag) => dreFlatten[tag])
+                        ?.filter(
+                          (item) =>
+                            (!item.refs || item.refs?.length === 0) &&
+                            item.custo
+                        )
                         ?.map((i) => {
+                          const custo = Number(i.custo || 0);
                           return {
                             accountPlanId: i.id,
-                            cost: Number(i.custo || 0),
+                            cost: custo < 0 ? custo * -1 : custo,
                           };
                         }),
                   },
@@ -74,9 +108,42 @@ export function ReportDRE(props: {
           dre: props?.dre,
           basear: flatten?.basear,
           dreFlatten: flatten?.dreFlatten,
+          // flattenLastMonth: flattenLastMonth,
           dreFlattenArray: flatten?.dreSplittedArray,
         }}
       >
+        <div className="top_titles" style={{ display: "flex", marginBottom: 5 }}>
+          <div style={{ width: 300, marginRight: 65 }}></div>
+
+          <div
+            style={{
+              width: 252,
+              marginRight: 20,
+              textAlign: "center",
+              background: "#000",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <h3 className="font_title" style={{ color: "#fff", marginBottom: 0, fontWeight: 700 }}>ORÇADO</h3>
+          </div>
+          <div
+            style={{
+              width: 252,
+              textAlign: "center",
+              background: "#000",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <h3 className="font_title" style={{ color: "#fff", marginBottom: 0, fontWeight: 700 }}>REALIZADO</h3>
+          </div>
+        </div>
+
         {props.dre?.map((report: DreItem) => {
           return (
             <div key={report.id}>
@@ -104,11 +171,31 @@ function Group(
     groupLevel: number;
   }
 ) {
+  function GroupRecursive() {
+    return (
+      <>
+        {props?.itens?.map((item) => (
+          <Group
+            key={item.tag}
+            {...item}
+            groupLevel={props.groupLevel + 1}
+            index={undefined}
+            initialFlattenList={props?.initialFlattenList}
+          />
+        ))}
+      </>
+    );
+  }
+
   return (
     <div className="group">
+      {props.groupLevel === 1 && <GroupRecursive />}
+
       <div className="group_top">
         <span
-          className={`font-12-${props.groupLevel > 2 ? "regular" : "bold"} description`}
+          className={`font-12-${
+            props.groupLevel > 2 ? "regular" : "bold"
+          } description`}
           style={{
             paddingLeft:
               props.groupLevel === 3
@@ -123,26 +210,16 @@ function Group(
 
         <div style={{ display: "flex", gap: 20 }}>
           <div style={{ position: "relative" }}>
-            {props.index === 0 && <h3 className="font_title">ORÇADO</h3>}
             <InputRefCusto {...props} />
           </div>
 
           <div style={{ position: "relative" }}>
-            {props.index === 0 && <h3 className="font_title">REALIZADO</h3>}
             <InputTotal {...props} />
           </div>
         </div>
       </div>
 
-      {props?.itens?.map((item) => (
-        <Group
-          key={item.tag}
-          {...item}
-          groupLevel={props.groupLevel + 1}
-          index={undefined}
-          initialFlattenList={props?.initialFlattenList}
-        />
-      ))}
+      {props.groupLevel > 1 && <GroupRecursive />}
     </div>
   );
 }

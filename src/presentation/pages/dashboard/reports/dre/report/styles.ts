@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ReportDRE = styled("div")`
 
-  .font_title {
+  /* .font_title {
     position: absolute;
     top: -47px;
     text-align: center;
@@ -13,7 +13,7 @@ export const ReportDRE = styled("div")`
     padding: 10px;
     background: #000;
     color: #fff;
-  }
+  } */
 
   input {
     height: 24px;

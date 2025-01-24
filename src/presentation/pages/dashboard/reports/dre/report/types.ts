@@ -10,6 +10,7 @@ export type Agrupamento = {
   refCusto: string;
   itens: Agrupamento[];
   refs?: number[];
+  total: number
 };
 
 export type DreItem = {

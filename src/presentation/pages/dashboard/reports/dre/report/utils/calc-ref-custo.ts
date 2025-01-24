@@ -3,11 +3,14 @@ export function calcRefCusto(
   baseDeCusto?: Record<string, { custo: number; total?: number }>,
   isTotal?: boolean
 ): number | null {
+  // console.log(refCusto)
   if (refCusto) {
     const refCustosIds: string[] = refCusto
       .split(" ")
       .filter((item) => !isNaN(Number(item)) || /^[+\-*/]$/.test(item.trim()))
       .filter((item) => item !== "");
+
+    //  console.log(refCustosIds) 
 
     const refCustosValues = refCustosIds.map((item) => {
       if (!isNaN(Number(item))) {

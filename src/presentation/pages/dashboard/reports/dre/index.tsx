@@ -16,6 +16,7 @@ import * as S from "./styles";
 
 export function DreReport() {
   const [dateDRE, setDateDRE] = useState(null);
+  // const [dreLastMonth, setDataLastMonth] = useState(null);
 
   const { data, mutate, isFetching } = useQuery({
     queryKey: ["DRE", dateDRE],
@@ -27,9 +28,8 @@ export function DreReport() {
         method: "get",
       });
 
-      return response
+      return response;
     },
-    enableCache: true,
   });
 
   return (
@@ -46,7 +46,6 @@ export function DreReport() {
           <FormHandler
             initialData={{ competence: dateDRE }}
             onSucess={async (data) => {
-              console.log(data);
               setDateDRE(data.competence);
             }}
             button={{ text: "CARREGAR DRE" }}
@@ -66,8 +65,29 @@ export function DreReport() {
         {isFetching && <LoaderCircle size={30} color="#000" />}
       </S.DreReport>
 
+      {/* <button
+          type="button"
+          onClick={async () => {
+            const response = await api({
+              url: `reports/dre-groups?period=${moment(dateDRE)
+                .subtract(1, "month")
+                .format("MM/YYYY")}&v2=true`,
+              method: "get",
+            });
+
+            setDataLastMonth(response);
+          }}
+        >PEGAR DADOS DO MÊS ANTERIOR</button> */}
+
+      {/* dreLastMonth={dreLastMonth as any} 
+setDataLastMonth={setDataLastMonth} */}
       {data && dateDRE && !isFetching && (
-        <ReportDRE dre={data as any} mutate={mutate} setDateDRE={setDateDRE} />
+        <ReportDRE
+          dre={data as any}
+          mutate={mutate}
+          dateDRE={dateDRE}
+          setDateDRE={setDateDRE}
+        />
       )}
     </PageWrapper>
   );
