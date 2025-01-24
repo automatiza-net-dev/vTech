@@ -10,8 +10,6 @@ import { calcRefCusto } from "../../utils";
 export function InputRefCusto({
   tag,
   custo,
-  description,
-  itens,
   initialFlattenList,
 }: Agrupamento & { initialFlattenList: any }) {
   const { values, setFieldValue } = useFormikContext<any>();
@@ -43,7 +41,6 @@ export function InputRefCusto({
       values.dreFlattenArray as Agrupamento[]
     ).filter((dre) => dre.refs && dre.refs.map((r) => String(r)).includes(tag));
 
-
     if (groupDresById && groupDresById.length > 0) {
       for (const dre of groupDresById) {
         const fatherRefCusto = dre.refCusto;
@@ -59,23 +56,10 @@ export function InputRefCusto({
   }
 
   useEffect(() => {
-    if(custo && custo > 0) {
-      // && !values.flattenLastMonth
-      onChangeInputCurrency(custo)
+    if (custo && custo > 0) {
+      onChangeInputCurrency(custo);
     }
-  }, [])
-
-  // useEffect(() => {
-  //   if(values.flattenLastMonth) {
-  //     const custo = values?.flattenLastMonth?.dreFlatten?.[tag]?.custo;
-
-  //    setFieldValue(`dreFlatten.${tag}.custo`, custo)
-
-  //     if(custo && custo > 0) {
-  //       onChangeInputCurrency(custo)
-  //     }
-  //   }
-  // }, [])
+  }, []);
 
   const refCusto = initialFlattenList[tag]?.refCusto;
 

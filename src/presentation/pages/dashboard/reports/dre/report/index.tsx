@@ -1,45 +1,23 @@
-import { api, FormHandler, LoaderCircle } from "infinity-forge";
+import { api, FormHandler } from "infinity-forge";
 
 import { InputRefCusto } from "./components";
+import InputTotal from "./components/total";
+
 import { flattenHierarchyToObject } from "./utils";
 
 import { Agrupamento, DreItem } from "./types";
 
 import * as S from "./styles";
-import InputTotal from "./components/total";
-import { useEffect, useState } from "react";
 
 export function ReportDRE(props: {
   dre?: DreItem[];
   mutate: () => void;
   setDateDRE: any;
   dateDRE?: string;
-  // dreLastMonth?: DreItem[];
-  // setDataLastMonth: any;
+  months?: number;
+  setMonths: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [loading, setLoading] = useState(false);
-
   const flatten = flattenHierarchyToObject(props.dre);
-  // const flattenLastMonth =
-  //   props?.dreLastMonth && flattenHierarchyToObject(props.dreLastMonth);
-
-  // useEffect(() => {
-  //   if (
-  //     props.dateDRE &&
-  //     props.dreLastMonth &&
-  //     Array.isArray(props.dreLastMonth)
-  //   ) {
-  //     setLoading(true);
-
-  //     setTimeout(() => {
-  //       setLoading(false);
-  //     }, 2000);
-  //   }
-  // }, [props.dateDRE, props.dreLastMonth]);
-
-  // if (loading) {
-  //   return <LoaderCircle size={30} color="#000" />;
-  // }
 
   return (
     <S.ReportDRE>
@@ -50,16 +28,24 @@ export function ReportDRE(props: {
         button={{ text: "Salvar" }}
         customAction={{
           Component: () => (
-            <button
-              type="button"
-              onClick={() => {
-                props.setDateDRE(null);
-                // props.setDataLastMonth(null);
-              }}
-              className="cancel"
-            >
-              Cancelar
-            </button>
+            <>
+              {!props.months && (
+                <button type="button" className="retroativo" onClick={() => props.setMonths(1)}>
+                   REPLICAR CUSTO DO MÊS ANTERIOR
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  props.setMonths(0);
+                  props.setDateDRE(null);
+                }}
+                className="cancel"
+              >
+                Cancelar
+              </button>
+            </>
           ),
           props: {},
         }}
@@ -108,11 +94,13 @@ export function ReportDRE(props: {
           dre: props?.dre,
           basear: flatten?.basear,
           dreFlatten: flatten?.dreFlatten,
-          // flattenLastMonth: flattenLastMonth,
           dreFlattenArray: flatten?.dreSplittedArray,
         }}
       >
-        <div className="top_titles" style={{ display: "flex", marginBottom: 5 }}>
+        <div
+          className="top_titles"
+          style={{ display: "flex", marginBottom: 5 }}
+        >
           <div style={{ width: 300, marginRight: 65 }}></div>
 
           <div
@@ -127,7 +115,12 @@ export function ReportDRE(props: {
               justifyContent: "center",
             }}
           >
-            <h3 className="font_title" style={{ color: "#fff", marginBottom: 0, fontWeight: 700 }}>ORÇADO</h3>
+            <h3
+              className="font_title"
+              style={{ color: "#fff", marginBottom: 0, fontWeight: 700 }}
+            >
+              ORÇADO
+            </h3>
           </div>
           <div
             style={{
@@ -140,7 +133,12 @@ export function ReportDRE(props: {
               justifyContent: "center",
             }}
           >
-            <h3 className="font_title" style={{ color: "#fff", marginBottom: 0, fontWeight: 700 }}>REALIZADO</h3>
+            <h3
+              className="font_title"
+              style={{ color: "#fff", marginBottom: 0, fontWeight: 700 }}
+            >
+              REALIZADO
+            </h3>
           </div>
         </div>
 

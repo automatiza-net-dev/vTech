@@ -5,8 +5,8 @@ import {
   useQuery,
   FormHandler,
   PageWrapper,
-  InputDatePicker,
   LoaderCircle,
+  InputDatePicker,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -15,16 +15,16 @@ import { ReportDRE } from "./report";
 import * as S from "./styles";
 
 export function DreReport() {
+  const [months, setMonths] = useState(0);
   const [dateDRE, setDateDRE] = useState(null);
-  // const [dreLastMonth, setDataLastMonth] = useState(null);
 
   const { data, mutate, isFetching } = useQuery({
-    queryKey: ["DRE", dateDRE],
+    queryKey: ["DRE", dateDRE, months],
     queryFn: async () => {
       const response = await api({
         url: `reports/dre-groups?period=${moment(dateDRE).format(
           "MM/YYYY"
-        )}&v2=true`,
+        )}&months=${months}`,
         method: "get",
       });
 
@@ -65,28 +65,15 @@ export function DreReport() {
         {isFetching && <LoaderCircle size={30} color="#000" />}
       </S.DreReport>
 
-      {/* <button
-          type="button"
-          onClick={async () => {
-            const response = await api({
-              url: `reports/dre-groups?period=${moment(dateDRE)
-                .subtract(1, "month")
-                .format("MM/YYYY")}&v2=true`,
-              method: "get",
-            });
 
-            setDataLastMonth(response);
-          }}
-        >PEGAR DADOS DO MÊS ANTERIOR</button> */}
-
-      {/* dreLastMonth={dreLastMonth as any} 
-setDataLastMonth={setDataLastMonth} */}
       {data && dateDRE && !isFetching && (
         <ReportDRE
           dre={data as any}
           mutate={mutate}
           dateDRE={dateDRE}
           setDateDRE={setDateDRE}
+          months={months}
+          setMonths={setMonths}
         />
       )}
     </PageWrapper>
