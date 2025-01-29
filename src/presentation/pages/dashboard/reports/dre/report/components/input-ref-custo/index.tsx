@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
 import { useFormikContext } from "formik";
-import { InputCurrency } from "infinity-forge";
 
 import { Percentage } from "./percentage";
 import { Agrupamento } from "../../types";
 import { calcRefCusto } from "../../utils";
+import { InputCurrency } from "../../input-currency";
 
 export function InputRefCusto({
   tag,
@@ -14,8 +14,24 @@ export function InputRefCusto({
 }: Agrupamento & { initialFlattenList: any }) {
   const { values, setFieldValue } = useFormikContext<any>();
 
-  async function onChangeInputCurrency(value: number | string) {
-    setFieldValue(`dreFlatten.${tag}.custo`, value);
+  async function onChangeInputCurrency(
+    value: number | string,
+    callback?: () => void
+  ) {
+    callback && callback();
+    
+    if (String(value).at(-1) === ",") {
+      return;
+    }
+
+    const formattedValue = String(value).replace(",", ".");
+    const parsedValue = Number(formattedValue);
+
+    if (isNaN(parsedValue) || !isFinite(parsedValue)) {
+      return;
+    }
+
+    setFieldValue(`dreFlatten.${tag}.custo`, formattedValue);
 
     const newListFlattenUpdateWithNewValue: { [key in string]: Agrupamento } =
       Object.keys(values.dreFlatten as { [key in string]: Agrupamento }).reduce(
@@ -23,11 +39,13 @@ export function InputRefCusto({
           const itemValue = values.dreFlatten[item];
 
           if (String(tag) === String(item)) {
+            console.log(parsedValue);
+
             return {
               ...reducer,
               [item]: {
                 ...itemValue,
-                custo: Number(value),
+                custo: parsedValue,
               },
             };
           }
@@ -50,7 +68,7 @@ export function InputRefCusto({
           newListFlattenUpdateWithNewValue
         );
 
-        setFieldValue(`dreFlatten.${dre.tag}.custo`, costDreFather);
+        setFieldValue(`dreFlatten.${dre.tag}.custo`, costDreFather?.toFixed(2));
       }
     }
   }

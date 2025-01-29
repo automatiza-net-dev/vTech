@@ -3,27 +3,24 @@ import { calcRefCusto } from "../../utils";
 
 export function Percentage({ tag }) {
   const { values } = useFormikContext<any>();
-
   const dreFlatten = values["dreFlatten"];
 
   const value = dreFlatten[tag];
-  const refCustoBasear = values["basear"]?.refCusto;
+  let custoValue = String(value?.custo || "0");
 
+  if (custoValue.endsWith(",")) {
+    custoValue = custoValue.replace(/,$/, "");  
+  }
+  
+  let parsedCusto = Number(custoValue);
+  const refCustoBasear = values["basear"]?.refCusto;
   const custoBasear = calcRefCusto(refCustoBasear, dreFlatten);
 
-  const percentage = (
-    (Number(value?.custo || 0) / Number(custoBasear || 0)) *
-    100
-  ).toFixed(1);
+  const percentage = custoBasear && custoBasear > 0 ? ((parsedCusto / custoBasear) * 100).toFixed(1) : "0";
 
   return (
     <span className="font-14-regular">
-      {tag === values["basear"]?.tag
-        ? "100"
-        : isNaN(Number(percentage))
-        ? 0
-        : percentage}
-      %
+      {tag === values["basear"]?.tag ? "100" : percentage}%
     </span>
   );
 }

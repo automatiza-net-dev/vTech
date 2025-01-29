@@ -1,12 +1,12 @@
 import { memo, useCallback, useEffect } from "react";
 
 import { useFormikContext } from "formik";
-import { InputCurrency } from "infinity-forge";
 
 import { Agrupamento } from "../../types";
 import { calcRefCusto } from "../../utils";
 
 import { Percentage } from "./percentage";
+import { InputCurrency } from "../../input-currency";
 
 function InputTotal({
   tag,
