@@ -1,4 +1,3 @@
-import { FinancesResume } from "@/domain";
 import { useLoadFinancesResume } from "@/presentation";
 
 import * as S from "./styles";

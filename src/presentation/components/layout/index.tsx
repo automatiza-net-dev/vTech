@@ -13,7 +13,7 @@ import * as S from "./styles";
 
 export function LayoutDashboard({ children }) {
   return (
-    <PrivatePage signInRole="user" roles={["user"]}>
+    <PrivatePage signInRole="user" roles={["user", "controller", "system"]}>
       <DictionaryQueryProvider>
         <LayoutPage>{children}</LayoutPage>
       </DictionaryQueryProvider>

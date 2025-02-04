@@ -1,7 +1,5 @@
-import { useQueryClient } from "react-query";
 
-import { FormHandler, Input, InputMask, useToast } from "infinity-forge";
-
+import { FormHandler, Input, InputMask, useQueryClient, useToast } from "infinity-forge";
 
 import { UserController } from "@/domain";
 import { RemoteUserController } from "@/data";
@@ -22,8 +20,8 @@ export function FormUserController({
   userController?: UserController;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { createToast} = useToast();
-  const queryClient = useQueryClient();
+  const { createToast } = useToast();
+  const refetch = useQueryClient(s => s.refetch);
 
   const id = userController?.id;
 
@@ -38,9 +36,12 @@ export function FormUserController({
         .create(data);
     }
 
-    queryClient.invalidateQueries("RemoteLoadUserControllers");
+    refetch("RemoteLoadUserControllers");
 
-    createToast({ message: `Colaborador ${id ? "atualizado" : "cadastrado"} com sucesso!`, status: "success" })
+    createToast({
+      message: `Colaborador ${id ? "atualizado" : "cadastrado"} com sucesso!`,
+      status: "success",
+    });
 
     setModal(false);
   }
@@ -56,6 +57,7 @@ export function FormUserController({
         >
           <S.FormUserController>
             <FormHandler
+              isStickyButtons
               initialData={{
                 ...userController,
                 roleId: String(userController?.roleId || ""),

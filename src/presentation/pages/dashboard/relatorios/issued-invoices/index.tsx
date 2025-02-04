@@ -6,7 +6,7 @@ import {
   useToast,
   FormHandler,
   PageWrapper,
-  RangeDatePicker,
+  InputDateRange,
 } from "infinity-forge";
 import * as XLSX from "xlsx/xlsx.mjs";
 
@@ -109,7 +109,7 @@ export function IssuedInvoices() {
             onlyOneValue
           />
 
-          <RangeDatePicker name="range" />
+          <InputDateRange names={["range.startDate", "range.endDate"]} />
         </FormHandler>
       </S.SalesReport>
     </PageWrapper>

@@ -24,12 +24,12 @@ export function DailyCashier() {
       customFilters: [
         {
           name: "fromOpening",
-          InputComponent: "DatePicker",
+          InputComponent: "InputDatePicker",
           label: "Início",
         },
         {
           name: "toOpening",
-          InputComponent: "DatePicker",
+          InputComponent: "InputDatePicker",
           label: "Fim",
         },
         {

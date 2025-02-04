@@ -1,7 +1,4 @@
-import React from "react";
-
-import { ListUserPage, LayoutAdmin } from "@/presentation";
-import { PrivatePage } from "infinity-forge";
+import { LayoutAdmin, ListUserPage } from "@/presentation";
 
 export default function ListUsuarioPage() {
   return (

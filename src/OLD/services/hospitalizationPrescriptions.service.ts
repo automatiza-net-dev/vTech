@@ -26,9 +26,6 @@ const getAllMedicalPrescriptionSchedulling = async ({ from, to }) =>
 const updateScheduling = async (id, data) =>
   await api.put(`/hospitalization-prescriptions/schedule/${id}`, data);
 
-const interruptPrescription = async (id) =>
-  await api.put(`/hospitalization-prescriptions/interrupt/${id}`);
-
 const excludePrescription = async (id) =>
   await api.put(`/hospitalization-prescriptions/exclude/${id}`);
 
@@ -39,6 +36,5 @@ export const hospitalizationPrescriptionsService = {
   getById,
   updateScheduling,
   getAllMedicalPrescriptionSchedulling,
-  interruptPrescription,
   excludePrescription,
 };

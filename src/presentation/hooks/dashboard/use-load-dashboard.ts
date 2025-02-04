@@ -1,20 +1,25 @@
 import { useRouter } from "next/router";
 
 import { useQuery } from "react-query";
-import { BadRequestError, useAuthAdmin } from "infinity-forge";
+import { api, BadRequestError, useAuthAdmin } from "infinity-forge";
 
-import { LoadDashboard, User } from "@/domain";
+import { LoadDashboard } from "@/domain";
 import { RemoteCRM, RemoteDashboard } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 
-export function useLoadDashboard(props: { type?: "crm" }) {
+export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
   const { user } = useAuthAdmin();
 
   const router = useRouter();
 
-
   async function fetcher() {
     try {
+      if (props.type === "admin") {
+        const response = await api({ url: "portal/dashboard", method: "get" });
+
+        return response;
+      }
+
       if (props?.type === "crm") {
         const response = await container
           .get<RemoteCRM>(TypesAutomatiza.RemoteCRM)

@@ -16,8 +16,7 @@ import {
 
 import * as S from "./styles";
 
-export function DashboardPage({ type }: { type?: "crm" }) {
-  const router = useRouter();
+export function DashboardPage({ type }: { type?: "crm" | "admin" }) {
   const dashboard = useLoadDashboard({ type });
 
   const breakColumns =
@@ -26,20 +25,6 @@ export function DashboardPage({ type }: { type?: "crm" }) {
   const subgroupsDataTable = dashboard?.data?.tables?.find(
     (item) => item?.name === "subgroups"
   );
-
-  useEffect(() => {
-    if (router?.query?.reload === "true") {
-      updateRoute({
-        params: { reload: undefined },
-        router,
-      });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      return;
-    }
-  }, [router.query?.reload]);
 
   return (
     <>
@@ -58,11 +43,11 @@ export function DashboardPage({ type }: { type?: "crm" }) {
         <TablesSection />
       </S.Dashboard>
 
-      <SchedulesDashboard />
+      {!type  && <SchedulesDashboard />}
 
-      <FinancesResumeCards />
+      {!type && <FinancesResumeCards />}
 
-      <CashiersResumeCards />
+      {!type && <CashiersResumeCards />}
     </>
   );
 }

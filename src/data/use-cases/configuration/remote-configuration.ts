@@ -2,15 +2,16 @@
 
 import { inject, injectable } from 'inversify'
 
-import * as infinityForge from 'infinity-forge'
+import { InfraTypes } from "@/container/infra";
+import { makeApiURL } from "@/container/infra/make-api-url";
 
 import * as domain from "@/domain"
 
 @injectable()
 export class RemoteConfiguration implements domain.LoadAllDictionary {
   constructor(
-    @inject(infinityForge.InfraTypes.makeApiURL) private readonly makeApiURL: infinityForge.makeApiURL,
-    @inject(infinityForge.InfraTypes.authorizeDashboardHttp) private readonly httpClient: infinityForge.HttpClient<any>,
+    @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
+    @inject(InfraTypes.authorizeDashboardHttp) private readonly httpClient: domain.HttpClient<any>,
   ) {}
   async loadAllDictionary() {
     const response = await this.httpClient.request({

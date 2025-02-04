@@ -1,69 +1,26 @@
 import { inject, injectable } from "inversify";
 
 import { InfraTypes } from "@/container/infra/types";
+import { makeApiURL } from "@/container/infra/make-api-url";
 
-import * as infinityForge from "infinity-forge";
+import * as domain from "@/domain";
 
 @injectable()
-export class RemoteMenu
-  implements
-    infinityForge.LoadAllMenu,
-    infinityForge.CreateUser,
-    infinityForge.DeleteUser,
-    infinityForge.EditUser
-{
+export class RemoteMenu {
   constructor(
     @inject(InfraTypes.makeApiURL)
-    private readonly makeApiURL: infinityForge.makeApiURL,
+    private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
-    private readonly httpClient: infinityForge.HttpClient
+    private readonly httpClient: domain.HttpClient
   ) {}
 
-  async loadAll(params?: infinityForge.LoadAllMenu.Params) {
+  async loadAll(params) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("Menu"),
       method: "get",
       body: params,
     });
 
-    return response.data as infinityForge.LoadAllMenu.Model;
-  }
-
-  async create(params: infinityForge.CreateUser.Params) {
-    const response = await this.httpClient.request({
-      url: this.makeApiURL.make("Menu"),
-      method: "post",
-      body: params,
-    });
-
-    return response.data as infinityForge.CreateUser.Model;
-  }
-
-  async delete(params: infinityForge.DeleteUser.Params) {
-    const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`Menu/${params.id}`),
-      method: "delete",
-    });
-
     return response.data;
-  }
-
-  async edit(params: infinityForge.EditUser.Params) {
-    const response = await this.httpClient.request({
-      url: this.makeApiURL.make("Menu"),
-      method: "put",
-      body: params,
-    });
-
-    return response.data;
-  }
-
-  async getDetail(params: infinityForge.LoadDetailUser.Params) {
-    const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`Menu/${params.id}`),
-      method: "get",
-    });
-
-    return response.data as infinityForge.LoadDetailUser.Model;
   }
 }

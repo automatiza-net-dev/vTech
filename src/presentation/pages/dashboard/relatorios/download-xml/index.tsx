@@ -6,7 +6,7 @@ import {
   useToast,
   FormHandler,
   PageWrapper,
-  DatePicker,
+  InputDatePicker,
 } from "infinity-forge";
 
 import { reportsService } from "@/OLD/services/reports.service";
@@ -77,7 +77,7 @@ export function DownloadXML() {
             onlyOneValue
           />
 
-          <DatePicker name="periodo" mode={"month"} label="Período" />
+          <InputDatePicker name="periodo" mode={"month"} label="Período" />
         </FormHandler>
       </S.DownloadXML>
     </PageWrapper>

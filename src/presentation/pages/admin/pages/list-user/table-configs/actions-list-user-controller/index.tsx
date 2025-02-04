@@ -1,21 +1,21 @@
 import { useState } from "react";
+import { useAuthAdmin, useQueryClient, useToast } from "infinity-forge";
 
-import {
-  ButtonEdit,
-  ButtonDelete,
-  useDeleteUserController,
-} from "@/presentation";
-import { User } from "@/domain";
+import { ButtonEdit, ButtonDelete } from "@/presentation";
 import { FormUserController } from "../../components";
-import { useAuthAdmin } from "infinity-forge";
+
+import { RemoteUserController } from "@/data";
+import { adminTypes, container } from "@/container";
 
 export function ActionsListUserController(props) {
   const [modal, setModal] = useState(false);
-  const { mutateAsync, isLoading } = useDeleteUserController(props.id);
 
   const { user } = useAuthAdmin();
+  const { createToast } = useToast();
 
   const isActualUser = props.id === user?.user?.id;
+
+  const refetch = useQueryClient((s) => s.refetch);
 
   return (
     <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
@@ -30,7 +30,20 @@ export function ActionsListUserController(props) {
       <ButtonEdit onClick={() => setModal(true)} />
 
       {!isActualUser && (
-        <ButtonDelete onClick={() => mutateAsync()} disabled={isLoading} />
+        <ButtonDelete
+          onClick={async () => {
+            await container
+              .get<RemoteUserController>(adminTypes.RemoteUserController)
+              .delete({ id: props.id });
+
+            refetch("RemoteLoadUserControllers");
+
+            createToast({
+              message: "Colaborador excluido com sucesso",
+              status: "success",
+            });
+          }}
+        />
       )}
     </div>
   );

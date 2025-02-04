@@ -73,8 +73,6 @@ export const budgetStatusFormatter = (budget, setReload) => {
     BAIXADA: <span style={{ color: "green" }}>Baixada</span>,
   };
 
-  console.log(budget?.status, "<<<")
-
   return statusStyles[budget?.status] || budget?.status;
 };
 

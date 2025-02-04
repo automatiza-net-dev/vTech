@@ -14,7 +14,7 @@ export function ChartsSection({
   type,
   children,
 }: {
-  type?: "crm";
+  type?: "crm" | "admin";
   children?: React.ReactNode;
 }) {
   const dashboard = useLoadDashboard({ type });

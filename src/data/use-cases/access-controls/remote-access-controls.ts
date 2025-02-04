@@ -38,7 +38,7 @@ export class RemoteAccessControls implements domain.LoadAccessControls, domain.U
   }
 
   async update(params: domain.UpdateAccessControls.Params) {
-    const permissions = (params as any).roles.reduce((reducer, role) => {
+    const permissions = (params as any)?.roles?.reduce((reducer, role) => {
       return [...reducer, ...role.permissions];
     }, []);
 

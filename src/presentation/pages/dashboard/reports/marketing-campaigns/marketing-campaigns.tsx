@@ -6,7 +6,7 @@ import {
   PageWrapper,
   FormHandler,
   updateRoute,
-  RangeDatePicker,
+  InputDateRange,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -122,7 +122,7 @@ export function MarketingCampaignsReports() {
               ]}
             />
 
-            <RangeDatePicker name="period" mode="date" label="Período" />
+            <InputDateRange names={["period.startDate", "period.endDate"]} mode="date" label="Período" />
           </div>
         </FormHandler>
 

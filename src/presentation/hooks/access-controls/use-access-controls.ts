@@ -1,8 +1,7 @@
-import { useQuery } from "react-query";
 
 import { RemoteAccessControls } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { adminTypes, container } from "@/container";
+import { useQuery } from "infinity-forge";
 
 export function useAccessControls({ id }) {
   async function fetcher() {
@@ -12,6 +11,6 @@ export function useAccessControls({ id }) {
   return useQuery({
     queryKey: ["RemoteLoadAccessControls", id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

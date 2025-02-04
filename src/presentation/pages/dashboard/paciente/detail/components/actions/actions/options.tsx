@@ -56,7 +56,7 @@ export function useActionsPatient(): {
         <svg
           stroke="currentColor"
           fill="currentColor"
-          stroke-width="0"
+          strokeWidth="0"
           viewBox="0 0 384 512"
           height="30"
           width="30"
@@ -338,7 +338,7 @@ export function useActionsPatient(): {
         <svg
           stroke="currentColor"
           fill="none"
-          stroke-width="2"
+          strokeWidth="2"
           viewBox="0 0 24 24"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -364,7 +364,7 @@ export function useActionsPatient(): {
         <svg
           stroke="currentColor"
           fill="none"
-          stroke-width="2"
+          strokeWidth="2"
           viewBox="0 0 24 24"
           stroke-linecap="round"
           stroke-linejoin="round"

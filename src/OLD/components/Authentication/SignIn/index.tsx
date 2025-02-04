@@ -6,7 +6,7 @@ import { container, TypesAutomatiza } from "@/container";
 
 import moment from "moment";
 import { notification } from "antd";
-import { useAuthAdmin, Button } from "infinity-forge";
+import { useAuthAdmin, Button, useToast } from "infinity-forge";
 
 import { sessionService } from "@/OLD/services/session.service";
 
@@ -37,6 +37,8 @@ export function SignIn() {
       };
     }
   }, []);
+
+  const {createToast} = useToast()
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -82,14 +84,8 @@ export function SignIn() {
         );
         loadUser();
       } catch (err: any) {
-        notification.error({
-          message: "Erro",
-          description:
-            err?.response?.data?.message ||
-            (err?.response?.status === 422
-              ? "Usuário ou senha não existe"
-              : "Erro ao logar. Por favor, tente novamente mais tarde."),
-        });
+        createToast({ status: "error",  message: err?.response?.data?.message || err?.response?.status === 422   ? "Usuário ou senha não existe" : "Erro ao logar. Por favor, tente novamente mais tarde."})
+          
       }
     },
     [data]

@@ -1,11 +1,11 @@
 import "reflect-metadata";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 import Head from "next/head";
 
-import { InfinityForgeProviders } from "infinity-forge";
+import { InfinityForgeProviders, useAuthAdmin, useQuery } from "infinity-forge";
 
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -24,8 +24,11 @@ import {
   InfinityForgeInjections,
   SchedulingContextProvider,
   LoaderOnRouteChange,
+  SignInAdmin,
+  Forbidden,
+  NotificationsModal,
 } from "@/presentation";
-import { RemoteLoadUserDashboard } from "@/data";
+import { RemoteLoadUserDashboard, RemoteMenu } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
 import "moment/locale/pt-br";
@@ -39,47 +42,26 @@ import { PermissionsProvider } from "@/presentation/context/permissions";
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
+  const [menus, setMenus] = useState<any>(null);
+
   const router = useRouter();
 
   return (
     <QueryClientProvider client={queryClient}>
       <IpProvider>
         <InfinityForgeProviders
+          atena={{  disableAuth: true, roles: ["aa"] } as any}
+          i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true }}
           auth={{
+            ForbiddenCompoent: Forbidden,
             roles: {
               user: {
                 signInConfig: { Component: SignIn },
-                loadUserConfig: {
-                  queryFn: async (): Promise<any> => {
-                    try {
-                      const user = await container
-                        .get<RemoteLoadUserDashboard>(
-                          TypesAutomatiza.RemoteLoadUserDashboard
-                        )
-                        .load({ admin: false });
-
-                      const initialUserData = {
-                        ...user,
-                        avatar: user.user?.profile_picture || "",
-                        emailAddress: user?.user?.email || "",
-                        firstName: user?.user?.name || "",
-                        id: (user as any)?.user?.id || "",
-                        imagem: user.user?.profile_picture,
-                        isExternal: false,
-                        lastName: "",
-                      };
-
-                      return initialUserData;
-                    } catch {
-                      return null;
-                    }
-                  },
-                },
                 onSignOut: (user: any) => {
                   queryClient.clear();
                   queryClient.removeQueries();
 
-                  router.push("/")
+                  router.push("/");
 
                   if (user?.isThirdParty) {
                     window.location.href =
@@ -87,10 +69,49 @@ export default function App({ Component, pageProps }) {
                   }
                 },
               },
+              controller: {
+                signInConfig: {
+                  Component: SignInAdmin,
+                },
+              },
             },
           }}
           loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
-          InjectedRemotes={InfinityForgeInjections}
+          InjectedRemotes={{
+            menu: {
+              menu: menus || { items: [] },
+            },
+            users: {
+              getRole: async () => {
+                try {
+                  const user = await container
+                    .get<RemoteLoadUserDashboard>(
+                      TypesAutomatiza.RemoteLoadUserDashboard
+                    )
+                    .load({});
+
+                  const initialUserData = {
+                    ...user,
+                    avatar: user.user?.profile_picture || "",
+                    emailAddress: user?.user?.email || "",
+                    firstName: user?.user?.name || "",
+                    id: (user as any)?.user?.id || "",
+                    imagem: user.user?.profile_picture,
+                    isExternal: false,
+                    lastName: "",
+                  };
+
+                  return {
+                    role: initialUserData?.user?.type,
+                    user: initialUserData,
+                  };
+                } catch (err) {
+                  console.log(err);
+                  return { role: "", user: null };
+                }
+              },
+            },
+          }}
           Configurations={{
             chat: false,
             menu: {
@@ -111,6 +132,8 @@ export default function App({ Component, pageProps }) {
           }}
           theme={themes[process.env.client || "sancla"]}
         >
+          <NotificationsModal />
+
           <GlobalStyles host={process.env.clientName} />
 
           <SchedulingContextProvider>
@@ -122,6 +145,8 @@ export default function App({ Component, pageProps }) {
                       <title>{process.env.clientName}</title>
                     </Head>
 
+                    <GambiarraTemporaria setMenus={setMenus} />
+
                     <Component {...pageProps} />
                   </PermissionsProvider>
                 </AppProvider>
@@ -132,4 +157,26 @@ export default function App({ Component, pageProps }) {
       </IpProvider>
     </QueryClientProvider>
   );
+}
+
+
+
+function GambiarraTemporaria({ setMenus }) {
+  const { roleUser } = useAuthAdmin();
+
+  useQuery({
+    queryKey: ["menus", roleUser],
+    queryFn: async () => {
+      return container
+        .get<RemoteMenu>(TypesAutomatiza.RemoteMenuAutomatiza)
+        .loadAll({});
+    },
+    enabled: roleUser === "user",
+    enableCache: true,
+    onSuccess: (data) => {
+      setMenus(data);
+    },
+  });
+
+  return <></>;
 }

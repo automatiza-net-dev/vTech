@@ -1,4 +1,6 @@
-import { useLoadUsersController, useTable } from "@/presentation";
+import { useTable } from "infinity-forge";
+
+import { useLoadUsersController } from "@/presentation";
 
 import { ButtonNewCollaborator } from "./components";
 import { tableListCollaboratorsConfig } from "./table-configs";
@@ -8,18 +10,13 @@ import * as S from "./styles";
 export function ListUserPage() {
   const { data, isFetching } = useLoadUsersController();
 
-  const { Table, SearchBar } = useTable({
-    tableKey: null,
-    router: undefined,
-    columnsTable: tableListCollaboratorsConfig,
+  const { Table } = useTable({
+    columnsConfiguration: {
+      columns: tableListCollaboratorsConfig
+    },
     configs: {
-      isFetching: isFetching,
-      tableData: data,
-      disableFetch: true,
-      disableGetFilter: true,
-      disablePagination: true,
-      enableSearchInSelf: true,
-      disableOrdenationTable: true,
+      isLoading: isFetching,
+      tableData: data || [],
       errorMessage: "Nenhum colaborador encontrado.",
     },
   });
@@ -32,8 +29,6 @@ export function ListUserPage() {
         </div>
 
         <div className="box-right">
-          {SearchBar}
-
           <div>
             <ButtonNewCollaborator />
           </div>

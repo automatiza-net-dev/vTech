@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { InfraTypes, container } from "infinity-forge";
-
-import { Storage } from "@/infra";
 
 export function useIsThirdPartyUser() {
   const [isThirdParty, setIsThirdParty] = useState(false);

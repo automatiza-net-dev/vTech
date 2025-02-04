@@ -1,8 +1,9 @@
-import { IColumnTable } from "@/presentation";
+import { Column } from "infinity-forge";
+
+import { UserController } from "@/domain";
 import { ActionsListUserController } from "./actions-list-user-controller";
 
-
-export const tableListCollaboratorsConfig: IColumnTable[] = [
+export const tableListCollaboratorsConfig: Column<UserController>[] = [
   {
     id: "name",
     label: "Nome",
@@ -20,7 +21,7 @@ export const tableListCollaboratorsConfig: IColumnTable[] = [
   },
   {
     width: 300,
-    id: "actions",
+    id: "roleId",
     label: "Ações",
     Component: {
       Element: ActionsListUserController,

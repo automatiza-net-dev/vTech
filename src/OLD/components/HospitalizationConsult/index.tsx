@@ -9,7 +9,6 @@ import Filters from "./Filters";
 import { Dropdown, Menu, Modal, Input } from "antd";
 import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/HospitalizationTimeline";
 import { Button, PageWrapper } from "infinity-forge";
-import HospitalizationControl from "@/OLD/components/Hospitalization/Control";
 import HeaderForm from "@/OLD/components/Hospitalization/HeaderForm";
 
 import { VscTriangleDown } from "react-icons/vsc";
@@ -193,14 +192,7 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
             patientData={selectedHospitalization}
           />
         )}
-        {controlVisible && (
-          <HospitalizationControl
-            id={selectedHospitalization?.id}
-            visible={controlVisible}
-            origin={"consult"}
-            close={() => setControlVisible(false)}
-          />
-        )}
+     x
         {hospitalizationData && (
           <Modal
             title="Dados da internação"
