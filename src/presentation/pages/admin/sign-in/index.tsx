@@ -18,13 +18,11 @@ export function SignInAdmin() {
     <S.Login>
       <div className="form-login">
         <FormHandler
-        debugMode
+          debugMode
           isStickyButtons
           button={{ text: "ENTRAR" }}
           onSucess={async (data) => {
-            const ipAddress = await fetch("https://api.ipify.org/")
-              .then((res) => res.text())
-              .then((res) => res);
+            const ipAddress = await api({ url: "ip", method: "get" }, "/api/");
 
             const response = await api({
               url: "auth/controller-login",

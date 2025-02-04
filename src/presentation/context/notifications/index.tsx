@@ -20,7 +20,7 @@ export function NotificationsModal() {
 
   const { user } = useAuthAdmin()
 
-  const { data } = useQuery({
+  const { data, mutate } = useQuery({
     queryKey: [user?.unit?.id, "notifications"],
     queryFn: async () => {
       const response = await api({ url: "Notifications/list-notifications", method: "get" })
@@ -42,8 +42,6 @@ export function NotificationsModal() {
   if (!notification) {
     return <></>;
   }
-
-  console.log(notification)
 
   return (
     <>
@@ -74,7 +72,9 @@ export function NotificationsModal() {
                 type="button"
                 text="Marcar como lida"
                 onClick={async () => {
-                  await api({ url: "read-notifications", method: "put", body: { notificationId: notification.id } })
+                  await api({ url: "Notifications/read-notifications", method: "put", body: { notificationId: notification.id } })
+
+                  await mutate()
                 }}
               />
             </div>
