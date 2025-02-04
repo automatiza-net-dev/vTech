@@ -51,7 +51,7 @@ export default function App({ Component, pageProps }) {
       <IpProvider>
         <InfinityForgeProviders
           atena={{  disableAuth: true, roles: ["aa"] } as any}
-          i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true }}
+          i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
             ForbiddenCompoent: Forbidden,
             roles: {

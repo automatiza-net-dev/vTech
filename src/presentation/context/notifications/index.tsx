@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 
-import { Button, useAuthAdmin, useQuery } from "infinity-forge";
+import { api, Button, useAuthAdmin, useQuery } from "infinity-forge";
 
 import { Modal } from "./modal";
 
 import * as S from "./styles";
+
+type Notification = {
+  "id": number;
+  "is_required": boolean,
+  "type": string,
+  "message":  string,
+  "image":  string,
+  title: string;
+}
 
 export function NotificationsModal() {
   const [open, setOpen] = useState(false);
@@ -12,23 +21,13 @@ export function NotificationsModal() {
   const { user } = useAuthAdmin()
 
   const { data } = useQuery({
-    queryKey: [user?.id, "notifications"],
-    queryFn: () => [
-      {
-        id: 1,
-        title: "Orçamentos Pendentes",
-        status: "",
-        message:
-          "Existem <strong>orçamentos</strong> <br /> que estão pendentes de liberação de Cortesia / Desconto Máximo. Clique Aqui para ir para a tela de Orçamentos",
-        createdAt: null,
-        createdAtText: null,
-        isRead: false,
-        link: "/dashboard/orcamentos?pending=true",
-        required: true,
-        image: "",
-      },
-      
-    ],
+    queryKey: [user?.unit?.id, "notifications"],
+    queryFn: async () => {
+      const response = await api({ url: "Notifications/list-notifications", method: "get" })
+
+      return response as Notification[]
+    },
+    enabled: !!user,
     enableCache: true
   });
 
@@ -43,6 +42,8 @@ export function NotificationsModal() {
   if (!notification) {
     return <></>;
   }
+
+  console.log(notification)
 
   return (
     <>
@@ -61,7 +62,7 @@ export function NotificationsModal() {
             )}
 
             <div className="actions">
-              {!notification.required && (
+              {!notification.is_required && (
                 <Button
                   type="button"
                   text="Sair"
@@ -72,7 +73,9 @@ export function NotificationsModal() {
               <Button
                 type="button"
                 text="Marcar como lida"
-                onClick={() => setOpen(false)}
+                onClick={async () => {
+                  await api({ url: "read-notifications", method: "put", body: { notificationId: notification.id } })
+                }}
               />
             </div>
           </div>

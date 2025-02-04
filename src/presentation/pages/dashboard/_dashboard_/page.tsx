@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-import { useRouter } from "next/router";
-import { updateRoute } from "infinity-forge";
+import { Router, useRouter } from "next/router";
+import { updateRoute, useQueryClient } from "infinity-forge";
 
 import { useLoadDashboard } from "@/presentation";
 

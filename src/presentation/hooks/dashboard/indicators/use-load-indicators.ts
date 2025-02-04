@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { BadRequestError } from "infinity-forge";
+import { BadRequestError, useAuthAdmin } from "infinity-forge";
 
 import { RemoteIndicators } from "@/data";
 import { container, dashboardTypes } from "@/container";
@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 import { Indicator } from "@/domain";
 
 export function useLoadIndicators(business_unit_id: string) {
+
+  const { user } = useAuthAdmin()
+
   const router = useRouter();
 
   const date = router.query.fromDate as string;
@@ -27,7 +30,7 @@ export function useLoadIndicators(business_unit_id: string) {
     }
   }
   const result = useQuery({
-    queryKey: ["loadIndicators"],
+    queryKey: ["loadIndicators", user?.unit?.id],
     queryFn: fetcher,
     refetchOnWindowFocus: false,
   });

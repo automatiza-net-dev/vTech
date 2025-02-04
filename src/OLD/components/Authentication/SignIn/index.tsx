@@ -6,7 +6,7 @@ import { container, TypesAutomatiza } from "@/container";
 
 import moment from "moment";
 import { notification } from "antd";
-import { useAuthAdmin, Button, useToast } from "infinity-forge";
+import { useAuthAdmin, Button, useToast, api } from "infinity-forge";
 
 import { sessionService } from "@/OLD/services/session.service";
 
@@ -27,18 +27,17 @@ export function SignIn() {
 
   useEffect(() => {
     if (process.browser) {
-      async () => {
-        const storage = container.get<Storage>(TypesAutomatiza.storage);
-        const ipStorage = await storage.get<"ip">("ip");
-        const ip = ipStorage?.value;
+      (async () => {
+        const ip = await api({ url: "ip", method: "get" }, "/api/");
+
         if (ip) {
           setData((prev) => ({ ...prev, ip }));
         }
-      };
+      })()
     }
   }, []);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -84,8 +83,13 @@ export function SignIn() {
         );
         loadUser();
       } catch (err: any) {
-        createToast({ status: "error",  message: err?.response?.data?.message || err?.response?.status === 422   ? "Usuário ou senha não existe" : "Erro ao logar. Por favor, tente novamente mais tarde."})
-          
+        createToast({
+          status: "error",
+          message:
+            err?.response?.data?.message || err?.response?.status === 422
+              ? "Usuário ou senha não existe"
+              : "Erro ao logar. Por favor, tente novamente mais tarde.",
+        });
       }
     },
     [data]

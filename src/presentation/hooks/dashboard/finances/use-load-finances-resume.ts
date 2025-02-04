@@ -5,6 +5,7 @@ import { RemoteFinancesResume } from "@/data";
 import { container, dashboardTypes } from "@/container";
 
 export function useLoadFinancesResume() {
+
   async function fetcher() {
     try {
       const response = await container

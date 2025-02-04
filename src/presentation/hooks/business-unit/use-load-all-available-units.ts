@@ -1,10 +1,7 @@
-import { useQuery } from "react-query";
+import { useQuery, useAuthAdmin } from "infinity-forge";
 
 import { RemoteBusinessUnits } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { adminTypes, container } from "@/container";
-import { useAuthAdmin } from "infinity-forge";
-import { User } from "@/domain";
 
 export function useLoadAllAvailableUnits() {
   const { user } = useAuthAdmin();
@@ -18,8 +15,8 @@ export function useLoadAllAvailableUnits() {
   }
 
   return useQuery({
-    queryKey: ["RemoteLoadAllAvailableUnits", user?.user?.id],
+    queryKey: ["RemoteLoadAllAvailableUnits", user?.unit?.id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

@@ -47,6 +47,7 @@ export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
     queryKey: [
       "dasboard",
       user?.user?.id,
+      user?.unit?.id,
       router.query.toDate,
       router.query.fromDate,
     ],
