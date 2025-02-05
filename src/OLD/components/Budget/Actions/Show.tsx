@@ -216,6 +216,8 @@ export default function ShowBudget({ budget, setReload }: any) {
       });
   };
 
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+
   return (
     <>
       <Tooltip
@@ -284,12 +286,16 @@ export default function ShowBudget({ budget, setReload }: any) {
                   </span>
                 </div>
 
-                <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small font-14-regular">
-                    Código interno
-                  </span>
-                  <span className="uk-text-default">{data?.internalCode}</span>
-                </div>
+                {hasInternalCode && (
+                  <div className="uk-flex uk-flex-column uk-width-1-1">
+                    <span className="uk-text-small font-14-regular">
+                      Código interno
+                    </span>
+                    <span className="uk-text-default">
+                      {data?.internalCode}
+                    </span>
+                  </div>
+                )}
               </div>
               <hr className="uk-margin-remove" />
               <div

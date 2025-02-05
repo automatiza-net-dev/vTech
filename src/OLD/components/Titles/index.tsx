@@ -408,11 +408,8 @@ export default function Titles({ type }: any) {
         <Table
           pagination={{ onChange: (page) => setCurrentPage(page) }}
           columns={
-            hasInternalCode
-              ? Columns(selectAllFinances)
-              : Columns(selectAllFinances).filter(
-                  (column) => column.key !== "internalCode"
-                )
+           Columns(selectAllFinances, hasInternalCode)
+            
           }
           dataSource={formatedFinances}
           footer={() => (

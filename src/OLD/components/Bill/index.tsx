@@ -97,6 +97,8 @@ export default function Bills() {
     }
   }, [router.query]);
 
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+
   return !hasBillsPermission ? (
     <AccessDenied />
   ) : (
@@ -169,15 +171,17 @@ export default function Bills() {
                 </Select>
               </Input>
 
-              <Input style={{ width: "70%" }}>
-                <label style={{ width: 140 }}>Código Interno</label>
-                <AntInput
-                  value={filters?.internalCode}
-                  onChange={(e) =>
-                    setFilters({ ...filters, internalCode: e.target.value })
-                  }
-                />
-              </Input>
+              {hasInternalCode && (
+                <Input style={{ width: "70%" }}>
+                  <label style={{ width: 140 }}>Código Interno</label>
+                  <AntInput
+                    value={filters?.internalCode}
+                    onChange={(e) =>
+                      setFilters({ ...filters, internalCode: e.target.value })
+                    }
+                  />
+                </Input>
+              )}
 
               <Input style={{ width: "50%" }}>
                 <label>Código</label>
@@ -271,7 +275,7 @@ export default function Bills() {
           <div className="uk-margin-top">
             <Table
               columns={
-                user?.unit?.system?.type === "Vet" ? Columns : LiftColumns
+                user?.unit?.system?.type === "Vet" ? Columns(hasInternalCode) : LiftColumns(hasInternalCode)
               }
               dataSource={mapper(data, cashiers)}
               footer={() => (

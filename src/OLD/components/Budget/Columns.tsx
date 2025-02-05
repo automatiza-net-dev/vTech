@@ -1,7 +1,10 @@
 import { useDictionary } from "@/presentation";
+import { useAuthAdmin } from "infinity-forge";
 
 export const Columns = () => {
   const { getWord } = useDictionary();
+  const { user} = useAuthAdmin()
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   return [
     {
@@ -24,11 +27,11 @@ export const Columns = () => {
       dataIndex: "tag",
       key: "tag",
     },
-    {
+    hasInternalCode ? {
       title: "Código interno",
       dataIndex: "internalCode",
       key: "internalCode"
-    },
+    } : {},
     {
       title: "Vendedor",
       dataIndex: "user_name",

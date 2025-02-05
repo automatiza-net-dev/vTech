@@ -1,7 +1,7 @@
 import { BsCheck, BsX } from "react-icons/bs";
 import { Checkbox, Tooltip } from "antd";
 
-export const Columns = (selectAllFinances) => [
+export const Columns = (selectAllFinances, hasInternalCode) => [
   {
     title: "Doc",
     dataIndex: "document",
@@ -57,11 +57,11 @@ export const Columns = (selectAllFinances) => [
     dataIndex: "nsu",
     key: "nsu",
   },
-  {
+  hasInternalCode ? {
     title: "Código interno",
     dataIndex: "internalCode",
     key: "internalCode",
-  },
+  } : {},
   {
     title: "Conf",
     dataIndex: "accept",

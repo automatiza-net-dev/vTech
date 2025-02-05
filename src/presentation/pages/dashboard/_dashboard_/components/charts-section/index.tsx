@@ -1,5 +1,5 @@
 import React from "react";
-import { FormHandler, Select, Skeleton } from "infinity-forge";
+import { Skeleton } from "infinity-forge";
 
 import {
   Cards,
@@ -8,9 +8,10 @@ import {
   useResizeWindowUpdate,
 } from "@/presentation";
 
-import * as S from "./styles";
 import { PrecoCard } from "../cards/preco";
 import { AdminFilters } from "./admin-filters";
+
+import * as S from "./styles";
 
 export function ChartsSection({
   type,
@@ -40,9 +41,7 @@ export function ChartsSection({
 
   return (
     <>
-      {type === "admin" && (
-        <AdminFilters />
-      )}
+      {type === "admin" && <AdminFilters />}
 
       <S.ChartsSection
         $gridStyle={handleGridStyle()}

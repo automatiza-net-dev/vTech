@@ -154,6 +154,8 @@ function Budgets() {
 
   const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
 
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
   ) : (
@@ -254,15 +256,17 @@ function Budgets() {
               </Select>
             </Input>
 
-            <Input style={{ width: "100%" }}>
-              <label>Código interno</label>
-              <AntInput
-                value={filters.internalCode}
-                onChange={(e) =>
-                  setFilters({ ...filters, internalCode: e.target.value })
-                }
-              />
-            </Input>
+            {hasInternalCode && (
+              <Input style={{ width: "100%" }}>
+                <label>Código interno</label>
+                <AntInput
+                  value={filters.internalCode}
+                  onChange={(e) =>
+                    setFilters({ ...filters, internalCode: e.target.value })
+                  }
+                />
+              </Input>
+            )}
 
             <Input style={{ width: "100%" }}>
               <label>Código</label>
@@ -278,8 +282,6 @@ function Budgets() {
             className="uk-flex uk-flex-middle uk-margin-small-top"
             style={{ gap: "1rem" }}
           >
-
-            
             <Input style={{ width: "100%" }}>
               <Label>Cliente</Label>
               <AntInput
