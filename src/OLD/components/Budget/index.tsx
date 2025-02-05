@@ -147,15 +147,14 @@ function Budgets() {
     setFilters((prv) => ({ ...prv, budget_id: id, noSearch: false }));
     setReload((prv) => !prv);
   };
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const { getWord } = useDictionary();
 
   const columns =
-    user?.unit?.system?.type === "Vet" ? Columns() : LiftColumns();
-
-  const { getWord } = useDictionary();
+    user?.unit?.system?.type === "Vet" ? Columns(hasInternalCode, getWord("Orçamento")) : LiftColumns(hasInternalCode, getWord("Orçamento"));
 
   const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />

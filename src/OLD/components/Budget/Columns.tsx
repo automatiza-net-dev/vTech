@@ -1,14 +1,12 @@
 import { useDictionary } from "@/presentation";
-import { useAuthAdmin } from "infinity-forge";
 
-export const Columns = () => {
-  const { getWord } = useDictionary();
-  const { user} = useAuthAdmin()
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+export const Columns = (hasInternalCode, word) => {
+
+
 
   return [
     {
-      title: `Data ${getWord("Orçamento")}`,
+      title: `Data ${word}`,
       dataIndex: "budget_date",
       key: "budget_date",
     },
