@@ -31,12 +31,9 @@ function BudgetActions({ budget, setReload = false }) {
 
   const componentRef = React.useRef<HTMLDivElement>(null);
 
-
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current, 
-    removeAfterPrint: true,
+    contentRef: componentRef,
   });
-
 
   return (
     <Container>
@@ -59,7 +56,7 @@ function BudgetActions({ budget, setReload = false }) {
             hookEnable: true,
           });
         }}
-        onClick={handlePrint}
+        onClick={() => handlePrint()}
       >
            <svg
               style={{ cursor: "pointer" }}
@@ -92,7 +89,7 @@ function BudgetActions({ budget, setReload = false }) {
             hookEnable: true,
           });
         }}
-        onClick={handlePrint}
+        onClick={() => handlePrint()}
       >
       <svg
               id="Capa_2"

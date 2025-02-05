@@ -387,10 +387,6 @@ function Budgets() {
               height: "95vh",
               maxWidth: "1400px",
               minHeight: "600px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
             }}
             stylesContent={{ height: "100%", width: "100%" }}
             open={modalCriar}

@@ -31,12 +31,12 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
           <label>Cod. {getWord("Orçamento")}</label>
           <p className="ukk-margin-remove">{budget?.data?.tag}</p>
         </div>
+
         <div>
-          <label>Cliente</label>
-          <p className="ukk-margin-remove">
-            {budget?.data?.client?.name || budget?.data?.client_name}
-          </p>
+          <label>Cod. Interno</label>
+          <p className="ukk-margin-remove">{budget?.data?.internalCode}</p>
         </div>
+
 
         <div>
           <label>Data {getWord("Orçamento")}</label>
@@ -44,18 +44,28 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
             {moment(budget?.data?.budget_date).format("DD/MM/YYYY - HH:mm")}
           </p>
         </div>
+
         <div>
           <label>Data validade</label>
           <p className="ukk-margin-remove">
             {moment(budget?.data?.expiration_date).format("DD/MM/YYYY - HH:mm")}
           </p>
         </div>
+
         <div>
           <label>Status</label>
           <p className="ukk-margin-remove">
             {budget?.data?.status.toLowerCase()}
           </p>
         </div>
+
+        <div>
+          <label>Cliente</label>
+          <p className="ukk-margin-remove">
+            {budget?.data?.client?.name || budget?.data?.client_name}
+          </p>
+        </div>
+
         {process.env.client !== "liftone" && (
           <div>
             <label>Paciente</label>

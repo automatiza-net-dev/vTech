@@ -13,7 +13,7 @@ export function usePrint({
   >([]);
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef: componentRef,
   });
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const AddBudget = styled("div")`
-  height: 100%;
   width: 100%;
   min-width: 700px;
 

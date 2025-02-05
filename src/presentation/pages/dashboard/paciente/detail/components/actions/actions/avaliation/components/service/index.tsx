@@ -53,7 +53,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   const queryClient = useQueryClient();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const handlePrint = useReactToPrint({ content: () => componentRef.current });
+  const handlePrint = useReactToPrint({ contentRef: componentRef});
 
   const { user } = useAuthAdmin();
 
