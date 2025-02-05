@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { memo, useState, useCallback, useEffect } from "react";
 
-import { Tooltip, Popconfirm, Modal, notification } from "antd";
+import {  Popconfirm, Modal, notification } from "antd";
 import DownFormChild from "../FormChild";
 import { financesService } from "@/OLD/services/finances.service";
 
@@ -65,7 +65,6 @@ function GroupActions({ group, setReload }: any) {
   return (
     <div className="uk-flex uk-flex-around">
       {!group?.payment_date && (
-        <Tooltip title="Baixar grupo de pagamento">
           <Popconfirm
             title="Baixa grupo de pagamento"
             onConfirm={() =>
@@ -76,7 +75,6 @@ function GroupActions({ group, setReload }: any) {
           >
             <IoMdDownload style={{ cursor: "pointer" }} />
           </Popconfirm>
-        </Tooltip>
       )}
       {downVisible && (
         <Modal

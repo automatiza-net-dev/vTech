@@ -105,6 +105,9 @@ function Filters({ filters, setFilters, setReload }) {
             }}
           />
           <Tooltip
+            idTooltip="asq341"
+            position="top-center"
+            enableHover
             content={
               <>
                 Esta consulta retorna todas as oportunidades que :
@@ -376,5 +379,3 @@ function Filters({ filters, setFilters, setReload }) {
 }
 
 export default Filters;
-
-

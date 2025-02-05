@@ -10,7 +10,6 @@ import {
   Switch,
   notification,
   Select as SelectAnt,
-  Tooltip,
   Modal,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -151,7 +150,6 @@ export default function FormChild({
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
-                <Tooltip title={"Clique para editar os dados do cliente"}>
                   <label
                     className="uk-link"
                     style={{
@@ -162,7 +160,6 @@ export default function FormChild({
                   >
                     Cliente
                   </label>
-                </Tooltip>
               }
             />
 

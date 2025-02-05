@@ -10,8 +10,8 @@ import OpActivities from "@/OLD/components/OpportunitiesActivities";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
 import UpdateActivity from "@/OLD/components/OpportunitiesActivities/Update";
 import FormControll from "../FormControll";
-import { Tooltip, Menu, Dropdown, Button } from "antd";
-import { Modal } from "infinity-forge";
+import { Menu, Dropdown, Button } from "antd";
+import { Modal, Tooltip } from "infinity-forge";
 import SyncOpportunity from "../SyncOpportunity";
 
 import { SideBarContent } from "@/presentation";
@@ -186,13 +186,11 @@ function StatusColumns({
           {column.label}
           {column?.title === "Nova Oportunidade" &&
             newOpportunityPermission && (
-              <Tooltip title="Adicionar oportunidade">
-                <PlusOutline
-                  size={25}
-                  className="custom-icon"
-                  onClick={() => router.push("/crm/oportunidades/nova")}
-                />
-              </Tooltip>
+              <PlusOutline
+                size={25}
+                className="custom-icon"
+                onClick={() => router.push("/crm/oportunidades/nova")}
+              />
             )}
         </h6>
         <div className="cards-qty">{sortedOpportunities?.length || 0}</div>
@@ -252,7 +250,6 @@ function StatusColumns({
                 )}
               </div>
             </div>
-            {/*</Tooltip>*/}
             <div>
               <div>
                 <Dropdown
@@ -286,7 +283,9 @@ function StatusColumns({
                       return (
                         <div>
                           <Tooltip
-                            title={
+                            idTooltip="asda81as"
+                            enableHover
+                            content={
                               <div>
                                 <div>Prof. Responsável: {act?.user?.name} </div>
                                 <div>

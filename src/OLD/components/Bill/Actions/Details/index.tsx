@@ -24,7 +24,6 @@ import {
   Popconfirm,
   Skeleton,
   Table,
-  Tooltip,
   Typography,
 } from "antd";
 
@@ -397,7 +396,7 @@ const Details = memo(function Details({ billId, setVisible }) {
     return false;
   };
 
-  const imprimir = useReactToPrint({ contentRef: componentRef })
+  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   const productIssuedDocuments = useMemo(() => {
     const result = [];
@@ -440,7 +439,7 @@ const Details = memo(function Details({ billId, setVisible }) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-                <Tooltip title={"Cancelar Nota"}>
+            
                   <MdOutlineCancel
                     opacity={validToCancel ? 1 : 0.5}
                     onClick={() => {
@@ -456,10 +455,10 @@ const Details = memo(function Details({ billId, setVisible }) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
+              
               )}
               {disableFNPermission && (
-                <Tooltip title={"Inutilizar Nota"}>
+              
                   <FiRefreshCw
                     opacity={validToDisable ? 1 : 0.5}
                     onClick={() => {
@@ -475,9 +474,9 @@ const Details = memo(function Details({ billId, setVisible }) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
+              
               )}
-              <Tooltip title={"Atualizar Dados"}>
+    
                 <MdOutlineSyncDisabled
                   opacity={validToUpdate ? 1 : 0.5}
                   onClick={() => {
@@ -489,9 +488,9 @@ const Details = memo(function Details({ billId, setVisible }) {
                   className="icon"
                   cursor={"pointer"}
                 />
-              </Tooltip>
+            
               {renderErrors(item?.corrections, item?.sefaz_status) && (
-                <Tooltip title="Visualizar erros da nota">
+              
                   <TbAlertTriangle
                     size={20}
                     color="var(--red)"
@@ -506,10 +505,10 @@ const Details = memo(function Details({ billId, setVisible }) {
                       ]);
                     }}
                   />
-                </Tooltip>
+              
               )}{" "}
               {item?.sefaz_status === "autorizado" && (
-                <Tooltip title={"Imprimir nota"}>
+           
                   <RiPrinterCloudLine
                     opacity={validToPrint ? 1 : 0.5}
                     onClick={() => {
@@ -523,7 +522,7 @@ const Details = memo(function Details({ billId, setVisible }) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
+             
               )}
             </div>
           ),
@@ -561,43 +560,41 @@ const Details = memo(function Details({ billId, setVisible }) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-                <Tooltip title={"Cancelar Nota"}>
-                  <MdOutlineCancel
-                    opacity={validToCancel ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToCancel) {
-                        return;
-                      }
-
-                      setCancelNfseData({
-                        issuedDocumentId: item.id,
-                        reason: "",
-                      });
-                      setOpenCancelNfse(true);
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-                </Tooltip>
-              )}
-              <Tooltip title={"Atualizar Dados"}>
-                <MdOutlineSyncDisabled
-                  opacity={validToUpdate ? 1 : 0.5}
+                <MdOutlineCancel
+                  opacity={validToCancel ? 1 : 0.5}
                   onClick={() => {
-                    if (!validToUpdate) {
+                    if (!validToCancel) {
                       return;
                     }
 
-                    updateNfseMutation.mutate(item.id);
+                    setCancelNfseData({
+                      issuedDocumentId: item.id,
+                      reason: "",
+                    });
+                    setOpenCancelNfse(true);
                   }}
                   size={25}
                   className="icon"
                   cursor={"pointer"}
                 />
-              </Tooltip>
+              )}
+
+              <MdOutlineSyncDisabled
+                opacity={validToUpdate ? 1 : 0.5}
+                onClick={() => {
+                  if (!validToUpdate) {
+                    return;
+                  }
+
+                  updateNfseMutation.mutate(item.id);
+                }}
+                size={25}
+                className="icon"
+                cursor={"pointer"}
+              />
+
               {item?.errors?.length > 0 ? (
-                <Tooltip title="Visualizar erros da nota">
+            
                   <TbAlertTriangle
                     size={20}
                     color="var(--red)"
@@ -607,9 +604,9 @@ const Details = memo(function Details({ billId, setVisible }) {
                       return setNfeErrors(item?.errors);
                     }}
                   />
-                </Tooltip>
+               
               ) : (
-                <Tooltip title={"Imprimir nota"}>
+               
                   <RiPrinterCloudLine
                     opacity={validToPrint ? 1 : 0.5}
                     onClick={() => {
@@ -623,7 +620,7 @@ const Details = memo(function Details({ billId, setVisible }) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
+          
               )}
             </div>
           ),
@@ -814,8 +811,8 @@ const Details = memo(function Details({ billId, setVisible }) {
             <PrintScreen bill={data} />
           </div>
         </div>
-      
-        <Button text="Imprimir" onClick={() => imprimir()}/>
+
+        <Button text="Imprimir" onClick={() => imprimir()} />
       </footer>
 
       <Modal

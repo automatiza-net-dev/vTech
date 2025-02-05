@@ -20,7 +20,7 @@ import { CheckOutlined, EditTwoTone } from "@ant-design/icons";
 import { VscTasklist } from "react-icons/vsc";
 
 // Components
-import { AutoComplete, Select, Table, Tooltip, Modal } from "antd";
+import { AutoComplete, Select, Table, Modal } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -234,7 +234,6 @@ function Products() {
                     ...d,
                     actions: (
                       <div className="uk-flex uk-flex-around">
-                        <Tooltip title="Detalhes do produto">
                           <CheckOutlined
                             size={15}
                             onClick={() => {
@@ -242,8 +241,6 @@ function Products() {
                               setDetailsVisible(true);
                             }}
                           />
-                        </Tooltip>
-                        <Tooltip title="Items de produtividade">
                           <VscTasklist
                             style={{ cursor: "pointer" }}
                             onClick={() => {
@@ -251,7 +248,6 @@ function Products() {
                               setProductivityVisible(true);
                             }}
                           />
-                        </Tooltip>
                         {/*canEditProduct && (
                         <EditTwoTone
                           size={15}

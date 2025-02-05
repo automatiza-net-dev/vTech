@@ -29,7 +29,7 @@ import { Reload } from "styled-icons/zondicons";
 // Components
 import { Container } from "./styles";
 import { Button, PageWrapper, useAuthAdmin } from "infinity-forge";
-import { Table, Tooltip, Modal, notification } from "antd";
+import { Table, Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "./Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -161,29 +161,23 @@ export default function Titles({ type }: any) {
         return {
           ...finance,
           document: (
-            <Tooltip
-              title={`Clique para acessar detalhes do ${
-                finance?.source === "FINANCE" ? "título" : "Borderô"
-              }`}
-            >
-              <span
-                onClick={() => {
-                  if (finance?.source === "FINANCE") {
-                    setId([finance?.id]);
-                    setData({
-                      id: finance?.id,
-                    });
-                    return setUpdateOpen(true);
-                  } else {
-                    setSelectedBorderoId(finance?.id);
-                    setBorderoDetailsVisible(true);
-                  }
-                }}
-                className="uk-link"
-              >
-                {finance?.document || "Doc"}
-              </span>
-            </Tooltip>
+            <span
+            onClick={() => {
+              if (finance?.source === "FINANCE") {
+                setId([finance?.id]);
+                setData({
+                  id: finance?.id,
+                });
+                return setUpdateOpen(true);
+              } else {
+                setSelectedBorderoId(finance?.id);
+                setBorderoDetailsVisible(true);
+              }
+            }}
+            className="uk-link"
+          >
+            {finance?.document || "Doc"}
+          </span>
           ),
           parc: `${finance?.installment} / ${finance?.qty_installments}`,
           fiscalNote: finance?.fiscal_note || "-",

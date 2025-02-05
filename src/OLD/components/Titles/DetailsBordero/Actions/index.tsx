@@ -6,7 +6,7 @@ import { financesService } from "@/OLD/services/finances.service";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { usePlans } from "@/OLD/hooks/usePlans";
 
-import { Modal, notification, Tooltip, Popconfirm } from "antd";
+import { Modal, notification, Popconfirm } from "antd";
 import Edit from "@/OLD/components/Titles/Actions/Edit";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
@@ -144,7 +144,7 @@ const Actions = memo(function Actions({
           }}
         />
       )}
-      <Tooltip title="Remover título borderô">
+
         <Popconfirm
           title="Deseja remover este título do borderô?"
           onConfirm={removeItemsBordero}
@@ -153,8 +153,8 @@ const Actions = memo(function Actions({
             <DeleteTwoTone twoToneColor={"red"} className="custom-icon" />
           )}
         </Popconfirm>
-      </Tooltip>
-      <Tooltip title="Detalhes do título">
+  
+
         <AiOutlineEye
           className="custom-icon"
           onClick={() => {
@@ -162,7 +162,6 @@ const Actions = memo(function Actions({
             setVisible(true);
           }}
         />
-      </Tooltip>
       {visible && (
         <Modal
           title="Atualizar informações da parcela"

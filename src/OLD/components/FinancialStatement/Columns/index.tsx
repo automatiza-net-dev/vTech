@@ -1,5 +1,4 @@
-import { BsCheck, BsX } from "react-icons/bs";
-import { Checkbox, Tooltip } from "antd";
+import { Checkbox } from "antd";
 
 export const Columns = (selectAllFinances) => [
   {
@@ -61,9 +60,8 @@ export const Columns = (selectAllFinances) => [
     title: (
       <>
         Ações&nbsp;
-        <Tooltip title="Selecionar todos">
+        
           <Checkbox onChange={(e) => selectAllFinances(e.target.checked)} />
-        </Tooltip>
       </>
     ),
     dataIndex: "actions",

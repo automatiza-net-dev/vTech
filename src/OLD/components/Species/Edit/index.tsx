@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Tooltip } from "antd";
+import { Form, Input, Modal, notification } from "antd";
 import { memo, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { animalServices } from "@/OLD/services/animal.service";
@@ -41,9 +41,7 @@ export const Edit = memo(({ item, reload, setReload }) => {
 
   return (
     <div>
-      <Tooltip title="Editar">
         <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
-      </Tooltip>
       <Modal
         loading={loading}
         title="Editar espécie"

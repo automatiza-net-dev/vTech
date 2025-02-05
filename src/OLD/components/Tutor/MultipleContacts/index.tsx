@@ -2,7 +2,7 @@
 import { memo } from "react";
 
 import { Container } from "./styles";
-import { Input, Button, Tooltip, Checkbox, notification } from "antd";
+import { Input, Button, Checkbox, notification } from "antd";
 const { Option } = Select;
 
 import { DeleteTwoTone } from "@ant-design/icons";
@@ -128,7 +128,7 @@ const MultipleContacts = memo(function MultipleContacts({
             />
           </div>
           <div className="uk-flex uk-flex-middle uk-margin-top">
-            <Tooltip title="Contato principal">
+
               {!contact?.main ? (
                 <AiOutlineStar
                   size={20}
@@ -156,7 +156,7 @@ const MultipleContacts = memo(function MultipleContacts({
                   }}
                 />
               )}
-            </Tooltip>
+           
             <DeleteTwoTone
               twoToneColor={"red"}
               size={20}

@@ -18,7 +18,6 @@ import { Modal } from "infinity-forge";
 import { useDictionary } from "@/presentation";
 import {
   useToast,
-  Tooltip,
   LoaderCircle,
   Select,
   FormHandler,
@@ -296,20 +295,14 @@ export default function CompleteBudget({ budget, setReload = false }) {
   return (
     <>
       {confirmBudgetPermission && (
-        <Tooltip
-          enableHover
-          content={`Confirmar ${getWord("Orçamento")}`}
-          trigger={
-            <BsCheckCircle
-              className="icon"
-              size={20}
-              onClick={() =>
-                validBudget ? setVisible((prevState) => !prevState) : null
-              }
-              style={{ opacity: validBudget ? 1 : 0.5 }}
-            />
-          }
-        />
+        <BsCheckCircle
+        className="icon"
+        size={20}
+        onClick={() =>
+          validBudget ? setVisible((prevState) => !prevState) : null
+        }
+        style={{ opacity: validBudget ? 1 : 0.5 }}
+      />
       )}
 
       <Modal

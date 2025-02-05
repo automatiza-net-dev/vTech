@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import moment from "moment";
 import { useAuthAdmin } from "infinity-forge";
-import { Tooltip, notification, Modal } from "antd";
+import {  notification, Modal } from "antd";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
@@ -156,7 +156,6 @@ function Actions(casher) {
   return (
     <Container>
       {casher.status === "ABERTO" && closeDailyCashierPermission && (
-        <Tooltip title="Fechar caixa">
           <VscLock
             size={20}
             className="icon"
@@ -166,11 +165,9 @@ function Actions(casher) {
               setNumberInput(true);
             }}
           />
-        </Tooltip>
       )}
       {(casher?.status === "FECHADO" ||
         (casher?.status === "REVISAO" && reopenDailyCashierPermission)) && (
-        <Tooltip title="Reabrir caixa">
           <VscUnlock
             size={20}
             className="icon"
@@ -180,11 +177,9 @@ function Actions(casher) {
               setNumberInput(false);
             }}
           />
-        </Tooltip>
       )}
       {!casher?.checking_date ? (
         checkDailyCashierPermission && (
-          <Tooltip title="Realizar conferência">
             <VscCheckAll
               size={20}
               className="icon"
@@ -209,20 +204,16 @@ function Actions(casher) {
               */
               }}
             />
-          </Tooltip>
         )
       ) : (
-        <Tooltip title="Conferência realizada">
           <GiConfirmed size={20} className="icon" color="var(--green)" />
-        </Tooltip>
       )}
-      <Tooltip title="Visualizar relatório">
         <VscBook
           className="icon"
           size={20}
           onClick={() => setReportVisible(true)}
         />
-      </Tooltip>
+        
       {obsVisible && (
         <Modal
           visible={obsVisible}

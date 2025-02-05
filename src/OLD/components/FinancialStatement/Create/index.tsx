@@ -28,7 +28,6 @@ import {
   AutoComplete,
   notification,
   Radio,
-  Tooltip,
 } from "antd";
 import Installments from "./Installments";
 
@@ -281,18 +280,10 @@ export const Create = memo(function Create({ type }) {
                 defaultValue="recorrente"
                 onChange={(e) => setData({ ...data, parcType: e.target.value })}
               >
-                <Tooltip
-                  placement="left"
-                  title="Ao gerar os titulos, a data de Competencia irá acompanhar a data de Vencimento da parcela"
-                >
+             
                   <Radio value="rec">Recorrente</Radio>
-                </Tooltip>
-                <Tooltip
-                  placement="left"
-                  title="Ao gerar os titulos, a data de Competencia irá acompanhar a data de Emissao da parcela"
-                >
+              
                   <Radio value="parc">Parcelamento</Radio>
-                </Tooltip>
               </Group>
             </div>
           </div>

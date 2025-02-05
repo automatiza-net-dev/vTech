@@ -13,7 +13,6 @@ import { PrintHeader } from "@/presentation";
 import * as S from "./styles";
 
 import moment from "moment";
-import { Tooltip } from "antd";
 
 function ModalListagem({ bill }) {
   const [template, setTemplate] = useState("");
@@ -160,7 +159,6 @@ export function ModalListagemDocumentosVenda({ bill, refresh }) {
         <ModalListagem bill={bill} />
       </Modal>
 
-      <Tooltip title="Listagem Documentos Venda">
         <button
           type="button"
           onClick={async () => setModal(true)}
@@ -168,7 +166,6 @@ export function ModalListagemDocumentosVenda({ bill, refresh }) {
         >
           <a>{bill?.document_status}</a>
         </button>
-      </Tooltip>
     </>
   );
 }

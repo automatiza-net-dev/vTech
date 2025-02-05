@@ -9,7 +9,6 @@ import {
   Skeleton,
   Table,
   notification,
-  Tooltip,
   Popconfirm,
   AutoComplete,
 } from "antd";
@@ -505,32 +504,6 @@ export const DepositMovements = memo(() => {
                       <CgDetailsMore size={15} />
                     </div>
                   </Link>
-                  {/*
-                  {canEditDeposit && (
-                    <Tooltip title="Editar movimentação">
-                      <EditTwoTone
-                        onClick={() =>
-                          notification.warning({
-                            message: "Verificar métodos e campos"
-                          })
-                        }
-                      />
-                    </Tooltip>
-                  )}
-                  {canRemoveDepositMov && (
-                    <Tooltip title="Remover movimentação">
-                      <Popconfirm
-                        title="Deseja remover essa movimentação?"
-                        onConfirm={() =>
-                          notification.warning({ message: "verificar método" })
-                        }
-                      >
-                        <DeleteTwoTone twoToneColor={"red"} />
-                      </Popconfirm>
-                    </Tooltip>
-                  )}
-                    */}
-          
 
                   <button
                     type="button"

@@ -7,7 +7,7 @@ import { useSuppliers } from "@/OLD/hooks/useSuppliers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Table, Tooltip } from "antd";
+import { Table } from "antd";
 import Filters from "./Filters";
 
 import { suppliersColumns } from "./Columns";
@@ -87,13 +87,11 @@ const Suppliers = memo(function Suppliers() {
       <Container>
         <Filters filters={filters} setFilters={setFilters} />
         <div className="uk-flex uk-flex-right">
-          <Tooltip title={canCreateSuppliers ? "-" : "Você não tem acesso"}>
             <Button
               disabled={!canCreateSuppliers}
               onClick={() => router.push("/dashboard/fornecedores/novo")}
               text="Cadastrar"
             />
-          </Tooltip>
         </div>
         <hr />
         <Table columns={suppliersColumns} dataSource={formattedSuppliers} />

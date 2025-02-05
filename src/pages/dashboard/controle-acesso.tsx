@@ -6,7 +6,6 @@ import {
   Modal,
   Table,
   Switch,
-  Tooltip,
   Checkbox,
   Collapse,
   Skeleton,
@@ -410,13 +409,11 @@ export default function ControlesDeAcessoPage() {
                               submitDuplicatePermission(elem?.id)
                             }
                           >
-                            <Tooltip title="Duplicar controle">
                               <BiDuplicate
                                 color="var(--darkBlue)"
                                 size={15}
                                 style={{ cursor: "pointer" }}
                               />
-                            </Tooltip>
                           </Popconfirm>
                           <Popconfirm
                             title="Tem certeza que deseja deletar?"

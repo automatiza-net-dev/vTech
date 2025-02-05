@@ -12,7 +12,7 @@ import Update from "./Update";
 import FormControll from "@/OLD/components/Kanban/CardsPanel/FormControll";
 
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
-import { notification, Tooltip, Popconfirm } from "antd";
+import { notification, Popconfirm } from "antd";
 
 import { HiPencilAlt } from "react-icons/hi";
 import { AiOutlineEye } from "react-icons/ai";
@@ -89,16 +89,13 @@ function Actions({
             <EditTwoTone onClick={() => setUpdateVisible(true)} />
           )}
           {newActivityPermission && (
-            <Tooltip title="Cadastrar nova atividade">
               <HiPencilAlt
                 className="custom-cursor"
                 size={15}
                 onClick={() => setNewActivityVisible(true)}
               />
-            </Tooltip>
           )}
           {addGainPermission && opportunity?.status?.ganho ? (
-            <Tooltip title="informar ganho">
               <BsCheckCircle
                 className="custom-cursor"
                 onClick={() =>
@@ -112,10 +109,8 @@ function Actions({
                   })
                 }
               />
-            </Tooltip>
           ) : null}
           {addLossPermission && opportunity?.status?.perda ? (
-            <Tooltip title="informar perda" className="custom-cursor">
               <BsXCircle
                 onClick={() =>
                   setFormData({
@@ -127,19 +122,15 @@ function Actions({
                   })
                 }
               />
-            </Tooltip>
           ) : null}
         </>
       )}
       {reopenOpportunityPermission && opportunity?.balance && (
-        <Tooltip title="Reabrir oportunidade">
           <BsArrowCounterclockwise
             className="custom-cursor"
             onClick={() => reopenOpportunity()}
           />
-        </Tooltip>
       )}
-      <Tooltip title="Visualizar atividades">
         <AiOutlineEye
           className="custom-cursor"
           onClick={() =>
@@ -148,7 +139,6 @@ function Actions({
             )
           }
         />
-      </Tooltip>
       {removeOpportunityPermission && (
         <Popconfirm
           title="Deseja remover esta oportunidade?"

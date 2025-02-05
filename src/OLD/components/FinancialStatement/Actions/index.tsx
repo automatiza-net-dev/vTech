@@ -29,7 +29,6 @@ import {
   Popconfirm,
   Modal,
   Checkbox,
-  Tooltip,
   Input,
 } from "antd";
 const { TextArea } = Input;
@@ -220,12 +219,11 @@ const Actions = memo(function Actions({
       ) : (
         reverseTitlePermission &&
         completeFinance?.origin_flag !== "BANCARIO" && (
-          <Tooltip title="Estornar título">
+        
             <BsArrowCounterclockwise
               className="icon"
               onClick={() => setReversalVisible(true)}
             />
-          </Tooltip>
         )
       )}
       {completeFinance.status !== "BAIXADO" && editTitlePermission && (

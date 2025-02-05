@@ -5,7 +5,6 @@ import { Unit } from "./unit";
 import { useLoadAllBusinessUnits } from "@/presentation";
 
 import * as S from "./styles";
-import { Tooltip } from "antd";
 
 export function InputAddUnit() {
   const { values, setFieldValue, setFieldError } = useFormikContext<any>();
@@ -57,18 +56,13 @@ export function InputAddUnit() {
           />
         )}
 
-        <Tooltip
-          title="Adicionar"
-          children={
-            <button
+<button
               type="button"
               onClick={addUnit}
               className={!selectUnit ? "disabled" : ""}
             >
               <Icon name="IconPlusSharp" color="#000" />
             </button>
-          }
-        />
       </div>
 
       {values?.units?.map((unit) => {

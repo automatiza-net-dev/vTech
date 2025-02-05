@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { billService } from "@/OLD/services/bills.service";
 import { productService } from "@/OLD/services/product.service";
 
@@ -13,7 +12,6 @@ import {
   Popconfirm,
   Radio,
   Table,
-  Tooltip,
   notification,
 } from "antd";
 import { Modal as ModalInfinityForge } from "infinity-forge";
@@ -36,7 +34,7 @@ const { Group } = Radio;
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-import { useDictionary, DiscountConfirmation } from "@/presentation";
+import { DiscountConfirmation } from "@/presentation";
 
 const columns = [
   {
@@ -394,13 +392,11 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
   return (
     <>
       {addItemPermission && (
-        <Tooltip title="Adicionar Item">
-          <GrAddCircle
-            className="icon"
-            size={20}
-            onClick={() => setVisible((prevState) => !prevState)}
-          />
-        </Tooltip>
+        <GrAddCircle
+          className="icon"
+          size={20}
+          onClick={() => setVisible((prevState) => !prevState)}
+        />
       )}
       <Modal
         visible={visible}

@@ -4,7 +4,7 @@ import { memo, useCallback, useState } from "react";
 import { financesService } from "@/OLD/services/finances.service";
 
 import { Container } from "./styles";
-import { Popconfirm, Tooltip, notification, Modal } from "antd";
+import { Popconfirm, notification, Modal } from "antd";
 import FormChild from "./FormChild";
 
 import { FiLock, FiUnlock } from "react-icons/fi";
@@ -147,42 +147,34 @@ const BorderoActions = memo(function BorderoActions({
   return (
     <Container>
       {bordero?.status === "Aberto" && (
-        <Tooltip title="Fechar borderô">
           <Popconfirm
             title="Deseja fechar este borderô?"
             onConfirm={closeBordero}
           >
             <FiLock className="custom-icon" />
           </Popconfirm>
-        </Tooltip>
       )}
       {bordero?.status === "Fechado" && (
-        <Tooltip title="Reabrir borderô">
           <Popconfirm
             title="Deseja reabrir este borderô?"
             onConfirm={reopenBordero}
           >
             <FiUnlock className="custom-icon" />
           </Popconfirm>
-        </Tooltip>
       )}
       {bordero?.status === "Fechado" && (
-        <Tooltip title="Baixar borderô">
           <IoMdDownload
             size={20}
             className="custom-icon"
             onClick={() => setDownModalVisible(true)}
           />
-        </Tooltip>
       )}
       {bordero?.status === "Baixado" && (
-        <Tooltip title="Estornar borderô">
           <BsArrowCounterclockwise
             size={20}
             className="custom-icon"
             onClick={() => setRevertModalVisible(true)}
           />
-        </Tooltip>
       )}
 
       <Modal

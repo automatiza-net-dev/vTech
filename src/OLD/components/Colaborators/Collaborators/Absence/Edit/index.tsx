@@ -4,7 +4,6 @@ import {
   Modal,
   notification,
   Select,
-  Tooltip,
   Checkbox,
   DatePicker,
   Space,
@@ -138,9 +137,8 @@ export const Edit = ({ item }) => {
 
   return (
     <div>
-      <Tooltip title="Editar">
-        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
-      </Tooltip>
+      <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+
       <Modal
         visible={isVisible}
         title="Editar ausencia ou indisponibilidade"

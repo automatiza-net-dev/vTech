@@ -11,7 +11,6 @@ import {
   Table,
   notification,
   Popconfirm,
-  Tooltip,
 } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -268,7 +267,6 @@ export const Deposits = memo(() => {
                         </div>
                       </Link>
                       {canRemoveDeposit && (
-                        <Tooltip title="Remover depósito">
                           <Popconfirm
                             onConfirm={() =>
                               notification.warning({
@@ -279,7 +277,6 @@ export const Deposits = memo(() => {
                           >
                             <DeleteTwoTone twoToneColor={"red"} />
                           </Popconfirm>
-                        </Tooltip>
                       )}
 
                       <button

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 // Components
-import { Popconfirm, Tooltip, notification } from "antd";
+import { Popconfirm, notification } from "antd";
 
 // Services
 import { petsService } from "@/OLD/services/patient.service";
@@ -43,9 +43,7 @@ export const Delete = React.memo(function Delete({ id, reload, setReload }) {
         placement="left"
         loading={loading}
       >
-        <Tooltip title="Deletar">
           <DeleteTwoTone twoToneColor="red" className="uk-margin-small-top" />
-        </Tooltip>
       </Popconfirm>
     </div>
   );

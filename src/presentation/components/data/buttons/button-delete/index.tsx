@@ -1,11 +1,9 @@
-import { Tooltip } from "antd";
 import { LoaderCircle, Icon } from "infinity-forge";
 
 export function ButtonDelete(
   props: { isLoading?: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>
 ) {
   return (
-    <Tooltip title="Excluir">
       <button
         style={{ background: "transparent", border: 0 }}
         type="button"
@@ -17,6 +15,5 @@ export function ButtonDelete(
           <Icon name="IconDelete" color="#f10" />
         )}
       </button>
-    </Tooltip>
   );
 }

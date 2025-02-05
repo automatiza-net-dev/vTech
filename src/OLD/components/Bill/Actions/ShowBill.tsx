@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Button, Modal, Table, Tooltip } from "antd";
+import { Button, Modal, Table } from "antd";
 import * as React from "react";
 import { AiOutlineZoomIn } from "react-icons/ai";
 import { billStatusFormatter } from "..";
@@ -77,15 +77,13 @@ const ShowBill = React.memo(function ShowBill({ bill }) {
 
   return (
     <>
-      <Tooltip title="Mostrar Nota de Saída">
-        <AiOutlineZoomIn
-          className="icon"
-          size={20}
-          onClick={() => {
-            setVisible((prevState) => !prevState);
-          }}
-        />
-      </Tooltip>
+      <AiOutlineZoomIn
+        className="icon"
+        size={20}
+        onClick={() => {
+          setVisible((prevState) => !prevState);
+        }}
+      />
 
       <Modal
         visible={visible}

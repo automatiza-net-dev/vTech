@@ -20,7 +20,6 @@ import {
   Table,
   Popconfirm,
   notification,
-  Tooltip,
   Modal,
   Typography,
 } from "antd";
@@ -113,7 +112,6 @@ export function Details({ receiptId, setVisible }: any) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-                <Tooltip title={"Cancelar Nota"}>
                   <MdOutlineCancel
                     opacity={validToCancel ? 1 : 0.5}
                     onClick={() => {
@@ -129,10 +127,8 @@ export function Details({ receiptId, setVisible }: any) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
               )}
               {disableFNPermission && (
-                <Tooltip title={"Inutilizar Nota"}>
                   <FiRefreshCw
                     opacity={validToDisable ? 1 : 0.5}
                     onClick={() => {
@@ -148,9 +144,8 @@ export function Details({ receiptId, setVisible }: any) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
               )}
-              <Tooltip title={"Atualizar Dados"}>
+          
                 <MdOutlineSyncDisabled
                   opacity={validToUpdate ? 1 : 0.5}
                   onClick={() => {
@@ -162,9 +157,9 @@ export function Details({ receiptId, setVisible }: any) {
                   className="icon"
                   cursor={"pointer"}
                 />
-              </Tooltip>
+          
               {doc?.corrections.length > 0 ? (
-                <Tooltip title="Visualizar erros da nota">
+              
                   <TbAlertTriangle
                     size={20}
                     color="var(--red)"
@@ -174,9 +169,8 @@ export function Details({ receiptId, setVisible }: any) {
                       return setNfeErrors(doc?.corrections);
                     }}
                   />
-                </Tooltip>
+               
               ) : (
-                <Tooltip title={"Imprimir nota"}>
                   <RiPrinterCloudLine
                     opacity={validToPrint ? 1 : 0.5}
                     onClick={() => {
@@ -190,7 +184,6 @@ export function Details({ receiptId, setVisible }: any) {
                     className="icon"
                     cursor={"pointer"}
                   />
-                </Tooltip>
               )}
             </div>
           ),

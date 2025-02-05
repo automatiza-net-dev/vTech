@@ -12,7 +12,7 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { Tooltip, notification, Popconfirm, Modal } from "antd";
+import {  notification, Popconfirm, Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
@@ -125,46 +125,40 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
           <AddBillItem bill={bill} />
 
           {addPaymentPermission && (
-            <Tooltip title="Adicionar Pagamento">
-              <MdMonetizationOn
-                className="icon"
-                size={20}
-                onClick={() => {
-                  /*if (cashiers.length === 0) {
+            <MdMonetizationOn
+              className="icon"
+              size={20}
+              onClick={() => {
+                /*if (cashiers.length === 0) {
                     return notification.warning({
                       message: "Nenhum caixa diário aberto",
                     });
                   }*/
-                  setSelectedId(bill?.id);
-                  setPaymentsVisible(true);
-                }}
-              />
-            </Tooltip>
+                setSelectedId(bill?.id);
+                setPaymentsVisible(true);
+              }}
+            />
           )}
         </>
       )}
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
-          <Tooltip title="Finalizar venda">
-            <Popconfirm
-              title="Deseja finalizar essa venda?"
-              onConfirm={() => closeBill()}
-            >
-              <FiLock size={20} className="icon" />
-            </Popconfirm>
-          </Tooltip>
+          <Popconfirm
+            title="Deseja finalizar essa venda?"
+            onConfirm={() => closeBill()}
+          >
+            <FiLock size={20} className="icon" />
+          </Popconfirm>
         )}
       {(bill?.status === "BAIXADA" || bill?.status === "Venda Finalizada") && (
         <>
           {reopenBillPermission && (
-            <Tooltip title="Reabrir venda">
-              <Popconfirm
-                title="Deseja reabrir essa venda?"
-                onConfirm={() => reopenBillPayment()}
-              >
-                <FiUnlock size={20} className="icon" />
-              </Popconfirm>
-            </Tooltip>
+            <Popconfirm
+              title="Deseja reabrir essa venda?"
+              onConfirm={() => reopenBillPayment()}
+            >
+              <FiUnlock size={20} className="icon" />
+            </Popconfirm>
           )}
         </>
       )}
@@ -174,17 +168,16 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
 
       <LaunchRelatedSale billId={bill.id} internalCode={bill?.internalCode} />
 
-      <Tooltip title="Detalhes da nota">
-        <CgDetailsMore
-          size={25}
-          className="icon"
-          onClick={() => {
-            setSelectedId(bill?.id);
-            setDetailsVisible(true);
-            // router.push(`/dashboard/vendas/detalhes/${bill?.id}`);
-          }}
-        />
-      </Tooltip>
+      <CgDetailsMore
+        size={25}
+        className="icon"
+        onClick={() => {
+          setSelectedId(bill?.id);
+          setDetailsVisible(true);
+          // router.push(`/dashboard/vendas/detalhes/${bill?.id}`);
+        }}
+      />
+
       {removeBillPermission && (
         <Popconfirm
           title="Deseja remover essa nota de saída?"

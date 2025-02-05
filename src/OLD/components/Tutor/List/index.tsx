@@ -20,7 +20,7 @@ import { Delete } from "../Delete";
 import { Container } from "./styles";
 import {
   Tag,
-  Tooltip,
+
   notification,
   Table,
   Dropdown,

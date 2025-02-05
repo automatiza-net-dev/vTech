@@ -9,7 +9,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Container } from "./styles";
 import { Button } from "infinity-forge";
-import { Input, Table, Tooltip, notification, Modal, Popconfirm } from "antd";
+import { Input, Table, notification, Modal, Popconfirm } from "antd";
 import FinancesActions from "../Actions";
 import DownFormChild from "../Actions/FormChild";
 
@@ -229,7 +229,6 @@ function BorderoDetails({
           0 && (
           <>
             {titles?.length > 0 && (
-              <Tooltip title="Baixar todos os títulos do grupo">
                 <Popconfirm
                   title="Deseja baixar os títulos selecionados?"
                   onConfirm={() => {
@@ -240,7 +239,6 @@ function BorderoDetails({
                 >
                   <Button text="Baixar títulos" />
                 </Popconfirm>
-              </Tooltip>
             )}
           </>
         )}

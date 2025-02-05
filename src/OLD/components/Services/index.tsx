@@ -7,7 +7,7 @@ import { useServices } from "@/OLD/hooks/useServices";
 
 import { Container } from "./styles";
 import { Button, PageWrapper, formatNumberToCurrency } from "infinity-forge";
-import { Table, Tooltip, Modal } from "antd";
+import { Table, Modal } from "antd";
 import Filters from "./Filters";
 import Actions from "./Actions";
 import AccessDenied from "@/OLD/components/AccessDenied";

@@ -1,5 +1,4 @@
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import { Tooltip } from "antd";
 
 import { LoaderCircle } from "infinity-forge";
 
@@ -7,7 +6,6 @@ export function ButtonCopy(
   props: { isLoading?: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>
 ) {
   return (
-    <Tooltip title="Duplicar">
       <button
         style={{ background: "transparent", border: 0 }}
         type="button"
@@ -23,6 +21,5 @@ export function ButtonCopy(
           />
         )}
       </button>
-    </Tooltip>
   );
 }

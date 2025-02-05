@@ -37,7 +37,7 @@ import { Reload } from "styled-icons/zondicons";
 // Components
 import { Container } from "./styles";
 import { Button } from "infinity-forge";
-import { Table, Tooltip, Modal, notification } from "antd";
+import { Table,  Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "@/OLD/components/Titles/Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -174,9 +174,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
           ...finance,
           document:
             finance?.source === "GROUP" ? (
-              <Tooltip
-                title={`Clique para acessar detalhes do grupo de pagamento`}
-              >
                 <span
                   onClick={() => {
                     setCheckingAccountId(
@@ -204,7 +201,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
                 >
                   {finance?.document || "Doc"}
                 </span>
-              </Tooltip>
+             
             ) : (
               <span
                 onClick={() => {

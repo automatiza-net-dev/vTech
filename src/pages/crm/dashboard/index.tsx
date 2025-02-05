@@ -9,9 +9,9 @@ export default function CrmDashboardPage() {
   return (
     <LayoutDashboard>
       <PageWrapper title="Dashboard CRM">
-        <ChartsSection type="crm" />
+        <ChartsSection  />
 
-        <TablesSection type="crm" />
+        <TablesSection  />
       </PageWrapper>
     </LayoutDashboard>
   );
