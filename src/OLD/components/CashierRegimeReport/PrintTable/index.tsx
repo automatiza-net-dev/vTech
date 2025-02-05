@@ -44,6 +44,8 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
     XLSX.writeFile(wb, "regime-caixa" + ".xlsx");
   };
 
+  const imprimir = useReactToPrint({ contentRef: componentRef })
+
   return (
     <>
       <Container ref={componentRef}>
@@ -107,12 +109,8 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
         >
           Exportar (Excel)
         </Button>
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => componentRef.current}
-        />
+
+<Button className="uk-margin-small-right" onClick={() => imprimir()}>Imprimir</Button>
       </div>
     </>
   );

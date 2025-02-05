@@ -21,7 +21,7 @@ import { Columns } from "./Columns";
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 // Icons
 import { Reload } from "styled-icons/zondicons";
@@ -86,6 +86,8 @@ export default function Titles({ type }: any) {
 
   const router = useRouter();
   const componentRef = useRef();
+  
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   const sortFinances = () => {
     filters?.order &&
@@ -106,6 +108,7 @@ export default function Titles({ type }: any) {
         }
       });
   };
+
 
   const handleExport = () => {
     const formatted = finances?.map((item) => ({
@@ -465,12 +468,10 @@ export default function Titles({ type }: any) {
 
           <Button text="Exportar (Excel)" onClick={() => handleExport()} />
 
-          <ReactToPrint
-            trigger={() => (
-              <Button className="uk-margin-small-right" text="Imprimir" />
-            )}
-            content={() => componentRef.current}
-          />
+      
+        
+        <Button className="uk-margin-small-right" text="Imprimir" onClick={() => imprimir()}/>
+
         </div>
         {updateOpen && (
           <Modal

@@ -16,13 +16,13 @@ function PrintTable({ reports, filters, values }) {
 
   const componentRef = useRef();
 
+  const imprimir = useReactToPrint({ contentRef: componentRef })
+
   return (
     <>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <ReactToPrint
-          trigger={() => <Button>Imprimir</Button>}
-          content={() => componentRef.current}
-        />
+
+        <Button onClick={() => imprimir()}>Imprimir</Button>
       </div>
       <Container ref={componentRef}>
         <div className="clinic-header">

@@ -25,7 +25,7 @@ import { useMutation, useQuery } from "react-query";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { Select } from "antd";
 import Link from "next/link";
@@ -161,6 +161,8 @@ export const DepositMovements = memo(() => {
     refetchOnReconnect: false,
     enabled: openCreate,
   });
+
+  const imprimir = useReactToPrint({ contentRef: componentRef,  onAfterPrint: setMovDetails(false)  })
 
   const memoedProducts = useMemo(() => {
     if (!productsQuery.data) return [];
@@ -528,16 +530,20 @@ export const DepositMovements = memo(() => {
                     </Tooltip>
                   )}
                     */}
-                  <ReactToPrint
-                    onBeforeGetContent={() =>
+          
+
+                  <button
+                    type="button"
+                    onClick={() => {
                       depositService
                         ?.getDepositMovements({ ids: [elem?.id] })
-                        .then((res) => setMovDetails(res?.data[0]))
-                    }
-                    trigger={() => <MdLocalPrintshop />}
-                    content={() => componentRef?.current}
-                    onAfterPrint={() => setMovDetails(false)}
-                  />
+                        .then((res) => setMovDetails(res?.data[0]));
+
+                        imprimir()
+                    }}
+                  >
+                    <MdLocalPrintshop />
+                  </button>
                 </div>
               ),
             }))}

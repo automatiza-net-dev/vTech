@@ -7,7 +7,7 @@ import { billService } from "@/OLD/services/bills.service";
 import { useShowBill } from "@/OLD/hooks/useBills";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import {
   productFiscalDocumentsColumns,
   productsColumns,
@@ -396,6 +396,8 @@ const Details = memo(function Details({ billId, setVisible }) {
     }
     return false;
   };
+
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   const productIssuedDocuments = useMemo(() => {
     const result = [];
@@ -812,10 +814,8 @@ const Details = memo(function Details({ billId, setVisible }) {
             <PrintScreen bill={data} />
           </div>
         </div>
-        <ReactToPrint
-          trigger={() => <Button text="Imprimir" />}
-          content={() => componentRef.current}
-        />
+      
+        <Button text="Imprimir" onClick={() => imprimir()}/>
       </footer>
 
       <Modal

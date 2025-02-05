@@ -13,7 +13,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { useClinic } from "@/OLD/hooks/useClinics";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import PrintTable from "./PrintTable";
 import { Button, PageWrapper } from "infinity-forge";
 
@@ -75,6 +75,7 @@ const TitlesListReport = () => {
     XLSX.writeFile(wb, "relatório - títulos" + ".xlsx");
   };
 
+
   const formatFinances = (recentDown = false) => {
     setFormatedFinances(
       financesReport.map((finance) => {
@@ -111,6 +112,7 @@ const TitlesListReport = () => {
   }, [financesReport, reload]);
 
   const printRef = useRef();
+  const imprimir = useReactToPrint({ contentRef: printRef })
 
   return !listTitlesPermission || listTitlesPermission === "loading" ? (
     <AccessDenied loading={listTitlesPermission} />
@@ -161,10 +163,10 @@ const TitlesListReport = () => {
             marginTop: "5px",
           }}
         >
-          <ReactToPrint
-            trigger={() => <Button type="primary" text="Imprimir Tabela" />}
-            content={() => printRef.current} // Use a referência aqui
-          />
+         
+
+<Button type="primary" text="Imprimir Tabela" onClick={() => imprimir()}/>
+
           <Button onClick={() => handleExport()} text="Exportar (Excel)" />
           <div style={{ display: "none" }}>
             <PrintTable

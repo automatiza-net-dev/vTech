@@ -22,7 +22,7 @@ import { memo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import PrintScreen from "./PrintScreen";
 
 import { Select } from "antd";
@@ -151,6 +151,11 @@ export const Deposits = memo(() => {
     setSearchParams((prv) => ({ ...prv, unitId: clinic?.id }));
   }, [clinic]);
 
+  const imprimir = useReactToPrint({
+    contentRef: componentRef,
+    onAfterPrint: () => setDepositDetails(false),
+  });
+
   return !listDepositsPermission || listDepositsPermission === "loading" ? (
     <AccessDenied loading={listDepositsPermission} />
   ) : (
@@ -276,16 +281,19 @@ export const Deposits = memo(() => {
                           </Popconfirm>
                         </Tooltip>
                       )}
-                      <ReactToPrint
-                        onBeforeGetContent={() =>
+
+                      <button
+                        type="button"
+                        onClick={() => {
                           depositService
                             .getDeposit(elem?.id)
-                            .then((res) => setDepositDetails(res.data))
-                        }
-                        trigger={() => <MdLocalPrintshop />}
-                        content={() => componentRef?.current}
-                        onAfterPrint={() => setDepositDetails(false)}
-                      />
+                            .then((res) => setDepositDetails(res.data));
+
+                          imprimir();
+                        }}
+                      >
+                        <MdLocalPrintshop />
+                      </button>
                     </div>
                   ),
                 }))

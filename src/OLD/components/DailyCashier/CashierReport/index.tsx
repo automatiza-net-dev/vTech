@@ -8,7 +8,7 @@ import { useDumpDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 // Utils
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 // Components
 import { Button } from "antd";
@@ -46,6 +46,8 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
       });
     setPaymentMethods(arr);
   }, [reports]);
+
+  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   return (
     <>
@@ -372,12 +374,10 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
         </section>
       </Container>
       <footer className="uk-flex uk-flex-right uk-margin-top">
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => componentRef.current}
-        />
+        <Button className="uk-margin-small-right" onClick={() => imprimir()}>
+          Imprimir
+        </Button>
+
         <Button onClick={() => setVisible(false)}>Fechar</Button>
       </footer>
     </>

@@ -11,7 +11,7 @@ import PrintScreen from "./PrintScreen";
 import { useRouter } from "next/router";
 
 import { sortItems } from "@/OLD/utils/sortItems";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 const columns = [
   {
@@ -57,6 +57,8 @@ export const ShowDeposit = memo(() => {
   const isDisabled = showDepositQuery.isLoading;
 
   sortItems(showDepositQuery?.data?.items, "description");
+
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   return (
     <PageWrapper
@@ -129,12 +131,9 @@ export const ShowDeposit = memo(() => {
         <footer
           style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
         >
-          <ReactToPrint
-            trigger={() => (
-              <Button classCallback="uk-margin-small-right" text="Imprimir" />
-            )}
-            content={() => componentRef.current}
-          />
+     
+            <Button classCallback="uk-margin-small-right" text="Imprimir" onClick={() => imprimir()}/>
+
           <Button onClick={() => router.back()} text="Voltar" />
         </footer>
         <div style={{ display: "none" }}>

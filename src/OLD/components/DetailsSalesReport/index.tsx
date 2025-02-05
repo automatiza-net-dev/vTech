@@ -151,10 +151,6 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
       <Container>
         <Filters filters={filters} setFilters={setFilters} />
         <div className="uk-flex uk-flex-around">
-          {/* <ReactToPrint
-          trigger={() => <Button>Imprimir</Button>}
-          content={() => componentRef?.current}
-  /> */}
           <Button
             onClick={() => handleExport()}
             onMouseOver={() => {

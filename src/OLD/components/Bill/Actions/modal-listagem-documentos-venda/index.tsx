@@ -1,41 +1,43 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 
 import { RemoteBills } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
-import { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
-import { Modal, useToast, Button, useAuthAdmin } from "infinity-forge";
+import { Modal, useToast, Button, api } from "infinity-forge";
 
 import { PrintHeader } from "@/presentation";
-
-import api from "@/OLD/services";
 
 import * as S from "./styles";
 
 import moment from "moment";
-import ReactToPrint from "react-to-print";
 import { Tooltip } from "antd";
 
 function ModalListagem({ bill }) {
-  const { user } = useAuthAdmin();
+  const [template, setTemplate] = useState("");
+
   const { createToast } = useToast();
+
   const { data } = useQuery({
     queryKey: ["LoadDocuments"],
     queryFn: async () => {
-      const response = await api.get(
-        `/product-documents/documents/${bill?.id}`
-      );
+      const response = await api({
+        url: `/product-documents/documents/${bill?.id}`,
+        method: "get",
+      });
 
       return response.data;
     },
   });
 
-  const [template, setTemplate] = useState("");
-
   const componentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+
+  const imprimir = useReactToPrint({
+    contentRef: componentRef,
+  });
 
   return (
     <S.ModalListagem>
@@ -80,14 +82,15 @@ function ModalListagem({ bill }) {
                       setTemplate(item.template);
                     }}
                   >
-                    <ReactToPrint
-                      onBeforePrint={() => {
-                        container
+                    <Button
+                      text="imprimir"
+                      onClick={async () => {
+                        await container
                           .get<RemoteBills>(TypesAutomatiza.RemoteBills)
                           .printDocument({ billDocumentId: item?.id });
+
+                        imprimir();
                       }}
-                      trigger={() => <Button text="imprimir" />}
-                      content={() => componentRef.current}
                     />
                   </div>
                 </td>
@@ -101,9 +104,13 @@ function ModalListagem({ bill }) {
           className="generate-documents-button"
           onClick={async () => {
             try {
-              await api.post("/product-documents/generate", {
-                billId: bill.id,
-                patientId: bill.client.id,
+              await api({
+                method: "post",
+                url: "/product-documents/generate",
+                body: {
+                  billId: bill.id,
+                  patientId: bill.client.id,
+                },
               });
 
               queryClient.invalidateQueries(["LoadDocuments"]);
