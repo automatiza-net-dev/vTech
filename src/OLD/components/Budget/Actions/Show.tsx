@@ -145,7 +145,6 @@ export default function ShowBudget({ budget, setReload }: any) {
 
   const { colaborators } = useColaborators(visible);
 
-  const imprimirCompleto = useReactToPrint({ contentRef: componentRef });
 
   const componentRef = React.useRef();
   const queryClient = useQueryClient();
@@ -217,6 +216,7 @@ export default function ShowBudget({ budget, setReload }: any) {
   };
 
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const imprimirCompleto = useReactToPrint({ contentRef: componentRef });
 
   return (
     <>

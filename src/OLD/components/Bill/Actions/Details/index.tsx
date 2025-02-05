@@ -396,7 +396,6 @@ const Details = memo(function Details({ billId, setVisible }) {
     return false;
   };
 
-  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   const productIssuedDocuments = useMemo(() => {
     const result = [];
@@ -721,6 +720,8 @@ const Details = memo(function Details({ billId, setVisible }) {
   }, [getFiscalDocumentsQuery?.data?.length]);
 
   const { TextArea } = Input;
+
+  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   return (
     <Container className="">
