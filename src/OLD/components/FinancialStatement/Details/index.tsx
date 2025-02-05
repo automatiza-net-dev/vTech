@@ -18,14 +18,14 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { columns } from "./Columns";
 import moment from "moment";
 
-const FinancialStatementDetails = memo(function BorderoDetails({
+function BorderoDetails({
   groupData,
   setVisible,
   setGroupData,
   reload,
   setReload,
   checkingAccountId,
-}) {
+}: any) {
   const [loading, setLoading] = useState(false);
   const [formattedTitles, setFormattedTitles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -273,6 +273,6 @@ const FinancialStatementDetails = memo(function BorderoDetails({
       )}
     </Container>
   );
-});
+}
 
-export default FinancialStatementDetails;
+export default BorderoDetails;

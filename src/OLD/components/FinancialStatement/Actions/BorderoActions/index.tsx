@@ -19,11 +19,11 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
-const BorderoActions = memo(function BorderoActions({
+function BorderoActions({
   bordero,
   setReload,
   type,
-}) {
+}: any) {
   const [downData, setDownData] = useState({
     interestValue: currencyFormatter(0),
     discountValue: currencyFormatter(0),
@@ -274,6 +274,6 @@ const BorderoActions = memo(function BorderoActions({
       </Modal>
     </Container>
   );
-});
+}
 
 export default BorderoActions;

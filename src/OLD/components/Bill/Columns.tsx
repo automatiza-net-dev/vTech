@@ -10,6 +10,11 @@ export const Columns = [
     key: "code",
   },
   {
+    title: "Código Interno",
+    dataIndex: "internalCode",
+    key: "internalCode",
+  },
+  {
     title: "Cliente",
     dataIndex: "client",
     key: "client",

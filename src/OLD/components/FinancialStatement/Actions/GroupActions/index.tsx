@@ -11,7 +11,7 @@ import { IoMdDownload } from "react-icons/io";
 
 import moment from "moment";
 
-const GroupActions = memo(function GroupActions({ group, setReload }) {
+function GroupActions({ group, setReload }: any) {
   const [downData, setDownData] = useState({});
   const [downVisible, setDownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -96,6 +96,6 @@ const GroupActions = memo(function GroupActions({ group, setReload }) {
       )}
     </div>
   );
-});
+}
 
 export default GroupActions;

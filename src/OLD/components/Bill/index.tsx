@@ -146,7 +146,7 @@ export default function Bills() {
                 />
               </Input>
 
-              <Input style={{ width: "100%" }}>
+              <Input style={{ width: "50%" }}>
                 <Label>Status</Label>
                 <Select
                   allowClear
@@ -170,6 +170,16 @@ export default function Bills() {
               </Input>
 
               <Input style={{ width: "70%" }}>
+                <label style={{ width: 140 }}>Código Interno</label>
+                <AntInput
+                  value={filters?.internalCode}
+                  onChange={(e) =>
+                    setFilters({ ...filters, internalCode: e.target.value })
+                  }
+                />
+              </Input>
+
+              <Input style={{ width: "50%" }}>
                 <label>Código</label>
                 <AntInput
                   value={filters.tag}
