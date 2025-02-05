@@ -209,7 +209,7 @@ export default function Titles({ type }: any) {
                 }`
               : "-",
           nsu: finance?.nsu_document || "-",
-          internalCode: finance?.internal_code || "-",
+          internalCode: finance?.internal_code || finance?.internalCode || "-",
           actions:
             finance?.source === "FINANCE" ? (
               <FinancesActions

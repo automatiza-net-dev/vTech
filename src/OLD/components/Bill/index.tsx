@@ -55,6 +55,7 @@ export default function Bills() {
     return data.map((bill) => {
       return {
         id: bill?.id,
+        internalCode: bill?.internalCode,
         fn: bill?.hasDocuments ? "Sim" : "Não",
         bill_date: dateFormatter(bill?.bill_date),
         code: bill?.tag ?? "-",

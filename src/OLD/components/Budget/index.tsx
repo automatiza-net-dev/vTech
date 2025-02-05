@@ -80,6 +80,7 @@ const mapper = (data = [], setReload) => {
   return data?.map((budget) => {
     return {
       id: budget?.id,
+      internalCode: budget?.internalCode,
       evaluator: budget?.reviewer?.name || "-",
       budget_date: dateFormatter(budget.budget_date),
       expiration_date: dateFormatter(budget.expiration_date),
