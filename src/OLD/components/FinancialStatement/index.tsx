@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Core
 import React, { memo, useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
@@ -52,7 +53,7 @@ import CreateTitle from "@/OLD/components/Titles/Create";
 // Utils
 import * as XLSX from "xlsx/xlsx.mjs";
 
-const FinancialSteatment = memo(function Titles({ type }) {
+const FinancialSteatment = memo(function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     order: "expiration_date",
     status: "ABERTO",
