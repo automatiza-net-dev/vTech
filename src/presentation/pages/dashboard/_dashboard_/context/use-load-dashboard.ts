@@ -1,35 +1,31 @@
-import { useRouter } from "next/router";
-
 import { useQuery, api, BadRequestError, useAuthAdmin } from "infinity-forge";
 
 import { Dashboard, LoadDashboard } from "@/domain";
 import { RemoteCRM, RemoteDashboard } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 
-export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
+export function useLoadDashboard({ type, filters }: { type?: "crm" | "admin", filters: any }) {
   const { user } = useAuthAdmin();
-
-  const router = useRouter();
 
   async function fetcher() {
     try {
-      if (props.type === "admin") {
-        const response = await api({ url: "portal/dashboard", method: "get", body: router.query });
+      if (type === "admin") {
+        const response = await api({ url: "portal/dashboard", method: "get", body: filters });
 
         return response as Dashboard
       }
 
-      if (props?.type === "crm") {
+      if (type === "crm") {
         const response = await container
           .get<RemoteCRM>(TypesAutomatiza.RemoteCRM)
-          .loadDashboardCRM(router.query);
+          .loadDashboardCRM(filters);
 
         return response;
       }
 
       const response = await container
         .get<RemoteDashboard>(TypesAutomatiza.RemoteDashboard)
-        .loadAll(router.query);
+        .loadAll(filters);
 
       return response;
     } catch (err) {
@@ -45,14 +41,11 @@ export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
   return useQuery({
     queryKey: [
       "dasboard",
-      props.type,
+      type,
       user?.user?.id,
       user?.unit?.id,
-      router.query.units,
-      router.query.toDate,
-      router.query.fromDate,
+      JSON.stringify(filters)
     ],
     queryFn: fetcher,
-    enabled: !!(router.query.toDate && router.query.fromDate && router.isReady),
   });
 }

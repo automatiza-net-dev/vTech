@@ -1,23 +1,27 @@
-import { useLoadAllAvailableUnits } from "@/presentation/hooks";
+import moment from "moment";
 import { FormHandler, InputDateRange, Select } from "infinity-forge";
 
+import { useDashboard } from "../../../context";
+import { useLoadAllAvailableUnits } from "@/presentation";
+
 import * as S from "./styles";
-import { useRouter } from "next/router";
-import moment from "moment";
 
 export function AdminFilters() {
-  const businessUnits = useLoadAllAvailableUnits();
 
-  const router = useRouter()
+  const { setFilters } = useDashboard()
+
+  const businessUnits = useLoadAllAvailableUnits();
 
   return (
     <S.AdminFilters className="filters">
       <FormHandler
-        initialData={{ units:  Array.isArray(router.query.units) ? router.query.units : [router.query.units], fromDate: moment(router.query.fromDate).toDate(), toDate: moment(router.query.toDate).toDate() }}
         onChangeForm={{
           callbackResult: (data) => {
-            
-            router.replace({ query: { fromDate: moment(data.fromDate).format("YYYY-MM-DD"), toDate: moment(data.toDate).format("YYYY-MM-DD"), units: data.units } })
+            setFilters({
+              to: moment(data.toDate).format("YYYY-MM-DD"),
+              from: moment(data.fromDate).format("YYYY-MM-DD"),
+              units: data.units,
+            })
           },
         }}
       >
@@ -40,5 +44,3 @@ export function AdminFilters() {
     </S.AdminFilters>
   );
 }
-
-

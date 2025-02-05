@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 
+import { useDashboard } from "../../context";
+
 import moment from "moment";
-import { FormHandler, InputDatePicker, updateRoute } from "infinity-forge";
+import { FormHandler, InputDatePicker } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -13,19 +15,11 @@ type FiltersDashboardParams = {
 export function FiltersDashboard() {
   const router = useRouter();
 
+  const { setFilters } = useDashboard();
+
   return (
     <S.FiltersDashboard>
       <FormHandler
-        initialData={{
-          toDate: moment(
-            router.query.toDate || moment().format("YYYY-MM-DD"),
-            "YYYY-MM-DD"
-          ).toDate(),
-          fromDate: moment(
-            router.query.fromDate || moment().format("YYYY-MM-DD"),
-            "YYYY-MM-DD"
-          ).toDate(),
-        }}
         onChangeForm={{
           callbackResult: ({ fromDate }: FiltersDashboardParams) => {
             const fromDateStartMonth = moment(fromDate)
@@ -33,24 +27,15 @@ export function FiltersDashboard() {
               .format("YYYY-MM-DD");
 
             if (fromDateStartMonth !== (router.query as any).fromDate) {
-           
-              updateRoute({
-                params: {
-                  fromDate: fromDateStartMonth,
-                  toDate: moment(fromDate).endOf("month").format("YYYY-MM-DD"),
-                },
-                router,
+              setFilters({
+                fromDate: fromDateStartMonth,
+                toDate: moment(fromDate).endOf("month").format("YYYY-MM-DD"),
               });
             }
           },
         }}
       >
-        <InputDatePicker
-          name="fromDate"
-          mode="month"
-          date={{}}
-          language="pt"
-        />
+        <InputDatePicker name="fromDate" mode="month" date={{}} language="pt" />
       </FormHandler>
     </S.FiltersDashboard>
   );
