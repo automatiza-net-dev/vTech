@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { billService } from "@/OLD/services/bills.service";
 import { productService } from "@/OLD/services/product.service";
 
@@ -74,7 +75,7 @@ const columns = [
   },
 ];
 
-const AddBillItem = React.memo(function AddBillItem({ bill }) {
+function AddBillItem({ bill }: any) {
   const queryClient = useQueryClient();
   const [visible, setVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({});
@@ -724,6 +725,6 @@ const AddBillItem = React.memo(function AddBillItem({ bill }) {
       </Modal>
     </>
   );
-});
+}
 
 export default AddBillItem;
