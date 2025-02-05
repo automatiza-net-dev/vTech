@@ -14,7 +14,7 @@ import { Layout } from "./layout-infinity-forge-remover-apos-atualizar/layout";
 
 export function LayoutAdmin({ children }) {
   return (
-    <PrivatePage signInRole="controller" roles={["controller", "system"]}>
+    <PrivatePage signInRole="controller" roles={["controller", "system", "user"]}>
       <DictionaryQueryProvider>
         <LayoutPage>{children}</LayoutPage>
       </DictionaryQueryProvider>

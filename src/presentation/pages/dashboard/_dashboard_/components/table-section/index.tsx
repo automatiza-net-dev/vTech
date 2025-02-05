@@ -2,7 +2,7 @@ import { TableDashboard, useLoadDashboard } from "@/presentation";
 import { IndicatorTable } from "./indicator-table";
 import { SellerIndicatorTable } from "./seller-indicator-table";
 
-export function TablesSection({ type }: { type?: "crm" }) {
+export function TablesSection({ type }: { type?: "crm" | "admin" }) {
   const dashboard = useLoadDashboard({ type });
 
   const tableSalesPerPeriod = dashboard?.data?.tables?.find(
@@ -11,6 +11,18 @@ export function TablesSection({ type }: { type?: "crm" }) {
 
   const tableSalesPerUser = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-user"
+  );
+
+  const rankingFaturamento = dashboard?.data?.tables?.find(
+    (table) => table.name === "RankingFaturamento"
+  );
+
+  const rankingVendedores = dashboard?.data?.tables?.find(
+    (table) => table.name === "RankingVendedores"
+  );
+
+  const rankingTicketMedio = dashboard?.data?.tables?.find(
+    (table) => table.name === "RankingTicketMedio"
   );
 
   const tableBudgets = dashboard?.data?.tables?.filter(
@@ -37,6 +49,21 @@ export function TablesSection({ type }: { type?: "crm" }) {
     <>
       {dashboard.data?.tables && dashboard.data?.tables?.length > 0 && (
         <section className="tables-section">
+          {(rankingFaturamento || rankingTicketMedio) && (
+            <div className="row" style={{ marginBottom: 20, marginTop: 20 }}>
+              {rankingFaturamento && <TableDashboard {...rankingFaturamento} />}
+
+              {rankingTicketMedio && <TableDashboard {...rankingTicketMedio} />}
+            </div>
+          )}
+
+          {rankingVendedores && (
+            <TableDashboard
+              key={rankingVendedores.name}
+              {...rankingVendedores}
+            />
+          )}
+
           <div className="row">
             {tableSalesPerPeriod && (
               <TableDashboard

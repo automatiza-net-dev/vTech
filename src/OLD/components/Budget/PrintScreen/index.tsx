@@ -12,7 +12,7 @@ import moment from "moment";
 import { currencyFormatter } from "..";
 import { useDictionary } from "@/presentation";
 
-export default function PrintScreen({ printDetails, budgetData }) {
+export default function PrintScreen({ printDetails, budgetData }: any) {
   const { clinic } = useProfile();
 
   const { getWord } = useDictionary();

@@ -253,6 +253,17 @@ function Budgets() {
                 </Select.Option>
               </Select>
             </Input>
+
+            <Input style={{ width: "100%" }}>
+              <label>Código interno</label>
+              <AntInput
+                value={filters.internalCode}
+                onChange={(e) =>
+                  setFilters({ ...filters, internalCode: e.target.value })
+                }
+              />
+            </Input>
+
             <Input style={{ width: "100%" }}>
               <label>Código</label>
               <AntInput
@@ -267,6 +278,8 @@ function Budgets() {
             className="uk-flex uk-flex-middle uk-margin-small-top"
             style={{ gap: "1rem" }}
           >
+
+            
             <Input style={{ width: "100%" }}>
               <Label>Cliente</Label>
               <AntInput

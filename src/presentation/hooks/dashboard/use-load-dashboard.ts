@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "react-query";
-import { api, BadRequestError, useAuthAdmin } from "infinity-forge";
+import { useQuery, api, BadRequestError, useAuthAdmin } from "infinity-forge";
 
 import { LoadDashboard } from "@/domain";
 import { RemoteCRM, RemoteDashboard } from "@/data";
@@ -15,9 +14,9 @@ export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
   async function fetcher() {
     try {
       if (props.type === "admin") {
-        const response = await api({ url: "portal/dashboard", method: "get" });
+        const response = await api({ url: "portal/dashboard", method: "get", body: router.query });
 
-        return response;
+        return response
       }
 
       if (props?.type === "crm") {
@@ -46,13 +45,15 @@ export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
   return useQuery({
     queryKey: [
       "dasboard",
+      props.type,
       user?.user?.id,
       user?.unit?.id,
+      router.query.units,
       router.query.toDate,
       router.query.fromDate,
     ],
     queryFn: fetcher,
-    refetchOnWindowFocus: false,
     enabled: !!(router.query.toDate && router.query.fromDate && router.isReady),
+    enableCache: true
   });
 }

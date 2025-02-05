@@ -249,32 +249,40 @@ export default function ShowBudget({ budget, setReload }: any) {
                 style={{ paddingBottom: "1rem" }}
               >
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Data de Criação</span>
+                  <span className="uk-text-small font-14-regular">Data de Criação</span>
                   <span className="uk-text-default">
                     {dateFormatter(data?.budget_date)}
                   </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Data Validade</span>
+                  <span className="uk-text-small font-14-regular">Data Validade</span>
                   <span className="uk-text-default">
                     {moment(data?.expiration_date).format("DD/MM/YYYY")}
                   </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Finalizado em</span>
+                  <span className="uk-text-small font-14-regular">Finalizado em</span>
                   <span className="uk-text-default">
                     {data?.finished_at ? dateFormatter(data?.finished_at) : "-"}
                   </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Status</span>
+                  <span className="uk-text-small font-14-regular">Status</span>
                   <span className="uk-text-default">
                     {budgetStatusFormatter(data)}
                   </span>
                 </div>
+
+                <div className="uk-flex uk-flex-column uk-width-1-1">
+                  <span className="uk-text-small font-14-regular">Código interno</span>
+                  <span className="uk-text-default">
+                    {data?.internalCode}
+                  </span>
+                </div>
+
               </div>
               <hr className="uk-margin-remove" />
               <div
@@ -665,6 +673,8 @@ export default function ShowBudget({ budget, setReload }: any) {
                           </>
                         )}
                       </S.Status>
+
+                    
                       {/* {removeBudgetPaymentPermission && (
                         <div className="uk-flex uk-flex-right">
                           <Popconfirm

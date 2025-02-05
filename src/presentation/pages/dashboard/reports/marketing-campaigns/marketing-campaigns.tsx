@@ -77,18 +77,18 @@ export function MarketingCampaignsReports() {
           onSucess={handleSubmit}
         >
           <div className="filter-container">
-            {businessUnits?.data && (
-              <Select
-                label="Unidades"
-                menuPlacement="bottom"
-                name="units"
-                isMultiple={true}
-                options={businessUnits?.data?.map((unit) => ({
+            <Select
+              label="Unidades"
+              menuPlacement="bottom"
+              name="units"
+              isMultiple={true}
+              options={
+                businessUnits?.data?.map((unit) => ({
                   value: unit?.id,
                   label: unit?.identification,
-                }))}
-              />
-            )}
+                })) || []
+              }
+            />
 
             {campaigns?.data && (
               <Select
@@ -122,7 +122,11 @@ export function MarketingCampaignsReports() {
               ]}
             />
 
-            <InputDateRange names={["period.startDate", "period.endDate"]} mode="date" label="Período" />
+            <InputDateRange
+              names={["period.startDate", "period.endDate"]}
+              mode="date"
+              label="Período"
+            />
           </div>
         </FormHandler>
 

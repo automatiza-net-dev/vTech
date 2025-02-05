@@ -2,7 +2,6 @@ import {
   ChartsSection,
   LayoutDashboard,
   TablesSection,
-  useLoadDashboard,
 } from "@/presentation";
 import { PageWrapper } from "infinity-forge";
 

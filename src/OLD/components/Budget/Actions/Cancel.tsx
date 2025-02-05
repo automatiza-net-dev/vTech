@@ -11,10 +11,10 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsXCircle } from "react-icons/bs";
 import { useDictionary } from "@/presentation";
 
-const CancelBudget = React.memo(function CancelBudget({
+function CancelBudget({
   budget,
   setReload = false,
-}) {
+}: any) {
   const { getWord } = useDictionary();
 
   const queryClient = useQueryClient();
@@ -173,6 +173,6 @@ const CancelBudget = React.memo(function CancelBudget({
       </Modal>
     </>
   );
-});
+}
 
 export default CancelBudget;

@@ -1,7 +1,7 @@
-import axios from "axios";
 import { Storage } from "@/infra";
 import { container, TypesAutomatiza } from "@/container";
 import { createContext, useEffect, useState } from "react";
+import { api } from "infinity-forge";
 
 export const IpContext = createContext<{}>({});
 
@@ -9,8 +9,9 @@ export const IpProvider = ({ children }) => {
   const [startApplication, setStartApplication] = useState(false);
 
   async function getIpAddres() {
-    const IPAddress = await axios.get("https://api.ipify.org/");
-    return IPAddress?.data || (null as string | null);
+    const ip = await api({ url: "ip", method: "get" }, "/api/")
+
+    return ip
   }
 
   useEffect(() => {

@@ -40,7 +40,7 @@ export function DashboardPage({ type }: { type?: "crm" | "admin" }) {
           )}
         </ChartsSection>
 
-        <TablesSection />
+        <TablesSection type={type}/>
       </S.Dashboard>
 
       {!type  && <SchedulesDashboard />}

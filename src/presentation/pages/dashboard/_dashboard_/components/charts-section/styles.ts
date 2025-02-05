@@ -2,9 +2,29 @@ import styled, { css } from "styled-components";
 import { IStyledDashboard } from "../../styles";
 
 export const ChartsSection = styled("section")<IStyledDashboard>`
-  display: flex;
-  gap: 15px;
   --cardsWidth: ${(props) => (props.$breakColumns ? "435px" : "372px")};
+
+  .top_informations {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+
+    > div {
+      max-width: 300px;
+      width: 100%;
+    }
+  }
+
+  .chart_content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .content_chartsSection {
+    display: flex;
+    gap: 15px;
+  }
 
   .cards_skeleton {
     span {

@@ -25,6 +25,11 @@ export const Columns = () => {
       key: "tag",
     },
     {
+      title: "Código interno",
+      dataIndex: "internalCode",
+      key: "internalCode"
+    },
+    {
       title: "Vendedor",
       dataIndex: "user_name",
       key: "user_name",
