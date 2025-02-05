@@ -72,7 +72,7 @@ export function NotificationsModal() {
                 type="button"
                 text="Marcar como lida"
                 onClick={async () => {
-                  await api({ url: "Notifications/read-notifications", method: "put", body: { notificationId: notification.id } })
+                  await api({ url: "Notifications/read-notifications", method: "post", body: { notificationId: [notification.id] } })
 
                   await mutate()
                 }}
