@@ -1,9 +1,12 @@
-import { TableDashboard, useLoadDashboard } from "@/presentation";
+import { TableDashboard } from "@/presentation";
+
+import { useDashboard } from "../../context";
+
 import { IndicatorTable } from "./indicator-table";
 import { SellerIndicatorTable } from "./seller-indicator-table";
 
-export function TablesSection({ type }: { type?: "crm" | "admin" }) {
-  const dashboard = useLoadDashboard({ type });
+export function TablesSection() {
+  const { dashboard } = useDashboard();
 
   const tableSalesPerPeriod = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-period"
@@ -47,7 +50,7 @@ export function TablesSection({ type }: { type?: "crm" | "admin" }) {
 
   return (
     <>
-      {dashboard.data?.tables && dashboard.data?.tables?.length > 0 && (
+      {dashboard?.data?.tables && dashboard?.data?.tables?.length > 0 && (
         <section className="tables-section">
           {(rankingFaturamento || rankingTicketMedio) && (
             <div className="row" style={{ marginBottom: 20, marginTop: 20 }}>
@@ -94,7 +97,7 @@ export function TablesSection({ type }: { type?: "crm" | "admin" }) {
 
           {billsReviewerTableData && (
             <IndicatorTable
-              indicator={dashboard.data.tables.find(
+              indicator={dashboard?.data.tables.find(
                 (item) => item.name === "billsReviewer"
               )}
             />
@@ -102,7 +105,7 @@ export function TablesSection({ type }: { type?: "crm" | "admin" }) {
 
           {indicatorTableData && (
             <IndicatorTable
-              indicator={dashboard.data.tables.find(
+              indicator={dashboard?.data.tables.find(
                 (item) => item.name === "budgetsAvaliadorConsolidado"
               )}
             />
@@ -110,7 +113,7 @@ export function TablesSection({ type }: { type?: "crm" | "admin" }) {
 
           {sellerindicatorTableData && (
             <SellerIndicatorTable
-              indicator={dashboard.data.tables.find(
+              indicator={dashboard?.data.tables.find(
                 (item) => item.name === "budgetsVendedorConsolidado"
               )}
             />

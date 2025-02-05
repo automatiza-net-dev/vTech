@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { Error, Layout, PrivatePage, useAuthAdmin, useQueryClient } from "infinity-forge";
+import { Error, Layout, PrivatePage, useAuthAdmin } from "infinity-forge";
 
 import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -27,8 +27,6 @@ function LayoutPage({ children }) {
 
   const { user, loadUser } = useAuthAdmin();
 
-    const clearCache = useQueryClient(state => state.clearCache)
-
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({
       img: "",
@@ -49,10 +47,9 @@ function LayoutPage({ children }) {
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
           .swap({ unitId: value?.workspace, dashboard: true });
 
-          loadUser()
-          clearCache()
+        loadUser();
 
-        if(router.pathname !== "/dashboard") {
+        if (router.pathname !== "/dashboard") {
           router.push({
             pathname: "/dashboard",
             query: { reload: "true" },

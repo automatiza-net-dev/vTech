@@ -9,10 +9,10 @@ import PrintTable from "./PrintTable";
 import { Button } from "infinity-forge";
 
 export function PrintSchedule({ data, date }) {
-
-  const imprimir = useReactToPrint({ contentRef:componentRef  })
   
   const componentRef = useRef();
+  const imprimir = useReactToPrint({ contentRef:componentRef  })
+  
   return (
     <Container host={process.env.clientName}>
      <Button text="Imprimir" onClick={() => imprimir()}>Imprimir</Button>

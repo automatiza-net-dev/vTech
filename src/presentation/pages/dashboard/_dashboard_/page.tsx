@@ -1,10 +1,3 @@
-import { useEffect } from "react";
-
-import { Router, useRouter } from "next/router";
-import { updateRoute, useQueryClient } from "infinity-forge";
-
-import { useLoadDashboard } from "@/presentation";
-
 import {
   TablesSection,
   ChartsSection,
@@ -13,11 +6,20 @@ import {
   FinancesResumeCards,
   InvoicingBySubgroupTable,
 } from "./components";
+import { DashboardProvider, DashboardType, useDashboard } from "./context";
 
 import * as S from "./styles";
 
-export function DashboardPage({ type }: { type?: "crm" | "admin" }) {
-  const dashboard = useLoadDashboard({ type });
+export function DashboardPage({ type }: { type?: DashboardType }) {
+  return (
+    <DashboardProvider type={type}>
+      <DashboardContent />
+    </DashboardProvider>
+  );
+}
+
+function DashboardContent() {
+  const { dashboard, type } = useDashboard();
 
   const breakColumns =
     dashboard?.data?.charts && dashboard?.data?.charts?.length <= 4;
@@ -29,21 +31,21 @@ export function DashboardPage({ type }: { type?: "crm" | "admin" }) {
   return (
     <>
       <S.Dashboard $breakColumns={breakColumns}>
-        <ChartsSection type={type}>
+        <ChartsSection>
           {subgroupsDataTable && (
             <div className="custom-table">
               {(subgroupsDataTable as any)?.data.length > 0 &&
-                dashboard.data && (
+                dashboard?.data && (
                   <InvoicingBySubgroupTable {...(subgroupsDataTable as any)} />
                 )}
             </div>
           )}
         </ChartsSection>
 
-        <TablesSection type={type}/>
+        <TablesSection  />
       </S.Dashboard>
 
-      {!type  && <SchedulesDashboard />}
+      {!type && <SchedulesDashboard />}
 
       {!type && <FinancesResumeCards />}
 

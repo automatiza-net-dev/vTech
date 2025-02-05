@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { useQuery, api, BadRequestError, useAuthAdmin } from "infinity-forge";
 
-import { LoadDashboard } from "@/domain";
+import { Dashboard, LoadDashboard } from "@/domain";
 import { RemoteCRM, RemoteDashboard } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 
@@ -16,7 +16,7 @@ export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
       if (props.type === "admin") {
         const response = await api({ url: "portal/dashboard", method: "get", body: router.query });
 
-        return response
+        return response as Dashboard
       }
 
       if (props?.type === "crm") {
@@ -54,6 +54,5 @@ export function useLoadDashboard(props: { type?: "crm" | "admin" }) {
     ],
     queryFn: fetcher,
     enabled: !!(router.query.toDate && router.query.fromDate && router.isReady),
-    enableCache: true
   });
 }

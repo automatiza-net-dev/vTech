@@ -1,30 +1,25 @@
 import React from "react";
 import { Skeleton } from "infinity-forge";
 
-import {
-  Cards,
-  Chart,
-  useLoadDashboard,
-  useResizeWindowUpdate,
-} from "@/presentation";
+import { Cards, Chart, useResizeWindowUpdate } from "@/presentation";
 
 import { PrecoCard } from "../cards/preco";
 import { AdminFilters } from "./admin-filters";
 
+import { useDashboard } from "../../context";
+
 import * as S from "./styles";
 
 export function ChartsSection({
-  type,
   children,
 }: {
-  type?: "crm" | "admin";
   children?: React.ReactNode;
 }) {
-  const dashboard = useLoadDashboard({ type });
+  const { dashboard, type } = useDashboard();
 
   const resize = useResizeWindowUpdate();
 
-  const isFetching = dashboard.isFetching || resize;
+  const isFetching = dashboard?.isFetching || resize;
 
   const breakColumns =
     dashboard?.data?.charts && dashboard?.data?.charts?.length <= 4;
@@ -51,7 +46,7 @@ export function ChartsSection({
         <div className="content_chartsSection">
           <div className="chart_content">
             <div className="top_informations">
-              {dashboard.data?.top?.map((dashboardItem) => (
+              {dashboard?.data?.top?.map((dashboardItem) => (
                 <PrecoCard key={dashboardItem.name} {...dashboardItem} />
               ))}
             </div>
@@ -65,7 +60,7 @@ export function ChartsSection({
               </div>
             )}
 
-            {!isFetching && dashboard.data && (
+            {!isFetching && dashboard?.data && (
               <div className="charts">
                 <div>
                   {dashboard?.data?.charts?.map((chart) => (
@@ -78,7 +73,7 @@ export function ChartsSection({
             )}
           </div>
 
-          <Cards {...dashboard.data} type={type} isFetching={isFetching} />
+          <Cards {...dashboard?.data} type={type} isFetching={isFetching} />
         </div>
       </S.ChartsSection>
     </>
