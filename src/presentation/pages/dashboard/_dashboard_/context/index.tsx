@@ -18,16 +18,13 @@ export type FiltersDashboard = {
   units?: string[];
   toDate?: string;
   fromDate?: string;
-
-  to?: string;
-  from?: string;
 };
 
 const dashboardContext = createContext<{
   type?: DashboardType;
-  filters: FiltersDashboard;
+  filters: FiltersDashboard | null;
   dashboard?: Required<QueryState<Partial<Dashboard> | undefined>>;
-  setFilters: Dispatch<SetStateAction<FiltersDashboard>>;
+  setFilters: Dispatch<SetStateAction<FiltersDashboard | null>>;
 }>({ filters: {}, setFilters: () => {} });
 
 export function DashboardProvider({
@@ -37,12 +34,7 @@ export function DashboardProvider({
   type?: DashboardType;
   children: React.ReactNode;
 }) {
-  const [filters, setFilters] = useState<FiltersDashboard>({
-    toDate: moment().format("YYYY-MM-DD"),
-    fromDate: moment().format("YYYY-MM-DD"),
-    to: moment().format("YYYY-MM-DD"),
-    from: moment().format("YYYY-MM-DD"),
-  });
+  const [filters, setFilters] = useState<FiltersDashboard | null>(null);
 
   const dashboard = useLoadDashboard({ type, filters });
 

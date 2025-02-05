@@ -47,5 +47,6 @@ export function useLoadDashboard({ type, filters }: { type?: "crm" | "admin", fi
       JSON.stringify(filters)
     ],
     queryFn: fetcher,
+    enabled: !!filters
   });
 }

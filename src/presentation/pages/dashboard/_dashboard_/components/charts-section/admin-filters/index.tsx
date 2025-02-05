@@ -18,8 +18,8 @@ export function AdminFilters() {
         onChangeForm={{
           callbackResult: (data) => {
             setFilters({
-              to: moment(data.toDate).format("YYYY-MM-DD"),
-              from: moment(data.fromDate).format("YYYY-MM-DD"),
+              toDate: moment(data.toDate).format("YYYY-MM-DD"),
+              fromDate: moment(data.fromDate).format("YYYY-MM-DD"),
               units: data.units,
             })
           },
