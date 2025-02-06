@@ -61,6 +61,8 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
+  console.log(data)
+
   const { user } = useAuthAdmin();
   const { data: uniqueOrigins } = useLoadCampaings({
     active: true,
@@ -397,7 +399,7 @@ export default function FormChild({
                 value: collab?.name,
                 key: collab?.id,
               }))}
-              value={data?.collabName}
+              value={data?.collabName || user.firstName}
               onChange={(val) => setData({ ...data, collabName: val })}
               onSelect={(_, opt) => {
                 setData({ ...data, userId: opt?.id, collabName: opt?.value });
@@ -614,7 +616,7 @@ export default function FormChild({
               <Button type="submit" text="Salvar" />
               <Popconfirm
                 title="Deseja descartar alterações ?"
-                onConfirm={() => router.back()}
+                onConfirm={() => router.push("/crm/kanban")}
               >
                 <Button text="Cancelar" />
               </Popconfirm>
