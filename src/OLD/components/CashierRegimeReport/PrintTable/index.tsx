@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 import { memo, useRef } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
@@ -7,7 +7,7 @@ import { Button, Empty } from "antd";
 import { PrintHeader } from "@/presentation";
 import { Container, RowBox } from "./styles";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";

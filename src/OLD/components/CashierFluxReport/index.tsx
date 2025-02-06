@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { memo, useState, useEffect } from "react";
 
 import {
@@ -37,9 +36,9 @@ function FinancesReport() {
   const listCashierFluxPermission = useUserHasPermission("REL02");
 
   const formatValues = () => {
-    const arr = [];
+    const arr: any = [];
     flowReports?.length > 0 &&
-      flowReports[0]?.flow.map((report, i) => {
+      flowReports[0]?.flow.map((report: any, i) => {
         const period = Object.keys(report)[0];
         let initialValue =
           i === 0 ? checkingAccountReports[0]?.total : arr[i - 1]?.finalBalance;

@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { memo, useRef, useState } from "react";
+import { useRef } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
@@ -7,14 +6,14 @@ import { Button, Empty } from "antd";
 import { Container, RowBox } from "./styles";
 import { PrintHeader } from "@/presentation";
 
-import ReactToPrint from "react-to-print";
+import  { useReactToPrint } from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 
 function PrintTable({ reports, filters, values }) {
   const { clinic } = useProfile();
 
-  const componentRef = useRef();
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const imprimir = useReactToPrint({ contentRef: componentRef })
 
@@ -24,6 +23,7 @@ function PrintTable({ reports, filters, values }) {
 
         <Button onClick={() => imprimir()}>Imprimir</Button>
       </div>
+
       <Container ref={componentRef}>
         <div className="clinic-header">
           <PrintHeader />
