@@ -66,6 +66,8 @@ export default function FormChild({
     clientOriginId: data?.originId,
   });
 
+  console.log("@")
+
   const router = useRouter();
   const statusChangePermission = useUserHasPermission("CRM12");
   const editOpportunityPermission = useUserHasPermission("CRM02");
