@@ -34,7 +34,10 @@ export function DashboardProvider({
   type?: DashboardType;
   children: React.ReactNode;
 }) {
-  const [filters, setFilters] = useState<FiltersDashboard | null>(null);
+  const [filters, setFilters] = useState<FiltersDashboard | null>({
+    fromDate: moment().startOf("month").format("YYYY-MM-DD"),
+    toDate: moment().endOf("month").format("YYYY-MM-DD"),
+  });
 
   const dashboard = useLoadDashboard({ type, filters });
 

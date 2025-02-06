@@ -33,6 +33,7 @@ import {
 } from "antd";
 const { TextArea } = Input;
 import Edit from "./Edit";
+import { useToast } from "infinity-forge";
 
 const Actions = memo(function Actions({
   completeFinance,
@@ -187,15 +188,20 @@ const Actions = memo(function Actions({
       });
   }, [reason]);
 
+  const { createToast } = useToast()
+
   const removeFinance = useCallback(() => {
     setLoading(true);
     financesService
       .remove(financeId)
-      .then((_res) =>
+      .then((_res) => {
+        setReload(s => !s)
         notification.success({ message: "Parcela removida com sucesso!" })
+      }
       )
       .catch((err) => {
         setLoading(false);
+        console.log(err?.response)
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
           return notification.error({ message: messageArr[1] });

@@ -5,6 +5,7 @@ import { api, Button, useAuthAdmin, useQuery } from "infinity-forge";
 import { Modal } from "./modal";
 
 import * as S from "./styles";
+import { logo } from "@/presentation/utils";
 
 type Notification = {
   "id": number;
@@ -20,7 +21,7 @@ export function NotificationsModal() {
 
   const { user } = useAuthAdmin()
 
-  const { data, mutate } = useQuery({
+  const { data, isFetching, mutate } = useQuery({
     queryKey: [user?.unit?.id, "notifications"],
     queryFn: async () => {
       const response = await api({ url: "Notifications/list-notifications", method: "get" })
@@ -28,7 +29,6 @@ export function NotificationsModal() {
       return response as Notification[]
     },
     enabled: !!user,
-    enableCache: true
   });
 
   useEffect(() => {
@@ -45,10 +45,12 @@ export function NotificationsModal() {
 
   return (
     <>
-      <Modal isNotPossibleClose hideCloseButton open={open} onClose={() => {}}>
+      <Modal isNotPossibleClose hideCloseButton open={open} onClose={() => {}} styles={{ maxWidth: "700px", width: "100%" }}>
         <S.Notifications>
           <div>
-            {notification.image && <img src={notification.image} />}
+            <img className="logo" src={logo}  />
+
+            {notification.image && <img className="image" src={notification.image} />}
 
             {notification.title && <h2>{notification.title}</h2>}
 
@@ -71,6 +73,7 @@ export function NotificationsModal() {
               <Button
                 type="button"
                 text="Marcar como lida"
+                loading={isFetching}
                 onClick={async () => {
                   await api({ url: "Notifications/read-notifications", method: "post", body: { notificationIds: [notification.id] } })
 

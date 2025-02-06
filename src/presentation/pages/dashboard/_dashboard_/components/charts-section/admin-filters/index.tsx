@@ -7,21 +7,24 @@ import { useLoadAllAvailableUnits } from "@/presentation";
 import * as S from "./styles";
 
 export function AdminFilters() {
-
-  const { setFilters } = useDashboard()
+  const { filters, setFilters } = useDashboard();
 
   const businessUnits = useLoadAllAvailableUnits();
 
   return (
     <S.AdminFilters className="filters">
       <FormHandler
+        initialData={{
+          fromDate: moment(filters?.fromDate).toDate(), 
+          toDate: moment(filters?.toDate).toDate(), 
+        }}
         onChangeForm={{
           callbackResult: (data) => {
             setFilters({
               toDate: moment(data.toDate).format("YYYY-MM-DD"),
               fromDate: moment(data.fromDate).format("YYYY-MM-DD"),
               units: data.units,
-            })
+            });
           },
         }}
       >

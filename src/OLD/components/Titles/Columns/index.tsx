@@ -3,6 +3,11 @@ import { Checkbox } from "antd";
 
 export const Columns = (selectAllFinances, hasInternalCode) => [
   {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
     title: "Doc",
     dataIndex: "document",
     key: "document",

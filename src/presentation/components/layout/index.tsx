@@ -6,6 +6,7 @@ import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 import {
   DictionaryQueryProvider,
+  logo,
   useLoadAllAvailableUnits,
 } from "@/presentation";
 
@@ -65,9 +66,7 @@ function LayoutPage({ children }) {
         <Layout
           workspaces={workspaces as any}
           logo={{
-            src:
-              process.env.NEXT_PUBLIC_API +
-              `/assets/logo-${process.env.client}.png`,
+            src: logo,
             href: "/dashboard",
           }}
         >

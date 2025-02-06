@@ -1,3 +1,4 @@
+export * from "./logo"
 export * from "./uid";
 export * from "./phone";
 export * from "./date";
