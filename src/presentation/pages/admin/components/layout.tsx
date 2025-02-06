@@ -9,7 +9,7 @@ export function LayoutAdmin({ children }) {
   return (
     <PrivatePage
       signInRole="controller"
-      roles={["controller", "system", "user"]}
+      roles={["controller", "system"]}
     >
       <DictionaryQueryProvider>
         <LayoutPage>{children}</LayoutPage>

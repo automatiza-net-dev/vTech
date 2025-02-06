@@ -2,21 +2,11 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { notification } from "antd";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { userService } from "@/OLD/services/user.service";
 import ConfirmScreen from "@/OLD/components/mini-components/ConfirmScreen";
 
 import { Container } from "./styles";
-
-const verifyErrors = (msg) => {
-  if (msg?.includes("Token inválido")) {
-    return notification.error({ message: "Token inválido, solicite um novo." });
-  }
-
-  return notification.error({
-    message: "Houve um erro ao criar a nova senha...",
-  });
-};
 
 export function ResetPassword({ type = "reset" }) {
   const [send, setSend] = useState(false);
@@ -24,6 +14,8 @@ export function ResetPassword({ type = "reset" }) {
     password: "",
     password_confirmation: "",
   });
+
+  const { createToast } = useToast();
 
   const router = useRouter();
 
@@ -33,18 +25,14 @@ export function ResetPassword({ type = "reset" }) {
     (e) => {
       e.preventDefault();
       if (data.password === "" || data.password_confirmation === "") {
-        notification.error({
-          message: "Erro",
-          description: "Preencha os dois campos",
-        });
+        createToast({ status: "error", message: "Preencha os dois campos" })
         return;
       }
 
       if (data.password !== data?.password_confirmation) {
-        notification.error({
-          message: "Erro",
-          description: "As senhas não conferem",
-        });
+     
+
+        createToast({ status: "error", message: "As senhas não conferem" })
         return;
       }
 
@@ -53,19 +41,41 @@ export function ResetPassword({ type = "reset" }) {
             .resetPassword({ ...data, hash })
             .then((_res) => {
               setSend(true);
-              return notification.success({ message: "Senha alterada!" });
+              createToast({ status: "success", message: "Senha alterada!" });
             })
             .catch((err) => {
-              verifyErrors(err?.response?.data?.message);
+              if (err?.response?.data?.message?.includes("Token inválido")) {
+                createToast({
+                  status: "error",
+                  message: "Token inválido, solicite um novo.",
+                });
+                return;
+              }
+
+              createToast({
+                status: "error",
+                message: "Houve um erro ao criar a nova senha...",
+              });
             })
         : userService
             .changePassword({ ...data, hash })
             .then((_res) => {
               setSend(true);
-              return notification.success({ message: "Senha alterada!" });
+              createToast({ status: "success", message: "Senha alterada!" });
             })
             .catch((err) => {
-              verifyErrors(err?.response?.data?.message);
+              if (err?.response?.data?.message?.includes("Token inválido")) {
+                createToast({
+                  status: "error",
+                  message: "Token inválido, solicite um novo.",
+                });
+                return;
+              }
+
+              createToast({
+                status: "error",
+                message: "Houve um erro ao criar a nova senha...",
+              });
             });
     },
     [data]

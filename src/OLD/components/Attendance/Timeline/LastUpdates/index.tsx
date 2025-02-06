@@ -9,6 +9,7 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 import moment from "moment";
 import "moment/locale/pt-br";
+import { useToast } from "infinity-forge";
 
 export default function LastUpdates({
   reload,
@@ -22,6 +23,8 @@ export default function LastUpdates({
 
   const router = useRouter();
   const patientId = router.query.subpage;
+
+  const {createToast} = useToast()
 
   const getAppointmentsByTag = useCallback(() => {
     timelineService
@@ -38,10 +41,7 @@ export default function LastUpdates({
         );
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as últimas atualizações lançadas...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao buscar as últimas atualizações lançadas..." })
       })
   }, [router.query.subpage, reload, filter]);
 

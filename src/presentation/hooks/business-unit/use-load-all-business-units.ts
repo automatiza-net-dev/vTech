@@ -14,3 +14,16 @@ export function useLoadAllBusinessUnits() {
     enableCache: true
   });
 }
+
+
+export function useLoadAllBusinessUnitsSystem() {
+  async function fetcher() {
+    return await container.get<RemoteBusinessUnits>(adminTypes.RemoteBusinessUnits).loadAllSystem();
+  }
+
+  return useQuery({
+    queryKey: ["RemoteLoadAllBusinessUnitsSystem"],
+    queryFn: fetcher,
+    enableCache: true
+  });
+}

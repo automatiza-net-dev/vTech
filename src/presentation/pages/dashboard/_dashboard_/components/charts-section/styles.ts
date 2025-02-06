@@ -33,7 +33,7 @@ export const ChartsSection = styled("section")<IStyledDashboard>`
   }
 
   .skeleton {
-    width: calc(100% - var(--cardsWidth));
+    width: 100%;
     height: 50vh;
 
     span {
@@ -42,7 +42,7 @@ export const ChartsSection = styled("section")<IStyledDashboard>`
   }
 
   .charts {
-    width: calc(100% - var(--cardsWidth));
+    width: 100%;
 
     > div {
       display: flex;

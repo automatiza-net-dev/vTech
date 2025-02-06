@@ -15,6 +15,7 @@ import DosesModal from "./DosesModal";
 import Columns from "./Columns";
 import moment from "moment";
 import "moment/locale/pt-br";
+import { useToast } from "infinity-forge";
 
 export default  function ListVaccinesLauched({
   reload,
@@ -27,6 +28,8 @@ export default  function ListVaccinesLauched({
   const [selectedVaccineData, setSelectedVaccineData] = useState({});
   const router = useRouter();
   const patientId = router.query.subpage;
+
+  const {createToast} = useToast()
 
   const getAllVaccines = useCallback(() => {
     setLoading(true);
@@ -50,10 +53,7 @@ export default  function ListVaccinesLauched({
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message:
-            "Houve um erro ao buscar os lançamentos de vacinas do paciente...",
-        });
+        createToast({ status: "error",message: "Houve um erro ao buscar os lançamentos de vacinas do paciente..."  })
       })
       .finally(() => {
         setLoading(false);

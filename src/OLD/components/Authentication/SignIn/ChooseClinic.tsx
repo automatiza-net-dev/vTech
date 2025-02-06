@@ -1,16 +1,10 @@
 import { Modal, notification, Radio, Space } from "antd";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import React from "react";
 import { sessionService } from "@/OLD/services/session.service";
 import { sortItems } from "@/OLD/utils/sortItems";
 import { useRouter } from "next/router";
-
-const verifyErrors = (msg) => {
-  if (msg?.includes("E_IP_NOT_ALLOWED")) {
-    return notification.error({ message: "Ip não autorizado para login" });
-  }
-};
 
 export function ChooseClinic({ login, data, clinics }) {
   const [loading, setLoading] = React.useState(false);
@@ -23,6 +17,8 @@ export function ChooseClinic({ login, data, clinics }) {
   });
 
   const router = useRouter();
+
+  const { createToast } = useToast();
 
   sortItems(clinics, "identification");
 
@@ -41,9 +37,10 @@ export function ChooseClinic({ login, data, clinics }) {
 
     if (dataWithClinic.business_unit_id === "") {
       setLoading(false);
-      return notification.error({
-        message: "Erro",
-        description: "Escolha uma clinica para concluir o login!",
+
+      createToast({
+        status: "error",
+        message: "Escolha uma clinica para concluir o login!",
       });
     }
     try {
@@ -52,7 +49,13 @@ export function ChooseClinic({ login, data, clinics }) {
       setLoading(false);
       setVisible(false);
     } catch (err: any) {
-      verifyErrors(err?.response?.data?.message);
+      if (err?.response?.data?.message?.includes("E_IP_NOT_ALLOWED")) {
+        createToast({
+          status: "error",
+          message: "Ip não autorizado para login",
+        });
+      }
+
       setLoading(false);
     }
   }, [dataWithClinic]);

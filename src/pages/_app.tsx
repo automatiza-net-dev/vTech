@@ -73,6 +73,12 @@ export default function App({ Component, pageProps }) {
                 signInConfig: {
                   Component: SignInAdmin,
                 },
+                onSignOut: () => {
+                  queryClient.clear();
+                  queryClient.removeQueries();
+
+                  router.push("/");
+                },
               },
             },
           }}
@@ -159,8 +165,6 @@ export default function App({ Component, pageProps }) {
   );
 }
 
-
-
 function GambiarraTemporaria({ setMenus }) {
   const { roleUser } = useAuthAdmin();
 
@@ -171,7 +175,6 @@ function GambiarraTemporaria({ setMenus }) {
         .get<RemoteMenu>(TypesAutomatiza.RemoteMenuAutomatiza)
         .loadAll({});
     },
-    enabled: roleUser === "user",
     enableCache: true,
     onSuccess: (data) => {
       setMenus(data);

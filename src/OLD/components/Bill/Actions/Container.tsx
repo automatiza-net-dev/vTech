@@ -12,12 +12,12 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import {  notification, Popconfirm, Modal } from "antd";
+import { notification, Popconfirm, Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useToast } from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
@@ -47,20 +47,23 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
   const removeBillPermission = useUserHasPermission("VEN12");
   const reopenBillPermission = useUserHasPermission("VEN15");
 
+  const { createToast } = useToast();
+
   const closeBill = React.useCallback(() => {
     billService
       .closeBillPayment(bill?.id)
       .then((_res) => {
-        notification.success({ message: "Venda finalizada com sucesso!" });
+        createToast({
+          status: "success",
+          message: "Venda finalizada com sucesso!",
+        });
       })
       .catch((err) => {
         const errorMessage =
           err?.response?.data?.message ||
           "Houve um erro ao finalizar a venda, verifique se ainda há valores pendentes";
 
-        notification.error({
-          message: errorMessage,
-        });
+        createToast({ status: "error", message: errorMessage });
       })
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
@@ -72,10 +75,14 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
     billService
       .reopenBillPayment(bill?.id)
       .then((_res) =>
-        notification.success({ message: "Venda reaberta com sucesso!" })
+        createToast({
+          status: "success",
+          message: "Venda reaberta com sucesso!",
+        })
       )
       .catch((_err) =>
-        notification.error({
+        createToast({
+          status: "error",
           message: "Houve um problema ao finalizar a venda",
         })
       )
@@ -91,18 +98,22 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
       .then((_res) => {
         queryClient.invalidateQueries(["bills"]);
         setReload && setReload((prv) => !prv);
-        return notification.success({
+        return createToast({
+          status: "success",
           message: "Nota de saída removida com sucesso!",
         });
       })
       .catch((err) => {
         if (err?.response?.data?.message) {
-          return notification.error({
+          createToast({
+            status: "error",
             message: err.response.data.message.replace("E_ERR:", ""),
           });
+          return;
         }
 
-        return notification.error({
+        return createToast({
+          status: "error",
           message: "Houve um erro ao remover a nota de saída...",
         });
       });
@@ -129,11 +140,6 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
               className="icon"
               size={20}
               onClick={() => {
-                /*if (cashiers.length === 0) {
-                    return notification.warning({
-                      message: "Nenhum caixa diário aberto",
-                    });
-                  }*/
                 setSelectedId(bill?.id);
                 setPaymentsVisible(true);
               }}

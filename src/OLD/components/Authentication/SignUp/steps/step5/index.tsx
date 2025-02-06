@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import { notification } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 import api from "@/OLD/services";
 
@@ -31,6 +31,8 @@ export function Step5(props) {
   });
   const [loading, setLoading] = useState(false);
 
+  const {createToast} = useToast()
+
   const handleSubmit = useCallback(
     async (e) => {
       let errorCount = 0;
@@ -59,24 +61,16 @@ export function Step5(props) {
             });
             props.setStep((prv) => prv + 1);
           } catch (err: any) {
-            notification.error({
-              message: "Erro",
-              description:
-                err?.response?.status === 422
-                  ? "Email ou documento já cadastrado"
-                  : "Erro ao criar conta",
-            });
+            createToast({ status: "error", message:  err?.response?.status === 422
+              ? "Email ou documento já cadastrado"
+              : "Erro ao criar conta" })
           }
           setLoading(false);
         } else {
-          notification.error({
-            message: "Senhas não conferem",
-          });
+          createToast({ status: "error", message: "Senhas não conferem"})
         }
       } else {
-        notification.error({
-          message: "Por favor, preencha todos os campos",
-        });
+        createToast({ status: "error", message:"Por favor, preencha todos os campos",})
       }
     },
     [data, props]

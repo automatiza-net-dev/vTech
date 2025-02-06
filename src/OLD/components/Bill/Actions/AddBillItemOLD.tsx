@@ -15,7 +15,7 @@ import {
   Table,
   notification,
 } from "antd";
-import { Modal as ModalInfinityForge } from "infinity-forge";
+import { Modal as ModalInfinityForge, useToast } from "infinity-forge";
 import {
   useCreateBillItem,
   useGetBillProducts,
@@ -93,6 +93,8 @@ function AddBillItem({ bill }: any) {
     currencyFormatter(0)
   );
 
+  const {createToast} = useToast()
+
   const { data } = useShowBill(bill.id, visible);
   const { data: products } = useGetBillProducts(visible);
   const { mutate, isLoading } = useCreateBillItem();
@@ -133,9 +135,8 @@ function AddBillItem({ bill }: any) {
               if (err?.rule === "DescontoMaximo") {
                 return setDiscountConfirmVisible(true);
               }
-              notification.error({
-                message: err.message,
-              });
+
+              createToast({ status: "error", message: err.message }) 
             });
             return;
           }
@@ -256,8 +257,8 @@ function AddBillItem({ bill }: any) {
   const removeBillItem = (id) => {
     billService
       .removeBillItem(id)
-      .then((_res) =>
-        notification.success({ message: "Item removido com sucesso" })
+      .then((_res) => createToast({ status: "success", message: "Item removido com sucesso" }) 
+     
       )
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
@@ -356,9 +357,7 @@ function AddBillItem({ bill }: any) {
           queryClient.invalidateQueries(["bills"]);
           setReload((prv) => !prv);
           setMultipleProducts([]);
-          return notification.success({
-            message: "Produtos adicionados com sucesso!",
-          });
+          return createToast({ status: "success", message: "Produtos adicionados com sucesso!" }) 
         })
         .catch((errorList) => {
           setLoading(false);
@@ -367,23 +366,20 @@ function AddBillItem({ bill }: any) {
               if (err?.rule === "DescontoMaximo") {
                 return setDiscountConfirmVisible(true);
               }
-              notification.error({
-                message: err.message,
-              });
+
+              createToast({ status: "error", message: err.message }) 
             });
             return;
           }
 
           if (err?.response?.data?.message) {
-            notification.error({
-              message: err?.response?.data?.message,
-            });
+            createToast({ status: "error", message:  err?.response?.data?.message}) 
             return;
           }
 
-          notification.error({
-            message: "Houve um erro ao salvar os produtos selecionados",
-          });
+
+          createToast({ status: "error", message: "Houve um erro ao salvar os produtos selecionados"}) 
+
           return;
         });
     },
@@ -593,10 +589,8 @@ function AddBillItem({ bill }: any) {
                 className="uk-width-1-1 uk-margin-right"
                 value={generalDiscount}
                 onChange={(e) => {
-                  if (discountType === "percent" && e.target.value > 100) {
-                    return notification.warning({
-                      message: "O valor máximo é 100",
-                    });
+                  if (discountType === "percent" && e.target.value > 100) { 
+                   return createToast({ status: "error", message: "O valor máximo é 100"}) 
                   }
 
                   const value =

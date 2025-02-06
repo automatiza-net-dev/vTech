@@ -13,12 +13,15 @@ import { notification, Table } from "antd";
 import moment from "moment";
 import "moment/locale/pt-br";
 import Columns from "./Columns";
+import { useToast } from "infinity-forge";
 
 const PathologiesList = memo(function PatologiesList({ reload }) {
   const [allPathologies, setAllPathologies] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const patientId = router.query.subpage;
+
+  const {createToast} = useToast()
 
   const getAllPathologies = useCallback(() => {
     setLoading(false);
@@ -38,9 +41,7 @@ const PathologiesList = memo(function PatologiesList({ reload }) {
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao recuperar as patologias registradas...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao recuperar as patologias registradas..." })
       })
       .finally(() => setLoading(false));
   }, [patientId, reload]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, memo } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
@@ -8,6 +8,7 @@ import TimeLine from "./Timeline";
 import { petsService } from "@/OLD/services/patient.service";
 
 import { Container } from "./styles";
+import { useToast } from "infinity-forge";
 
 export default function Attendance() {
   const [patient, setPatient] = useState({});
@@ -18,6 +19,8 @@ export default function Attendance() {
   const router = useRouter();
   const patientId = router?.query?.subpage;
 
+  const { createToast } = useToast()
+
   const getTutorData = (Id?: any, id?: any): any => {
     petsService
       .getTutors({ patientId: Id })
@@ -25,9 +28,8 @@ export default function Attendance() {
         setTutorData(res.data?.find((tutor) => tutor?.id === id));
       })
       .catch((_err) => {
-        return notification.error({
-          message: "Houve um erro ao buscar as informações do tutor...",
-        });
+
+        createToast({ status: "error", message: "Houve um erro ao buscar as informações do tutor..." })
       });
   };
 
@@ -42,9 +44,7 @@ export default function Attendance() {
         );
       })
       .catch(() => {
-        return notification.error({
-          message: "Não foi possível recuperar as informações do paciente...",
-        });
+        createToast({ status: "error", message: "Não foi possível recuperar as informações do paciente..." })
       });
   }, [patientId]);
 
@@ -56,9 +56,7 @@ export default function Attendance() {
         getTutorData(res.data.id);
       })
       .catch(() => {
-        return notification.error({
-          message: "Não foi possível recuperar as informações do paciente...",
-        });
+        createToast({ status: "error", message: "Não foi possível recuperar as informações do paciente..." })
       });
   }, [patientId]);
 

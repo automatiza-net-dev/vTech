@@ -44,10 +44,8 @@ export function SignIn() {
       e.preventDefault();
 
       if (data.email === "" || data.password === "") {
-        return notification.error({
-          message: "Erro",
-          description: "Por favor, preencha todos os campos",
-        });
+        createToast({ status: "error", message: "Por favor, preencha todos os campos", })
+        return;
       }
 
       try {
@@ -70,10 +68,7 @@ export function SignIn() {
         });
 
         if (loginResponse?.message) {
-          return notification.error({
-            message: "Erro",
-            description: loginResponse.message,
-          });
+          return createToast({ status: "error", message: loginResponse.message })
         }
 
         router.push(

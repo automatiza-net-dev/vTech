@@ -15,11 +15,12 @@ type FiltersDashboardParams = {
 export function FiltersDashboard() {
   const router = useRouter();
 
-  const { setFilters } = useDashboard();
+  const { filters, setFilters } = useDashboard();
 
   return (
     <S.FiltersDashboard>
       <FormHandler
+        initialData={{ fromDate: moment(filters?.fromDate).toDate() }}
         onChangeForm={{
           callbackResult: ({ fromDate }: FiltersDashboardParams) => {
             const fromDateStartMonth = moment(fromDate)

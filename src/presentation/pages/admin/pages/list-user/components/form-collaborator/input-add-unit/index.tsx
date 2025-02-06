@@ -2,14 +2,14 @@ import { useFormikContext } from "formik";
 import { Select, Icon } from "infinity-forge";
 
 import { Unit } from "./unit";
-import { useLoadAllBusinessUnits } from "@/presentation";
+import {  useLoadAllBusinessUnitsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
 export function InputAddUnit() {
   const { values, setFieldValue, setFieldError } = useFormikContext<any>();
 
-  const { data } = useLoadAllBusinessUnits();
+  const { data } = useLoadAllBusinessUnitsSystem();
 
   const selectUnit = values.selectUnit;
 

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { Checkbox, notification } from "antd";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 import styled from "styled-components";
 
@@ -11,6 +11,7 @@ export function Step4(props) {
     []
   );
 
+  const {createToast} = useToast()
 
   const handleChangeChecked = useCallback(
     (e, text) => {
@@ -41,10 +42,7 @@ export function Step4(props) {
       props.setData({ ...props.data, professionalProfile: inputSelected });
       props.setStep((prv) => prv + 1);
     } else {
-      notification.error({
-        message: "Erro",
-        description: "Por favor, selecione pelo menos um campo",
-      });
+      createToast({ status: "error", message: "Por favor, selecione pelo menos um campo" })
     }
   }, [inputs]);
 
