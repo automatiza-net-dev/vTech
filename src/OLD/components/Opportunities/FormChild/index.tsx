@@ -613,13 +613,10 @@ export default function FormChild({
                 justifyContent: "flex-end",
               }}
             >
-              <Button type="submit" text="Salvar" />
-              <Popconfirm
-                title="Deseja descartar alterações ?"
-                onConfirm={() => router.push("/crm/kanban")}
-              >
-                <Button text="Cancelar" />
-              </Popconfirm>
+              <Button type="submit" text="Salvar" /> 
+            
+                <Button text="Cancelar" onClick={() => () => router.push("/crm/kanban")}/>
+          
             </footer>
           ) : (
             <>
