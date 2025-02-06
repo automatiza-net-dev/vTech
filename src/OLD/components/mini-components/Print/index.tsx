@@ -33,6 +33,7 @@ export default function Print({
     <>
       {triggerComponent && (
         <button
+          style={{ border: 0, padding: 0, background: "transparent" }}
           type="button"
           onClick={() => {
             onBeforePrint && onBeforePrint();

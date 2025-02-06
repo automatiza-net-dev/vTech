@@ -1,12 +1,10 @@
-// @ts-nocheck
 import React, { useEffect } from "react";
 
-import { AutoComplete, Popconfirm } from "antd";
+import {  Popconfirm } from "antd";
 
 import Editor from "@/OLD/components/Editor";
 import { sortItems } from "@/OLD/utils/sortItems";
 import Print from "@/OLD/components/mini-components/Print";
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { Select, FormHandler, Button } from "infinity-forge";
 
 function FormChild({
@@ -25,7 +23,7 @@ function FormChild({
   setRecipeSearch,
   patient,
   remove,
-}) {
+}: any) {
   useEffect(() => {
     if (!modal && recipeId) {
       setRecipeSearch(
@@ -68,9 +66,9 @@ function FormChild({
           <h3>{recipeSearch}</h3>
         )}
       </div>
-      <div className="uk-margin-top">
+     <div className="uk-margin-top">
         <Editor editorState={body} setEditorState={setBody} />
-      </div>
+      </div> 
       <footer
         style={{
           marginTop: "10px",
@@ -92,7 +90,7 @@ function FormChild({
             submitUpdatePrint && submitUpdatePrint();
           }}
           string={true}
-        />
+        /> 
         {modal ? (
           <>
             <Button

@@ -14,7 +14,7 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { MdOutlineClear } from "react-icons/md";
 
 // Components
-import { Button } from "infinity-forge";
+import { Button, FormHandler } from "infinity-forge";
 import { Container, InputBox } from "./styles";
 import { DateFilter } from "@/OLD/components/mini-components";
 import { Input, Select, Radio, AutoComplete } from "antd";
@@ -99,6 +99,11 @@ const TitlesFilters = memo(function TitlesFilters({
               from={"fromIssue"}
               to={"toIssue"}
             />
+
+    {/* <FormHandler>
+      <Date
+    </FormHandler> */}
+
           </div>
           <InputBox>
             <DatePicker
