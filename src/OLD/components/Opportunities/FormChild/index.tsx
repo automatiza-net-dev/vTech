@@ -60,8 +60,6 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
-  console.log(data)
-
   const { user } = useAuthAdmin();
   const { data: uniqueOrigins } = useLoadCampaings({
     active: true,
