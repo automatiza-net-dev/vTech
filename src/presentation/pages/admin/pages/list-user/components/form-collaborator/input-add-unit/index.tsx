@@ -49,7 +49,7 @@ export function InputAddUnit() {
             onlyOneValue
             options={
               data?.map((item) => ({
-                label: item?.company_name,
+                label: item?.economicGroup?.company_name,
                 value: item.id,
               })) || []
             }
