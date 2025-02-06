@@ -14,8 +14,11 @@ import { ActivitiesTable } from "./activities-table";
 import { useTable } from "infinity-forge";
 
 export function TableDashboard(props: DashboardTableType) {
+console.log(props.name)
   switch (props.name) {
     case "sales-per-period":
+      return props.data.length > 0 && <SalesPerPeriodTable {...props} />;
+    case "portal-sales-per-period":
       return props.data.length > 0 && <SalesPerPeriodTable {...props} />;
     case "budgets":
       return props.data.length > 0 && <BillSalesUserTable {...props} />;
@@ -74,7 +77,6 @@ function RakingVendedores(props: DashboardTableType) {
 }
 
 function RakingFaturamento(props: DashboardTableType) {
-
   const { Table } = useTable({
     columnsConfiguration: {
       columns: [

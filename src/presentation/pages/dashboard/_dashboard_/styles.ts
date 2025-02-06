@@ -12,6 +12,10 @@ export const Dashboard = styled("div")<IStyledDashboard>`
     width: calc(50% - var(--cardsWidth)) !important;
   }
 
+  .sales_period_table.portal {
+    width: 100% !important;
+  }
+
   .sales_by_user_table {
     width: calc(65% - var(--cardsWidth)) !important;
   }

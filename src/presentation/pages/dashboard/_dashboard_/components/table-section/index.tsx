@@ -12,6 +12,10 @@ export function TablesSection() {
     (table) => table.name === "sales-per-period"
   );
 
+  const tablePortalSalesPerPeriod = dashboard?.data?.tables?.find(
+    (table) => table.name === "portal-sales-per-period"
+  );
+
   const tableSalesPerUser = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-user"
   );
@@ -62,22 +66,25 @@ export function TablesSection() {
 
           {rankingVendedores && (
             <TableDashboard
-              key={rankingVendedores.name}
               {...rankingVendedores}
             />
           )}
 
+          <div style={{ width: "100%" }}>
+            {tablePortalSalesPerPeriod && (
+              <TableDashboard {...tablePortalSalesPerPeriod} />
+            )}
+          </div>
+
           <div className="row">
             {tableSalesPerPeriod && (
               <TableDashboard
-                key={tableSalesPerPeriod.name}
                 {...tableSalesPerPeriod}
               />
             )}
 
             {tableSalesPerUser && (
               <TableDashboard
-                key={tableSalesPerUser.name}
                 {...tableSalesPerUser}
               />
             )}
@@ -85,12 +92,11 @@ export function TablesSection() {
 
           {tableBudgets &&
             tableBudgets.map((item) => (
-              <TableDashboard key={item?.name} {...item} />
+              <TableDashboard  {...item} />
             ))}
 
           {activitiesTableData && activitiesTableData?.hasData && (
             <TableDashboard
-              key={activitiesTableData.name}
               {...activitiesTableData}
             />
           )}

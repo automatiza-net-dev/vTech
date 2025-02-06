@@ -1,5 +1,6 @@
 export type DashboardTableTypes =
   | "sales-per-period"
+  | "portal-sales-per-period"
   | "sales-per-user"
   | "budgets"
   | "subgroups"
