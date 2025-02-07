@@ -19,11 +19,16 @@ export function EditorQuill(props: { value?: string; handleOnChange: (value: str
         reference.root.innerHTML = props.value
       }
 
-      // reference.on(Quill.events.TEXT_CHANGE, () => {
-      //   const html = reference.root.innerHTML
-
-      //   props.handleOnChange(html)
-      // })
+      reference.on(Quill.events.TEXT_CHANGE, () => {
+        const html = reference.root.innerHTML
+        
+        console.log(html)
+        if(html !== props.value) {
+          props.handleOnChange(html)
+        }else {
+          
+        }
+      })
     }
   }, [])
 

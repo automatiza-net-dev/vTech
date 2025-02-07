@@ -6,4 +6,8 @@ export const Container = styled.div`
   .ql-editor {
     min-height: 250px;
   }
+
+  .ql-editor .ql-align-right {
+    text-align: left;
+  }
 `;
