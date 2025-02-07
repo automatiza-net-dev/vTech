@@ -26,7 +26,6 @@ export default function Print({
 
   const imprimir = useReactToPrint({
     contentRef: componentRef,
-    ignoreGlobalStyles: true,
   });
 
   return (
