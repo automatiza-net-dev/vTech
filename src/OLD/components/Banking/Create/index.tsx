@@ -13,7 +13,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { bankingService } from "@/OLD/services/banking.service";
 
 import { Container } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import {
   Input,
   DatePicker,
@@ -42,6 +42,7 @@ const Create = memo(function FormChild({}) {
   const { paymentMethods } = usePaymentMethods(false, false);
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   const createBanking = useCallback(() => {
     setLoading(true);
@@ -55,17 +56,26 @@ const Create = memo(function FormChild({}) {
         originFlag: "BANCARIO",
         competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
       })
-      .then((_res) =>
-        notification.success({ message: "Transação salva com sucesso" })
-      )
+      .then((_res) => {
+        createToast({
+          status: "success",
+          message: "Transação salva com sucesso",
+        });
+      })
       .catch((err) => {
         setLoading(false);
         error = true;
         const message = err?.response?.data?.errors[0].message;
         if (message) {
-          return notification.error({ message });
+          createToast({
+            status: "error",
+            message: message,
+          });
+          return;
         }
-        return notification.error({
+
+        createToast({
+          status: "error",
           message: "Houve um erro ao salvar a transação...",
         });
       })
@@ -108,14 +118,21 @@ const Create = memo(function FormChild({}) {
       setLoading(false);
       setData({});
       router.back();
-      notification.success({
+
+      createToast({
+        status: "success",
         message: "Transação salva com sucesso",
       });
+
     } catch (err) {
       const errorMessage =
         err?.response?.data?.errors[0]?.message || "Erro desconhecido";
       setLoading(false);
-      notification.error({ message: errorMessage });
+
+      createToast({
+        status: "error",
+        message: errorMessage,
+      });
     }
   }, [data, router]);
 

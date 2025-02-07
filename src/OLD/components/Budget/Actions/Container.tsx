@@ -1,19 +1,15 @@
-// @ts-nocheck
 import * as React from "react";
 import styled from "styled-components";
 
-import { Tooltip } from "infinity-forge";
 import { useReactToPrint } from "react-to-print";
 
 import ShowBudget from "./Show";
 import CancelBudget from "./Cancel";
 import CompleteBudget from "./Complete";
 import PrintScreen from "../PrintScreen";
-import AddBudgetItem from "./add-payment-preview";
 import AddBudget from "./add-budget";
 import AddPaymentPreview from "./add-payment-preview";
 
-import { PermissionItem } from "@/presentation";
 
 const Container = styled.div`
   display: flex;
@@ -32,9 +28,12 @@ const Container = styled.div`
 function BudgetActions({ budget, setReload = false }) {
   const [printDetails, setPrintDetails] = React.useState({});
 
-  const handlePrint = useReactToPrint({ content: () => componentRef.current });
 
   const componentRef = React.useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+  });
 
   return (
     <Container>
@@ -57,15 +56,9 @@ function BudgetActions({ budget, setReload = false }) {
             hookEnable: true,
           });
         }}
-        onClick={() => {
-          handlePrint();
-        }}
+        onClick={() => handlePrint()}
       >
-        <Tooltip
-          enableHover
-          content="Impressão Completa"
-          trigger={
-            <svg
+           <svg
               style={{ cursor: "pointer" }}
               id="Capa_1"
               enable-background="new 0 0 512 512"
@@ -85,8 +78,6 @@ function BudgetActions({ budget, setReload = false }) {
                 <path d="m166 452h180c8.284 0 15-6.716 15-15s-6.716-15-15-15h-180c-8.284 0-15 6.716-15 15s6.716 15 15 15z" />
               </g>
             </svg>
-          }
-        />
       </div>
 
       <div
@@ -98,15 +89,9 @@ function BudgetActions({ budget, setReload = false }) {
             hookEnable: true,
           });
         }}
-        onClick={() => {
-          handlePrint();
-        }}
+        onClick={() => handlePrint()}
       >
-        <Tooltip
-          content="Impressão Simplificada"
-          enableHover
-          trigger={
-            <svg
+      <svg
               id="Capa_2"
               enable-background="new 0 0 512 512"
               height="20"
@@ -123,17 +108,13 @@ function BudgetActions({ budget, setReload = false }) {
                 <path d="m166 332h180c8.284 0 15-6.716 15-15s-6.716-15-15-15h-180c-8.284 0-15 6.716-15 15s6.716 15 15 15z" />
               </g>
             </svg>
-          }
-        />
       </div>
 
-      {budget && (
         <div style={{ display: "none" }}>
           <div ref={componentRef}>
-            <PrintScreen printDetails={printDetails} />
+           {budget && <PrintScreen printDetails={printDetails} />}
           </div>
         </div>
-      )}
     </Container>
   );
 }

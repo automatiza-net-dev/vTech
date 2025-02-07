@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import PrintFooter from "./PrintFooter";
 import PatientHeader from "./PetHeader";
@@ -24,14 +24,25 @@ export default function Print({
 
   const componentRef: any = useRef();
 
+  const imprimir = useReactToPrint({
+    contentRef: componentRef,
+    ignoreGlobalStyles: true,
+  });
+
   return (
     <>
-      <ReactToPrint
-        ignoreGlobalStyles
-        trigger={() => triggerComponent}
-        content={() => componentRef.current}
-        onBeforePrint={() => onBeforePrint && onBeforePrint()}
-      />
+      {triggerComponent && (
+        <button
+          style={{ border: 0, padding: 0, background: "transparent" }}
+          type="button"
+          onClick={() => {
+            onBeforePrint && onBeforePrint();
+            imprimir();
+          }}
+        >
+          {triggerComponent}
+        </button>
+      )}
       <div style={{ display: "none" }}>
         <PrintScreen ref={componentRef as any} className="uk-padding-small">
           <div className="">

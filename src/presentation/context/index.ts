@@ -1,3 +1,3 @@
 export * from "./ui";
-export * from "./ip-address";
 export * from "./permissions";
+export * from "./notifications";

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { Input, notification } from "antd";
 
 import api from "@/OLD/services";
@@ -15,6 +15,7 @@ export function Step3({ data, setStep }) {
   const [focusController, setFocusController] = useState(0);
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   useEffect(() => {
     if (code?.length < 6 && code.length > 0) {
@@ -36,11 +37,12 @@ export function Step3({ data, setStep }) {
   };
 
   const resendCode = useCallback(async () => {
-    await api
-      ?.get(`/users/resend-confirmation/${data?.email}`)
-      .then((_res) =>
-        notification.success({ message: "Código reenviado com sucesso!" })
-      );
+    await api?.get(`/users/resend-confirmation/${data?.email}`).then((_res) => {
+      createToast({
+        status: "success",
+        message: "Código reenviado com sucesso!",
+      });
+    });
   }, [data.email]);
 
   const submitCode = useCallback(() => {
@@ -48,14 +50,17 @@ export function Step3({ data, setStep }) {
       .confirmToken({ code, email: data?.email })
       .then((_res) => {
         setStep((prv) => prv + 1);
-        return notification.success({
+
+        createToast({
+          status: "success",
           message: "Email confirmado com sucesso",
         });
+        
       })
-      .catch((err) => {
-        notification.error({
-          message:
-            "Código inválido, verifique o código informado e tente novamente",
+      .catch(() => {
+        createToast({
+          status: "error",
+          message: "Código inválido, verifique o código informado e tente novamente",
         });
       });
   }, [code, data?.email]);

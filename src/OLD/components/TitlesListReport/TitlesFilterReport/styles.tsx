@@ -15,4 +15,8 @@ export const InputBox = styled.div`
     border: none;
     width: 100%;
   }
+
+  .conntent_form_infinity_forge {
+    margin-right: 20px;
+  }
 `;

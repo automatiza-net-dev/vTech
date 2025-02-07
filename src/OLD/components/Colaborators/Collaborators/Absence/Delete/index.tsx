@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { memo } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
-import { notification, Popconfirm, Tooltip } from "antd";
+import { notification, Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 import { calendarService } from "@/OLD/services/calendar.service";
 
@@ -37,9 +37,7 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-        <Tooltip title="Deletar">
           <DeleteTwoTone twoToneColor="red" />
-        </Tooltip>
       </Popconfirm>
     </div>
   );

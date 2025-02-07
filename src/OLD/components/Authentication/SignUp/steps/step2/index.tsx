@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/router";
 
 import { notification } from "antd";
-import { Button, FormHandler, Input, InputMask } from "infinity-forge";
+import { Button, FormHandler, Input, InputMask, useToast } from "infinity-forge";
 
 import api from "@/OLD/services";
 import { step02Schema } from "./schema";
@@ -14,6 +14,8 @@ import * as S from "./styles";
 export function Step2(props) {
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   async function sendToken(formData) {
     try {
       await api?.post("/users/send-confirmation", {
@@ -23,10 +25,8 @@ export function Step2(props) {
     } catch (err: any) {
       err?.response?.data?.errors?.forEach((error) => {
         if (error?.message.includes("Campo já está em uso")) {
-          notification.error({
-            message:
-              "Email já em uso, faça login ou verifique o e-mail informado",
-          });
+          createToast({ status: "error", message:  "Email já em uso, faça login ou verifique o e-mail informado", })
+        
           props.setStep(1);
         }
       });
@@ -44,10 +44,7 @@ export function Step2(props) {
       });
       props.setStep(3);
     } catch (error) {
-      notification.error({
-        message: "Erro",
-        description: "Por favor, preencha todos os campos corretamente",
-      });
+      createToast({ status: "error", message:   "Por favor, preencha todos os campos corretamente",})
     }
   }
 

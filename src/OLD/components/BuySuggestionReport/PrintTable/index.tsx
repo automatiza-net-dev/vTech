@@ -7,7 +7,7 @@ import { Container, RowBox } from "./styles";
 import { Button, Empty } from "antd";
 import { PrintHeader } from "@/presentation";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 const PrintTable = memo(function PrintTable({ reports }) {
   const { clinic } = useProfile();
@@ -34,6 +34,8 @@ const PrintTable = memo(function PrintTable({ reports }) {
 
     XLSX.writeFile(wb, "suggestao_compra" + ".xlsx");
   };
+
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   return (
     <>
@@ -84,12 +86,9 @@ const PrintTable = memo(function PrintTable({ reports }) {
         >
           Exportar (Excel)
         </Button>
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => componentRef.current}
-        />
+      
+
+<Button className="uk-margin-small-right" onClick={() => imprimir()}>Imprimir</Button>
       </div>
     </>
   );

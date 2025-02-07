@@ -1,4 +1,4 @@
-import { Tooltip, Checkbox } from "antd";
+import {  Checkbox } from "antd";
 
 export const columns = (selectAll) => [
   { title: "Doc", key: "doc", dataIndex: "doc" },
@@ -18,9 +18,7 @@ export const columns = (selectAll) => [
     title: (
       <>
         Ações&nbsp;
-        <Tooltip title="Selecionar todos">
           <Checkbox onChange={(e) => selectAll(e.target.checked)} />
-        </Tooltip>
       </>
     ),
     dataIndex: "actions",

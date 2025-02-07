@@ -1,8 +1,8 @@
-import { useQuery } from "react-query";
 
 import { RemoteSchedule } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
+import { useQuery } from "infinity-forge";
 
 export function useLoadSchedules() {
   async function fetcher() {
@@ -16,6 +16,6 @@ export function useLoadSchedules() {
   return useQuery({
     queryKey: "RemoteSchedules",
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

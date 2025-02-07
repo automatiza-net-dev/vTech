@@ -18,6 +18,7 @@ import Columns from "./Columns";
 // Icons
 import { BsEye } from "react-icons/bs";
 import { MdCancel } from "react-icons/md";
+import { useToast } from "infinity-forge";
 
 const ListPatientExams = memo(function ListPatientExams({
   reload,
@@ -30,6 +31,8 @@ const ListPatientExams = memo(function ListPatientExams({
   const [examPatientData, setExamPatientData] = useState({});
   // const [arquivesVisible, setArquivesVisible] = useState(false);
   const [arquives, setArquives] = useState([]);
+
+  const {createToast} = useToast()
 
   const getAllExams = useCallback(() => {
     setLoading(true);
@@ -63,10 +66,7 @@ const ListPatientExams = memo(function ListPatientExams({
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message:
-            "Houve um problema ao recuperar os exames pendentes do paciente...",
-        });
+        createToast({ status: "error", message:  "Houve um problema ao recuperar os exames pendentes do paciente...",})
       })
       .finally(() => {
         setLoading(false);

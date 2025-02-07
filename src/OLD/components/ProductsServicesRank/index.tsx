@@ -14,7 +14,7 @@ import PrintTable from "./PrintScreen";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { PageWrapper } from "infinity-forge";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import * as XLSX from "xlsx/xlsx.mjs";
 
 export function ProductsServicesRank() {
@@ -56,6 +56,8 @@ export function ProductsServicesRank() {
 
     XLSX.writeFile(wb, "ranking-vendas" + ".xlsx");
   };
+
+  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   return !listProductsRankingReportPermission ||
     listProductsRankingReportPermission === "loading" ? (
@@ -139,19 +141,10 @@ export function ProductsServicesRank() {
           </div>
         </div>
         <div className="uk-flex-around uk-flex">
-          <ReactToPrint
-            trigger={() => (
-              <Button
-                className=""
-                onMouseOver={() => {
-                  setReload((prv) => !prv);
-                }}
-              >
-                Imprimir
-              </Button>
-            )}
-            content={() => componentRef.current}
-          />
+          <Button className="" onClick={() => imprimir()}>
+            Imprimir
+          </Button>
+
           <Button
             onClick={handleExport}
             onMouseOver={() => {

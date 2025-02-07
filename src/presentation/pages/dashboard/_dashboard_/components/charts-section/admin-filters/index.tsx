@@ -1,0 +1,49 @@
+import moment from "moment";
+import { FormHandler, InputDateRange, Select } from "infinity-forge";
+
+import { useDashboard } from "../../../context";
+import { useLoadAllAvailableUnits } from "@/presentation";
+
+import * as S from "./styles";
+
+export function AdminFilters() {
+  const { filters, setFilters } = useDashboard();
+
+  const businessUnits = useLoadAllAvailableUnits();
+
+  return (
+    <S.AdminFilters className="filters">
+      <FormHandler
+        initialData={{
+          fromDate: moment(filters?.fromDate).toDate(), 
+          toDate: moment(filters?.toDate).toDate(), 
+        }}
+        onChangeForm={{
+          callbackResult: (data) => {
+            setFilters({
+              toDate: moment(data.toDate).format("YYYY-MM-DD"),
+              fromDate: moment(data.fromDate).format("YYYY-MM-DD"),
+              units: data.units,
+            });
+          },
+        }}
+      >
+        <Select
+          label="Clínicas"
+          menuPlacement="bottom"
+          name="units"
+          isMultiple={true}
+          loading={businessUnits.isFetching}
+          options={
+            businessUnits?.data?.map((unit) => ({
+              value: unit?.id,
+              label: unit?.identification,
+            })) || []
+          }
+        />
+
+        <InputDateRange label="Período" names={["fromDate", "toDate"]} />
+      </FormHandler>
+    </S.AdminFilters>
+  );
+}

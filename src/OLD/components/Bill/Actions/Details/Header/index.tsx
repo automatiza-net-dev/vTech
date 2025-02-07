@@ -9,6 +9,7 @@ import { Container } from "./styles";
 
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useAuthAdmin } from "infinity-forge";
 
 export default function Header({
   bill,
@@ -23,6 +24,8 @@ export default function Header({
 }: any) {
   const { colaborators } = useColaborators();
   const { tutors } = useTutor(false, false);
+  const { user } = useAuthAdmin();
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
 
@@ -40,6 +43,14 @@ export default function Header({
           <label>Código</label>
           <Input disabled value={bill?.tag} />
         </div>
+
+        {hasInternalCode && (
+          <div className="uk-margin-small-right">
+            <label>Código Interno</label>
+            <Input disabled value={bill?.internalCode} />
+          </div>
+        )}
+
         <div className="uk-margin-small-right uk-width-1-2">
           <label className="uk-margin-right">Vendedor</label>
           {bill?.status === "ABERTA" && changeSellerPermission && (
@@ -158,5 +169,3 @@ export default function Header({
     </Container>
   );
 }
-
-

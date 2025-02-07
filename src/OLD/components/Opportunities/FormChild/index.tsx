@@ -6,11 +6,9 @@ import { RemoteCRM } from "@/data";
 import {
   Input,
   AutoComplete,
-  Popconfirm,
   Switch,
   notification,
   Select as SelectAnt,
-  Tooltip,
   Modal,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -151,7 +149,6 @@ export default function FormChild({
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
-                <Tooltip title={"Clique para editar os dados do cliente"}>
                   <label
                     className="uk-link"
                     style={{
@@ -162,7 +159,6 @@ export default function FormChild({
                   >
                     Cliente
                   </label>
-                </Tooltip>
               }
             />
 
@@ -400,7 +396,7 @@ export default function FormChild({
                 value: collab?.name,
                 key: collab?.id,
               }))}
-              value={data?.collabName}
+              value={data?.collabName || user.firstName}
               onChange={(val) => setData({ ...data, collabName: val })}
               onSelect={(_, opt) => {
                 setData({ ...data, userId: opt?.id, collabName: opt?.value });
@@ -614,13 +610,10 @@ export default function FormChild({
                 justifyContent: "flex-end",
               }}
             >
-              <Button type="submit" text="Salvar" />
-              <Popconfirm
-                title="Deseja descartar alterações ?"
-                onConfirm={() => router.back()}
-              >
-                <Button text="Cancelar" />
-              </Popconfirm>
+              <Button type="submit" text="Salvar" /> 
+            
+                <Button text="Cancelar" onClick={() => () => router.push("/crm/kanban")}/>
+          
             </footer>
           ) : (
             <>

@@ -32,7 +32,7 @@ export function CommissionsReportsComponent() {
   const businessUnits = useLoadAllAvailableUnits();
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef: componentRef,
   });
 
   return (

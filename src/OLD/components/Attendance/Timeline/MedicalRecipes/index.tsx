@@ -15,6 +15,7 @@ import Columns from "./Columns";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { Print } from "@/OLD/utils/generalUtils";
+import { useToast } from "infinity-forge";
 
 
 const MedicalRecipesList = memo(function MedicalRecipesList({ reload }) {
@@ -22,6 +23,8 @@ const MedicalRecipesList = memo(function MedicalRecipesList({ reload }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const patientId = router.query.subpage;
+
+  const {createToast} = useToast()
 
   const getAllMedicalRecipes = useCallback(() => {
     setLoading(true);
@@ -61,9 +64,7 @@ const MedicalRecipesList = memo(function MedicalRecipesList({ reload }) {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao buscar as receitas medicas registradas...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao buscar as receitas medicas registradas...", })
       })
       .finally(() => {
         setLoading(false);

@@ -76,6 +76,7 @@ export function SinglePendingProducts({
   const formatItems = () => {
     setData(
       receipt?.items?.map((item) => ({
+        qtdEntrada: item?.quantity,
         productDescription: item?.productVariation?.product?.description,
         productId: item?.productVariation?.product?.id,
         productVariationId: item?.productVariation?.id,
@@ -248,33 +249,50 @@ export function SinglePendingProducts({
                           });
                           setData(arr);
                         }}
-                        filterOption={(value, option) =>
-                          normalizeStr(option?.description).includes(
-                            normalizeStr(value)
+                        filterOption={(val, opt) =>
+                          normalizeStr(opt?.value.toUpperCase()).includes(
+                            normalizeStr(val?.toUpperCase())
                           )
                         }
                       />
                     </div>
                     <div className="uk-width-1-3">
                       <label>Unidade</label>
-                      <Select
-                        value={item?.unitId}
+
+
+                      <AutoComplete
                         className="uk-width-1-1"
-                        onChange={(val) => {
+                        options={units?.map((unit) => ({
+                          ...unit,
+                          value: unit?.name,
+                          key: unit?.id,
+                        }))}
+                        value={item?.unitId}
+                        onChange={(val, option) => {
+                
                           let arr = [...data];
                           arr.splice(i, 1, {
                             ...item,
-                            unitId: val,
+                            unitId: option.id,
                             sendUpdate: true,
                           });
                           setData(arr);
                         }}
-                      >
-                        {units?.length > 0 &&
-                          units?.map((unit) => (
-                            <Option value={unit?.id}>{unit?.name}</Option>
-                          ))}
-                      </Select>
+                        onSelect={(_, opt) => {
+                          let arr = [...data];
+                          arr.splice(i, 1, {
+                            ...item,
+                            subgroupId: opt?.id,
+                            sendUpdate: true,
+                          });
+                          setData(arr);
+                        }}
+                        filterOption={(val, opt) =>
+                          normalizeStr(opt?.value.toUpperCase()).includes(
+                            normalizeStr(val?.toUpperCase())
+                          )
+                        }
+                      />
                     </div>
                   </div>
                   <div
@@ -324,7 +342,7 @@ export function SinglePendingProducts({
                       <>
                         <div className="uk-width-1-4 uk-margin-small-right">
                           <label>
-                            Tipo de unidade para fracionamento do produto
+                          Tipo de Unidade da Compra
                           </label>
                           <AutoComplete
                             className="uk-width-1-1"
@@ -359,7 +377,7 @@ export function SinglePendingProducts({
                           />
                         </div>
                         <div className="uk-width-1-4">
-                          <label>Qtd Embalagem</label>
+                          <label>Qtd Embalagem Compra</label>
                           <Input
                             value={item?.fractionValue}
                             onChange={(e) => {
@@ -380,6 +398,24 @@ export function SinglePendingProducts({
                     className="uk-flex uk-margin-small-top"
                     style={{ gap: "5px" }}
                   >
+                    <div className="uk-width-1-6">
+                      <label>Qtd Entrada</label>
+                      <Input
+                        value={item?.qtdEntrada}
+                        type="number"
+                        disabled
+                        onChange={(e) => {
+                          let arr = [...data];
+                          arr.splice(i, 1, {
+                            ...item,
+                            qtdEntrada: e.target.value,
+                            sendUpdate: true,
+                          });
+                          setData(arr);
+                        }}
+                      />
+                    </div>
+
                     <div className="uk-width-1-6">
                       <label>Estoque Min</label>
                       <Input
@@ -416,17 +452,26 @@ export function SinglePendingProducts({
                         value={item?.costPrice}
                         onChange={(e) => {
                           let arr = [...data];
+                          const newCost = currencyFormatter(convertIntlCurrency(e.target.value));
+                    
+                          const cost = convertIntlCurrency(newCost) || 0;
+                          const margin = parseFloat(item?.profitMargin) || 0;
+                          const price = cost * (1 + margin / 100);
+                          const profitMargin = cost ? ((price - cost) / cost) * 100 : 0;
+                    
                           arr.splice(i, 1, {
                             ...item,
-                            costPrice: currencyFormatter(
-                              convertIntlCurrency(e.target.value)
-                            ),
+                            costPrice: newCost,
+                            price: currencyFormatter(price.toFixed(2)), 
+                            profitMargin: profitMargin.toFixed(2), 
                             sendUpdate: true,
                           });
+                    
                           setData(arr);
                         }}
                       />
                     </div>
+
                     <div className="uk-width-1-6">
                       <label>% Margem</label>
                       <Input
@@ -440,8 +485,24 @@ export function SinglePendingProducts({
                           });
                           setData(arr);
                         }}
+                        onBlur={() => {
+                          let arr = [...data];
+                          const cost =
+                            convertIntlCurrency(item?.costPrice) || 0;
+                          const margin = parseFloat(item?.profitMargin) || 0;
+                          const price = cost * (1 + margin / 100);
+
+                          arr.splice(i, 1, {
+                            ...item,
+                            price: currencyFormatter(price.toFixed(2)), 
+                            sendUpdate: true,
+                          });
+
+                          setData(arr);
+                        }}
                       />
                     </div>
+
                     <div className="uk-width-1-6">
                       <label>R$ Venda</label>
                       <Input
@@ -457,8 +518,26 @@ export function SinglePendingProducts({
                           });
                           setData(arr);
                         }}
+                        onBlur={() => {
+                          let arr = [...data];
+                          const cost =
+                            convertIntlCurrency(item?.costPrice) || 0;
+                          const price = convertIntlCurrency(item?.price) || 0;
+                          const margin = cost
+                            ? ((price - cost) / cost) * 100
+                            : 0;
+
+                          arr.splice(i, 1, {
+                            ...item,
+                            profitMargin: margin.toFixed(2), 
+                            sendUpdate: true,
+                          });
+
+                          setData(arr);
+                        }}
                       />
                     </div>
+
                     <div className="uk-width-1-5">
                       <label>Desconto Max. (%)</label>
                       <Input

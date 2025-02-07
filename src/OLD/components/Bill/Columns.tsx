@@ -1,4 +1,4 @@
-export const Columns = [
+export const Columns = (hasInternalCode) => [
   {
     title: "Data da Venda",
     dataIndex: "bill_date",
@@ -9,6 +9,11 @@ export const Columns = [
     dataIndex: "code",
     key: "code",
   },
+  hasInternalCode ? {
+    title: "Código Interno",
+    dataIndex: "internalCode",
+    key: "internalCode",
+  }: {},
   {
     title: "Cliente",
     dataIndex: "client",
@@ -41,7 +46,7 @@ export const Columns = [
   },
   {
     title: "N.F",
-    dataIndex: "fn",
+    dataIndex: "fn", 
     key: "fn",
   },
   {
@@ -51,7 +56,7 @@ export const Columns = [
   },
 ];
 
-export const LiftColumns = [
+export const LiftColumns =  (hasInternalCode) => [
   {
     title: "Data da Venda",
     dataIndex: "bill_date",
@@ -62,6 +67,11 @@ export const LiftColumns = [
     dataIndex: "code",
     key: "code",
   },
+  hasInternalCode ? {
+    title: "Código Interno",
+    dataIndex: "internalCode",
+    key: "internalCode",
+  } : {},
   {
     title: "Cliente",
     dataIndex: "client",

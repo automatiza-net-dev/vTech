@@ -1,11 +1,12 @@
 import { useDictionary } from "@/presentation";
 
-export const Columns = () => {
-  const { getWord } = useDictionary();
+export const Columns = (hasInternalCode, word) => {
+
+
 
   return [
     {
-      title: `Data ${getWord("Orçamento")}`,
+      title: `Data ${word}`,
       dataIndex: "budget_date",
       key: "budget_date",
     },
@@ -24,6 +25,11 @@ export const Columns = () => {
       dataIndex: "tag",
       key: "tag",
     },
+    hasInternalCode ? {
+      title: "Código interno",
+      dataIndex: "internalCode",
+      key: "internalCode"
+    } : {},
     {
       title: "Vendedor",
       dataIndex: "user_name",

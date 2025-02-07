@@ -1,19 +1,26 @@
 import { useRouter } from "next/router";
 
-import { Error, Layout, PrivatePage, useAuthAdmin } from "infinity-forge";
-
-import { RemoteBusinessUnits } from "@/data";
-import { TypesAutomatiza, container } from "@/container";
 import {
+  Error,
+  Layout,
+  PrivatePage,
+  useAuthAdmin,
+  useQueryClient,
+} from "infinity-forge";
+
+import {
+  logo,
   DictionaryQueryProvider,
   useLoadAllAvailableUnits,
 } from "@/presentation";
+import { RemoteBusinessUnits } from "@/data";
+import { TypesAutomatiza, container } from "@/container";
 
 import * as S from "./styles";
 
 export function LayoutDashboard({ children }) {
   return (
-    <PrivatePage signInRole="user" roles={["user"]}>
+    <PrivatePage signInRole="user" roles={["user", "controller", "system"]}>
       <DictionaryQueryProvider>
         <LayoutPage>{children}</LayoutPage>
       </DictionaryQueryProvider>
@@ -25,7 +32,9 @@ function LayoutPage({ children }) {
   const router = useRouter();
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
-  const { user } = useAuthAdmin();
+  const { user, loadUser } = useAuthAdmin();
+
+  const clearCache = useQueryClient((state) => state.clearCache);
 
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({
@@ -47,10 +56,16 @@ function LayoutPage({ children }) {
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
           .swap({ unitId: value?.workspace, dashboard: true });
 
-        router.push({
-          pathname: "/dashboard",
-          query: { reload: "true" },
-        });
+        await loadUser();
+
+        clearCache();
+
+        if (router.pathname !== "/dashboard") {
+          router.push({
+            pathname: "/dashboard",
+            query: { reload: "true" },
+          });
+        }
       }
     },
   };
@@ -61,9 +76,7 @@ function LayoutPage({ children }) {
         <Layout
           workspaces={workspaces as any}
           logo={{
-            src:
-              process.env.NEXT_PUBLIC_API +
-              `/assets/logo-${process.env.client}.png`,
+            src: logo,
             href: "/dashboard",
           }}
         >

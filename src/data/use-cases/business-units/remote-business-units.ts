@@ -29,6 +29,16 @@ export class RemoteBusinessUnits
     return response as domain.LoadAllBusinessUnits.Model;
   }
 
+  async loadAllSystem() {
+    const response = await this.httpClient.request({
+      url: this.makeApiURL.make("business-units/system"),
+      method: "get",
+    });
+
+    return response as domain.LoadAllBusinessUnits.Model;
+  }
+
+
   async load(params: domain.LoadBusinessUnits.Params) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(`business-units/${params?.id}`),

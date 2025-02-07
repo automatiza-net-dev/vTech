@@ -1,4 +1,3 @@
-import { useFormikContext } from "formik";
 import { Input, InputSwitch } from "infinity-forge";
 
 import * as S from "./styles";

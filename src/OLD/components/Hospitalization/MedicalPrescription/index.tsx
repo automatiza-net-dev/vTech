@@ -20,6 +20,7 @@ import { hospitalizationPrescriptionsService } from "@/OLD/services/hospitalizat
 
 // Utils
 import moment from "moment";
+import { MedicalPrescription } from "@/presentation";
 const labelControl = (str) => {
   switch (str) {
     case "RECURRENT":
@@ -37,7 +38,7 @@ const labelControl = (str) => {
   }
 };
 
-export default function MedicalPrescription({ duplicate = false }) {
+export default function MedicalPrescriptioan({ duplicate = false }) {
   const router = useRouter();
   const [type, setType] = useState("PROCEDURE");
   const [intervalType, setIntervalType] = useState("RECURRENT");
@@ -174,6 +175,7 @@ export default function MedicalPrescription({ duplicate = false }) {
 
   return (
     <PageWrapper title="Prescrição Médica">
+      <MedicalPrescription />
       <Container>
         <form
           className="body-form uk-card uk-card-body uk-margin-top"
@@ -214,22 +216,22 @@ export default function MedicalPrescription({ duplicate = false }) {
               <div style={{ display: "flex", gap: "10px" }}>
                 <Button
                   type="button"
-                  onClick={() => setIntervalType("RECURRENT")}
-                  text="Recorrente"
+                  onClick={() => setIntervalType("")}
+                  text=""
                 />
 
                 <Button
                   type="button"
                   // type={intervalType === "ONCE" ? "primary" : ""}
                   onClick={() => setIntervalType("ONCE")}
-                  text="Apenas uma vez"
+                  text=""
                 />
 
                 <Button
                   type="button"
                   // type={intervalType === "WHEN_NEEDED" ? "primary" : ""}
-                  onClick={() => setIntervalType("WHEN_NEEDED")}
-                  text="Quando necessário"
+                  onClick={() => setIntervalType("")}
+                  text=""
                 />
               </div>
             </div>

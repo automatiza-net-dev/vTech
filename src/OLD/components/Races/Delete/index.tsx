@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { memo, useEffect } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
-import { notification, Popconfirm, Tooltip } from "antd";
+import { notification, Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 import { animalServices } from "@/OLD/services/animal.service";
 
@@ -50,9 +50,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         loading={loading}
       >
         {canDeleteRace && (
-          <Tooltip title="Deletar">
             <DeleteTwoTone twoToneColor="red" />
-          </Tooltip>
         )}
       </Popconfirm>
     </div>

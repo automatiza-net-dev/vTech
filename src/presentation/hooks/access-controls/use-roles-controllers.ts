@@ -1,7 +1,6 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteControllerRole } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { adminTypes, container } from "@/container";
 
 export function useRolesControllers() {
@@ -12,6 +11,6 @@ export function useRolesControllers() {
   return useQuery({
     queryKey: "RemoteLoadAllControllerRoles",
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

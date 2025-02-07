@@ -12,7 +12,6 @@ import {
   FormHandler,
 } from "infinity-forge";
 
-import { useLoadDashboard } from "@/presentation";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { clinicService } from "@/OLD/services/clinic.service";
 import { hospitalizationService } from "@/OLD/services/hospitalization.service";

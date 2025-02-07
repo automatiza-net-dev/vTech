@@ -16,7 +16,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 // Components
-import { Modal, Table, notification, Tooltip, Select } from "antd";
+import { Modal, Table, notification, Select } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Container, Input as InputBox } from "./styles";
 import { Button, PageWrapper } from "infinity-forge";
@@ -47,7 +47,6 @@ const CheckingAccounts = memo(function CheckingAccounts() {
         ? checkingAccounts.map((account) => {
             return {
               name: (
-                <Tooltip title="Clique para visualizar os detalhes da conta bancária">
                   <span
                     className="uk-link"
                     onClick={() =>
@@ -56,7 +55,6 @@ const CheckingAccounts = memo(function CheckingAccounts() {
                   >
                     {account?.description}
                   </span>
-                </Tooltip>
               ),
               accountCode: account?.bank_code,
               bank: account?.bank_name,

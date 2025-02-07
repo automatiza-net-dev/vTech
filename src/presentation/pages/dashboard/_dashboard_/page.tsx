@@ -1,10 +1,3 @@
-import { useEffect } from "react";
-
-import { useRouter } from "next/router";
-import { updateRoute } from "infinity-forge";
-
-import { useLoadDashboard } from "@/presentation";
-
 import {
   TablesSection,
   ChartsSection,
@@ -13,12 +6,20 @@ import {
   FinancesResumeCards,
   InvoicingBySubgroupTable,
 } from "./components";
+import { DashboardProvider, DashboardType, useDashboard } from "./context";
 
 import * as S from "./styles";
 
-export function DashboardPage({ type }: { type?: "crm" }) {
-  const router = useRouter();
-  const dashboard = useLoadDashboard({ type });
+export function DashboardPage({ type }: { type?: DashboardType }) {
+  return (
+    <DashboardProvider type={type}>
+      <DashboardContent />
+    </DashboardProvider>
+  );
+}
+
+function DashboardContent() {
+  const { dashboard, type } = useDashboard();
 
   const breakColumns =
     dashboard?.data?.charts && dashboard?.data?.charts?.length <= 4;
@@ -27,42 +28,28 @@ export function DashboardPage({ type }: { type?: "crm" }) {
     (item) => item?.name === "subgroups"
   );
 
-  useEffect(() => {
-    if (router?.query?.reload === "true") {
-      updateRoute({
-        params: { reload: undefined },
-        router,
-      });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      return;
-    }
-  }, [router.query?.reload]);
-
   return (
     <>
       <S.Dashboard $breakColumns={breakColumns}>
-        <ChartsSection type={type}>
+        <ChartsSection>
           {subgroupsDataTable && (
             <div className="custom-table">
               {(subgroupsDataTable as any)?.data.length > 0 &&
-                dashboard.data && (
+                dashboard?.data && (
                   <InvoicingBySubgroupTable {...(subgroupsDataTable as any)} />
                 )}
             </div>
           )}
         </ChartsSection>
 
-        <TablesSection />
+        <TablesSection  />
       </S.Dashboard>
 
-      <SchedulesDashboard />
+      {!type && <SchedulesDashboard />}
 
-      <FinancesResumeCards />
+      {!type && <FinancesResumeCards />}
 
-      <CashiersResumeCards />
+      {!type && <CashiersResumeCards />}
     </>
   );
 }

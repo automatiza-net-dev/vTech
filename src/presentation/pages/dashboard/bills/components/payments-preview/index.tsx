@@ -32,8 +32,6 @@ export function PaymentsPreviewComponent(
         <Accordion
           title={"Pagamentos Previstos"}
           key="payments-preview-detail"
-          closeIcon={"IconTopChevron"}
-          openIcon={"IconRightChevron"}
           children={
             paymentsPreview?.data &&
             paymentsPreview.data.map((payment, i) => (

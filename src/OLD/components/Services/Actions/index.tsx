@@ -9,7 +9,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { EditTwoTone, DeleteTwoTone, CheckOutlined } from "@ant-design/icons";
 import { VscTasklist } from "react-icons/vsc";
 
-import { notification, Popconfirm, Modal, Tooltip } from "antd";
+import { notification, Popconfirm, Modal } from "antd";
 import EditForm from "./EditForm";
 import ProductivityItems from "@/OLD/components/mini-components/ProductivityItems";
 import ServiceDetails from "../Single";
@@ -107,7 +107,6 @@ const Actions = memo(function Actions({ service, setReload }) {
 
   return (
     <section className="uk-flex uk-flex-around">
-      <Tooltip title="Clique para acessar os detalhes do serviço">
         <CheckOutlined
           onClick={() => {
             setServiceId(service?.id);
@@ -117,15 +116,12 @@ const Actions = memo(function Actions({ service, setReload }) {
             }
           }}
         />
-      </Tooltip>
-      <Tooltip title="Items de produtividade">
         <VscTasklist
           onClick={() => {
             setServiceId(service?.id);
             setProductivityVisible(true);
           }}
         />
-      </Tooltip>
 
       {/*canEditService && <EditTwoTone onClick={() => setUpdateVisible(true)} />*/}
       <Popconfirm

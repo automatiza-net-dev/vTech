@@ -26,6 +26,7 @@ import {
   AutoComplete,
   notification,
 } from "antd";
+import { useToast } from "infinity-forge";
 const { Group } = Radio;
 const { Option } = Select;
 
@@ -43,6 +44,8 @@ const Update = memo(function Update({
   const { tutors } = useTutor(false, false);
   const { paymentMethods } = usePaymentMethods(false, false);
   const router = useRouter();
+
+  const {createToast} = useToast()
 
   const formatTutors = () => {
     setFormatedTutors(
@@ -109,19 +112,19 @@ const Update = memo(function Update({
         competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
         fiscalNote: data?.fiscalNote,
       })
-      .then((_res) =>
-        notification.success({ message: "Registro atualizado com sucesso!" })
+      .then((_res) => {
+        createToast({ status: "success", message: "Registro atualizado com sucesso!" })
+      }
       )
       .catch((err) => {
         setLoading(false);
         error = true;
         const message = err?.response?.data?.errors[0].message;
         if (message) {
-          return notification.error({ message });
+          createToast({ status: "error", message })
+          return 
         }
-        return notification.error({
-          message: "Houve um erro ao salvar a transação...",
-        });
+        return createToast({ status: "error", message: "Houve um erro ao salvar a transação..." }) 
       })
       .finally(() => {
         if (!error) {

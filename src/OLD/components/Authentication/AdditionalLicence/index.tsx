@@ -1,7 +1,7 @@
 import React from "react";
 
 import { notification } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { useRouter } from "next/router";
 import { Container } from "../ForgotPassword/styles";
 import { userService } from "@/OLD/services/user.service";
@@ -10,25 +10,21 @@ export function AdditionalLicence() {
   const router = useRouter();
   const [loading, setLoadig] = React.useState(false);
 
+  const {createToast} = useToast()
+
   const handleAddLicence = React.useCallback(() => {
     setLoadig(true);
     userService
       .addLicence()
       .then((res) => {
         setLoadig(false);
-        notification.success({
-          message: "Sucesso!",
-          description: "Licença adicional efetuada!",
-        });
+        createToast({ status: "success", message: "Licença adicional efetuada!", })
 
         router.push("/");
       })
       .catch(() => {
         setLoadig(false);
-        notification.error({
-          message: "Erro",
-          description: "Erro ao adicionar licença",
-        });
+        createToast({ status: "error", message: "Erro ao adicionar licença", })
       });
   }, []);
 

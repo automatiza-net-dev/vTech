@@ -184,6 +184,19 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
             </InputBox>
           </div>
         )}
+
+<div className="uk-width-1-5">
+          <label>Titulo Oportunidade</label>
+          <InputBox className="uk-width-1-1">
+            <Input
+              value={filters?.description}
+              onChange={(e) =>
+                setFilters({ ...filters, description: e.target.value })
+              }
+            />
+          </InputBox>
+        </div>
+
         <div className="uk-width-1-5">
           <label>Unidade</label>
           <InputBox className="uk-width-1-1">
@@ -264,39 +277,6 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
                 setFilters({ ...filters, contactName: e.target.value })
               }
             />
-            {/*
-            allowClear
-            onClear={() => {
-              const newObj = { ...filters };
-                delete newObj?.contactName;
-                setFilters(newObj);
-              }}
-              className="uk-width-1-1"
-              value={values?.contactName}
-              options={[
-                { value: "Todos", id: "all" },
-                ...tutors?.map((tutor) => ({
-                  ...tutor,
-                  value: tutor?.name,
-                  key: tutor?.id
-                }))
-              ]}
-              onChange={(val) => setValues({ ...values, contactName: val })}
-              onSelect={(_val, opt) => {
-                setValues({ ...values, contactName: opt?.value });
-                if (opt?.id === "all") {
-                  const obj = { ...filters };
-                  delete obj?.contactName;
-                  return setFilters(obj);
-                }
-                setFilters({ ...filters, contactName: opt?.value });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val.toUpperCase())
-                  )
-                }
-              */}
           </InputBox>
         </div>
         <div>

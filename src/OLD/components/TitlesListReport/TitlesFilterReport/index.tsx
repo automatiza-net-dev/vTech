@@ -4,7 +4,7 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { Container, InputBox } from "./styles";
 import { DateFilter } from "@/OLD/components/mini-components";
 import { DatePicker, Select, Radio } from "antd";
-import { Button } from "infinity-forge";
+import { Button, FormHandler, InputDateRange } from "infinity-forge";
 
 const { Option } = Select;
 const { Group } = Radio;
@@ -32,115 +32,45 @@ function TitleFilterReports({
 
   return (
     <Container className="uk-margin-top uk-flex">
-      <div className="uk-width-1-3 uk-margin-right">
-        <div>
-          <div className="uk-flex">
-            <label>Data emissão</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromIssueDate"}
-              to={"toIssueDate"}
-            />
-          </div>
-          <InputBox>
-            <DatePicker
-              value={filters?.fromIssueDate}
-              onChange={(e) => {
-                setFilters({
-                  ...filters,
-                  fromIssueDate: e?.startOf("day") ?? null,
-                });
-              }}
-              format="DD/MM/YYYY"
-              className="date-component"
-            />
-            à
-            <DatePicker
-              value={filters?.toIssueDate}
-              onChange={(e) => {
-                setFilters({
-                  ...filters,
-                  toIssueDate: e?.endOf("day") ?? null,
-                });
-              }}
-              format="DD/MM/YYYY"
-              className="date-component"
-            />
-          </InputBox>
-        </div>
-        <div className="uk-margin-small-top">
-          <div className="uk-flex">
-            <label>Data Vencimento</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromExpirationDate"}
-              to={"toExpirationDate"}
-            />
-          </div>
-          <InputBox>
-            <DatePicker
-              value={filters?.fromExpirationDate}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  fromExpirationDate: e?.startOf("day") ?? null,
-                })
-              }
-              format="DD/MM/YYYY"
-              className="date-component"
-            />
-            <DatePicker
-              value={filters?.toExpirationDate}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  toExpirationDate: e?.endOf("day") ?? null,
-                })
-              }
-              format="DD/MM/YYYY"
-              className="date-component"
-            />
-          </InputBox>
-        </div>
-        <div className="uk-margin-small-top">
-          <div className="uk-flex">
-            <label>Data Pagamento</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromPaymentDate"}
-              to={"toPaymentDate"}
-            />
-          </div>
-          <InputBox>
-            <DatePicker
-              value={filters?.fromPaymentDate}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  fromPaymentDate: e?.startOf("day") ?? null,
-                })
-              }
-              format="DD/MM/YYYY"
-              className="date-component"
-            />
-            à{" "}
-            <DatePicker
-              value={filters?.toPaymentDate}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  toPaymentDate: e?.endOf("day") ?? null,
-                })
-              }
-              format="DD/MM/YYYY"
-              className="date-component"
-            />
-          </InputBox>
-        </div>
+      <div style={{ marginRight: 20 }}>
+      <FormHandler
+        cleanFieldsOnSubmit={false}
+        onChangeForm={{
+          callbackResult: (formValues) => {
+            setFilters(formValues);
+          },
+        }}
+      >
+        <InputDateRange
+          enableFilter
+          id="Date"
+          placeholder="DD/MM/YYYY"
+          label="Data emissão"
+          names={["fromIssueDate", "toIssueDate"]}
+          isClearable
+        />
+
+        <InputDateRange
+          enableFilter
+          id="Date"
+          placeholder="DD/MM/YYYY"
+          label="Data Vencimento"
+          names={["fromExpirationDate", "toExpirationDate"]}
+          isClearable
+        />
+
+        <InputDateRange
+          enableFilter
+          id="Date"
+          placeholder="DD/MM/YYYY"
+          label="Data Pagamento"
+          names={["fromPaymentDate", "toPaymentDate"]}
+          isClearable
+        />
+      </FormHandler>
       </div>
+   
+
       <div className="uk-width-1-3 uk-margin-right">
         <div>
           <label>Data competência</label>
@@ -291,6 +221,6 @@ function TitleFilterReports({
       </div>
     </Container>
   );
-};
+}
 
 export default TitleFilterReports;

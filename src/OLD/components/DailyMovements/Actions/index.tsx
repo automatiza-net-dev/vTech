@@ -8,7 +8,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { dailyMovementsService } from "@/OLD/services/dailyMovements.service";
 
 import { Container } from "./styles";
-import { Tooltip, notification, Modal } from "antd";
+import { notification, Modal } from "antd";
 import FormChild from "../FormChild";
 
 import { GiConfirmed } from "react-icons/gi";
@@ -124,7 +124,6 @@ function Actions ({ movement, reload, setReload, setReport }) {
       {closeDailyMovementPermission && (
         <>
           {movement?.status === "Aberto" && (
-            <Tooltip title="Fechar movimentação">
               <VscLock
                 className="icon"
                 size={20}
@@ -133,10 +132,8 @@ function Actions ({ movement, reload, setReload, setReport }) {
                   setSubmitFunc("Fechamento");
                 }}
               />
-            </Tooltip>
           )}
           {movement?.status === "Fechado" && (
-            <Tooltip title="Reabrir movimentação">
               <VscUnlock
                 className="icon"
                 size={20}
@@ -145,18 +142,14 @@ function Actions ({ movement, reload, setReload, setReport }) {
                   setSubmitFunc("Reabertura");
                 }}
               />
-            </Tooltip>
           )}
         </>
       )}
 
       {movement?.checking_date ? (
-        <Tooltip title="Verificado">
           <GiConfirmed className="icon" size={20} color="var(--green)" />
-        </Tooltip>
       ) : (
         checkDailyMovementPermission && (
-          <Tooltip title="Conferir movimentação">
             <VscCheckAll
               className="icon"
               color="var(--red)"
@@ -166,17 +159,14 @@ function Actions ({ movement, reload, setReload, setReport }) {
                 setSubmitFunc("Verificação");
               }}
             />
-          </Tooltip>
         )
       )}
 
-      <Tooltip title="Visualizar relatório">
         <VscBook
           size={20}
           className="icon"
           onClick={() => setReport(movement.logs)}
         />
-      </Tooltip>
       <Modal
         visible={obsVisible}
         onCancel={() => setObsVisible(false)}

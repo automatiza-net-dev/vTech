@@ -7,7 +7,7 @@ import { billService } from "@/OLD/services/bills.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Button } from "infinity-forge";
-import { Popconfirm, notification, Tooltip } from "antd";
+import { Popconfirm, notification } from "antd";
 
 const verifyUpdateExpirationErrors = (err) => {
   return notification.error({
@@ -98,9 +98,7 @@ const RemoveBillPayment = memo(function ({
           cancelText="Não"
           placement="left"
         >
-          <Tooltip title="Remover pagamento">
             <Button text="Remover Pagamento" />
-          </Tooltip>
         </Popconfirm>
       )}
     </div>

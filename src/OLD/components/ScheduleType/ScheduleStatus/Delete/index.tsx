@@ -3,7 +3,7 @@ import React, { memo, useCallback } from "react";
 
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm, Tooltip } from "antd";
+import { notification, Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { useMutation, useQueryClient } from "react-query";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -46,9 +46,7 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-        <Tooltip title="Deletar">
           {canDeleteScheduleStatus && <DeleteTwoTone twoToneColor="red" />}
-        </Tooltip>
       </Popconfirm>
     </div>
   );

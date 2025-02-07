@@ -15,7 +15,7 @@ function Create({ setReload, setVisible, listCreated }) {
   const { createToast } = useToast();
 
   const verifyErrors = (err) => {
-    err?.response?.data?.errors.forEach((err) => {
+    err?.response?.data?.errors?.forEach((err) => {
       if (err?.field === "supplierId") {
         return createToast({
           message: "Selecione o fornecedor",

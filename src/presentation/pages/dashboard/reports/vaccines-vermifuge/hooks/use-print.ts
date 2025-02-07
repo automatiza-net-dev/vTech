@@ -12,7 +12,7 @@ export function usePrint({
   const [vaccinesReport, setVaccinesReport] = useState<Vaccine[]>([]);
 
   const print = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef:  componentRef,
     pageStyle: `
     @page {
       size: A4 landscape; 

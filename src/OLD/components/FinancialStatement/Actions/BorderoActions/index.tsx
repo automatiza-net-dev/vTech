@@ -6,7 +6,7 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Popconfirm, Tooltip, notification, Modal } from "antd";
+import { Popconfirm, notification, Modal } from "antd";
 import FormChild from "./FormChild";
 
 import { FiLock, FiUnlock } from "react-icons/fi";
@@ -19,11 +19,11 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
-const BorderoActions = memo(function BorderoActions({
+function BorderoActions({
   bordero,
   setReload,
   type,
-}) {
+}: any) {
   const [downData, setDownData] = useState({
     interestValue: currencyFormatter(0),
     discountValue: currencyFormatter(0),
@@ -194,53 +194,43 @@ const BorderoActions = memo(function BorderoActions({
   return (
     <Container>
       {bordero?.status === "Aberto" && (
-        <Tooltip title="Fechar borderô">
           <Popconfirm
             title="Deseja fechar este borderô?"
             onConfirm={closeBordero}
           >
             <FiLock className="custom-icon" />
           </Popconfirm>
-        </Tooltip>
       )}
       {bordero?.status === "Fechado" && (
-        <Tooltip title="Reabrir borderô">
           <Popconfirm
             title="Deseja reabrir este borderô?"
             onConfirm={reopenBordero}
           >
             <FiUnlock className="custom-icon" />
           </Popconfirm>
-        </Tooltip>
       )}
       {bordero?.status === "Fechado" && downBorderoPermission && (
-        <Tooltip title="Baixar borderô">
           <IoMdDownload
             size={20}
             className="custom-icon"
             onClick={() => setDownModalVisible(true)}
           />
-        </Tooltip>
       )}
       {bordero?.status === "Baixado" && revertBorderoPermission && (
-        <Tooltip title="Estornar borderô">
           <BsArrowCounterclockwise
             size={20}
             className="custom-icon"
             onClick={() => setRevertModalVisible(true)}
           />
-        </Tooltip>
       )}
       {bordero?.status === "Baixado" ||
         (bordero?.status === "Fechado" && (
-          <Tooltip title="Excluir bordero" className="uk-margin-small-top">
             <Popconfirm
               onConfirm={removeBordero}
               title="Deseja remover este bordero?"
             >
               <DeleteTwoTone twoToneColor="red" />
             </Popconfirm>
-          </Tooltip>
         ))}
 
       <Modal
@@ -274,6 +264,6 @@ const BorderoActions = memo(function BorderoActions({
       </Modal>
     </Container>
   );
-});
+}
 
 export default BorderoActions;

@@ -22,7 +22,7 @@ import {
 import { Container } from "./styles";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
-import { Select, FormHandler, Button } from "infinity-forge";
+import { Select, FormHandler, Button, useToast } from "infinity-forge";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 
@@ -58,14 +58,14 @@ export default function FormChild({
     }
   }, [data?.examId, allExams, modal]);
 
+  const {createToast} = useToast()
+
   const beforeUpload = useCallback((file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return notification.error({
-          message: "Você só pode upar imagens até 2MB!",
-        });
+        createToast({ status: "error", message: "Você só pode upar imagens até 2MB!", })
       }
     }
 

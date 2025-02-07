@@ -16,6 +16,7 @@ import {
   notification,
   Button,
 } from "antd";
+import { useToast } from "infinity-forge";
 const { Option } = Select;
 
 function Vaccines({
@@ -33,6 +34,8 @@ function Vaccines({
   const { user } = useProfile();
   const router = useRouter();
   const eventId = router.query.innerpage;
+
+  const {createToast} = useToast()
 
   const getProtocols = useCallback(() => {
     setLoading(true);
@@ -53,9 +56,8 @@ function Vaccines({
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Não foi possível recuperar os protocolos disponíveis...",
-        });
+
+        createToast({ status: "error", message: "Não foi possível recuperar os protocolos disponíveis..." })
       })
       .finally(() => {
         setLoading(false);
@@ -83,15 +85,12 @@ function Vaccines({
         applications: applicationsData,
       })
       .then((_res) => {
-        return notification.success({
-          message: "Vacina lançada com sucesso!",
-        });
+        createToast({ status: "success", message: "Vacina lançada com sucesso!" })
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: `${err.response.data.errors[0].message}`,
-        });
+
+        createToast({ status: "error", message: `${err.response.data.errors[0].message}` })
       })
       .finally(() => {
         setLoading(false);

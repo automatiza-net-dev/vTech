@@ -1,5 +1,4 @@
 import { useQuery } from "react-query";
-import { callApiOneTime } from "infinity-forge";
 
 import { RemoteBudget } from "@/data";
 import { LoadAllBudgetsAttendance } from "@/domain";
@@ -17,7 +16,6 @@ export function useLoadAllBudgetAttendances(
 
       return response;
     },
-    ...callApiOneTime,
     enabled: !!(props?.id)
   });
 }

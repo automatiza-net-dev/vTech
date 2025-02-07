@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 
 import { Button } from "infinity-forge";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { DatePicker, Modal, Select } from "antd";
 
 import {
@@ -87,6 +87,8 @@ export function HospitalizationTimeline({
         })
       : filteredTimelineData;
 
+  const imprimir = useReactToPrint({ contentRef: componentRef });
+
   return modal ? (
     <Modal
       width={1000}
@@ -115,11 +117,11 @@ export function HospitalizationTimeline({
           style={{ marginLeft: "16px" }}
           onChange={handleDateRangeChange}
         />
-        <ReactToPrint
-          trigger={() => (
-            <Button style={{ marginTop: "00px" }} text="Imprimir" />
-          )}
-          content={() => componentRef.current}
+
+        <Button
+          style={{ marginTop: "00px" }}
+          text="Imprimir"
+          onClick={() => imprimir()}
         />
       </div>
       <div>

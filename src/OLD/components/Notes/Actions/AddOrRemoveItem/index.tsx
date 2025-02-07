@@ -5,7 +5,7 @@ import { receiptService } from "@/OLD/services/receipt.service";
 
 import { useReceipt } from "@/OLD/hooks/useReceipts";
 
-import { Tooltip, Modal, notification } from "antd";
+import { Modal, notification } from "antd";
 import FormChild from "@/OLD/components/Notes/FormChild";
 
 import moment from "moment";
@@ -81,12 +81,11 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
 
   return (
     <>
-      <Tooltip title="Adicionar ou remover item">
         <GrAddCircle
           style={{ cursor: "pointer" }}
           onClick={() => setVisible(true)}
         />
-      </Tooltip>
+  
       {visible && (
         <Modal
           visible={visible}

@@ -6,7 +6,6 @@ import { Modal } from "infinity-forge";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Tooltip } from "antd";
 import TreatmentsMaintenance from "@/OLD/components/Treatments/Maintenance";
 
 import { IoIosTimer } from "react-icons/io";
@@ -25,7 +24,6 @@ function Actions({ treatment }) {
 
   return (
     <Container className="uk-flex uk-flex-around">
-      <Tooltip title="Manutenção / Agendamento execução">
         <GrHostMaintenance
           className="custom-icon"
           size={15}
@@ -34,9 +32,7 @@ function Actions({ treatment }) {
             setTreatmentsMaintenanceOpen(true);
           }}
         />
-      </Tooltip>
       {dayExecutionsPermission && (
-        <Tooltip title="Execuções do dia">
           <IoIosTimer
             className="custom-icon"
             size={20}
@@ -46,7 +42,6 @@ function Actions({ treatment }) {
               )
             }
           />
-        </Tooltip>
       )}
       <Modal
         styles={{ width: '1200px', padding: '10px' }}

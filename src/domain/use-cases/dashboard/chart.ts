@@ -83,6 +83,7 @@ export type DashboardCardBoundBilling = {
 };
 
 export type Dashboard = {
+  top: DashboardCard[];
   charts: DashboardChart[];
   cards: DashboardCard[];
   tables: DashboardTableType[];

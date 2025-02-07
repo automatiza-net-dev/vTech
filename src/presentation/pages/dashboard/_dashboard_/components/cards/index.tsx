@@ -7,13 +7,14 @@ import { CardRenderingControl } from "./card-rendering-control";
 import * as S from "./styles";
 
 export function Cards({
+  type,
   cards,
   isFetching,
-}: Partial<Dashboard> & { isFetching: boolean }) {
+}: Partial<Dashboard> & { isFetching: boolean, type?: "crm" | "admin"; }) {
   return (
     <div className="cards">
       <S.Cards>
-        <FiltersDashboard />
+        {type !== "admin" && <FiltersDashboard />}
 
         {cards?.map((item) => (
           <CardRenderingControl key={item.name} {...item} />

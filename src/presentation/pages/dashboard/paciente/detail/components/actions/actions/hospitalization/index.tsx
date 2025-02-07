@@ -15,7 +15,7 @@ export function HospitalizationForm(props: TimeLine["timeline_info"]) {
   const componentRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef:  componentRef,
   });
 
   const risks = [

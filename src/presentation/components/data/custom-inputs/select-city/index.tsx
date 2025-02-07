@@ -10,12 +10,6 @@ export function SelectCity() {
 
   const { data, isFetching } = useLoadCities({ uf });
 
-  const options =
-    data?.map((city) => ({
-      label: city?.nome,
-      value: city?.nome,
-    })) || [];
-
   useEffect(() => {
     if (uf) {
       setFieldValue("city", "");
@@ -29,7 +23,7 @@ export function SelectCity() {
       label="Cidade"
       placeholder="Selecione a cidade"
       loading={isFetching}
-      options={options}
+      options={data?.options}
       disabled={!uf || !data}
     />
   );

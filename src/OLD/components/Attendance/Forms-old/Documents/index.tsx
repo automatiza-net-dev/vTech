@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 // Core
 import React, { useState, useEffect, useCallback } from "react";
 

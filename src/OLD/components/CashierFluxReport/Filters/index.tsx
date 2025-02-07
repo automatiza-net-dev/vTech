@@ -1,75 +1,56 @@
-// @ts-nocheck
-import { memo } from "react";
-
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 
-import { InputBox } from "./styles";
-import { Button } from "infinity-forge";
-import { Select, DatePicker } from "antd";
-import { DateFilter } from "@/OLD/components/mini-components";
-const { Option } = Select;
+import { Button, FormHandler, InputDateRange, Select } from "infinity-forge";
+
+import * as S from "./styles";
 
 function Filters({ filters, setFilters, setReload, setValues }) {
-  const { businessUnits } = useBusinessUnitsByUser(false);
+  const { businessUnits } = useBusinessUnitsByUser(false, false);
 
+  function handleSubmit() {
+    setFilters({ ...filters, noSearch: false });
+    setReload((prv) => !prv);
+  }
   return (
-    <section className="uk-margin-small-top">
-      <div className="uk-flex uk-flex-around">
-        <InputBox className="uk-width-1-3 uk-margin-top">
-          <label>Unidade:&nbsp;</label>
-          <Select
-            className="uk-width-1-1"
-            onChange={(val) => {
-              setFilters({ ...filters, businessUnit: val });
-              setValues((prv) => ({
-                ...prv,
-                clinicFantasyName: businessUnits.find(
-                  (unit) => unit?.id === val
-                )?.fantasyName,
-              }));
-            }}
-            value={filters?.businessUnit}
-          >
-            {businessUnits.length > 0 &&
-              businessUnits.map((unit) => (
-                <Option value={unit?.id}>{unit?.fantasyName}</Option>
-              ))}
-          </Select>
-        </InputBox>
-        <div className="uk-width-1-3">
-          <DateFilter
-            state={filters}
-            setState={setFilters}
-            from={"fromDate"}
-            to={"toDate"}
-          />
-          <InputBox className="uk-width-1-1">
-            <label>Período:&nbsp;</label>
-            <DatePicker
-              format="DD/MM/YYYY"
-              onChange={(val) => setFilters({ ...filters, fromDate: val })}
-              value={filters?.fromDate}
-            />
-            &nbsp;à&nbsp;
-            <DatePicker
-              format="DD/MM/YYYY"
-              onChange={(val) => setFilters({ ...filters, toDate: val })}
-              value={filters?.toDate}
-            />
-          </InputBox>
-        </div>
-        <div>
-          <Button
-            type="primary"
-            onClick={() => {
-              setFilters({ ...filters, noSearch: false });
-              setReload((prv) => !prv);
-            }}
-            text="Filtrar"
-          />
-        </div>
-      </div>
-    </section>
+    <S.Filters>
+      <FormHandler
+        cleanFieldsOnSubmit={false}
+        customAction={{
+          Component: () => <Button text="Enviar" onClick={handleSubmit} />,
+        }}
+        onChangeForm={{
+          callbackResult: (formValues) => {
+            setFilters(formValues);
+          },
+        }}
+      >
+        <Select
+          onlyOneValue
+          name="businessUnit"
+          label="Unidade"
+          options={businessUnits?.map((unit) => ({
+            label: unit?.fantasyName,
+            value: unit?.id,
+          }))}
+          onChangeInput={(val) => {
+            setValues((prv) => ({
+              ...prv,
+              clinicFantasyName: businessUnits.find((unit) => unit?.id === val)
+                ?.fantasyName,
+            }));
+          }}
+        />
+
+        <InputDateRange
+          enableFilter
+          id="Date"
+          placeholder="DD/MM/YYYY"
+          label="Período"
+          names={["fromDate", "toDate"]}
+          isClearable
+        />
+      </FormHandler>
+    </S.Filters>
   );
 }
 

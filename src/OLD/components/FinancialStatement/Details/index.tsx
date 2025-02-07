@@ -9,7 +9,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Container } from "./styles";
 import { Button } from "infinity-forge";
-import { Input, Table, Tooltip, notification, Modal, Popconfirm } from "antd";
+import { Input, Table, notification, Modal, Popconfirm } from "antd";
 import FinancesActions from "../Actions";
 import DownFormChild from "../Actions/FormChild";
 
@@ -18,14 +18,14 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { columns } from "./Columns";
 import moment from "moment";
 
-const FinancialStatementDetails = memo(function BorderoDetails({
+function BorderoDetails({
   groupData,
   setVisible,
   setGroupData,
   reload,
   setReload,
   checkingAccountId,
-}) {
+}: any) {
   const [loading, setLoading] = useState(false);
   const [formattedTitles, setFormattedTitles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -229,7 +229,6 @@ const FinancialStatementDetails = memo(function BorderoDetails({
           0 && (
           <>
             {titles?.length > 0 && (
-              <Tooltip title="Baixar todos os títulos do grupo">
                 <Popconfirm
                   title="Deseja baixar os títulos selecionados?"
                   onConfirm={() => {
@@ -240,7 +239,6 @@ const FinancialStatementDetails = memo(function BorderoDetails({
                 >
                   <Button text="Baixar títulos" />
                 </Popconfirm>
-              </Tooltip>
             )}
           </>
         )}
@@ -273,6 +271,6 @@ const FinancialStatementDetails = memo(function BorderoDetails({
       )}
     </Container>
   );
-});
+}
 
-export default FinancialStatementDetails;
+export default BorderoDetails;

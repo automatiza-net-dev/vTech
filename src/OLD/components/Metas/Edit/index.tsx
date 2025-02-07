@@ -5,7 +5,6 @@ import {
   Modal,
   notification,
   Select,
-  Tooltip,
   Button as ButtonA,
 } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
@@ -67,9 +66,7 @@ export const Edit = memo(({ item, canUpdate }) => {
   return (
     <div>
       {canUpdate && (
-        <Tooltip title="Editar">
           <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
-        </Tooltip>
       )}
 
       <Modal

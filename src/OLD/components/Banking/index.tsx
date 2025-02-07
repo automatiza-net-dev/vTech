@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 // Core
 import React, { memo, useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -14,7 +14,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 // Components
 import { Container } from "./styles";
 import { Button, PageWrapper } from "infinity-forge";
-import { Table, Tooltip } from "antd";
+import { Table } from "antd";
 import { useBankings } from "@/OLD/hooks/useBankings";
 import Filters from "./Filters";
 import Actions from "./Actions";
@@ -39,7 +39,6 @@ const Banking = memo(function Banking() {
       bankings.map((banking) => {
         return {
           document: (
-            <Tooltip title="Clique para visualizar detalhes">
               <span
                 onClick={() =>
                   router.push(
@@ -50,7 +49,6 @@ const Banking = memo(function Banking() {
               >
                 {banking?.document}
               </span>
-            </Tooltip>
           ),
           type: banking?.type,
           account: banking?.checkingAccount?.description,

@@ -1,15 +1,15 @@
 import { inject, injectable } from "inversify";
 
 import { User } from "@/domain";
-import * as domain from "infinity-forge";
 import * as domainAutomatiza from "@/domain";
 import { InfraTypes } from "@/container/infra/types";
+import { api } from "infinity-forge";
 
 @injectable()
 export class RemoteLoadUserDashboard {
   constructor(
     @inject(InfraTypes.makeApiURL)
-    private readonly makeApiURL: domain.makeApiURL,
+    private readonly makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
     private readonly httpClient: domainAutomatiza.HttpClient<User>,
     @inject(InfraTypes.authorizeAdminHttp)
@@ -18,11 +18,13 @@ export class RemoteLoadUserDashboard {
     private readonly storage: domainAutomatiza.StorageVtech
   ) {}
   async load(params: { admin?: boolean }) {
+
     const HTTP = params?.admin ? this.httpClientAdmin : this.httpClient;
-    const ip = await this.storage.get<"ip">("ip");
+
+    const ip = await api({ url: "ip", method: "get" }, "/api/")
 
     const response = await HTTP.request({
-      url: this.makeApiURL.make(`auth/me?ip=${ip?.value}`),
+      url: this.makeApiURL.make(`auth/me?ip=${ip}`),
       method: "get",
     });
 

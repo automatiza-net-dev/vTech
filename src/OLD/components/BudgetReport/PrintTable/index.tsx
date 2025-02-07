@@ -8,7 +8,7 @@ import { Empty } from "antd";
 import { PrintHeader } from "@/presentation";
 import { Button } from "infinity-forge";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
@@ -121,6 +121,7 @@ function PrintTable({ reports }) {
   };
 
   const { getWord } = useDictionary();
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   return (
     <>
@@ -215,12 +216,9 @@ function PrintTable({ reports }) {
           text="Exportar (Excel)"
         />
 
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right" text="Imprimir" />
-          )}
-          content={() => componentRef.current}
-        />
+      
+
+<Button className="uk-margin-small-right" text="Imprimir" onClick={( ) => imprimir()} />
       </div>
     </>
   );

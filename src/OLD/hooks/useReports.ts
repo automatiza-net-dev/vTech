@@ -7,7 +7,7 @@ import { reportsService } from "@/OLD/services/reports.service";
 import moment from "moment";
 
 export const useFlowReports = (filters, reload) => {
-  const [flowReports, setFlowReports] = useState([]);
+  const [flowReports, setFlowReports] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
@@ -49,7 +49,7 @@ export const useFlowReports = (filters, reload) => {
 };
 
 export const useCheckingAccountReports = (filters, reload) => {
-  const [checkingAccountReports, setCheckingAccountsReports] = useState([]);
+  const [checkingAccountReports, setCheckingAccountsReports] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

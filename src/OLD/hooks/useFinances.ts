@@ -64,7 +64,7 @@ export const useFinances = (filters, reload) => {
 };
 
 export const useShowFinance = (ids, reload, search = true) => {
-  const [finances, setFinances] = useState([]);
+  const [finances, setFinances] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
@@ -199,7 +199,7 @@ export const useShowBordero = (id, filters, reload) => {
 };
 
 export const useGroupedFinances = (filters, reload) => {
-  const [finances, setFinances] = useState([]);
+  const [finances, setFinances] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
@@ -313,7 +313,7 @@ export const usePaymentGroup = (filters, reload) => {
 };
 
 export const useFinancesBalance = (filters) => {
-  const [balance, setBalance] = useState({});
+  const [balance, setBalance] = useState<any>({});
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

@@ -12,7 +12,7 @@ import { Button, PageWrapper } from "infinity-forge";
 import Create from "./Actions/Create";
 import Filters from "./Filters";
 import AddOrRemoveItem from "./Actions/AddOrRemoveItem";
-import { Modal, Table, Upload, notification, Tooltip, Popconfirm } from "antd";
+import { Modal, Table, Upload, notification, Popconfirm } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import Details from "./Single";
 
@@ -77,7 +77,6 @@ export function Notes() {
                 )}
                 {/* TODO CHAMAR MODAL EM TESE PARA ELIMINAR PAGINA... */}
                 {receipt?.status === "PendenteXml" && (
-                  <Tooltip title="Continuar a importação do xml">
                     <MdOutlineChecklist
                       size={20}
                       className="custom-icon"
@@ -87,10 +86,8 @@ export function Notes() {
                         )
                       }
                     />
-                  </Tooltip>
                 )}
                 {receipt?.status !== "Baixada" && addPaymentsPermission && (
-                  <Tooltip title="Adicionar pagamento">
                     <MdMonetizationOn
                       className="custom-icon"
                       onClick={() => {
@@ -98,14 +95,10 @@ export function Notes() {
                         setAddPaymentsScreenVisible(true);
                       }}
                     />
-                  </Tooltip>
                 )}
                 {receipt?.status !== "Baixada" && (
-                  <Tooltip title="Finalizar entrada" className="custom-icon">
                     <FiLock onClick={() => finishReceipt(receipt?.id)} />
-                  </Tooltip>
                 )}
-                <Tooltip title="Detalhes da nota">
                   <CgDetailsMore
                     className="custom-icon"
                     onClick={() => {
@@ -120,22 +113,14 @@ export function Notes() {
                       }
                     }}
                   />
-                </Tooltip>
                 {receipt?.status === "Baixada" && (
                   <>
                     {reopenReceiptPermission && (
-                      <Tooltip
-                        onClick={() => reopenReceipt(receipt?.id)}
-                        title="Reabrir nota"
-                        className="custom-icon"
-                      >
-                        <FiUnlock />
-                      </Tooltip>
+                        <FiUnlock onClick={() => reopenReceipt(receipt?.id)} />
                     )}
                   </>
                 )}
                 {removeReceiptPermission && (
-                  <Tooltip title="Remover nota">
                     <Popconfirm
                       title="Deseja remover esta nota de entrada?"
                       onConfirm={() =>
@@ -144,7 +129,6 @@ export function Notes() {
                     >
                       <DeleteTwoTone twoToneColor={"red"} />
                     </Popconfirm>
-                  </Tooltip>
                 )}
               </div>
             ),

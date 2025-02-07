@@ -5,7 +5,7 @@ import { useSalesAnalyticsReport } from "@/OLD/hooks/useReports";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { Container } from "./styles";
 import Filters from "./Filters";
 import PrintScreen from "./PrintScreen";
@@ -28,6 +28,11 @@ const AnalyticalReport = memo(function () {
 
   const componentRef = useRef();
 
+  const imprimir = useReactToPrint({
+    contentRef: componentRef,
+    onBeforePrint: () => setReload(!reload),
+  });
+
   return !listAnalyticsReportsPermission ||
     listAnalyticsReportsPermission === "loading" ? (
     <AccessDenied loading={listAnalyticsReportsPermission} />
@@ -37,20 +42,14 @@ const AnalyticalReport = memo(function () {
         <Filters filters={filters} setFilters={setFilters} />
         <hr />
         <div className="uk-flex uk-flex-around">
-          <ReactToPrint
-            trigger={() => (
-              <Button
-                className="uk-margin-small-right"
-                onMouseOver={() => {
-                  setReload((prv) => !prv);
-                }}
-              >
-                Imprimir
-              </Button>
-            )}
-            content={() => componentRef.current}
-            onBeforePrint={() => setReload(!reload)}
-          />
+          <Button
+            className="uk-margin-small-right"
+            onClick={() => {
+              imprimir();
+            }}
+          >
+            Imprimir
+          </Button>
         </div>
         <div style={{ display: "none" }}>
           <div ref={componentRef}>

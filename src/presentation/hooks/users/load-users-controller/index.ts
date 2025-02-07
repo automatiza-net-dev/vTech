@@ -1,8 +1,7 @@
-import { useQuery } from "react-query";
 
 import { RemoteUserController } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { adminTypes, container } from "@/container";
+import { useQuery } from "infinity-forge";
 
 export function useLoadUsersController() {
   
@@ -15,6 +14,6 @@ export function useLoadUsersController() {
   return useQuery({
     queryKey: "RemoteLoadUserControllers",
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { notification, Popconfirm, Tooltip } from "antd";
+import { notification, Popconfirm } from "antd";
 import React from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { clinicService } from "@/OLD/services/clinic.service";
@@ -33,9 +33,7 @@ export const Delete = React.memo(function Delete({ id, reload, setReload }) {
       cancelText="Não"
       placement="left"
     >
-      <Tooltip title="Apagar">
         <DeleteTwoTone twoToneColor="red" />
-      </Tooltip>
     </Popconfirm>
   );
 });

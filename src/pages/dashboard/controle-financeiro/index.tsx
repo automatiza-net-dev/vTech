@@ -4,7 +4,7 @@ import { LayoutDashboard } from "@/presentation";
 export default function FinancialStatementPage() {
   return (
     <LayoutDashboard>
-      <FinancialStatement />
+      <FinancialStatement  type={""}/>
     </LayoutDashboard>
   );
 }

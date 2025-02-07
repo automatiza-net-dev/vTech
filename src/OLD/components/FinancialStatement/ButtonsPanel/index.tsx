@@ -13,11 +13,11 @@ import { notification, Modal } from "antd";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import DownTitles from "../../Titles/DownTitles";
 
-const ButtonsPanel = memo(function ButtonsPanel({
+function ButtonsPanel({
   setReload,
   type,
   setFilters,
-}) {
+}: any) {
   const [loading, setLoading] = useState(false);
   const [showBaixaModal, setShowBaixaModal] = useState(false);
 
@@ -157,6 +157,6 @@ const ButtonsPanel = memo(function ButtonsPanel({
       <hr />
     </div>
   );
-});
+}
 
 export default ButtonsPanel;

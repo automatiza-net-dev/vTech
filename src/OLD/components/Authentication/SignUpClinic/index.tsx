@@ -6,7 +6,7 @@ import { notification } from "antd";
 
 import api from "@/OLD/services";
 import { sessionService } from "@/OLD/services/session.service";
-import { useAuthAdmin, Button } from "infinity-forge";
+import { useAuthAdmin, Button, useToast } from "infinity-forge";
 
 export function SignUpClinic() {
   const router = useRouter();
@@ -14,6 +14,8 @@ export function SignUpClinic() {
   const [loading, setLoading] = useState(false);
 
   const { signOut } = useAuthAdmin();
+
+  const {createToast} = useToast()
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -25,20 +27,16 @@ export function SignUpClinic() {
           ...data,
           id: router?.query?.token,
         })
-        .then((res) => {
-          notification.success({
-            message: "Sucesso",
-            description: "Cadastro realizado com sucesso!",
-          });
+        .then(() => {
+          createToast({ status: "success", message: "Cadastro realizado com sucesso!" })
+         
           setLoading(false);
           signOut();
           router.push("/");
         })
-        .catch((err) => {
-          notification.error({
-            message: "Erro",
-            description: "Erro ao concluir cadastro",
-          });
+        .catch(() => {
+          createToast({ status: "error", message: "Erro ao concluir cadastro" })
+       
           setLoading(false);
         });
     },

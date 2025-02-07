@@ -37,7 +37,6 @@ function Page() {
     initialDataIsTableItem: true,
     initialData: { economic_group_id: user?.data?.unit?.economicGroup?.id },
     onSucess: async (data) => {
-      console.log(data);
 
       await api({
         url: data.id ? `business-units/${data.id}` : `business-units`,

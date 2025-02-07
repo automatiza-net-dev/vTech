@@ -25,6 +25,8 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { BsFillClockFill } from "react-icons/bs";
 import { VscTriangleDown } from "react-icons/vsc";
 import { VscTriangleRight } from "react-icons/vsc";
+import { MedicalPrescription } from "@/presentation";
+import { Modal } from "infinity-forge";
 
 const risks = [
   { id: 1, value: "Leve", color: "#2E8B57", textColor: "#F8F8FF" },
@@ -438,10 +440,10 @@ const PatientData = memo(function PatientData({
         patientData={byPatientData}
         selectedDate={selectedDate}
       />
-      <HospitalizationControl
-        id={showControl}
-        close={() => setShowControl(false)}
-      />
+
+      <Modal open={!!showControl} onClose={() => setShowControl(null)} styles={{ maxWidth: "1250px", width: "100%" }}>
+        <MedicalPrescription id={showControl} />
+      </Modal>
     </Container>
   );
 });

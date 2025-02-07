@@ -2,15 +2,14 @@ import { useFormikContext } from "formik";
 import { Select, Icon } from "infinity-forge";
 
 import { Unit } from "./unit";
-import { useLoadAllBusinessUnits } from "@/presentation";
+import {  useLoadAllBusinessUnitsSystem } from "@/presentation";
 
 import * as S from "./styles";
-import { Tooltip } from "antd";
 
 export function InputAddUnit() {
   const { values, setFieldValue, setFieldError } = useFormikContext<any>();
 
-  const { data } = useLoadAllBusinessUnits();
+  const { data } = useLoadAllBusinessUnitsSystem();
 
   const selectUnit = values.selectUnit;
 
@@ -50,25 +49,20 @@ export function InputAddUnit() {
             onlyOneValue
             options={
               data?.map((item) => ({
-                label: item?.company_name,
+                label: item?.economicGroup?.company_name,
                 value: item.id,
               })) || []
             }
           />
         )}
 
-        <Tooltip
-          title="Adicionar"
-          children={
-            <button
+<button
               type="button"
               onClick={addUnit}
               className={!selectUnit ? "disabled" : ""}
             >
               <Icon name="IconPlusSharp" color="#000" />
             </button>
-          }
-        />
       </div>
 
       {values?.units?.map((unit) => {

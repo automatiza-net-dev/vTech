@@ -71,7 +71,7 @@ export function useDailyCashierTableActions({
     initialDataIsTableItem: true,
     initialData: {
       userId: user?.user?.id,
-      openingDate: moment(new Date()),
+      openingDate: moment().toDate(),
       initialBalance: "0",
     },
     button: { text: "Salvar" },

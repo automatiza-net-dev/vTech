@@ -73,8 +73,6 @@ export const budgetStatusFormatter = (budget, setReload) => {
     BAIXADA: <span style={{ color: "green" }}>Baixada</span>,
   };
 
-  console.log(budget?.status, "<<<")
-
   return statusStyles[budget?.status] || budget?.status;
 };
 
@@ -82,6 +80,7 @@ const mapper = (data = [], setReload) => {
   return data?.map((budget) => {
     return {
       id: budget?.id,
+      internalCode: budget?.internalCode,
       evaluator: budget?.reviewer?.name || "-",
       budget_date: dateFormatter(budget.budget_date),
       expiration_date: dateFormatter(budget.expiration_date),
@@ -148,13 +147,14 @@ function Budgets() {
     setFilters((prv) => ({ ...prv, budget_id: id, noSearch: false }));
     setReload((prv) => !prv);
   };
-
-  const columns =
-    user?.unit?.system?.type === "Vet" ? Columns() : LiftColumns();
-
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
   const { getWord } = useDictionary();
 
+  const columns =
+    user?.unit?.system?.type === "Vet" ? Columns(hasInternalCode, getWord("Orçamento")) : LiftColumns(hasInternalCode, getWord("Orçamento"));
+
   const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
+
 
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
@@ -255,6 +255,19 @@ function Budgets() {
                 </Select.Option>
               </Select>
             </Input>
+
+            {hasInternalCode && (
+              <Input style={{ width: "100%" }}>
+                <label>Código interno</label>
+                <AntInput
+                  value={filters.internalCode}
+                  onChange={(e) =>
+                    setFilters({ ...filters, internalCode: e.target.value })
+                  }
+                />
+              </Input>
+            )}
+
             <Input style={{ width: "100%" }}>
               <label>Código</label>
               <AntInput
@@ -376,10 +389,6 @@ function Budgets() {
               height: "95vh",
               maxWidth: "1400px",
               minHeight: "600px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
             }}
             stylesContent={{ height: "100%", width: "100%" }}
             open={modalCriar}

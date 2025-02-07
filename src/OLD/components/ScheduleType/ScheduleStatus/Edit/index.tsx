@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Tooltip } from "antd";
+import { Form, Input, Modal, notification } from "antd";
 import { memo, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -40,11 +40,9 @@ export const Edit = memo(({ status }) => {
 
   return (
     <div>
-      <Tooltip title="Editar">
         {canEditScheduleStatus && (
           <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
         )}
-      </Tooltip>
 
       <Modal
         loading={loading}

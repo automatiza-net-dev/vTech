@@ -9,7 +9,7 @@ import { depositService } from "@/OLD/services/deposit.service";
 
 import { useRouter } from "next/router";
 import moment from "moment";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 const columns = [
   {
@@ -51,6 +51,8 @@ export const ShowDepositMovement = () => {
   });
 
   const isDisabled = showDepositMovementQuery.isLoading;
+
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   return (
     <section>
@@ -159,12 +161,10 @@ export const ShowDepositMovement = () => {
       <footer
         style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
       >
-        <ReactToPrint
-          trigger={() => (
-            <Button text="Imprimir" />
-          )}
-          content={() => componentRef?.current}
-        />
+       
+
+<Button text="Imprimir" onClick={() => imprimir()}/>
+
         <Button onClick={() => router.back()} text="Voltar" />
       </footer>
     </section>

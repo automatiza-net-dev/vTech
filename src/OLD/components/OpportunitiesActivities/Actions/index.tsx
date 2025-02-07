@@ -6,7 +6,7 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import UpdateActivity from "../Update";
-import { notification, Popconfirm, Tooltip } from "antd";
+import { notification, Popconfirm } from "antd";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { AiOutlineEye } from "react-icons/ai";
@@ -58,17 +58,14 @@ const Actions = memo(function Actions({
           {!activity?.balance && (
             <>
               {editActivityPermission && (
-                <Tooltip title="Alterar atividade">
                   <EditTwoTone
                     onClick={() => {
                       setEditVisible(true);
                       setEdit(true);
                     }}
                   />
-                </Tooltip>
               )}
               {removeActivityPermission && (
-                <Tooltip title="Excluir atividade">
                   <Popconfirm
                     title="Tem certeza que deseja remover esta atividade?"
                     onConfirm={() => {
@@ -77,21 +74,17 @@ const Actions = memo(function Actions({
                   >
                     <DeleteTwoTone twoToneColor="red" />
                   </Popconfirm>
-                </Tooltip>
               )}
             </>
           )}
         </>
       )}
       {activity?.status === "Executada" && reopenActivityPermission && (
-        <Tooltip title="Reabrir atividade">
           <BsArrowCounterclockwise
             style={{ cursor: "pointer" }}
             onClick={() => reopenActivity()}
           />
-        </Tooltip>
       )}
-      <Tooltip title="Detalhes atividade">
         <AiOutlineEye
           onClick={() => {
             setEditVisible(true);
@@ -99,7 +92,6 @@ const Actions = memo(function Actions({
           }}
           style={{ cursor: "pointer" }}
         />
-      </Tooltip>
       <UpdateActivity
         colaborators={colaborators}
         actTypes={actTypes}

@@ -7,7 +7,7 @@ import { Button, Empty } from "antd";
 import { Container, RowBox } from "./styles";
 import { PrintHeader } from "@/presentation";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
@@ -39,6 +39,8 @@ const PrintTable = memo(function PrintTable({ data = [], loading, date }) {
 
     XLSX.writeFile(wb, "regime-competencia" + ".xlsx");
   };
+
+  const imprimir = useReactToPrint({ contentRef: componentRef })
 
   return (
     <>
@@ -97,12 +99,9 @@ const PrintTable = memo(function PrintTable({ data = [], loading, date }) {
         >
           Exportar (Excel)
         </Button>
-        <ReactToPrint
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => componentRef.current}
-        />
+      
+
+<Button className="uk-margin-small-right" onClick={() => imprimir()}>Imprimir</Button>
       </div>
     </>
   );

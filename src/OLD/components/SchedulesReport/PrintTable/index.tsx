@@ -7,23 +7,14 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 import { Button, Empty } from "antd";
 import { PrintHeader } from "@/presentation";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 
 import { Container, RowBox } from "./styles";
 
-function PrintTable({
-  schedules,
-  filters,
-  values,
-  setReload,
-  setFilters,
-}) {
+function PrintTable({ schedules, filters, values, setReload, setFilters }) {
   const { clinic } = useProfile();
-  
-
-  
 
   const componentRef = useRef();
 
@@ -136,6 +127,8 @@ function PrintTable({
     XLSX.writeFile(wb, "Agendamentos" + ".xlsx");
   };
 
+  const imprimir = useReactToPrint({ contentRef: componentRef });
+
   return (
     <>
       <Container ref={componentRef} className="uk-margin-small-top">
@@ -166,7 +159,9 @@ function PrintTable({
               {process.env.client !== "liftone" ? "tutor_resp" : "cliente_resp"}
             </div>
             <div>
-              {process.env.client !== "liftone" ? "cpf_cnpj_resp" : "cpf_cnpj_cliente"}
+              {process.env.client !== "liftone"
+                ? "cpf_cnpj_resp"
+                : "cpf_cnpj_cliente"}
             </div>
           </section>{" "}
           {schedules?.length > 0 ? (
@@ -188,8 +183,12 @@ function PrintTable({
                   <div>{item?.data_cancelamento}</div>
                   <div>{item?.tem_retorno}</div>
                   <div>{item?.e_retorno}</div>
-                  {process.env.client !== "liftone" && <div>{item?.nome_paciente}</div>}
-                  {process.env.client !== "liftone" && <div>{item?.rg_paciente}</div>}
+                  {process.env.client !== "liftone" && (
+                    <div>{item?.nome_paciente}</div>
+                  )}
+                  {process.env.client !== "liftone" && (
+                    <div>{item?.rg_paciente}</div>
+                  )}
                   <div>{item?.nome_tutor}</div>
                   <div>{item?.cpf_cnpj_tutor}</div>
                 </RowBox>
@@ -214,19 +213,20 @@ function PrintTable({
         >
           Exportar (Excel)
         </Button>
-        <ReactToPrint
-          onBeforePrint={() => {
+
+        <Button
+          className="uk-margin-small-right"
+          onClick={() => {
             setFilters((prv) => ({ ...prv, noSearch: false }));
             setReload((prv) => !prv);
+            imprimir();
           }}
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => componentRef.current}
-        />
+        >
+          Imprimir
+        </Button>
       </div>
     </>
   );
-};
+}
 
 export default PrintTable;

@@ -21,6 +21,7 @@ export const ListUser = styled("div")`
     }
   }
 
+
   .content {
     background-color: #fff;
     padding: 30px;

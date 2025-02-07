@@ -29,7 +29,7 @@ import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 // Icons
 import { Reload } from "styled-icons/zondicons";
@@ -37,7 +37,7 @@ import { Reload } from "styled-icons/zondicons";
 // Components
 import { Container } from "./styles";
 import { Button } from "infinity-forge";
-import { Table, Tooltip, Modal, notification } from "antd";
+import { Table,  Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "@/OLD/components/Titles/Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -53,7 +53,7 @@ import CreateTitle from "@/OLD/components/Titles/Create";
 // Utils
 import * as XLSX from "xlsx/xlsx.mjs";
 
-const FinancialSteatment = memo(function Titles({ type }) {
+const FinancialSteatment = memo(function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     order: "expiration_date",
     status: "ABERTO",
@@ -82,12 +82,12 @@ const FinancialSteatment = memo(function Titles({ type }) {
   const { suppliers } = useSuppliers(suppliersFilters, false);
   const { clinics } = useClinic(Reload);
   const { titles, setTitles } = useAuth();
-  const { tefFlags } = useTefFlags(false);
+  const { tefFlags } = useTefFlags(false, "");
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
   const { balance } = useFinancesBalance(filters);
   const { clinic } = useProfile();
   const [unit, setUnit] = useState({ unit: clinic?.id });
-  const { checkingAccounts } = useCheckingAccounts(unit);
+  const { checkingAccounts } = useCheckingAccounts(unit as any);
 
   const createTitlePermission = useUserHasPermission(
     `${accessControlTitles(type)}01`
@@ -174,9 +174,6 @@ const FinancialSteatment = memo(function Titles({ type }) {
           ...finance,
           document:
             finance?.source === "GROUP" ? (
-              <Tooltip
-                title={`Clique para acessar detalhes do grupo de pagamento`}
-              >
                 <span
                   onClick={() => {
                     setCheckingAccountId(
@@ -204,7 +201,7 @@ const FinancialSteatment = memo(function Titles({ type }) {
                 >
                   {finance?.document || "Doc"}
                 </span>
-              </Tooltip>
+             
             ) : (
               <span
                 onClick={() => {
@@ -419,13 +416,15 @@ const FinancialSteatment = memo(function Titles({ type }) {
     }
   }, [finance, updateOpen]);
 
+  const imprimir = useReactToPrint({ contentRef: componentRef });
+
   return !listTitlesPermission || listTitlesPermission === "loading" ? (
     <AccessDenied loading={listTitlesPermission} />
   ) : (
     <Container className="uk-padding">
       <div className="uk-flex uk-flex-between">
         <h3 className="uk-margin-remove">Controle financeiro</h3>
-        <div>
+        <div style={{ display: "flex", gap: 20 }}>
           <Button
             onClick={() => {
               setFilters({ ...filters, noSearch: false });
@@ -566,13 +565,10 @@ const FinancialSteatment = memo(function Titles({ type }) {
           <PrintScreen data={finances} loading={loadingFinances} />
         </div>
       </div>
-      <div className="uk-flex uk-flex-right uk-margin-small-top">
+      <div className="uk-flex uk-flex-right uk-margin-small-top" style={{ gap: 20 }}>
         <Button text="Exportar (Excel)" onClick={() => handleExport()} />
 
-        <ReactToPrint
-          trigger={() => <Button text="Imprimir" />}
-          content={() => componentRef.current}
-        />
+        <Button text="Imprimir" onClick={() => imprimir()} />
       </div>
       {updateOpen && (
         <Modal

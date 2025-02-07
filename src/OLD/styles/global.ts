@@ -19,7 +19,9 @@ input, textarea {
         background-color: ${(props) => props.theme.primaryColor} !important;
     }
 }
-
+.close-button {
+    width: 14px !important;
+}
 
 .form-button.sticky {
     display: flex;

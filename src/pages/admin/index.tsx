@@ -1,9 +1,9 @@
-import { DashboardAdmin, LayoutAdmin } from "@/presentation";
+import { DashboardPage, LayoutAdmin } from "@/presentation";
 
 export default function DashboardFranchisorPage() {
   return (
-    <LayoutAdmin disableBreadcrumb>
-      <DashboardAdmin />
+    <LayoutAdmin>
+      <DashboardPage type="admin" />
     </LayoutAdmin>
   );
 }

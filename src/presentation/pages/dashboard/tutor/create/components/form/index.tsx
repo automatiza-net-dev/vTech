@@ -26,6 +26,7 @@ import { initialData } from "./initial-data";
 import { ICreateTutorFormProps } from "./interfaces";
 
 import * as S from "./styles";
+import { SelectGender } from "./select-gender";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
@@ -119,16 +120,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <Input name="name" label="Nome Social / Nome Fantasia" />
 
-                <Select
-                  label={isRegister ? "Gênero*" : "Gênero"}
-                  name="gender"
-                  options={[
-                    { value: "feminino", label: "Feminino" },
-                    { value: "masculino", label: "Masculino" },
-                    { value: "outro", label: "Outros" },
-                  ]}
-                  onlyOneValue
-                />
+             <SelectGender isRegister={isRegister} />
 
                 <Select
                   menuPlacement="bottom"

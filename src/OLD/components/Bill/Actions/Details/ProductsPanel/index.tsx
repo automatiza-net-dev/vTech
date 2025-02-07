@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { memo, useState, useEffect, useRef } from "react";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { useQueryClient } from "react-query";
 
@@ -66,6 +66,9 @@ const ProductsPanel = memo(function ProductsPanel({
     return "-";
   }
 
+  const imprimir1 = useReactToPrint({ contentRef: SinglecomponentRef })
+  const imprimir2 = useReactToPrint({ contentRef: componentRef })
+
   const formatPayments = () => {
     setFormatedPayments(
       payments?.map((payment, i) => {
@@ -114,10 +117,8 @@ const ProductsPanel = memo(function ProductsPanel({
                 }));
               }}
             >
-              <ReactToPrint
-                trigger={() => <Button text="imprimir" />}
-                content={() => (SinglecomponentRef as any).current}
-              />
+           
+<Button text="imprimir" onClick={() => imprimir1()} />
             </div>
           ),
         };
@@ -177,10 +178,9 @@ const ProductsPanel = memo(function ProductsPanel({
                     }));
                   }}
                 >
-                  <ReactToPrint
-                    trigger={() => <Button text="Imprimir recibo" />}
-                    content={() => (componentRef as any).current}
-                  />
+               
+
+<Button text="Imprimir recibo" onClick={() => imprimir2()} />
                 </div>
               )}
             </div>

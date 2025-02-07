@@ -9,7 +9,6 @@ import {
   Skeleton,
   Table,
   notification,
-  Tooltip,
   Popconfirm,
   AutoComplete,
 } from "antd";
@@ -25,7 +24,7 @@ import { useMutation, useQuery } from "react-query";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { Select } from "antd";
 import Link from "next/link";
@@ -161,6 +160,8 @@ export const DepositMovements = memo(() => {
     refetchOnReconnect: false,
     enabled: openCreate,
   });
+
+  const imprimir = useReactToPrint({ contentRef: componentRef,  onAfterPrint: setMovDetails(false)  })
 
   const memoedProducts = useMemo(() => {
     if (!productsQuery.data) return [];
@@ -503,41 +504,19 @@ export const DepositMovements = memo(() => {
                       <CgDetailsMore size={15} />
                     </div>
                   </Link>
-                  {/*
-                  {canEditDeposit && (
-                    <Tooltip title="Editar movimentação">
-                      <EditTwoTone
-                        onClick={() =>
-                          notification.warning({
-                            message: "Verificar métodos e campos"
-                          })
-                        }
-                      />
-                    </Tooltip>
-                  )}
-                  {canRemoveDepositMov && (
-                    <Tooltip title="Remover movimentação">
-                      <Popconfirm
-                        title="Deseja remover essa movimentação?"
-                        onConfirm={() =>
-                          notification.warning({ message: "verificar método" })
-                        }
-                      >
-                        <DeleteTwoTone twoToneColor={"red"} />
-                      </Popconfirm>
-                    </Tooltip>
-                  )}
-                    */}
-                  <ReactToPrint
-                    onBeforeGetContent={() =>
+
+                  <button
+                    type="button"
+                    onClick={() => {
                       depositService
                         ?.getDepositMovements({ ids: [elem?.id] })
-                        .then((res) => setMovDetails(res?.data[0]))
-                    }
-                    trigger={() => <MdLocalPrintshop />}
-                    content={() => componentRef?.current}
-                    onAfterPrint={() => setMovDetails(false)}
-                  />
+                        .then((res) => setMovDetails(res?.data[0]));
+
+                        imprimir()
+                    }}
+                  >
+                    <MdLocalPrintshop />
+                  </button>
                 </div>
               ),
             }))}

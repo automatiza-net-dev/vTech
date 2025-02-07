@@ -3,7 +3,7 @@ import React from "react";
 
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm, Tooltip } from "antd";
+import { notification, Popconfirm } from "antd";
 import { petsService } from "@/OLD/services/patient.service";
 
 export const Delete = React.memo(function Delete({ id, setRefreshList }) {
@@ -36,9 +36,7 @@ export const Delete = React.memo(function Delete({ id, setRefreshList }) {
         cancelText="Não"
         placement="left"
       >
-        <Tooltip title="Apagar">
           <DeleteTwoTone twoToneColor="red" />
-        </Tooltip>
       </Popconfirm>
     </div>
   );

@@ -7,7 +7,6 @@ import { IconCalendar } from "./icon";
 import { SideBarContent } from "@/presentation";
 
 import * as S from "./styles";
-import { Tooltip } from "antd";
 
 export function ScheduleCard(props: Event) {
   const [open, setOpen] = useState(false);
@@ -92,15 +91,10 @@ export function ScheduleCard(props: Event) {
           )} */}
 
           {isLongDescription ? (
-            <Tooltip
-              children={
-                <div
-                  className="description"
-                  dangerouslySetInnerHTML={{ __html: serviceType?.description }}
-                />
-              }
-              title={serviceType?.description}
-            />
+           <div
+           className="description"
+           dangerouslySetInnerHTML={{ __html: serviceType?.description }}
+         />
           ) : (
             <div
               className="description"

@@ -1,16 +1,35 @@
-import { TableDashboard, useLoadDashboard } from "@/presentation";
+import { TableDashboard } from "@/presentation";
+
+import { useDashboard } from "../../context";
+
 import { IndicatorTable } from "./indicator-table";
 import { SellerIndicatorTable } from "./seller-indicator-table";
 
-export function TablesSection({ type }: { type?: "crm" }) {
-  const dashboard = useLoadDashboard({ type });
+export function TablesSection() {
+  const { dashboard } = useDashboard();
 
   const tableSalesPerPeriod = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-period"
   );
 
+  const tablePortalSalesPerPeriod = dashboard?.data?.tables?.find(
+    (table) => table.name === "portal-sales-per-period"
+  );
+
   const tableSalesPerUser = dashboard?.data?.tables?.find(
     (table) => table.name === "sales-per-user"
+  );
+
+  const rankingFaturamento = dashboard?.data?.tables?.find(
+    (table) => table.name === "RankingFaturamento"
+  );
+
+  const rankingVendedores = dashboard?.data?.tables?.find(
+    (table) => table.name === "RankingVendedores"
+  );
+
+  const rankingTicketMedio = dashboard?.data?.tables?.find(
+    (table) => table.name === "RankingTicketMedio"
   );
 
   const tableBudgets = dashboard?.data?.tables?.filter(
@@ -35,19 +54,37 @@ export function TablesSection({ type }: { type?: "crm" }) {
 
   return (
     <>
-      {dashboard.data?.tables && dashboard.data?.tables?.length > 0 && (
+      {dashboard?.data?.tables && dashboard?.data?.tables?.length > 0 && (
         <section className="tables-section">
+          {(rankingFaturamento || rankingTicketMedio) && (
+            <div className="row" style={{ marginBottom: 20, marginTop: 20 }}>
+              {rankingFaturamento && <TableDashboard {...rankingFaturamento} />}
+
+              {rankingTicketMedio && <TableDashboard {...rankingTicketMedio} />}
+            </div>
+          )}
+
+          {rankingVendedores && (
+            <TableDashboard
+              {...rankingVendedores}
+            />
+          )}
+
+          <div style={{ width: "100%" }}>
+            {tablePortalSalesPerPeriod && (
+              <TableDashboard {...tablePortalSalesPerPeriod} />
+            )}
+          </div>
+
           <div className="row">
             {tableSalesPerPeriod && (
               <TableDashboard
-                key={tableSalesPerPeriod.name}
                 {...tableSalesPerPeriod}
               />
             )}
 
             {tableSalesPerUser && (
               <TableDashboard
-                key={tableSalesPerUser.name}
                 {...tableSalesPerUser}
               />
             )}
@@ -55,19 +92,18 @@ export function TablesSection({ type }: { type?: "crm" }) {
 
           {tableBudgets &&
             tableBudgets.map((item) => (
-              <TableDashboard key={item?.name} {...item} />
+              <TableDashboard  {...item} />
             ))}
 
           {activitiesTableData && activitiesTableData?.hasData && (
             <TableDashboard
-              key={activitiesTableData.name}
               {...activitiesTableData}
             />
           )}
 
           {billsReviewerTableData && (
             <IndicatorTable
-              indicator={dashboard.data.tables.find(
+              indicator={dashboard?.data.tables.find(
                 (item) => item.name === "billsReviewer"
               )}
             />
@@ -75,7 +111,7 @@ export function TablesSection({ type }: { type?: "crm" }) {
 
           {indicatorTableData && (
             <IndicatorTable
-              indicator={dashboard.data.tables.find(
+              indicator={dashboard?.data.tables.find(
                 (item) => item.name === "budgetsAvaliadorConsolidado"
               )}
             />
@@ -83,7 +119,7 @@ export function TablesSection({ type }: { type?: "crm" }) {
 
           {sellerindicatorTableData && (
             <SellerIndicatorTable
-              indicator={dashboard.data.tables.find(
+              indicator={dashboard?.data.tables.find(
                 (item) => item.name === "budgetsVendedorConsolidado"
               )}
             />

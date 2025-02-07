@@ -1,5 +1,4 @@
-// @ts-nocheck
-
+//@ts-nocheck
 import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
@@ -11,7 +10,7 @@ import { useSchedule } from "@/OLD/hooks/useSchedules";
 import { useLoadPatient } from "@/presentation";
 import { useScheduleStatus } from "@/OLD/hooks/useScheduleStatus";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { Modal, notification, Select, Button as AntButton } from "antd";
 
 import moment from "moment";
@@ -22,6 +21,8 @@ export function EndAttendanceButton() {
   const [reload, setReload] = useState(false);
   const [selectedAttendance, setSelectedAttendance] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { createToast } = useToast();
 
   const addLaunchPermission = useUserHasPermission("FIC01");
   const patient = useLoadPatient();
@@ -37,6 +38,7 @@ export function EndAttendanceButton() {
     (attendance) => !attendance?.end_date
   );
 
+
   const closeAttendances = useCallback(() => {
     setLoading(true);
     attendanceService
@@ -46,7 +48,8 @@ export function EndAttendanceButton() {
           queryKey: ["RemotePatient", patient.data.id],
         });
 
-        notification.success({
+        createToast({
+          status: "error",
           message: "Atendimento finalizado com sucesso!",
         });
       })
@@ -84,11 +87,9 @@ export function EndAttendanceButton() {
                     attendancesToClose &&
                       attendanceService
                         .closeAttendance(attendancesToClose?.id)
-                        .then((_res) =>
-                          notification.success({
-                            message: "Atendimento finalizado com sucesso!",
-                          })
-                        );
+                        .then((_res) => {
+                          createToast({ status: "success", message: "Atendimento finalizado com sucesso!" })
+                        });
                   }
                 },
                 onCancel: () => {
@@ -138,9 +139,9 @@ export function EndAttendanceButton() {
               loading={loading}
               onClick={() => {
                 !selectedAttendance
-                  ? notification.warning({
-                      message: "Selecione o atendimento a ser finalizado",
-                    })
+                  ? 
+
+                    createToast({ status: "error", message: "Selecione o atendimento a ser finalizado",})
                   : closeAttendances();
               }}
             >

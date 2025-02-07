@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { Button, PageWrapper, Accordion } from "infinity-forge";
-import { notification, Table, Modal, Tooltip, Tag } from "antd";
+import { notification, Table, Modal, Tag } from "antd";
 
 import { petsService } from "@/OLD/services/patient.service";
 
@@ -55,12 +55,10 @@ function Single({ selectedId, setVisible }) {
               />
             ),
             activeTutor: !tutor?.is_main ? (
-              <Tooltip title="Definir tutor ativo">
                 <GiConfirmed
                   onClick={() => setActiveTutor(tutor?.id)}
                   style={{ cursor: "pointer" }}
                 />
-              </Tooltip>
             ) : (
               <Tag color={"blue"}>Ativo</Tag>
             ),

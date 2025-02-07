@@ -21,7 +21,7 @@ import { Columns } from "./Columns";
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 // Icons
 import { Reload } from "styled-icons/zondicons";
@@ -29,7 +29,7 @@ import { Reload } from "styled-icons/zondicons";
 // Components
 import { Container } from "./styles";
 import { Button, PageWrapper, useAuthAdmin } from "infinity-forge";
-import { Table, Tooltip, Modal, notification } from "antd";
+import { Table, Modal, notification } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "./Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -87,25 +87,7 @@ export default function Titles({ type }: any) {
   const router = useRouter();
   const componentRef = useRef();
 
-  const sortFinances = () => {
-    filters?.order &&
-      finances.sort((a, b) => {
-        if (filters?.order !== "doc") {
-          return moment(a[filters?.order]).diff(moment(b[filters?.order]));
-        } else {
-          if (`${a.document}` < `${b.document}`) {
-            return -1;
-          }
-          if (`${a.document}` > `${b.document}`) {
-            return 1;
-          }
-          if (a.document === b.document) {
-            return a.installment - b.installment;
-          }
-          return 0;
-        }
-      });
-  };
+  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   const handleExport = () => {
     const formatted = finances?.map((item) => ({
@@ -141,91 +123,86 @@ export default function Titles({ type }: any) {
   };
 
   const formatFinances = (recentDown = false) => {
-    sortFinances();
+    // sortFinances();
 
-    setFormatedFinances(
-      finances.map((finance) => {
-        if (recentDown) {
-          const ids = titles.map((item) => item?.id);
+    const financesList = finances.map((finance) => {
+      if (recentDown) {
+        const ids = titles.map((item) => item?.id);
 
-          if (!ids.includes(finance.id)) {
-            return;
-          }
-        } else {
-          setTitles([]);
+        if (!ids.includes(finance.id)) {
+          return;
         }
+      } else {
+        setTitles([]);
+      }
 
-        return {
-          ...finance,
-          document: (
-            <Tooltip
-              title={`Clique para acessar detalhes do ${
-                finance?.source === "FINANCE" ? "título" : "Borderô"
-              }`}
-            >
-              <span
-                onClick={() => {
-                  if (finance?.source === "FINANCE") {
-                    setId([finance?.id]);
-                    setData({
-                      id: finance?.id,
-                    });
-                    return setUpdateOpen(true);
-                  } else {
-                    setSelectedBorderoId(finance?.id);
-                    setBorderoDetailsVisible(true);
-                  }
-                }}
-                className="uk-link"
-              >
-                {finance?.document || "Doc"}
-              </span>
-            </Tooltip>
-          ),
-          parc: `${finance?.installment} / ${finance?.qty_installments}`,
-          fiscalNote: finance?.fiscal_note || "-",
-          accept: finance.accept,
-          client: finance?.client || "-",
-          issueDate: finance?.issue_date
-            ? moment(finance?.issue_date).format("DD/MM/YYYY")
-            : "Não informado",
-          value: currencyFormatter(finance?.total_value),
-          expirationDate: finance?.expiration_date
-            ? moment(finance?.expiration_date).format("DD/MM/YYYY")
+      return {
+        ...finance,
+        key: finance.id,
+        document: (
+          <span
+            onClick={() => {
+              if (finance?.source === "FINANCE") {
+                setId([finance?.id]);
+                setData({
+                  id: finance?.id,
+                });
+                return setUpdateOpen(true);
+              } else {
+                setSelectedBorderoId(finance?.id);
+                setBorderoDetailsVisible(true);
+              }
+            }}
+            className="uk-link"
+          >
+            {finance?.document || "Doc"}
+          </span>
+        ),
+        parc: `${finance?.installment} / ${finance?.qty_installments}`,
+        fiscalNote: finance?.fiscal_note || "-",
+        accept: finance.accept,
+        client: finance?.client || "-",
+        issueDate: finance?.issue_date
+          ? moment(finance?.issue_date).format("DD/MM/YYYY")
+          : "Não informado",
+        value: currencyFormatter(finance?.total_value),
+        expirationDate: finance?.expiration_date
+          ? moment(finance?.expiration_date).format("DD/MM/YYYY")
+          : "-",
+        paymentValue: currencyFormatter(
+          finance?.payment_value ? finance?.payment_value : 0
+        ),
+        paymentDate: finance?.payment_date
+          ? moment(finance?.payment_date).format("DD/MM/YYYY")
+          : "-",
+        paymentMethod:
+          finance?.source === "FINANCE"
+            ? `${finance?.payment_method} ${
+                finance?.tef_flag ? ` - ${finance?.tef_flag}` : ""
+              }`
             : "-",
-          paymentValue: currencyFormatter(
-            finance?.payment_value ? finance?.payment_value : 0
+        nsu: finance?.nsu_document || "-",
+        internalCode: finance?.internal_code || finance?.internalCode || "-",
+        actions:
+          finance?.source === "FINANCE" ? (
+            <FinancesActions
+              financeId={finance?.id}
+              reload={reload}
+              setReload={setReload}
+              type={type === "receive" ? "CREDITO" : "DEBITO"}
+              completeFinance={finance}
+            />
+          ) : (
+            <BorderoActions
+              bordero={finance}
+              type={type === "receive" ? "CREDITO" : "DEBITO"}
+              setReload={setReload}
+            />
           ),
-          paymentDate: finance?.payment_date
-            ? moment(finance?.payment_date).format("DD/MM/YYYY")
-            : "-",
-          paymentMethod:
-            finance?.source === "FINANCE"
-              ? `${finance?.payment_method} ${
-                  finance?.tef_flag ? ` - ${finance?.tef_flag}` : ""
-                }`
-              : "-",
-          nsu: finance?.nsu_document || "-",
-          internalCode: finance?.internal_code || "-",
-          actions:
-            finance?.source === "FINANCE" ? (
-              <FinancesActions
-                financeId={finance?.id}
-                reload={reload}
-                setReload={setReload}
-                type={type === "receive" ? "CREDITO" : "DEBITO"}
-                completeFinance={finance}
-              />
-            ) : (
-              <BorderoActions
-                bordero={finance}
-                type={type === "receive" ? "CREDITO" : "DEBITO"}
-                setReload={setReload}
-              />
-            ),
-        };
-      })
-    );
+      };
+    });
+
+    setFormatedFinances(financesList);
 
     if (recentDown) {
       setFormatedFinances((prv) => prv.filter((item) => item?.document));
@@ -360,17 +337,6 @@ export default function Titles({ type }: any) {
             <Button
               onClick={() => {
                 setCreateTitleVisible(true);
-                {
-                  /*
-            router.push(
-              `/dashboard/${
-                type === "receive"
-                ? "titulos-receber/criar"
-                : "titulos-pagar/criar"
-              }`
-              );
-            */
-                }
               }}
               text="Novo título"
             />
@@ -404,13 +370,7 @@ export default function Titles({ type }: any) {
         )}
         <Table
           pagination={{ onChange: (page) => setCurrentPage(page) }}
-          columns={
-            hasInternalCode
-              ? Columns(selectAllFinances)
-              : Columns(selectAllFinances).filter(
-                  (column) => column.key !== "internalCode"
-                )
-          }
+          columns={Columns(selectAllFinances, hasInternalCode)}
           dataSource={formatedFinances}
           footer={() => (
             <footer className="uk-flex uk-flex-center">
@@ -465,11 +425,10 @@ export default function Titles({ type }: any) {
 
           <Button text="Exportar (Excel)" onClick={() => handleExport()} />
 
-          <ReactToPrint
-            trigger={() => (
-              <Button className="uk-margin-small-right" text="Imprimir" />
-            )}
-            content={() => componentRef.current}
+          <Button
+            className="uk-margin-small-right"
+            text="Imprimir"
+            onClick={() => imprimir()}
           />
         </div>
         {updateOpen && (

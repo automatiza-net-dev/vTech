@@ -18,7 +18,6 @@ import {
   DatePicker,
   TimePicker,
   AutoComplete,
-  Tooltip,
   Popconfirm,
 } from "antd";
 import { Container } from "./styles";
@@ -202,7 +201,6 @@ export default function ExecutionForm({ data, reload, setReload }) {
               <div className="fields-box">
                 <div>{execution?.productivityItem?.description || "-"}</div>
                 <div>
-                  <Tooltip title="Clique para acessar os detalhes do agendamento">
                     <span
                       className="uk-link"
                       onClick={() => getSchedule(execution?.schedule?.id)}
@@ -214,7 +212,6 @@ export default function ExecutionForm({ data, reload, setReload }) {
                           ).format("DD/MM/YYYY - HH:mm")
                         : "-"}
                     </span>
-                  </Tooltip>
                 </div>
                 <div className="uk-margin-small-right">
                   <AutoComplete

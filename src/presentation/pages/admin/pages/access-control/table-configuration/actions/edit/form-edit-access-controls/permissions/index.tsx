@@ -1,9 +1,9 @@
+import { useFormikContext } from "formik";
 import { Input, InputSwitch } from "infinity-forge";
 
 import { LoadRolePermissions } from "@/domain";
 
 import * as S from "./styles";
-import { useFormikContext } from "formik";
 
 export function Permissions() {
   const { values } = useFormikContext<any>();

@@ -1,12 +1,14 @@
 export type DashboardTableTypes =
   | "sales-per-period"
+  | "portal-sales-per-period"
   | "sales-per-user"
   | "budgets"
   | "subgroups"
   | "budgetsAvaliadorConsolidado"
   | "billsReviewer"
   | "budgetsVendedorConsolidado"
-  | "activities";
+  | "activities"
+  | "RankingVendedores" | "RankingFaturamento" | "RankingTicketMedio";
 
 export type DashboardTable<T = any> = {
   type: string;
@@ -77,6 +79,31 @@ export type BudgetsByUser = {
   users: BudgetsUser[];
 };
 
+export type RankingFaturamento = {
+  grupo_economico: string;
+  unidade_negocios: string;
+  business_unit_id: string;
+  total_bills: number;
+  participacao: number;
+};
+
+export type RankingVendedores = {
+  grupo_economico: string;
+  unidade_negocios: string;
+  business_unit_id: string;
+  total_bills: number;
+  participacao: number;
+  nome_vendedor: string;
+  tkt_medio: number;
+};
+
+export type RankingTicketMedio = {
+  grupo_economico: string;
+  unidade_negocios: string;
+  business_unit_id: string;
+  tkt_medio: number;
+}
+
 export type DashboardTableSubgroupDetails = {};
 
 export type DashboardTableSalesPerPeriod = DashboardTable<SalesPerPeriod>;
@@ -87,8 +114,14 @@ export type DashboardSalesByUser = DashboardTable<SalesPerUser>;
 
 export type DashboardInvoicingBySubgroup = DashboardTable<SubgroupInvoicing>;
 
+export type DashboardRankingFaturamento = DashboardTable<RankingFaturamento>;
+
+export type DashboardRankingVendedores = DashboardTable<RankingVendedores>;
+
+export type DashboardRankingTicketMedio = DashboardTable<RankingTicketMedio>;
+
 export type DashboardTableType =
   | DashboardTableSalesPerPeriod
   | DashboardBillSalesUser
   | DashboardSalesByUser
-  | DashboardInvoicingBySubgroup;
+  | DashboardInvoicingBySubgroup | DashboardRankingFaturamento | DashboardRankingVendedores | DashboardRankingTicketMedio;

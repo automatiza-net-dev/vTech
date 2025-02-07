@@ -14,6 +14,7 @@ import moment from "moment";
 // Components
 import { Modal, notification } from "antd";
 import FormChild from "./FormChild";
+import { useToast } from "infinity-forge";
 
 function WeightForm({
   visible,
@@ -27,6 +28,8 @@ function WeightForm({
   const [loading, setLoading] = useState(false);
   const { user } = useProfile();
   const { data: patient } = useLoadPatient();
+
+  const {createToast} = useToast()
 
   const systemName = process.env.clientName;
 
@@ -52,15 +55,11 @@ function WeightForm({
         observation: data?.observation,
       })
       .then((_res) =>
-        notification.success({
-          message: "Peso registrado com sucesso!",
-        })
+        createToast({ status: "success", message: "Peso registrado com sucesso!", })
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao registrar o peso informado...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao registrar o peso informado...", })
       })
       .finally(() => {
         setLoading(false);
@@ -80,16 +79,14 @@ function WeightForm({
         technicianId: user?.id,
         observation: data?.observation,
       })
-      .then((_res) =>
-        notification.success({
-          message: "Pressão arterial registrada com sucesso!",
-        })
+      .then((_res) => {
+        createToast({ status: "success", message: "Pressão arterial registrada com sucesso!", })
+      }
+    
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao registrar a pressão informada...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao registrar a pressão informada...", })
       })
       .finally(() => {
         setLoading(false);
@@ -109,16 +106,13 @@ function WeightForm({
         technicianId: user?.id,
         observation: data?.observation,
       })
-      .then((_res) =>
-        notification.success({
-          message: "Glicemia registrada com sucesso!",
-        })
+      .then((_res) => {
+        createToast({ status: "success", message: "Glicemia registrada com sucesso!", })
+      }
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao registrar a glicemia informada...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao registrar a glicemia informada...", })
       })
       .finally(() => {
         setLoading(false);
@@ -171,14 +165,14 @@ function WeightForm({
         technicianId: user?.id,
         observation: data?.observation,
       })
-      .then((_res) =>
-        notification.success({ message: "Peso atualizado com sucesso!" })
+      .then((_res) => {
+       
+        createToast({ status: "success", message: "Peso atualizado com sucesso!", })
+      }
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao atualizar o peso informado...",
-        });
+        createToast({ status: "error", message: "Houve um erro ao atualizar o peso informado...", })
       })
       .finally(() => {
         setLoading(false);

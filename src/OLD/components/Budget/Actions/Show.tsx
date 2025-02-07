@@ -27,7 +27,7 @@ const { Panel } = Collapse;
 
 import PrintScreen from "../PrintScreen";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { CgDetailsMore } from "react-icons/cg";
 
@@ -145,6 +145,7 @@ export default function ShowBudget({ budget, setReload }: any) {
 
   const { colaborators } = useColaborators(visible);
 
+
   const componentRef = React.useRef();
   const queryClient = useQueryClient();
   const removeBudgetPaymentPermission = useUserHasPermission("ORC10");
@@ -214,6 +215,9 @@ export default function ShowBudget({ budget, setReload }: any) {
       });
   };
 
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const imprimirCompleto = useReactToPrint({ contentRef: componentRef });
+
   return (
     <>
       <Tooltip
@@ -249,32 +253,49 @@ export default function ShowBudget({ budget, setReload }: any) {
                 style={{ paddingBottom: "1rem" }}
               >
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Data de Criação</span>
+                  <span className="uk-text-small font-14-regular">
+                    Data de Criação
+                  </span>
                   <span className="uk-text-default">
                     {dateFormatter(data?.budget_date)}
                   </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Data Validade</span>
+                  <span className="uk-text-small font-14-regular">
+                    Data Validade
+                  </span>
                   <span className="uk-text-default">
                     {moment(data?.expiration_date).format("DD/MM/YYYY")}
                   </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Finalizado em</span>
+                  <span className="uk-text-small font-14-regular">
+                    Finalizado em
+                  </span>
                   <span className="uk-text-default">
                     {data?.finished_at ? dateFormatter(data?.finished_at) : "-"}
                   </span>
                 </div>
 
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Status</span>
+                  <span className="uk-text-small font-14-regular">Status</span>
                   <span className="uk-text-default">
                     {budgetStatusFormatter(data)}
                   </span>
                 </div>
+
+                {hasInternalCode && (
+                  <div className="uk-flex uk-flex-column uk-width-1-1">
+                    <span className="uk-text-small font-14-regular">
+                      Código interno
+                    </span>
+                    <span className="uk-text-default">
+                      {data?.internalCode}
+                    </span>
+                  </div>
+                )}
               </div>
               <hr className="uk-margin-remove" />
               <div
@@ -576,34 +597,26 @@ export default function ShowBudget({ budget, setReload }: any) {
                     </div>
                   </div>
 
-                  <ReactToPrint
-                    content={() => componentRef.current as any}
-                    trigger={() => (
-                      <Button
-                        text="Impressão Completa"
-                        onMouseOver={() =>
-                          setPrintDetails((prv) => ({
-                            ...prv,
-                            complete: true,
-                          }))
-                        }
-                      />
-                    )}
+                  <Button
+                    onClick={() => imprimirCompleto()}
+                    text="Impressão Completa"
+                    onMouseOver={() =>
+                      setPrintDetails((prv) => ({
+                        ...prv,
+                        complete: true,
+                      }))
+                    }
                   />
 
-                  <ReactToPrint
-                    content={() => componentRef.current as any}
-                    trigger={() => (
-                      <Button
-                        text="Impressão Simplificada"
-                        onMouseOver={() =>
-                          setPrintDetails((prv) => ({
-                            ...prv,
-                            complete: false,
-                          }))
-                        }
-                      />
-                    )}
+                  <Button
+                    onClick={() => imprimirCompleto()}
+                    text="Impressão Simplificada"
+                    onMouseOver={() =>
+                      setPrintDetails((prv) => ({
+                        ...prv,
+                        complete: false,
+                      }))
+                    }
                   />
 
                   <Button
@@ -665,6 +678,7 @@ export default function ShowBudget({ budget, setReload }: any) {
                           </>
                         )}
                       </S.Status>
+
                       {/* {removeBudgetPaymentPermission && (
                         <div className="uk-flex uk-flex-right">
                           <Popconfirm

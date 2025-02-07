@@ -2,22 +2,12 @@ import React from "react";
 import { useRouter } from "next/router";
 
 import { notification } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 import { Container } from "./styles";
 import ConfirmScreen from "@/OLD/components/mini-components/ConfirmScreen";
 
 import { unitsService } from "@/OLD/services/units.service";
-
-const verifyErrors = (msg) => {
-  if (msg?.includes("Campo não existe nos registros")) {
-    return notification.warning({ message: "Verifique o e-mail infomado" });
-  }
-
-  return notification.error({
-    message: "Houve um erro ao encaminhar o e-mail para redefinição se senha",
-  });
-};
 
 export function ForgotPassword() {
   const [email, setEmail] = React.useState("");
@@ -25,14 +15,15 @@ export function ForgotPassword() {
 
   const router = useRouter();
 
+  const { createToast } = useToast();
+
   const handleSubmit = React.useCallback(
     (e) => {
       e.preventDefault();
       if (email === "") {
-        notification.error({
-          message: "Erro",
-          description: "Preencha o campo de email",
-        });
+
+        createToast({ status: "error", message: "Preencha o campo de email", })
+
         return;
       }
 
@@ -40,16 +31,32 @@ export function ForgotPassword() {
         .forgotPassword({ email, systemName: process.env.clientName })
         .then((_res) => {
           setSend(true);
-          return notification.success({
+
+          createToast({
+            status: "success",
             message:
               "E-mail encaminhado com sucesso!, verifique sua caixa de entrada para mais instruções",
           });
         })
         .catch((err) => {
-          verifyErrors(
+          const msg =
             err?.response?.data?.errors[0]?.message ||
-              err?.response?.data?.message
-          );
+            err?.response?.data?.message;
+
+          if (msg?.includes("Campo não existe nos registros")) {
+            createToast({
+              status: "error",
+              message: "Verifique o e-mail infomado",
+            });
+
+            return;
+          }
+
+          createToast({
+            status: "error",
+            message:
+              "Houve um erro ao encaminhar o e-mail para redefinição se senha",
+          });
         });
     },
     [email]

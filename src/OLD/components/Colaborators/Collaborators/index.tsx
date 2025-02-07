@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useCallback, useState, memo } from "react";
 
-import { Popover, Table, Tooltip } from "antd";
+import { Popover, Table } from "antd";
 
 import { convertDate } from "@/OLD/utils/convertDate";
 import { Delete } from "./Delete";
@@ -167,13 +167,11 @@ function Colaborators() {
     
         </Input>
         <div className="uk-margin-small-top">
-          <Tooltip title={canCreateColaborator ? "-" : "Você não tem acesso"}>
             <Button
               disabled={!canCreateColaborator}
               onClick={() => setCreateVisible(true)}
               text="Cadastrar"
             />
-          </Tooltip>
         </div>
       </div>
       <hr />

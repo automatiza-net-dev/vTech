@@ -2,7 +2,7 @@ import { useRef } from "react";
 
 import { Button, Empty } from "antd";
 import * as XLSX from "xlsx/xlsx.mjs";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { PrintHeader } from "@/presentation";
 import { useProfile } from "@/OLD/hooks/useProfile";
@@ -32,6 +32,14 @@ const PrintTable = function PrintTable({
 
     XLSX.writeFile(wb, "orcamentos" + ".xlsx");
   };
+
+  const print = useReactToPrint({
+    contentRef: componentRef,
+    onBeforePrint: async () => {
+      setFilters((prv) => ({ ...prv, noSearch: false }));
+      setReload((prv) => !prv);
+    },
+  });
 
   return (
     <>
@@ -106,16 +114,9 @@ const PrintTable = function PrintTable({
         </Container>
       </div>
       <div className="uk-margin-top uk-flex uk-flex-center">
-        <ReactToPrint
-          onBeforeGetContent={() => {
-            setFilters((prv) => ({ ...prv, noSearch: false }));
-            setReload((prv) => !prv);
-          }}
-          trigger={() => (
-            <Button className="uk-margin-small-right">Imprimir</Button>
-          )}
-          content={() => (componentRef as any).current}
-        />
+    
+
+<Button className="uk-margin-small-right" onClick={() => print()}>Imprimir</Button>
       </div>
     </>
   );

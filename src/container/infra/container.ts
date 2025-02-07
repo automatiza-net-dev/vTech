@@ -1,9 +1,10 @@
 import { Container } from "inversify";
 
-import { AxiosHttpClient, CookieStorageAdapter } from "infinity-forge";
 import { InfraTypes } from "./types";
 import { makeApiURL } from "./make-api-url";
 import { AuthorizeDashboardHttpClientDecorator } from "../decorators";
+import { AxiosHttpClient } from "./axios-http-client";
+import { CookieStorageAdapter } from "./cookies";
 
 const infraContainer = new Container({ autoBindInjectable: true, defaultScope: "Singleton" });
 

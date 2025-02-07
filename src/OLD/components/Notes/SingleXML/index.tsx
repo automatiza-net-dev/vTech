@@ -347,7 +347,7 @@ function Single() {
             />
           </footer>
         </TabPane>
-        <TabPane
+        {/* <TabPane
           key="2"
           tab="Pagamentos"
           className="custom-tab uk-padding-small"
@@ -361,7 +361,7 @@ function Single() {
             reload={reload}
             setReload={setReload}
           />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </Container>
   );

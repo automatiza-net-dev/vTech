@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { useAuthAdmin } from "infinity-forge";
 
 import { User } from "@/domain";
@@ -17,7 +17,6 @@ export function Print({
   PdfContent: JSX.Element;
 }) {
   const { user } = useAuthAdmin();
-
 
   const printContentRef = useRef<HTMLDivElement>(null);
 
@@ -40,13 +39,19 @@ export function Print({
     </button>
   ) as any;
 
+  const imprimir = useReactToPrint({ contentRef: printContentRef });
+
   return (
     <>
-      <ReactToPrint
-        trigger={() => children || item}
-        onBeforePrint={onBeforePrint}
-        content={() => printContentRef.current}
-      />
+      <button
+        type="button"
+        onClick={async () => {
+          onBeforePrint && (await onBeforePrint());
+          imprimir();
+        }}
+      >
+        {children || item}
+      </button>
 
       <div
         style={{

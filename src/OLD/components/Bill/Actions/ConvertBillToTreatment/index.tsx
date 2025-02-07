@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { billService } from "@/OLD/services/bills.service";
 
-import { Tooltip, notification, Popconfirm } from "antd";
+import {  notification, Popconfirm } from "antd";
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
 
@@ -52,14 +52,12 @@ const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
   };
 
   return (
-    <Tooltip title="Converter venda para tratamento">
       <Popconfirm
         title="Deseja converter venda para tratamento?"
         onConfirm={() => convertBill(bill)}
       >
         <AiOutlineCheckCircle size={20} style={{ cursor: "pointer" }} />
       </Popconfirm>
-    </Tooltip>
   );
 });
 
