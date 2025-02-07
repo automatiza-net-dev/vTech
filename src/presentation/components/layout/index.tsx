@@ -56,16 +56,10 @@ function LayoutPage({ children }) {
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
           .swap({ unitId: value?.workspace, dashboard: true });
 
-        await loadUser();
-
-        clearCache();
-
-        if (router.pathname !== "/dashboard") {
-          router.push({
-            pathname: "/dashboard",
-            query: { reload: "true" },
-          });
-        }
+        router.push({
+          pathname: "/dashboard",
+          query: { reload: "true" },
+        });
       }
     },
   };

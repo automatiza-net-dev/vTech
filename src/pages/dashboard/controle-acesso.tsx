@@ -403,28 +403,22 @@ export default function ControlesDeAcessoPage() {
                             </>
                           )}
 
-                          <Popconfirm
-                            title={`Deseja fazer uma cópia do acesso ${elem?.name}?`}
-                            onConfirm={() =>
-                              submitDuplicatePermission(elem?.id)
-                            }
-                          >
-                              <BiDuplicate
-                                color="var(--darkBlue)"
-                                size={15}
-                                style={{ cursor: "pointer" }}
-                              />
-                          </Popconfirm>
-                          <Popconfirm
-                            title="Tem certeza que deseja deletar?"
-                            onConfirm={() => {
-                              deleteRoleMutation.mutate(elem.id);
-                            }}
-                          >
-                            {canDeleteAccess && (
-                              <DeleteOutlined size={15} disabled={isDisabled} />
-                            )}
-                          </Popconfirm>
+                          <BiDuplicate
+                            onClick={() => submitDuplicatePermission(elem?.id)}
+                            color="var(--darkBlue)"
+                            size={15}
+                            style={{ cursor: "pointer" }}
+                          />
+
+                          {canDeleteAccess && (
+                            <DeleteOutlined
+                              onClick={() => {
+                                deleteRoleMutation.mutate(elem.id);
+                              }}
+                              size={15}
+                              disabled={isDisabled}
+                            />
+                          )}
                         </div>
                       ),
                     }))
