@@ -89,26 +89,6 @@ export default function Titles({ type }: any) {
 
   const imprimir = useReactToPrint({ contentRef: componentRef });
 
-  // const sortFinances = () => {
-  //   filters?.order &&
-  //     finances.sort((a, b) => {
-  //       if (filters?.order !== "doc") {
-  //         return moment(a[filters?.order]).diff(moment(b[filters?.order]));
-  //       } else {
-  //         if (`${a.document}` < `${b.document}`) {
-  //           return -1;
-  //         }
-  //         if (`${a.document}` > `${b.document}`) {
-  //           return 1;
-  //         }
-  //         if (a.document === b.document) {
-  //           return a.installment - b.installment;
-  //         }
-  //         return 0;
-  //       }
-  //     });
-  // };
-
   const handleExport = () => {
     const formatted = finances?.map((item) => ({
       documento: item?.document,
@@ -221,8 +201,6 @@ export default function Titles({ type }: any) {
           ),
       };
     });
-
-    console.log(financesList);
 
     setFormatedFinances(financesList);
 
