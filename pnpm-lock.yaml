@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.0.0)
       infinity-forge:
-        specifier: 6.7.0
-        version: 6.7.0(@types/react@18.3.18)(monaco-editor@0.52.2)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+        specifier: 6.7.1
+        version: 6.7.1(@types/react@18.3.18)(monaco-editor@0.52.2)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
       inversify:
         specifier: ^6.0.2
         version: 6.2.1(reflect-metadata@0.2.2)
@@ -1737,8 +1737,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@6.7.0:
-    resolution: {integrity: sha512-XxBpw4bbaxGs/p+pbycxrnnHdwrM/GIOyQ8bC4740/TkJ5B9+SucRhLJKEWsbrwDGtCYiN7yJ5L1kSA2dDIPEQ==}
+  infinity-forge@6.7.1:
+    resolution: {integrity: sha512-2utWIImoCSkhkkWZm/dlBPCr9iwMATovnlxrYgBk9O+/h++vCmfqU498KRjTZZAzxux6WQu/5eI8W8kGBUDc0A==}
     peerDependencies:
       react: '>=16'
 
@@ -5032,7 +5032,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@6.7.0(@types/react@18.3.18)(monaco-editor@0.52.2)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+  infinity-forge@6.7.1(@types/react@18.3.18)(monaco-editor@0.52.2)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
     dependencies:
       '@monaco-editor/react': 4.6.0(monaco-editor@0.52.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       axios: 1.7.9

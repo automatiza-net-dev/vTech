@@ -170,6 +170,7 @@ const TitlesFilters = memo(function TitlesFilters({
             label="Nome do Titular"
             name="client"
             options={clientOptions}
+            isClearable
           />
 
           <Select
@@ -177,6 +178,7 @@ const TitlesFilters = memo(function TitlesFilters({
             label="Forma de pagamento"
             name="paymentMethod"
             options={paymentMethodOptions}
+            isClearable
           />
 
           <Select
@@ -184,6 +186,7 @@ const TitlesFilters = memo(function TitlesFilters({
             label="Plano Contas"
             name="plan"
             options={planOptions}
+            isClearable
           />
         </div>
 
@@ -234,17 +237,19 @@ const TitlesFilters = memo(function TitlesFilters({
             name="unit"
             options={clinicOptions}
             onlyOneValue
+            isClearable
           />
 
           <Select
             label="Ordenar por"
             name="order"
             onlyOneValue
+            isClearable
             options={[
               { label: "Data Vencimento", value: "expiration_date" },
               { label: "Data Emissão", value: "issue_date" },
-              { label: "Data Competência", value: "payment_date" },
-              { label: "Data Pagamento", value: "expiration_date" },
+              { label: "Data Competência", value: "competence_date" },
+              { label: "Data Pagamento", value: "payment_date" },
               { label: "Documento / Parcela", value: "doc" },
             ]}
           />

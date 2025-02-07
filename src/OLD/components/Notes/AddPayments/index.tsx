@@ -110,7 +110,8 @@ const AddPayments = memo(function AddPayments({
         message: "Pagamento adicionado com sucesso!",
       });
     } catch (err) {
-      if (window.confirm(err?.error?.message)) {
+
+      if (window.confirm(err?.error?.message || err?.errors?.[0]?.field + " " +  err?.errors?.[0]?.message)) {
         await container
           .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
           .createPayment({
@@ -172,7 +173,7 @@ const AddPayments = memo(function AddPayments({
         message: "Pagamento adicionado com sucesso!",
       });
     } catch (error) {
-      if (window.confirm(err?.error?.message)) {
+      if (window.confirm(error?.error?.message || (error?.errors?.[0]?.field + " " +  error?.errors?.[0]?.message))) {
         await receiptService.createReceiptPayment({
           ...payload,
           items: payload.items.map((item) => ({
