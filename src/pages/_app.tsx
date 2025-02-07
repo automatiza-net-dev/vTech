@@ -5,7 +5,12 @@ import { useRouter } from "next/router";
 
 import Head from "next/head";
 
-import { InfinityForgeProviders, useAuthAdmin, useQuery } from "infinity-forge";
+import {
+  BadRequestError,
+  InfinityForgeProviders,
+  useAuthAdmin,
+  useQuery,
+} from "infinity-forge";
 
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -50,7 +55,7 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
       <IpProvider>
         <InfinityForgeProviders
-          atena={{  disableAuth: true, roles: ["aa"] } as any}
+          atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
             ForbiddenCompoent: Forbidden,
@@ -96,6 +101,10 @@ export default function App({ Component, pageProps }) {
                     )
                     .load({});
 
+                  if (!user?.user) {
+                    throw new BadRequestError({ message: "Usuário com erro", code: "400" });
+                  }
+
                   const initialUserData = {
                     ...user,
                     avatar: user.user?.profile_picture || "",
@@ -112,7 +121,6 @@ export default function App({ Component, pageProps }) {
                     user: initialUserData,
                   };
                 } catch (err) {
-                  console.log(err);
                   return { role: "", user: null };
                 }
               },
