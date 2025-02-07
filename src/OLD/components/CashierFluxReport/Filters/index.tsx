@@ -18,13 +18,9 @@ function Filters({ filters, setFilters, setReload, setValues }) {
         customAction={{
           Component: () => <Button text="Enviar" onClick={handleSubmit} />,
         }}
-        initialData={filters}
         onChangeForm={{
           callbackResult: (formValues) => {
-            setFilters((prev) => ({
-              ...prev,
-              ...formValues,
-            }));
+            setFilters(formValues);
           },
         }}
       >

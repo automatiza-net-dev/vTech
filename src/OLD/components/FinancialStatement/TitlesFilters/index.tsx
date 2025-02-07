@@ -12,6 +12,7 @@ import { Container, InputBox } from "./styles";
 import { Input, Select, Radio, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { DateFilter } from "../../mini-components";
+import { FormHandler, InputDateRange } from "infinity-forge";
 const { Option } = Select;
 const { Group } = Radio;
 
@@ -89,151 +90,46 @@ function TitlesFilters({
 
   return (
     <Container className="uk-margin-top uk-flex">
-      <div className="uk-width-1-5 uk-margin-right">
-        <div>
-          <div className="uk-flex">
-            <label>Data emissão</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromIssue"}
-              to={"toIssue"}
-            />
-          </div>
-          <InputBox>
-            <DatePicker
-              slotProps={{
-                textField: { variant: "standard" },
-              }}
-              value={filters?.fromIssue}
-              onChange={(e) => {
-                setFilters({
-                  ...filters,
-                  fromIssue: e?.startOf("day") ?? null,
-                });
-              }}
-              className="date-component"
-            />
-            à
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.toIssue}
-              onChange={(e) => {
-                setFilters({
-                  ...filters,
-                  toIssue: e?.endOf("day") ?? null,
-                });
-              }}
-              className="date-component"
-            />
-            <MdOutlineClear
-              size={40}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setFilters((prv) => ({
-                  ...prv,
-                  fromIssue: null,
-                  toIssue: null,
-                }));
-              }}
-            />
-          </InputBox>
-        </div>
-        <div className="uk-margin-small-top">
-          <div className="uk-flex">
-            <label>Data Vencimento</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromExpiration"}
-              to={"toExpiration"}
-            />
-          </div>
-          <InputBox>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.fromExpiration}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  fromExpiration: e?.startOf("day") ?? null,
-                })
-              }
-              className="date-component"
-            />
-            à
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.toExpiration}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  toExpiration: e?.endOf("day") ?? null,
-                })
-              }
-              className="date-component"
-            />
-            <MdOutlineClear
-              size={40}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setFilters((prv) => ({
-                  ...prv,
-                  fromExpiration: null,
-                  toExpiration: null,
-                }));
-              }}
-            />
-          </InputBox>
-        </div>
-        <div className="uk-margin-small-top">
-          <div className="uk-flex">
-            <label>Data Pagamento</label>
-            <DateFilter
-              state={filters}
-              setState={setFilters}
-              from={"fromPayment"}
-              to={"toPayment"}
-            />
-          </div>
-          <InputBox>
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.fromPayment}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  fromPayment: e?.startOf("day") ?? null,
-                })
-              }
-              className="date-component"
-            />
-            à{" "}
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={filters?.toPayment}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  toPayment: e?.endOf("day") ?? null,
-                })
-              }
-              className="date-component"
-            />
-            <MdOutlineClear
-              size={40}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setFilters((prv) => ({
-                  ...prv,
-                  fromPayment: null,
-                  toPayment: null,
-                }));
-              }}
-            />
-          </InputBox>
-        </div>
-      </div>
+
+      <FormHandler
+        cleanFieldsOnSubmit={false}
+        initialData={filters}
+        onChangeForm={{
+          callbackResult: (formValues) => {
+            setFilters(formValues);
+          },
+        }}
+      >
+        <InputDateRange
+          enableFilter
+          id="Date"
+          placeholder="DD/MM/YYYY"
+          label="Data emissão"
+          names={["fromIssue", "toIssue"]}
+          isClearable
+        />
+
+<InputDateRange
+          enableFilter
+          id="DateExp"
+          placeholder="DD/MM/YYYY"
+          label="Data Vencimento"
+          names={["fromExpiration", "toExpiration"]}
+          isClearable
+        />
+
+<InputDateRange
+          enableFilter
+          id="DateExpPag"
+          placeholder="DD/MM/YYYY"
+          label="Data Pagamento"
+          names={["fromPayment", "toPayment"]}
+          isClearable
+        />
+      </FormHandler>
+    
+  
+
       <div className="uk-width-1-5 uk-margin-right">
         <div className="uk-flex">
           <div className="">
