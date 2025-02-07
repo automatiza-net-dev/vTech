@@ -149,22 +149,17 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
       )}
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
-          <Popconfirm
-            title="Deseja finalizar essa venda?"
-            onConfirm={() => closeBill()}
-          >
-            <FiLock size={20} className="icon" />
-          </Popconfirm>
+          <FiLock onClick={() => closeBill()} size={20} className="icon" />
         )}
+
       {(bill?.status === "BAIXADA" || bill?.status === "Venda Finalizada") && (
         <>
           {reopenBillPermission && (
-            <Popconfirm
-              title="Deseja reabrir essa venda?"
-              onConfirm={() => reopenBillPayment()}
-            >
-              <FiUnlock size={20} className="icon" />
-            </Popconfirm>
+            <FiUnlock
+              onClick={() => reopenBillPayment()}
+              size={20}
+              className="icon"
+            />
           )}
         </>
       )}
@@ -180,18 +175,17 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
         onClick={() => {
           setSelectedId(bill?.id);
           setDetailsVisible(true);
-          // router.push(`/dashboard/vendas/detalhes/${bill?.id}`);
         }}
       />
 
       {removeBillPermission && (
-        <Popconfirm
-          title="Deseja remover essa nota de saída?"
-          onConfirm={() => removeBill()}
-        >
-          <DeleteTwoTone twoToneColor={"red"} className="icon" />
-        </Popconfirm>
+        <DeleteTwoTone
+          onClick={() => removeBill()}
+          twoToneColor={"red"}
+          className="icon"
+        />
       )}
+
       {detailsVisible && (
         <Modal
           visible={detailsVisible}
