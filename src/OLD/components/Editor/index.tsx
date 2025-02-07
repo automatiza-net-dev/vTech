@@ -1,41 +1,20 @@
-import { useEffect, useState } from "react";
+import dynamic from 'next/dynamic'
+
 import { Container } from "./styles";
-import { FormHandler, TextEditor } from "infinity-forge";
 
-function Editor({ editorState, setEditorState, readOnly = false }: any) {
+const EditorQuill = dynamic(() => import("./quill").then(r => r.EditorQuill), {
+  loading: () => <div>loading...</div>,
+  ssr: false,
+});
 
-  const [start, setStart] = useState(false);
-
-  useEffect(() => {
-  
-    setTimeout(() => {
-      setStart(true)
-    }, 200)
-  }, [])
-
-  if(!start) {
-    return <></>
-  }
-
+function Editor({ editorState, setEditorState }: any) {
   return (
     <Container>
-      <FormHandler
-        initialData={{ textEditor: editorState }}
-        onChangeForm={{
-          callbackResult: (data) => {
-            console.log({data})
-            if(data?.textEditor) {
-              console.log("nem entro aqui")
-              setEditorState(data?.textEditor);
-            }
-          },
-        }}
-      >
-        <TextEditor name="textEditor"  />
-      </FormHandler>
+         <EditorQuill  value={editorState} handleOnChange={setEditorState} />
     </Container>
   );
 }
+
 
 
 export default Editor;

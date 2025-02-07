@@ -11,6 +11,7 @@ import {
   FormHandler,
   useAuthAdmin,
   LoaderCircle,
+  TextEditor,
 } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
@@ -31,17 +32,15 @@ import { TimeLine } from "@/domain";
 import { RemoteAttendances, RemoteChangeStatus } from "@/data";
 import { TypesAutomatiza, container, patientTypes } from "@/container";
 
-import Editor from "@/OLD/components/Editor";
-
 import { AttendanceBudgets } from "../attendance-budgets";
 import { SelectTypeService } from "../select-type-service";
 
 import * as S from "./styles";
+import { useFormikContext } from "formik";
 
 export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   const [modal, setModal] = useState(false);
   const [attendance, setAttendance] = useState<TimeLine | null>(null);
-  const [body, setBody] = useState("");
 
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -66,12 +65,6 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   async function handleSubmit(data, onSuccess: () => void) {
     try {
-      if (body === "") {
-        return createToast({
-          message: "Protocolo não informado",
-          status: "error",
-        });
-      }
 
       if (!data?.scheduleServiceId || data?.scheduleServiceId == "") {
         return createToast({
@@ -83,7 +76,6 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       const payload = {
         ...data,
         scheduleId: scheduleId,
-        protocol: body,
         realizedAt: moment().toDate(),
         technicianId: user?.user?.id as string,
         scheduleServiceId: data.scheduleServiceId
@@ -155,10 +147,6 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       });
     }
   }
-
-  useEffect(() => {
-    setBody(timeLine?.timeline_info?.protocol || "");
-  }, [timeLine.timeline_info]);
 
   const initialData = {
     ...timeLine.timeline_info,
@@ -247,7 +235,6 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         <div className="row">
           <SelectTypeService
             initialService={timeLine?.timeline_info?.service?.id}
-            setBody={setBody}
           />
 
           <Input label="Resumo" name="resume" placeholder="Resumo" />
@@ -256,7 +243,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           className="uk-margin-top"
           style={{ maxHeight: "500px", overflowY: "auto" }}
         >
-          <Editor editorState={body} setEditorState={setBody} value={body} />
+          <Protocol timeLine={timeLine} />
         </div>
 
         <div className="internal_observations">
@@ -312,4 +299,16 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       </div>
     </S.Service>
   );
+}
+
+
+function Protocol({timeLine}) {
+
+  const { setFieldValue } = useFormikContext()
+
+  useEffect(() => {
+    setFieldValue("protocol",timeLine?.timeline_info?.protocol || "")
+  }, [])
+
+  return <TextEditor name="protocol" />
 }
