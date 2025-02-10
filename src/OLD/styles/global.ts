@@ -8,6 +8,10 @@ label {
     font-size: 14px !important;
 }
 
+.ql-editor {
+    min-height: 200px !important;
+}
+
 input, textarea {
     font-size: 13px !important;
 }

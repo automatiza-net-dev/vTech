@@ -169,7 +169,8 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         isStickyButtons
         debugMode
         schema={{
-          resume: yup.string().required("Campo resumo é obrigatório"),
+          protocol: yup.string().required("Campo requerido"),
+          resume: yup.string().required("Campo requerido"),
         }}
         cleanFieldsOnSubmit={false}
         initialData={initialData}
@@ -309,5 +310,5 @@ function Protocol({ timeLine }) {
     setFieldValue("protocol", timeLine?.timeline_info?.protocol || "");
   }, []);
 
-  return <TextEditor name="protocol" />;
+  return <TextEditor label="Protocolo" name="protocol" />;
 }
