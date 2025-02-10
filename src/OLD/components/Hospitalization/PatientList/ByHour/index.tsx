@@ -29,7 +29,7 @@ import {
   Select,
   Input,
 } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -51,6 +51,8 @@ function ByHour({
   const [availableUserFilters, setAvailableUserFilters] = useState({});
 
   const workerSchedule = useLoadAllSchedulesUser(availableUserFilters);
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     setAvailableUserFilters({
@@ -90,10 +92,7 @@ function ByHour({
         );
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as prescrições para a data selecionada",
-        });
+        return  createToast({ status: "error", message:   "Houve um erro ao buscar as prescrições para a data selecionada", })
       });
   }, [selectedDate, selectedHour]);
 
@@ -135,15 +134,12 @@ function ByHour({
           status: "Executado",
         })
         .then(() =>
-          notification.success({
-            message: "Prescrição executada com sucesso!",
-          })
+
+          createToast({ status: "success", message: "Prescrição executada com sucesso!", })
         )
         .catch((err) => {
           setLoading(false);
-          return notification.error({
-            message: "Houve um erro ao lançar a execução da prescrição",
-          });
+          return createToast({ status: "error", message: "Houve um erro ao lançar a execução da prescrição", })
         })
         .finally(() => {
           setData({});
@@ -259,9 +255,7 @@ function ByHour({
                         if (!medicalPrescription?.executed_at) {
                           setSelectedIndex(index);
                         } else {
-                          return notification.error({
-                            message: "Prescrição já executada",
-                          });
+                          return  createToast({ status: "error", message: "Prescrição já executada" })
                         }
                       }}
                     />

@@ -3,7 +3,6 @@ import {
   Form,
   Input,
   Modal,
-  notification,
   Select,
   Button as ButtonA,
 } from "antd";
@@ -12,12 +11,15 @@ import { useMutation, useQueryClient } from "react-query";
 import { EditTwoTone } from "@ant-design/icons";
 import { metasService } from "@/OLD/services/metas.service";
 import { Switch } from "antd";
+import { useToast } from "infinity-forge";
 
 export const Edit = memo(({ item, canUpdate }) => {
   const queryClient = useQueryClient();
   const [isVisible, setIsVisible] = useState(false);
   const { Option } = Select;
   const [payload, setPayload] = useState({});
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     if (!isVisible) {
@@ -35,18 +37,13 @@ export const Edit = memo(({ item, canUpdate }) => {
     (data) => metasService.updateMeta(item.id, data),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Meta editada!",
-        });
+        createToast({ status: "success", message:"Sucesso"  })
+     
         setIsVisible(false);
         queryClient.invalidateQueries("metas");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar meta!",
-        });
+        createToast({ status: "error", message:"Erro ao editar meta!" })
       },
     }
   );

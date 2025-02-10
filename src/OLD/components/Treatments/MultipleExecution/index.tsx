@@ -16,13 +16,11 @@ import { Container } from "./styles";
 import {
   Input,
   DatePicker,
- 
   AutoComplete,
   TimePicker,
-  notification,
   Popconfirm,
 } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 const { TextArea } = Input;
 
 import moment from "moment";
@@ -43,6 +41,8 @@ const MultipleExecution = memo(function MultipleExecution() {
   const { colaborators } = useColaborators();
 
   const dayExecutionsPermission = useUserHasPermission("TRA02");
+
+  const { createToast } = useToast();
 
   useEffect(() => {
     setFilters({
@@ -95,13 +95,19 @@ const MultipleExecution = memo(function MultipleExecution() {
       .then((_res) => {
         router.back();
         setLoading(false);
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Execuções completas com sucesso!",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        notification.error({ message: "Verifique os campos informados" });
+
+        return createToast({
+          status: "error",
+          message: "Verifique os campos informados",
+        });
       });
   }, [data, JSON.stringify(router), formattedExecutions]);
 
@@ -220,7 +226,8 @@ const MultipleExecution = memo(function MultipleExecution() {
                       value={formattedExecutions[i].quantityExecuted}
                       onChange={(e) => {
                         if (e.target.value > exec?.scheduledQuantity) {
-                          return notification.warning({
+                          return createToast({
+                            status: "error",
                             message:
                               "A quantidade executada não pode ultrapassar a quantidade agendada",
                           });

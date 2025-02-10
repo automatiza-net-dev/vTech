@@ -10,7 +10,6 @@ import {
   Input,
   DatePicker,
   TimePicker,
-  notification,
   Select,
 } from "antd";
 const { TextArea } = Input;
@@ -21,6 +20,7 @@ import { hospitalizationPrescriptionsService } from "@/OLD/services/hospitalizat
 
 // Utils
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const typeLabel = (str) => {
   if (str === "MEDICATION") {
@@ -62,6 +62,8 @@ const ViewMedicalPrescription = memo(function ViewMedicalPrescription({
   // const { grudAdministration } = medicalPrescriptionData;
   // const { prescriptionUnit } = medicalPrescriptionData;
 
+  const {createToast} = useToast()
+
   useEffect(() => {
     if (visible) {
       setData({
@@ -91,9 +93,8 @@ const ViewMedicalPrescription = memo(function ViewMedicalPrescription({
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Não foi possível buscar os veterinários disponíveis.",
-        });
+
+        return createToast({ status: "error", message:  "Não foi possível buscar os veterinários disponíveis."})
       })
       .finally(() => {
         setLoading(false);
@@ -128,15 +129,12 @@ const ViewMedicalPrescription = memo(function ViewMedicalPrescription({
         frequencyQuantityUnit: medicalPrescriptionData?.frequency_quantity_unit,
       })
       .then(() =>
-        notification.success({
-          message: "Prescrição executada com sucesso!",
-        })
+
+      createToast({ status: "success", message:  "Prescrição executada com sucesso!"})
       )
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao lançar a execução da prescrição",
-        });
+        return createToast({ status: "error", message: "Houve um erro ao lançar a execução da prescrição"})
       })
       .finally(() => {
         setReload(!reload);
@@ -164,12 +162,10 @@ const ViewMedicalPrescription = memo(function ViewMedicalPrescription({
         executionUserId: data?.executionUserId,
       })
       .then((_res) =>
-        notification.success({ message: "Prescrição executada com sucesso!" })
+       
+      createToast({ status: "success", message: "Prescrição executada com sucesso!"})
       )
-      .catch((_err) =>
-        notification.error({
-          message: "houve um erro ao executar a prescrição...",
-        })
+      .catch((_err) =>  createToast({ status: "error", message: "houve um erro ao executar a prescrição..."})
       )
       .finally(() => {
         setReload(!reload);

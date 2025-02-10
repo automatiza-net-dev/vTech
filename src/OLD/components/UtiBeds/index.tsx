@@ -14,10 +14,10 @@ import { EditTwoTone } from "@ant-design/icons";
 
 // Components
 import { Input, Container } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import CreateBed from "./Create";
 import RemoveBed from "./Delete";
-import { Table, notification, Select } from "antd";
+import { Table, Select } from "antd";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 const { Option } = Select;
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -45,6 +45,8 @@ export function UtiBeds() {
   const canCreateUtiBeds = useUserHasPermission("LEI01");
   const canEditUtiBeds = useUserHasPermission("LEI02");
   const canDeleteUtiBeds = useUserHasPermission("LEI03");
+
+  const {createToast} = useToast()
 
   const getAllBeds = useCallback(() => {
     setLoading(true);
@@ -88,9 +90,8 @@ export function UtiBeds() {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao buscar os leitos cadastrados",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao buscar os leitos cadastrados" })
       })
       .finally(() => {
         setLoading(false);

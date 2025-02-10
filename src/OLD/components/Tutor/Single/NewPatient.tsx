@@ -1,11 +1,12 @@
 // @ts-nocheck
 import { memo, useCallback, useEffect, useState } from "react";
 
-import { Form, Input, Modal, notification, Select, Upload } from "antd";
+import { Form, Input, Modal, Select, Upload } from "antd";
 import { useRouter } from "next/router";
 import {  useMutation } from "react-query";
 import { petsService } from "@/OLD/services/patient.service";
 import dynamic from "next/dynamic";
+import { useToast } from "infinity-forge";
 
 const ImgCrop = dynamic(() => import("antd-img-crop"), { ssr: false });
 
@@ -15,21 +16,19 @@ export const NewPatient = memo(({ isVisible, close }) => {
   const [photo, setPhoto] = useState();
   const [fileList, setFileList] = useState([]);
 
+  const {createToast} = useToast()
+
   const { loading, mutate } = useMutation(
     (payload) => petsService.createPatient(payload),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Novo paciente cadastrado",
-        });
+
+        createToast({ status: "success", message: "Novo paciente cadastrado" })
+
         close();
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          message: "Erro ao cadastrar paciente",
-        });
+        createToast({ status: "error", message: "Erro ao cadastrar paciente" })
       },
     }
   );

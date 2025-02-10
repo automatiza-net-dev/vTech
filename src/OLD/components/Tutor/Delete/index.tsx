@@ -10,22 +10,30 @@ import { petsService } from "@/OLD/services/patient.service";
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
+import { useToast } from "infinity-forge";
 
 export const Delete = React.memo(function Delete({ id, reload, setReload }) {
   const [loading, setLoading] = useState(false);
+
+  const { createToast } = useToast();
 
   const mutate = (id) => {
     setLoading(true);
     petsService
       .deletePatient(id)
       .then((_res) =>
-        notification.success({ message: "Tutor removido com sucesso!" })
+        createToast({
+          status: "success",
+          message: "Tutor removido com sucesso!",
+        })
       )
       .catch((_err) => {
-        notification.error({
+        createToast({
+          status: "error",
           message:
             "Houve um erro ao remover o tutor, tente novamente mais tarde...",
         });
+
         setLoading(false);
       })
       .finally(() => setLoading(false));
@@ -36,14 +44,14 @@ export const Delete = React.memo(function Delete({ id, reload, setReload }) {
       <Popconfirm
         title="Deseja realmete excluir esse tutor?"
         onConfirm={() =>
-          notification.warning({ message: "Verificar funcionalidade" })
+          createToast({ status: "error", message: "Verificar funcionalidade" })
         }
         okText="Sim"
         cancelText="Não"
         placement="left"
         loading={loading}
       >
-          <DeleteTwoTone twoToneColor="red" className="uk-margin-small-top" />
+        <DeleteTwoTone twoToneColor="red" className="uk-margin-small-top" />
       </Popconfirm>
     </div>
   );

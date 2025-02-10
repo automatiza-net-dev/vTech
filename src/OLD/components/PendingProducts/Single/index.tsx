@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 import { useRouter } from "next/router";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { Input, AutoComplete, Select, notification, Checkbox } from "antd";
 
 const { Option } = Select;
@@ -115,35 +115,40 @@ export function SinglePendingProducts({
     receipt && formatItems();
   }, [receipt]);
 
-  const submitUpdateProducts = useCallback(() => {
-    const items = data?.filter((item) => item?.sendUpdate);
-    const verify = verifyFields(items);
+  const {createToast} = useToast()
 
-    !verify
-      ? receiptService
-          .updateXmlItems({
-            receiptId: receipt?.id,
-            items: items?.map((item) => ({
-              ...item,
-              costPrice: convertIntlCurrency(item.costPrice),
-              price: convertIntlCurrency(item?.price),
-            })),
-          })
-          .then((res) => {
-            router.back();
-            setLoading(false);
-            setReload((prv) => !prv);
-            return notification.success({
-              message: "Produtos atualizados com sucesso",
-            });
-          })
-          .catch((err) => {
-            setLoading(false);
-            return notification.error({
-              message: "Houve um erro ao atualizar os produtos",
-            });
-          })
-      : notification.warning({ message: verify });
+  const submitUpdateProducts = useCallback(() => {
+    try {
+      const items = data?.filter((item) => item?.sendUpdate);
+      const verify = verifyFields(items);
+
+      !verify
+        ? receiptService
+            .updateXmlItems({
+              receiptId: receipt?.id,
+              items: items?.map((item) => ({
+                ...item,
+                costPrice: convertIntlCurrency(item.costPrice),
+                price: convertIntlCurrency(item?.price),
+              })),
+            })
+            .then((res) => {
+              router.back();
+              setLoading(false);
+              setReload((prv) => !prv);
+
+              createToast({ status: "success", message: "Produtos atualizados com sucesso" })
+            })
+            .catch((err) => {
+              setLoading(false);
+
+              createToast({ status: "error", message: "Houve um erro ao atualizar os produtos" })
+            })
+        :  createToast({ status: "error", message: verify })
+    }catch(err) {
+      console.log(err)
+    }
+
   }, [data]);
 
   return (

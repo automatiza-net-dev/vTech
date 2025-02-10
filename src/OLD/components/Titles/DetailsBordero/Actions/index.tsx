@@ -6,7 +6,7 @@ import { financesService } from "@/OLD/services/finances.service";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { usePlans } from "@/OLD/hooks/usePlans";
 
-import { Modal, notification, Popconfirm } from "antd";
+import { Modal, Popconfirm } from "antd";
 import Edit from "@/OLD/components/Titles/Actions/Edit";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
@@ -16,6 +16,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const Actions = memo(function Actions({
   finance,
@@ -31,6 +32,8 @@ const Actions = memo(function Actions({
 
   const { paymentMethods } = usePaymentMethods(false, false, visible);
   const { plans } = usePlans(false, false, visible);
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     setData({
@@ -78,7 +81,7 @@ const Actions = memo(function Actions({
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return notification.warning({ message: "Plano de contas obrigatório" });
+      return createToast({ status: "error", message: "Plano de contas obrigatório"  }) 
     }
 
     financesService
@@ -88,20 +91,19 @@ const Actions = memo(function Actions({
         feeValue: convertIntlCurrency(newObj.feeValue),
         discountValue: convertIntlCurrency(newObj.discountValue),
       })
-      .then((_res) =>
-        notification.success({ message: "Parcela atualizada com sucesso!" })
+      .then((_res) => createToast({ status: "success", message: "Parcela atualizada com sucesso!"  }) 
+     
       )
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({ status: "error", message:messageArr[1]  }) 
         }
 
-        return notification.error({
-          message: "Houve um erro ao atualizar a parcela selecionada...",
-        });
+        return  createToast({ status: "error", message: "Houve um erro ao atualizar a parcela selecionada..."  }) 
       })
       .finally(() => {
         setLoading(false);
@@ -120,16 +122,13 @@ const Actions = memo(function Actions({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Título removido com sucesso!",
-        });
+
+        return   createToast({ status: "success", message: "Título removido com sucesso!"  }) 
       })
       .catch((err) => {
         setLoading(false);
 
-        return notification.error({
-          message: "Houve um erro ao remover o item",
-        });
+        return   createToast({ status: "error", message: "Houve um erro ao remover o item"  }) 
       });
   }, [borderoId, finance?.id]);
 

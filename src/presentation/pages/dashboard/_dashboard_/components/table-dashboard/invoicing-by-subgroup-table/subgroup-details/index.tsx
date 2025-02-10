@@ -4,10 +4,15 @@ import { Modal, useTable } from "infinity-forge";
 import { SubgroupsDetails } from "@/domain";
 import { useLoadSubgroupDetails } from "@/presentation";
 
+import { useDashboard } from "../../../../context";
+
 import { columns } from "./columns";
 
 export function InvoicingBySubgroupTable({ id }) {
-  const { data } = useLoadSubgroupDetails({ subgroup: id });
+
+  const {filters} = useDashboard()
+
+  const { data } = useLoadSubgroupDetails({ subgroup: id, ...filters });
 
   const { Table } = useTable<SubgroupsDetails>({
     columnsConfiguration: {

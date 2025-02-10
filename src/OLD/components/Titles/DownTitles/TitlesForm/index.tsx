@@ -9,8 +9,8 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Container } from "./styles";
-import { Button, useAuthAdmin } from "infinity-forge";
-import { DatePicker, Input, Select, notification } from "antd";
+import { Button, useAuthAdmin, useToast } from "infinity-forge";
+import { DatePicker, Input, Select } from "antd";
 const { Option } = Select;
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
@@ -37,6 +37,8 @@ function TitlesForm({
   const editPaymentMethodPermission = (title) =>
     usePermission(`${accessControlTitles(title)}10`);
 
+  const {createToast} = useToast()
+
   return (
     <form
       onSubmit={(e) => {
@@ -51,9 +53,8 @@ function TitlesForm({
         });
 
         return error
-          ? notification.error({
-              message: "O valor de pagamento deve ser maior ou igual à 0",
-            })
+          ? 
+            createToast({ status: "error", message:  "O valor de pagamento deve ser maior ou igual à 0"})
           : submit();
       }}
     >

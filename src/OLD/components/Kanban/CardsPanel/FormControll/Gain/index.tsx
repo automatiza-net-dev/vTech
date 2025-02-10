@@ -4,10 +4,11 @@ import { memo, useState, useCallback, useEffect } from "react";
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "../FormChild";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
+import { useToast } from "infinity-forge";
 
 const Gain = memo(function Gain({ formData, visible, close, setReload }) {
   const [data, setData] = useState({ currencyValue: currencyFormatter(0) });
@@ -18,11 +19,13 @@ const Gain = memo(function Gain({ formData, visible, close, setReload }) {
     params: { type: "crm_ganho" },
   });
 
+  const {createToast} = useToast()
+
   const submitGain = useCallback(() => {
     setLoading(true);
 
     if (!data?.selectedId) {
-      return notification.warning({ message: "Informe a razão do ganho" });
+      return createToast({ status: "error", message: "Informe a razão do ganho" }) 
     }
 
     opportunitiesService
@@ -36,13 +39,11 @@ const Gain = memo(function Gain({ formData, visible, close, setReload }) {
         setReload((prv) => !prv);
         setData({ currencyValue: currencyFormatter(0) });
         close();
-        return notification.success({ message: "Ganho informado!" });
+        return createToast({ status: "success", message: "Ganho informado!" }) 
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao informar o ganho...",
-        });
+        return  createToast({ status: "error", message: "Houve um erro ao informar o ganho..." }) 
       });
   }, [formData?.op?.id, data]);
 

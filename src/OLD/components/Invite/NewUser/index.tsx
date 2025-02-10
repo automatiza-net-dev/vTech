@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { Input, notification } from "antd";
+import { Input } from "antd";
 
 import api from "@/OLD/services";
 
@@ -44,9 +44,7 @@ export default function NewUser(props: Invite) {
       .catch((err) => {
         setLoading(false);
         if (data.password !== data.password_confirmation) {
-          return notification.error({
-            message: "Senhas não batem",
-          });
+          return createToast({ status: "error", message: "Senhas não batem" }) 
         }
 
         if (err?.response?.data?.message) {

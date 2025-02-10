@@ -1,11 +1,11 @@
 // @ts-nocheck
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Modal, notification, AutoComplete, Select } from "antd";
+import { Modal, AutoComplete, Select } from "antd";
 const { Option } = Select;
 import { petsService } from "@/OLD/services/patient.service";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { useRaces } from "@/OLD/hooks/useRaces";
 import { useTutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
@@ -40,6 +40,8 @@ export default function FastCreateTutor({
 
   const submitButton = useRef();
 
+  const {createToast} = useToast()
+
   const checkPhone = (phone) => {
     setLoading(true);
     petsService
@@ -73,9 +75,7 @@ export default function FastCreateTutor({
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao buscar os pacientes...",
-        });
+        return createToast({ status: "error", message: "Houve um erro ao buscar os pacientes..." })
       })
       .finally(() => {
         setLoading(false);
@@ -108,9 +108,7 @@ export default function FastCreateTutor({
 
   const fastCreate = useCallback(() => {
     if (!data?.tutorOriginId) {
-      return notification.warning({
-        message: "Informe como conheceu a clinica",
-      });
+      return  createToast({ status: "error", message: "Informe como conheceu a clinica" })
     }
 
     setLoading(true);
@@ -150,9 +148,7 @@ export default function FastCreateTutor({
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Verifique os campos informados",
-        });
+        return  createToast({ status: "error", message: "Verifique os campos informados" })
       });
   }, [patientData, data]);
 
@@ -178,7 +174,7 @@ export default function FastCreateTutor({
     }
 
     if (message) {
-      return notification.warning({ message });
+      return  createToast({ status: "error", message: message })
     } else {
       setLoading(true);
       petsService
@@ -224,7 +220,7 @@ export default function FastCreateTutor({
         })
         .catch((err) => {
           setLoading(false);
-          notification.error({ message: "Verifique os campos informados" });
+          createToast({ status: "error", message: "Verifique os campos informados" })
         })
         .finally(() => {
           setLoading(false);
@@ -289,9 +285,7 @@ export default function FastCreateTutor({
                   value={data?.tutorPhone}
                   onBlur={() => {
                     if (data?.tutorPhone?.length < 15) {
-                      notification.warning({
-                        message: "O telefone precisa ter 11 digitos",
-                      });
+                      createToast({ status: "error", message: "O telefone precisa ter 11 digitos" })
                     }
                   }}
                   onChange={(e) => {

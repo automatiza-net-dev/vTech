@@ -8,11 +8,11 @@ import { useRouter } from "next/router";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import Create from "./Actions/Create";
 import Filters from "./Filters";
 import AddOrRemoveItem from "./Actions/AddOrRemoveItem";
-import { Modal, Table, Upload, notification, Popconfirm } from "antd";
+import { Modal, Table, Upload, Popconfirm } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import Details from "./Single";
 
@@ -45,6 +45,8 @@ export function Notes() {
     useState(false);
 
   const { receipts } = useReceipts(filters, reload);
+
+  const {createToast} = useToast()
 
   const router = useRouter();
   const listReceiptsPermission = useUserHasPermission("ENT00");
@@ -123,8 +125,8 @@ export function Notes() {
                 {removeReceiptPermission && (
                     <Popconfirm
                       title="Deseja remover esta nota de entrada?"
-                      onConfirm={() =>
-                        notification.warning({ message: "Verificar método" })
+                      onConfirm={() => createToast({ status: "error", message: "Verificar método" })
+                     
                       }
                     >
                       <DeleteTwoTone twoToneColor={"red"} />
@@ -143,9 +145,7 @@ export function Notes() {
 
   const verifyFile = (info) => {
     if (info?.file?.type !== "text/xml") {
-      return notification.warning({
-        message: "Apenas arquivos Xml são permitidos",
-      });
+      return  createToast({ status: "error", message: "Apenas arquivos Xml são permitidos" })
     }
     setXml(info?.file?.originFileObj);
   };
@@ -167,45 +167,35 @@ export function Notes() {
 
   const verifyErrors = (str) => {
     if (str === "E_NO_IDS") {
-      return notification.error({ message: "Nenhum id informado" });
+      return  createToast({ status: "error", message: "Nenhum id informado" })
     }
 
     if (str === "E_INVALID_FILE") {
-      return notification.error({ message: "Arquivo inválido" });
+      return  createToast({ status: "error", message: "Arquivo inválido"})
     }
 
     if (str === "E_IMPORTED") {
-      return notification.error({ message: "Arquivo já importado" });
+      return createToast({ status: "error", message: "Arquivo já importado"})
     }
 
     if (str === "E_INVALID_DOC") {
-      return notification.error({
-        message: "CNPJ não pertence a nenhuma unidade",
-      });
+      return  createToast({ status: "error", message: "CNPJ não pertence a nenhuma unidade"})
     }
 
     if (str === "E_NO_DL") {
-      return notification.error({
-        message: "É necessário um movimento diário para importação",
-      });
+      return  createToast({ status: "error", message: "É necessário um movimento diário para importação"})
     }
 
     if (str === "E_NO_VARIATION") {
-      return notification.error({
-        message: "Não foi possível encontrar um preço para o produto",
-      });
+      return createToast({ status: "error", message: "Não foi possível encontrar um preço para o produto"})
     }
 
     if (str === "E_INTERNAL") {
-      return notification.error({
-        message: "Não foi possível ler o arquivo",
-      });
+      return  createToast({ status: "error", message: "Não foi possível ler o arquivo"})
     }
 
     if (str === "E_NOT_FOUND") {
-      return notification.error({
-        message: "Não foi possível encontrar um preço para o produto",
-      });
+      return  createToast({ status: "error", message: "Não foi possível encontrar um preço para o produto"})
     }
   };
 
@@ -214,20 +204,13 @@ export function Notes() {
       .finishReceipt({ receiptId: id })
       .then((res) => {
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Nota de entrada finalizada com sucesso",
-        });
+        return  createToast({ status: "success", message: "Nota de entrada finalizada com sucesso"})
       })
       .catch((err) => {
         if (err?.response?.data?.code === "E_NO_VARIATION") {
-          return notification.error({
-            message:
-              "Existem produtos da nota que ainda não foram relacionados",
-          });
+          return  createToast({ status: "error", message: "Existem produtos da nota que ainda não foram relacionados"})
         } else {
-          return notification.error({
-            message: err?.response?.data?.message?.split(":")[1],
-          });
+          return  createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1]})
         }
       });
   };
@@ -237,14 +220,10 @@ export function Notes() {
       .reopenReceipt({ receiptId: id })
       .then((_res) => {
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Nota de entrada reaberta com sucesso!",
-        });
+        return  createToast({ status: "success", message:  "Nota de entrada reaberta com sucesso!"})
       })
       .catch((err) => {
-        return notification.error({
-          message: "Houve um erro ao reabrir a nota",
-        });
+        return  createToast({ status: "error", message:  "Houve um erro ao reabrir a nota"})
       });
   };
 

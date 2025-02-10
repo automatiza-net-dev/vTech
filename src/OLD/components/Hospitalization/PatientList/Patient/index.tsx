@@ -26,7 +26,7 @@ import { BsFillClockFill } from "react-icons/bs";
 import { VscTriangleDown } from "react-icons/vsc";
 import { VscTriangleRight } from "react-icons/vsc";
 import { MedicalPrescription } from "@/presentation";
-import { Modal } from "infinity-forge";
+import { Modal, useToast } from "infinity-forge";
 
 const risks = [
   { id: 1, value: "Leve", color: "#2E8B57", textColor: "#F8F8FF" },
@@ -83,18 +83,14 @@ const PatientData = memo(function PatientData({
     generalLaunchPermission,
   };
 
+  const {createToast} = useToast()
+
   const finalizeHospitalization = useCallback(() => {
     hospitalizationService
       .finalizeHospitalization(selectedPatient?.id)
-      .then((_res) =>
-        notification.success({
-          message: "Hospitalização finalizada com sucesso!",
-        })
+      .then((_res) => createToast({ status: "success", message: "Hospitalização finalizada com sucesso!" })
       )
-      .catch((err) =>
-        notification.error({
-          message: "Houve um erro ao finalizar a hospitalização do paciente",
-        })
+      .catch((err) => createToast({ status: "error", message: "Houve um erro ao finalizar a hospitalização do paciente" })
       )
       .finally(() => {
         setReload((prv) => !prv);

@@ -2,13 +2,13 @@
 import { memo } from "react";
 
 import { Container } from "./styles";
-import { Input, Button, Checkbox, notification } from "antd";
+import { Input, Button, Checkbox } from "antd";
 const { Option } = Select;
 
 import { DeleteTwoTone } from "@ant-design/icons";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 
-import { Select, FormHandler } from "infinity-forge";
+import { Select, FormHandler, useToast } from "infinity-forge";
 
 import masks from "@/OLD/utils/masks";
 
@@ -31,6 +31,9 @@ const MultipleContacts = memo(function MultipleContacts({
   contacts,
   setContacts,
 }) {
+
+  const {createToast} = useToast()
+
   return (
     <Container>
       <h5 className="uk-heading-line uk-margin-remove">
@@ -88,9 +91,7 @@ const MultipleContacts = memo(function MultipleContacts({
                     item?.type === "celular" &&
                     item?.contact?.length !== 15
                   ) {
-                    notification.warning({
-                      message: "o celular precisa ter 11 digitos",
-                    });
+                    createToast({ status: "error", message:  "o celular precisa ter 11 digitos" })
                   }
                 });
                 setContacts(arr);

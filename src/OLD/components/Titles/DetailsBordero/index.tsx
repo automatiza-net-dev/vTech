@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import { useShowBordero } from "@/OLD/hooks/useFinances";
 
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
-import { Input, Table, notification, Modal } from "antd";
+import { Button, useToast } from "infinity-forge";
+import { Input, Table, Modal } from "antd";
 import FormChild from "@/OLD/components/Titles/Actions/BorderoActions/FormChild";
 import Actions from "./Actions";
 
@@ -34,6 +34,8 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
   });
 
   const router = useRouter();
+
+  const { createToast } = useToast();
 
   const { bordero } = useShowBordero(borderoId, filters, reload);
 
@@ -73,13 +75,17 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Borderô fechado com sucesso!",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
+          status: "error",
           message: "houve um erro ao fechar o borderô",
         });
       });
@@ -93,13 +99,17 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+      
+        return createToast({
+          status: "success",
           message: "Borderô reaberto com sucesso!",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+     
+        return createToast({
+          status: "error",
           message: "houve um erro ao reabrir o borderô",
         });
       });
@@ -127,14 +137,17 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-        return notification.success({
+      
+        return createToast({
+          status: "success",
           message: "Bordero baixado com sucesso!",
         });
       })
       .catch((err) => {
         setLoading(false);
 
-        return notification.error({
+        return createToast({
+          status: "error",
           message: "Houve um erro interno ao baixar o bordero selecionado #err",
         });
       });
@@ -157,16 +170,18 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Bordero extornado com sucesso!",
         });
       })
       .catch((err) => {
         setLoading(false);
 
-        return notification.error({
-          message:
-            "Houve um erro interno ao estornar o bordero selecionado #err",
+        return createToast({
+          status: "error",
+          message: "Houve um erro interno ao estornar o bordero selecionado #err",
         });
       });
   }, [revertData, bordero]);

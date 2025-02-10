@@ -12,7 +12,7 @@ import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 
 import { Container } from "./styles";
 import { useToast } from "infinity-forge";
-import { Input, notification, Collapse, Popconfirm } from "antd";
+import { Input, Collapse, Popconfirm } from "antd";
 import { Button } from "infinity-forge";
 const { Panel } = Collapse;
 
@@ -106,9 +106,7 @@ const AddPayments = memo(function AddPayments({
       setPaymentsReload((prv) => !prv);
       queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
 
-      return notification.success({
-        message: "Pagamento adicionado com sucesso!",
-      });
+      return createToast({ status: "success", message: "Pagamento adicionado com sucesso!"  })
     } catch (err) {
 
       if (window.confirm(err?.error?.message || err?.errors?.[0]?.field + " " +  err?.errors?.[0]?.message)) {
@@ -125,9 +123,8 @@ const AddPayments = memo(function AddPayments({
         setLoading(false);
         setPaymentsReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-        return notification.success({
-          message: "Pagamento adicionado com sucesso!",
-        });
+       
+        return createToast({ status: "success", message: "Pagamento adicionado com sucesso!"  })
       }
     }
   }, [budget, data]);
@@ -138,12 +135,13 @@ const AddPayments = memo(function AddPayments({
       .then((_res) => {
         setPaymentsReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-        notification.success({ message: "Pagamento removido com sucesso!" });
+      
+
+      createToast({ status: "success", message: "Pagamento removido com sucesso!"   })
       })
       .catch((err) => {
-        return notification.error({
-          message: err?.response?.data?.message?.split(":")[1],
-        });
+
+        return  createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1]   })
       });
   };
 
@@ -169,9 +167,8 @@ const AddPayments = memo(function AddPayments({
       setLoading(false);
       setReload((prv) => !prv);
       queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-      return notification.success({
-        message: "Pagamento adicionado com sucesso!",
-      });
+
+      return createToast({ status: "success", message:"Pagamento adicionado com sucesso!"  })
     } catch (error) {
       if (window.confirm(error?.error?.message || (error?.errors?.[0]?.field + " " +  error?.errors?.[0]?.message))) {
         await receiptService.createReceiptPayment({

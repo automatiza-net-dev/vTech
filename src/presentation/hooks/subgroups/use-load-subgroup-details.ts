@@ -5,12 +5,13 @@ import { useAuthAdmin } from "infinity-forge";
 
 import { RemoteSubgroups } from "@/data";
 import { callApiOneTime } from "@/presentation";
-import { LoadSubgroupDetails, User } from "@/domain";
+import { LoadSubgroupDetails } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
 export function useLoadSubgroupDetails(params: LoadSubgroupDetails.Params) {
   const { user } = useAuthAdmin();
   const router = useRouter();
+
 
   const userID = user?.user?.id;
 

@@ -5,8 +5,9 @@ import { memo, useCallback, useState } from "react";
 import { variationGroupService } from "@/OLD/services/variation-group.service";
 
 // Components
-import { Button, Input, Modal, notification } from "antd";
+import { Button, Input, Modal } from "antd";
 import { useMutation, useQueryClient } from "react-query";
+import { useToast } from "infinity-forge";
 const { TextArea } = Input;
 
 const CreateVariationGroup = memo(function CreateVariationGroup({
@@ -17,21 +18,22 @@ const CreateVariationGroup = memo(function CreateVariationGroup({
 
   const [data, setData] = useState({ description: "" });
 
+  const {createToast} = useToast()
+
   const { mutate, isLoading } = useMutation(
     (newData) => variationGroupService.storeVariationGroup(newData),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Grupo de variação cadastrado com sucesso!",
-        });
+    
+
+        createToast({ status: "success", message: "Grupo de variação cadastrado com sucesso!" })
+
         queryClient.invalidateQueries(["variation-groups"]);
         setData({ description: "" });
         hide();
       },
       onError: (err: any) => {
-        notification.error({
-          message: err.response.data.errors[0].message,
-        });
+        createToast({ status: "error", message:  err.response.data.errors[0].message })
       },
     }
   );

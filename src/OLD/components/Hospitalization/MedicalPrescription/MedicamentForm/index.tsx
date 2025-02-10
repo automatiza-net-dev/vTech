@@ -13,10 +13,13 @@ import { drugsAdministrationsService } from "@/OLD/services/drugsAdministrations
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useToast } from "infinity-forge";
 
 const MedicamentForm = memo(function MedicamentForm({ state, setState }) {
   const [allUnits, setAllUnits] = useState([]);
   const [allDrugsAdministrations, setAllDrugsAdministrations] = useState([]);
+
+  const {createToast} = useToast()
 
   const getAllUnits = useCallback(() => {
     unitsService
@@ -26,10 +29,8 @@ const MedicamentForm = memo(function MedicamentForm({ state, setState }) {
         setAllUnits(res.data);
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as unidades do medicamento disponíveis",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao buscar as unidades do medicamento disponíveis" })
       });
   }, []);
 
@@ -41,10 +42,7 @@ const MedicamentForm = memo(function MedicamentForm({ state, setState }) {
         setAllDrugsAdministrations(res.data);
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as administrações de medicamentos disponíveis",
-        });
+        return createToast({ status: "error", message: "Houve um erro ao buscar as administrações de medicamentos disponíveis" })
       });
   }, []);
 

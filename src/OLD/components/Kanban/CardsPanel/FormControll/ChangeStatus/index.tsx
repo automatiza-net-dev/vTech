@@ -3,10 +3,11 @@ import { memo, useState, useCallback } from "react";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "../FormChild";
 
 import { useListCrmStatus } from "@/OLD/hooks/useCrmStatus";
+import { useToast } from "infinity-forge";
 
 const ChangeStatus = memo(function ChangeStatus({
   formData,
@@ -18,12 +19,14 @@ const ChangeStatus = memo(function ChangeStatus({
   const [data, setData] = useState({});
 
   const { crmStatus } = useListCrmStatus();
+  
+  const { createToast } = useToast();
 
   const submitChangeStatus = useCallback(() => {
     setLoading(true);
 
     if (!data?.selectedId) {
-      return notification.warning({ message: "Informe o novo status!" });
+      return createToast({ status: "error", message: "Informe o novo status!" })
     }
 
     opportunitiesService
@@ -35,15 +38,13 @@ const ChangeStatus = memo(function ChangeStatus({
         close();
         setLoading(false);
         setData({});
-        return notification.success({
-          message: "Status alterado com sucesso!",
-        });
+
+        return createToast({ status: "success", message: "Status alterado com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao atualizar o status da oportunidade...",
-        });
+    
+        return createToast({ status: "error", message:"Houve um erro ao atualizar o status da oportunidade..." })
       });
   }, [formData, data]);
 

@@ -2,9 +2,7 @@ import React, { useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { notification } from "antd";
-
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -22,23 +20,19 @@ export default function MedicalRecipeCreatePage() {
   const [body, setBody] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
+  const { createToast } = useToast()
+
   const canCreateMedicalRecipe = useUserHasPermission("REC01");
 
   const submitData = useCallback(() => {
     if (!(data && data.title && data.title.length > 0)) {
-      return notification.error({
-        message: "Insira um titulo",
-      });
+      return createToast({ status: "error", message:  "Insira um titulo" }) 
     }
     if (!(data && data.description && data.description.length > 0)) {
-      return notification.error({
-        message: "Insira uma descrição",
-      });
+      return  createToast({ status: "error", message:  "Insira uma descrição" }) 
     }
     if (!(body && body.length > 0)) {
-      return notification.error({
-        message: "Insira o corpo do documento",
-      });
+      return  createToast({ status: "error", message:   "Insira o corpo do documento" }) 
     }
     if (loading) return;
     setLoading(true);
@@ -50,15 +44,13 @@ export default function MedicalRecipeCreatePage() {
         template: body,
       })
       .then((res) => {
-        notification.success({
-          message: "Documento criado com sucesso",
-        });
+       
+        createToast({ status: "success", message: "Documento criado com sucesso" }) 
+
         router.back();
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro ao criar documento",
-        });
+        createToast({ status: "error", message: "Erro ao criar documento"}) 
       })
       .finally(() => setLoading(false));
   }, [loading, data, body]);

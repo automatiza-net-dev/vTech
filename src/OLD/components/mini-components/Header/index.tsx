@@ -11,7 +11,6 @@ import {
   Menu,
   Modal,
   Radio,
-  notification,
 } from "antd";
 import Link from "next/link";
 import { Container } from "./styles";
@@ -27,7 +26,7 @@ import { userService } from "@/OLD/services/user.service";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 import { useIsThirdPartyUser } from "@/presentation";
-import { useAuthAdmin } from "infinity-forge";
+import { useAuthAdmin, useToast } from "infinity-forge";
 
 const Header = ({ origin = "dashboard" }) => {
   const [chooseClinicVisible, setChooseClinicVisible] = useState(false);
@@ -44,6 +43,8 @@ const Header = ({ origin = "dashboard" }) => {
 
   sortItems(units, "identification");
 
+  const { createToast } = useToast();
+
   const submitSwapUnit = useCallback(
     () =>
       unitsService.swapUnit({ unitId: selectedUnit }).then((_res) => {
@@ -51,18 +52,21 @@ const Header = ({ origin = "dashboard" }) => {
         setReload((prv) => !prv);
         router.push("/dashboard");
         router.reload();
-        return notification.success({ message: "Unidade alterada" });
+        return createToast({ status: "success", message: "Unidade alterada" });
       }),
     [selectedUnit]
   );
 
   const startChangePassword = () => {
-    userService.startChangePassword().then(() =>
-      notification.success({
-        message:
-          "Solicitação encaminhada com sucesso!, em instantes você receberá um e-mail com instruções",
-      })
-    );
+    userService
+      .startChangePassword()
+      .then(() =>
+        createToast({
+          status: "success",
+          message:
+            "Solicitação encaminhada com sucesso!, em instantes você receberá um e-mail com instruções",
+        })
+      );
   };
 
   const detectMessage = () => {
