@@ -1,10 +1,13 @@
-import { Error, Profile, WorkSpace, Notifications, SelectWorkSpace } from 'infinity-forge'
+import { Error, Profile, WorkSpace, Notifications } from 'infinity-forge'
 
 import * as S from './styles'
+import { SelectWorkSpace } from './select-workspace'
 
 interface IMenuRight {
   workspaces: WorkSpace
 }
+
+const Pro = Profile as any
 
 export function MenuRight(props: IMenuRight) {
   return (
@@ -14,7 +17,7 @@ export function MenuRight(props: IMenuRight) {
 
         <Notifications />
 
-        <Profile />
+        <Pro />
       </S.MenuRight>
     </Error>
   )

@@ -6,6 +6,7 @@ export const MenuRight = styled.div`
   align-items: center;
   gap: clamp(1rem, 0.78vw, 1.5rem);
 
+
   @media only screen and (max-width: 1024px) {
     #messages-btn,
     #settings-btn,

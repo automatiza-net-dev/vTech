@@ -32,7 +32,7 @@ function LayoutPage({ children }) {
   const router = useRouter();
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
-  const { user, loadUser } = useAuthAdmin();
+  const { user, roleUser, loadUser } = useAuthAdmin();
 
   const clearCache = useQueryClient((state) => state.clearCache);
 
@@ -73,6 +73,18 @@ function LayoutPage({ children }) {
             src: logo,
             href: "/dashboard",
           }}
+          profile={
+            roleUser === "controller"
+              ? {
+                  menus: [
+                    {
+                      title: "Voltar para o portal franqueador",
+                      onClick: () => router.push("/admin"),
+                    },
+                  ],
+                }
+              : undefined
+          }
         >
           {children}
         </Layout>
