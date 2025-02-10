@@ -45,15 +45,10 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.6",
     "html-react-parser": "^3.0.8",
-    "infinity-forge": "6.7.1",
+    "infinity-forge": "6.7.9",
     "inversify": "^6.0.2",
     "moment": "^2.29.1",
-    "next": "^14.2.3",
-    "node": "^20.18.0",
     "prop-types": "^15.8.1",
-    "quill": "^2.0.3",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
     "react-hook-form": "^7.34.0",
     "react-icons": "^4.4.0",
     "react-modal": "^3.16.1",
@@ -61,10 +56,16 @@
     "react-quill": "^2.0.0",
     "react-to-print": "^3.0.5",
     "reflect-metadata": "^0.2.2",
-    "styled-components": "^6.1.13",
     "styled-icons": "^10.45.0",
     "xlsx": "^0.18.5",
-    "yup": "^1.4.0",
-    "zustand": "^4.5.1"
+
+    "next": "^15.1.6",
+    "node": "^22.13.0",
+    "quill": "^2.0.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "styled-components": "^6.1.15",
+    "yup": "^1.6.1",
+    "zustand": "^5.0.2"
   }
 }

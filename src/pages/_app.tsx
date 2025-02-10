@@ -20,7 +20,6 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import GlobalStyles from "@/OLD/styles/global";
 import { AppProvider } from "@/OLD/context/appContext";
-import { IpProvider } from "@/OLD/context/ip-context";
 import { SignIn } from "@/OLD/components/Authentication/SignIn";
 
 import {
@@ -53,122 +52,123 @@ export default function App({ Component, pageProps }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <IpProvider>
-        <InfinityForgeProviders
-          atena={{ disableAuth: true, roles: ["aa"] } as any}
-          i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
-          auth={{
-            ForbiddenCompoent: Forbidden,
-            roles: {
-              user: {
-                signInConfig: { Component: SignIn },
-                onSignOut: (user: any) => {
-                  queryClient.clear();
-                  queryClient.removeQueries();
+      <InfinityForgeProviders
+        atena={{ disableAuth: true, roles: ["aa"] } as any}
+        i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
+        auth={{
+          ForbiddenCompoent: Forbidden,
+          roles: {
+            user: {
+              signInConfig: { Component: SignIn },
+              onSignOut: (user: any) => {
+                queryClient.clear();
+                queryClient.removeQueries();
 
-                  router.push("/");
+                router.push("/");
 
-                  if (user?.isThirdParty) {
-                    window.location.href =
-                      "https://portal.liftonefranquias.com.br/";
-                  }
-                },
-              },
-              controller: {
-                signInConfig: {
-                  Component: SignInAdmin,
-                },
-                onSignOut: () => {
-                  queryClient.clear();
-                  queryClient.removeQueries();
-
-                  router.push("/");
-                },
-              },
-            },
-          }}
-          loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
-          InjectedRemotes={{
-            menu: {
-              menu: menus || { items: [] },
-            },
-            users: {
-              getRole: async () => {
-                try {
-                  const user = await container
-                    .get<RemoteLoadUserDashboard>(
-                      TypesAutomatiza.RemoteLoadUserDashboard
-                    )
-                    .load({});
-
-                  if (!user?.user) {
-                    throw new BadRequestError({ message: "Usuário com erro", code: "400" });
-                  }
-
-                  const initialUserData = {
-                    ...user,
-                    avatar: user.user?.profile_picture || "",
-                    emailAddress: user?.user?.email || "",
-                    firstName: user?.user?.name || "",
-                    id: (user as any)?.user?.id || "",
-                    imagem: user.user?.profile_picture,
-                    isExternal: false,
-                    lastName: "",
-                  };
-
-                  return {
-                    role: initialUserData?.user?.type,
-                    user: initialUserData,
-                  };
-                } catch (err) {
-                  return { role: "", user: null };
+                if (user?.isThirdParty) {
+                  window.location.href =
+                    "https://portal.liftonefranquias.com.br/";
                 }
               },
             },
-          }}
-          Configurations={{
-            chat: false,
-            menu: {
-              mode: "CollapsedMenu",
+            controller: {
+              signInConfig: {
+                Component: SignInAdmin,
+              },
+              onSignOut: () => {
+                queryClient.clear();
+                queryClient.removeQueries();
+
+                router.push("/");
+              },
             },
-            styles: { Button: ButtonInfinityForge },
-            notification: {
-              enable: true,
-              CustomComponent: (props) => (
-                <Link href={props?.link}>
-                  <div className="top">
-                    <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
-                    <span>{props?.message}</span>
-                  </div>
-                </Link>
-              ),
+          },
+        }}
+        loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
+        InjectedRemotes={{
+          menu: {
+            menu: menus || { items: [] },
+          },
+          users: {
+            getRole: async () => {
+              try {
+                const user = await container
+                  .get<RemoteLoadUserDashboard>(
+                    TypesAutomatiza.RemoteLoadUserDashboard
+                  )
+                  .load({});
+
+                if (!user?.user) {
+                  throw new BadRequestError({
+                    message: "Usuário com erro",
+                    code: "400",
+                  });
+                }
+
+                const initialUserData = {
+                  ...user,
+                  avatar: user.user?.profile_picture || "",
+                  emailAddress: user?.user?.email || "",
+                  firstName: user?.user?.name || "",
+                  id: (user as any)?.user?.id || "",
+                  imagem: user.user?.profile_picture,
+                  isExternal: false,
+                  lastName: "",
+                };
+
+                return {
+                  role: initialUserData?.user?.type,
+                  user: initialUserData,
+                };
+              } catch (err) {
+                return { role: "", user: null };
+              }
             },
-          }}
-          theme={themes[process.env.client || "sancla"]}
-        >
-          <NotificationsModal />
+          },
+        }}
+        Configurations={{
+          chat: false,
+          menu: {
+            mode: "CollapsedMenu",
+          },
+          styles: { Button: ButtonInfinityForge },
+          notification: {
+            enable: true,
+            CustomComponent: (props) => (
+              <Link href={props?.link}>
+                <div className="top">
+                  <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
+                  <span>{props?.message}</span>
+                </div>
+              </Link>
+            ),
+          },
+        }}
+        theme={themes[process.env.client || "sancla"]}
+      >
+        <NotificationsModal />
 
-          <GlobalStyles host={process.env.clientName} />
+        <GlobalStyles host={process.env.clientName} />
 
-          <SchedulingContextProvider>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <ConfigProvider locale={ptBR}>
-                <AppProvider>
-                  <PermissionsProvider>
-                    <Head>
-                      <title>{process.env.clientName}</title>
-                    </Head>
+        <SchedulingContextProvider>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <ConfigProvider locale={ptBR}>
+              <AppProvider>
+                <PermissionsProvider>
+                  <Head>
+                    <title>{process.env.clientName}</title>
+                  </Head>
 
-                    <GambiarraTemporaria setMenus={setMenus} />
+                  <GambiarraTemporaria setMenus={setMenus} />
 
-                    <Component {...pageProps} />
-                  </PermissionsProvider>
-                </AppProvider>
-              </ConfigProvider>
-            </LocalizationProvider>
-          </SchedulingContextProvider>
-        </InfinityForgeProviders>
-      </IpProvider>
+                  <Component {...pageProps} />
+                </PermissionsProvider>
+              </AppProvider>
+            </ConfigProvider>
+          </LocalizationProvider>
+        </SchedulingContextProvider>
+      </InfinityForgeProviders>
     </QueryClientProvider>
   );
 }

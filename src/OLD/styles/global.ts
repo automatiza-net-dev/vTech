@@ -1,7 +1,10 @@
 // @ts-nocheck
 import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle<any>`
-
+ .conntent_form_infinity_forge {
+    overflow: hidden !important;
+    padding: 0 20px !important;
+}
 label {
     font-size: 14px !important;
 }
@@ -11,12 +14,12 @@ input, textarea {
 }
 
 .create-button {
-    background-color: ${(props) => props.theme.primaryColor} !important;
+    background-color: ${(props) => props?.theme?.primaryColor} !important;
 }
 
 .filters-accordion + form {
     button {
-        background-color: ${(props) => props.theme.primaryColor} !important;
+        background-color: ${(props) => props?.theme?.primaryColor} !important;
     }
 }
 .close-button {
@@ -28,7 +31,7 @@ input, textarea {
     justify-content: flex-end;
     gap: 20px; 
     border-top: 1px solid #ccc;
-    padding-right: 0 !important;
+    padding-right: 20px !important;
     z-index: 9 !important;
     
 

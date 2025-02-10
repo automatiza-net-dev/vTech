@@ -23,10 +23,12 @@ import { Contacts, SelectOrigin, SelectProfession } from "../";
 import { defineRequireFields } from "./utils/define-required-fields";
 
 import { initialData } from "./initial-data";
+import { SelectGender } from "./select-gender";
+
 import { ICreateTutorFormProps } from "./interfaces";
 
 import * as S from "./styles";
-import { SelectGender } from "./select-gender";
+import { InputCorporateName } from "./input-corporate-name";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
@@ -98,7 +100,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
             <div>
               <div className="row">
-                <Input name="corporateName" label="Nome / Razão Social*" />
+                <InputCorporateName />
 
                 <InputCpfCnpj
                   name="document"
@@ -120,7 +122,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <Input name="name" label="Nome Social / Nome Fantasia" />
 
-             <SelectGender isRegister={isRegister} />
+                <SelectGender isRegister={isRegister} />
 
                 <Select
                   menuPlacement="bottom"
