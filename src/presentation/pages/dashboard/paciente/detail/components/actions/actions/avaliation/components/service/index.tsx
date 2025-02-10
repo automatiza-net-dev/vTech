@@ -52,7 +52,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   const queryClient = useQueryClient();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const handlePrint = useReactToPrint({ contentRef: componentRef});
+  const handlePrint = useReactToPrint({ contentRef: componentRef });
 
   const { user } = useAuthAdmin();
 
@@ -65,7 +65,6 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   async function handleSubmit(data, onSuccess: () => void) {
     try {
-
       if (!data?.scheduleServiceId || data?.scheduleServiceId == "") {
         return createToast({
           message: "Informe o tipo de atendimento",
@@ -239,12 +238,8 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
           <Input label="Resumo" name="resume" placeholder="Resumo" />
         </div>
-        <div
-          className="uk-margin-top"
-          style={{ maxHeight: "500px", overflowY: "auto" }}
-        >
-          <Protocol timeLine={timeLine} />
-        </div>
+
+        <Protocol timeLine={timeLine} />
 
         <div className="internal_observations">
           {props.timeline_info?.protocol ? (
@@ -301,14 +296,12 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   );
 }
 
-
-function Protocol({timeLine}) {
-
-  const { setFieldValue } = useFormikContext()
+function Protocol({ timeLine }) {
+  const { setFieldValue } = useFormikContext();
 
   useEffect(() => {
-    setFieldValue("protocol",timeLine?.timeline_info?.protocol || "")
-  }, [])
+    setFieldValue("protocol", timeLine?.timeline_info?.protocol || "");
+  }, []);
 
-  return <TextEditor name="protocol" />
+  return <TextEditor name="protocol" />;
 }
