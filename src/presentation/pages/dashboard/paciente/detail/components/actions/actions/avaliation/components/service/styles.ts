@@ -1,14 +1,6 @@
 import styled from "styled-components";
 
 export const Service = styled("div")`
-  #text-editor {
-    overflow: hidden;
-    div[class*="RichTextEditor__"] {
-      min-height: 500px;
-      overflow: hidden;
-      z-index: 2;
-    }
-  }
 
   .form-button.sticky {
     z-index: 9;

@@ -46,13 +46,13 @@ function Scheduling() {
 
       <div className="top">
         <div className="actions">
-          {viewCalendar === "day" && <ChangeDayInCalendar />}
+          {viewCalendar === "day" && <ChangeDayInCalendar />} 
 
           <ButtonCreateSchedulling />
         </div>
 
         <div className="options">
-          {data && <PrintTable data={data} date={dateFormatted} />}
+         {data && <PrintTable data={data} date={dateFormatted} />}
 
           <Button
             text="Diário"
@@ -65,11 +65,11 @@ function Scheduling() {
             onClick={() => setViewCalendar("week")}
           />
 
-          <SwitchToggleCancelledEvents data={data} />
+        <SwitchToggleCancelledEvents data={data} /> 
         </div>
       </div>
 
-      <div style={{ display: viewCalendar === "week" ? "block" : "none" }}>
+    <div style={{ display: viewCalendar === "week" ? "block" : "none" }}>
         <WeekCalendar
           setViewCalendar={setViewCalendar}
           viewCalendar={viewCalendar}
@@ -144,7 +144,7 @@ function Scheduling() {
             />
           );
         })}
-      </div>
+      </div> 
     </S.Scheduling>
   );
 }

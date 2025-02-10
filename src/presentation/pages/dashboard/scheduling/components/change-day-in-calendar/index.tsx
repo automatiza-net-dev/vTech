@@ -11,29 +11,27 @@ import { LeftArrow, RightArrow } from "./icons";
 import * as S from "./styles";
 
 export function ChangeDayInCalendar() {
-  const [changeDate, selectedDate] = useScheduling<any>((state) => [
-    state.changeDate,
-    state.selectedDate,
-  ]);
+  const changeDate = useScheduling((state) => state.changeDate);
+  const selectedDate = useScheduling(state => state.selectedDate)
 
   function handleDayAdvance() {
-    const nextDay = add(selectedDate, { days: 1 });
+    const nextDay = add(selectedDate || new Date(),  { days: 1 });
     changeDate(nextDay);
   }
 
   function handleDayRetreat() {
-    const previousDay = sub(selectedDate, { days: 1 });
+    const previousDay = sub(selectedDate || new Date(), { days: 1 });
 
     changeDate(previousDay);
   }
 
   return (
     <S.ChangeDayInCalendar>
-      <button onClick={handleDayRetreat}>
+     <button onClick={handleDayRetreat}>
         <div className="icon">
           <RightArrow />
         </div>
-      </button>
+      </button> 
 
       <FormHandler
         cleanFieldsOnSubmit={false}
@@ -43,14 +41,14 @@ export function ChangeDayInCalendar() {
           },
         }}
       >
-        <DatePickerSchedule />
+        <DatePickerSchedule /> 
       </FormHandler>
 
-      <button onClick={handleDayAdvance}>
+    <button onClick={handleDayAdvance}>
         <div className="icon">
           <LeftArrow />
         </div>
-      </button>
+      </button> 
     </S.ChangeDayInCalendar>
   );
 }
@@ -67,5 +65,5 @@ function DatePickerSchedule() {
     }
   }, [selectedDate]);
 
-  return <InputDatePicker language="pt" name="date" mode="date" date={{}} />;
+  return <InputDatePicker language="pt" name="date" mode="date"  />;
 }
