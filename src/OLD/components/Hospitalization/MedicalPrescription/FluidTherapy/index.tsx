@@ -14,11 +14,14 @@ import { drugsAdministrationsService } from "@/OLD/services/drugsAdministrations
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useToast } from "infinity-forge";
 
 const FluidTherapy = memo(function FluidTherapy({ state, setState }) {
   const [allDrugsAdministrations, setAllDrugsAdministrations] = useState([]);
   const [allMedicamentUnits, setAllMedicamentUnits] = useState([]);
   const [allSpeedFluidUnits, setAllSpeedFluidUnits] = useState([]);
+
+  const {createToast} = useToast()
 
   const getAllMedicamentUnits = useCallback(() => {
     unitsService
@@ -28,10 +31,7 @@ const FluidTherapy = memo(function FluidTherapy({ state, setState }) {
         setAllMedicamentUnits(res.data);
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as unidades do medicamento disponíveis",
-        });
+        return  createToast({ status: "error", message:  "Houve um erro ao buscar as unidades do medicamento disponíveis" })
       });
   }, []);
 
@@ -43,10 +43,7 @@ const FluidTherapy = memo(function FluidTherapy({ state, setState }) {
         setAllSpeedFluidUnits(res.data);
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as unidades do medicamento disponíveis",
-        });
+        return createToast({ status: "error", message:  "Houve um erro ao buscar as unidades do medicamento disponíveis" })
       });
   }, []);
 
@@ -58,10 +55,8 @@ const FluidTherapy = memo(function FluidTherapy({ state, setState }) {
         setAllDrugsAdministrations(res.data);
       })
       .catch((_err) => {
-        return notification.error({
-          message:
-            "Houve um erro ao buscar as administrações de medicamentos disponíveis",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao buscar as administrações de medicamentos disponíveis"  })
       });
   }, []);
 

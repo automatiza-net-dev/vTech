@@ -13,13 +13,12 @@ import {
 import { useProfile } from "@/OLD/hooks/useProfile.ts";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile.ts";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
 import {
   Input,
   Table,
   Popconfirm,
-  notification,
   Modal,
   Typography,
 } from "antd";
@@ -64,6 +63,8 @@ export function Details({ receiptId, setVisible }: any) {
   const cancelFNPermission = useUserHasPermission("VEN09");
   const disableFNPermission = useUserHasPermission("VEN10");
 
+  const {createToast} = useToast()
+
   const queryClient = useQueryClient();
 
   const removeReceiptItemSubmit = (id) => {
@@ -71,12 +72,12 @@ export function Details({ receiptId, setVisible }: any) {
       .removeReceiptItem({ itemId: id })
       .then((_res) => {
         setReload((prv) => !prv);
-        return notification.success({ message: "Item removido com sucesso" });
+
+        return createToast({ status: "success", message: "Item removido com sucesso" })
       })
       .catch((err) => {
-        return notification.error({
-          message: "Houve um erro ao remover o item",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao remover o item"})
       });
   };
 
@@ -284,13 +285,15 @@ export function Details({ receiptId, setVisible }: any) {
     {
       onSuccess: () => {
         setLoading(false);
-        notification.success({ message: "Nota emitida com sucesso" });
+       
+       createToast({ status: "success", message: "Nota emitida com sucesso" })
         setOpenModal(false);
         queryClient.invalidateQueries(["bills"]);
       },
       onError: (err) => {
         setLoading(false);
-        notification.error({ message: err.message ?? "Erro na emissão" });
+               
+       createToast({ status: "error", message: err.message ?? "Erro na emissão" })
       },
     }
   );
@@ -511,9 +514,8 @@ export function Details({ receiptId, setVisible }: any) {
             e.preventDefault();
 
             if (!cancelNfeData?.reason) {
-              return notification.error({
-                message: "Informe o motivo do cancelamento",
-              });
+            
+              return  createToast({ status: "error", message:"Informe o motivo do cancelamento" })
             }
 
             cancelNfeMutation.mutate(cancelNfeData);
@@ -559,9 +561,7 @@ export function Details({ receiptId, setVisible }: any) {
           onSubmit={(e) => {
             e.preventDefault();
             if (!disableNfeData?.reason) {
-              return notification.error({
-                message: "Informe o motivo da inutilização",
-              });
+              return createToast({ status: "error", message:"Informe o motivo da inutilização" })
             }
 
             disableNfeMutation.mutate(disableNfeData);

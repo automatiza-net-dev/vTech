@@ -8,7 +8,7 @@ import { usePaymentGroup } from "@/OLD/hooks/useFinances";
 import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { Input, Table, notification, Modal, Popconfirm } from "antd";
 import FinancesActions from "../Actions";
 import DownFormChild from "../Actions/FormChild";
@@ -33,6 +33,8 @@ function BorderoDetails({
   const [downVisible, setDownVisible] = useState(false);
 
   const router = useRouter();
+
+  const { createToast } = useToast();
 
   const { titles, setTitles } = useAuth();
   const { finances } = usePaymentGroup(groupData, reload);
@@ -110,14 +112,17 @@ function BorderoDetails({
           paymentDate: moment().format("YYYY-MM-DD"),
         }));
         setReload((prv) => !prv);
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Títulos baixados com sucesso!",
         });
       })
       .catch((err) => {
         const errMessage = err?.response?.data?.errors;
         if (errMessage) {
-          return notification.error({
+          return createToast({
+            status: "error",
             message: errMessage[0].message,
           });
         }
@@ -148,12 +153,18 @@ function BorderoDetails({
           ...prv,
           paymentDate: moment().format("YYYY-MM-DD"),
         }));
-        return notification.success({ message: "Grupo baixado com sucesso!" });
+
+        return createToast({
+          status: "success",
+          message: "Grupo baixado com sucesso!",
+        });
       })
       .catch((err) => {
         const errMessage = err?.response?.data?.errors;
         if (errMessage) {
-          return notification.error({
+
+          return createToast({
+            status: "error",
             message: errMessage[0].message,
           });
         }
@@ -229,16 +240,16 @@ function BorderoDetails({
           0 && (
           <>
             {titles?.length > 0 && (
-                <Popconfirm
-                  title="Deseja baixar os títulos selecionados?"
-                  onConfirm={() => {
-                    !checkingAccountId
-                      ? setDownVisible(true)
-                      : downSelectedTitles();
-                  }}
-                >
-                  <Button text="Baixar títulos" />
-                </Popconfirm>
+              <Popconfirm
+                title="Deseja baixar os títulos selecionados?"
+                onConfirm={() => {
+                  !checkingAccountId
+                    ? setDownVisible(true)
+                    : downSelectedTitles();
+                }}
+              >
+                <Button text="Baixar títulos" />
+              </Popconfirm>
             )}
           </>
         )}

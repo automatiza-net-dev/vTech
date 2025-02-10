@@ -10,13 +10,16 @@ import { petsService } from "@/OLD/services/patient.service";
 import { useTutor } from "@/OLD/hooks/useTutor";
 
 // Components
-import { AutoComplete, Button, notification } from "antd";
+import { AutoComplete, Button } from "antd";
+import { useToast } from "infinity-forge";
 
 function TutorVincForm({ patient, setVisible, setReload, reload }: any) {
   const [tutor, setTutor] = useState({});
   const [loading, setLoading] = useState(false);
   const [formatedTutors, setFormatedTutors] = useState([]);
   const { tutors } = useTutor();
+
+  const {createToast} = useToast()
 
   const formatTutors = () => {
     setFormatedTutors(
@@ -40,16 +43,11 @@ function TutorVincForm({ patient, setVisible, setReload, reload }: any) {
         holder: tutor?.tutorId,
         patient: patient?.id,
       })
-      .then((res) =>
-        notification.success({
-          message: "Tutor vinculado com sucesso!",
-        })
+      .then((res) => createToast({ status: "success", message: "Tutor vinculado com sucesso!" })
       )
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao vincular o tutor...",
-        });
+        return   createToast({ status: "error", message:"Houve um erro ao vincular o tutor..." })
       })
       .finally(() => {
         setTutor({});

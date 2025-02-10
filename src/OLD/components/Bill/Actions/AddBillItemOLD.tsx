@@ -5,6 +5,8 @@ import { productService } from "@/OLD/services/product.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
+import { Modal as ModalInfinity } from "infinity-forge";
+
 import {
   AutoComplete,
   Button,
@@ -93,7 +95,7 @@ function AddBillItem({ bill }: any) {
     currencyFormatter(0)
   );
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const { data } = useShowBill(bill.id, visible);
   const { data: products } = useGetBillProducts(visible);
@@ -136,7 +138,7 @@ function AddBillItem({ bill }: any) {
                 return setDiscountConfirmVisible(true);
               }
 
-              createToast({ status: "error", message: err.message }) 
+              createToast({ status: "error", message: err.message });
             });
             return;
           }
@@ -257,8 +259,8 @@ function AddBillItem({ bill }: any) {
   const removeBillItem = (id) => {
     billService
       .removeBillItem(id)
-      .then((_res) => createToast({ status: "success", message: "Item removido com sucesso" }) 
-     
+      .then((_res) =>
+        createToast({ status: "success", message: "Item removido com sucesso" })
       )
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
@@ -333,6 +335,8 @@ function AddBillItem({ bill }: any) {
       });
   };
 
+  const [modalItem, setModalItem] = React.useState(false);
+
   const submitKit = React.useCallback(
     (maxDiscount = false) => {
       setLoading(true);
@@ -357,7 +361,10 @@ function AddBillItem({ bill }: any) {
           queryClient.invalidateQueries(["bills"]);
           setReload((prv) => !prv);
           setMultipleProducts([]);
-          return createToast({ status: "success", message: "Produtos adicionados com sucesso!" }) 
+          return createToast({
+            status: "success",
+            message: "Produtos adicionados com sucesso!",
+          });
         })
         .catch((errorList) => {
           setLoading(false);
@@ -367,18 +374,23 @@ function AddBillItem({ bill }: any) {
                 return setDiscountConfirmVisible(true);
               }
 
-              createToast({ status: "error", message: err.message }) 
+              createToast({ status: "error", message: err.message });
             });
             return;
           }
 
           if (err?.response?.data?.message) {
-            createToast({ status: "error", message:  err?.response?.data?.message}) 
+            createToast({
+              status: "error",
+              message: err?.response?.data?.message,
+            });
             return;
           }
 
-
-          createToast({ status: "error", message: "Houve um erro ao salvar os produtos selecionados"}) 
+          createToast({
+            status: "error",
+            message: "Houve um erro ao salvar os produtos selecionados",
+          });
 
           return;
         });
@@ -589,8 +601,11 @@ function AddBillItem({ bill }: any) {
                 className="uk-width-1-1 uk-margin-right"
                 value={generalDiscount}
                 onChange={(e) => {
-                  if (discountType === "percent" && e.target.value > 100) { 
-                   return createToast({ status: "error", message: "O valor máximo é 100"}) 
+                  if (discountType === "percent" && e.target.value > 100) {
+                    return createToast({
+                      status: "error",
+                      message: "O valor máximo é 100",
+                    });
                   }
 
                   const value =
@@ -657,45 +672,43 @@ function AddBillItem({ bill }: any) {
         </div>
         <hr />
         <div className="uk-flex uk-flex-right">
+          <ModalInfinity open={openItem} onClose={() => setOpenItem(false)}>
+            <div>
+              Deseja adicionar o produto {formData?.productDescription}?
+              <div>
+                <Button
+                  type="primary"
+                  className="uk-margin-small-right"
+                  onClick={() => {
+                    submitDiscount();
+                    setFormData({});
+                    setOpenItem(false);
+                    setVisible((prevState) => !prevState);
+                    return submitKit();
+                  }}
+                >
+                  Sim
+                </Button>
+                <Button
+                  onClick={() => {
+                    submitDiscount();
+                    setFormData({});
+                    setVisible((prevState) => !prevState);
+                    setOpenItem(false);
+                  }}
+                >
+                  Não
+                </Button>
+              </div>
+            </div>
+          </ModalInfinity>
           <Button
             type="primary"
             onClick={() => {
               setSubmitData({ submitFunction: submitDiscount });
               if (multipleProducts?.length > 0) {
-                return notification.warning({
-                  message: (
-                    <div>
-                      {" "}
-                      Deseja adicionar o produto {formData?.productDescription}?
-                      <div>
-                        <Button
-                          type="primary"
-                          className="uk-margin-small-right"
-                          onClick={() => {
-                            submitDiscount();
-                            setFormData({});
-                            setVisible((prevState) => !prevState);
-                            notification.destroy();
-                            return submitKit();
-                          }}
-                        >
-                          Sim
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            submitDiscount();
-                            setFormData({});
-                            setVisible((prevState) => !prevState);
-                            notification.destroy();
-                          }}
-                        >
-                          Não
-                        </Button>
-                      </div>
-                    </div>
-                  ),
-                  placement: "bottomRight",
-                });
+                setModalItem(true);
+                return;
               }
               submitDiscount();
             }}

@@ -7,6 +7,7 @@ import { billService } from "@/OLD/services/bills.service";
 import {  notification } from "antd";
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { useToast } from "infinity-forge";
 
 const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
   bill,
@@ -15,6 +16,8 @@ const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  const {createToast} = useToast()
 
   const convertBill = (bill) => {
     setLoading(true);
@@ -27,27 +30,13 @@ const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
       .then((res) => {
         setLoading(false);
         setReload && setReload((prv) => !prv);
-        return notification.success({
-          message: (
-            <span>
-              Venda convertida com sucesso, clique{" "}
-              <span
-                className="uk-link"
-                onClick={() => router.push(`/dashboard/tratamentos`)}
-              >
-                aqui
-              </span>{" "}
-              para acessar os detalhes do tratamento{" "}
-            </span>
-          ),
-        });
+
+        return  createToast({ status: "success", message:  "Venda convertida com sucesso" }) 
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message:
-            "Houve um erro ao converter a venda, contacte o administrador do sistema para mais detalhes",
-        });
+
+        createToast({ status: "error", message:  "Houve um erro ao converter a venda, contacte o administrador do sistema para mais detalhes" }) 
       });
   };
 

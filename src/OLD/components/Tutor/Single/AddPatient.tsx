@@ -1,12 +1,12 @@
 // @ts-nocheck
 import { memo, useCallback, useState } from "react";
-import { AutoComplete, Form, Modal, notification } from "antd";
+import { AutoComplete, Form, Modal } from "antd";
 import { NewPatient } from "./NewPatient";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { petsService } from "@/OLD/services/patient.service";
 import { useRouter } from "next/router";
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
   const id = useRouter()?.query?.innerpage;
@@ -19,12 +19,11 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
 
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   const { data, loading } = useQuery("getPatients", petsService.getPatients, {
     onError: (error) => {
-      notification.error({
-        message: "Erro",
-        description: "Erro ao buscar pacientes",
-      });
+      createToast({ status: "error", message: "Erro ao buscar pacientes"  })
     },
     staleTime: 20000,
     refetchInterval: 25000,
@@ -34,17 +33,13 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
     (payload) => petsService.assignPatientToTutor(payload),
     {
       onError: (error) => {
-        notification.error({
-          message: "Erro",
-          description: "Não foi possível realizar o vinculo",
-        });
+        createToast({ status: "error", message: "Não foi possível realizar o vinculo"  })
       },
       onSuccess: () => {
         setReload((prv) => !prv);
-        notification.success({
-          message: "Sucesso",
-          description: "Vinculo de paciente e tutor realizado",
-        });
+
+        createToast({ status: "success", message:"Vinculo de paciente e tutor realizado" })
+
         setIsVisible(false);
       },
     }

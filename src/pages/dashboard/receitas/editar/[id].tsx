@@ -4,9 +4,9 @@ import React, { useState, useCallback, useEffect } from "react";
 
 import { useRouter } from "next/router";
 
-import { notification, Spin } from "antd";
+import {  Spin } from "antd";
 
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -25,6 +25,8 @@ export default function MedicalRecipeEditPage() {
 
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   const canEditMedicalRecipe = useUserHasPermission("REC02");
 
   const fetchData = useCallback(() => {
@@ -40,9 +42,7 @@ export default function MedicalRecipeEditPage() {
         setBody(res.data.template);
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro ao carregar documento",
-        });
+        createToast({ status: "error", message: "Erro ao carregar documento", })
       })
       .finally(() => setStartPage(false));
   }, []);
@@ -50,19 +50,13 @@ export default function MedicalRecipeEditPage() {
   useEffect(() => fetchData(), [fetchData]);
   const submitData = useCallback(() => {
     if (!(data && data.title && data.title.length > 0)) {
-      return notification.error({
-        message: "Insira um titulo",
-      });
+      return  createToast({ status: "error", message: "Insira um titulo", })
     }
     if (!(data && data.description && data.description.length > 0)) {
-      return notification.error({
-        message: "Insira uma descrição",
-      });
+      return createToast({ status: "error", message: "Insira uma descrição", })
     }
     if (!(body && body.length > 0)) {
-      return notification.error({
-        message: "Insira o corpo do documento",
-      });
+      return  createToast({ status: "error", message: "Insira o corpo do documento", })
     }
     if (loading) return;
     setLoading(true);
@@ -74,15 +68,15 @@ export default function MedicalRecipeEditPage() {
         template: body,
       })
       .then((res) => {
-        notification.success({
-          message: "Documento editado com sucesso",
-        });
+
+        createToast({ status: "success", message: "Documento editado com sucesso", })
+
         router.back();
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro ao criar documento",
-        });
+
+        createToast({ status: "error", message: "Erro ao criar documento", })
+
       })
       .finally(() => setLoading(false));
   }, [loading, data, body, router]);

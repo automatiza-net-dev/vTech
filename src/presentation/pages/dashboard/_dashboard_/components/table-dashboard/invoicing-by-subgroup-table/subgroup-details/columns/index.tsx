@@ -30,7 +30,7 @@ export const columns: Column<SubgroupsDetails>[] = [
     hasAsc: false,
     width: 100,
     Component: {
-      Element: (props) => <span>{props.totalSales}</span>,
+      Element: (props) => <span>{props?.totalSales?.toFixed(2)}</span>,
       props: {},
       allProps: true,
     },
@@ -41,7 +41,7 @@ export const columns: Column<SubgroupsDetails>[] = [
     hasAsc: false,
     width: 100,
     Component: {
-      Element: (props) => <span>{props.percentage}</span>,
+      Element: (props) => <span>{props?.percentage?.toFixed(2)}</span>,
       props: {},
       allProps: true,
     },

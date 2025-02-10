@@ -11,7 +11,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 // Components
 import { Container } from "./styles";
 import { Menu, notification, Popconfirm } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import BaseForm from "./BaseForm";
 import HeaderControl from "./Date";
 import PatientList from "./PatientList";
@@ -197,6 +197,8 @@ export default function HospitalizationTable() {
 
   const showHospitalizationsPermission = useUserHasPermission("INT00");
 
+  const {createToast} = useToast()
+
   const getAllHospitalizations = useCallback(() => {
     setLoading(true);
     hospitalizationService
@@ -206,9 +208,9 @@ export default function HospitalizationTable() {
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao listar os pacientes hospitalizados...",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao listar os pacientes hospitalizados..." })
+       
       })
       .finally(() => {
         setLoading(false);

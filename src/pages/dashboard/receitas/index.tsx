@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
-import { Table, Tag, notification, Popconfirm } from "antd";
+import { Table, Tag, Popconfirm } from "antd";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { recipeServices } from "@/OLD/services/recipes.service";
@@ -19,6 +19,7 @@ export default function MedicalRecipesListPage() {
   const [reload, setReload] = useState(false);
 
   const router = useRouter();
+  const {createToast} = useToast()
 
   const { documents, loadingDocuments } = useMedicalRecipes(filters, reload);
 
@@ -31,14 +32,10 @@ export default function MedicalRecipesListPage() {
     recipeServices
       .remove(id)
       .then((_res) =>
-        notification.success({
-          message: "Modelo de receita médica removida com sucesso!",
-        })
+         createToast({ status: "success", message: "Modelo de receita médica removida com sucesso!" })
       )
-      .catch((err) => {
-        notification.error({
-          message: "Houve um erro ao remover a receita...",
-        });
+      .catch((err) => { 
+        createToast({ status: "error", message:  "Houve um erro ao remover a receita..." })
       })
       .finally(() => {
         setReload(!reload);

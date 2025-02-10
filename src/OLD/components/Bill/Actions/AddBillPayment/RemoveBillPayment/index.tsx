@@ -6,14 +6,10 @@ import { billService } from "@/OLD/services/bills.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { Popconfirm, notification } from "antd";
 
-const verifyUpdateExpirationErrors = (err) => {
-  return notification.error({
-    message: "Houve um erro ao atualizar parcelas...",
-  });
-};
+
 
 const RemoveBillPayment = memo(function ({
   payments,
@@ -26,19 +22,16 @@ const RemoveBillPayment = memo(function ({
 
   const queryClient = useQueryClient();
 
+  const {createToast} = useToast()
+
   const removeBlockPermission = useUserHasPermission("VEN05");
   const updateExpirationDatePermission = useUserHasPermission("VEN13");
 
   const verifyErrors = (message) => {
     if (message.includes("baixa em algum pagamento")) {
-      return notification.warning({
-        message:
-          "Este bloco de pagamentos já possui parcela(s) baixada(s) no financeiro.",
-      });
+      return createToast({ status: "error", message:  "Este bloco de pagamentos já possui parcela(s) baixada(s) no financeiro." }) 
     }
-    return notification.error({
-      message: "Houve um erro ao remover o bloco de pagamentos...",
-    });
+    return createToast({ status: "error", message:  "Houve um erro ao remover o bloco de pagamentos..." }) 
   };
 
   const removeBillPayment = useCallback(() => {
@@ -49,7 +42,7 @@ const RemoveBillPayment = memo(function ({
       .then((_res) => {
         setLoading(false);
         queryClient.invalidateQueries(["bills"]);
-        return notification.success({ message: "Bloco removido com sucesso!" });
+        return createToast({ status: "success", message: "Bloco removido com sucesso!" })
       })
       .catch((err) => {
         verifyErrors(err?.response?.data?.message);
@@ -69,12 +62,10 @@ const RemoveBillPayment = memo(function ({
       .then((res) => {
         queryClient.invalidateQueries(["bills"]);
         setEditExpirationDate(false);
-        return notification.success({
-          message: "Datas de vencimento atualizadas!",
-        });
+        return createToast({ status: "suc", message:  "Datas de vencimento atualizadas!"}) 
       })
       .catch((err) => {
-        verifyUpdateExpirationErrors(err);
+        createToast({ status: "error", message:  "Houve um erro ao atualizar parcelas..." }) 
       });
   }, [data, editExpirationDate]);
 

@@ -4,8 +4,9 @@ import { memo, useCallback, useState } from "react";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "../FormChild";
+import { useToast } from "infinity-forge";
 
 const Loss = memo(function ({ formData, visible, close, setReload }) {
   const [loading, setLoading] = useState(false);
@@ -16,11 +17,13 @@ const Loss = memo(function ({ formData, visible, close, setReload }) {
     params: { type: "crm_perda" },
   });
 
+  const {createToast} = useToast()
+
   const submitLoss = useCallback(() => {
     setLoading(true);
 
     if (!data?.selectedId) {
-      return notification.warning({ message: "Informe o motivo da perda" });
+      return createToast({ status: "error",  message: "Informe o motivo da perda" })
     }
 
     opportunitiesService
@@ -33,15 +36,11 @@ const Loss = memo(function ({ formData, visible, close, setReload }) {
         setReload((prv) => !prv);
         close();
         setData({});
-        return notification.success({
-          message: "Perda informada com sucesso!",
-        });
+        return  createToast({ status: "success",  message: "Perda informada com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao informar a perda...",
-        });
+        return  createToast({ status: "success",  message: "Houve um erro ao informar a perda..." })
       });
   }, [formData?.op?.id, data]);
 

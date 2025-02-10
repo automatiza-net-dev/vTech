@@ -3,8 +3,8 @@ import React, { memo, useCallback, useEffect, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button, Modal } from "infinity-forge";
-import { notification, Table } from "antd";
+import { Button, Modal, useToast } from "infinity-forge";
+import { Table } from "antd";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { petsService } from "@/OLD/services/patient.service";
@@ -34,6 +34,8 @@ export function Single({
 
   const router = useRouter();
   const hasPermission = useVerifyPermissions("PET04");
+
+  const {createToast} = useToast()
 
   const columns = [
     {
@@ -141,10 +143,8 @@ export function Single({
       })
       .catch((err) => {
         setLoading(false);
-        notification.error({
-          message: "Erro",
-          description: "Erro ao buscar tutor",
-        });
+
+        createToast({ status: "error", message:  "Erro ao buscar tutor"})
       });
   };
 

@@ -5,8 +5,9 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "../FormChild";
+import { useToast } from "infinity-forge";
 
 const ChangeTechnician = memo(function ChangeTechnician({
   formData,
@@ -19,11 +20,13 @@ const ChangeTechnician = memo(function ChangeTechnician({
 
   const { colaborators } = useColaborators();
 
+  const {createToast} = useToast()
+
   const submitGain = useCallback(() => {
     setLoading(true);
 
     if (!data?.completeId) {
-      return notification.warning({ message: "Informe o novo usuário!" });
+      return createToast({ status: "error", message: "Informe o novo usuário!" })
     }
 
     opportunitiesService
@@ -35,13 +38,11 @@ const ChangeTechnician = memo(function ChangeTechnician({
         setReload((prv) => !prv);
         close();
         setData({});
-        return notification.success({ message: "Responsável alterado!" });
+        return createToast({ status: "success", message: "Responsável alterado!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao atualizar o usuário responsável",
-        });
+        return createToast({ status: "error", message: "Houve um erro ao atualizar o usuário responsável" })
       });
   }, [formData?.op?.id, data]);
 

@@ -5,9 +5,10 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
 import { useSyncableSchedules } from "@/OLD/hooks/useSchedules";
 
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const SyncOpportunity = memo(function SyncOpportunity({
   data,
@@ -21,21 +22,18 @@ const SyncOpportunity = memo(function SyncOpportunity({
 
   const { schedules } = useSyncableSchedules(filters);
 
+  const {createToast} = useToast()
+
   const syncOpportunity = (data) => {
     opportunitiesService
       .syncSchedule(data)
       .then((res) => {
         setVisible(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Agendamento vinculado com sucesso!",
-        });
+        return createToast({ status: "success", message: "Agendamento vinculado com sucesso!" })
       })
       .catch((err) => {
-        notification.error({
-          message:
-            "Não foi possível vincular a oportunidade com o agendamento selecionado",
-        });
+        createToast({ status: "error", message:  "Não foi possível vincular a oportunidade com o agendamento selecionado" })
       });
   };
 

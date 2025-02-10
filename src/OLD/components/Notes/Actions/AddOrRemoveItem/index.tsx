@@ -5,12 +5,13 @@ import { receiptService } from "@/OLD/services/receipt.service";
 
 import { useReceipt } from "@/OLD/hooks/useReceipts";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "@/OLD/components/Notes/FormChild";
 
 import moment from "moment";
 
 import { GrAddCircle } from "react-icons/gr";
+import { useToast } from "infinity-forge";
 
 const AddOrRemoveItem = memo(function AddOrRemoveItem({
   id,
@@ -23,17 +24,17 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
 
   const { receipt } = useReceipt(ids, reload);
 
+  const {createToast} = useToast()
+
   const addReceiptItemSubmit = (data, setState) => {
     receiptService
       .addReceiptItem(data)
       .then((res) => {
         setReload((prv) => !prv);
-        return notification.success({ message: "Item adicionado com sucesso" });
+        return  createToast({ status: "success",  message:"Item adicionado com sucesso" })
       })
       .catch((err) => {
-        return notification.error({
-          message: "Houve um erro ao adicionar o item",
-        });
+        return createToast({ status: "error",  message:"Houve um erro ao adicionar o item" })
       });
     setState([]);
   };
@@ -43,12 +44,11 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
       .removeReceiptItem({ itemId: id })
       .then((_res) => {
         setReload((prv) => !prv);
-        return notification.success({ message: "Item removido com sucesso" });
+       
+       return createToast({ status: "success",  message:"Item removido com sucesso" })
       })
       .catch((err) => {
-        return notification.error({
-          message: "Houve um erro ao remover o item",
-        });
+        return createToast({ status: "success",  message:"Houve um erro ao remover o item" })
       });
   };
 

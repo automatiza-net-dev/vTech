@@ -175,8 +175,14 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         initialData={initialData}
         customSubmit={[
           {
-            action: async () => {
-              handlePrint();
+            action: async (data) => {
+              await handleSubmit(data, () => {
+                queryClient.invalidateQueries(["LastUpdates"])
+              });
+
+  
+                handlePrint();
+            
             },
             props: () => ({
               text: "IMPRIMIR",

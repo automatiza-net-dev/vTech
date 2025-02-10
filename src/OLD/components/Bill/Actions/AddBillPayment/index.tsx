@@ -34,20 +34,6 @@ import { Select, FormHandler, useToast, BadRequestError } from "infinity-forge";
 import { Button } from "infinity-forge";
 import { AxiosError } from "axios";
 
-const verifyErrors = (msg) => {
-  if (
-    msg.includes("Não foi possível encontrar o caixa aberto para o usuário")
-  ) {
-    return notification.warning({
-      message: "Não existe caixa diário aberto para o seu Login",
-    });
-  }
-
-  if (msg?.includes("E_NOT_OPEN")) {
-    return notification.warning({ message: "Não existe caixa diário aberto" });
-  }
-};
-
 const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
   const [reload, setReload] = useState(false);
   const [filters, setFilters] = useState({ active: true });
@@ -144,12 +130,15 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     billService
       .closeBillPayment(data?.id)
       .then((_res) => {
-        notification.success({ message: "Venda finalizada com sucesso!" });
+        createToast({
+          status: "success",
+          message: "Venda finalizada com sucesso!",
+        });
       })
       .catch((err) => {
         error = true;
-
-        notification.error({
+        createToast({
+          status: "error",
           message:
             err?.response?.data?.message ||
             "Houve um erro ao finalizar a venda, verifique se há valores pendentes",
@@ -170,7 +159,8 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     }
 
     if (data?.total_value - totalPayed > 0) {
-      return notification.warning({ message: "Há valores pendentes" });
+      createToast({ status: "error", message: "Há valores pendentes" });
+      return;
     }
 
     closePayment();
@@ -219,7 +209,8 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
 
   const submitPayment = useCallback(() => {
     if (cashiers.length === 0) {
-      return notification.warning({
+      return createToast({
+        status: "error",
         message: "Nenhum caixa diário aberto",
       });
     }
@@ -230,7 +221,9 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       ) !== "NÃO" &&
       !formData?.installments
     ) {
-      return notification.warning({
+
+     return createToast({
+        status: "error",
         message: "Selecione a quantidade de parcelas",
       });
     }
@@ -249,7 +242,9 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
         setFormData({
           expirationDate: moment(),
         });
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Pagamento adicionado com sucesso!",
         });
       },
@@ -265,7 +260,23 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
           return;
         }
 
-        verifyErrors(err.response.data.message);
+        if (
+          err.response.data.message.includes(
+            "Não foi possível encontrar o caixa aberto para o usuário"
+          )
+        ) {
+          return createToast({
+            status: "error",
+            message: "Não existe caixa diário aberto para o seu Login",
+          });
+        }
+
+        if (err.response.data.message?.includes("E_NOT_OPEN")) {
+          return createToast({
+            status: "error",
+            message: "Não existe caixa diário aberto",
+          });
+        }
 
         queryClient.invalidateQueries(["bills"]);
       },

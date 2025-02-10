@@ -6,8 +6,9 @@ import { memo, useCallback, useState } from "react";
 import { variationService } from "@/OLD/services/variation.service";
 
 // Components
-import { Button, Input, Modal, notification } from "antd";
+import { Button, Input, Modal } from "antd";
 import { useMutation, useQueryClient } from "react-query";
+import { useToast } from "infinity-forge";
 const { TextArea } = Input;
 
 const CreateVariation = memo(function CreateVariation({ visible, hide }) {
@@ -15,21 +16,20 @@ const CreateVariation = memo(function CreateVariation({ visible, hide }) {
 
   const [data, setData] = useState({ description: "" });
 
+  const {createToast} = useToast()
+
   const { mutate, isLoading } = useMutation(
     (newData) => variationService.storeVariation(newData),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Variação cadastrado com sucesso!",
-        });
+        createToast({ status: "success",  message: "Variação cadastrado com sucesso!" })
+     
         queryClient.invalidateQueries(["variations"]);
         setData({ description: "" });
         hide();
       },
       onError: (error) => {
-        notification.error({
-          message: err.response.data.errors[0].message,
-        });
+        createToast({ status: "error",  message: err.response.data.errors[0].message })
       },
     }
   );

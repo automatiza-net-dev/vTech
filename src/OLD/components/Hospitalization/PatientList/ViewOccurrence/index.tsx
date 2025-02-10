@@ -3,7 +3,7 @@
 import React, { memo, useEffect, useState, useCallback } from "react";
 
 // Components
-import { Modal, Button, Input, notification, AutoComplete } from "antd";
+import { Modal, Button, Input, AutoComplete } from "antd";
 import HeaderForm from "@/OLD/components/Hospitalization/HeaderForm";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
@@ -19,6 +19,7 @@ import { hospitalizationOccurences } from "@/OLD/services/hospitalizationsOcurre
 // Utils
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useToast } from "infinity-forge";
 
 const ViewOccurrence = memo(function ViewOccurrence({
   visible,
@@ -37,6 +38,8 @@ const ViewOccurrence = memo(function ViewOccurrence({
 
   const editPermission = useUserHasPermission("INT06");
   const editPermissionFinished = useState("INT07");
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     visible &&
@@ -70,13 +73,10 @@ const ViewOccurrence = memo(function ViewOccurrence({
       setVisible(false);
       setLoading(false);
       setReload((prv) => !prv);
-      return notification.success({
-        message: "Relatório atualizado com sucesso!",
-      });
+     
+      return createToast({ status: "success", message: "Relatório atualizado com sucesso!", })
     } catch (error) {
-      return notification.error({
-        message: "Houve um erro ao atualizar o relatório.",
-      });
+      return  createToast({ status: "error", message: "Houve um erro ao atualizar o relatório.", })
     }
   }, [body, occurrenceData, patientData?.id, data]);
 

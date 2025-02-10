@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import cep from "cep-promise";
 import styled from "styled-components";
-import { Input, Select, AutoComplete, notification } from "antd";
+import { Input, Select, AutoComplete } from "antd";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { places } from "@/OLD/utils/places";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { userService } from "@/OLD/services/user.service";
@@ -22,6 +22,8 @@ export default function PerfilPage() {
   const [data, setData] = useState<any>({});
   const { user } = useProfile(reload);
 
+  const {createToast} = useToast()
+
   const getAddress = (cepData) => {
     setLoading(true);
     cep(cepData)
@@ -37,9 +39,8 @@ export default function PerfilPage() {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Não foi possível localizar o cep informado!",
-        });
+
+        return createToast({ status: "error", message:  "Não foi possível localizar o cep informado!"})
       });
   };
 
@@ -72,16 +73,13 @@ export default function PerfilPage() {
     userService
       .updateLoggedUser(data)
       .then((_res) =>
-        notification.success({
-          message: "Informações atualizadas com sucesso!",
-        })
+
+        createToast({ status: "success", message:  "Informações atualizadas com sucesso!"})
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message:
-            "Houve um erro ao atualizar as informações, verifique os campos informados",
-        });
+      
+        return createToast({ status: "error", message:  "Houve um erro ao atualizar as informações, verifique os campos informados"})
       })
       .finally(() => {
         setLoading(false);

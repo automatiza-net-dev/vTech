@@ -14,7 +14,6 @@ import {
   Button,
   Modal,
   Input,
-  notification,
   DatePicker,
   TimePicker,
   AutoComplete,
@@ -31,6 +30,7 @@ import { BiTrashAlt } from "react-icons/bi";
 
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useToast } from "infinity-forge";
 
 export default function ExecutionForm({ data, reload, setReload }) {
   const [visible, setVisible] = useState(false);
@@ -55,6 +55,8 @@ export default function ExecutionForm({ data, reload, setReload }) {
   const schedulingExecutionPermission = useUserHasPermission("TRA01");
   const submitExecutionPermission = useUserHasPermission("TRA02");
   const removeExecutionPermission = useUserHasPermission("TRA03");
+
+  const {createToast} = useToast()
 
   const getSchedule = (id) => {
     calendarService
@@ -123,15 +125,15 @@ export default function ExecutionForm({ data, reload, setReload }) {
         })
         .then((_res) => {
           setLoading(false);
-          notification.success({ message: "Execução criada com sucesso!" });
+
+          createToast({ status: "success", message:"Execução criada com sucesso!"  })
+
           setVisible(false);
           setReload((prv) => !prv);
         })
         .catch((_err) => {
           setLoading(false);
-          return notification.error({
-            message: "Houve um problema ao criar a execução",
-          });
+          createToast({ status: "error", message: "Houve um problema ao criar a execução"  })
         });
     },
     [JSON.stringify(data), quantity]
@@ -157,7 +159,7 @@ export default function ExecutionForm({ data, reload, setReload }) {
         setReload((prv) => !prv);
         setLoading(false);
         setSelectedId(false);
-        return notification.success({ message: "Item executado com sucesso!" });
+        createToast({ status: "success", message: "Item executado com sucesso!" })
       })
       .catch((_err) => setLoading(false));
   }, [executionPayload, selectedId, data]);
@@ -170,15 +172,13 @@ export default function ExecutionForm({ data, reload, setReload }) {
         setLoading(false);
         setReasonVisible(false);
         setReload(!reload);
-        return notification.success({
-          message: "Execução removida com sucesso!",
-        });
+
+        createToast({ status: "success", message: "Execução removida com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao remover a execução...",
-        });
+
+        createToast({ status: "error", message: "Houve um erro ao remover a execução..." })
       });
   }, [JSON.stringify(removePayload)]);
 
@@ -309,9 +309,8 @@ export default function ExecutionForm({ data, reload, setReload }) {
                             });
                             setExecutionPayload(obj);
                           } else {
-                            return notification.warning({
-                              message: "Execução já efetuada",
-                            });
+
+                            createToast({ status: "error", message: "Execução já efetuada" })
                           }
                         }}
                       />
@@ -367,10 +366,7 @@ export default function ExecutionForm({ data, reload, setReload }) {
                   data?.treatmentItem?.scheduledQuantity;
 
                 if (e.target.value > max) {
-                  return notification.warning({
-                    message:
-                      "O valor não deve ultrapassar a quantidade máxima disponível para agendamento",
-                  });
+                  return createToast({ status: "error", message: "O valor não deve ultrapassar a quantidade máxima disponível para agendamento"  })
                 }
                 setQuantity(e.target.value);
               }}

@@ -24,7 +24,6 @@ import {
   Select,
   Upload,
   AutoComplete,
-  notification,
   Switch,
   Dropdown,
   Menu,
@@ -40,6 +39,7 @@ const { Option } = Select;
 
 import { viacepService } from "@/OLD/services/viacep.service";
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useToast } from "infinity-forge";
 
 export const FormChild = React.memo(function FormChild({
   data,
@@ -62,6 +62,7 @@ export const FormChild = React.memo(function FormChild({
   const { professions } = useProfessions();
   const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
 
+  const {createToast} = useToast()
   
   const router = useRouter();
   const inputNumberAddressRef = useRef();
@@ -96,9 +97,8 @@ export const FormChild = React.memo(function FormChild({
         });
       })
       .catch((_err) => {
-        return notification.error({
-          message: "Houve um erro ao buscar o cep informado",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao buscar o cep informado" })
       });
   };
 
@@ -131,7 +131,7 @@ export const FormChild = React.memo(function FormChild({
       .checkDocument(Masks?.noDocument(str?.join(",").replaceAll(",", "")))
       .then((res) => {
         if (!res?.data?.valid) {
-          return notification.warning({ message: "CPF Inválido" });
+          return createToast({ status: "error", message: "CPF Inválido" })
         }
       })
       .catch((err) => setLoading(false));

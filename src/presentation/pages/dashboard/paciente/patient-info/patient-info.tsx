@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import moment from "moment";
 import { useRouter } from "next/router";
-import { Button, PageWrapper, Accordion } from "infinity-forge";
-import { notification, Table, Modal, Tag } from "antd";
+import { Button, PageWrapper, Accordion, useToast } from "infinity-forge";
+import { Table, Modal, Tag } from "antd";
 
 import { petsService } from "@/OLD/services/patient.service";
 
@@ -28,11 +28,13 @@ function Single({ selectedId, setVisible }) {
 
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   const setActiveTutor = (tutorId) => {
     petsService
       .setMainTutor(selectedId, tutorId)
-      .then((_res) =>
-        notification.success({ message: "Tutor ativo com sucesso!" })
+      .then((_res) =>   createToast({ status: "success", message: "Tutor ativo com sucesso!" })
+
       )
       .finally(() => {
         setReload((prv) => !prv);

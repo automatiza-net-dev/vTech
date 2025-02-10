@@ -15,9 +15,7 @@ const UploadArquives = memo(function UploadArquives({ fileList, setFileList }) {
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return notification.error({
-          message: "Você só pode upar imagens até 2MB!",
-        });
+        return createToast({ status: "error", message:  "Você só pode upar imagens até 2MB!" })
       }
     }
 

@@ -20,8 +20,6 @@ import { Delete } from "../Delete";
 import { Container } from "./styles";
 import {
   Tag,
-
-  notification,
   Table,
   Dropdown,
   Menu,
@@ -36,7 +34,7 @@ import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FormCreatePatient, FormCreateTutor } from "@/presentation";
-import { Icon, Modal, Button, useAuthAdmin } from "infinity-forge";
+import { Icon, Modal, Button, useAuthAdmin, useToast } from "infinity-forge";
 
 export function List({
   filters,
@@ -75,6 +73,8 @@ export function List({
   const { user } = useAuthAdmin();
 
   const router = useRouter();
+
+  const {createToast} = useToast()
 
   const columns = [
     {
@@ -231,8 +231,8 @@ export function List({
   const setActiveTutor = (tutorId) => {
     petsService
       .setMainTutor(patient?.id, tutorId)
-      .then((_res) =>
-        notification.success({ message: "Tutor ativo com sucesso!" })
+      .then((_res) => createToast({ status: "success", message: "Tutor ativo com sucesso!"  })
+
       )
       .finally(() => {
         setPatientReload((prv) => !prv);
@@ -250,9 +250,7 @@ export function List({
         setSelectedPetToVinc({});
         setTutor({});
         setPetToVinc(false);
-        return notification.success({
-          message: "Paciente vinculado com sucesso!",
-        });
+        return  createToast({ status: "success", message:"Paciente vinculado com sucesso!",  })
       });
   };
 

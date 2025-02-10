@@ -8,12 +8,12 @@ import { patientContactsService } from "@/OLD/services/patientContacts.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Form, notification } from "antd";
+import { Form } from "antd";
 import { LoadingSpin } from "@/OLD/components/mini-components";
 import { FormChild } from "../Edit/FormChild";
 import { Container } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 import masks from "@/OLD/utils/masks";
 import moment from "moment";
@@ -31,6 +31,8 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
   const router = useRouter();
   const petId = router?.query?.innerpage;
 
+  const { createToast } = useToast();
+
   const vincPet = useCallback(
     (id) => {
       setLoading(true);
@@ -40,12 +42,17 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
           patient: petId,
         })
         .then((_res) =>
-          notification.success({ message: "Pet vinculado com sucesso!" })
+          createToast({
+            status: "success",
+            message: "Pet vinculado com sucesso!",
+          })
         )
         .catch((_err) => {
-          notification.error({
+          createToast({
+            status: "error",
             message: "Houve um problema ao vincular o pet ao tutor...",
           });
+
           setLoading(false);
         })
         .finally(() => setLoading(false));
@@ -118,22 +125,22 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
 
     if (!data?.name) {
       setLoading(false);
-      return notification.warning({
-        message: "Informe o seu nome",
-      });
+      return createToast({ status: "error", message: "Informe o seu nome" });
     }
 
     if (!isSchedule) {
       if (!data?.birthDate) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe a sua data de nascimento",
         });
       }
 
       if (!data?.gender) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe o seu gênero",
         });
       }
@@ -141,12 +148,16 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
 
     if (process.env.client === "sancla" && !data?.professionId && !isSchedule) {
       setLoading(false);
-      return notification.warning({ message: "Selecione uma profissão" });
+      return createToast({
+        status: "error",
+        message: "Selecione uma profissão",
+      });
     }
 
     if (!data?.clientOriginId) {
       setLoading(false);
-      return notification.warning({
+      return createToast({
+        status: "error",
         message: "Informe como conheceu a clinica",
       });
     }
@@ -155,55 +166,56 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
 
     if (message) {
       setLoading(false);
-      return notification.error({ message });
+      return createToast({ status: "error", message: message });
     }
 
     if (!isSchedule) {
       if (!data?.postalCode) {
         setLoading(false);
-        return notification.warning({
-          message: "Informe o seu CEP",
-        });
+        return createToast({ status: "error", message: "Informe o seu CEP" });
       }
 
       if (!data?.street) {
         setLoading(false);
-        return notification.warning({
-          message: "Informe a sua rua",
-        });
+        return createToast({ status: "error", message: "Informe a sua rua" });
       }
 
       if (!data?.number) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe o número da residência",
         });
       }
 
       if (!data?.district) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe o seu bairro",
         });
       }
 
       if (!data?.state) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe o seu estado",
         });
       }
 
       if (!data?.city) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe a sua cidade",
         });
       }
 
       if (!data?.residence) {
         setLoading(false);
-        return notification.warning({
+        return createToast({
+          status: "error",
           message: "Informe o seu tipo de residência",
         });
       }
@@ -223,14 +235,11 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
         setOriginConfig("");
         onSuccess && onSuccess(res.data);
         if (process.env.clientName === "Liftone") {
-          notification.success({
-            message: "Sucesso",
-            description: "Cliente cadastrado!",
-          });
+          createToast({ status: "success", message: "Cliente cadastrado!" });
         } else {
-          notification.success({
-            message: "Sucesso",
-            description: `${
+          createToast({
+            status: "success",
+            message: `${
               process.env.client === "liftone" ? "Cliente" : "Tutor"
             } cadastrado!`,
           });
@@ -241,16 +250,22 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
       })
       .catch((err) => {
         if (err?.response?.data?.code === "E_DOCUMENT_ALREADY_REGISTERED") {
-          return notification.warning({ message: "Documento já cadastrado" });
+          return createToast({
+            status: "error",
+            message: "Documento já cadastrado",
+          });
         }
 
         if (err?.response?.data?.code === "E_INVALID_DOCUMENT") {
-          return notification.warning({ message: "Verifique o cpf informado" });
+          return createToast({
+            status: "error",
+            message: "Verifique o cpf informado",
+          });
         }
 
-        notification.error({
-          message: "Erro",
-          description: "Erro ao cadastrar tutor",
+        return createToast({
+          status: "error",
+          message: "Erro ao cadastrar tutor",
         });
       })
       .finally(() => {

@@ -9,17 +9,10 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 
 import AddPayments from "../AddPayments";
-import { FormHandler } from "infinity-forge";
+import { FormHandler, useToast } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button, useAuthAdmin } from "infinity-forge";
-import {
-  Collapse,
-  Table,
-  Input,
-  Select,
-  notification,
-  Popconfirm,
-} from "antd";
+import { Collapse, Table, Input, Select, Popconfirm } from "antd";
 const { Panel } = Collapse;
 const { Option } = Select;
 
@@ -53,6 +46,7 @@ function PaymentsPanel({
   const { paymentMethods } = usePaymentMethods();
 
   const router = useRouter();
+  const { createToast } = useToast();
   const finishReceiptPermission = useUserHasPermission("ENT07");
   const updatePaymentsPermission = useUserHasPermission("ENT05");
   const removePaymentsPermission = useUserHasPermission("ENT06");
@@ -266,13 +260,16 @@ function PaymentsPanel({
       .then((_res) => {
         setReload((prv) => !prv);
         setEditBlock(false);
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Informações do pagamento atualizadas com sucesso!",
         });
       })
       .catch((err) => {
         if (err?.response?.data?.message) {
-          return notification.error({
+          return createToast({
+            status: "error",
             message: err?.response?.data?.message?.split(":")[1],
           });
         }
@@ -287,11 +284,17 @@ function PaymentsPanel({
       .then((_res) => {
         setReload((prv) => !prv);
         setLoading(false);
-        return notification.success({ message: "Bloco removido com sucesso!" });
+
+        return createToast({
+          status: "success",
+          message: "Bloco removido com sucesso!",
+        });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
+          status: "error",
           message: "Houve um erro ao remover o bloco de pagamento",
         });
       });
@@ -305,24 +308,25 @@ function PaymentsPanel({
       .then((res) => {
         setReload((prv) => !prv);
         setVisible(false);
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Nota de entrada finalizada com sucesso",
         });
       })
       .catch((err) => {
         if (err?.response?.data?.code === "E_NO_VARIATION") {
-          return notification.error({
+          return createToast({
+            status: "error",
             message:
               "Existem produtos da nota que ainda não foram relacionados",
           });
         } else {
-          return notification.error({
+          return createToast({
+            status: "error",
             message: err?.response?.data?.message?.split(":")[1],
           });
         }
-        return notification.error({
-          message: "Houve um erro ao finalizar a nota de entrada...",
-        });
       });
   }, [receipt?.id]);
 
@@ -390,7 +394,7 @@ function PaymentsPanel({
                       `
                       : paymentsList?.[0]?.paymentMethodDescription
                           ?.description}{" "}
-                    {' '}{currencyFormatter(
+                    {currencyFormatter(
                       paymentsList?.reduce(
                         (acc, current) =>
                           acc + convertIntlCurrency(current?.originValue),
