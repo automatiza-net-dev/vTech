@@ -17,11 +17,12 @@ export function SelectTypeService({
   initialService?: string;
   setBody?: Dispatch<SetStateAction<string>>;
 }) {
-  const { values } = useFormikContext<any>();
+  const { values, setFieldValue} = useFormikContext<any>();
   const initialValue = values["scheduleServiceId"][0];
 
   const patient = useLoadPatient();
   const { user } = useAuthAdmin();
+
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups({});
 
@@ -44,6 +45,7 @@ export function SelectTypeService({
         base: resume,
       });
 
+      setFieldValue("protocol", response.result)
     setBody && setBody(response.result);
   }
 
