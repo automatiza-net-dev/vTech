@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { Table, Tag, notification, Popconfirm } from "antd";
+import { Table, Tag, Popconfirm } from "antd";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { usePathologies } from "@/OLD/hooks/usePathologies";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -24,16 +24,16 @@ export default function PathologiesListPage() {
   const canDeletePathology = useUserHasPermission("PAT03");
   const listPathologiesPermission = useUserHasPermission("PAT00");
 
+  const {createToast} = useToast()
+
   const removePathology = (id) => {
     pathologiesServices
       .remove(id)
-      .then((_res) =>
-        notification.success({ message: "Patologia removida com sucesso" })
+      .then((_res) => createToast({ status: "success", message:  "Patologia removida com sucesso"  })
+      
       )
       .catch((_err) => {
-        return notification.error({
-          message: "Houve um erro ao remover a patologia...",
-        });
+        createToast({ status: "error", message:  "Houve um erro ao remover a patologia..."  })
       })
       .finally(() => {
         setReload(!reload);

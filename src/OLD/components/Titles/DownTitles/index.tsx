@@ -17,7 +17,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { Container } from "./styles";
 import Header from "./Header";
 import TitlesForm from "./TitlesForm";
-import { notification } from "antd";
+import { useToast } from "infinity-forge";
 
 function DownTitles({ setVisible, setReload }: any) {
   const [options, setOptions] = useState(false);
@@ -26,6 +26,8 @@ function DownTitles({ setVisible, setReload }: any) {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  const {createToast} = useToast()
 
   const { titles, setTitles } = useAuth();
   const { paymentMethods } = usePaymentMethods();
@@ -86,9 +88,7 @@ function DownTitles({ setVisible, setReload }: any) {
 
   const submit = useCallback(() => {
     if ((data ?? []).length === 0) {
-      return notification.error({
-        message: `Selecione ao menos um título para baixar`,
-      });
+      return createToast({ status: "error", message: `Selecione ao menos um título para baixar` })
     }
 
     setLoading(true);
@@ -127,15 +127,14 @@ function DownTitles({ setVisible, setReload }: any) {
         setLoading(false);
         setVisible(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "título baixado com sucesso!",
-        });
+     
+
+        return  createToast({ status: "success", message: "título baixado com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: `Verifique os campos dos títulos`,
-        });
+
+        return  createToast({ status: "success", message: `Verifique os campos dos títulos` })
       });
   }, [data]);
 
