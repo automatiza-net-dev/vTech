@@ -1,9 +1,12 @@
-import { Error, PrivatePage } from "infinity-forge";
+import { Error, PrivatePage, useAuthAdmin } from "infinity-forge";
 
-import { DictionaryQueryProvider } from "@/presentation";
+import { DictionaryQueryProvider, useLoadAllAvailableUnits } from "@/presentation";
 import { Layout } from "./layout-infinity-forge-remover-apos-atualizar/layout";
 
 import * as S from "./styles";
+import { container, TypesAutomatiza } from "@/container";
+import { RemoteBusinessUnits } from "@/data";
+import { useRouter } from "next/router";
 
 export function LayoutAdmin({ children }) {
   return (
@@ -19,6 +22,37 @@ export function LayoutAdmin({ children }) {
 }
 
 function LayoutPage({ children }) {
+
+ const { user} = useAuthAdmin();
+ const avaiableUnits = useLoadAllAvailableUnits?.();
+
+ const router = useRouter()
+
+  const workspaces = {
+    list: avaiableUnits?.data?.map((companie) => ({
+      img: "",
+      label: companie.identification,
+      subtitle: companie.group,
+      value: companie.id,
+    })),
+    onChangeWorkSpace: async (value: any) => {
+      if (
+        value.workspace !==
+        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
+          ?.id
+      ) {
+        await container
+          .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
+          .swap({ unitId: value?.workspace, dashboard: true });
+
+        router.push({
+          pathname: "/dashboard",
+          query: { reload: "true" },
+        });
+      }
+    },
+  };
+
   return (
     <Error name="LayoutDashboard">
       <S.Layout>
@@ -29,6 +63,7 @@ function LayoutPage({ children }) {
               `/assets/logo-${process.env.client}.png`,
             href: "/dashboard",
           }}
+          workspaces={workspaces as any}
         >
           {children}
         </Layout>

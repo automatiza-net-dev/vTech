@@ -3,7 +3,6 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle<any>`
  .conntent_form_infinity_forge {
     overflow: hidden !important;
-    padding: 0 20px !important;
 }
 label {
     font-size: 14px !important;
