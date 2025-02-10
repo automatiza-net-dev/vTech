@@ -26,7 +26,7 @@ import { BsFillClockFill } from "react-icons/bs";
 import { VscTriangleDown } from "react-icons/vsc";
 import { VscTriangleRight } from "react-icons/vsc";
 import { MedicalPrescription } from "@/presentation";
-import { Modal, useToast } from "infinity-forge";
+import { Modal, Tooltip, useToast } from "infinity-forge";
 
 const risks = [
   { id: 1, value: "Leve", color: "#2E8B57", textColor: "#F8F8FF" },
@@ -83,14 +83,22 @@ const PatientData = memo(function PatientData({
     generalLaunchPermission,
   };
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const finalizeHospitalization = useCallback(() => {
     hospitalizationService
       .finalizeHospitalization(selectedPatient?.id)
-      .then((_res) => createToast({ status: "success", message: "Hospitalização finalizada com sucesso!" })
+      .then((_res) =>
+        createToast({
+          status: "success",
+          message: "Hospitalização finalizada com sucesso!",
+        })
       )
-      .catch((err) => createToast({ status: "error", message: "Houve um erro ao finalizar a hospitalização do paciente" })
+      .catch((err) =>
+        createToast({
+          status: "error",
+          message: "Houve um erro ao finalizar a hospitalização do paciente",
+        })
       )
       .finally(() => {
         setReload((prv) => !prv);
@@ -303,7 +311,7 @@ const PatientData = memo(function PatientData({
 
                 return (
                   <Col flex="auto" key={hourItem} className="calendar-item">
-                    <Dropdown
+                    {/* <Dropdown
                       trigger="click"
                       overlay={menu(
                         setFormsVisible,
@@ -320,7 +328,24 @@ const PatientData = memo(function PatientData({
                       }}
                     >
                       <AiOutlinePlus className="plus-icon" />
-                    </Dropdown>
+                    </Dropdown> */}
+
+                    <Tooltip
+                      idTooltip="outlineplus"
+                      closeOnClick
+                      position="bottom-center"
+                      trigger={<AiOutlinePlus onClick={() => setSelectedPatient(item)} className="plus-icon" />}
+                      content={menu(
+                        setFormsVisible,
+                        item,
+                        router,
+                        permissionsDataMenu,
+                        hourItem,
+                        false,
+                        setShowControl
+                      )}
+                    ></Tooltip>
+
                     <div className="uk-flex uk-flex-around">
                       <section className="uk-width-1-3">
                         {occurrences.map((occurrence) => {
@@ -437,7 +462,11 @@ const PatientData = memo(function PatientData({
         selectedDate={selectedDate}
       />
 
-      <Modal open={!!showControl} onClose={() => setShowControl(null)} styles={{ maxWidth: "1250px", width: "100%" }}>
+      <Modal
+        open={!!showControl}
+        onClose={() => setShowControl(null)}
+        styles={{ maxWidth: "1250px", width: "100%" }}
+      >
         <MedicalPrescription id={showControl} />
       </Modal>
     </Container>

@@ -20,6 +20,7 @@ export function FormCreatePrescription({
         isStickyButtons
         button={{ text: "SALVAR" }}
         disableEnterKeySubmitForm
+        
         initialData={{
           type: previousPrescription?.type || "PROCEDURE",
           frequency: previousPrescription?.frequency || "RECURRENT",
@@ -31,14 +32,28 @@ export function FormCreatePrescription({
           frequencyQuantityUnit: previousPrescription?.frequencyQuantityUnit
         }}
         onSucess={async (data) => {
+          const combinedExecutionStart = moment(data.executionStart)
+          .set({
+            hour: Number(data.executionHour.split(":")[0]),
+            minute: Number(data.executionHour.split(":")[1]),
+            second: 0,
+            millisecond: 0,
+          })
+          .toISOString();
+
+          const payload = {
+            ...data,
+            prescribedAt: moment().toISOString(),
+            hospitalizationId,
+            executionStart: combinedExecutionStart, 
+          };
+
+          console.log(payload)
+
           await api({
             url: "hospitalization-prescriptions",
             method: "post",
-            body: {
-              ...data,
-              prescribedAt: moment().toISOString(),
-              hospitalizationId,
-            },
+            body: payload,
           });
 
           await refetch(["medicalPrescription", hospitalizationId].toString());
