@@ -15,7 +15,7 @@ import {
 } from "./Columns";
 
 import { DeleteTwoTone } from "@ant-design/icons";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import {
   Checkbox,
   Input,
@@ -44,29 +44,13 @@ import { Icon } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
 
-const verifyErrors = (message) => {
-  if (!message) {
-    return notification.error({
-      message: "Houve um erro interno, tente novamente mais tarde",
-    });
-  }
-
-  if (message?.includes("E_NOT_OPEN")) {
-    return notification.warning({
-      message: "Nota não está aberta, não é possível alterar o vendedor",
-    });
-  }
-
-  if (message?.includes("E_ERR")) {
-    return notification.warning({ message: message?.split(":")[1] });
-  }
-};
-
 const Details = memo(function Details({ billId, setVisible }) {
   const [formatedProducts, setFormatedProducts] = useState([]);
   const [higherBlock, setHigherBlock] = useState(0);
   const blockArr = Array.from(Array(higherBlock).keys());
   const [openModal, setOpenModal] = useState(false);
+
+  const { createToast } = useToast();
 
   const [openCancelNfse, setOpenCancelNfse] = useState(false);
   const [cancelNfseData, setCancelNfseData] = useState({});
@@ -396,7 +380,6 @@ const Details = memo(function Details({ billId, setVisible }) {
     return false;
   };
 
-
   const productIssuedDocuments = useMemo(() => {
     const result = [];
 
@@ -438,90 +421,80 @@ const Details = memo(function Details({ billId, setVisible }) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-            
-                  <MdOutlineCancel
-                    opacity={validToCancel ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToCancel) return;
-
-                      setOpenCancelNfe(true);
-                      setCancelNfeData({
-                        issuedDocumentId: item.id,
-                        reason: "",
-                      });
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-              
-              )}
-              {disableFNPermission && (
-              
-                  <FiRefreshCw
-                    opacity={validToDisable ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToDisable) return;
-
-                      setOpenDisableNfe(true);
-                      setDisableNfeData({
-                        issuedDocumentId: item.id,
-                        reason: "",
-                      });
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-              
-              )}
-    
-                <MdOutlineSyncDisabled
-                  opacity={validToUpdate ? 1 : 0.5}
+                <MdOutlineCancel
+                  opacity={validToCancel ? 1 : 0.5}
                   onClick={() => {
-                    if (!validToUpdate) return;
+                    if (!validToCancel) return;
 
-                    updateNfeMutation.mutate(item.id);
+                    setOpenCancelNfe(true);
+                    setCancelNfeData({
+                      issuedDocumentId: item.id,
+                      reason: "",
+                    });
                   }}
                   size={25}
                   className="icon"
                   cursor={"pointer"}
                 />
-            
+              )}
+              {disableFNPermission && (
+                <FiRefreshCw
+                  opacity={validToDisable ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToDisable) return;
+
+                    setOpenDisableNfe(true);
+                    setDisableNfeData({
+                      issuedDocumentId: item.id,
+                      reason: "",
+                    });
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
+              )}
+              <MdOutlineSyncDisabled
+                opacity={validToUpdate ? 1 : 0.5}
+                onClick={() => {
+                  if (!validToUpdate) return;
+
+                  updateNfeMutation.mutate(item.id);
+                }}
+                size={25}
+                className="icon"
+                cursor={"pointer"}
+              />
               {renderErrors(item?.corrections, item?.sefaz_status) && (
-              
-                  <TbAlertTriangle
-                    size={20}
-                    color="var(--red)"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setNfeErrorsVisible(true);
-                      return setNfeErrors([
-                        {
-                          cod: item?.sefaz_status_code,
-                          mensagem: item?.sefaz_message,
-                        },
-                      ]);
-                    }}
-                  />
-              
+                <TbAlertTriangle
+                  size={20}
+                  color="var(--red)"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setNfeErrorsVisible(true);
+                    return setNfeErrors([
+                      {
+                        cod: item?.sefaz_status_code,
+                        mensagem: item?.sefaz_message,
+                      },
+                    ]);
+                  }}
+                />
               )}{" "}
               {item?.sefaz_status === "autorizado" && (
-           
-                  <RiPrinterCloudLine
-                    opacity={validToPrint ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToPrint) {
-                        return;
-                      }
+                <RiPrinterCloudLine
+                  opacity={validToPrint ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToPrint) {
+                      return;
+                    }
 
-                      window.open(item.authorization_pdf_path, "_blank");
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-             
+                    window.open(item.authorization_pdf_path, "_blank");
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
               )}
             </div>
           ),
@@ -593,33 +566,29 @@ const Details = memo(function Details({ billId, setVisible }) {
               />
 
               {item?.errors?.length > 0 ? (
-            
-                  <TbAlertTriangle
-                    size={20}
-                    color="var(--red)"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setNfeErrorsVisible(true);
-                      return setNfeErrors(item?.errors);
-                    }}
-                  />
-               
+                <TbAlertTriangle
+                  size={20}
+                  color="var(--red)"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setNfeErrorsVisible(true);
+                    return setNfeErrors(item?.errors);
+                  }}
+                />
               ) : (
-               
-                  <RiPrinterCloudLine
-                    opacity={validToPrint ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToPrint) {
-                        return;
-                      }
+                <RiPrinterCloudLine
+                  opacity={validToPrint ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToPrint) {
+                      return;
+                    }
 
-                      window.open(item.authorization_pdf_path, "_blank");
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-          
+                    window.open(item.authorization_pdf_path, "_blank");
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
               )}
             </div>
           ),
@@ -686,10 +655,31 @@ const Details = memo(function Details({ billId, setVisible }) {
       .then((_res) => {
         setChangeFields((prv) => ({ ...prv, seller: false }));
         queryClient.invalidateQueries(["bills"]);
-        return notification.success({ message: "Vendedor alterado!" });
+
+        return createToast({
+          status: "success",
+          message: "Vendedor alterado!",
+        });
       })
       .catch((err) => {
-        verifyErrors(err?.response?.data?.message);
+        if (!message) {
+          return createToast({
+            status: "error",
+            message: "Houve um erro interno, tente novamente mais tarde",
+          });
+        }
+
+        if (message?.includes("E_NOT_OPEN")) {
+          return notification.warning({
+            message: "Nota não está aberta, não é possível alterar o vendedor",
+          });
+        }
+
+        if (message?.includes("E_ERR")) {
+          return notification.warning({
+            message: err?.response?.data?.message?.split(":")[1],
+          });
+        }
       });
   }, [data, seller]);
 
@@ -705,7 +695,23 @@ const Details = memo(function Details({ billId, setVisible }) {
         return notification.success({ message: "Resp. financeiro alterado" });
       })
       .catch((err) => {
-        verifyErrors(err?.response?.data?.message);
+        if (!message) {
+          return notification.error({
+            message: "Houve um erro interno, tente novamente mais tarde",
+          });
+        }
+
+        if (message?.includes("E_NOT_OPEN")) {
+          return notification.warning({
+            message: "Nota não está aberta, não é possível alterar o vendedor",
+          });
+        }
+
+        if (message?.includes("E_ERR")) {
+          return notification.warning({
+            message: err?.response?.data?.message?.split(":")[1],
+          });
+        }
       });
   }, [data, finResponsible]);
 
