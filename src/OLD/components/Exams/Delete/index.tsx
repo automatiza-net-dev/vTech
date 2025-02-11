@@ -3,27 +3,27 @@
 import React, { memo, useCallback } from "react";
 
 // Components
-import { Popconfirm, notification } from "antd";
+import { Popconfirm } from "antd";
 
 // Services
 import { examService } from "@/OLD/services/exams.service";
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
+import { useToast } from "infinity-forge";
 
 const DeleteExam = memo(function DeleteExam({ reload, setReload, id }) {
+
+  const {createToast} = useToast()
+
   const removeExam = useCallback(() => {
     examService
       .removeExam(id)
       .then((res) => {
-        return notification.success({
-          message: "Exame removido com sucesso!",
-        });
+        return  createToast({ status: "success", message:  "Exame removido com sucesso!" })
       })
       .catch((err) => {
-        return notification.error({
-          message: err.response.data.errors[0].message,
-        });
+        return createToast({ status: "error", message:  err.response.data.errors[0].message })
       })
       .finally(() => {
         setReload(!reload);

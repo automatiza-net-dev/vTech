@@ -32,6 +32,7 @@ import {
 import Installments from "./Installments";
 
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
+import { useToast } from "infinity-forge";
 const { Option } = Select;
 const { Group } = Radio;
 
@@ -61,6 +62,8 @@ export const Create = memo(function Create({ type }) {
 
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   const submitInstallments = useCallback(async () => {
     setLoading(true);
     let error = false;
@@ -75,9 +78,9 @@ export const Create = memo(function Create({ type }) {
     financesService
       .createMultiple({ items })
       .then((_res) => {
-        notification.success({
-          message: `Parcelas salvas com sucesso!`,
-        });
+
+        createToast({ status: "success", message: `Parcelas salvas com sucesso!` })
+       
         router.back();
       })
       .catch((_err) => {

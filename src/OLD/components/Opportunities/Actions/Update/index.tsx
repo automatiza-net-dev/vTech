@@ -11,6 +11,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const Update = memo(function ({
   visible,
@@ -28,6 +29,8 @@ const Update = memo(function ({
   const [loading, setLoading] = useState(false);
 
   const { clinic } = useProfile();
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     setData({
@@ -92,9 +95,8 @@ const Update = memo(function ({
         setLoading(false);
         setReload((prv) => !prv);
         setVisible(false);
-        return notification.success({
-          message: "Oportunidade atualizada com sucesso!",
-        });
+
+        return createToast({ message: "Oportunidade atualizada com sucesso!", status: "success" })
       })
       .catch((_err) => {
         setLoading(false);

@@ -7,8 +7,8 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button } from "infinity-forge";
-import { notification, Modal } from "antd";
+import { Button, useToast } from "infinity-forge";
+import { Modal } from "antd";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import DownTitles from "../../Titles/DownTitles";
@@ -23,6 +23,8 @@ function ButtonsPanel({
 
   const [modalVisible, setModalVisible] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+
+  const {createToast} = useToast()
 
   const { titles, setTitles } = useAuth();
 
@@ -65,7 +67,7 @@ function ButtonsPanel({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        notification.success({ message: "Aceite realizado com sucesso!" });
+        createToast({ status: "success", message: "Aceite realizado com sucesso!" })
       })
       .catch((_err) => setLoading(false));
   }, [titles]);
@@ -101,13 +103,12 @@ function ButtonsPanel({
           })
         );
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Items adicionados com sucesso ao borderô",
-        });
+
+        return    createToast({ status: "success", message:"Items adicionados com sucesso ao borderô" })
       })
       .catch((err) => {
         setReload((prv) => !prv);
-        return notification.error({ message: "Erro" });
+        return createToast({ status: "error", message:"Erro"  })
       });
   }, [titles]);
 

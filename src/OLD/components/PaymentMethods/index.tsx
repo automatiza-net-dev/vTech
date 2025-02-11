@@ -14,8 +14,8 @@ import { Columns } from "./Colums";
 
 // Components
 import { BodyPage, Input as InputBox } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
-import { Table, Select, Modal, notification } from "antd";
+import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Table, Select, Modal } from "antd";
 import FormChild from "./FormChild";
 import Actions from "./Actions";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -34,6 +34,8 @@ const PaymentMethods = memo(function () {
     allowChangeExpirationDate: false,
     automaticCancellation: false,
   });
+
+  const {createToast} = useToast()
 
   const listPaymentMethodsPermission = useUserHasPermission("FPG00");
   const canCreatePaymentMethods = useUserHasPermission("FPG01");
@@ -72,54 +74,39 @@ const PaymentMethods = memo(function () {
 
   const submitPaymentMethod = useCallback(() => {
     if (!data.description) {
-      return notification.warning({
-        message: "Verifique o campo obrigatório: Descrição",
-      });
+      return createToast({ status: "warning", message: "Verifique o campo obrigatório: Descrição" })
+     
     }
 
     if (!data?.usage) {
-      return notification.warning({
-        message: "Campo tipo pagamento obrigatório",
-      });
+      return createToast({ status: "warning", message: "Campo tipo pagamento obrigatório" })
     }
 
     if (!data.daysFirstInstallment) {
-      return notification.warning({
-        message: "Verifique o campo obrigatório: Dias da primeira parcela",
-      });
+      return   createToast({ status: "warning", message: "Verifique o campo obrigatório: Dias da primeira parcela" })
     }
 
     if (!data.daysBetweenInstallments) {
-      return notification.warning({
-        message: "Verifique o campo obrigatório: Dias entre as parcelas",
-      });
+      return  createToast({ status: "warning", message: "Verifique o campo obrigatório: Dias entre as parcelas" })
     }
 
     if (!data.minimumInstallmentValue) {
-      return notification.warning({
-        message: "Verifique o campo obrigatório: Valor mínimo da parcela",
-      });
+      return createToast({ status: "warning", message: "Verifique o campo obrigatório: Valor mínimo da parcela" })
     }
 
     if (!data.tef) {
-      return notification.warning({
-        message: "Verifique o campo obrigatório: TEF",
-      });
+      return createToast({ status: "warning", message: "Verifique o campo obrigatório: TEF" })
     }
 
     if (data.tef !== "NAO" && !data.type) {
-      return notification.warning({
-        message: "Verifique o campo obrigatório: Tipo",
-      });
+      return  createToast({ status: "warning", message: "Verifique o campo obrigatório: Tipo" })
     }
 
     setLoading(true);
     paymentMethodsService
       .createPaymentMethod(data)
       .then((_res) => {
-        notification.success({
-          message: "Forma de pagamento adicionada com sucesso!",
-        });
+        createToast({ status: "success", message: "Forma de pagamento adicionada com sucesso!" })
         setNewPaymentMethod(false);
         setData({
           active: true,
@@ -133,11 +120,9 @@ const PaymentMethods = memo(function () {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return     createToast({ status: "error", message:  messageArr[1] })
         }
-        return notification.error({
-          message: "Houve um erro ao cadastrar a forma de pagamento",
-        });
+        return createToast({ status: "error", message:  "Houve um erro ao cadastrar a forma de pagamento", })
       });
   }, [data]);
 

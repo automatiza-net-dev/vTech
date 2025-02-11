@@ -20,6 +20,7 @@ import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { BsXCircle } from "react-icons/bs";
 import { BsCheckCircle, BsArrowCounterclockwise } from "react-icons/bs";
 import { AxiosError } from "axios";
+import { useToast } from "infinity-forge";
 
 function Actions({
   setReload,
@@ -42,11 +43,14 @@ function Actions({
   const addLossPermission = useUserHasPermission("CRM05");
   const reopenOpportunityPermission = useUserHasPermission("CRM10");
 
+  const { createToast } = useToast();
+
   async function removeOpportunity(id) {
     try {
       await opportunitiesService.removeOpportunity(id);
 
-      notification.success({
+      createToast({
+        status: "success",
         message: "oportunidade removida com sucesso!",
       });
     } catch (error) {
@@ -70,7 +74,9 @@ function Actions({
       ?.reopenOpportunity(opportunity?.id)
       .then((res) => {
         setReload((prv) => !prv);
-        return notification.success({
+
+        return createToast({
+          status: "success",
           message: "Opportunidade reaberta com sucesso!",
         });
       })
@@ -89,56 +95,56 @@ function Actions({
             <EditTwoTone onClick={() => setUpdateVisible(true)} />
           )}
           {newActivityPermission && (
-              <HiPencilAlt
-                className="custom-cursor"
-                size={15}
-                onClick={() => setNewActivityVisible(true)}
-              />
+            <HiPencilAlt
+              className="custom-cursor"
+              size={15}
+              onClick={() => setNewActivityVisible(true)}
+            />
           )}
           {addGainPermission && opportunity?.status?.ganho ? (
-              <BsCheckCircle
-                className="custom-cursor"
-                onClick={() =>
-                  setFormData({
-                    op: opportunity,
-                    form: "gain",
-                    title: "Ganho oportunidade",
-                    currencyField: "Valor do ganho (R$)",
-                    selectField: "Motivo Ganho",
-                    areaField: "Observações",
-                  })
-                }
-              />
+            <BsCheckCircle
+              className="custom-cursor"
+              onClick={() =>
+                setFormData({
+                  op: opportunity,
+                  form: "gain",
+                  title: "Ganho oportunidade",
+                  currencyField: "Valor do ganho (R$)",
+                  selectField: "Motivo Ganho",
+                  areaField: "Observações",
+                })
+              }
+            />
           ) : null}
           {addLossPermission && opportunity?.status?.perda ? (
-              <BsXCircle
-                onClick={() =>
-                  setFormData({
-                    op: opportunity,
-                    form: "loss",
-                    title: "Perda Oportunidade",
-                    selectField: "Motivo Perda",
-                    areaField: "Observações",
-                  })
-                }
-              />
+            <BsXCircle
+              onClick={() =>
+                setFormData({
+                  op: opportunity,
+                  form: "loss",
+                  title: "Perda Oportunidade",
+                  selectField: "Motivo Perda",
+                  areaField: "Observações",
+                })
+              }
+            />
           ) : null}
         </>
       )}
       {reopenOpportunityPermission && opportunity?.balance && (
-          <BsArrowCounterclockwise
-            className="custom-cursor"
-            onClick={() => reopenOpportunity()}
-          />
-      )}
-        <AiOutlineEye
+        <BsArrowCounterclockwise
           className="custom-cursor"
-          onClick={() =>
-            router.push(
-              `/crm/oportunidades/oportunidades-atividades/${opportunity?.id}`
-            )
-          }
+          onClick={() => reopenOpportunity()}
         />
+      )}
+      <AiOutlineEye
+        className="custom-cursor"
+        onClick={() =>
+          router.push(
+            `/crm/oportunidades/oportunidades-atividades/${opportunity?.id}`
+          )
+        }
+      />
       {removeOpportunityPermission && (
         <Popconfirm
           title="Deseja remover esta oportunidade?"

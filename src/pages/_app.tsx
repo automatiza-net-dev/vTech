@@ -88,8 +88,8 @@ export default function App({ Component, pageProps }) {
         loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
         InjectedRemotes={{
           menu: {
-            menu: menus || { items: [] },
-          },
+            menu: menus || { items: [] } as any,
+          } as any,
           users: {
             getRole: async () => {
               try {

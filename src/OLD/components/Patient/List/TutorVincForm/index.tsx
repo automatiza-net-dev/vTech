@@ -9,13 +9,14 @@ import { petsService } from "@/OLD/services/patient.service";
 import { useTutor } from "@/OLD/hooks/useTutor";
 
 // Components
-import { AutoComplete, Button, notification, Popconfirm, Modal } from "antd";
+import { AutoComplete, Button, Popconfirm, Modal } from "antd";
 import { CreateTutor } from "@/OLD/components/Tutor/Create";
 
 // Utils
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useToast } from "infinity-forge";
 
 const TutorVincForm = memo(function TutorVincForm({
   patient,
@@ -32,6 +33,8 @@ const TutorVincForm = memo(function TutorVincForm({
   const { tutors } = useTutor();
 
   const canCreateTutor = useUserHasPermission("TUT01");
+
+  const {createToast} = useToast()
 
   const formatTutors = () => {
     setFormatedTutors(
@@ -60,15 +63,13 @@ const TutorVincForm = memo(function TutorVincForm({
       })
       .then((_res) => {
         setLoading(false);
-        notification.success({
-          message: "Tutor vinculado com sucesso!",
-        });
+        createToast({ status: "success", message: "Tutor vinculado com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao vincular o tutor...",
-        });
+
+        return   createToast({ status: "error", message: "Houve um erro ao vincular o tutor..." })
+    
       });
   }, [tutor, patient]);
 

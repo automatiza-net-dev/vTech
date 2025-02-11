@@ -4,8 +4,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import moment from "moment";
-import { useAuthAdmin } from "infinity-forge";
-import {  notification, Modal } from "antd";
+import { useAuthAdmin, useToast } from "infinity-forge";
+import { Modal } from "antd";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
@@ -31,6 +31,8 @@ function Actions(casher) {
 
   const { user } = useAuthAdmin();
 
+  const { createToast } = useToast();
+
   const router = useRouter();
   const closeDailyCashierPermission = useUserHasPermission("CAI02");
   const reopenDailyCashierPermission = useUserHasPermission("CAI03");
@@ -46,8 +48,9 @@ function Actions(casher) {
         closingDate: moment(new Date()).toISOString(),
       })
       .then((_res) => {
-        notification.success({
+        createToast({
           message: "Caixa fechado com sucesso!",
+          status: "success",
         });
 
         setData({});
@@ -59,11 +62,13 @@ function Actions(casher) {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({ message: messageArr[1], status: "error" });
         }
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao realizar o fechamento do caixa...",
+          status: "error",
         });
       });
   }, [data, user?.id, casher?.id]);
@@ -77,8 +82,9 @@ function Actions(casher) {
         observations: data?.observations,
       })
       .then((_res) => {
-        notification.success({
+        createToast({
           message: "Caixa reaberto com sucesso!",
+          status: "success",
         });
 
         setSubmitFunc(null);
@@ -91,9 +97,10 @@ function Actions(casher) {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return createToast({ status: "error", message: messageArr[1] });
         }
-        return notification.error({
+        return createToast({
+          status: "error",
           message: "Houve um erro ao realizar o fechamento do caixa...",
         });
       });
@@ -108,7 +115,8 @@ function Actions(casher) {
         observations: data?.observations,
       })
       .then((_res) => {
-        notification.success({
+        createToast({
+          status: "success",
           message: "Caixa conferido com sucesso!",
         });
 
@@ -122,9 +130,10 @@ function Actions(casher) {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return createToast({ status: "error", message: messageArr[1] });
         }
-        return notification.error({
+        return createToast({
+          status: "error",
           message: "Houve um erro ao realizar o fechamento do caixa...",
         });
       });
@@ -156,64 +165,63 @@ function Actions(casher) {
   return (
     <Container>
       {casher.status === "ABERTO" && closeDailyCashierPermission && (
-          <VscLock
-            size={20}
-            className="icon"
-            onClick={() => {
-              setSubmitFunc("Fechamento");
-              setObsVisible(true);
-              setNumberInput(true);
-            }}
-          />
+        <VscLock
+          size={20}
+          className="icon"
+          onClick={() => {
+            setSubmitFunc("Fechamento");
+            setObsVisible(true);
+            setNumberInput(true);
+          }}
+        />
       )}
       {(casher?.status === "FECHADO" ||
         (casher?.status === "REVISAO" && reopenDailyCashierPermission)) && (
-          <VscUnlock
-            size={20}
-            className="icon"
-            onClick={() => {
-              setSubmitFunc("Reabertura");
-              setObsVisible(true);
-              setNumberInput(false);
-            }}
-          />
+        <VscUnlock
+          size={20}
+          className="icon"
+          onClick={() => {
+            setSubmitFunc("Reabertura");
+            setObsVisible(true);
+            setNumberInput(false);
+          }}
+        />
       )}
       {!casher?.checking_date ? (
         checkDailyCashierPermission && (
-            <VscCheckAll
-              size={20}
-              className="icon"
-              color="var(--red)"
-              onClick={() => {
-                if (casher.status !== "FECHADO") {
-                  return notification.error({
-                    message:
-                      "O caixa deve estar fechado para realizar a conferencia",
-                  });
-                }
+          <VscCheckAll
+            size={20}
+            className="icon"
+            color="var(--red)"
+            onClick={() => {
+              if (casher.status !== "FECHADO") {
+                return createToast({
+                  status: "error",
+                  message:
+                    "O caixa deve estar fechado para realizar a conferencia",
+                });
+              }
 
-                router.push(
-                  `/dashboard/caixa-diario/conferencia/${casher?.id}`
-                );
+              router.push(`/dashboard/caixa-diario/conferencia/${casher?.id}`);
 
-                /*
+              /*
               Antiga forma de conferência
               setSubmitFunc("Conferência");
               setObsVisible(true);
               setNumberInput(false);
               */
-              }}
-            />
+            }}
+          />
         )
       ) : (
-          <GiConfirmed size={20} className="icon" color="var(--green)" />
+        <GiConfirmed size={20} className="icon" color="var(--green)" />
       )}
-        <VscBook
-          className="icon"
-          size={20}
-          onClick={() => setReportVisible(true)}
-        />
-        
+      <VscBook
+        className="icon"
+        size={20}
+        onClick={() => setReportVisible(true)}
+      />
+
       {obsVisible && (
         <Modal
           visible={obsVisible}

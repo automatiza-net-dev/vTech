@@ -12,8 +12,8 @@ import { userService } from "@/OLD/services/user.service";
 import Masks from "@/OLD/utils/masks";
 
 // Components
-import { Button } from "infinity-forge";
-import { Modal, Form, Select, notification, Input } from "antd";
+import { Button, useToast } from "infinity-forge";
+import { Modal, Form, Select, Input } from "antd";
 const { Item } = Form;
 const { Option } = Select;
 
@@ -29,6 +29,8 @@ const Create = memo(function Create({
   const [selectedRole, setSelectedRole] = useState("");
   const { clinic } = useProfile();
 
+  const {createToast} = useToast()
+
   const getRoles = useCallback(() => {
     setLoading(true);
     adminService
@@ -38,9 +40,8 @@ const Create = memo(function Create({
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao buscar os cargos disponíveis...",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao buscar os cargos disponíveis..." })
       })
       .finally(() => setLoading(false));
   }, []);
@@ -74,9 +75,8 @@ const Create = memo(function Create({
       .createCollaborator({ ...data, systemName: process.env.clientName })
       .then((_res) => {
         submitInvite();
-        notification.success({
-          message: "Colaborador cadastrado com sucesso!",
-        });
+       
+        return createToast({ status: "success", message: "Colaborador cadastrado com sucesso!" })
       })
       .catch((err) => {
         error = true;
@@ -84,13 +84,9 @@ const Create = memo(function Create({
         if (
           err.response.data.errors[0].message.includes("Campo já está em uso")
         ) {
-          notification.error({
-            message: "E-mail já está em uso",
-          });
+         createToast({ status: "error", message:"E-mail já está em uso" })
         } else {
-          notification.error({
-            message: err.response.data.errors[0].message,
-          });
+          createToast({ status: "error", message: err.response.data.errors[0].message })
         }
       })
       .finally(() => {

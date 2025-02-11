@@ -16,9 +16,9 @@ import moment from "moment";
 
 // Components
 import { Container, Input } from "./styles";
-import { Table, notification, Select } from "antd";
+import { Table, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import Actions from "./Actions";
 import Report from "./DailyMovementReport";
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -33,6 +33,8 @@ function DailyMovements() {
 
   const userInfo = useMe();
   const { movements } = useDailyMovementsSearch(filters, reload);
+
+  const {createToast} = useToast()
 
   const createMovimentationPermission = useUserHasPermission("MOV01");
   const listDailyMovPermission = useUserHasPermission("MOV00");
@@ -92,17 +94,15 @@ function DailyMovements() {
         userId: userInfo?.data?.id,
         openingDate: moment(new Date()).toISOString(),
       })
-      .then(() =>
-        notification.success({ message: "Movimentação aberta com sucesso!" })
+      .then(() => createToast({ status: "success", message: "Movimentação aberta com sucesso!" })
       )
       .catch((err) => {
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return  createToast({ status: "error", message: messageArr[1] })
         }
-        notification.error({
-          message: "Houve um erro ao abrir a movimentação...",
-        });
+       
+        createToast({ status: "error", message: "Houve um erro ao abrir a movimentação..." })
       })
       .finally(() => {
         setReload(!reload);

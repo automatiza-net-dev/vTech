@@ -13,8 +13,8 @@ import { useDocuments } from "@/OLD/hooks/useDocs";
 import { documentServices } from "@/OLD/services/document.service";
 
 // Components
-import { Button, PageWrapper } from "infinity-forge";
-import { Table, Tag, Popconfirm, notification } from "antd";
+import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Table, Tag, Popconfirm } from "antd";
 import { Container, InputBox } from "./styles";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -35,18 +35,17 @@ function DocumentList() {
   const canEditDocument = useUserHasPermission("DOC02");
   const canDeleteDocument = useUserHasPermission("DOC03");
 
+  const { createToast} = useToast()
+
   const removeDocument = (id) => {
     setLoading(true);
     documentServices
       .remove(id)
-      .then((res) =>
-        notification.success({ message: "Documento removido com sucesso!" })
+      .then((res) => createToast({ status: "success", message: "Documento removido com sucesso!" })
       )
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao remover o documento",
-        });
+        return   createToast({ status: "error", message: "Houve um erro ao remover o documento" })
       })
       .finally(() => {
         setLoading(false);

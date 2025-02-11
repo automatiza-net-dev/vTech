@@ -5,10 +5,12 @@ import { useRouter } from "next/router";
 
 import { profileService } from "@/OLD/services/External/profileService";
 import { LoadingPage } from "@/OLD/components/mini-components/LoadingPage";
-import { notification } from "antd";
+import { useToast } from "infinity-forge";
 
 const ExternalAccess = memo(function ExternalAccess() {
   const router = useRouter();
+
+  const {createToast} = useToast()
 
   const verifyToken = () => {
     profileService
@@ -17,7 +19,8 @@ const ExternalAccess = memo(function ExternalAccess() {
         res.data?.unit ? router.push("/dashboard") : router.push("/dashboard")
       )
       .catch((err) => {
-        notification.error({ message: "Token inválido" });
+      createToast({ status: "error", message:"Token inválido" })
+    
         return router.back();
       });
   };

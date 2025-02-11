@@ -12,10 +12,10 @@ import { examService } from "@/OLD/services/exams.service";
 import { groupsService } from "@/OLD/services/groups.service";
 
 // Components
-import { Input, notification, Switch, Select } from "antd";
+import { Input, Switch, Select } from "antd";
 import Editor from "@/OLD/components/Editor";
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -30,6 +30,8 @@ const UpdateExam = memo(function UpdateExam() {
 
   const canEditExams = useUserHasPermission("EXA02");
 
+  const {createToast} = useToast()
+
   const getAllSubgroups = useCallback(() => {
     setLoading(true);
     groupsService
@@ -37,9 +39,8 @@ const UpdateExam = memo(function UpdateExam() {
       .then((res) => setAllSubgroups(res.data))
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao recuperar os subgrupos disponíveis...",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro ao recuperar os subgrupos disponíveis..." })
       })
       .finally(() => {
         setLoading(false);
@@ -64,16 +65,14 @@ const UpdateExam = memo(function UpdateExam() {
         ownLaboratory: data?.own_laboratory,
       })
       .then((_res) => {
-        return notification.success({
-          message: "Exame atualizado com sucesso!",
-          type: "success",
-        });
+       
+
+       return createToast({ status: "success", message: "Exame atualizado com sucesso!" })
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: err.response.data.errors[0].message,
-        });
+
+       return createToast({ status: "error", message: err.response.data.errors[0].message })
       })
       .finally(() => {
         setLoading(false);

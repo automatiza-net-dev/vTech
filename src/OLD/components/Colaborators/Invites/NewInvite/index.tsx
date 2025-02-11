@@ -27,10 +27,8 @@ export const NewInvite = React.memo(function Colaborators({
       const res = await adminService.getAllRoles();
       setRoles(res.data);
     } catch (err) {
-      notification.error({
-        message: "Erro",
-        description: "Erro ao buscar os cargos",
-      });
+      createToast({ status: "error",  message: "Erro" })
+     
     }
   }, []);
 
@@ -40,10 +38,7 @@ export const NewInvite = React.memo(function Colaborators({
       setClinics(res.data);
       if (res.data.length === 1) setData({ businessUnitId: res.data[0].id });
     } catch (err) {
-      notification.error({
-        message: "Erro",
-        description: "Erro ao buscar as clinicas",
-      });
+      createToast({ status: "error",  message: "Erro" })
     }
   }, []);
 
@@ -55,47 +50,23 @@ export const NewInvite = React.memo(function Colaborators({
     });
   }, []);
 
-  const resendInviteStructure = () => (
-    <div>
-      <label>Deseja reenviar o convite?</label>
-      <div>
-        <AntdButton
-          onClick={() => notification.destroy()}
-          className="uk-margin-small-right"
-        >
-          Não
-        </AntdButton>
-        <AntdButton
-          type="primary"
-          onClick={() =>
-            resendInvite(
-              allInvites.find((invite) => invite?.email === data?.email)?.id
-            )
-          }
-        >
-          Sim
-        </AntdButton>
-      </div>
-    </div>
-  );
 
   const resendInvite = useCallback(
     (mail) => {
       setLoading(true);
       clinicService
         .resendInvite(mail)
-        .then((res) =>
-          notification.success({ description: "Convite reenviado!" })
+        .then((res) => createToast({ message: "Convite reenviado!" , status: "success" })
+      
         )
         .catch((_err) => {
           setData({});
           setReload(!reload);
-          notification.destroy();
+      
           setLoading(false);
           setVisible(false);
-          notification.error({
-            description: "Houve um erro ao reenviar o convite",
-          });
+
+          createToast({ status: "error", message: "Houve um erro ao reenviar o convite"  })
         });
     },
     [data?.email]

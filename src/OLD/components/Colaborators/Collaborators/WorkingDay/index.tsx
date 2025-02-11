@@ -209,9 +209,8 @@ export function WorkingDay({ edit }) {
         >
           <Button
             onClick={() => {
-              notification.success({
-                message: "Informações salvas com sucesso!",
-              });
+              createToast({ status: "success", message: "Informações salvas com sucesso!" })
+          
               router.back();
             }}
             text="Salvar"

@@ -40,29 +40,31 @@ const menu = (
   const { generalLaunchPermission, medicalPrescriptionPermission } =
     permissions;
 
-  const discharge = () => {
-    return notification.warning({
-      key: "discharge",
-      message: (
-        <div>
-          <p>Paciente já recebeu alta!</p>
-          <p className="uk-margin-remvoe">Deseja finalizar a internação ?</p>
-          <div className="uk-flex uk-flex-around">
-            <Button
-              text="Sim"
-              onClick={() => {
-                (finalizeHospitalization as any)();
-                (notification as any).destroy({ key: "discharge" });
-              }}
-            />
+  const { createToast } = useToast();
 
-            <Button
-              onClick={() => notification.destroy({ key: "discharge" })}
-              text="Não"
-            />
+  const discharge = () => {
+    return createToast({
+      status: "warning",
+      duration: 20000,
+      Component: ({ closeToast }) => {
+        return (
+          <div>
+            <p>Paciente já recebeu alta!</p>
+            <p className="uk-margin-remvoe">Deseja finalizar a internação ?</p>
+            <div className="uk-flex uk-flex-around">
+              <Button
+                text="Sim"
+                onClick={() => {
+                  (finalizeHospitalization as any)();
+                  closeToast();
+                }}
+              />
+
+              <Button onClick={() => closeToast()} text="Não" />
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     });
   };
 
@@ -197,7 +199,7 @@ export default function HospitalizationTable() {
 
   const showHospitalizationsPermission = useUserHasPermission("INT00");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllHospitalizations = useCallback(() => {
     setLoading(true);
@@ -209,8 +211,10 @@ export default function HospitalizationTable() {
       .catch((_err) => {
         setLoading(false);
 
-        return createToast({ status: "error", message: "Houve um erro ao listar os pacientes hospitalizados..." })
-       
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao listar os pacientes hospitalizados...",
+        });
       })
       .finally(() => {
         setLoading(false);

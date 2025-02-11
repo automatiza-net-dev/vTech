@@ -1,24 +1,25 @@
 // @ts-nocheck
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import React from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { clinicService } from "@/OLD/services/clinic.service";
+import { useToast } from "infinity-forge";
 
 export const Delete = React.memo(function Delete({ id, reload, setReload }) {
+
+  const {createToast} = useToast()
+
   const handleDelete = React.useCallback(() => {
     clinicService
       .deleteInvite(id)
       .then(() => {
-        notification.success({
-          message: "Sucesso",
-          description: "Convite deletado",
-        });
+
+        createToast({ status: "success", message: "Convite deletado" })
+
       })
       .catch((_err) => {
-        notification.error({
-          message: "Erro",
-          description: "Falha ao excluir convite!",
-        });
+        createToast({ status: "error",  message:  "Falha ao excluir convite!"})
+     
       })
       .finally(() => {
         setReload(!reload);

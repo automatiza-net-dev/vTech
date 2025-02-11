@@ -13,7 +13,7 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
 import FormChild from "../../FormChild";
 import { Container } from "../../styles";
-import { notification, Modal } from "antd";
+import { Modal } from "antd";
 import { Patient } from "@/OLD/components/Patient";
 import { Tutor } from "@/OLD/components/Tutor";
 
@@ -55,7 +55,8 @@ export default function Create({
     try {
       await opportunitiesService.create(newObj);
 
-      notification.success({
+      createToast({
+        status: "success",
         message: "Oportunidade cadastrada com sucesso!",
       });
 

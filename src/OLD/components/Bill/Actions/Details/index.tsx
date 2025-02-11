@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
@@ -15,7 +15,6 @@ import {
 } from "./Columns";
 
 import { DeleteTwoTone } from "@ant-design/icons";
-import { Button, useToast } from "infinity-forge";
 import {
   Checkbox,
   Input,
@@ -43,44 +42,42 @@ import { Icon, Button, useToast } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
 
-const Details = memo(function Details({ billId, setVisible }) {
-  const [formatedProducts, setFormatedProducts] = useState([]);
-  const [higherBlock, setHigherBlock] = useState(0);
+const Details = memo(function Details({ billId, setVisible }: any) {
+  const [formatedProducts, setFormatedProducts] = useState<any>([]);
+  const [higherBlock, setHigherBlock] = useState<any>(0);
   const blockArr = Array.from(Array(higherBlock).keys());
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState<any>(false);
 
   const { createToast } = useToast();
 
-  const [openCancelNfse, setOpenCancelNfse] = useState(false);
-  const [cancelNfseData, setCancelNfseData] = useState({});
+  const [openCancelNfse, setOpenCancelNfse] = useState<any>(false);
+  const [cancelNfseData, setCancelNfseData] = useState<any>({});
 
-  const [openCancelNfe, setOpenCancelNfe] = useState(false);
-  const [cancelNfeData, setCancelNfeData] = useState({});
+  const [openCancelNfe, setOpenCancelNfe] = useState<any>(false);
+  const [cancelNfeData, setCancelNfeData] = useState<any>({});
 
-  const [openDisableNfe, setOpenDisableNfe] = useState(false);
-  const [disableNfeData, setDisableNfeData] = useState({});
+  const [openDisableNfe, setOpenDisableNfe] = useState<any>(false);
+  const [disableNfeData, setDisableNfeData] = useState<any>({});
 
-  const [documentsToIssue, setDocumentsToIssue] = useState([]);
-  const [nfeErrorsVisible, setNfeErrorsVisible] = useState(false);
-  const [reload, setReload] = useState(false);
+  const [documentsToIssue, setDocumentsToIssue] = useState<any>([]);
+  const [nfeErrorsVisible, setNfeErrorsVisible] = useState<any>(false);
+  const [reload, setReload] = useState<any>(false);
 
-  const [nfeErrors, setNfeErrors] = useState([]);
-  const [authorizeData, setAuthorizeData] = useState({
+  const [nfeErrors, setNfeErrors] = useState<any>([]);
+  const [authorizeData, setAuthorizeData] = useState<any>({
     type: "SAIDA",
     billId: null,
   });
 
-  const [changeFields, setChangeFields] = useState({});
-  const [seller, setSeller] = useState({});
-  const [finResponsible, setFinResponsible] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [changeFields, setChangeFields] = useState<any>({});
+  const [seller, setSeller] = useState<any>({});
+  const [finResponsible, setFinResponsible] = useState<any>({});
+  const [loading, setLoading] = useState<any>(false);
 
   const queryClient = useQueryClient();
   const emitFiscalNotePermission = useUserHasPermission("VEN08");
   const cancelFNPermission = useUserHasPermission("VEN09");
   const disableFNPermission = useUserHasPermission("VEN10");
-
-  const { createToast } = useToast();
 
   const { data } = useShowBill(billId, true);
 
@@ -205,10 +202,10 @@ const Details = memo(function Details({ billId, setVisible }) {
         queryClient.invalidateQueries(["bills"]);
         queryClient.invalidateQueries(["fiscalDocuments"]);
       },
-      onError: (err) => {
+      onError: (err: any) => {
         setLoading(false);
         createToast({
-          message: err.response.data[0].message ?? "Erro na emissão",
+          message: err?.response?.data?.[0]?.message ?? "Erro na emissão",
           status: "error",
         });
       },
@@ -240,9 +237,9 @@ const Details = memo(function Details({ billId, setVisible }) {
         setOpenCancelNfse(false);
         setCancelNfseData({});
       },
-      onError: (err) => {
+      onError: (err: any) => {
         createToast({
-          message: err.response.data.message || "Erro na emissão",
+          message: err?.response?.data?.message || "Erro na emissão",
           status: "error",
         });
       },
@@ -274,11 +271,11 @@ const Details = memo(function Details({ billId, setVisible }) {
         queryClient.invalidateQueries(["bills"]);
         queryClient.invalidateQueries(["fiscalDocuments"]);
       },
-      onError: (err) => {
+      onError: (err: any) => {
         setLoading(false);
 
         createToast({
-          message: err.response.data.message ?? "Erro na emissão",
+          message: err?.response?.data?.message || "Erro na emissão",
           status: "error",
         });
       },
@@ -310,9 +307,9 @@ const Details = memo(function Details({ billId, setVisible }) {
         setOpenCancelNfe(false);
         setCancelNfeData({});
       },
-      onError: (err) => {
+      onError: (err: any) => {
         createToast({
-          message: err.response.data.message ?? "Erro na emissão",
+          message: err?.response?.data?.message ?? "Erro na emissão",
           status: "error",
         });
       },
@@ -331,9 +328,9 @@ const Details = memo(function Details({ billId, setVisible }) {
         setOpenDisableNfe(false);
         setDisableNfeData({});
       },
-      onError: (err) => {
+      onError: (err: any) => {
         createToast({
-          message: err.response.data.message.split(":")[1],
+          message: err?.response?.data?.message?.split(":")?.[1],
           status: "error",
         });
       },
@@ -678,13 +675,15 @@ const Details = memo(function Details({ billId, setVisible }) {
         }
 
         if (message?.includes("E_NOT_OPEN")) {
-          return notification.warning({
+          return createToast({
+            status: "warning",
             message: "Nota não está aberta, não é possível alterar o vendedor",
           });
         }
 
         if (message?.includes("E_ERR")) {
-          return notification.warning({
+          return createToast({
+            status: "warning",
             message: err?.response?.data?.message?.split(":")[1],
           });
         }
@@ -707,19 +706,22 @@ const Details = memo(function Details({ billId, setVisible }) {
       })
       .catch((err) => {
         if (!message) {
-          return notification.error({
+          return createToast({
+            status: "error",
             message: "Houve um erro interno, tente novamente mais tarde",
           });
         }
 
         if (message?.includes("E_NOT_OPEN")) {
-          return notification.warning({
+          return createToast({
+            status: "warning",
             message: "Nota não está aberta, não é possível alterar o vendedor",
           });
         }
 
         if (message?.includes("E_ERR")) {
-          return notification.warning({
+          return createToast({
+            status: "warning",
             message: err?.response?.data?.message?.split(":")[1],
           });
         }

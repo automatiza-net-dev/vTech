@@ -1,26 +1,25 @@
 // @ts-nocheck
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import React from "react";
 import { userService } from "@/OLD/services/user.service";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { clinicService } from "@/OLD/services/clinic.service";
+import { useToast } from "infinity-forge";
 
 export const Delete = React.memo(function Delete({ id, setRefreshList }) {
+
+  const {createToast} = useToast()
+
   const handleDelete = React.useCallback(() => {
     clinicService
       .deleteColaborator(id)
       .then((res) => {
-        notification.success({
-          message: "Sucesso",
-          description: "Colaborador removido",
-        });
+        createToast({ status: "success", message: "Colaborador removido" })
+       
         setRefreshList();
       })
       .catch(() => {
-        notification.success({
-          message: "Erro",
-          description: "Erro ao remover colaborador",
-        });
+        createToast({ status: "success", message: "Erro ao remover colaborador"})
       });
   }, [id]);
 

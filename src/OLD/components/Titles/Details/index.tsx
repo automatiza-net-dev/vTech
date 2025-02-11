@@ -9,8 +9,7 @@ import { usePlans } from "@/OLD/hooks/usePlans";
 import { financesService } from "@/OLD/services/finances.service";
 
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
-import { notification } from "antd";
+import { Button, useToast } from "infinity-forge";
 import Edit from "../Actions/Edit";
 
 import moment from "moment";
@@ -27,6 +26,8 @@ const Details = memo(function Details() {
   const { finance } = useShowFinance(router.query.innerpage);
   const { paymentMethods } = usePaymentMethods(false, false);
   const { plans } = usePlans();
+
+  const {createToast} = useToast()
 
   const formatFinance = () => {
     setData({
@@ -73,7 +74,7 @@ const Details = memo(function Details() {
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return notification.warning({ message: "Plano de contas obrigatório" });
+     return createToast({ status: "warning" , message: "Plano de contas obrigatório"})
     }
 
     financesService
@@ -83,19 +84,17 @@ const Details = memo(function Details() {
         feeValue: convertIntlCurrency(newObj?.feeValue),
         discountValue: convertIntlCurrency(newObj?.discountValue),
       })
-      .then((_res) =>
-        notification.success({ message: "Parcela atualizada com sucesso!" })
+      .then((_res) => createToast({ status: "success" , message: "Parcela atualizada com sucesso!"})
+       
       )
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return  createToast({ status: "error" , message: messageArr[1]})
         }
-        return notification.error({
-          message: "Houve um erro ao atualizar a parcela selecionada...",
-        });
+        return  createToast({ status: "error" , message: "Houve um erro ao atualizar a parcela selecionada..."})
       })
       .finally(() => {
         setLoading(false);

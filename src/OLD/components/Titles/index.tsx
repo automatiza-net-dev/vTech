@@ -28,8 +28,8 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button, PageWrapper, useAuthAdmin } from "infinity-forge";
-import { Table, Modal, notification } from "antd";
+import { Button, PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
+import { Table, Modal } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "./Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -74,6 +74,8 @@ export default function Titles({ type }: any) {
   const { titles, setTitles } = useAuth();
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
   const { user } = useAuthAdmin();
+
+  const {createToast} = useToast()
 
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
@@ -236,7 +238,7 @@ export default function Titles({ type }: any) {
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return notification.warning({ message: "Plano de contas obrigatório" });
+      return createToast({ status: "warning", message: "Plano de contas obrigatório" })
     }
 
     financesService
@@ -248,20 +250,19 @@ export default function Titles({ type }: any) {
         value: convertIntlCurrency(newObj?.value),
       })
       .then((_res) => {
-        setEdit(false);
-        notification.success({ message: "Parcela atualizada com sucesso!" });
+        setEdit(false); createToast({ status: "success", message: "Parcela atualizada com sucesso!" })
+
       })
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
-        }
 
-        return notification.error({
-          message: "Houve um erro ao atualizar a parcela selecionada...",
-        });
+          return createToast({ status: "error", message: messageArr[1] })
+        }
+        
+        return createToast({ status: "error", message: "Houve um erro ao atualizar a parcela selecionada..." })
       })
       .finally(() => {
         setLoading(false);

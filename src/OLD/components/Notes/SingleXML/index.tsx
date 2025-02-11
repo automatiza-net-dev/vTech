@@ -83,9 +83,8 @@ function Single() {
         setBackConfirm((prv) => ({ ...prv, createReceiptProduct: true }));
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Produtos inseridos com sucesso!",
-        });
+
+        createToast({ status: "success", message:  "Produtos inseridos com sucesso!" })
       })
       .catch((err) => {
         setLoading(false);
@@ -113,9 +112,7 @@ function Single() {
         setBackConfirm((prv) => ({ ...prv, supplierProduct: true }));
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Produtos criados e vinculados com sucesso",
-        });
+        createToast({ status: "success", message:  "Produtos criados e vinculados com sucesso" })
       })
       .catch((err) => {
         setLoading(false);
@@ -132,9 +129,8 @@ function Single() {
       ?.finishReceipt({ receiptId: receipt[0]?.id })
       .then((res) => {
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Nota de entrada finalizada com sucesso",
-        });
+
+        createToast({ status: "success", message:  "Nota de entrada finalizada com sucesso" })
       })
       .catch((err) => {
         if (err?.response?.data?.code === "E_NO_VARIATION") {

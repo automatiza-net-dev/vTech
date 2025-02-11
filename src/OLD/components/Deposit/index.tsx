@@ -9,10 +9,9 @@ import {
   Row,
   Skeleton,
   Table,
-  notification,
   Popconfirm,
 } from "antd";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { InputBox } from "./styles";
 import moment from "moment";
@@ -92,6 +91,8 @@ export const Deposits = memo(() => {
     type: "Venda",
   });
 
+  const {createToast} = useToast()
+
   const depositsQuery = useQuery({
     queryKey: ["deposits", searchParams],
     queryFn: () => {
@@ -118,11 +119,11 @@ export const Deposits = memo(() => {
         setCreateDepositData({ description: "", type: "Venda" });
       },
       onError: (err) => {
-        notification.error({
-          message: err.response.data.message
-            ? err.response.data.message.split(":").at(1)
-            : "Erro ao criar",
-        });
+
+        createToast({ status: "error", message: err.response.data.message
+          ? err.response.data.message.split(":").at(1)
+          : "Erro ao criar" })
+       
       },
     }
   );
@@ -135,11 +136,10 @@ export const Deposits = memo(() => {
         depositsQuery.refetch();
       },
       onError: (err) => {
-        notification.error({
-          message: err.response.data.message
-            ? err.response.data.message.split(":").at(1)
-            : "Erro ao atualizar",
-        });
+
+        createToast({ status: "error", message: err.response.data.message
+          ? err.response.data.message.split(":").at(1)
+          : "Erro ao atualizar" })
       },
     }
   );
@@ -269,9 +269,7 @@ export const Deposits = memo(() => {
                       {canRemoveDeposit && (
                           <Popconfirm
                             onConfirm={() =>
-                              notification.warning({
-                                message: "Verificar método",
-                              })
+                              createToast({ status: "warning", message: "Verificar método" })
                             }
                             title="Deseja remover este depósito?"
                           >

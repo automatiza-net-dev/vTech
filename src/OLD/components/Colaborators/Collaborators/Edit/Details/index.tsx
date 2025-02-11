@@ -8,9 +8,9 @@ import { clinicService } from "@/OLD/services/clinic.service";
 import { userService } from "@/OLD/services/user.service";
 
 // Components
-import { notification, Input, Select, Space, AutoComplete } from "antd";
+import {  Input, Select, Space, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { Container } from "./styles";
 const { Option } = Select;
 
@@ -36,6 +36,8 @@ function EditColaborator() {
   const [cities, setCities] = useState([]);
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   const getCollab = useCallback(() => {
     setLoading(true);
     clinicService
@@ -55,9 +57,8 @@ function EditColaborator() {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um problema ao buscar os detalhes do colaborador...",
-        });
+
+        return createToast({ message: "Houve um problema ao buscar os detalhes do colaborador...", status: "error" })
       })
       .finally(() => setLoading(false));
   }, [router.query.id]);
@@ -77,9 +78,8 @@ function EditColaborator() {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Não foi possível localizar o cep informado!",
-        });
+
+        return createToast({ message: "Não foi possível localizar o cep informado!", status: "error" })
       });
   };
 
@@ -112,14 +112,12 @@ function EditColaborator() {
 
     clinicService
       .updateCollaborator(router.query.id, data)
-      .then((_res) =>
-        notification.success({ message: "Colaborador atualizado com sucesso!" })
+      .then((_res) =>  createToast({ message: "Colaborador atualizado com sucesso!", status: "success" })
+      
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao atualizar os dados do colaborador...",
-        });
+       return createToast({ message: "Houve um erro ao atualizar os dados do colaborador...", status: "error" })
       })
       .finally(() => {
         setLoading(false);
@@ -133,7 +131,7 @@ function EditColaborator() {
       .checkDocument(Masks?.noDocument(doc))
       .then((res) => {
         if (!res?.data?.valid) {
-          return notification.warning({ message: "CPF Inválido" });
+         return createToast({ message: "CPF Inválido", status: "warning" })
         }
       })
       .catch((err) => setLoading(false));

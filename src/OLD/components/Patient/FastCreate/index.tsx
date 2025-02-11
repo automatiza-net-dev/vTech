@@ -1,10 +1,13 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import Masks from "@/OLD/utils/masks";
 import { petsService } from "@/OLD/services/patient.service";
 import { useRaces } from "@/OLD/hooks/useRaces";
+import { useToast } from "infinity-forge";
+
+
 
 const FastCreatePatient = React.memo(function FastCreatePatient({
   visible,
@@ -20,6 +23,8 @@ const FastCreatePatient = React.memo(function FastCreatePatient({
   const [filter, setFilter] = useState({ description: "" });
   const submitButton = useRef();
 
+  const {createToast} = useToast()
+
   const { races } = useRaces(filter, reload, setReload, false, visible);
 
   const submitData = useCallback(() => {
@@ -28,10 +33,9 @@ const FastCreatePatient = React.memo(function FastCreatePatient({
       .createPatient({ ...data, holderId: tutorId })
       .then((res) => {
         fetchData();
-        notification.success({
-          message: "Sucesso",
-          description: "Paciente cadastrado!",
-        });
+
+        createToast({ status: "success", message: "Paciente cadastrado!" })
+      
         setPayload({
           ...payload,
           patient_id: res.data.id,
@@ -39,10 +43,10 @@ const FastCreatePatient = React.memo(function FastCreatePatient({
         setVisible(false);
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao cadastrar paciente",
-        });
+       
+
+        createToast({ status: "error", message: "Erro ao cadastrar paciente" })
+      
       })
       .finally(() => {
         setLoading(false);

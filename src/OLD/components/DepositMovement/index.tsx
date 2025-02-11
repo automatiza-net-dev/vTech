@@ -8,12 +8,11 @@ import {
   Row,
   Skeleton,
   Table,
-  notification,
   Popconfirm,
   AutoComplete,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { InputBox } from "./styles";
@@ -135,6 +134,8 @@ export const DepositMovements = memo(() => {
     selectedProduct: "",
     quantity: 0,
   });
+
+  const { createToast } = useToast();
   const [reload, setReload] = useState(false);
 
   const { colaborators } = useColaborators();
@@ -161,7 +162,10 @@ export const DepositMovements = memo(() => {
     enabled: openCreate,
   });
 
-  const imprimir = useReactToPrint({ contentRef: componentRef,  onAfterPrint: setMovDetails(false)  })
+  const imprimir = useReactToPrint({
+    contentRef: componentRef,
+    onAfterPrint: setMovDetails(false),
+  });
 
   const memoedProducts = useMemo(() => {
     if (!productsQuery.data) return [];
@@ -190,7 +194,8 @@ export const DepositMovements = memo(() => {
         depositMovementsQuery.refetch();
       },
       onError: (err) => {
-        notification.error({
+        createToast({
+          status: "error",
           message: err.response.data[0].message
             ? err.response.data[0].message
             : "Erro ao criar",
@@ -512,7 +517,7 @@ export const DepositMovements = memo(() => {
                         ?.getDepositMovements({ ids: [elem?.id] })
                         .then((res) => setMovDetails(res?.data[0]));
 
-                        imprimir()
+                      imprimir();
                     }}
                   >
                     <MdLocalPrintshop />
