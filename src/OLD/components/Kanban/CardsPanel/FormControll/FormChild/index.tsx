@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { memo } from "react";
 
 import { Input, Button, Select, AutoComplete } from "antd";
@@ -9,6 +8,14 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
+import {
+  api,
+  formatNumberToCurrency,
+  FormHandler,
+  useQuery,
+  Select as SelectInfinityForge,
+} from "infinity-forge";
+import moment from "moment";
 
 const FormChild = memo(function ({
   data,
@@ -17,7 +24,36 @@ const FormChild = memo(function ({
   formData,
   close,
   options,
-}) {
+}: any) {
+  console.log(formData, "???");
+
+  const opportunityMovements = useQuery({
+    queryKey:
+      "search_from_clients" +
+      formData?.op?.contact?.id +
+      formData?.op?.client?.id,
+    queryFn: async () => {
+      const response = await api({
+        url: "opportunity-movements/search-from-clients",
+        method: "get",
+        body: {
+          client: formData?.op?.contact?.id,
+          patient: formData?.op?.client?.id,
+          type: "bill",
+        },
+      });
+
+      return response;
+    },
+  });
+
+  const opportunitiesList = opportunityMovements?.data?.map((op) => {
+    return {
+      label: op?.tag + " - " + moment(op?.bill_date).format("DD/MM/YYYY") + " - " + formatNumberToCurrency(op?.total_value || 0) ,
+      value: op?.id,
+    };
+  }) || []
+
   const headerRender = () => {
     if (formData?.form === "gain" || formData?.form === "loss") {
       return (
@@ -63,10 +99,29 @@ const FormChild = memo(function ({
       {formData?.form === "gain" && (
         <div className="uk-margin-small-top">
           <h4>
-            Valor da oportunidade: {currencyFormatter(formData?.op?.value)}
+            Valor da oportunidade:{" "}
+            {formatNumberToCurrency(formData?.op?.value || 0)}
           </h4>
         </div>
       )}
+
+      <FormHandler>
+        <SelectInfinityForge
+          onChangeInput={(value) => {
+            const opportunityId = value;
+
+            console.log(opportunityId)
+          }}
+          isMultiple
+          label="Selecionar Vendas Relacionadas"
+          name="select_opportunity"
+          placeholder="Selecione uma venda"
+          
+          loading={opportunityMovements.isFetching}
+          options={opportunitiesList}
+        />
+      </FormHandler>
+
       {formData?.actualField && (
         <div>
           <label>{formData?.actualField}</label>
@@ -101,7 +156,7 @@ const FormChild = memo(function ({
               setData({ ...data, completeId: opt?.id, collabName: opt?.value });
             }}
             filterOption={(val, opt) =>
-              normalizeStr(opt?.value.toUpperCase()).includes(
+              normalizeStr(String(opt?.value)?.toUpperCase()).includes(
                 normalizeStr(val?.toUpperCase())
               )
             }

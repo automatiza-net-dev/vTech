@@ -32,9 +32,7 @@ function LayoutPage({ children }) {
   const router = useRouter();
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
-  const { user, roleUser, loadUser } = useAuthAdmin();
-
-  const clearCache = useQueryClient((state) => state.clearCache);
+  const { user, roleUser } = useAuthAdmin();
 
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({

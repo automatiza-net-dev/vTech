@@ -8,6 +8,7 @@ export const ChartsSection = styled("section")<IStyledDashboard>`
     display: flex;
     align-items: flex-start;
     gap: 20px;
+    margin-bottom: 10px;
 
     > div {
       max-width: 300px;

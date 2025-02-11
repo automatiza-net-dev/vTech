@@ -85,9 +85,8 @@ export const Create = memo(function Create({ type }) {
       })
       .catch((_err) => {
         error = true;
-        return notification.error({
-          description: `Verifique os campos da parcela`,
-        });
+
+        return createToast({ status: "error", message:  })
       });
   }, [installments]);
 
