@@ -3,7 +3,7 @@
 import { memo, useCallback } from "react";
 
 // Components
-import { Popconfirm, notification } from "antd";
+import { Popconfirm } from "antd";
 
 // Services
 import { subgroupsService } from "@/OLD/services/subgroups.service";
@@ -14,9 +14,11 @@ import { useMutation, useQueryClient } from "react-query";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
+import { useToast } from "infinity-forge";
 
 const DeleteSubgroup = memo(function DeleteSubgroup({ close, id }) {
   const queryClient = useQueryClient();
+  const { createToast } = useToast();
 
   const { mutate, isLoading } = useMutation((id) =>
     subgroupsService.deleteSubgroup(id)
@@ -24,7 +26,7 @@ const DeleteSubgroup = memo(function DeleteSubgroup({ close, id }) {
 
   const removeExam = useCallback(() => {
     if (!permissions?.SBG3) {
-      return notification.error({ message: "Ação não permitida!" });
+      return createToast({ message: "Ação não permitida!", status: "error" });
     }
 
     mutate(id, {

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification } from "antd";
-import { Button } from "infinity-forge";
+import { Form, Input, Modal } from "antd";
+import { Button, useToast } from "infinity-forge";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { memo, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
@@ -9,27 +9,22 @@ import { animalServices } from "@/OLD/services/animal.service";
 export const Create = ({ visible, setVisible, reload, setReload, button }) => {
   const queryClient = useQueryClient();
   const [payload, setPayload] = useState();
-
+  const { createToast } = useToast();
   const canCreateSpecie = useUserHasPermission("ESP01");
 
   const { mutate, loading } = useMutation(
     (data) => animalServices.createSpecie(data),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Espécie criada!",
-        });
+        createToast({ message: "Espécie criada!", status: "success" });
+
         setPayload(null);
         setVisible(false);
         setReload(!reload);
         queryClient.invalidateQueries("getSpecies");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao criar espécie!",
-        });
+        createToast({ message: "Erro ao criar espécie!", status: "error" });
       },
     }
   );

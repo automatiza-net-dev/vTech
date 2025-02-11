@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 // Components
 import { Container } from "./styles";
-import { Input, notification, DatePicker, TimePicker } from "antd";
+import { Input, DatePicker, TimePicker } from "antd";
 import IntervalForm from "./IntervalForm";
 import MedicamentForm from "./MedicamentForm";
 import FluidTherapy from "./FluidTherapy";
@@ -45,7 +45,7 @@ export default function MedicalPrescriptioan({ duplicate = false }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const { medicalPrescription } = useMedicalPrescription(router.query.id);
 
@@ -81,34 +81,52 @@ export default function MedicalPrescriptioan({ duplicate = false }) {
 
   const verifyFields = () => {
     if (!data?.executionStart || !data?.executionHour) {
-      return  createToast({ status: "error", message: "Informe a data e hora de inicio da execução" })
+      return createToast({
+        status: "error",
+        message: "Informe a data e hora de inicio da execução",
+      });
     }
 
     if (intervalType === "RECURRENT") {
       if (!data?.frequencyUnit) {
-        return  createToast({ status: "error", message: "Informe o tipo de intervalo (Horas ou dias)" })
+        return createToast({
+          status: "error",
+          message: "Informe o tipo de intervalo (Horas ou dias)",
+        });
       }
 
       if (!data?.frequencyQuantityUnit) {
-        return  createToast({ status: "error", message: "Informe o tipo de duração (horas ou dias)" })
+        return createToast({
+          status: "error",
+          message: "Informe o tipo de duração (horas ou dias)",
+        });
       }
     }
 
     if (type !== "PROCEDURE") {
       if (!data?.prescriptionUnitId) {
-        return  createToast({ status: "error", message:  "Informe o tipo de unidade" })
+        return createToast({
+          status: "error",
+          message: "Informe o tipo de unidade",
+        });
       }
 
       if (!data?.drugAdministrationId) {
-        return createToast({ status: "error", message:  "informe a via de aplicação" })
+        return createToast({
+          status: "error",
+          message: "informe a via de aplicação",
+        });
       }
 
       if (type === "FLUID_THERAPY") {
         if (!data?.fluidSet) {
-          return   createToast({ status: "error", message:  "Informe o equipo" })
+          return createToast({ status: "error", message: "Informe o equipo" });
         }
         if (!data?.fluidUnitId) {
-          return  createToast({ status: "error", message:  "informe a unidade de velocidade" })
+          return createToast({
+            status: "error",
+            message: "informe a unidade de velocidade",
+          });
         }
       }
     }
@@ -138,19 +156,30 @@ export default function MedicalPrescriptioan({ duplicate = false }) {
         prescribedAt: moment(new Date()),
       })
       .then((res) => {
-        return createToast({ status: "success", message: "Prescrição médica registrada com sucesso!",  })
-        
+        return createToast({
+          status: "success",
+          message: "Prescrição médica registrada com sucesso!",
+        });
       })
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.errors) {
-          return createToast({ status: "error", message:  err?.response?.data?.errors[0].message })
+          return createToast({
+            status: "error",
+            message: err?.response?.data?.errors[0].message,
+          });
         }
         if (err?.response?.data?.message) {
-          return createToast({ status: "error", message:  err?.response?.data?.message })
+          return createToast({
+            status: "error",
+            message: err?.response?.data?.message,
+          });
         }
-        return  createToast({ status: "error", message:  "Houve um erro ao cadastrar a prescrição médica" })
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao cadastrar a prescrição médica",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -224,7 +253,9 @@ export default function MedicalPrescriptioan({ duplicate = false }) {
             </div>
           </section>
           <p style={{ marginTop: "30px" }}>
-            <h2>{labelControl(type)} - {labelControl(intervalType)}</h2>
+            <h2>
+              {labelControl(type)} - {labelControl(intervalType)}
+            </h2>
             <hr />
           </p>
           <section className="uk-margin-top uk-flex">

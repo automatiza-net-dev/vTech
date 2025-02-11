@@ -2,7 +2,7 @@
 import React, { useState, memo, useCallback, useEffect } from "react";
 
 import FormChild from "../../FormChild";
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
@@ -30,7 +30,7 @@ const Update = memo(function ({
 
   const { clinic } = useProfile();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   useEffect(() => {
     setData({
@@ -96,13 +96,17 @@ const Update = memo(function ({
         setReload((prv) => !prv);
         setVisible(false);
 
-        return createToast({ message: "Oportunidade atualizada com sucesso!", status: "success" })
+        return createToast({
+          message: "Oportunidade atualizada com sucesso!",
+          status: "success",
+        });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro ao atualizar as informações da oportunidade, verifique os campos informados",
+          status: "error",
         });
       });
   }, [JSON.stringify(data), clinic?.id, JSON.stringify(opportunity)]);

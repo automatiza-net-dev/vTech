@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Form, Input, Modal, Select, notification } from "antd";
+import { Form, Input, Modal, Select } from "antd";
 import { LoadingSpin } from "@/OLD/components/mini-components";
 import { CreateTypeService } from "@/OLD/components/ServiceType/Create";
 import { memo, useCallback, useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { productService } from "@/OLD/services/product.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 export const Create = ({ setRefreshTable }) => {
   const { Option } = Select;
@@ -24,6 +24,7 @@ export const Create = ({ setRefreshTable }) => {
   const [body, setBody] = useState("");
 
   const canCreateScheduleService = useUserHasPermission("ASV01");
+  const { createToast } = useToast();
 
   const handleGetServiceTypes = useCallback(() => {
     setLoading(true);
@@ -43,8 +44,10 @@ export const Create = ({ setRefreshTable }) => {
       .listProducts()
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao buscar os produtos disponíveis",
+          status: "error",
         });
       })
       .finally(() => {
@@ -58,7 +61,7 @@ export const Create = ({ setRefreshTable }) => {
 
   const handleSubmit = useCallback(() => {
     if (!canCreateScheduleService) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     setLoading(true);
@@ -68,15 +71,16 @@ export const Create = ({ setRefreshTable }) => {
         setRefreshTable();
         setIsModalVisible(false);
         setData(null);
-        notification.success({
-          message: "Sucesso",
-          description: "Serviço de Agendamento cadastrado",
+
+        return createToast({
+          message: "Serviço de Agendamento cadastrado",
+          status: "success",
         });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao criar serviço de Agendamento",
+        return createToast({
+          message: "Erro ao criar serviço de Agendamento",
+          status: "error",
         });
       })
       .finally(() => {

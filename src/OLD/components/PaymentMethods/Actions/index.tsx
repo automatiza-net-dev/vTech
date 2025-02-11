@@ -11,9 +11,11 @@ import { paymentMethodsService } from "@/OLD/services/paymentMethods.service";
 
 // Components
 import { Container } from "./styles";
-import { Modal, notification, Popconfirm } from "antd";
+import { Modal, Popconfirm } from "antd";
 import FormChild from "../FormChild";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
+import { useToast } from "infinity-forge";
 
 const Actions = memo(function Actions({ method, reload, setReload }) {
   const [data, setData] = useState({});
@@ -22,6 +24,7 @@ const Actions = memo(function Actions({ method, reload, setReload }) {
 
   const canEditPaymentMethods = useUserHasPermission("FPG02");
   const canDeletePaymentMethods = useUserHasPermission("FPG03");
+  const { createToast } = useToast();
 
   useEffect(() => {
     setData({
@@ -51,42 +54,51 @@ const Actions = memo(function Actions({ method, reload, setReload }) {
     paymentMethodsService
       .removePaymentMethod(method?.id)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Método de pagamento removido com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return createToast({ message: messageArr[1], status: "error" });
         }
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao remover o método de pagamento...",
+          status: "error",
         });
       });
   }, [method?.id]);
 
   const submitUpdatePaymentMethod = useCallback(() => {
     if (!data?.usage) {
-      return notification.warning({ message: "Selecione o tipo de pagamento" });
+      return createToast({
+        message: "Selecione o tipo de pagamento",
+        status: "warning",
+      });
     }
     setLoading(true);
     paymentMethodsService
       .updatePaymentMethod(method?.id, data)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Forma de pagamento atualizada com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({ message: messageArr[1], status: "error" });
         }
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar o método de pagamento...",
+          status: "error",
         });
       })
       .finally(() => {

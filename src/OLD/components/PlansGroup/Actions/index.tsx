@@ -4,8 +4,8 @@ import React, { memo, useEffect, useState, useCallback } from "react";
 import { plansGroupService } from "@/OLD/services/plansGroup.service";
 
 import FormChild from "../FormChild";
-import { PermissionItem } from 'infinity-forge'
-import { Modal, notification, Popconfirm } from "antd";
+import { PermissionItem, useToast } from "infinity-forge";
+import { Modal, Popconfirm } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -17,13 +17,13 @@ const Actions = memo(function ({ reload, setReload, group }) {
 
   const canEditPlansGroup = useUserHasPermission("GPC02");
   const canDeletePlansGroup = useUserHasPermission("GPC03");
-
+  const { createToast } = useToast();
   const formatGroup = () => {
     setData({
       description: group?.description,
       type: group?.type,
       active: group?.active,
-      dreGroupId: group?.dreGroup?.id
+      dreGroupId: group?.dreGroup?.id,
     });
   };
 
@@ -33,21 +33,23 @@ const Actions = memo(function ({ reload, setReload, group }) {
 
   const removePlansGroup = useCallback(() => {
     if (!canDeletePlansGroup) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     setLoading(true);
     plansGroupService
       .remove(group?.id)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Grupo removido com sucesso!",
+          status: "success",
         })
       )
       .catch((_err) => {
         setLoading(false);
-        notification.error({
+        createToast({
           message: "Houve um erro ao remover o plano selecionado...",
+          status: "error",
         });
       })
       .finally(() => setTimeout(setReload(!reload)));
@@ -59,8 +61,9 @@ const Actions = memo(function ({ reload, setReload, group }) {
     plansGroupService
       .update(group?.id, data)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Grupo atualizado com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
@@ -68,12 +71,14 @@ const Actions = memo(function ({ reload, setReload, group }) {
         setLoading(false);
 
         return err?.response?.data.errors
-          ? notification.error({
+          ? createToast({
               message: `houve um erro ao efetuar a atualização de dados, verifique o campo: ${err?.response?.data.errors[0].field}`,
+              status: "error",
             })
-          : notification.error({
+          : createToast({
               message:
                 "Houve um problema ao efetuar a atualização das informações do grupo...",
+              status: "error",
             });
       })
       .finally(() => {
@@ -91,7 +96,10 @@ const Actions = memo(function ({ reload, setReload, group }) {
         <EditTwoTone
           onClick={() =>
             !canEditPlansGroup
-              ? notification.error({ message: "Ação não permitida" })
+              ? createToast({
+                  message: "Ação não permitida",
+                  status: "error",
+                })
               : setUpdateVisible(true)
           }
         />
@@ -100,7 +108,10 @@ const Actions = memo(function ({ reload, setReload, group }) {
         title="Deseja remover este grupo de planos de contas ?"
         onConfirm={() => {
           !canDeletePlansGroup
-            ? notification.error({ message: "Ação não permitida" })
+            ? createToast({
+                message: "Ação não permitida",
+                status: "error",
+              })
             : removePlansGroup();
         }}
       >

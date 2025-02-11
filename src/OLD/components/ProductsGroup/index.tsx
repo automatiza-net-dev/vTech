@@ -7,8 +7,8 @@ import { productService } from "@/OLD/services/product.service";
 import { useProductsGroup } from "@/OLD/hooks/useProductGroup";
 
 import { Container } from "./styles";
-import { Table, Modal, notification, Popconfirm } from "antd";
-import { Button, PageWrapper } from "infinity-forge";
+import { Table, Modal, Popconfirm } from "antd";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -30,6 +30,7 @@ const ProductsGroup = memo(function ProductsGroup() {
   const canCreateKit = useUserHasPermission("KIT01");
   const canEditKit = useUserHasPermission("KIT02");
   const canDeleteKit = useUserHasPermission("KIT03");
+  const { createToast } = useToast();
 
   const { productsGroup } = useProductsGroup(filters, reload);
 
@@ -39,12 +40,13 @@ const ProductsGroup = memo(function ProductsGroup() {
       .removeKit(id)
       .then((_res) => {
         setReload((prv) => !prv);
-        notification.success({ message: "Kit removido com sucesso" });
+        createToast({ message: "Kit removido com sucesso", status: "success" });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Hovue um erro ao remover o kit selecionado",
+          status: "error",
         });
       });
   };

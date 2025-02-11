@@ -9,7 +9,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Container } from "./styles";
 import { Button, useToast } from "infinity-forge";
-import { Input, Table, notification, Modal, Popconfirm } from "antd";
+import { Input, Table, Modal, Popconfirm } from "antd";
 import FinancesActions from "../Actions";
 import DownFormChild from "../Actions/FormChild";
 
@@ -162,7 +162,6 @@ function BorderoDetails({
       .catch((err) => {
         const errMessage = err?.response?.data?.errors;
         if (errMessage) {
-
           return createToast({
             status: "error",
             message: errMessage[0].message,

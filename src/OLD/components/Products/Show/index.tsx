@@ -21,18 +21,9 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { EditTwoTone } from "@ant-design/icons";
 
 // Components
-import {
-  Col,
-  Input,
-  Row,
-  Switch,
-  Table,
-  AutoComplete,
-  Select,
-  notification,
-} from "antd";
+import { Col, Input, Row, Switch, Table, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
 import { Container } from "../styles";
@@ -101,6 +92,7 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
   sortItems(subgroups, "description");
   sortItems(taxationGroups, "name");
   sortItems(units, "name");
+  const { createToast } = useToast();
 
   {
     /*const { data, error, refetch } = useQuery(
@@ -169,13 +161,17 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
 
   const verifyFields = (fields) => {
     if (fields.includes("purpose")) {
-      return notification.warning({
+      return createToast({
         message: "Informe o propósito do produto",
+        status: "warning",
       });
     }
 
     if (fields.includes("icmsOrigin")) {
-      return notification.warning({ message: "Informe a origem icms" });
+      return createToast({
+        message: "Informe a origem icms",
+        status: "warning",
+      });
     }
   };
 
@@ -192,8 +188,9 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
       ?.then((res) => {
         setLoading(false);
         setVisible(false);
-        return notification.success({
+        return createToast({
           message: "Produto atualizado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {

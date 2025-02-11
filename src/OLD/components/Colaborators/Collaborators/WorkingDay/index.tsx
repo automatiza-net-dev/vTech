@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
-import { Col, Row, notification, Checkbox } from "antd";
+import { Col, Row, Checkbox } from "antd";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { Button, useToast } from "infinity-forge";
 
@@ -189,13 +189,13 @@ export function WorkingDay({ edit }) {
         )}
 
         <div className="uk-flex uk-flex-between">
-          {(
+          {
             <Button
               text="Adicionar Horário de agenda"
               onClick={() => mutate(defaultData)}
               loading={isMutating}
             />
-          )}
+          }
         </div>
       </div>
       {edit && (
@@ -209,8 +209,11 @@ export function WorkingDay({ edit }) {
         >
           <Button
             onClick={() => {
-              createToast({ status: "success", message: "Informações salvas com sucesso!" })
-          
+              createToast({
+                status: "success",
+                message: "Informações salvas com sucesso!",
+              });
+
               router.back();
             }}
             text="Salvar"

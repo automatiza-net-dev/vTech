@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { memo, useEffect, useState } from "react";
 
-import { notification, Button } from "antd";
+import { Button } from "antd";
 
 import moment from "moment";
 

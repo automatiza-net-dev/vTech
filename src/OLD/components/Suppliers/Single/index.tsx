@@ -2,7 +2,7 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { petsService } from "@/OLD/services/patient.service";
-import { notification, Table } from "antd";
+import { Table } from "antd";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
 import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
@@ -34,7 +34,7 @@ const Single = memo(function Single() {
             background: "#fff",
             borderRadius: "20px",
             marginTop: "50px",
-            border: "0.5px solid #cacaca"
+            border: "0.5px solid #cacaca",
           }}
         >
           <>

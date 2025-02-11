@@ -1,33 +1,29 @@
 // @ts-nocheck
 import React, { memo } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
+import { useToast } from "infinity-forge";
 
 export const Delete = memo(function Delete({ id, reload, setReload }) {
   const queryClient = useQueryClient();
-
+  const { createToast } = useToast();
   const permissions = permissionControl("especies");
 
   const { mutate, loading } = useMutation(
     (id) => animalServices.deleteSpecie(id),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Espécie deletada",
-        });
+        createToast({ message: "Espécie deletada", status: "success" });
+
         setReload(!reload);
         queryClient.invalidateQueries("getSpecies");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao deletar espécie",
-        });
+        createToast({ message: "Erro ao deletar espécie", status: "error" });
       },
     }
   );
@@ -38,7 +34,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         title="Deseja realmete excluir essa espécie?"
         onConfirm={() =>
           !permissions?.ESP3
-            ? notification.error({ message: "Ação não permitida" })
+            ? createToast({ message: "Ação não permitida", status: "error" })
             : mutate(id)
         }
         okText="Sim"
@@ -46,7 +42,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         placement="left"
         loading={loading}
       >
-          <DeleteTwoTone twoToneColor="red" />
+        <DeleteTwoTone twoToneColor="red" />
       </Popconfirm>
     </div>
   );

@@ -6,13 +6,14 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
-import { Button, Input, Modal, Select, Switch, notification } from "antd";
+import { Button, Input, Modal, Select, Switch } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 const { TextArea } = Input;
 const { Option } = Select;
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
+import { useToast } from "infinity-forge";
 
 const UpdateSubgroup = memo(function UpdateSubgroup({
   subgroupInfo,
@@ -21,7 +22,7 @@ const UpdateSubgroup = memo(function UpdateSubgroup({
   subgroups = [],
 }) {
   const queryClient = useQueryClient();
-
+  const { createToast } = useToast();
   const [data, setData] = useState(null);
 
   const permissions = permissionControl("subgrupos");
@@ -48,7 +49,7 @@ const UpdateSubgroup = memo(function UpdateSubgroup({
 
   const submit = useCallback(() => {
     if (!permissions?.SBG2) {
-      return notification.error({ message: "Ação não permitida!" });
+      return createToast({ message: "Ação não permitida!", status: "error" });
     }
 
     mutate({

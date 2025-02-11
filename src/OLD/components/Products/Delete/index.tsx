@@ -3,7 +3,7 @@
 import { memo, useCallback } from "react";
 
 // Components
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 
 // Services
 import { productService } from "@/OLD/services/product.service";
@@ -14,17 +14,21 @@ import { useMutation } from "react-query";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
+import { useToast } from "infinity-forge";
 
 const DeleteProduct = memo(function DeleteProduct({ id, hide }) {
   const permissions = permissionControl("produtos");
+  const { createToast } = useToast();
 
   const { mutate, isLoading } = useMutation(
     () => productService.removeProduct(id),
     {
       onSuccess: () => {
-        notification.success({
+        createToast({
           message: "Produto removido com sucesso",
+          status: "success",
         });
+
         hide();
       },
     }
@@ -32,7 +36,7 @@ const DeleteProduct = memo(function DeleteProduct({ id, hide }) {
 
   const remove = useCallback(() => {
     if (!permissions?.PRD3) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
     mutate();
   }, [id]);

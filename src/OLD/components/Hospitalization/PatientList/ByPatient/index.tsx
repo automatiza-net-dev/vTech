@@ -16,14 +16,7 @@ import moment from "moment";
 
 // Components;
 import { Container } from "./styles";
-import {
-  Modal,
-  DatePicker,
-  Input,
-  TimePicker,
-  notification,
-  Select,
-} from "antd";
+import { Modal, DatePicker, Input, TimePicker, Select } from "antd";
 import { Button, useToast } from "infinity-forge";
 const { TextArea } = Input;
 const { Option } = Select;
@@ -56,7 +49,7 @@ const ByPatient = memo(function ByPatient({
   const [selectedIndex, setSelectedIndex] = useState("");
   const { patient } = patientData;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getVets = useCallback(() => {
     setLoading(true);
@@ -74,8 +67,11 @@ const ByPatient = memo(function ByPatient({
       )
       .catch((_err) => {
         setLoading(false);
-        
-        return createToast({ status: "error", message: "Não foi possível buscar os veterinários disponíveis." })
+
+        return createToast({
+          status: "error",
+          message: "Não foi possível buscar os veterinários disponíveis.",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -140,10 +136,16 @@ const ByPatient = memo(function ByPatient({
         executionUserId: data?.executionUserId,
       })
       .then((_res) =>
-      createToast({ status: "success", message: "Prescrição executada com sucesso!" })
+        createToast({
+          status: "success",
+          message: "Prescrição executada com sucesso!",
+        })
       )
       .catch((_err) =>
-        createToast({ status: "error", message: "houve um erro ao executar a prescrição..." })
+        createToast({
+          status: "error",
+          message: "houve um erro ao executar a prescrição...",
+        })
       )
       .finally(() => {
         setReload(!reload);
@@ -236,7 +238,10 @@ const ByPatient = memo(function ByPatient({
                           if (!item?.executed_at) {
                             setSelectedIndex(index);
                           } else {
-                            return createToast({ status: "error", message: "Prescrição já executada" })
+                            return createToast({
+                              status: "error",
+                              message: "Prescrição já executada",
+                            });
                           }
                         }}
                       />

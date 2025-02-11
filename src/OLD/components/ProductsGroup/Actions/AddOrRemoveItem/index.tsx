@@ -6,16 +6,8 @@ import { productService } from "@/OLD/services/product.service";
 
 import { useGetBillProducts } from "@/OLD/hooks/useBills";
 
-import {
-  Table,
-  AutoComplete,
-  notification,
-  Input,
-  Modal,
-  Switch,
-  Popconfirm,
-} from "antd";
-import { Button } from "infinity-forge";
+import { Table, AutoComplete, Input, Modal, Switch, Popconfirm } from "antd";
+import { Button, useToast } from "infinity-forge";
 import { Container } from "./styles";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
@@ -38,7 +30,7 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
   const [loading, setLoading] = useState(false);
   const [updateVisible, setUpdateVisible] = useState(false);
   const [data, setData] = useState({});
-
+  const { createToast } = useToast();
   const { data: products } = useGetBillProducts(true);
 
   const router = useRouter();
@@ -149,9 +141,10 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
       })
       .catch((_err) => {
         setLoading(false);
-        notification.error({
+        createToast({
           message:
             "Houve um erro ao adicionar o produto, verifique os campos informados",
+          status: "error",
         });
       });
   }, [kit, selectedProduct]);
@@ -163,14 +156,17 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+        return createToast({
           message: "item removido removido com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao remover o item",
+          status: "error",
         });
       });
   };
@@ -190,15 +186,18 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
         setLoading(false);
         setReload((prv) => !prv);
         setUpdateVisible(false);
-        return notification.success({
+        return createToast({
           message: "Item atualizado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
           message:
             "Houve um erro ao atualizar o item, verifique os campos informados",
+          status: "error",
         });
       });
   }, [selectedProduct, data]);

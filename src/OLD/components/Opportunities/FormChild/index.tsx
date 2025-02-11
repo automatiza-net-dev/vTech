@@ -3,16 +3,15 @@ import React, { useEffect, useState, useCallback } from "react";
 
 import { RemoteCRM } from "@/data";
 
-import {
-  Input,
-  AutoComplete,
-  Switch,
-  notification,
-  Select as SelectAnt,
-  Modal,
-} from "antd";
+import { Input, AutoComplete, Switch, Select as SelectAnt, Modal } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { FormHandler, Select, Button, useAuthAdmin } from "infinity-forge";
+import {
+  FormHandler,
+  Select,
+  Button,
+  useAuthAdmin,
+  useToast,
+} from "infinity-forge";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { animalServices } from "@/OLD/services/animal.service";
@@ -60,6 +59,8 @@ export default function FormChild({
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
 
+  const { createToast } = useToast();
+
   const { user } = useAuthAdmin();
   const { data: uniqueOrigins } = useLoadCampaings({
     active: true,
@@ -91,8 +92,9 @@ export default function FormChild({
         );
       })
       .catch((err) => {
-        notification.error({
+        createToast({
           message: "Houve um erro ao obter as raças disponíveis",
+          status: "error",
         });
       });
   }, [refreshAutoComplete]);
@@ -107,13 +109,19 @@ export default function FormChild({
 
   const verifyFields = () => {
     if (!data?.contactDate) {
-      return notification.warning({ message: "Informe a data do contado" });
+      return createToast({
+        message: "Informe a data do contado",
+        status: "warning",
+      });
     }
     if (!data?.statusId) {
-      return notification.warning({ message: "Informe o status" });
+      return createToast({ message: "Informe o status", status: "warning" });
     }
     if (!data?.userId) {
-      return notification.warning({ message: "Informe o responsável" });
+      return createToast({
+        message: "Informe o responsável",
+        status: "warning",
+      });
     }
     return "ok";
   };
@@ -149,16 +157,16 @@ export default function FormChild({
               onSuccess={() => setReload((prv) => !prv)}
               origin="Crm"
               trigger={
-                  <label
-                    className="uk-link"
-                    style={{
-                      textAlign: "left",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    Cliente
-                  </label>
+                <label
+                  className="uk-link"
+                  style={{
+                    textAlign: "left",
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  Cliente
+                </label>
               }
             />
 
@@ -610,10 +618,12 @@ export default function FormChild({
                 justifyContent: "flex-end",
               }}
             >
-              <Button type="submit" text="Salvar" /> 
-            
-                <Button text="Cancelar" onClick={() => () => router.push("/crm/kanban")}/>
-          
+              <Button type="submit" text="Salvar" />
+
+              <Button
+                text="Cancelar"
+                onClick={() => () => router.push("/crm/kanban")}
+              />
             </footer>
           ) : (
             <>

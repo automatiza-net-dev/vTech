@@ -3,10 +3,11 @@ import React from "react";
 
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useToast } from "infinity-forge";
 
 export const Delete = React.memo(function Delete({
   id,
@@ -16,23 +17,25 @@ export const Delete = React.memo(function Delete({
 }) {
   const canDeleteScheduleService = useUserHasPermission("ASV03");
 
+  const { createToast } = useToast();
+
   const handleDelete = React.useCallback(() => {
     if (!permissions?.ASV3) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     scheduleTypeServices
       .deleteScheduleType(id)
       .then((res) => {
-        notification.success({
-          message: "Sucesso",
-          description: "tipo de agendamento deletado!",
+        return createToast({
+          message: "tipo de agendamento deletado!",
+          status: "success",
         });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao deletar o tipo de agendamento!",
+        return createToast({
+          message: "Erro ao deletar o tipo de agendamento!",
+          status: "error",
         });
       })
       .finally(() => setReload((prv) => !prv));
@@ -47,7 +50,7 @@ export const Delete = React.memo(function Delete({
         cancelText="Não"
         placement="left"
       >
-          {canDeleteScheduleService && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteScheduleService && <DeleteTwoTone twoToneColor="red" />}
       </Popconfirm>
     </div>
   );

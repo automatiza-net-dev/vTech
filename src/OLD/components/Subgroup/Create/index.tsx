@@ -6,7 +6,7 @@ import { memo, useCallback, useState } from "react";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
-import { Button, Input, Modal, notification, Select } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 const { TextArea } = Input;
 
@@ -23,16 +23,19 @@ const CreateSubgroup = memo(function CreateSubgroup({
     (newData) => subgroupsService.storeSubgroup(newData),
     {
       onSuccess: () => {
-        notification.success({
+        createToast({
           message: "Exame cadastrado com sucesso!",
+          status: "success",
         });
+
         queryClient.invalidateQueries(["subgroups"]);
         setData({ description: "", parent: null });
         hide();
       },
       onError: (error) => {
-        notification.error({
+        createToast({
           message: err.response.data.errors[0].message,
+          status: "error",
         });
       },
     }

@@ -6,8 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import { productService } from "@/OLD/services/product.service";
 
 // Components
-import { Button, InputNumber, Modal, Select, notification } from "antd";
+import { Button, InputNumber, Modal, Select } from "antd";
 import { useMutation } from "react-query";
+import { useToast } from "infinity-forge";
 
 const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
   visible,
@@ -15,6 +16,8 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
   close,
   id,
 }) {
+  const { createToast } = useToast();
+
   const [data, setData] = useState({});
 
   const handleClose = () => {
@@ -158,7 +161,10 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
                     maximumDiscountPercentage: val,
                   });
                 } else {
-                  notification.warning({ message: "O valor máximo é 100%" });
+                  createToast({
+                    message: "O valor máximo é 100%",
+                    status: "warning",
+                  });
                 }
               }}
             />
@@ -177,9 +183,10 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
                     maximumDiscountValue: val,
                   });
                 } else {
-                  notification.warning({
+                  createToast({
                     message:
                       "O valor de desconto não pode ser maior que o preço de venda",
+                    status: "warning",
                   });
                 }
               }}

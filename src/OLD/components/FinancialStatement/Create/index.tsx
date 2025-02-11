@@ -26,7 +26,6 @@ import {
   Select,
   Button,
   AutoComplete,
-  notification,
   Radio,
 } from "antd";
 import Installments from "./Installments";
@@ -217,21 +216,21 @@ export const Create = memo(function Create({ type }) {
           e.preventDefault();
 
           if (!data?.clientId && clinic?.unitConfig?.requires_finance_client) {
-            return notification.warning({
-              message: "Selecione um títular para o título",
-            });
+            return createToast({message:"Selecione um títular para o título",status:"warning"})
+             
           }
 
           if (!data?.paymentMethodId) {
-            return notification.warning({
-              message: "Verifique o campo obrigatório: Forma Pagamento",
-            });
+            return createToast({message:"Verifique o campo obrigatório: Forma Pagamento",status:"warning"})
+
+
+            
           }
 
           if (!data?.accountPlanId) {
-            return notification.warning({
-              message: "Verifique o campo obrigatório: Plano Contas",
-            });
+            return createToast({message:"Verifique o campo obrigatório: Plano Contas",status:"warning"})
+
+           
           }
 
           !submitStage ? setSubmitStage(true) : submitInstallments();

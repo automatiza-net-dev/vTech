@@ -3,31 +3,27 @@ import React, { memo, useCallback } from "react";
 
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { useMutation, useQueryClient } from "react-query";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useToast } from "infinity-forge";
 
 export const Delete = memo(function Delete({ id }) {
   const queryClient = useQueryClient();
-
+  const { createToast } = useToast();
   const canDeleteScheduleStatus = useUserHasPermission("AST03");
 
   const { mutate, loading } = useMutation(
     (id) => scheduleTypeServices.deleteStatus(id),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Status deletado",
-        });
+        createToast({ message: "Status deletado", status: "success" });
+
         queryClient.invalidateQueries("getAllStatus");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao deletar status",
-        });
+        createToast({ message: "Erro ao deletar status", status: "error" });
       },
     }
   );
@@ -38,7 +34,7 @@ export const Delete = memo(function Delete({ id }) {
         title="Deseja realmete excluir esse status?"
         onConfirm={() =>
           !permissions?.AST3
-            ? notification.error({ message: "Ação não permitida" })
+            ? createToast({ message: "Ação não permitida", status: "error" })
             : mutate(id)
         }
         okText="Sim"
@@ -46,7 +42,7 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-          {canDeleteScheduleStatus && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteScheduleStatus && <DeleteTwoTone twoToneColor="red" />}
       </Popconfirm>
     </div>
   );

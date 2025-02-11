@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 
 import { Button, useToast } from "infinity-forge";
-import { Input, AutoComplete, Select, notification, Checkbox } from "antd";
+import { Input, AutoComplete, Select, Checkbox } from "antd";
 
 const { Option } = Select;
 
@@ -115,7 +115,7 @@ export function SinglePendingProducts({
     receipt && formatItems();
   }, [receipt]);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const submitUpdateProducts = useCallback(() => {
     try {
@@ -137,18 +137,23 @@ export function SinglePendingProducts({
               setLoading(false);
               setReload((prv) => !prv);
 
-              createToast({ status: "success", message: "Produtos atualizados com sucesso" })
+              createToast({
+                status: "success",
+                message: "Produtos atualizados com sucesso",
+              });
             })
             .catch((err) => {
               setLoading(false);
 
-              createToast({ status: "error", message: "Houve um erro ao atualizar os produtos" })
+              createToast({
+                status: "error",
+                message: "Houve um erro ao atualizar os produtos",
+              });
             })
-        :  createToast({ status: "error", message: verify })
-    }catch(err) {
-      console.log(err)
+        : createToast({ status: "error", message: verify });
+    } catch (err) {
+      console.log(err);
     }
-
   }, [data]);
 
   return (
@@ -264,7 +269,6 @@ export function SinglePendingProducts({
                     <div className="uk-width-1-3">
                       <label>Unidade</label>
 
-
                       <AutoComplete
                         className="uk-width-1-1"
                         options={units?.map((unit) => ({
@@ -274,7 +278,6 @@ export function SinglePendingProducts({
                         }))}
                         value={item?.unitId}
                         onChange={(val, option) => {
-                
                           let arr = [...data];
                           arr.splice(i, 1, {
                             ...item,
@@ -346,9 +349,7 @@ export function SinglePendingProducts({
                     {item?.fractioned && (
                       <>
                         <div className="uk-width-1-4 uk-margin-small-right">
-                          <label>
-                          Tipo de Unidade da Compra
-                          </label>
+                          <label>Tipo de Unidade da Compra</label>
                           <AutoComplete
                             className="uk-width-1-1"
                             options={units?.map((unit) => ({
@@ -457,21 +458,25 @@ export function SinglePendingProducts({
                         value={item?.costPrice}
                         onChange={(e) => {
                           let arr = [...data];
-                          const newCost = currencyFormatter(convertIntlCurrency(e.target.value));
-                    
+                          const newCost = currencyFormatter(
+                            convertIntlCurrency(e.target.value)
+                          );
+
                           const cost = convertIntlCurrency(newCost) || 0;
                           const margin = parseFloat(item?.profitMargin) || 0;
                           const price = cost * (1 + margin / 100);
-                          const profitMargin = cost ? ((price - cost) / cost) * 100 : 0;
-                    
+                          const profitMargin = cost
+                            ? ((price - cost) / cost) * 100
+                            : 0;
+
                           arr.splice(i, 1, {
                             ...item,
                             costPrice: newCost,
-                            price: currencyFormatter(price.toFixed(2)), 
-                            profitMargin: profitMargin.toFixed(2), 
+                            price: currencyFormatter(price.toFixed(2)),
+                            profitMargin: profitMargin.toFixed(2),
                             sendUpdate: true,
                           });
-                    
+
                           setData(arr);
                         }}
                       />
@@ -499,7 +504,7 @@ export function SinglePendingProducts({
 
                           arr.splice(i, 1, {
                             ...item,
-                            price: currencyFormatter(price.toFixed(2)), 
+                            price: currencyFormatter(price.toFixed(2)),
                             sendUpdate: true,
                           });
 
@@ -534,7 +539,7 @@ export function SinglePendingProducts({
 
                           arr.splice(i, 1, {
                             ...item,
-                            profitMargin: margin.toFixed(2), 
+                            profitMargin: margin.toFixed(2),
                             sendUpdate: true,
                           });
 

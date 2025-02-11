@@ -7,7 +7,7 @@ import { useToast } from "infinity-forge";
 import { planService } from "@/OLD/services/plan.service";
 
 import FormChild from "../FormChild";
-import { Modal, notification, Popconfirm } from "antd";
+import { Modal, Popconfirm } from "antd";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {

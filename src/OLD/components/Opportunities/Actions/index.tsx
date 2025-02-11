@@ -12,7 +12,7 @@ import Update from "./Update";
 import FormControll from "@/OLD/components/Kanban/CardsPanel/FormControll";
 
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
-import { notification, Popconfirm } from "antd";
+import {  Popconfirm } from "antd";
 
 import { HiPencilAlt } from "react-icons/hi";
 import { AiOutlineEye } from "react-icons/ai";
@@ -55,15 +55,22 @@ function Actions({
       });
     } catch (error) {
       if (error instanceof AxiosError) {
-        notification.error({
+
+        createToast({
+          status: "error",
           message: error?.response?.data?.message,
         });
+        
         return;
       }
 
-      notification.error({
+
+      createToast({
+        status: "error",
         message: "Houve um erro ao remover a oportunidade",
       });
+      
+     
     }
   }
 
@@ -81,9 +88,11 @@ function Actions({
         });
       })
       .catch((_err) =>
-        notification.error({
+        createToast({
+          status: "error",
           message: "não foi possível reabrir a oportunidade",
-        })
+        });
+      
       );
   }, [opportunity]);
 

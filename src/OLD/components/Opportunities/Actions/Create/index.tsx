@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import moment from "moment";
 import { AxiosError } from "axios";
-import { PageWrapper, useAuthAdmin } from "infinity-forge";
+import { PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
 
 import { useMe } from "@/presentation";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ export default function Create({
   const { crmData, setCrmData } = useAuth();
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   async function createOpportunity() {
     console.log(data?.castrated);
@@ -63,13 +64,15 @@ export default function Create({
       router.back();
     } catch (error) {
       if (error instanceof AxiosError) {
-        return notification.error({
+        return createToast({
           message: error?.response?.data?.title,
+          status: "error",
         });
       }
 
-      return notification.error({
+      return createToast({
         message: "Verifique os campos informados...",
+        status: "error",
       });
     }
   }

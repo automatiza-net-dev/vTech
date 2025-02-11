@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Select } from "antd";
+import { Form, Input, Modal, Select } from "antd";
 import { LoadingSpin } from "@/OLD/components/mini-components";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { CreateTypeService } from "@/OLD/components/ServiceType/Create";
 import { useRouter } from "next/router";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -26,6 +26,8 @@ export const Edit = memo(({ reload, setReload, icon, id }) => {
 
   const canEditScheduleService = useUserHasPermission("ASV02");
 
+  const { createToast } = useToast();
+
   const handleEdit = useCallback(() => {
     setLoading(true);
 
@@ -41,15 +43,16 @@ export const Edit = memo(({ reload, setReload, icon, id }) => {
       })
       .then((res) => {
         setIsModalVisible(false);
-        notification.success({
-          message: "Sucesso",
-          description: "Serviço de Agendamento editada!",
+
+        createToast({
+          message: "Serviço de Agendamento editada!",
+          status: "success",
         });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar serviço de Agendamento",
+        createToast({
+          message: "Erro ao editar serviço de Agendamento",
+          status: "success",
         });
       })
       .finally(() => {

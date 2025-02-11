@@ -1,11 +1,12 @@
 // @ts-nocheck
 import React, { memo } from "react";
 
-import { Input, Select, Button, notification } from "antd";
+import { Input, Select, Button } from "antd";
 const { Option } = Select;
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+import { useToast } from "infinity-forge";
 
 const FormChild = memo(function FormChild({
   data,
@@ -13,6 +14,8 @@ const FormChild = memo(function FormChild({
   submit,
   setVisible,
 }) {
+  const { createToast } = useToast();
+
   return (
     <form
       onSubmit={(e) => {
@@ -65,7 +68,10 @@ const FormChild = memo(function FormChild({
               if (e.target.value <= 100) {
                 setData({ ...data, maximumDiscountPercentage: e.target.value });
               } else {
-                notification.warning({ message: "O valor máximo é 100%" });
+                createToast({
+                  message: "O valor máximo é 100%",
+                  status: "warning",
+                });
               }
             }}
           />
@@ -86,9 +92,10 @@ const FormChild = memo(function FormChild({
                   ),
                 });
               } else {
-                notification.warning({
+                createToast({
                   message:
                     "O valor de desconto não pode ser maior que o preço de venda",
+                  status: "warning",
                 });
               }
             }}

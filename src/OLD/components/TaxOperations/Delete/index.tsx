@@ -3,7 +3,7 @@
 import { memo, useCallback } from "react";
 
 // Components
-import { Popconfirm, notification } from "antd";
+import { Popconfirm } from "antd";
 
 // Services
 import { taxOperationService } from "@/OLD/services/tax-operation.service";
@@ -14,11 +14,13 @@ import { useMutation, useQueryClient } from "react-query";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
+import { useToast } from "infinity-forge";
 
 const DeleteTaxOperation = memo(function DeleteTaxOperation({ close, id }) {
   const queryClient = useQueryClient();
 
   const permissions = permissionControl("operacoesFiscais");
+  const { createToast } = useToast();
 
   const { mutate, isLoading } = useMutation((id) =>
     taxOperationService.deleteTaxOperations(id)
@@ -26,7 +28,7 @@ const DeleteTaxOperation = memo(function DeleteTaxOperation({ close, id }) {
 
   const remove = useCallback(() => {
     if (!permissions?.OPF3) {
-      return notification.error({ message: "ação não permitida" });
+      return createToast({ message: "ação não permitida", status: "error" });
     }
 
     mutate(id, {

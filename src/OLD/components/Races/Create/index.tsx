@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Select } from "antd";
-import { Button } from "infinity-forge";
+import { Form, Input, Modal, Select } from "antd";
+import { Button, useToast } from "infinity-forge";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { memo, useCallback, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -21,15 +21,14 @@ export const Create = ({
   const [createSpecieVisible, setCreateSpecieVisible] = useState(false);
   const { Option } = Select;
   const { species, loadingSpecies } = useSpecies("ALL", reload);
+  const { createToast } = useToast();
 
   const { mutate, loading } = useMutation(
     (data) => animalServices.createRace(data),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Raça criada!",
-        });
+        createToast({ message: "Raça criada!", status: "success" });
+
         setVisible(false);
         setPayload(null);
         queryClient.invalidateQueries("getRaces");
@@ -38,10 +37,7 @@ export const Create = ({
         }
       },
       onError: (error) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao criar Raça!",
-        });
+        createToast({ message: "Erro ao criar Raça!", status: "error" });
       },
     }
   );
@@ -123,7 +119,9 @@ export const Create = ({
               <Option value="PELO_CURTO">Pelo curto</Option>
             </Select>
           </Form.Item>
-          <footer style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+          <footer
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
             <Button
               type="button"
               text="Cancelar"

@@ -10,7 +10,7 @@ import { planService } from "@/OLD/services/plan.service";
 
 import { Container } from "./styles";
 import { Button, PageWrapper } from "infinity-forge";
-import { Table, Modal, notification } from "antd";
+import { Table, Modal } from "antd";
 import FormChild from "./FormChild";
 import Filters from "./Filters";
 import Actions from "./Actions";
@@ -28,6 +28,8 @@ const Plans = memo(function Plans() {
   const [formatedPlans, setFormatedPlans] = useState([]);
 
   const { plans } = usePlans(filters, reload);
+  const { createToast } = useToast();
+
   const { plansGroup } = usePlansGroup(groupFilters);
 
   const listAccountPlansPermission = useUserHasPermission("PCT00");
@@ -105,7 +107,7 @@ const Plans = memo(function Plans() {
 
   const submitCreatePlan = useCallback(async () => {
     if (!canCreateAccountPlans) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     try {
@@ -117,12 +119,14 @@ const Plans = memo(function Plans() {
       setCreateVisible(false);
       setData({ active: true });
 
-      notification.success({
+      return createToast({
         message: "Plano de contas cadastrado com sucesso!",
+        status: "success",
       });
     } catch (error) {
-      notification.error({
+      return createToast({
         message: "Houve um erro ao cadastrar o plano...",
+        status: "error",
       });
     }
   }, [data]);

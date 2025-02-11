@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Select } from "antd";
+import { Form, Input, Modal, Select } from "antd";
 import { LoadingSpin } from "@/OLD/components/mini-components";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { useRouter } from "next/router";
 import { memo, useCallback, useEffect, useState } from "react";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -18,6 +18,7 @@ export const Edit = ({ icon, id, reload, setReload }) => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { createToast } = useToast();
 
   const canEditTypeScheduleService = useUserHasPermission("ATS02");
 
@@ -31,15 +32,15 @@ export const Edit = ({ icon, id, reload, setReload }) => {
       .editSingleScheduleServiceGroup(!idRouter ? id : idRouter, data)
       .then((_res) => {
         setIsModalVisible(false);
-        notification.success({
-          message: "Sucesso",
-          description: "Tipo de agendamento editado!",
+        createToast({
+          message: "Tipo de agendamento editado!",
+          status: "success",
         });
       })
       .catch((_err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar tipo de agendamento",
+        createToast({
+          message: "Erro ao editar tipo de agendamento",
+          status: "error",
         });
       })
       .finally(() => {
@@ -74,7 +75,7 @@ export const Edit = ({ icon, id, reload, setReload }) => {
         <EditTwoTone
           onClick={() =>
             permissions?.ATS2
-              ? notification.error({ message: "Ação não permitida" })
+              ? createToast({ message: "Ação não permitida", status: "error" })
               : setIsModalVisible(true)
           }
           className="uk-margin-small-left"

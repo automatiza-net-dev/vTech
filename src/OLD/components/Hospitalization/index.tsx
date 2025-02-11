@@ -10,7 +10,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
 import { Container } from "./styles";
-import { Menu, notification, Popconfirm } from "antd";
+import { Menu, Popconfirm } from "antd";
 import { Button, useToast } from "infinity-forge";
 import BaseForm from "./BaseForm";
 import HeaderControl from "./Date";

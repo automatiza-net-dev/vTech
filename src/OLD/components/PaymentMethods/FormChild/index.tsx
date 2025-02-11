@@ -9,17 +9,10 @@ import { useCheckingAccounts } from "@/OLD/hooks/useCheckingAccounts";
 // Components
 import CardFlags from "./CreateCardFlags";
 import { Container } from "./styles";
-import {
-  Switch,
-  Input,
-  Select,
-  Button,
-  Modal,
-  notification,
-  Table
-} from "antd";
+import { Switch, Input, Select, Button, Modal, Table } from "antd";
 const { Option } = Select;
 import FlagsTable from "./FlagsTable";
+import { useToast } from "infinity-forge";
 
 function FormChild({
   submit,
@@ -28,11 +21,11 @@ function FormChild({
   setVisible,
   reload,
   setReload,
-  methodId
+  methodId,
 }) {
   const [flagsVisible, setFlagsVisible] = useState(false);
   const { checkingAccounts } = useCheckingAccounts();
-
+  const { createToast } = useToast();
   return (
     <Container>
       <form
@@ -116,7 +109,7 @@ function FormChild({
               onChange={(e) =>
                 setData({
                   ...data,
-                  installmentsWithoutPassword: e.target.value
+                  installmentsWithoutPassword: e.target.value,
                 })
               }
             />
@@ -243,8 +236,9 @@ function FormChild({
         <Button
           onClick={() => {
             if (!data?.type) {
-              return notification.warning({
-                message: "Informa o tipo de operação"
+              return createToast({
+                message: "Informa o tipo de operação",
+                status: "warning",
               });
             }
             setFlagsVisible(true);
@@ -271,6 +265,6 @@ function FormChild({
       </Modal>
     </Container>
   );
-};
+}
 
 export default FormChild;

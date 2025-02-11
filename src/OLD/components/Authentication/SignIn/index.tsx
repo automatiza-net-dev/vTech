@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { container, TypesAutomatiza } from "@/container";
 
 import moment from "moment";
-import { notification } from "antd";
 import { useAuthAdmin, Button, useToast, api } from "infinity-forge";
 
 import { sessionService } from "@/OLD/services/session.service";
@@ -33,7 +32,7 @@ export function SignIn() {
         if (ip) {
           setData((prev) => ({ ...prev, ip }));
         }
-      })()
+      })();
     }
   }, []);
 
@@ -44,7 +43,10 @@ export function SignIn() {
       e.preventDefault();
 
       if (data.email === "" || data.password === "") {
-        createToast({ status: "error", message: "Por favor, preencha todos os campos", })
+        createToast({
+          status: "error",
+          message: "Por favor, preencha todos os campos",
+        });
         return;
       }
 
@@ -68,7 +70,10 @@ export function SignIn() {
         });
 
         if (loginResponse?.message) {
-          return createToast({ status: "error", message: loginResponse.message })
+          return createToast({
+            status: "error",
+            message: loginResponse.message,
+          });
         }
 
         router.push(

@@ -12,7 +12,7 @@ import { Container } from "./styles";
 import OpportunitiesForm from "@/OLD/components/Opportunities/FormChild";
 import Actions from "./Actions";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
-import { Table, notification, Input } from "antd";
+import { Table, Input } from "antd";
 import { Button, useToast } from "infinity-forge";
 
 import { opportunitiesActivitiesColumns } from "./Columns";
@@ -169,7 +169,11 @@ const OpActivities = memo(function OpActivities({
       })
       .catch((_err) => {
         setLoading(false);
-        return createToast({ status: "error", message:"Houve um erro ao atualizar as informações da oportunidade, verifique os campos informados"  })
+        return createToast({
+          status: "error",
+          message:
+            "Houve um erro ao atualizar as informações da oportunidade, verifique os campos informados",
+        });
       });
   }
 
