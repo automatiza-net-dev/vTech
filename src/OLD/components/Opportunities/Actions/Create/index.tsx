@@ -35,6 +35,8 @@ export default function Create({
   const { clinic } = useProfile();
   const { crmData, setCrmData } = useAuth();
 
+  const { createToast } = useToast();
+
   const router = useRouter();
   const { createToast } = useToast();
 
@@ -65,14 +67,14 @@ export default function Create({
     } catch (error) {
       if (error instanceof AxiosError) {
         return createToast({
-          message: error?.response?.data?.title,
           status: "error",
+          message: error?.response?.data?.title,
         });
       }
 
       return createToast({
-        message: "Verifique os campos informados...",
         status: "error",
+        message: "Verifique os campos informados...",
       });
     }
   }

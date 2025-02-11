@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import { Input, Button, Select, AutoComplete } from "antd";
 const { Option } = Select;
@@ -25,11 +25,10 @@ const FormChild = memo(function ({
   close,
   options,
 }: any) {
-  console.log(formData, "???");
-
   const opportunityMovements = useQuery({
     queryKey:
       "search_from_clients" +
+      formData?.op?.id +
       formData?.op?.contact?.id +
       formData?.op?.client?.id,
     queryFn: async () => {
@@ -47,12 +46,19 @@ const FormChild = memo(function ({
     },
   });
 
-  const opportunitiesList = opportunityMovements?.data?.map((op) => {
-    return {
-      label: op?.tag + " - " + moment(op?.bill_date).format("DD/MM/YYYY") + " - " + formatNumberToCurrency(op?.total_value || 0) ,
-      value: op?.id,
-    };
-  }) || []
+  const opportunitiesList =
+    opportunityMovements?.data?.map((op) => {
+      return {
+        ...op,
+        label:
+          op?.tag +
+          " - " +
+          moment(op?.bill_date).format("DD/MM/YYYY") +
+          " - " +
+          formatNumberToCurrency(op?.total_value || 0),
+        value: op?.id,
+      };
+    }) || [];
 
   const headerRender = () => {
     if (formData?.form === "gain" || formData?.form === "loss") {
@@ -90,9 +96,9 @@ const FormChild = memo(function ({
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        submit();
+       submit();
       }}
     >
       {headerRender()}
@@ -107,16 +113,29 @@ const FormChild = memo(function ({
 
       <FormHandler>
         <SelectInfinityForge
-          onChangeInput={(value) => {
-            const opportunityId = value;
+          onChangeInput={(value) =>
+            setData((oldState) => {
+              const selectValue = value as string[];
 
-            console.log(opportunityId)
-          }}
+              const items = selectValue.map((item) => {
+                const findOptionSelected = opportunitiesList?.find(
+                  (op) => op?.id === item
+                );
+
+                return {
+                  opportunityId: formData?.op?.id,
+                  movementId: item,
+                  type: findOptionSelected?.type,
+                };
+              });
+
+              return { ...oldState, items };
+            })
+          }
           isMultiple
           label="Selecionar Vendas Relacionadas"
           name="select_opportunity"
           placeholder="Selecione uma venda"
-          
           loading={opportunityMovements.isFetching}
           options={opportunitiesList}
         />
