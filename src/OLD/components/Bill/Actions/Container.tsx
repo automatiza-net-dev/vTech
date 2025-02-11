@@ -12,7 +12,7 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm, Modal } from "antd";
+import { Popconfirm, Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";

@@ -15,12 +15,10 @@ import {
 } from "./Columns";
 
 import { DeleteTwoTone } from "@ant-design/icons";
-import { Button } from "infinity-forge";
 import {
   Checkbox,
   Input,
   Modal,
-  notification,
   Popconfirm,
   Skeleton,
   Table,
@@ -40,25 +38,21 @@ import { TbAlertTriangle } from "react-icons/tb";
 import { RiPrinterCloudLine } from "react-icons/ri";
 import { fiscalDocumentService } from "../../../../../OLD/services/fiscal-document.service";
 import moment from "moment";
-import { Icon } from "infinity-forge";
+import { Icon, Button, useToast } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
 
 const verifyErrors = (message) => {
   if (!message) {
-    return notification.error({
-      message: "Houve um erro interno, tente novamente mais tarde",
-    });
+    return "Houve um erro interno, tente novamente mais tarde";
   }
 
   if (message?.includes("E_NOT_OPEN")) {
-    return notification.warning({
-      message: "Nota não está aberta, não é possível alterar o vendedor",
-    });
+    return "Nota não está aberta, não é possível alterar o vendedor";
   }
 
   if (message?.includes("E_ERR")) {
-    return notification.warning({ message: message?.split(":")[1] });
+    returnmessage?.split(":")[1];
   }
 };
 
@@ -96,6 +90,8 @@ const Details = memo(function Details({ billId, setVisible }) {
   const emitFiscalNotePermission = useUserHasPermission("VEN08");
   const cancelFNPermission = useUserHasPermission("VEN09");
   const disableFNPermission = useUserHasPermission("VEN10");
+
+  const { createToast } = useToast();
 
   const { data } = useShowBill(billId, true);
 
@@ -214,15 +210,17 @@ const Details = memo(function Details({ billId, setVisible }) {
     {
       onSuccess: () => {
         setLoading(false);
-        notification.success({ message: "Nota emitida com sucesso" });
+        createToast({ message: "Nota emitida com sucesso", status: "success" });
+
         setOpenModal(false);
         queryClient.invalidateQueries(["bills"]);
         queryClient.invalidateQueries(["fiscalDocuments"]);
       },
       onError: (err) => {
         setLoading(false);
-        notification.error({
+        createToast({
           message: err.response.data[0].message ?? "Erro na emissão",
+          status: "error",
         });
       },
     }
@@ -254,8 +252,9 @@ const Details = memo(function Details({ billId, setVisible }) {
         setCancelNfseData({});
       },
       onError: (err) => {
-        notification.error({
+        createToast({
           message: err.response.data.message || "Erro na emissão",
+          status: "error",
         });
       },
     }
@@ -288,8 +287,10 @@ const Details = memo(function Details({ billId, setVisible }) {
       },
       onError: (err) => {
         setLoading(false);
-        notification.error({
+
+        createToast({
           message: err.response.data.message ?? "Erro na emissão",
+          status: "error",
         });
       },
     }
@@ -321,8 +322,9 @@ const Details = memo(function Details({ billId, setVisible }) {
         setCancelNfeData({});
       },
       onError: (err) => {
-        notification.error({
-          message: err.response.data.message || "Erro na emissão",
+        createToast({
+          message: err.response.data.message ?? "Erro na emissão",
+          status: "error",
         });
       },
     }
@@ -341,8 +343,9 @@ const Details = memo(function Details({ billId, setVisible }) {
         setDisableNfeData({});
       },
       onError: (err) => {
-        notification.error({
+        createToast({
           message: err.response.data.message.split(":")[1],
+          status: "error",
         });
       },
     }
@@ -396,7 +399,6 @@ const Details = memo(function Details({ billId, setVisible }) {
     return false;
   };
 
-
   const productIssuedDocuments = useMemo(() => {
     const result = [];
 
@@ -438,90 +440,80 @@ const Details = memo(function Details({ billId, setVisible }) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-            
-                  <MdOutlineCancel
-                    opacity={validToCancel ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToCancel) return;
-
-                      setOpenCancelNfe(true);
-                      setCancelNfeData({
-                        issuedDocumentId: item.id,
-                        reason: "",
-                      });
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-              
-              )}
-              {disableFNPermission && (
-              
-                  <FiRefreshCw
-                    opacity={validToDisable ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToDisable) return;
-
-                      setOpenDisableNfe(true);
-                      setDisableNfeData({
-                        issuedDocumentId: item.id,
-                        reason: "",
-                      });
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-              
-              )}
-    
-                <MdOutlineSyncDisabled
-                  opacity={validToUpdate ? 1 : 0.5}
+                <MdOutlineCancel
+                  opacity={validToCancel ? 1 : 0.5}
                   onClick={() => {
-                    if (!validToUpdate) return;
+                    if (!validToCancel) return;
 
-                    updateNfeMutation.mutate(item.id);
+                    setOpenCancelNfe(true);
+                    setCancelNfeData({
+                      issuedDocumentId: item.id,
+                      reason: "",
+                    });
                   }}
                   size={25}
                   className="icon"
                   cursor={"pointer"}
                 />
-            
+              )}
+              {disableFNPermission && (
+                <FiRefreshCw
+                  opacity={validToDisable ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToDisable) return;
+
+                    setOpenDisableNfe(true);
+                    setDisableNfeData({
+                      issuedDocumentId: item.id,
+                      reason: "",
+                    });
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
+              )}
+              <MdOutlineSyncDisabled
+                opacity={validToUpdate ? 1 : 0.5}
+                onClick={() => {
+                  if (!validToUpdate) return;
+
+                  updateNfeMutation.mutate(item.id);
+                }}
+                size={25}
+                className="icon"
+                cursor={"pointer"}
+              />
               {renderErrors(item?.corrections, item?.sefaz_status) && (
-              
-                  <TbAlertTriangle
-                    size={20}
-                    color="var(--red)"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setNfeErrorsVisible(true);
-                      return setNfeErrors([
-                        {
-                          cod: item?.sefaz_status_code,
-                          mensagem: item?.sefaz_message,
-                        },
-                      ]);
-                    }}
-                  />
-              
+                <TbAlertTriangle
+                  size={20}
+                  color="var(--red)"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setNfeErrorsVisible(true);
+                    return setNfeErrors([
+                      {
+                        cod: item?.sefaz_status_code,
+                        mensagem: item?.sefaz_message,
+                      },
+                    ]);
+                  }}
+                />
               )}{" "}
               {item?.sefaz_status === "autorizado" && (
-           
-                  <RiPrinterCloudLine
-                    opacity={validToPrint ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToPrint) {
-                        return;
-                      }
+                <RiPrinterCloudLine
+                  opacity={validToPrint ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToPrint) {
+                      return;
+                    }
 
-                      window.open(item.authorization_pdf_path, "_blank");
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-             
+                    window.open(item.authorization_pdf_path, "_blank");
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
               )}
             </div>
           ),
@@ -593,33 +585,29 @@ const Details = memo(function Details({ billId, setVisible }) {
               />
 
               {item?.errors?.length > 0 ? (
-            
-                  <TbAlertTriangle
-                    size={20}
-                    color="var(--red)"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setNfeErrorsVisible(true);
-                      return setNfeErrors(item?.errors);
-                    }}
-                  />
-               
+                <TbAlertTriangle
+                  size={20}
+                  color="var(--red)"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setNfeErrorsVisible(true);
+                    return setNfeErrors(item?.errors);
+                  }}
+                />
               ) : (
-               
-                  <RiPrinterCloudLine
-                    opacity={validToPrint ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToPrint) {
-                        return;
-                      }
+                <RiPrinterCloudLine
+                  opacity={validToPrint ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToPrint) {
+                      return;
+                    }
 
-                      window.open(item.authorization_pdf_path, "_blank");
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-          
+                    window.open(item.authorization_pdf_path, "_blank");
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
               )}
             </div>
           ),
@@ -668,7 +656,7 @@ const Details = memo(function Details({ billId, setVisible }) {
     billService
       .removeBillItem(id)
       .then((_res) =>
-        notification.success({ message: "Item removido com sucesso" })
+        createToast({ message: "Item removido com sucesso", status: "success" })
       )
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
@@ -686,10 +674,16 @@ const Details = memo(function Details({ billId, setVisible }) {
       .then((_res) => {
         setChangeFields((prv) => ({ ...prv, seller: false }));
         queryClient.invalidateQueries(["bills"]);
-        return notification.success({ message: "Vendedor alterado!" });
+
+        createToast({ message: "Vendedor alterado!", status: "success" });
       })
       .catch((err) => {
-        verifyErrors(err?.response?.data?.message);
+        const msg = verifyErrors(err?.response?.data?.message);
+
+        return createToast({
+          message: msg,
+          status: "error",
+        });
       });
   }, [data, seller]);
 
@@ -702,10 +696,18 @@ const Details = memo(function Details({ billId, setVisible }) {
       .then((_res) => {
         setChangeFields((prv) => ({ ...prv, finResponsible: false }));
         queryClient.invalidateQueries(["bills"]);
-        return notification.success({ message: "Resp. financeiro alterado" });
+        createToast({
+          message: "Resp. financeiro alterado",
+          status: "success",
+        });
       })
       .catch((err) => {
-        verifyErrors(err?.response?.data?.message);
+        const msg = verifyErrors(err?.response?.data?.message);
+
+        createToast({
+          message: msg,
+          status: "error",
+        });
       });
   }, [data, finResponsible]);
 
@@ -768,10 +770,13 @@ const Details = memo(function Details({ billId, setVisible }) {
             <Button
               onClick={() => {
                 if (data?.status !== "BAIXADA") {
-                  return notification.warning({
+                  createToast({
                     message:
                       "A Venda deve estar finalizada para emissão de documentos fiscais!",
+                    status: "warning",
                   });
+
+                  return;
                 }
                 setOpenModal(true);
               }}
@@ -937,9 +942,11 @@ const Details = memo(function Details({ billId, setVisible }) {
           onSubmit={(e) => {
             e.preventDefault();
             if (!cancelNfseData?.reason) {
-              return notification.error({
+              createToast({
                 message: "Informe o motivo do cancelamento",
+                status: "error",
               });
+              return;
             }
 
             cancelNfseMutation.mutate(cancelNfseData);
@@ -986,9 +993,11 @@ const Details = memo(function Details({ billId, setVisible }) {
             e.preventDefault();
 
             if (!cancelNfeData?.reason) {
-              return notification.error({
+              createToast({
                 message: "Informe o motivo do cancelamento",
+                status: "error",
               });
+              return;
             }
 
             cancelNfeMutation.mutate(cancelNfeData);
@@ -1034,8 +1043,9 @@ const Details = memo(function Details({ billId, setVisible }) {
           onSubmit={(e) => {
             e.preventDefault();
             if (!disableNfeData?.reason) {
-              return notification.error({
+              return createToast({
                 message: "Informe o motivo da inutilização",
+                status: "error",
               });
             }
 

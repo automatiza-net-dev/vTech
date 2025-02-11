@@ -9,7 +9,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 // Components
 import { Container } from "./styles";
 import { Button, useToast } from "infinity-forge";
-import { Input, Modal, notification } from "antd";
+import { Input, Modal } from "antd";
 
 export const DetailsPanel = memo(function DetailsPanel({
   formData,
@@ -20,7 +20,7 @@ export const DetailsPanel = memo(function DetailsPanel({
   const [confirmModal, setConfirmModal] = useState(false);
   let totalPayed = 0;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   for (let i = 0; i < bill?.payments?.length; i += 1) {
     totalPayed += bill?.payments[i]?.total_value;
@@ -32,11 +32,17 @@ export const DetailsPanel = memo(function DetailsPanel({
         convertIntlCurrency(formData?.installmentsValue) >
       parseFloat(bill?.total_value.toFixed(2))
     ) {
-      return createToast({ status: "error", message: "Valor pago maior que o valor total" })
+      return createToast({
+        status: "error",
+        message: "Valor pago maior que o valor total",
+      });
     }
 
     if (convertIntlCurrency(formData?.installmentsValue) <= 0) {
-      return createToast({ status: "error", message: "O valor do pagamento deve ser maior que zero" }) 
+      return createToast({
+        status: "error",
+        message: "O valor do pagamento deve ser maior que zero",
+      });
     }
 
     return submit();

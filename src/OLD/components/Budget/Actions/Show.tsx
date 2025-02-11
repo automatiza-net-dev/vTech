@@ -32,7 +32,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { CgDetailsMore } from "react-icons/cg";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { useAuthAdmin, Button, Icon } from "infinity-forge";
+import { useAuthAdmin, Button, Icon, useToast } from "infinity-forge";
 import { SystemUser } from "@/domain";
 
 import moment from "moment";
@@ -137,6 +137,7 @@ export default function ShowBudget({ budget, setReload }: any) {
   const { mutate: mutateSellerAndReviewer } = useUpdateSellerAndReviewer(
     budget?.id
   );
+  const { createToast } = useToast();
   const { user } = useAuthAdmin();
   const { data: budgetPayments } = useLoadPaymentsPreview({
     budgetId: budget.id,
@@ -144,7 +145,6 @@ export default function ShowBudget({ budget, setReload }: any) {
   });
 
   const { colaborators } = useColaborators(visible);
-
 
   const componentRef = React.useRef();
   const queryClient = useQueryClient();
@@ -206,11 +206,16 @@ export default function ShowBudget({ budget, setReload }: any) {
       .then((_res) => {
         setPaymentsReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-        notification.success({ message: "Pagamento removido com sucesso!" });
+
+        createToast({
+          message: "Pagamento removido com sucesso!",
+          status: "success",
+        });
       })
       .catch((err) => {
-        return notification.error({
+        return createToast({
           message: err?.response?.data?.message?.split(":")[1],
+          status: "error",
         });
       });
   };

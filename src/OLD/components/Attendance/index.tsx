@@ -2,8 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { notification } from "antd";
-
 import TimeLine from "./Timeline";
 import { petsService } from "@/OLD/services/patient.service";
 
@@ -19,7 +17,7 @@ export default function Attendance() {
   const router = useRouter();
   const patientId = router?.query?.subpage;
 
-  const { createToast } = useToast()
+  const { createToast } = useToast();
 
   const getTutorData = (Id?: any, id?: any): any => {
     petsService
@@ -28,8 +26,10 @@ export default function Attendance() {
         setTutorData(res.data?.find((tutor) => tutor?.id === id));
       })
       .catch((_err) => {
-
-        createToast({ status: "error", message: "Houve um erro ao buscar as informações do tutor..." })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao buscar as informações do tutor...",
+        });
       });
   };
 
@@ -44,7 +44,10 @@ export default function Attendance() {
         );
       })
       .catch(() => {
-        createToast({ status: "error", message: "Não foi possível recuperar as informações do paciente..." })
+        createToast({
+          status: "error",
+          message: "Não foi possível recuperar as informações do paciente...",
+        });
       });
   }, [patientId]);
 
@@ -56,7 +59,10 @@ export default function Attendance() {
         getTutorData(res.data.id);
       })
       .catch(() => {
-        createToast({ status: "error", message: "Não foi possível recuperar as informações do paciente..." })
+        createToast({
+          status: "error",
+          message: "Não foi possível recuperar as informações do paciente...",
+        });
       });
   }, [patientId]);
 

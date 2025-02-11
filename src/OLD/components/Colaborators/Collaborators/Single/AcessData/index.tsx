@@ -4,8 +4,8 @@ import React, { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 // Components
-import { notification } from "antd";
-import { Button } from "infinity-forge";
+
+import { Button, useToast } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -20,6 +20,8 @@ export function AccessData() {
   const [selectedRoles, setSelectedRoles] = useState([]);
   const userId = router.query.id;
 
+  const { createToast } = useToast();
+
   const getColabData = useCallback(() => {
     setLoading(true);
     clinicService
@@ -30,10 +32,14 @@ export function AccessData() {
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+
+        createToast({
           message:
             "Houve um erro ao recuperar as informações do colaborador...",
+          status: "error",
         });
+
+        return;
       })
       .finally(() => setLoading(false));
   }, [userId]);

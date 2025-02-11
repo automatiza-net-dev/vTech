@@ -4,7 +4,7 @@ import React, { useEffect, useState, memo, useCallback } from "react";
 import { useRouter } from "next/router";
 
 // Components
-import { notification, Table } from "antd";
+import { Table } from "antd";
 
 // Services
 import { timelineService } from "@/OLD/services/timeline.service";
@@ -21,7 +21,7 @@ const ListWeight = memo(function ListWeight({ reload }) {
   const router = useRouter();
   const patientId = router.query.subpage;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllWeights = useCallback(() => {
     setLoading(true);
@@ -43,7 +43,10 @@ const ListWeight = memo(function ListWeight({ reload }) {
       })
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message: "Houve um erro ao buscar os pesos registrados..." })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao buscar os pesos registrados...",
+        });
       })
       .finally(() => {
         setLoading(false);

@@ -4,7 +4,7 @@ import React, { useState, useCallback, memo, useEffect } from "react";
 import { useRouter } from "next/router";
 
 // Components
-import { notification, Table } from "antd";
+import { Table } from "antd";
 import { Container } from "./styles";
 
 // Services
@@ -17,11 +17,7 @@ import moment from "moment";
 import "moment/locale/pt-br";
 import { useToast } from "infinity-forge";
 
-export default  function ListVaccinesLauched({
-  reload,
-  setReload,
-  patient,
-}) {
+export default function ListVaccinesLauched({ reload, setReload, patient }) {
   const [allVaccines, setAllVaccines] = useState([]);
   const [loading, setLoading] = useState(false);
   const [dosesModalVisible, setDosesModalVisible] = useState(false);
@@ -29,7 +25,7 @@ export default  function ListVaccinesLauched({
   const router = useRouter();
   const patientId = router.query.subpage;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllVaccines = useCallback(() => {
     setLoading(true);
@@ -53,7 +49,11 @@ export default  function ListVaccinesLauched({
       })
       .catch((err) => {
         setLoading(false);
-        createToast({ status: "error",message: "Houve um erro ao buscar os lançamentos de vacinas do paciente..."  })
+        createToast({
+          status: "error",
+          message:
+            "Houve um erro ao buscar os lançamentos de vacinas do paciente...",
+        });
       })
       .finally(() => {
         setLoading(false);

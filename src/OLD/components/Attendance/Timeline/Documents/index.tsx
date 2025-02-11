@@ -13,7 +13,7 @@ import Columns from "./columns";
 import { Print } from "@/OLD/utils/generalUtils";
 
 // Components
-import { Table, notification } from "antd";
+import { Table } from "antd";
 import { IconBox } from "./styles";
 import { useToast } from "infinity-forge";
 
@@ -23,7 +23,7 @@ const DocumentsList = memo(function DocumentsList({ reload }) {
   const router = useRouter();
   const patientId = router.query.subpage;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllDocuments = useCallback(() => {
     setLoading(true);
@@ -63,7 +63,10 @@ const DocumentsList = memo(function DocumentsList({ reload }) {
       })
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message:  "Não foi possível recuperar os documentos registrados...",})
+        createToast({
+          status: "error",
+          message: "Não foi possível recuperar os documentos registrados...",
+        });
       })
       .finally(() => {
         setLoading(false);

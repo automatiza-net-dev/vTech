@@ -12,7 +12,7 @@ import { useLoadPatient } from "@/presentation";
 import moment from "moment";
 
 // Components
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "./FormChild";
 import { useToast } from "infinity-forge";
 
@@ -29,7 +29,7 @@ function WeightForm({
   const { user } = useProfile();
   const { data: patient } = useLoadPatient();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const systemName = process.env.clientName;
 
@@ -55,11 +55,17 @@ function WeightForm({
         observation: data?.observation,
       })
       .then((_res) =>
-        createToast({ status: "success", message: "Peso registrado com sucesso!", })
+        createToast({
+          status: "success",
+          message: "Peso registrado com sucesso!",
+        })
       )
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message: "Houve um erro ao registrar o peso informado...", })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao registrar o peso informado...",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -80,13 +86,17 @@ function WeightForm({
         observation: data?.observation,
       })
       .then((_res) => {
-        createToast({ status: "success", message: "Pressão arterial registrada com sucesso!", })
-      }
-    
-      )
+        createToast({
+          status: "success",
+          message: "Pressão arterial registrada com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message: "Houve um erro ao registrar a pressão informada...", })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao registrar a pressão informada...",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -107,12 +117,17 @@ function WeightForm({
         observation: data?.observation,
       })
       .then((_res) => {
-        createToast({ status: "success", message: "Glicemia registrada com sucesso!", })
-      }
-      )
+        createToast({
+          status: "success",
+          message: "Glicemia registrada com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message: "Houve um erro ao registrar a glicemia informada...", })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao registrar a glicemia informada...",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -166,13 +181,17 @@ function WeightForm({
         observation: data?.observation,
       })
       .then((_res) => {
-       
-        createToast({ status: "success", message: "Peso atualizado com sucesso!", })
-      }
-      )
+        createToast({
+          status: "success",
+          message: "Peso atualizado com sucesso!",
+        });
+      })
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message: "Houve um erro ao atualizar o peso informado...", })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao atualizar o peso informado...",
+        });
       })
       .finally(() => {
         setLoading(false);
