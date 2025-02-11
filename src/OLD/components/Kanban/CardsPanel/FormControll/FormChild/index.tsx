@@ -28,6 +28,7 @@ const FormChild = memo(function ({
   const opportunityMovements = useQuery({
     queryKey:
       "search_from_clients" +
+      formData?.op?.id +
       formData?.op?.contact?.id +
       formData?.op?.client?.id,
     queryFn: async () => {
