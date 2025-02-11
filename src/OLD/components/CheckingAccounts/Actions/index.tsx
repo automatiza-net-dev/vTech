@@ -14,9 +14,10 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
 import { Container } from "./styles";
-import { notification, Popconfirm, Modal } from "antd";
+import { Popconfirm, Modal } from "antd";
 import FormChild from "../FormChild";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useToast } from "infinity-forge";
 
 const Actions = memo(function Actions({ account, reload, setReload }) {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,8 @@ const Actions = memo(function Actions({ account, reload, setReload }) {
 
   const canEditAccountBank = useUserHasPermission("CCO02");
   const canDeleteAccountBank = useUserHasPermission("CCO03");
+
+  const { createToast } = useToast();
 
   useEffect(() => {
     updateVisible &&
@@ -57,19 +60,30 @@ const Actions = memo(function Actions({ account, reload, setReload }) {
         businessUnitId: newObj?.businessUnitId || null,
       })
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Conta atualizada com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          createToast({
+            message: messageArr[1],
+            status: "error",
+          });
+
+          return;
         }
-        return notification.error({
+
+        createToast({
           message: "Houve um erro ao atualizar os dados da conta!",
+          status: "error",
         });
+
+        return;
       })
       .finally(() => {
         setReload(!reload);
@@ -87,19 +101,29 @@ const Actions = memo(function Actions({ account, reload, setReload }) {
     checkingAccountService
       .removeCheckingAccount(account?.id)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Conta removida com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          createToast({
+            message: messageArr[1],
+            status: "error",
+          });
+
+          return;
         }
-        return notification.error({
+
+        createToast({
           message: "Houve um erro ao remover a conta",
+          status: "error",
         });
+
+        return;
       })
       .finally(() => {
         setReload(!reload);

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import { Button, useToast } from "infinity-forge";
-import { Input, notification } from "antd";
+import { Input } from "antd";
 
 import api from "@/OLD/services";
 import { userService } from "@/OLD/services/user.service";
@@ -55,12 +55,12 @@ export function Step3({ data, setStep }) {
           status: "success",
           message: "Email confirmado com sucesso",
         });
-        
       })
       .catch(() => {
         createToast({
           status: "error",
-          message: "Código inválido, verifique o código informado e tente novamente",
+          message:
+            "Código inválido, verifique o código informado e tente novamente",
         });
       });
   }, [code, data?.email]);

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { notification } from "antd";
 
 import { Button, useToast } from "infinity-forge";
 import { userService } from "@/OLD/services/user.service";
@@ -25,14 +24,12 @@ export function ResetPassword({ type = "reset" }) {
     (e) => {
       e.preventDefault();
       if (data.password === "" || data.password_confirmation === "") {
-        createToast({ status: "error", message: "Preencha os dois campos" })
+        createToast({ status: "error", message: "Preencha os dois campos" });
         return;
       }
 
       if (data.password !== data?.password_confirmation) {
-     
-
-        createToast({ status: "error", message: "As senhas não conferem" })
+        createToast({ status: "error", message: "As senhas não conferem" });
         return;
       }
 

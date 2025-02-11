@@ -15,7 +15,6 @@ import {
   Popconfirm,
   Radio,
   Table,
-  notification,
 } from "antd";
 import { Modal as ModalInfinityForge, useToast } from "infinity-forge";
 import {

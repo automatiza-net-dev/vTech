@@ -16,10 +16,10 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 // Components
-import { Modal, Table, notification, Select } from "antd";
+import { Modal, Table, Select } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Container, Input as InputBox } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import FormChild from "./FormChild";
 import Actions from "./Actions";
 const { Option } = Select;
@@ -41,20 +41,22 @@ const CheckingAccounts = memo(function CheckingAccounts() {
   const canCreateAccountBank = useUserHasPermission("CCO01");
   const listAccountsBankPermission = useUserHasPermission("CCO00");
 
+  const { createToast } = useToast();
+
   const formatCheckingAccounts = () => {
     setFormatedAccounts(
       checkingAccounts.length > 0
         ? checkingAccounts.map((account) => {
             return {
               name: (
-                  <span
-                    className="uk-link"
-                    onClick={() =>
-                      router.push(`/dashboard/contas-bancarias/${account?.id}`)
-                    }
-                  >
-                    {account?.description}
-                  </span>
+                <span
+                  className="uk-link"
+                  onClick={() =>
+                    router.push(`/dashboard/contas-bancarias/${account?.id}`)
+                  }
+                >
+                  {account?.description}
+                </span>
               ),
               accountCode: account?.bank_code,
               bank: account?.bank_name,
@@ -89,18 +91,21 @@ const CheckingAccounts = memo(function CheckingAccounts() {
           limit: convertIntlCurrency(newObj?.limit),
         })
         .then((_res) =>
-          notification.success({
+          createToast({
             message: "Conta cadastrada com sucesso!",
+            status: "success",
           })
         )
         .catch((err) => {
           setLoading(false);
           if (err?.response?.data?.message) {
             const messageArr = err?.response?.data?.message.split(":");
-            return notification.error({ message: messageArr[1] });
+            return createToast({ message: messageArr[1], status: "error" });
           }
-          return notification.error({
+
+          return createToast({
             message: "Houve um erro ao realizar o cadastro da conta...",
+            status: "error",
           });
         })
         .finally(() => {
@@ -127,7 +132,6 @@ const CheckingAccounts = memo(function CheckingAccounts() {
               placeholder="Nome da conta"
               onChange={(e) => setFilters({ ...filters, name: e.target.value })}
             />
-   
           </InputBox>
           <InputBox>
             <input
@@ -135,9 +139,8 @@ const CheckingAccounts = memo(function CheckingAccounts() {
               placeholder="Banco"
               onChange={(e) => setFilters({ ...filters, bank: e.target.value })}
             />
-
           </InputBox>
-        
+
           <div className="uk-width-1-3 uk-margin-small-top uk-margin-small-right">
             <Select
               placeholder="tipo de conta"

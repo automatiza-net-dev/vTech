@@ -1,27 +1,31 @@
 // @ts-nocheck
 import React, { memo } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 import { calendarService } from "@/OLD/services/calendar.service";
+import { useToast } from "infinity-forge";
 
 export const Delete = memo(function Delete({ id }) {
   const queryClient = useQueryClient();
+
+  const { createToast } = useToast();
 
   const { mutate, loading } = useMutation(
     (id) => calendarService.deleteAbsence(id),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Indisponibilidade deletada",
+        createToast({
+          message: "Indisponibilidade deletada",
+          status: "success",
         });
+
         queryClient.invalidateQueries("getAbsences");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao deletar indisponibiliade",
+        createToast({
+          message: "Erro ao deletar indisponibiliade",
+          status: "error",
         });
       },
     }
@@ -37,7 +41,7 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-          <DeleteTwoTone twoToneColor="red" />
+        <DeleteTwoTone twoToneColor="red" />
       </Popconfirm>
     </div>
   );

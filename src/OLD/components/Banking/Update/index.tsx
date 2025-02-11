@@ -18,14 +18,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 // Components
 import { Container } from "./styles";
 import { Button } from "antd";
-import {
-  Input,
-  DatePicker,
-  Radio,
-  Select,
-  AutoComplete,
-  notification,
-} from "antd";
+import { Input, DatePicker, Radio, Select, AutoComplete } from "antd";
 import { useToast } from "infinity-forge";
 const { Group } = Radio;
 const { Option } = Select;
@@ -45,7 +38,7 @@ const Update = memo(function Update({
   const { paymentMethods } = usePaymentMethods(false, false);
   const router = useRouter();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const formatTutors = () => {
     setFormatedTutors(
@@ -113,18 +106,23 @@ const Update = memo(function Update({
         fiscalNote: data?.fiscalNote,
       })
       .then((_res) => {
-        createToast({ status: "success", message: "Registro atualizado com sucesso!" })
-      }
-      )
+        createToast({
+          status: "success",
+          message: "Registro atualizado com sucesso!",
+        });
+      })
       .catch((err) => {
         setLoading(false);
         error = true;
         const message = err?.response?.data?.errors[0].message;
         if (message) {
-          createToast({ status: "error", message })
-          return 
+          createToast({ status: "error", message });
+          return;
         }
-        return createToast({ status: "error", message: "Houve um erro ao salvar a transação..." }) 
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao salvar a transação...",
+        });
       })
       .finally(() => {
         if (!error) {

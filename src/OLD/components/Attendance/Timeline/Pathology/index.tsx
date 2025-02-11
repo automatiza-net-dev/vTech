@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Components
-import { notification, Table } from "antd";
+import { Table } from "antd";
 
 // Utils
 import moment from "moment";
@@ -21,7 +21,7 @@ const PathologiesList = memo(function PatologiesList({ reload }) {
   const router = useRouter();
   const patientId = router.query.subpage;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllPathologies = useCallback(() => {
     setLoading(false);
@@ -41,7 +41,10 @@ const PathologiesList = memo(function PatologiesList({ reload }) {
       })
       .catch((err) => {
         setLoading(false);
-        createToast({ status: "error", message: "Houve um erro ao recuperar as patologias registradas..." })
+        createToast({
+          status: "error",
+          message: "Houve um erro ao recuperar as patologias registradas...",
+        });
       })
       .finally(() => setLoading(false));
   }, [patientId, reload]);
