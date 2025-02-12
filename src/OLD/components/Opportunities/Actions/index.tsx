@@ -91,8 +91,7 @@ function Actions({
         createToast({
           status: "error",
           message: "não foi possível reabrir a oportunidade",
-        });
-      
+        })
       );
   }, [opportunity]);
 

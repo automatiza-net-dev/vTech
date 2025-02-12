@@ -85,7 +85,7 @@ export const Create = memo(function Create({ type }) {
       .catch((_err) => {
         error = true;
 
-        return createToast({ status: "error", message:  })
+        return createToast({ status: "error", message: "Erro ao salvar parcela" })
       });
   }, [installments]);
 

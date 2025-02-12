@@ -12,7 +12,6 @@ import { Container } from "./styles";
 import moment from "moment";
 
 import { Select, FormHandler, useToast } from "infinity-forge";
-import { useToast } from "infinity-forge";
 
 export function Edit({ id, setVisible }) {
   const [data, setData] = useState();

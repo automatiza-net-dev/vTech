@@ -38,7 +38,6 @@ export default function Create({
   const { createToast } = useToast();
 
   const router = useRouter();
-  const { createToast } = useToast();
 
   async function createOpportunity() {
     console.log(data?.castrated);
