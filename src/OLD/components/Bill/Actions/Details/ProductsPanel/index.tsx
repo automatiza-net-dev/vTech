@@ -11,10 +11,7 @@ import { Button, useAuthAdmin } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 const { Panel } = Collapse;
 import RemoveBillPayment from "../../AddBillPayment/RemoveBillPayment";
-import {
-  useBillPaymentsReceipts,
-  PrintPaymentReceipts,
-} from "@/presentation";
+import { useBillPaymentsReceipts, PrintPaymentReceipts } from "@/presentation";
 
 import moment from "moment";
 import { paymentsColumns } from "./columns";
@@ -66,8 +63,25 @@ const ProductsPanel = memo(function ProductsPanel({
     return "-";
   }
 
-  const imprimir1 = useReactToPrint({ contentRef: SinglecomponentRef })
-  const imprimir2 = useReactToPrint({ contentRef: componentRef })
+  const imprimir1 = useReactToPrint({ contentRef: SinglecomponentRef });
+  const imprimir2 = useReactToPrint({ contentRef: componentRef });
+
+  function FormatProductCanceled({ text, item }: { text: string; item: any }) {
+    if(!item) {
+      return text
+    }
+    return (
+      <>
+        {text} {item?.reviewerCancelUser?.name || "-"} em <br />
+        {item?.reviewCancelDate &&
+          moment(item?.reviewCancelDate).format("DD/MM/YYYY HH:mm")}{" "}
+        <br />
+        {item?.reviewCancelNotes && (
+          <p className="font-14-regular">{item?.reviewCancelNotes}</p>
+        )}
+      </>
+    );
+  }
 
   const formatPayments = () => {
     setFormatedPayments(
@@ -103,7 +117,21 @@ const ProductsPanel = memo(function ProductsPanel({
             ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY") +
               ` (${payment?.finance?.paymentMethod?.description})`
             : "-",
-
+          cancelled: (
+            <div className="font-16-regular" style={{ textAlign: "right" }}>
+              {payment?.cancelled === "P" ? (
+                <FormatProductCanceled
+                  text={"Revisão pendente"}
+                />
+              ) : payment?.cancelled === "S" ? (
+                <FormatProductCanceled text={"Aprovado por"} item={payment} />
+              ) : payment?.cancelled === "N" ? (
+                <FormatProductCanceled text={"Recusado por"} item={payment} />
+              ) : (
+                <></>
+              )}
+            </div>
+          ),
           authorization: formatAuthorization(payment),
           print: payment?.finance?.payment_date && (
             <div
@@ -117,8 +145,7 @@ const ProductsPanel = memo(function ProductsPanel({
                 }));
               }}
             >
-           
-<Button text="imprimir" onClick={() => imprimir1()} />
+              <Button text="imprimir" onClick={() => imprimir1()} />
             </div>
           ),
         };
@@ -178,9 +205,7 @@ const ProductsPanel = memo(function ProductsPanel({
                     }));
                   }}
                 >
-               
-
-<Button text="Imprimir recibo" onClick={() => imprimir2()} />
+                  <Button text="Imprimir recibo" onClick={() => imprimir2()} />
                 </div>
               )}
             </div>

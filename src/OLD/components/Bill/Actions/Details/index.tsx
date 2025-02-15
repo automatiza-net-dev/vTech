@@ -337,6 +337,23 @@ const Details = memo(function Details({ billId, setVisible }: any) {
     }
   );
 
+  function FormatProductCanceled({ text, item }: { text: string, item: any }) {
+    if(!item) {
+      return text
+    }
+    return (
+      <>
+        {text} {item?.reviewerCancelUser?.name || "-"} em <br />
+        {item?.reviewCancelDate &&
+          moment(item?.reviewCancelDate).format("DD/MM/YYYY HH:mm")}{" "}
+        <br />
+        {item?.reviewCancelNotes && (
+          <p className="font-14-regular">{item?.reviewCancelNotes}</p>
+        )}
+      </>
+    );
+  }
+
   const formatProducts = () => {
     setFormatedProducts(
       data?.items
@@ -353,6 +370,19 @@ const Details = memo(function Details({ billId, setVisible }: any) {
             courtesy: item?.courtesy ? "Sim" : "Não",
             max_discount: item?.max_discount ? "Sim" : "Não",
             auth_data: <AuthorizationStatusProduct item={item} />,
+            cancelled: (
+              <div className="font-16-regular" style={{ textAlign: "right" }}>
+                {item?.cancelled === "P" ? (
+                  <FormatProductCanceled text={"Revisão pendente"}  />
+                ) : item.cancelled === "S" ? (
+                  <FormatProductCanceled text={"Aprovado por"} item={item}/>
+                ) : item.cancelled === "N" ? (
+                  <FormatProductCanceled text={"Recusado por"} item={item} />
+                ) : (
+                  <></>
+                )}
+              </div>
+            ),
             delete: () =>
               data?.status !== "BAIXADA" && (
                 <Popconfirm
@@ -512,6 +542,8 @@ const Details = memo(function Details({ billId, setVisible }: any) {
 
   const serviceIssuedDocuments = useMemo(() => {
     const result = [];
+
+    console.log(getIssuedNfseQuery.data);
 
     if (getIssuedNfseQuery?.data) {
       getIssuedNfseQuery.data.forEach((item) => {

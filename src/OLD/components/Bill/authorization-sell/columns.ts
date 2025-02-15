@@ -1,4 +1,4 @@
-export const AUTH_COLUMNS = [
+export const AUTH_COLUMNS = (cancelled: boolean) => [
   {
     title: "Qtd.",
     dataIndex: "quantity",
@@ -14,11 +14,11 @@ export const AUTH_COLUMNS = [
     dataIndex: "description",
     key: "description",
   },
-  {
+  !cancelled ?{
     title: "Preço Unitário Cadastro",
     dataIndex: "singleRegistragionPrice",
     key: "singleRegistragionPrice",
-  },
+  } : {},
   {
     title: "Preço Unitário Vendido",
     dataIndex: "singleSellingPrice",
@@ -29,11 +29,11 @@ export const AUTH_COLUMNS = [
     dataIndex: "grantedDiscount",
     key: "grantedDiscount",
   },
-  {
+  !cancelled ?{
     title: "Desconto Max",
     dataIndex: "maxDiscount",
     key: "maxDiscount",
-  },
+  } : {},
   {
     title: "Total Item",
     dataIndex: "totalItem",
@@ -44,11 +44,11 @@ export const AUTH_COLUMNS = [
     dataIndex: "courtesy",
     key: "courtesy",
   },
-  {
+  !cancelled ? {
     title: "Autorização",
     dataIndex: "authorization",
     key: "authorization",
-  },
+  } : {},
 ];
 
 export const paymentsColumns = [

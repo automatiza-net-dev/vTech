@@ -34,4 +34,9 @@ export const paymentsColumns = [
     key: "print",
     dataIndex: "print",
   },
+  {
+    title: "Dados cancelamento",
+    key: "cancelled",
+    dataIndex: "cancelled"
+  }
 ];

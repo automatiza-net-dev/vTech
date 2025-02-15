@@ -19,9 +19,11 @@ import * as S from "./styles";
 export function AuthorizationSell({
   billId,
   setReload,
+  cancelled
 }: {
   billId: string;
   setReload;
+  cancelled?: boolean;
 }) {
   const { data, isLoading } = useLoadBill({ id: billId });
 
@@ -49,6 +51,7 @@ export function AuthorizationSell({
       courtesy: item?.courtesy ? "Sim" : "Não",
       totalItem: item?.total_value,
       authorization: authorizationFormater(item, "product"),
+      
     })) || [];
 
   const paymentsDataSource = data?.payments?.map((payment) => ({
@@ -68,6 +71,7 @@ export function AuthorizationSell({
       block = item?.block;
     }
   });
+
   const blockList = Array.from(Array(block).keys());
 
   return (
@@ -98,7 +102,7 @@ export function AuthorizationSell({
           </div>
         </div>
 
-        <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
+        <Table columns={AUTH_COLUMNS(!!cancelled)} dataSource={tableDataSource} />
 
         {paymentsDataSource?.length > 0 && <h1>Pagamentos</h1>}
 

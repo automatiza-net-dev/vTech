@@ -10,6 +10,7 @@ import { Container } from "./styles";
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useAuthAdmin } from "infinity-forge";
+import { cancelledStatus } from "../../../utils/status-formater";
 
 export default function Header({
   bill,
@@ -31,6 +32,12 @@ export default function Header({
 
   return (
     <Container className="uk-margin-top">
+      <div style={{ marginTop: -40, textAlign: "right" }}>
+        <p className="font-16-regular">
+          Status Venda:{" "}
+          {bill?.cancelled ? cancelledStatus[bill?.cancelled] : bill?.status}
+        </p>
+      </div>
       <section className="uk-flex uk-flex-center">
         <div className="uk-margin-small-right">
           <label>Data de venda</label>
@@ -166,6 +173,71 @@ export default function Header({
           />
         </div>
       </section>
+
+      {bill?.cancelled && (
+        <>
+          <h3 className="font-18-bold" style={{ marginTop: 20 }}>
+            Dados de cancelamento
+          </h3>
+
+          <section className="uk-flex" style={{ marginBottom: 10 }}>
+            <div className="uk-margin-small-right">
+              <label>Data solicitação</label>
+              <Input
+                disabled
+                value={moment(bill?.cancelDate).format("DD/MM/YYYY HH:mm")}
+              />
+            </div>
+
+              <div className="uk-margin-small-right">
+                <label>R$ Prod Cancelados</label>
+                <Input disabled value={(bill?.cancelValueProducts || 0)?.toFixed(2)} />
+              </div>
+
+              <div className="uk-margin-small-right">
+                <label>R$ Serv. Cancelados</label>
+                <Input disabled value={(bill?.cancelValueServices || 0)?.toFixed(2)} />
+              </div>
+
+              <div className="uk-margin-small-right">
+                <label>R$ Total. Cancelados</label>
+                <Input disabled value={(bill?.cancelValueTotal || 0)?.toFixed(2)} />
+              </div>
+
+            <div className="uk-margin-small-right">
+              <label>Usuário solicitação</label>
+              <Input disabled value={bill?.cancelUser?.name} />
+            </div>
+
+            <div className="uk-margin-small-right">
+              <label>Motivo cancelamento</label>
+              <Input disabled value={bill?.cancelReason} />
+            </div>
+          </section>
+
+          <section className="uk-flex">
+            {bill?.cancelled_at && (
+              <div className="uk-margin-small-right">
+                <label>Data cancelamento</label>
+                <Input
+                  disabled
+                  value={moment(bill?.cancelled_at).format("DD/MM/YYYY HH:mm")}
+                />
+              </div>
+            )}
+
+            <div className="uk-margin-small-right">
+              <label>Usuário Cancelamento</label>
+              <Input disabled value={bill?.finishCancelUser?.name} />
+            </div>
+
+            <div className="uk-margin-small-right">
+              <label>Obs Cancelamento</label>
+              <Input disabled value={bill?.cancelObservation} />
+            </div>
+          </section>
+        </>
+      )}
     </Container>
   );
 }
