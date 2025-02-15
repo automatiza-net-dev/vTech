@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import moment from "moment";
 import { useFormikContext } from "formik";
-import { Input, Select } from "infinity-forge";
+import { Input, Select, InputSwitch } from "infinity-forge";
 
 import * as S from "./styles";
 
@@ -48,25 +48,26 @@ export function InputBirthday({ patientId, required }: IInputBirthdayProps) {
           <Input type="number" name="birthDays" label="Idade dias" min={0} />
         </div>
       )}
+
       {!patientId && (
-        <Input
-          name="birthDate_change"
-          type="checkbox"
-          label={`informar idade${required ? "*" : ""}`}
-          onChangeInput={(ev) => {
-            const isFalse = ev ? ev === "false" : "false";
+        <div style={{ width: "150px" }}>
+          <InputSwitch
+            name="birthDate_change"
+            type="checkbox"
+            label={`informar idade${required ? "*" : ""}`}
+            onChangeInput={(value) => {
+              setDatepickerType(value ? "month" : "normal");
 
-            setDatepickerType(isFalse ? "month" : "normal");
-
-            if (isFalse) {
-              setFieldValue("birthDate", undefined);
-            } else {
-              setFieldValue("birthYears", undefined);
-              setFieldValue("birthMonths", undefined);
-              setFieldValue("birthDays", undefined);
-            }
-          }}
-        />
+              if (value) {
+                setFieldValue("birthDate", undefined);
+              } else {
+                setFieldValue("birthYears", undefined);
+                setFieldValue("birthMonths", undefined);
+                setFieldValue("birthDays", undefined);
+              }
+            }}
+          />
+        </div>
       )}
     </S.InputBirthday>
   );

@@ -72,11 +72,12 @@ function Form({
   }
 
   async function handleSubmit(formData) {
-    
     const payload = {
       ...formData,
       origin,
-      birthDate: !isValidDate(formData?.birthDate) ? undefined : formData?.birthDate,
+      birthDate: !isValidDate(formData?.birthDate)
+        ? undefined
+        : formData?.birthDate,
       photo:
         formData?.photo &&
         Array.isArray(formData?.photo) &&
@@ -129,10 +130,6 @@ function Form({
               <Input name="name" label="Nome*" />
 
               <InputBirthday patientId={patientId} required={isRegister} />
-
-              <InputSwitch label="Comunidade Sanclá" name="community" />
-
-              {data && <InputSwitch label="Ativo" name="active" />}
             </div>
 
             <div className="row">
@@ -149,6 +146,12 @@ function Form({
               />
 
               <SelectHair />
+            </div>
+
+            <div className="row">
+              <InputSwitch label="Comunidade Sanclá" name="community" />
+
+              {data && <InputSwitch label="Ativo" name="active" />}
             </div>
           </div>
         </div>

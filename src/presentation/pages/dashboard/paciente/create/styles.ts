@@ -39,7 +39,7 @@ export const Create = styled("div")`
 
     &:first-child {
       > div:last-child {
-        max-width: fit-content;
+        /* max-width: fit-content; */
       }
     }
   }

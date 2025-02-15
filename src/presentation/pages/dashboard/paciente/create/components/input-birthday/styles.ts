@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const InputBirthday = styled("div")`
   display: flex;
   align-items: center;
+  width: 100%;
 
   #birthDate_change {
     width: 30px;
