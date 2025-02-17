@@ -13,10 +13,10 @@ export const cancelledStatus = {
 export const billStatusFormatter = (bill, setReload) => {
   const { status, pending } = bill;
   const pedingStatus = (status === "ABERTA" && pending)
-  if (pedingStatus || (bill.cancelled === "P" || bill.cancelled === "A")) {
+  if (pedingStatus || (bill?.cancelled === "P" || bill?.cancelled === "A")) {
     return (
       <TriggerModal
-        title={"Autorização de vendas"}
+        title={bill?.cancelled ? "Cancelamento de venda" : "Autorização de vendas"}
         triggerContent={pedingStatus ? "Pendente" : "Pendente cancelamento"}
         content={<AuthorizationSell cancelled={!pedingStatus} billId={bill?.id} setReload={setReload} />}
         width={1400}

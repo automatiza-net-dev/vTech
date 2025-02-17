@@ -21,28 +21,14 @@ export const AuthorizationSell = styled.div`
   }
 
   form {
-    max-width: 520px;
     margin: 0 auto;
 
-    .conntent_form_infinity_forge {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, max-content);
-      align-items: center;
-      column-gap: 5px;
-      grid-template-areas:
-        "first second"
-        "third third";
+    .ant-collapse  {
+      margin: 0 0 10px 0 !important;
+    }
 
-      > div:nth-child(1) {
-        grid-area: first;
-      }
-      > div:nth-child(2) {
-        grid-area: second;
-      }
-      > div:nth-child(3) {
-        grid-area: third;
-      }
+   .conntent_form_infinity_forge {
+      padding: 0 !important;
     }
 
     .form-button {
