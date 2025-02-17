@@ -44,7 +44,7 @@ export default function ValidaTerceiros() {
               .swap({ dashboard: true, unitId: responseBusinessUnits[0].id });
           }
 
-          await loadUser();
+          await loadUser({ roleName: "user" });
 
           if (router.query.log) {
             return;

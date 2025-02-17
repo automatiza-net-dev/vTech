@@ -76,7 +76,7 @@ export function SignIn() {
             "YYYY-MM-DD"
           )}&toDate=${moment().format("YYYY-MM-DD")}`
         );
-        loadUser();
+        loadUser({ roleName: "user" });
       } catch (err: any) {
         createToast({
           status: "error",
