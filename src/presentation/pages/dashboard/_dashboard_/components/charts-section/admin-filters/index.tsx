@@ -32,7 +32,6 @@ export function AdminFilters() {
           label="Clínicas"
           menuPlacement="bottom"
           name="units"
-          closeMenuOnSelect={false}
           isMultiple={true}
           loading={businessUnits.isFetching}
           options={
