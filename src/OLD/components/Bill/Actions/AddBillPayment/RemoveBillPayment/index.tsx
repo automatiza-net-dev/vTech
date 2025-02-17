@@ -71,7 +71,7 @@ const RemoveBillPayment = memo(function ({
         queryClient.invalidateQueries(["bills"]);
         setEditExpirationDate(false);
         return createToast({
-          status: "suc",
+          status: "success",
           message: "Datas de vencimento atualizadas!",
         });
       })
@@ -98,6 +98,15 @@ const RemoveBillPayment = memo(function ({
           }
         />
       )}
+
+      {/* <Popconfirm
+          title="Deseja realmete excluir esse pagamento?"
+         
+          okText="Sim"
+          cancelText="Não"
+          placement="left"
+        >
+        </Popconfirm> */}
       {removeBlockPermission && !editExpirationDate && (
         <Button text="Remover Pagamento" onClick={removeBillPayment} />
       )}
