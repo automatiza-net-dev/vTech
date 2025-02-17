@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.0.0)
       infinity-forge:
-        specifier: 6.7.9
-        version: 6.7.9(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+        specifier: 7.0.1
+        version: 7.0.1(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
       inversify:
         specifier: ^6.0.2
         version: 6.2.1(reflect-metadata@0.2.2)
@@ -1844,8 +1844,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@6.7.9:
-    resolution: {integrity: sha512-qlWsvmoU6FEj33TXbPbdl3vsfF+ZLvGyv0PJiX1za6uhxc7UZBLqvPyiLjkWwTRjC4R0crXgFhSkDwKz7SGrAg==}
+  infinity-forge@7.0.1:
+    resolution: {integrity: sha512-gAUNcE7CvV08zVBEsPedQsbhaekiJqaVC/Hjmm0jd/8/906ztfr77lj7qx12qg4yCNXOUYoSMsSqnGcITPuIag==}
     peerDependencies:
       react: '>=16'
 
@@ -5229,7 +5229,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@6.7.9(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+  infinity-forge@7.0.1(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
     dependencies:
       '@next/third-parties': 15.1.6(next@15.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       axios: 1.7.9
