@@ -20,7 +20,6 @@ export function FormCreatePrescription({
         isStickyButtons
         button={{ text: "SALVAR" }}
         disableEnterKeySubmitForm
-        
         initialData={{
           type: previousPrescription?.type || "PROCEDURE",
           frequency: previousPrescription?.frequency || "RECURRENT",
@@ -29,26 +28,39 @@ export function FormCreatePrescription({
           frequencyUnit: previousPrescription?.frequencyUnit,
           frequencyInterval: previousPrescription?.frequencyInterval,
           frequencyQuantity: previousPrescription?.frequencyQuantity,
-          frequencyQuantityUnit: previousPrescription?.frequencyQuantityUnit
+          frequencyQuantityUnit: previousPrescription?.frequencyQuantityUnit,
         }}
         onSucess={async (data) => {
           const combinedExecutionStart = moment(data.executionStart)
-          .set({
-            hour: Number(data.executionHour.split(":")[0]),
-            minute: Number(data.executionHour.split(":")[1]),
-            second: 0,
-            millisecond: 0,
-          })
-          .toISOString();
+            .set({
+              hour: Number(data.executionHour.split(":")[0]),
+              minute: Number(data.executionHour.split(":")[1]),
+              second: 0,
+              millisecond: 0,
+            })
+            .toISOString();
 
           const payload = {
             ...data,
             prescribedAt: moment().toISOString(),
             hospitalizationId,
-            executionStart: combinedExecutionStart, 
+            executionStart: combinedExecutionStart,
+            frequencyInterval: data.frequencyInterval
+              ? Number(data.frequencyInterval)
+              : undefined,
+            frequencyQuantity: data.frequencyInterval
+              ? Number(data.frequencyQuantity)
+              : undefined,
+            dose: data.frequencyInterval
+              ? Number(data.frequencyQuantity)
+              : undefined,
+            volume: data.frequencyInterval
+              ? Number(data.frequencyQuantity)
+              : undefined,
+            fluidSpeed: data.frequencyInterval
+              ? Number(data.frequencyQuantity)
+              : undefined,
           };
-
-          console.log(payload)
 
           await api({
             url: "hospitalization-prescriptions",
