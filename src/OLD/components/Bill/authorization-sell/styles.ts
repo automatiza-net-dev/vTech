@@ -20,14 +20,26 @@ export const AuthorizationSell = styled.div`
     }
   }
 
+  .form_cancel {
+    .form-button > div {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
   form {
     margin: 0 auto;
 
-    .ant-collapse  {
+    button:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    .ant-collapse {
       margin: 0 0 10px 0 !important;
     }
 
-   .conntent_form_infinity_forge {
+    .conntent_form_infinity_forge {
       padding: 0 !important;
     }
 

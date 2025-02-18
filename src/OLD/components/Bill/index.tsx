@@ -27,12 +27,11 @@ import { useGetAllBills } from "../../../OLD/hooks/useBills";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 
-import { AddSale } from "@/presentation";
+import { AddSale, PermissionItem } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";
 
 export default function Bills() {
-  const hasBillsPermission = usePermission("VEN00");
   const hasCreatePermission = usePermission("VEN01");
 
   const [visible, setVisible] = React.useState(false);
@@ -100,10 +99,8 @@ export default function Bills() {
 
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
-  return !hasBillsPermission ? (
-    <AccessDenied />
-  ) : (
-    <>
+  return (
+    <PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
       <PageWrapper title="Vendas">
         <Container>
           <section className="uk-margin-top uk-width-1-1">
@@ -276,7 +273,9 @@ export default function Bills() {
           <div className="uk-margin-top">
             <Table
               columns={
-                user?.unit?.system?.type === "Vet" ? Columns(hasInternalCode) : LiftColumns(hasInternalCode)
+                user?.unit?.system?.type === "Vet"
+                  ? Columns(hasInternalCode)
+                  : LiftColumns(hasInternalCode)
               }
               dataSource={mapper(data, cashiers)}
               footer={() => (
@@ -330,6 +329,6 @@ export default function Bills() {
           <AddSale setModal={setVisible} listCreated={listCreated} />
         </Modal>
       </PageWrapper>
-    </>
+    </PermissionItem>
   );
 }

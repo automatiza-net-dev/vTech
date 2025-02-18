@@ -1,14 +1,6 @@
 import { Input, InputCurrency, InputSwitch } from "infinity-forge";
 
-export const AUTH_COLUMNS = ({
-  cancelled,
-  billItems,
-  setBillItems,
-}: {
-  cancelled?: boolean;
-  setBillItems;
-  billItems;
-}) => [
+export const AUTH_COLUMNS = ({ cancelled }: { cancelled?: boolean }) => [
   {
     title: "Qtd.",
     dataIndex: "quantity",
@@ -69,55 +61,35 @@ export const AUTH_COLUMNS = ({
   cancelled
     ? {
         title: "Cancelar",
-
-        render: (item) => {
-          console.log(item);
-          return (
-            <div className="uk-flex" style={{ gap: "10px" }}>
-              <InputSwitch
-                name={"billItems" + item.id}
-                onChangeInput={(value) => {
-                  const bill = { billItemId: item.id };
-
-                  if (!value) {
-                    setBillItems((state) => {
-                      const removeItem = state?.filter(
-                        (billItem) => billItem.billItemId !== item.id
-                      );
-
-                      return removeItem;
-                    });
-
-                    return;
-                  }
-
-                  setBillItems((state) => {
-                    const billItems = state ? [...state, bill] : [bill];
-
-                    return billItems;
-                  });
-                }}
-              />
-
-              {billItems?.find(
-                (billItem) => billItem.billItemId === item.id
-              ) && (
-                <InputCurrency
-                  controlledInitialValue={{ value: item.quantity }}
-                  prefix=" "
-                  name={"quantity" + item.id}
-                  max={item.quantity}
-                  onChangeInput={(value) => {}}
-                />
-              )}
-            </div>
-          );
-        },
+        render: Cancel,
       }
     : {},
 ];
 
-export const paymentsColumns = [
+function Cancel(item) {
+  return (
+    <div className="uk-flex" style={{ gap: "10px", alignItems: "center" }}>
+      <InputSwitch name={`billItems[${item.index}].active`} />
+
+      <div style={{ display: "none" }}>
+        <Input
+          name={`billItems[${item.index}].billItemId`}
+          controlledInitialValue={{ value: item.id }}
+        />
+      </div>
+
+      <InputCurrency
+        label="Quantidade a ser cancelada"
+        controlledInitialValue={{ value: item.quantity }}
+        prefix=" "
+        name={`billItems[${item.index}].quantity`}
+        max={item.quantity}
+      />
+    </div>
+  );
+}
+
+export const paymentsColumns =  ({cancelled}) => [
   {
     title: "Data",
     dataIndex: "createdAt",
@@ -143,4 +115,26 @@ export const paymentsColumns = [
     dataIndex: "authorization",
     key: "authorization",
   },
+  cancelled
+  ? {
+      title: "Cancelar",
+      render: CancelPayment,
+    }
+  : {},
 ];
+
+
+function CancelPayment(item) {
+  return (
+    <div className="uk-flex" style={{ gap: "10px", alignItems: "center" }}>
+      <InputSwitch name={`billPayments[${item.index}].active`} />
+
+      <div style={{ display: "none" }}>
+        <Input
+          name={`billPayments[${item.index}].id`}
+          controlledInitialValue={{ value: item.id }}
+        />
+      </div>
+    </div>
+  );
+}

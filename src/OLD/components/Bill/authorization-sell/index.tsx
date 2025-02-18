@@ -2,7 +2,7 @@ import moment from "moment";
 import { Table, Collapse } from "antd";
 import { useQueryClient } from "react-query";
 
-import { Error, FormHandler, LoaderCircle } from "infinity-forge";
+import { api, Error, FormHandler, Input, LoaderCircle } from "infinity-forge";
 
 const { Panel } = Collapse;
 
@@ -16,13 +16,13 @@ import {
   useLoadBill,
   PermissionItem,
   AuthorizationPaymentForm,
+  usePermission,
 } from "@/presentation";
 import { Bill } from "@/domain";
 
-import { AuthorizeCancel } from "./authorize-cancel";
+import * as yup from "yup";
 
 import * as S from "./styles";
-import { useEffect, useState } from "react";
 
 export function AuthorizationSell({
   billId,
@@ -33,11 +33,11 @@ export function AuthorizationSell({
   setReload?: any;
   cancelled?: boolean;
 } & Partial<Bill>) {
-  const [billItems, setBillItems] = useState([])
   const { data, isLoading } = useLoadBill({ id: billId });
 
-  const queryClient = useQueryClient();
+  const hasPermissionToCancel = usePermission("VEN18");
 
+  const queryClient = useQueryClient();
 
   if (isLoading) {
     return <LoaderCircle size={30} color="#ccc" />;
@@ -48,8 +48,9 @@ export function AuthorizationSell({
   }
 
   const tableDataSource =
-    data?.items?.map((item) => ({
+    data?.items?.map((item, index) => ({
       id: item?.id,
+      index,
       quantity: 2,
       description: item?.productVariation?.product?.description,
       productCode: item?.productVariation?.product?.reference_code,
@@ -64,8 +65,10 @@ export function AuthorizationSell({
       authorization: authorizationFormater(item, "product"),
     })) || [];
 
-  const paymentsDataSource = data?.payments?.map((payment) => ({
+  const paymentsDataSource = data?.payments?.map((payment, index) => ({
     ...payment,
+    index,
+    id: payment.id,
     createdAt: payment?.created_at
       ? moment(payment?.created_at).format("DD/MM/YYYY - HH:MM")
       : "---",
@@ -111,77 +114,122 @@ export function AuthorizationSell({
             <input disabled value={data?.client?.name} />
           </div>
         </div>
+        <div className="form_cancel">
+          <FormHandler
+            schema={{
+              userEmail: yup.string().required("Campo requerido"),
+              userPwd: yup.string().required("Campo requerido"),
+            }}
+            button={
+              hasPermissionToCancel
+                ? { text: "CANCELAR" }
+                : {
+                    text: "Usuario não possui permissão para solicitar o cancelamento de vendas",
+                    disabled: true,
+                  }
+            }
+            disableEnterKeySubmitForm
+            cleanFieldsOnSubmit={false}
+            isStickyButtons
+            onSucess={async (data) => {
+              const payload = {
+                ...data,
+                billId,
+                notes: " ",
+                billItems: data.billItems?.filter((item) => item.active),
+                billPayments: data.billPayments
+                  ?.filter((item) => item.active)
+                  ?.map((item) => item.id),
+              };
 
-        <FormHandler>
-          <Table
-            columns={AUTH_COLUMNS({ cancelled, setBillItems, billItems })}
-            dataSource={tableDataSource}
-          />
+              await api({
+                url: "bills/request-cancellation",
+                method: "post",
+                body: payload,
+              });
+            }}
+          >
+            {cancelled && (
+              <PermissionItem hash="VEN18">
+                <div className="row">
+                  <Input name="userEmail" label="Email" />
+                  <Input label="Senha" name="userPwd" />
+                </div>
+              </PermissionItem>
+            )}
 
-          {paymentsDataSource?.length > 0 && <h1 className="font-18-bold">Pagamentos</h1>}
+            <Table
+              columns={AUTH_COLUMNS({ cancelled })}
+              dataSource={tableDataSource}
+            />
 
-          {paymentsDataSource?.length > 0 &&
-            blockList.map((i) => {
-              const paymentsList = paymentsDataSource?.filter(
-                (item) => item?.block === i + 1
-              );
-              return (
-                <>
-                  <Collapse key={i} style={{ margin: "10px" }}>
-                    <Panel
-                      key={i}
-                      header={
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            gap: "10px",
-                          }}
-                        >
-                          <div style={{ display: "flex", gap: "10px" }}>
-                            <div>
-                              {paymentsList?.[0]?.paymentMethod?.description}
-                              &nbsp;
-                              {paymentsList?.[0]?.qty_installments > 1
-                                ? "(Parcelado)"
-                                : ""}
-                              &nbsp;
-                              {paymentsList?.[0]?.flag?.description
-                                ? paymentsList?.[0]?.flag?.description
-                                : ""}
-                              &nbsp;
-                              {paymentsList?.[0]?.paymentMethod?.type}
+            {paymentsDataSource?.length > 0 && (
+              <h1 className="font-18-bold">Pagamentos</h1>
+            )}
+
+            {paymentsDataSource?.length > 0 &&
+              blockList.map((i) => {
+                const paymentsList = paymentsDataSource?.filter(
+                  (item) => item?.block === i + 1
+                );
+                return (
+                  <>
+                    <Collapse key={i} style={{ margin: "10px" }}>
+                      <Panel
+                        key={i}
+                        header={
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: "10px",
+                            }}
+                          >
+                            <div style={{ display: "flex", gap: "10px" }}>
+                              <div>
+                                {paymentsList?.[0]?.paymentMethod?.description}
+                                &nbsp;
+                                {paymentsList?.[0]?.qty_installments > 1
+                                  ? "(Parcelado)"
+                                  : ""}
+                                &nbsp;
+                                {paymentsList?.[0]?.flag?.description
+                                  ? paymentsList?.[0]?.flag?.description
+                                  : ""}
+                                &nbsp;
+                                {paymentsList?.[0]?.paymentMethod?.type}
+                              </div>
+                              <div>
+                                {currencyFormatter(
+                                  paymentsList.reduce(
+                                    (acc, current) => acc + current.total_value,
+                                    0
+                                  )
+                                )}
+                              </div>
+                              <div>{paymentsList?.length}x</div>
                             </div>
-                            <div>
-                              {currencyFormatter(
-                                paymentsList.reduce(
-                                  (acc, current) => acc + current.total_value,
-                                  0
-                                )
+                            <div style={{ display: "flex" }}>
+                              {paymentsList?.[0]?.pending && "Pendente"}
+                              {authorizationFormater(
+                                paymentsList?.[0],
+                                "payment"
                               )}
                             </div>
-                            <div>{paymentsList?.length}x</div>
                           </div>
-                          <div style={{ display: "flex" }}>
-                            {paymentsList?.[0]?.pending && "Pendente"}
-                            {authorizationFormater(
-                              paymentsList?.[0],
-                              "payment"
-                            )}
-                          </div>
-                        </div>
-                      }
-                    >
-                      <Table
-                        columns={paymentsColumns}
-                        dataSource={paymentsList}
-                      />
-                    </Panel>
-                  </Collapse>
-                </>
-              );
-            })}
-        </FormHandler>
+                        }
+                      >
+                        <Table
+                          columns={paymentsColumns({ cancelled })}
+                          dataSource={paymentsList}
+                        />
+                      </Panel>
+                    </Collapse>
+                  </>
+                );
+              })}
+          </FormHandler>
+        </div>
 
         <AuthorizationPaymentForm
           auth={"VEN16"}
@@ -195,12 +243,6 @@ export function AuthorizationSell({
             document?.querySelector<any>(".ant-modal-close")?.click();
           }}
         />
-
-        {cancelled && (
-          <PermissionItem hash="VEN18">
-            <AuthorizeCancel />
-          </PermissionItem>
-        )}
       </S.AuthorizationSell>
     </Error>
   );
