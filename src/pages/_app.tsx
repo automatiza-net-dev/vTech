@@ -116,6 +116,8 @@ export default function App({ Component, pageProps }) {
                   lastName: "",
                 };
 
+             
+
                 return {
                   role: initialUserData?.user?.type,
                   user: initialUserData,

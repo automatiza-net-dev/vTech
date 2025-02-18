@@ -20,6 +20,7 @@ export function FormCreatePrescription({
         isStickyButtons
         button={{ text: "SALVAR" }}
         disableEnterKeySubmitForm
+        cleanFieldsOnSubmit={false}
         initialData={{
           type: previousPrescription?.type || "PROCEDURE",
           frequency: previousPrescription?.frequency || "RECURRENT",
@@ -30,6 +31,7 @@ export function FormCreatePrescription({
           frequencyQuantity: previousPrescription?.frequencyQuantity,
           frequencyQuantityUnit: previousPrescription?.frequencyQuantityUnit,
         }}
+        decimalFields={['frequencyInterval', "frequencyQuantity", "dose", "volume", "fluidSpeed"]}
         onSucess={async (data) => {
           const combinedExecutionStart = moment(data.executionStart)
             .set({
@@ -45,20 +47,8 @@ export function FormCreatePrescription({
             prescribedAt: moment().toISOString(),
             hospitalizationId,
             executionStart: combinedExecutionStart,
-            frequencyInterval: data.frequencyInterval
-              ? Number(data.frequencyInterval)
-              : undefined,
-            frequencyQuantity: data.frequencyInterval
-              ? Number(data.frequencyQuantity)
-              : undefined,
-            dose: data.frequencyInterval
-              ? Number(data.frequencyQuantity)
-              : undefined,
-            volume: data.frequencyInterval
-              ? Number(data.frequencyQuantity)
-              : undefined,
-            fluidSpeed: data.frequencyInterval
-              ? Number(data.frequencyQuantity)
+            volume: data.volume
+              ? String(data.volume)
               : undefined,
           };
 

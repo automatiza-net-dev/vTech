@@ -1,4 +1,4 @@
-import { TriggerModal } from "@/presentation";
+import { useVerifyPermissions } from "@/presentation";
 import { Modal } from "infinity-forge";
 import { useState } from "react";
 import styled from "styled-components";
@@ -6,8 +6,9 @@ import { AuthorizationSell } from "../../authorization-sell";
 
 export function CancelAction({ bill }) {
   const [modal, setModal] = useState(false);
+  const hasPermissionToCancel = useVerifyPermissions("VEN18");
 
-  if (bill?.cancelled !== "P" && bill?.cancelled !== "A") {
+  if (!bill?.cancelled && hasPermissionToCancel) {
     return <></>;
   }
 

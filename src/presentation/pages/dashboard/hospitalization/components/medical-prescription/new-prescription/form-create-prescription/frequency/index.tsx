@@ -35,7 +35,7 @@ export function Frequency() {
               prefix=" "
               name="frequencyInterval"
               label="A Cada"
-              controlledInitialValue={{ value: values?.frequencyInterval }}
+              decimalLimit={0}
             />
 
             <Select
@@ -54,7 +54,7 @@ export function Frequency() {
               prefix=" "
               name="frequencyQuantity"
               label="Por"
-              controlledInitialValue={{ value: values?.frequencyQuantity }}
+              decimalLimit={0}
             />
 
             <Select

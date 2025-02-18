@@ -5,7 +5,6 @@ import {
   Layout,
   PrivatePage,
   useAuthAdmin,
-  useQueryClient,
 } from "infinity-forge";
 
 import {
