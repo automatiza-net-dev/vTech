@@ -5,7 +5,6 @@ import {
   Layout,
   PrivatePage,
   useAuthAdmin,
-  useQueryClient,
 } from "infinity-forge";
 
 import {
@@ -33,8 +32,6 @@ function LayoutPage({ children }) {
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
   const { user, roleUser, loadUser } = useAuthAdmin();
-
-  const clearCache = useQueryClient((state) => state.clearCache);
 
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({

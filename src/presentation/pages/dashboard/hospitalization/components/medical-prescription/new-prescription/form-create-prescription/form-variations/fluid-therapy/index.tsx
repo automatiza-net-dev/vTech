@@ -34,7 +34,6 @@ export function FluidTherapy() {
         prefix=" "
         name="fluidSpeed"
         label="Velocidade"
-        controlledInitialValue={{ value: values?.fluidSpeed }}
       />
       
       <Select

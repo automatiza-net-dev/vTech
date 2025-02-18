@@ -13,7 +13,7 @@ import { useLoadPatient } from "@/presentation";
 import { Popconfirm } from "antd";
 import FormChild from "./FormChild";
 import { Container } from "./styles";
-import { Modal, Button, useToast, Icon } from "infinity-forge";
+import { Modal, Button, useToast, Icon, useAuthAdmin } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -30,7 +30,8 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const [fileList, setFileList] = useState([]);
   const [photosOpen, setPhotosOpen] = useState(false);
 
-  const { user } = useProfile();
+  const {user} = useAuthAdmin()
+
   const patient = useLoadPatient();
   const { createToast } = useToast();
 

@@ -90,7 +90,45 @@ export default function App({ Component, pageProps }) {
           menu: {
             menu: ((menus as any) || { items: [] } as any) as any,
           } as any,
-          users: {
+          user: {
+            getRole: async () => {
+              try {
+                const user = await container
+                  .get<RemoteLoadUserDashboard>(
+                    TypesAutomatiza.RemoteLoadUserDashboard
+                  )
+                  .load({});
+
+                if (!user?.user) {
+                  throw new BadRequestError({
+                    message: "Usuário com erro",
+                    code: "400",
+                  });
+                }
+
+                const initialUserData = {
+                  ...user,
+                  avatar: user.user?.profile_picture || "",
+                  emailAddress: user?.user?.email || "",
+                  firstName: user?.user?.name || "",
+                  id: (user as any)?.user?.id || "",
+                  imagem: user.user?.profile_picture,
+                  isExternal: false,
+                  lastName: "",
+                };
+
+             
+
+                return {
+                  role: initialUserData?.user?.type,
+                  user: initialUserData,
+                };
+              } catch (err) {
+                return { role: "", user: null };
+              }
+            },
+          },
+          controller: {
             getRole: async () => {
               try {
                 const user = await container

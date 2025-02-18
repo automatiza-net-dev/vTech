@@ -69,7 +69,7 @@ export function FormVariations() {
 
         {type !== "PROCEDURE" && (
           <>
-            <InputCurrency prefix=" "  name="dose" label="Dose" controlledInitialValue={{ value: values?.dose }} />
+            <InputCurrency prefix=" "  name="dose" label="Dose"  />
 
             <Select
               label="Unidade"
