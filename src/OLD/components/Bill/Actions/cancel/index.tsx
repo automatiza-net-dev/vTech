@@ -18,6 +18,9 @@ export function CancelAction({ bill }) {
         <AuthorizationSell
           cancelled={true}
           billId={bill.id}
+          onSuccess={() => {
+            setModal(false)
+          }}
           {...bill}
         />
       </Modal>

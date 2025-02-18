@@ -1,20 +1,20 @@
 import {
   useTable,
-  Input,
   InputSwitch,
   formatNumberToCurrency,
-  InputCheckbox,
 } from "infinity-forge";
-
-import { Bill, Payment } from "@/domain";
-
 import moment from "moment";
+import { useFormikContext } from "formik";
+
+import {  Payment } from "@/domain";
+
 
 export function TablePayments(props: {
   paymentsList: Payment[];
   cancelled?: boolean;
 }) {
-  console.log(props);
+
+  const {values, setFieldValue} = useFormikContext()
 
   const { Table } = useTable({
     configs: {
@@ -85,8 +85,16 @@ export function TablePayments(props: {
                   className="uk-flex"
                   style={{ gap: "10px", alignItems: "center" }}
                 >
-                  <InputCheckbox
-                    name="billPayments"
+                  <InputSwitch
+                  onChangeInput={(value) => {
+                    if(value) {
+                      const actualValues = values?.["billPayments"] ? [...values["billPayments"], payment.id] :  [payment.id]
+                      setFieldValue("billPayments", actualValues)
+                    }else {
+                      setFieldValue("billPayments", values?.["billPayments"]?.filter(item => item !== payment.id))
+                    }
+                  }}
+                    name={`activePayment${payment.id}`}
                     options={[{ label: "", value: payment.id }]}
                   />
                 </div>

@@ -48,11 +48,11 @@ const columns = [
   },
 ];
 
-const mapper = (data = []) => {
+const mapper = (data = [], visible, setVisible) => {
   const mapped = data.map((item) => ({
     quantity: item.quantity,
     description: item.productVariation.product.description,
-    status: billStatusFormatter(item.status),
+    status: billStatusFormatter(item.status, undefined, visible, setVisible),
     unitary_value: item.unitary_value,
     discount_value: item.discount_value,
     total_value: item.total_value,
@@ -72,6 +72,7 @@ const mapper = (data = []) => {
 
 const ShowBill = React.memo(function ShowBill({ bill }) {
   const [visible, setVisible] = React.useState(false);
+  const [visible2, setVisible2] = React.useState(false);
 
   const { data } = useShowBill(bill.id, visible);
 
@@ -121,7 +122,7 @@ const ShowBill = React.memo(function ShowBill({ bill }) {
             <div className="uk-flex uk-flex-column uk-width-1-1">
               <span className="uk-text-small">Status</span>
               <span className="uk-text-default">
-                {billStatusFormatter(data?.status)}
+                {billStatusFormatter(data?.status, undefined, visible2, setVisible2)}
               </span>
             </div>
           </div>
@@ -191,7 +192,7 @@ const ShowBill = React.memo(function ShowBill({ bill }) {
 
             <Table
               columns={columns}
-              dataSource={mapper(data?.items)}
+              dataSource={mapper(data?.items, visible2, setVisible2)}
               pagination={false}
               scroll={{ y: 1000 }}
             />

@@ -1,14 +1,14 @@
-import * as yup from "yup";
-import moment from "moment";
-import { useQueryClient } from "react-query";
+
 import {
-  Accordion,
   api,
   Error,
-  FormHandler,
   Input,
+  Accordion,
+  FormHandler,
   LoaderCircle,
 } from "infinity-forge";
+import * as yup from "yup";
+import { useQueryClient } from "react-query";
 
 import {
   useLoadBill,
@@ -18,10 +18,9 @@ import {
 } from "@/presentation";
 import { Bill } from "@/domain";
 
-import { authorizationFormater } from "./utils";
 import {
-  TablePayments,
   TableItems,
+  TablePayments,
   PaymentHeader,
   AuthorizationInformations,
 } from "./components";
@@ -31,6 +30,7 @@ import * as S from "./styles";
 export function AuthorizationSell(
   props: {
     cancelled?: boolean;
+    onSuccess?: () => void;
   } & Partial<Bill>
 ) {
   const { data, isFetching } = useLoadBill({ id: props.id });
@@ -57,13 +57,19 @@ export function AuthorizationSell(
         <div className="form_cancel">
           <FormHandler
             onSucess={async (data) => {
-              console.log(data)
-
               const payload = {
-                ...data,
+                cancelReason: data.cancelReason,
+                userEmail: data.userEmail,
+                userPwd: data.userPwd,
                 billId: props.id,
-                billItems: data.billItems?.filter((item) => item.active).map(item => ({...item, quantity: Number(item.quantity || 0)})),
-                billPayments: data.billPayments?.filter(item => !!item),
+                billItems: data.billItems
+                  ?.filter((item) => item.active)
+                  .map((item) => ({
+                    ...item,
+                    quantity: Number(item.quantity || 0),
+                  })),
+                billPayments: data.billPayments?.filter((item) => !!item),
+                notes: " ",
               };
 
               await api({
@@ -71,6 +77,16 @@ export function AuthorizationSell(
                 method: "post",
                 body: payload,
               });
+
+              await queryClient.invalidateQueries({
+                queryKey: ["bills", true],
+              });
+
+              await queryClient.invalidateQueries({
+                queryKey: ["bills", false],
+              });
+
+              props.onSuccess && props?.onSuccess();
             }}
             schema={{
               userEmail: yup.string().required("Campo requerido"),
@@ -102,19 +118,23 @@ export function AuthorizationSell(
 
             <TableItems {...data} cancelled={props.cancelled} />
 
-           {Array.from({ length: maxBlock }).map((_, index) => {
-            const paymentsList = data.payments.filter(payment => payment.block === index + 1);
+            {Array.from({ length: maxBlock }).map((_, index) => {
+              const paymentsList = data.payments.filter(
+                (payment) => payment.block === index + 1
+              );
 
               return (
                 <Accordion
                   key={index + "block"}
                   Header={() => <PaymentHeader paymentsList={paymentsList} />}
                 >
-                 
-                  <TablePayments paymentsList={paymentsList} cancelled={props.cancelled} /> 
+                  <TablePayments
+                    paymentsList={paymentsList}
+                    cancelled={props.cancelled}
+                  />
                 </Accordion>
               );
-            })} 
+            })}
           </FormHandler>
         </div>
 

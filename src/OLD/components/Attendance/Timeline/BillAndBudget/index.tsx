@@ -29,6 +29,7 @@ export function BillAndBudget({ patient }) {
   const [formatedMetadata, setFormatedMetadata] = useState([]);
   const [reload, setReload] = useState(false);
   const [cashierFilters, setCashierFilters] = useState({});
+  const [visible, setVisible] = useState(false)
 
   const { getWord } = useDictionary();
   const { cashiers } = useDailyCasher(cashierFilters);
@@ -53,7 +54,7 @@ export function BillAndBudget({ patient }) {
           missingValue: currencyFormatter(item?.missing_value),
           status:
             item?._type === "sale"
-              ? billStatusFormatter(item, setReload)
+              ? billStatusFormatter(item, setReload, visible, setVisible)
               : budgetStatusFormatter(item, setReload),
           client: item?.client,
           actions:

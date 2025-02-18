@@ -35,6 +35,7 @@ export default function Bills() {
   const hasCreatePermission = usePermission("VEN01");
 
   const [visible, setVisible] = React.useState(false);
+  const [visible2, setVisible2] = React.useState(false);
   const [filters, setFilters] = React.useState({
     fromBill: moment(),
     toBill: moment(),
@@ -62,7 +63,7 @@ export default function Bills() {
         patient: bill.patient?.name ?? "-",
         user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
         total: currencyFormatter(bill?.total_value),
-        status: billStatusFormatter(bill, setReload),
+        status: billStatusFormatter(bill, setReload, visible2, setVisible2),
         missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
         docActions: (
           <ModalListagemDocumentosVenda

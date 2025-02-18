@@ -7,21 +7,17 @@ type PermissionItemProps = {
   DaniedComponent?: () => React.ReactNode;
 };
 
-export function PermissionItem({
-  hash,
-  children,
-  DaniedComponent,
-}: PermissionItemProps) {
+export function PermissionItem(props: PermissionItemProps) {
   const { isFetching } = useMe();
-  const hasPermission = useVerifyPermissions(hash);
+  const hasPermission = useVerifyPermissions(props?.hash);
 
   if(isFetching) {
     return <LoaderCircle size={30} color="#000" />
   }
 
   if (!hasPermission) {
-    return DaniedComponent ? <DaniedComponent /> : <></>;
+    return props?.DaniedComponent ? <props.DaniedComponent /> : <></>;
   }
 
-  return children;
+  return props?.children;
 }

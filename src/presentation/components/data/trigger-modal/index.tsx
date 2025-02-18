@@ -2,19 +2,15 @@ import { useState } from "react";
 import { ITriggerModalProps } from "./interfaces";
 import { Modal } from "infinity-forge";
 
-export function TriggerModal({
-  triggerContent,
-  content,
-  width,
-}: ITriggerModalProps) {
+export function TriggerModal(props: ITriggerModalProps) {
   const [visible, setVisible] = useState(false);
 
   return (
     <>
-      {triggerContent && (
+      {props?.triggerContent && (
         <button
           type="button"
-          onClick={() => setVisible(true)}
+          onClick={() => props?.setVisible ? props?.setVisible(true) : setVisible(true)}
           style={{
             padding: 0,
             border: "none",
@@ -22,13 +18,13 @@ export function TriggerModal({
             color: "#007bff",
           }}
         >
-          {triggerContent}
+          {props?.triggerContent}
         </button>
       )}
 
-      {content && (
-        <Modal open={visible} onClose={() => setVisible(false)} styles={{ maxWidth: width }} >
-          {content}
+      {props?.content && (
+        <Modal open={props?.visible || visible} onClose={() => props?.setVisible ? props?.setVisible(false) : setVisible(false)} styles={{ maxWidth: props?.width }} >
+          {props?.content}
         </Modal>
       )}
     </>
