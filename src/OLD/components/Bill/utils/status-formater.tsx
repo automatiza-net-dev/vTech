@@ -18,7 +18,7 @@ export const billStatusFormatter = (bill, setReload) => {
       <TriggerModal
         title={bill?.cancelled ? "Cancelamento de venda" : "Autorização de vendas"}
         triggerContent={pedingStatus ? "Pendente" : "Pendente cancelamento"}
-        content={<AuthorizationSell cancelled={!pedingStatus} billId={bill?.id} setReload={setReload} />}
+        content={<AuthorizationSell cancelled={!pedingStatus}  {...bill}/>}
         width={1400}
         footer={null}
       />

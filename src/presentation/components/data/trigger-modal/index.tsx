@@ -1,11 +1,11 @@
-import { Modal } from "antd";
 import { useState } from "react";
 import { ITriggerModalProps } from "./interfaces";
+import { Modal } from "infinity-forge";
 
 export function TriggerModal({
   triggerContent,
   content,
-  ...rest
+  width,
 }: ITriggerModalProps) {
   const [visible, setVisible] = useState(false);
 
@@ -27,7 +27,7 @@ export function TriggerModal({
       )}
 
       {content && (
-        <Modal visible={visible} onCancel={() => setVisible(false)} {...rest}>
+        <Modal open={visible} onClose={() => setVisible(false)} styles={{ maxWidth: width }} >
           {content}
         </Modal>
       )}
