@@ -136,7 +136,16 @@ export const DetailsPanel = memo(function DetailsPanel({
             </div>
           </>
         )}
-        <footer className="uk-margin-top">
+        <footer
+          className="uk-margin-top"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            textAlign: "center",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Button type="submit" text="Confirmar" />
 
           {someRequiresConfirmation && (

@@ -61,6 +61,7 @@ export function SelectProduct() {
           return {
             quantity: 1,
             total: price,
+            exceedDiscount: false,
             saleValue: price,
             discountValue: 0,
             description: name,

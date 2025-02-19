@@ -12,7 +12,7 @@ export function CancelAction({ bill }) {
     <CSS>
       <Modal open={modal} onClose={() => setModal(false)}>
         <AuthorizationSell
-          cancelled={true}
+          isCancelled={true}
           billId={bill.id}
           onSuccess={() => {
             setModal(false);

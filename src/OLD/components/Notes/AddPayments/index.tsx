@@ -396,14 +396,15 @@ const AddPayments = memo(function AddPayments({
               })}
             </div>
             <footer
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-              }}
+                  style={{
+                    marginTop: 15,
+                    display: "flex",
+                    gap: 5,
+                    flexDirection: "column",
+                    textAlign: "center",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
             >
               <Button
                 onClick={() =>
@@ -415,7 +416,7 @@ const AddPayments = memo(function AddPayments({
 
               {someRequiresConfirmation && (
                 <p
-                  style={{ marginTop: 5, textAlign: "start" }}
+                  style={{ marginTop: 5 }}
                   className="font-14-regular"
                 >
                   Parcelas marcadas em <strong>amarelo</strong> precisarão de

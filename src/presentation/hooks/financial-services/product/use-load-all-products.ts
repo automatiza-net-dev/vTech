@@ -1,7 +1,6 @@
 import { useQuery } from "react-query";
 
 import { RemoteProduct } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 export function useLoadAllProducts() {
@@ -13,6 +12,5 @@ export function useLoadAllProducts() {
         .loadAll();
       return response;
     },
-    ...callApiOneTime,
   });
 }

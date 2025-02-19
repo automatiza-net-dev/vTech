@@ -7,7 +7,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 export function TablePayments(props: {
   paymentsList: Payment[];
-  cancelled?: boolean;
+  isCancelled?: boolean;
   cancelledStatus?: "P" | "A";
 }) {
   const { values, setFieldValue } = useFormikContext();
@@ -74,7 +74,7 @@ export function TablePayments(props: {
         {
           id: "id",
           label: "Cancelar",
-          enabled: !!props.cancelled && !props?.cancelledStatus,
+          enabled: !!props.isCancelled && !props?.cancelledStatus,
           Component: {
             Element: (payment) => {
               return (
@@ -112,7 +112,7 @@ export function TablePayments(props: {
           id: "id",
           label: "Cancelar",
           enabled:
-            props.cancelled === true &&
+            props.isCancelled === true &&
             props?.cancelledStatus === "P" &&
             hasPermission,
           Component: {

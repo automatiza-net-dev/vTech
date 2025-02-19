@@ -20,6 +20,8 @@ export function AddProduct() {
   const cart = values["cart"];
   const isPossibleChangePricesProducs = user?.unit?.unitConfig?.alter_prices;
 
+  console.log(values["cart"]);
+
   function handleInputChange({
     value,
     pathName,
@@ -153,7 +155,7 @@ export function AddProduct() {
 
                     <InputCurrency
                       name={pathName + `.unitaryValue`}
-                      readOnly={!isPossibleChangePricesProducs}
+                      readOnly={!isPossibleChangePricesProducs || variation?.courtesy}
                       onChangeInput={(value) => {
                         handleInputChange({
                           value: value as string,
@@ -190,10 +192,21 @@ export function AddProduct() {
                               : (value as string),
                         });
 
+                        function transformarStringParaNumero(str) {
+                          if(!str) {
+                            return 0
+                          }
+
+                          return parseFloat(str.replace(',', '.'));
+                        }
+
                         if (
-                          Number(value) >=
-                          (variation.maximum_discount_percentage / 100) *
-                            variation.saleValue
+                          !variation.courtesy &&
+                          variation?.discountValue &&
+                          transformarStringParaNumero(variation?.discountValue) > 0 &&
+                          transformarStringParaNumero(value) >=
+                            (variation.maximum_discount_percentage / 100) *
+                              variation.saleValue
                         ) {
                           handleInputChange({
                             indexVariation,
@@ -253,7 +266,7 @@ export function AddProduct() {
                           checked={product?.variations?.[0]?.courtesy}
                           onChange={(e) => {
                             handleInputChange({
-                              value: e.target.checked as boolean,
+                              value: !variation?.courtesy as boolean,
                               pathName,
                               indexProduct,
                               indexVariation,
@@ -268,6 +281,23 @@ export function AddProduct() {
                                 indexVariation,
                                 fieldName: "unitaryValue",
                               });
+
+                              handleInputChange({
+                                value: 0,
+                                pathName,
+                                indexProduct,
+                                indexVariation,
+                                fieldName: "discountValue",
+                              });
+                              
+                              handleInputChange({
+                                value: 0,
+                                pathName,
+                                indexProduct,
+                                indexVariation,
+                                fieldName: "total",
+                              });
+
                             } else {
                               handleInputChange({
                                 value: variation?.saleValue,

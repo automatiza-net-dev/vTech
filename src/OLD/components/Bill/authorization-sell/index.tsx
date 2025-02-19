@@ -28,6 +28,7 @@ import * as S from "./styles";
 
 export function AuthorizationSell(
   props: {
+    isCancelled?: boolean;
     onSuccess?: () => void;
   } & Partial<Bill>
 ) {
@@ -91,7 +92,7 @@ export function AuthorizationSell(
               userPwd: yup.string().required("Campo requerido"),
             }}
             button={
-              data.cancelled
+              props?.isCancelled
                 ? {
                     text: hasPermissionToCancel
                       ? "CANCELAR"
@@ -104,7 +105,7 @@ export function AuthorizationSell(
             cleanFieldsOnSubmit={false}
             isStickyButtons
           >
-            {!props.cancelled && (
+            {!props?.isCancelled && (
               <PermissionItem hash="VEN18">
                 <div className="row">
                   <Input name="userEmail" label="Email" />
@@ -114,7 +115,7 @@ export function AuthorizationSell(
               </PermissionItem>
             )}
 
-            <TableItems {...data} />
+            <TableItems {...data} isCancelled={props.isCancelled}/>
 
             {Array.from({ length: maxBlock }).map((_, index) => {
               const paymentsList = data.payments.filter(
@@ -128,7 +129,7 @@ export function AuthorizationSell(
                 >
                   <TablePayments
                     paymentsList={paymentsList}
-                    cancelled={props.cancelled}
+                    isCancelled={props?.isCancelled}
                   />
                 </Accordion>
               );
@@ -136,7 +137,7 @@ export function AuthorizationSell(
           </FormHandler>
         </div>
 
-        {data && !props.cancelled && (
+        {data && !props.isCancelled && (
           <AuthorizationPaymentForm
             auth={"VEN16"}
             bill={data}
