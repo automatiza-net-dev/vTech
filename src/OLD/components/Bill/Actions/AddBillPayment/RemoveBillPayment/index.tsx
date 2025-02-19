@@ -7,7 +7,7 @@ import { billService } from "@/OLD/services/bills.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Button, useToast } from "infinity-forge";
-import { Popconfirm } from "antd";
+import { Popconfirm, notification } from "antd";
 
 const RemoveBillPayment = memo(function ({
   payments,
@@ -71,7 +71,7 @@ const RemoveBillPayment = memo(function ({
         queryClient.invalidateQueries(["bills"]);
         setEditExpirationDate(false);
         return createToast({
-          status: "suc",
+          status: "success",
           message: "Datas de vencimento atualizadas!",
         });
       })
@@ -98,16 +98,17 @@ const RemoveBillPayment = memo(function ({
           }
         />
       )}
-      {removeBlockPermission && !editExpirationDate && (
-        <Popconfirm
+
+      {/* <Popconfirm
           title="Deseja realmete excluir esse pagamento?"
-          onConfirm={removeBillPayment}
+         
           okText="Sim"
           cancelText="Não"
           placement="left"
         >
-          <Button text="Remover Pagamento" />
-        </Popconfirm>
+        </Popconfirm> */}
+      {removeBlockPermission && !editExpirationDate && (
+        <Button text="Remover Pagamento" onClick={removeBillPayment} />
       )}
     </div>
   );

@@ -12,6 +12,10 @@ label {
     min-height: 200px !important;
 }
 
+.ant-modal-mask {
+    z-index: 200 !important;
+}
+
 input, textarea {
     font-size: 13px !important;
 }

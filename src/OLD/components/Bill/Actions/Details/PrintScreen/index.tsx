@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
 
@@ -8,8 +8,10 @@ import * as S from "./styles";
 
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
+import { useAuthAdmin } from "infinity-forge";
+import { Bill } from "@/domain";
 
-export default function PrintScreen({ bill }: any) {
+export default function PrintScreen({ bill }: { bill: Bill }) {
   const [higherBlock, setHigherBlock] = useState(0);
   const blockArr = Array.from(Array(higherBlock).keys());
   const { clinic } = useProfile();
@@ -21,7 +23,7 @@ export default function PrintScreen({ bill }: any) {
   bill?.items.forEach((item) => {
     finalValue += item?.total_value || 0;
     totalDiscount += item?.discount_value || 0;
-    totalValue += item?.saleValue || 0;
+    totalValue += item?.sale_value || 0;
   });
 
   bill?.payments?.map((item) => {
@@ -29,26 +31,37 @@ export default function PrintScreen({ bill }: any) {
       setHigherBlock(item?.block);
     }
   });
-
+  const { user } = useAuthAdmin();
+  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
   return (
     <S.PrintScreen>
       <PrintHeader />
       <hr />
-      <section className="uk-flex uk-flex-around uk-margin-top">
-        <div>
+      <section className="uk-flex  uk-margin-top">
+        <div style={{ maxWidth: 200 }}>
           <label>Cliente</label>
           <p className="uk-margin-remove">{bill?.client?.name}</p>
         </div>
-        <div>
+
+        {hasInternalCode && (
+          <div style={{ maxWidth: 200 }}>
+            <label>Código Interno</label>
+            <p className="uk-margin-remove">{bill?.internalCode}</p>
+          </div>
+        )}
+
+        <div style={{ marginRight: 10 }}>
           <label>Código</label>
           <p className="uk-margin-remove">{bill?.tag}</p>
         </div>
-        <div>
+
+        <div style={{ marginRight: 10 }}>
           <label>Data</label>
           <p className="uk-margin-remove">
             {moment(bill?.bill_date).format("DD/MM/YYYY - HH:mm")}
           </p>
         </div>
+
         <div>
           <label>Status</label>
           <p className="uk-margin-remove">
@@ -177,7 +190,7 @@ export default function PrintScreen({ bill }: any) {
       <h4 className="uk-margin-top uk-text-center">
         <strong>Observações</strong>
       </h4>
-      <section>{bill?.additional_information}</section>
+      <section>{bill?.additionalInformation}</section>
     </S.PrintScreen>
   );
 }
