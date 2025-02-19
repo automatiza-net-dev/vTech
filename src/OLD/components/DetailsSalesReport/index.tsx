@@ -1,38 +1,47 @@
-// @ts-nocheck
 import * as React from "react";
 
-import { useDetailedSalesReport } from "@/OLD/hooks/useReports";
-import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Button } from "antd";
-import { Container } from "./styles";
 import Filters from "./Filters";
-import PrintScreen from "./PrintScreen";
-import AccessDenied from "@/OLD/components/AccessDenied";
-import { PageWrapper } from "infinity-forge";
+import { api, PageWrapper } from "infinity-forge";
 
 import * as XLSX from "xlsx/xlsx.mjs";
 import moment from "moment";
+import { PermissionItem } from "@/presentation";
 
-const DetailsSalesReport = React.memo(function DetailsSalesReport() {
-  const [filters, setFilters] = React.useState({});
-  const [reload, setReload] = React.useState(false);
+import { Container } from "./styles";
 
-  const { reports, loadingReports } = useDetailedSalesReport(filters, reload);
+function DetailsSalesReport() {
+  const [filters, setFilters] = React.useState<any>({});
+
   const { clinic } = useProfile();
-
-  const listDetailedSalesReportsPermission = useUserHasPermission("REL04");
 
   React.useEffect(() => {
     setFilters({ ...filters, economicGroups: [clinic?.economicGroup?.id] });
   }, [clinic]);
 
-  const componentRef = React.useRef();
+  const handleExport = async () => {
+    const keys = Object.keys(filters);
+    let newObj = { ...filters };
 
-  const handleExport = () => {
+    if (keys.includes("fromDate")) {
+      newObj = {
+        ...newObj,
+        fromDate: moment(filters?.fromDate).startOf("day").format("YYYY-MM-DD"),
+        toDate: moment(filters.toDate).endOf("day").format("YYYY-MM-DD"),
+      };
+    }
+
+    const reports = await api({
+      url: "reports/detailed-sales",
+      method: "get",
+      body: newObj,
+    });
+
     const formatted =
       process.env.client !== "liftone"
-        ? reports?.map((item) => ({
+        ? reports?.map((item: any) => ({
             sistema: item?.sistema,
             grupo: item?.grupo,
             cidade: item?.cidade,
@@ -90,9 +99,9 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
             data_venda_anterior: item?.data_venda_anterior
               ? moment(item?.data_venda_anterior).format("DD/MM/YYYY")
               : "-",
-            usuario_agendamento: item?.usuario_agenda_origem_venda || "-"
+            usuario_agendamento: item?.usuario_agenda_origem_venda || "-",
           }))
-        : reports?.map((item) => ({
+        : reports?.map((item: any) => ({
             sistema: item?.sistema,
             grupo: item?.grupo,
             cidade: item?.cidade,
@@ -143,31 +152,18 @@ const DetailsSalesReport = React.memo(function DetailsSalesReport() {
     XLSX.writeFile(wb, "Vendas detalhado" + ".xlsx");
   };
 
-  return !listDetailedSalesReportsPermission ||
-    listDetailedSalesReportsPermission === "loading" ? (
-    <AccessDenied loading={loadingReports} />
-  ) : (
-    <PageWrapper title="Relatório detalhado de vendas">
-      <Container>
-        <Filters filters={filters} setFilters={setFilters} />
-        <div className="uk-flex uk-flex-around">
-          <Button
-            onClick={() => handleExport()}
-            onMouseOver={() => {
-              setReload((prv) => !prv);
-            }}
-          >
-            Exportar (Excel)
-          </Button>
-        </div>
-        <div style={{ display: "none" }}>
-          <div ref={componentRef}>
-            <PrintScreen reports={reports} />
+  return (
+    <PermissionItem hash="REL04">
+      <PageWrapper title="Relatório detalhado de vendas">
+        <Container>
+          <Filters filters={filters} setFilters={setFilters} />
+          <div className="uk-flex uk-flex-around">
+            <Button onClick={() => handleExport()}>Exportar (Excel)</Button>
           </div>
-        </div>
-      </Container>
-    </PageWrapper>
+        </Container>
+      </PageWrapper>
+    </PermissionItem>
   );
-});
+}
 
 export default DetailsSalesReport;
