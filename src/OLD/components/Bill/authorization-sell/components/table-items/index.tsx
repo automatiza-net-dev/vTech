@@ -5,8 +5,8 @@ import { authorizationFormater } from "../../utils";
 
 import { Cancel } from "./cancel";
 
-export function TableItems(props: Bill & { cancelled?: boolean }) {
-  
+export function TableItems(props: Bill) {
+
   const { Table } = useTable<Product>({
     configs: { errorMessage: "Não possui items", tableData: props.items },
     columnsConfiguration: {
@@ -47,11 +47,6 @@ export function TableItems(props: Bill & { cancelled?: boolean }) {
           id: "sale_value",
           enabled: !props.cancelled,
           label: "Preço Unitário Cadastro",
-          Component: {
-            Element: (item) => (
-              <p className="font-14-regular">{item?.sale_value}</p>
-            ),
-          },
         },
         {
           id: "unitary_value",
@@ -59,12 +54,8 @@ export function TableItems(props: Bill & { cancelled?: boolean }) {
         },
         {
           id: "discount_value",
+          enabled: !!props.cancelled,
           label: "Desconto Concedido",
-        },
-        {
-          id: "productVariation",
-          enabled: !props.cancelled,
-          label: "Preço Unitário Cadastro",
           Component: {
             Element: (item) => {
               const product = item as Product;
@@ -98,7 +89,7 @@ export function TableItems(props: Bill & { cancelled?: boolean }) {
         {
           id: "id",
           label: "Autorização",
-          enabled: !props.cancelled,
+          enabled: props.cancelled,
           Component: {
             Element: (item) => {
               return (

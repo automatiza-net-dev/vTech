@@ -1,5 +1,37 @@
-import { TriggerModal } from "@/presentation";
+import { useState } from "react";
+
+import { Modal } from "infinity-forge";
+
 import { AuthorizationSell } from "../authorization-sell";
+
+function Component({ pedingStatus, bill }) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setVisible(true)}
+        style={{
+          padding: 0,
+          border: "none",
+          background: "none",
+          color: "#007bff",
+        }}
+      >
+        {pedingStatus ? "Pendente" : "Pendente cancelamento"}
+      </button>
+
+      <Modal
+        open={visible}
+        onClose={() => setVisible(false)}
+        styles={{ maxWidth: 1400 }}
+      >
+        <AuthorizationSell {...bill} onSuccess={() => setVisible(false)} />
+      </Modal>
+    </>
+  );
+}
 
 export const cancelledStatus = {
   P: "Cancelamento pendente",
@@ -8,33 +40,12 @@ export const cancelledStatus = {
   S: "Cancelamento autorizaado",
 };
 
-export const billStatusFormatter = (bill, setReload, visible, setVisible) => {
+export const billStatusFormatter = (bill) => {
   const { status, pending } = bill;
   const pedingStatus = status === "ABERTA" && pending;
+
   if (pedingStatus || bill?.cancelled === "P" || bill?.cancelled === "A") {
-    return (
-      <TriggerModal
-        visible={visible}
-        setVisible={setVisible}
-        title={
-          bill?.cancelled ? "Cancelamento de venda" : "Autorização de vendas"
-        }
-        triggerContent={pedingStatus ? "Pendente" : "Pendente cancelamento"}
-        content={
-          <AuthorizationSell
-            onSuccess={() => {
-              setVisible(false);
-            
-            
-            }}
-            cancelled={!pedingStatus}
-            {...bill}
-          />
-        }
-        width={1400}
-        footer={null}
-      />
-    );
+    return <Component bill={bill} pedingStatus={pedingStatus} />;
   }
 
   const statusStyles = {

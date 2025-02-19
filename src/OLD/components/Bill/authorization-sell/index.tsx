@@ -1,4 +1,3 @@
-
 import {
   api,
   Error,
@@ -29,25 +28,24 @@ import * as S from "./styles";
 
 export function AuthorizationSell(
   props: {
-    cancelled?: boolean;
     onSuccess?: () => void;
   } & Partial<Bill>
 ) {
-  const { data, isFetching } = useLoadBill({ id: props.id });
+  const { data, isFetching } = useLoadBill(props);
 
   const hasPermissionToCancel = usePermission("VEN18");
 
   const queryClient = useQueryClient();
-
-  if (isFetching) {
-    return <LoaderCircle size={30} color="#ccc" />;
-  }
 
   const maxBlock =
     data?.payments?.reduce(
       (max, item) => (item?.block > max ? item.block : max),
       0
     ) || 0;
+
+  if (isFetching) {
+    return <LoaderCircle size={30} color="#ccc" />;
+  }
 
   return (
     <Error name="AuthorizationSell">
@@ -93,7 +91,7 @@ export function AuthorizationSell(
               userPwd: yup.string().required("Campo requerido"),
             }}
             button={
-              props.cancelled
+              data.cancelled
                 ? {
                     text: hasPermissionToCancel
                       ? "CANCELAR"
@@ -106,7 +104,7 @@ export function AuthorizationSell(
             cleanFieldsOnSubmit={false}
             isStickyButtons
           >
-            {props.cancelled && (
+            {!props.cancelled && (
               <PermissionItem hash="VEN18">
                 <div className="row">
                   <Input name="userEmail" label="Email" />
@@ -116,7 +114,7 @@ export function AuthorizationSell(
               </PermissionItem>
             )}
 
-            <TableItems {...data} cancelled={props.cancelled} />
+            <TableItems {...data} />
 
             {Array.from({ length: maxBlock }).map((_, index) => {
               const paymentsList = data.payments.filter(
@@ -138,13 +136,17 @@ export function AuthorizationSell(
           </FormHandler>
         </div>
 
-        {data && (
+        {data && !props.cancelled && (
           <AuthorizationPaymentForm
             auth={"VEN16"}
             bill={data}
             onSuccess={async () => {
               await queryClient.invalidateQueries({
-                queryKey: ["RemoteLoadBill", props.cancelled],
+                queryKey: ["RemoteLoadBill", false],
+              });
+
+              await queryClient.invalidateQueries({
+                queryKey: ["RemoteLoadBill", true],
               });
             }}
           />

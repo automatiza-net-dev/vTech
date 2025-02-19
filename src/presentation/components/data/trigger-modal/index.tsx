@@ -10,7 +10,7 @@ export function TriggerModal(props: ITriggerModalProps) {
       {props?.triggerContent && (
         <button
           type="button"
-          onClick={() => props?.setVisible ? props?.setVisible(true) : setVisible(true)}
+          onClick={() =>  setVisible(true)}
           style={{
             padding: 0,
             border: "none",
@@ -23,7 +23,7 @@ export function TriggerModal(props: ITriggerModalProps) {
       )}
 
       {props?.content && (
-        <Modal open={props?.visible || visible} onClose={() => props?.setVisible ? props?.setVisible(false) : setVisible(false)} styles={{ maxWidth: props?.width }} >
+        <Modal open={props?.visible || visible} onClose={() => setVisible(false)} styles={{ maxWidth: props?.width }} >
           {props?.content}
         </Modal>
       )}

@@ -1,20 +1,17 @@
-import {
-  useTable,
-  InputSwitch,
-  formatNumberToCurrency,
-} from "infinity-forge";
+import { useTable, InputSwitch, formatNumberToCurrency } from "infinity-forge";
 import moment from "moment";
 import { useFormikContext } from "formik";
 
-import {  Payment } from "@/domain";
-
+import { Payment } from "@/domain";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 export function TablePayments(props: {
   paymentsList: Payment[];
   cancelled?: boolean;
+  cancelledStatus?: "P" | "A";
 }) {
-
-  const {values, setFieldValue} = useFormikContext()
+  const { values, setFieldValue } = useFormikContext();
+  const hasPermission = useUserHasPermission("VEN20");
 
   const { Table } = useTable({
     configs: {
@@ -77,7 +74,7 @@ export function TablePayments(props: {
         {
           id: "id",
           label: "Cancelar",
-          enabled: !!props.cancelled,
+          enabled: !!props.cancelled && !props?.cancelledStatus,
           Component: {
             Element: (payment) => {
               return (
@@ -86,17 +83,46 @@ export function TablePayments(props: {
                   style={{ gap: "10px", alignItems: "center" }}
                 >
                   <InputSwitch
-                  onChangeInput={(value) => {
-                    if(value) {
-                      const actualValues = values?.["billPayments"] ? [...values["billPayments"], payment.id] :  [payment.id]
-                      setFieldValue("billPayments", actualValues)
-                    }else {
-                      setFieldValue("billPayments", values?.["billPayments"]?.filter(item => item !== payment.id))
-                    }
-                  }}
+                    onChangeInput={(value) => {
+                      if (value) {
+                        const actualValues = values?.["billPayments"]
+                          ? [...values["billPayments"], payment.id]
+                          : [payment.id];
+                        setFieldValue("billPayments", actualValues);
+                      } else {
+                        setFieldValue(
+                          "billPayments",
+                          values?.["billPayments"]?.filter(
+                            (item) => item !== payment.id
+                          )
+                        );
+                      }
+                    }}
                     name={`activePayment${payment.id}`}
                     options={[{ label: "", value: payment.id }]}
                   />
+                </div>
+              );
+            },
+            props: {},
+            allProps: true,
+          },
+        },
+        {
+          id: "id",
+          label: "Cancelar",
+          enabled:
+            props.cancelled === true &&
+            props?.cancelledStatus === "P" &&
+            hasPermission,
+          Component: {
+            Element: (payment) => {
+              return (
+                <div
+                  className="uk-flex"
+                  style={{ gap: "10px", alignItems: "center" }}
+                >
+                  Novo
                 </div>
               );
             },
