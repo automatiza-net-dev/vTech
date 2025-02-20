@@ -8,7 +8,7 @@ import { Modal } from "antd";
 import FormChild from "../FormChild";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { useToast } from "infinity-forge";
+import { api, useToast } from "infinity-forge";
 
 const Gain = memo(function Gain({ formData, visible, close, setReload }) {
   const [data, setData] = useState({ currencyValue: currencyFormatter(0) });
@@ -21,11 +21,15 @@ const Gain = memo(function Gain({ formData, visible, close, setReload }) {
 
   const {createToast} = useToast()
 
-  const submitGain = useCallback(() => {
+  const submitGain = useCallback(async () => {
     setLoading(true);
 
     if (!data?.selectedId) {
       return createToast({ status: "error", message: "Informe a razão do ganho" }) 
+    }
+
+    if(Array.isArray(data?.items) && data.items.length > 0) {
+      await api({ url: "opportunity-movements/store", method: "post", body: { items: data.items }  })
     }
 
     opportunitiesService
