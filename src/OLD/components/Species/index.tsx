@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { notification, Table } from "antd";
+import { Table } from "antd";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { memo, useCallback, useEffect, useState } from "react";
 import { columns } from "./columns";
@@ -39,7 +39,13 @@ const SpeciesManagement = () => {
   ) : (
     <PageWrapper title="Gestão de espécies">
       <div>
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "10px",
+          }}
+        >
           <Create
             button={true}
             reload={reload}

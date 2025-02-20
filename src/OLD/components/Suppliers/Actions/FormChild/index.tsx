@@ -12,9 +12,8 @@ import {
   Switch,
   Select,
   AutoComplete,
-  notification,
 } from "antd";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 const { Option } = Select;
 
 const ImgCrop = dynamic(() => import("antd-img-crop"), { ssr: false });
@@ -34,6 +33,8 @@ const FormChild = memo(function ({ data, setData, submit, setPhoto }) {
   const { plans } = usePlans();
 
   const router = useRouter();
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     setStates(places);
@@ -59,9 +60,7 @@ const FormChild = memo(function ({ data, setData, submit, setPhoto }) {
         });
       })
       .catch((_err) => {
-        return notification.error({
-          message: "Houve um erro ao buscar o cep informado",
-        });
+        return  createToast({ status: "error", message: "Houve um erro ao buscar o cep informado" })
       });
   };
 

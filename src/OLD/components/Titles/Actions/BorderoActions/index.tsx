@@ -4,7 +4,7 @@ import { memo, useCallback, useState } from "react";
 import { financesService } from "@/OLD/services/finances.service";
 
 import { Container } from "./styles";
-import { Popconfirm, notification, Modal } from "antd";
+import { Popconfirm, Modal } from "antd";
 import FormChild from "./FormChild";
 
 import { FiLock, FiUnlock } from "react-icons/fi";
@@ -14,6 +14,7 @@ import { BsArrowCounterclockwise } from "react-icons/bs";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const BorderoActions = memo(function BorderoActions({
   bordero,
@@ -31,6 +32,7 @@ const BorderoActions = memo(function BorderoActions({
   const [downModalVisible, setDownModalVisible] = useState(false);
   const [revertModalVisible, setRevertModalVisible] = useState(false);
   const [revertData, setRevertData] = useState({});
+  const { createToast } = useToast();
 
   const closeBordero = useCallback(() => {
     setLoading(true);
@@ -40,14 +42,16 @@ const BorderoActions = memo(function BorderoActions({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+        return createToast({
           message: "Bordero Fechado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro interno ao fechar o bordero selecionado #err",
+          status: "error",
         });
       });
   }, [bordero]);
@@ -60,20 +64,23 @@ const BorderoActions = memo(function BorderoActions({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+        return createToast({
           message: "Bordero reaberto com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         if (err?.response?.data?.message) {
-          return notification.error({
+          return createToast({
             message: err?.response?.data?.message?.split(":")[1],
+            status: "error",
           });
         }
         setLoading(false);
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro interno ao reabrir o bordero selecionado #err",
+          status: "error",
         });
       });
   }, [bordero]);
@@ -100,15 +107,16 @@ const BorderoActions = memo(function BorderoActions({
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-        return notification.success({
+        return createToast({
           message: "Bordero baixado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
-
-        return notification.error({
+        return createToast({
           message: "Houve um erro interno ao baixar o bordero selecionado #err",
+          status: "error",
         });
       });
   }, [downData, bordero]);
@@ -130,16 +138,19 @@ const BorderoActions = memo(function BorderoActions({
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-        return notification.success({
+
+        return createToast({
           message: "Bordero estornado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
 
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro interno ao estornar o bordero selecionado #err",
+          status: "error",
         });
       });
   }, [revertData, bordero]);
@@ -147,34 +158,34 @@ const BorderoActions = memo(function BorderoActions({
   return (
     <Container>
       {bordero?.status === "Aberto" && (
-          <Popconfirm
-            title="Deseja fechar este borderô?"
-            onConfirm={closeBordero}
-          >
-            <FiLock className="custom-icon" />
-          </Popconfirm>
+        <Popconfirm
+          title="Deseja fechar este borderô?"
+          onConfirm={closeBordero}
+        >
+          <FiLock className="custom-icon" />
+        </Popconfirm>
       )}
       {bordero?.status === "Fechado" && (
-          <Popconfirm
-            title="Deseja reabrir este borderô?"
-            onConfirm={reopenBordero}
-          >
-            <FiUnlock className="custom-icon" />
-          </Popconfirm>
+        <Popconfirm
+          title="Deseja reabrir este borderô?"
+          onConfirm={reopenBordero}
+        >
+          <FiUnlock className="custom-icon" />
+        </Popconfirm>
       )}
       {bordero?.status === "Fechado" && (
-          <IoMdDownload
-            size={20}
-            className="custom-icon"
-            onClick={() => setDownModalVisible(true)}
-          />
+        <IoMdDownload
+          size={20}
+          className="custom-icon"
+          onClick={() => setDownModalVisible(true)}
+        />
       )}
       {bordero?.status === "Baixado" && (
-          <BsArrowCounterclockwise
-            size={20}
-            className="custom-icon"
-            onClick={() => setRevertModalVisible(true)}
-          />
+        <BsArrowCounterclockwise
+          size={20}
+          className="custom-icon"
+          onClick={() => setRevertModalVisible(true)}
+        />
       )}
 
       <Modal

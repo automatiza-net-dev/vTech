@@ -6,36 +6,28 @@ import { useActivitiesTypes } from "@/OLD/hooks/useActivitiesTypes";
 
 import { Container } from "./styles";
 import { DatePicker } from "@mui/x-date-pickers";
-import {
-  Input,
-  Select,
-  AutoComplete,
-  notification,
-  Button,
-  Switch,
-} from "antd";
+import { Input, Select, AutoComplete, Button, Switch } from "antd";
 const { Option } = Select;
 const { TextArea } = Input;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useToast } from "infinity-forge";
 
 const verifyFields = (data) => {
   if (!data?.userId) {
-    return notification.warning({ message: "informe o proprietário" });
+    return "informe o proprietário";
   }
 
   if (!data?.activityId) {
-    return notification.warning({ message: "Informe o tipo de atividade" });
+    return "Informe o tipo de atividade";
   }
 
   if (!data?.executionDate) {
-    return notification.warning({
-      message: "Informe a data e horário da atividade",
-    });
+    return "Informe a data e horário da atividade";
   }
 
   if (!data?.duration) {
-    return notification.warning({ message: "informe a duração da atividade" });
+    return "informe a duração da atividade";
   }
 
   return "ok";
@@ -54,12 +46,23 @@ const FormChild = memo(function FormChild({
   colaborators,
   actTypes,
 }) {
+  const { createToast } = useToast();
 
   return (
     <Container
       onSubmit={(e) => {
         e.preventDefault();
-        verifyFields(data) === "ok" && submit();
+        const response = verifyFields(data);
+
+        if (response === "ok") {
+          submit();
+          return;
+        }
+
+        return createToast({
+          message: response,
+          status: "warning",
+        });
       }}
     >
       <div className="uk-flex uk-flex-between">
@@ -196,11 +199,7 @@ const FormChild = memo(function FormChild({
           </div>
           {type === "update" && (
             <div className="uk-flex uk-flex-right uk-width-1-2">
-              <Button
-                htmlType="button"
-                onClick={setExecution}
-                type="primary"
-              >
+              <Button htmlType="button" onClick={setExecution} type="primary">
                 Finalizar e salvar
               </Button>
             </div>

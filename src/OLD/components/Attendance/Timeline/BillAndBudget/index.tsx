@@ -30,6 +30,7 @@ export function BillAndBudget({ patient }) {
   const [reload, setReload] = useState(false);
   const [cashierFilters, setCashierFilters] = useState({});
 
+
   const { getWord } = useDictionary();
   const { cashiers } = useDailyCasher(cashierFilters);
   const { salesMetadata } = usePatientSalesMetadata(patient?.id, reload);

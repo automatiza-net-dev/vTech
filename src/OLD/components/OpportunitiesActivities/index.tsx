@@ -12,8 +12,8 @@ import { Container } from "./styles";
 import OpportunitiesForm from "@/OLD/components/Opportunities/FormChild";
 import Actions from "./Actions";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
-import { Table, notification, Input } from "antd";
-import { Button } from "infinity-forge";
+import { Table, Input } from "antd";
+import { Button, useToast } from "infinity-forge";
 
 import { opportunitiesActivitiesColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -39,6 +39,7 @@ const OpActivities = memo(function OpActivities({
   const [edit, setEdit] = useState(false);
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   const newAcitivityPermission = useUserHasPermission("CRM06");
 
@@ -160,13 +161,16 @@ const OpActivities = memo(function OpActivities({
         setLoading(false);
         setReload((prv) => !prv);
         refresh && refresh();
-        return notification.success({
+
+        return createToast({
           message: "Oportunidade atualizada com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
+          status: "error",
           message:
             "Houve um erro ao atualizar as informações da oportunidade, verifique os campos informados",
         });

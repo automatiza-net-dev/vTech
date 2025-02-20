@@ -6,11 +6,12 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import UpdateActivity from "../Update";
-import { notification, Popconfirm } from "antd";
+import {  Popconfirm } from "antd";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { AiOutlineEye } from "react-icons/ai";
 import { BsArrowCounterclockwise } from "react-icons/bs";
+import { useToast } from "infinity-forge";
 
 const Actions = memo(function Actions({
   activity,
@@ -26,12 +27,14 @@ const Actions = memo(function Actions({
   const removeActivityPermission = useUserHasPermission("CRM08");
   const reopenActivityPermission = useUserHasPermission("CRM11");
 
+  const {createToast} = useToast()
+
   const removeActivity = useCallback(() => {
     opportunitiesService
       .excludeActivityOpportunity(activity?.id)
       .then((_res) => {
         setReload((prv) => !prv);
-        return notification.success({ message: "Atividade removida!" });
+        return createToast({ status: "success", message: "Atividade removida!" })
       });
   }, [activity?.id]);
 
@@ -40,14 +43,10 @@ const Actions = memo(function Actions({
       .reopenActivity(activity?.id)
       .then((res) => {
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Atividade reaberta com sucesso!",
-        });
+        return createToast({ status: "success", message: "Atividade reaberta com sucesso!" })
       })
       .catch((err) => {
-        return notification.error({
-          message: "Houve um erro ao reabrir a atividade",
-        });
+        return   createToast({ status: "error", message: "Houve um erro ao reabrir a atividade" })
       });
   }, [activity?.id]);
 

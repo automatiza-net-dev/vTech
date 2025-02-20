@@ -7,9 +7,9 @@ import { documentServices } from "@/OLD/services/document.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
-import { notification, Spin, Upload } from "antd";
+import { Spin, Upload } from "antd";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -33,6 +33,8 @@ function DocumentCreate() {
 
   const canEditDocument = useUserHasPermission("DOC02");
 
+  const { createToast } = useToast();
+
   const fetchData = useCallback(() => {
     setStartPage(true);
 
@@ -55,9 +57,7 @@ function DocumentCreate() {
           });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro ao carregar documento",
-        });
+        createToast({ status: "error", message: "Erro ao carregar documento" });
       })
       .finally(() => setStartPage(false));
   }, []);
@@ -84,7 +84,8 @@ function DocumentCreate() {
     ) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return notification.error({
+        return createToast({
+          status: "error",
           message: "Você só pode upar arquivos até 2MB!",
         });
       }
@@ -96,27 +97,25 @@ function DocumentCreate() {
 
   const submitData = useCallback(() => {
     if (!permissions?.DOC2) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ status: "error", message: "Ação não permitida" });
     }
 
     if (!(data && data.title && data.title.length > 0)) {
-      return notification.error({
-        message: "Insira um titulo",
-      });
+      return createToast({ status: "error", message: "Insira um titulo" });
     }
     if (!(data && data.description && data.description.length > 0)) {
-      return notification.error({
-        message: "Insira uma descrição",
-      });
+      return createToast({ status: "error", message: "Insira uma descrição" });
     }
     if (!(body && body.length > 0) && data?.type !== "pdf") {
-      return notification.error({
+      return createToast({
+        status: "error",
         message: "Insira o corpo do documento",
       });
     }
 
     if (data?.type === "pdf" && !file) {
-      return notification.error({
+      return createToast({
+        status: "error",
         message:
           "É necessário que seja adicionado um documento do tipo '.doc' ou '.docx'",
       });
@@ -132,15 +131,15 @@ function DocumentCreate() {
           template: body,
         })
         .then((res) => {
-          notification.success({
+          createToast({
+            status: "success",
             message: "Documento editado com sucesso",
           });
+
           router.back();
         })
         .catch((err) => {
-          notification.error({
-            message: "Erro ao criar documento",
-          });
+          createToast({ status: "error", message: "Erro ao criar documento" });
         })
         .finally(() => setLoading(false));
     } else {
@@ -157,7 +156,9 @@ function DocumentCreate() {
         .updateWithDoc(router.query.innerpage, formData)
         .then((res) => {
           setLoading(false);
-          notification.success({
+
+          createToast({
+            status: "success",
             message: "Documento criado com sucesso",
           });
           router.back();
@@ -165,7 +166,8 @@ function DocumentCreate() {
         .catch((err) => {
           setLoading(false);
           err?.response?.data?.errors?.length > 0 &&
-            notification.error({
+            createToast({
+              status: "error",
               message: err?.response?.data?.errors[0]?.message,
             });
         });

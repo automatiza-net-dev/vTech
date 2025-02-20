@@ -2,7 +2,7 @@
 import React, { useState, memo, useCallback, useEffect } from "react";
 
 import FormChild from "../../FormChild";
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
@@ -11,6 +11,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const Update = memo(function ({
   visible,
@@ -28,6 +29,8 @@ const Update = memo(function ({
   const [loading, setLoading] = useState(false);
 
   const { clinic } = useProfile();
+
+  const { createToast } = useToast();
 
   useEffect(() => {
     setData({
@@ -92,15 +95,18 @@ const Update = memo(function ({
         setLoading(false);
         setReload((prv) => !prv);
         setVisible(false);
-        return notification.success({
+
+        return createToast({
           message: "Oportunidade atualizada com sucesso!",
+          status: "success",
         });
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message:
             "Houve um erro ao atualizar as informações da oportunidade, verifique os campos informados",
+          status: "error",
         });
       });
   }, [JSON.stringify(data), clinic?.id, JSON.stringify(opportunity)]);

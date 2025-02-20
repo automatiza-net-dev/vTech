@@ -1,24 +1,20 @@
 // @ts-nocheck
-import {
-  Form,
-  Input,
-  Modal,
-  notification,
-  Select,
-  Button as ButtonA,
-} from "antd";
+import { Form, Input, Modal, Select, Button as ButtonA } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { animalServices } from "@/OLD/services/animal.service";
 import { EditTwoTone } from "@ant-design/icons";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useToast } from "infinity-forge";
 
 export const Edit = memo(({ item, reload, setReload }) => {
   const queryClient = useQueryClient();
   const [isVisible, setIsVisible] = useState(false);
   const { Option } = Select;
   const [payload, setPayload] = useState({});
+
+  const { createToast } = useToast();
 
   useEffect(() => {
     setPayload({
@@ -34,20 +30,15 @@ export const Edit = memo(({ item, reload, setReload }) => {
     (data) => animalServices.editRace(item.id, data),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Espécie editada!",
-        });
+        createToast({ message: "Espécie editada!", status: "success" });
+
         setIsVisible(false);
         setPayload(null);
         setReload(!reload);
         queryClient.invalidateQueries("getSpecies");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar espécie!",
-        });
+        createToast({ message: "Erro ao editar espécie!", status: "error" });
       },
     }
   );
@@ -62,7 +53,7 @@ export const Edit = memo(({ item, reload, setReload }) => {
   return (
     <div>
       {canEditRace && (
-          <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
       )}
 
       <Modal

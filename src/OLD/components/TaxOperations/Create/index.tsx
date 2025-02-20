@@ -6,12 +6,14 @@ import { memo, useCallback, useState } from "react";
 import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 // Components
-import { Button, Input, Modal, notification, Select } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { useMutation, useQueryClient } from "react-query";
+import { useToast } from "infinity-forge";
 const { TextArea } = Input;
 
 const CreateTaxOperation = memo(function CreateTaxOperation({ visible, hide }) {
   const queryClient = useQueryClient();
+  const { createToast } = useToast();
 
   const [data, setData] = useState({
     code: "",
@@ -26,9 +28,11 @@ const CreateTaxOperation = memo(function CreateTaxOperation({ visible, hide }) {
     (newData) => taxOperationService.storeTaxOperation(newData),
     {
       onSuccess: () => {
-        notification.success({
+        createToast({
           message: "Operação cadastrado com sucesso!",
+          status: "success",
         });
+
         queryClient.invalidateQueries(["tax-operations"]);
         setData({
           code: "",
@@ -41,8 +45,9 @@ const CreateTaxOperation = memo(function CreateTaxOperation({ visible, hide }) {
         hide();
       },
       onError: (error) => {
-        notification.error({
+        createToast({
           message: err.response.data.errors[0].message,
+          status: "error",
         });
       },
     }

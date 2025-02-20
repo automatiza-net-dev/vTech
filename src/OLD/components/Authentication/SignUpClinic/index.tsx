@@ -2,8 +2,6 @@ import { useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { notification } from "antd";
-
 import api from "@/OLD/services";
 import { sessionService } from "@/OLD/services/session.service";
 import { useAuthAdmin, Button, useToast } from "infinity-forge";
@@ -15,7 +13,7 @@ export function SignUpClinic() {
 
   const { signOut } = useAuthAdmin();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -28,15 +26,21 @@ export function SignUpClinic() {
           id: router?.query?.token,
         })
         .then(() => {
-          createToast({ status: "success", message: "Cadastro realizado com sucesso!" })
-         
+          createToast({
+            status: "success",
+            message: "Cadastro realizado com sucesso!",
+          });
+
           setLoading(false);
           signOut();
           router.push("/");
         })
         .catch(() => {
-          createToast({ status: "error", message: "Erro ao concluir cadastro" })
-       
+          createToast({
+            status: "error",
+            message: "Erro ao concluir cadastro",
+          });
+
           setLoading(false);
         });
     },

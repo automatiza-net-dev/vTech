@@ -8,24 +8,11 @@ import { vaccinesService } from "@/OLD/services/vaccine-service";
 import moment from "moment";
 import "moment/locale/pt-br";
 
-import {
-  Modal,
-  Input,
-  DatePicker,
-  Select,
-  notification,
-  Button,
-} from "antd";
+import { Modal, Input, DatePicker, Select, Button } from "antd";
 import { useToast } from "infinity-forge";
 const { Option } = Select;
 
-function Vaccines({
-  patient,
-  reload,
-  setReload,
-  visible,
-  setVisible,
-}) {
+function Vaccines({ patient, reload, setReload, visible, setVisible }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [allProtocols, setAllProtocols] = useState([]);
@@ -35,7 +22,7 @@ function Vaccines({
   const router = useRouter();
   const eventId = router.query.innerpage;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getProtocols = useCallback(() => {
     setLoading(true);
@@ -57,7 +44,10 @@ function Vaccines({
       .catch((_err) => {
         setLoading(false);
 
-        createToast({ status: "error", message: "Não foi possível recuperar os protocolos disponíveis..." })
+        createToast({
+          status: "error",
+          message: "Não foi possível recuperar os protocolos disponíveis...",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -85,16 +75,22 @@ function Vaccines({
         applications: applicationsData,
       })
       .then((_res) => {
-        createToast({ status: "success", message: "Vacina lançada com sucesso!" })
+        createToast({
+          status: "success",
+          message: "Vacina lançada com sucesso!",
+        });
       })
       .catch((err) => {
         setLoading(false);
 
-        createToast({ status: "error", message: `${err.response.data.errors[0].message}` })
+        createToast({
+          status: "error",
+          message: `${err.response.data.errors[0].message}`,
+        });
       })
       .finally(() => {
         setLoading(false);
-        setReload(!reload)
+        setReload(!reload);
         setVisible(false);
         setData({});
         setApplications([]);

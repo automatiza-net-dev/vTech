@@ -8,7 +8,7 @@ import { bedsService } from "@/OLD/services/beds.service";
 // Components
 import { Container } from "./styles";
 import { Button, useToast } from "infinity-forge";
-import { Modal, Input, Select, Switch, notification } from "antd";
+import { Modal, Input, Select, Switch } from "antd";
 const { Option } = Select;
 
 function CreateBed({
@@ -21,7 +21,7 @@ function CreateBed({
   const [data, setData] = useState({ active: true });
   const [loading, setLoading] = useState(false);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   useEffect(() => {
     updateData && setData(updateData);
@@ -38,14 +38,19 @@ function CreateBed({
         active: data.active,
       })
       .then((_res) => {
-
-        return createToast({ status: "success",  message: "Leito cadastrado com sucesso!" })
+        return createToast({
+          status: "success",
+          message: "Leito cadastrado com sucesso!",
+        });
       })
       .catch((err) => {
         error = true;
         setLoading(false);
 
-        return createToast({ status: "error",  message: `${err.response.data.errors[0].message}`, })
+        return createToast({
+          status: "error",
+          message: `${err.response.data.errors[0].message}`,
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -68,14 +73,19 @@ function CreateBed({
         active: data.active,
       })
       .then((res) => {
-        return createToast({ status: "success",  message:"Leito atualizado com sucesso!" })
+        return createToast({
+          status: "success",
+          message: "Leito atualizado com sucesso!",
+        });
       })
       .catch((err) => {
         error = true;
         setLoading(false);
 
-
-        return createToast({ status: "error", message: `${err.response.data.errors[0].message}`,  })
+        return createToast({
+          status: "error",
+          message: `${err.response.data.errors[0].message}`,
+        });
       })
       .finally(() => {
         setLoading(false);

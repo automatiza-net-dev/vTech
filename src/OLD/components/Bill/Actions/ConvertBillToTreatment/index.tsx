@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 
 import { billService } from "@/OLD/services/bills.service";
 
-import {  notification } from "antd";
-
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { useToast } from "infinity-forge";
 
@@ -17,7 +15,7 @@ const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
 
   const router = useRouter();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const convertBill = (bill) => {
     setLoading(true);
@@ -31,18 +29,28 @@ const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
         setLoading(false);
         setReload && setReload((prv) => !prv);
 
-        return  createToast({ status: "success", message:  "Venda convertida com sucesso" }) 
+        return createToast({
+          status: "success",
+          message: "Venda convertida com sucesso",
+        });
       })
       .catch((err) => {
         setLoading(false);
 
-        createToast({ status: "error", message:  "Houve um erro ao converter a venda, contacte o administrador do sistema para mais detalhes" }) 
+        createToast({
+          status: "error",
+          message:
+            "Houve um erro ao converter a venda, contacte o administrador do sistema para mais detalhes",
+        });
       });
   };
 
   return (
-    
-        <AiOutlineCheckCircle onClick={() =>  convertBill(bill)} size={20} style={{ cursor: "pointer" }} />
+    <AiOutlineCheckCircle
+      onClick={() => convertBill(bill)}
+      size={20}
+      style={{ cursor: "pointer" }}
+    />
   );
 });
 

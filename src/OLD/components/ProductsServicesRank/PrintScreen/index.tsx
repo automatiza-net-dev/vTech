@@ -9,7 +9,7 @@ import { PrintHeader } from "@/presentation";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-const PrintTable = memo(function PrintTable({ data = [], loading }) {
+export default function PrintTable({ data = [], loading }) {
   const { clinic } = useProfile();
 
   return (
@@ -60,6 +60,6 @@ const PrintTable = memo(function PrintTable({ data = [], loading }) {
       </Container>
     </>
   );
-});
+}
 
-export default PrintTable;
+

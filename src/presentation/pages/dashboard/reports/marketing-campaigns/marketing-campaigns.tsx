@@ -71,6 +71,7 @@ export function MarketingCampaignsReports() {
     <S.MarketingCampaignsReports>
       <PageWrapper title="Relatórios de campanha de marketing">
         <FormHandler
+          isStickyButtons
           initialData={initialData}
           cleanFieldsOnSubmit={false}
           button={{ text: "Imprimir" }}
@@ -121,12 +122,13 @@ export function MarketingCampaignsReports() {
                 },
               ]}
             />
-
-            <InputDateRange
-              names={["period.startDate", "period.endDate"]}
-              mode="date"
-              label="Período"
-            />
+            <div style={{ paddingBottom: 10 }}>
+              <InputDateRange
+                names={["period.startDate", "period.endDate"]}
+                mode="date"
+                label="Período"
+              />
+            </div>
           </div>
         </FormHandler>
 

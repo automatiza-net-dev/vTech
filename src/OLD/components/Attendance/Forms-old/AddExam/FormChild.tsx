@@ -11,14 +11,7 @@ import { PlusOutline } from "styled-icons/evaicons-outline";
 import { BsPaperclip } from "react-icons/bs";
 
 // Components
-import {
-  Input,
-  DatePicker,
-  Upload,
-  AutoComplete,
-  Popconfirm,
-  notification,
-} from "antd";
+import { Input, DatePicker, Upload, AutoComplete, Popconfirm } from "antd";
 import { Container } from "./styles";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
@@ -58,14 +51,17 @@ export default function FormChild({
     }
   }, [data?.examId, allExams, modal]);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const beforeUpload = useCallback((file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        createToast({ status: "error", message: "Você só pode upar imagens até 2MB!", })
+        createToast({
+          status: "error",
+          message: "Você só pode upar imagens até 2MB!",
+        });
       }
     }
 

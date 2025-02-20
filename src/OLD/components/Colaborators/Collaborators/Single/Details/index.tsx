@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Button } from "infinity-forge";
-import { notification, Table } from "antd";
+import { Button, useToast } from "infinity-forge";
+import { Table } from "antd";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -15,6 +15,8 @@ export const Details = React.memo(function () {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const { createToast } = useToast();
+
   useEffect(() => {
     const id = router?.query?.id;
     setLoading(true);
@@ -24,9 +26,9 @@ export const Details = React.memo(function () {
         setUser(res.data);
       })
       .catch((err) => {
-        notification.error({
-          message: "Error",
-          description: "Erro ao buscar colaborador",
+        createToast({
+          message: "Erro ao buscar colaborador",
+          status: "error",
         });
       });
     setLoading(false);

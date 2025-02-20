@@ -11,16 +11,9 @@ import { usePlans } from "@/OLD/hooks/usePlans";
 
 import PaymentsPanel from "../PaymentsPanel";
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
-import {
-  AutoComplete,
-  Select,
-  Input,
-  Checkbox,
-  notification,
-  Tabs,
-} from "antd";
+import { AutoComplete, Select, Input, Checkbox, Tabs } from "antd";
 const { TabPane } = Tabs;
 
 import moment from "moment";
@@ -38,6 +31,7 @@ function Single() {
   const [backConfirm, setBackConfirm] = useState({});
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   const { receipt } = useReceipt(ids, reload);
   const { colaborators } = useColaborators();
@@ -83,14 +77,17 @@ function Single() {
         setBackConfirm((prv) => ({ ...prv, createReceiptProduct: true }));
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+
+        createToast({
+          status: "success",
           message: "Produtos inseridos com sucesso!",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao salvar as informações da importação",
+          status: "error",
         });
       });
   }, [JSON.stringify(data)]);
@@ -113,14 +110,17 @@ function Single() {
         setBackConfirm((prv) => ({ ...prv, supplierProduct: true }));
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
+        createToast({
+          status: "success",
           message: "Produtos criados e vinculados com sucesso",
         });
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao inserir os novos produtos",
+          status: "error",
         });
       });
   }, [JSON.stringify(data)]);
@@ -132,21 +132,25 @@ function Single() {
       ?.finishReceipt({ receiptId: receipt[0]?.id })
       .then((res) => {
         setReload((prv) => !prv);
-        return notification.success({
+
+        createToast({
+          status: "success",
           message: "Nota de entrada finalizada com sucesso",
         });
       })
       .catch((err) => {
         if (err?.response?.data?.code === "E_NO_VARIATION") {
-          return notification.error({
+          return createToast({
             message:
               "Existem produtos da nota que ainda não foram relacionados",
+            status: "error",
           });
         }
 
         if (err?.response?.data?.message) {
-          return notification.error({
+          return createToast({
             message: err?.response?.data?.message?.split(":")[1],
+            status: "error",
           });
         }
       });

@@ -1,9 +1,10 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification } from "antd";
+import { Form, Input, Modal } from "antd";
 import { memo, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { animalServices } from "@/OLD/services/animal.service";
 import { EditTwoTone } from "@ant-design/icons";
+import { useToast } from "infinity-forge";
 
 export const Edit = memo(({ item, reload, setReload }) => {
   const queryClient = useQueryClient();
@@ -13,24 +14,21 @@ export const Edit = memo(({ item, reload, setReload }) => {
     code: item.code,
   });
 
+  const { createToast } = useToast();
+
   const { mutate, loading } = useMutation(
     (data) => animalServices.editSpecie(data, item.id),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Espécie editada!",
-        });
+        createToast({ message: "Espécie editada!", status: "success" });
+
         setReload(!reload);
         setPayload();
         setIsVisible(false);
         queryClient.invalidateQueries("getSpecies");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar espécie!",
-        });
+        createToast({ message: "Erro ao editar espécie!", status: "error" });
       },
     }
   );
@@ -41,7 +39,7 @@ export const Edit = memo(({ item, reload, setReload }) => {
 
   return (
     <div>
-        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+      <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
       <Modal
         loading={loading}
         title="Editar espécie"

@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification, Select } from "antd";
+import { Form, Input, Modal, Select } from "antd";
 import { useCallback, useState } from "react";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
 
@@ -16,6 +16,7 @@ export const CreateTypeService = ({
   const [data, setData] = useState(null);
 
   const permissions = permissionControl("tipoServicosAgendamento");
+  const { createToast } = useToast();
 
   const handleOk = useCallback(() => {
     document.getElementById("submit-button-service").click();
@@ -23,7 +24,7 @@ export const CreateTypeService = ({
 
   const handleSubmit = useCallback(() => {
     if (!permissions?.ATS1) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     setLoading(true);
@@ -32,15 +33,15 @@ export const CreateTypeService = ({
       .createScheduleServiceGroup(data)
       .then((res) => {
         setIsModalVisible(false);
-        notification.success({
-          message: "Sucesso",
-          description: "Tipo de serviço cadastrado",
+        return createToast({
+          message: "Tipo de serviço cadastrado",
+          status: "success",
         });
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao criar tipo de serviço",
+        return createToast({
+          message: "Erro ao criar tipo de serviço",
+          status: "error",
         });
       })
       .finally(() => {

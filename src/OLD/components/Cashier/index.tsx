@@ -8,11 +8,11 @@ import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
 // Components
 import { Container } from "./styles";
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import CashierHeader from "./CashierHeader";
 import CashierPanel from "./CashierPanel";
 import ReceiptForm from "./ReceiptAndExpensesForm";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 // Hooks
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
@@ -29,6 +29,8 @@ const Cashier = memo(function Cashier() {
   const [reload, setReload] = useState(false);
   const [dailyCasher, setDailyCasher] = useState([]);
   const router = useRouter();
+
+  const { createToast } = useToast();
 
   const id = router?.query?.innerpage;
 
@@ -60,18 +62,26 @@ const Cashier = memo(function Cashier() {
         setData({});
         setReload(!reload);
         setVisible(false);
-        return notification.success({
+
+        return createToast({
           message: "Recebimento registrado com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({
+            message: messageArr[1],
+            status: "error",
+          });
         }
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao registrar o recebimento...",
+          status: "error",
         });
       });
   }, [data, dailyCasher?.id]);
@@ -92,18 +102,26 @@ const Cashier = memo(function Cashier() {
         setData({});
         setReload(!reload);
         setVisible(false);
-        return notification.success({
+
+        return createToast({
           message: "Despesa registrada com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({
+            message: messageArr[1],
+            status: "error",
+          });
         }
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao registrar a despesa...",
+          status: "error",
         });
       });
   }, [data, dailyCasher?.id]);

@@ -11,7 +11,7 @@ import { useLoadPatient } from "@/presentation";
 import { useScheduleStatus } from "@/OLD/hooks/useScheduleStatus";
 
 import { Button, useToast } from "infinity-forge";
-import { Modal, notification, Select, Button as AntButton } from "antd";
+import { Modal, Select, Button as AntButton } from "antd";
 
 import moment from "moment";
 import { useQueryClient } from "react-query";
@@ -37,7 +37,6 @@ export function EndAttendanceButton() {
   const attendancesToClose = attendances.filter(
     (attendance) => !attendance?.end_date
   );
-
 
   const closeAttendances = useCallback(() => {
     setLoading(true);
@@ -88,7 +87,10 @@ export function EndAttendanceButton() {
                       attendanceService
                         .closeAttendance(attendancesToClose?.id)
                         .then((_res) => {
-                          createToast({ status: "success", message: "Atendimento finalizado com sucesso!" })
+                          createToast({
+                            status: "success",
+                            message: "Atendimento finalizado com sucesso!",
+                          });
                         });
                   }
                 },
@@ -139,9 +141,10 @@ export function EndAttendanceButton() {
               loading={loading}
               onClick={() => {
                 !selectedAttendance
-                  ? 
-
-                    createToast({ status: "error", message: "Selecione o atendimento a ser finalizado",})
+                  ? createToast({
+                      status: "error",
+                      message: "Selecione o atendimento a ser finalizado",
+                    })
                   : closeAttendances();
               }}
             >

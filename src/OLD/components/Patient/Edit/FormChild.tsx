@@ -12,12 +12,11 @@ import {
   Upload,
   AutoComplete,
   Button,
-  notification,
   Popconfirm,
 } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 
-import { Select, FormHandler } from "infinity-forge";
+import { Select, FormHandler, useToast } from "infinity-forge";
 
 import dynamic from "next/dynamic";
 
@@ -44,6 +43,7 @@ export const FormChild = React.memo(function FormChild({
 
   const { tutors } = useTutor(false, reload);
   const { Option } = AutoComplete;
+  const { createToast } = useToast();
 
   const { hairTypes } = usePatientAnimalHairTypes();
 
@@ -75,9 +75,11 @@ export const FormChild = React.memo(function FormChild({
         );
       })
       .catch((_err) => {
-        notification.error({
+        createToast({
           message: "Houve um erro ao obter as raças disponíveis",
+          status: "error",
         });
+
         setLoading(false);
       })
       .finally(() => setLoading(false));
@@ -436,8 +438,10 @@ export const FormChild = React.memo(function FormChild({
                   if (!checkTutor) {
                     return setSelectedTutors([...selectedTutors, data?.holder]);
                   }
-                  return notification.error({
+
+                  return createToast({
                     message: "Tutor já adicionado",
+                    status: "error",
                   });
                 }
               }}

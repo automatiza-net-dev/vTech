@@ -6,9 +6,10 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import FormChild from "../FormChild";
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 const Create = memo(function Create({
   visible,
@@ -23,6 +24,8 @@ const Create = memo(function Create({
   const [loading, setLoading] = useState(false);
 
   const { user } = useProfile();
+
+  const { createToast} = useToast()
 
   useEffect(() => {
     setData({ ...data, collabName: user?.name, userId: user?.id });
@@ -45,16 +48,12 @@ const Create = memo(function Create({
         setLoading(false);
         setVisible(false);
         setData({ collabName: user?.name, userId: user?.id });
-        return notification.success({
-          message: "Atividade criada com sucesso!",
-        });
+
+        return createToast({ status: "success",  message: "Atividade criada com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message:
-            "Houve um erro ao cadastrar a atividade, verifique os campos informados",
-        });
+        return createToast({ status: "error",  message:  "Houve um erro ao cadastrar a atividade, verifique os campos informados" })
       });
 
     customSubmit && customSubmit();

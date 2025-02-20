@@ -3,7 +3,7 @@
 import React, { memo, useEffect, useCallback, useState } from "react";
 
 // Components
-import { Select, Input, notification, AutoComplete } from "antd";
+import { Select, Input, AutoComplete } from "antd";
 const { Option } = Select;
 
 // Services
@@ -19,7 +19,7 @@ const MedicamentForm = memo(function MedicamentForm({ state, setState }) {
   const [allUnits, setAllUnits] = useState([]);
   const [allDrugsAdministrations, setAllDrugsAdministrations] = useState([]);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllUnits = useCallback(() => {
     unitsService
@@ -29,8 +29,11 @@ const MedicamentForm = memo(function MedicamentForm({ state, setState }) {
         setAllUnits(res.data);
       })
       .catch((_err) => {
-
-        return createToast({ status: "error", message: "Houve um erro ao buscar as unidades do medicamento disponíveis" })
+        return createToast({
+          status: "error",
+          message:
+            "Houve um erro ao buscar as unidades do medicamento disponíveis",
+        });
       });
   }, []);
 
@@ -42,7 +45,11 @@ const MedicamentForm = memo(function MedicamentForm({ state, setState }) {
         setAllDrugsAdministrations(res.data);
       })
       .catch((_err) => {
-        return createToast({ status: "error", message: "Houve um erro ao buscar as administrações de medicamentos disponíveis" })
+        return createToast({
+          status: "error",
+          message:
+            "Houve um erro ao buscar as administrações de medicamentos disponíveis",
+        });
       });
   }, []);
 

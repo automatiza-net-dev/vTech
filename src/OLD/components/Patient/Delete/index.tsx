@@ -3,25 +3,24 @@ import React from "react";
 
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm } from "antd";
+import {  Popconfirm } from "antd";
 import { petsService } from "@/OLD/services/patient.service";
+import { useToast } from "infinity-forge";
 
 export const Delete = React.memo(function Delete({ id, setRefreshList }) {
+
+  const {createToast} = useToast()
+
   const handleDelete = React.useCallback(() => {
     petsService
       .deletePatient(id)
       .then((res) => {
-        notification.success({
-          message: "Sucesso",
-          description: "Paciente deletado!",
-        });
+        createToast({ status: "success", message: "Paciente deletado!" })
+     
         setRefreshList();
       })
       .catch((err) => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao deletar o paciente!",
-        });
+        createToast({ status: "error", message: "Erro ao deletar o paciente!" })
       });
   }, [id]);
 
@@ -29,8 +28,8 @@ export const Delete = React.memo(function Delete({ id, setRefreshList }) {
     <div>
       <Popconfirm
         title="Deseja realmete excluir esse paciente?"
-        onConfirm={() =>
-          notification.warning({ message: "verificar funcionalidade" })
+        onConfirm={() =>   createToast({ status: "warning", message:"verificar funcionalidade" })
+     
         }
         okText="Sim"
         cancelText="Não"

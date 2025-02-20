@@ -16,10 +16,10 @@ import { EditTwoTone } from "@ant-design/icons";
 
 // Components
 import { Container, Input } from "./styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import EditExam from "./Edit";
 import RemoveExam from "./Delete";
-import { Table, notification, Select } from "antd";
+import { Table, Select } from "antd";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 const { Option } = Select;
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -35,6 +35,8 @@ const Exams = memo(function Exams() {
   const canCreateExams = useUserHasPermission("EXA01");
   const canEditExams = useUserHasPermission("EXA02");
   const canDeleteExams = useUserHasPermission("EXA03");
+
+  const {createToast} = useToast()
 
   const getAllExams = useCallback(() => {
     setLoading(true);
@@ -77,9 +79,7 @@ const Exams = memo(function Exams() {
       })
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um problema ao recuperar os exames cadastrados...",
-        });
+        return createToast({ status: "error", message: "Houve um problema ao recuperar os exames cadastrados..." })
       })
       .finally(() => {
         setLoading(false);

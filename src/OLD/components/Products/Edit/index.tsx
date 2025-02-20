@@ -14,26 +14,20 @@ import { useSingleProduct } from "@/OLD/hooks/useProducts";
 import Masks from "@/OLD/utils/masks";
 
 // Components
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  Switch,
-  notification,
-} from "antd";
+import { Button, Form, Input, InputNumber, Modal, Select, Switch } from "antd";
 import { useMutation, useQuery } from "react-query";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useToast } from "infinity-forge";
 
 const UpdateProduct = memo(function UpdateProduct({
   visible,
   selectedProduct,
   close,
 }) {
+  const { createToast } = useToast();
+
   const [data, setData] = useState({
     description: selectedProduct?.description,
   });
@@ -98,13 +92,17 @@ const UpdateProduct = memo(function UpdateProduct({
 
   const verifyFields = (fields) => {
     if (fields.includes("purpose")) {
-      return notification.warning({
+      return createToast({
         message: "Informe o propósito do produto",
+        status: "warning",
       });
     }
 
     if (fields.includes("icmsOrigin")) {
-      return notification.warning({ message: "Informe a origem icms" });
+      return createToast({
+        message: "Informe a origem icms",
+        status: "warning",
+      });
     }
   };
 
@@ -112,9 +110,11 @@ const UpdateProduct = memo(function UpdateProduct({
     (formData) => productService.updateProduct(productInfo.id, formData),
     {
       onSuccess: () => {
-        notification.success({
+        return createToast({
           message: "Produto atualizado com sucesso!",
+          status: "warning",
         });
+
         close();
       },
       onError: (err) => {

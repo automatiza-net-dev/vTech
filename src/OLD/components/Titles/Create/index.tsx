@@ -20,26 +20,15 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Components
 import { Container } from "./styles";
-import {
-  Input,
-  DatePicker,
-  Select,
-  Button,
-  AutoComplete,
-  notification,
-  Radio,
-} from "antd";
+import { Input, DatePicker, Select, Button, AutoComplete, Radio } from "antd";
 import Installments from "./Installments";
 
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
+import { useToast } from "infinity-forge";
 const { Option } = Select;
 const { Group } = Radio;
 
-export default function Create({
-  type = "",
-  setVisible,
-  setReload,
-}: any) {
+export default function Create({ type = "", setVisible, setReload }: any) {
   const [submitStage, setSubmitStage] = useState(false);
   const [installments, setInstallments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,6 +46,7 @@ export default function Create({
     originalValue: currencyFormatter(0),
   });
   const [titleType, setTitleType] = useState("");
+  const { createToast } = useToast();
 
   const { paymentMethods } = usePaymentMethods(false, false);
   const { plans } = usePlans();
@@ -91,14 +81,16 @@ export default function Create({
         setSubmitStage(false);
         setPlanSearch("");
         setPaymentMethodSearch("");
-        notification.success({
-          message: `Parcelas salvas com sucesso!`,
+        createToast({
+          message: "Parcelas salvas com sucesso!",
+          status: "success",
         });
       })
       .catch((err) => {
         error = true;
-        return notification.error({
-          description: `Verifique os campos da parcela`,
+        return createToast({
+          message: "Verifique os campos da parcela",
+          status: "error",
         });
       });
   }, [installments, titleType]);
@@ -251,20 +243,23 @@ export default function Create({
               !data?.clientId &&
               clinic?.unitConfig?.requires_finance_client
             ) {
-              return notification.warning({
+              return createToast({
                 message: "Selecione um títular para o título",
+                status: "warning",
               });
             }
 
             if (!data?.paymentMethodId) {
-              return notification.warning({
+              return createToast({
                 message: "Verifique o campo obrigatório: Forma Pagamento",
+                status: "warning",
               });
             }
 
             if (!data?.accountPlanId) {
-              return notification.warning({
+              return createToast({
                 message: "Verifique o campo obrigatório: Plano Contas",
+                status: "warning",
               });
             }
 
@@ -320,11 +315,9 @@ export default function Create({
                     setData({ ...data, parcType: e.target.value })
                   }
                 >
-               
-                    <Radio value="rec">Recorrente</Radio>
-               
-                    <Radio value="parc">Parcelamento</Radio>
-                
+                  <Radio value="rec">Recorrente</Radio>
+
+                  <Radio value="parc">Parcelamento</Radio>
                 </Group>
               </div>
             </div>
@@ -584,4 +577,3 @@ export default function Create({
     </>
   );
 }
-

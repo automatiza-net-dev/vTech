@@ -10,8 +10,7 @@ export function formatCart(cart: Cart[], maxDiscount: boolean): ProductCart[] {
   return cart
     ?.flatMap((item) => item.variations)
     ?.map((variation) => {
-      const verifyMaxDiscount =
-        !!maxDiscount && !!variation?.exceedDiscount ? true : false;
+      const verifyMaxDiscount = !!variation?.exceedDiscount ? true : false;
 
       return {
         billItemId: variation.billItemId || "",

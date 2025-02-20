@@ -25,7 +25,6 @@ import { useShowFinance } from "@/OLD/hooks/useFinances";
 // Components
 import { Container } from "./styles";
 import {
-  notification,
   Popconfirm,
   Modal,
   Checkbox,
@@ -33,6 +32,7 @@ import {
 } from "antd";
 const { TextArea } = Input;
 import Edit from "@/OLD/components/Titles/Actions/Edit";
+import { useToast } from "infinity-forge";
 
 const Actions = memo(function Actions({
   financeId,
@@ -51,6 +51,8 @@ const Actions = memo(function Actions({
   });
   const [reversalVisible, setReversalVisible] = useState(false);
   const [reason, setReason] = useState("");
+
+  const {createToast} = useToast()
 
   const { paymentMethods } = usePaymentMethods(false, false, updateOpen);
   const { plans } = usePlans(false, false, updateOpen);
@@ -117,7 +119,7 @@ const Actions = memo(function Actions({
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return notification.warning({ message: "Plano de contas obrigatório" });
+     return createToast({ status: "warning", message: "Plano de contas obrigatório" })
     }
 
     financesService
@@ -129,19 +131,19 @@ const Actions = memo(function Actions({
         value: convertIntlCurrency(newObj?.value),
       })
       .then((_res) =>
-        notification.success({ message: "Parcela atualizada com sucesso!" })
+
+      createToast({ status: "success", message: "Parcela atualizada com sucesso!" })
       )
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return   createToast({ status: "error", message:messageArr[1] })
         }
 
-        return notification.error({
-          message: "Houve um erro ao atualizar a parcela selecionada...",
-        });
+        return createToast({ status: "error", message:"Houve um erro ao atualizar a parcela selecionada..." })
       })
       .finally(() => {
         setLoading(false);
@@ -160,15 +162,12 @@ const Actions = memo(function Actions({
         originDownFlag: "FINANCEIRO",
       })
       .then((_res) =>
-        notification.success({
-          message: "Estorno realizado com sucesso!",
-        })
+        createToast({ status: "success", message:"Estorno realizado com sucesso!" })
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao realizar o estorno",
-        });
+
+        return     createToast({ status: "error", message:"Houve um erro ao realizar o estorno" })
       })
       .finally(() => {
         setLoading(false);
@@ -182,18 +181,16 @@ const Actions = memo(function Actions({
     setLoading(true);
     financesService
       .remove(financeId)
-      .then((_res) =>
-        notification.success({ message: "Parcela removida com sucesso!" })
+      .then((_res) =>  createToast({ status: "success", message:"Parcela removida com sucesso!" })
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return  createToast({ status: "error", message:messageArr[1] })
         }
-        notification.error({
-          message: "Houve um erro ao remover a parcela selecionada...",
-        });
+
+        createToast({ status: "error", message: "Houve um erro ao remover a parcela selecionada..." })
       })
       .finally(() => {
         setLoading(false);
@@ -267,9 +264,7 @@ const Actions = memo(function Actions({
           onOk={() =>
             reason !== ""
               ? submitReversal()
-              : notification.warning({
-                  message: "O campo motivo não pode estar vazio",
-                })
+              : createToast({ status: "warning", message: "O campo motivo não pode estar vazio" })
           }
         >
           <div>

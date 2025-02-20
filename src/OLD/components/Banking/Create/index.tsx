@@ -14,14 +14,7 @@ import { bankingService } from "@/OLD/services/banking.service";
 
 import { Container } from "./styles";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import {
-  Input,
-  DatePicker,
-  Radio,
-  Select,
-  AutoComplete,
-  notification,
-} from "antd";
+import { Input, DatePicker, Radio, Select, AutoComplete } from "antd";
 const { Group } = Radio;
 const { Option } = Select;
 
@@ -123,7 +116,6 @@ const Create = memo(function FormChild({}) {
         status: "success",
         message: "Transação salva com sucesso",
       });
-
     } catch (err) {
       const errorMessage =
         err?.response?.data?.errors[0]?.message || "Erro desconhecido";

@@ -2,16 +2,17 @@
 import React, { memo } from "react";
 import { useRouter } from "next/router";
 import { Container, InputBox } from "./styles";
-import { Input, notification, Switch } from "antd";
+import { Input, Switch } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 
 const FormChild = memo(function FormChild({ data, setData, submit, action }) {
   const router = useRouter();
+  const { createToast } = useToast();
 
   const catchFields = () => {
     if (!data?.description) {
-      return notification.error({ message: "Informe a descrição" });
+      return createToast({ message: "Informe a descrição", status: "error" });
     }
 
     return submit();

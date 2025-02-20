@@ -1,11 +1,12 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification } from "antd";
+import { Form, Input, Modal } from "antd";
 import { memo, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { EditTwoTone } from "@ant-design/icons";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useToast } from "infinity-forge";
 
 export const Edit = memo(({ status }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,21 +18,17 @@ export const Edit = memo(({ status }) => {
   const canEditScheduleStatus = useUserHasPermission("AST02");
 
   const queryClient = useQueryClient();
+  const { createToast } = useToast();
 
   const { mutate, loading } = useMutation(
     (payload) => scheduleTypeServices.editStatus(status.id, payload),
     {
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar status",
-        });
+        createToast({ message: "Erro ao editar status", status: "error" });
       },
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Status editado",
-        });
+        createToast({ message: "Status editado", status: "success" });
+
         setIsVisible(false);
         queryClient.invalidateQueries("getAllStatus");
       },
@@ -40,9 +37,9 @@ export const Edit = memo(({ status }) => {
 
   return (
     <div>
-        {canEditScheduleStatus && (
-          <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
-        )}
+      {canEditScheduleStatus && (
+        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+      )}
 
       <Modal
         loading={loading}

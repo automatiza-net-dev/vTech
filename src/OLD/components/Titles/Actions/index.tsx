@@ -24,13 +24,7 @@ import { useShowFinance } from "@/OLD/hooks/useFinances";
 
 // Components
 import { Container } from "./styles";
-import {
-  notification,
-  Popconfirm,
-  Modal,
-  Checkbox,
-  Input,
-} from "antd";
+import { Popconfirm, Modal, Checkbox, Input } from "antd";
 const { TextArea } = Input;
 import Edit from "./Edit";
 import { useToast } from "infinity-forge";
@@ -53,6 +47,7 @@ const Actions = memo(function Actions({
   const [reversalVisible, setReversalVisible] = useState(false);
   const [reason, setReason] = useState("");
   const [id, setId] = useState([]);
+  const { createToast } = useToast();
 
   const { paymentMethods } = usePaymentMethods(false, false, updateOpen);
   const { plans } = usePlans(false, false, updateOpen);
@@ -127,7 +122,10 @@ const Actions = memo(function Actions({
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return notification.warning({ message: "Plano de contas obrigatório" });
+      return createToast({
+        message: "Plano de contas obrigatório",
+        status: "warning",
+      });
     }
 
     financesService
@@ -139,18 +137,23 @@ const Actions = memo(function Actions({
         value: convertIntlCurrency(newObj?.value),
       })
       .then((_res) =>
-        notification.success({ message: "Parcela atualizada com sucesso!" })
+        createToast({
+          message: "Parcela atualizada com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({ message: messageArr[1], status: "error" });
         }
 
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar a parcela selecionada...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -170,14 +173,17 @@ const Actions = memo(function Actions({
         originDownFlag: "FINANCEIRO",
       })
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Estorno realizado com sucesso!",
+          status: "success",
         })
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+
+        return createToast({
           message: "Houve um erro ao realizar o estorno",
+          status: "error",
         });
       })
       .finally(() => {
@@ -188,26 +194,34 @@ const Actions = memo(function Actions({
       });
   }, [reason]);
 
-  const { createToast } = useToast()
 
   const removeFinance = useCallback(() => {
     setLoading(true);
     financesService
       .remove(financeId)
       .then((_res) => {
-        setReload(s => !s)
-        notification.success({ message: "Parcela removida com sucesso!" })
-      }
-      )
+        setReload((s) => !s);
+
+        return createToast({
+          message: "Parcela removida com sucesso!",
+          status: "success",
+        });
+      })
       .catch((err) => {
         setLoading(false);
-        console.log(err?.response)
+        console.log(err?.response);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({
+            message: messageArr[1],
+            status: "error",
+          });
         }
-        notification.error({
+
+        return createToast({
           message: "Houve um erro ao remover a parcela selecionada...",
+          status: "error",
         });
       })
       .finally(() => {
@@ -234,10 +248,10 @@ const Actions = memo(function Actions({
       ) : (
         reverseTitlePermission &&
         completeFinance?.origin_flag !== "BANCARIO" && (
-            <BsArrowCounterclockwise
-              className="icon"
-              onClick={() => setReversalVisible(true)}
-            />
+          <BsArrowCounterclockwise
+            className="icon"
+            onClick={() => setReversalVisible(true)}
+          />
         )
       )}
       {completeFinance?.status !== "BAIXADO" && editTitlePermission && (
@@ -280,8 +294,9 @@ const Actions = memo(function Actions({
         onOk={() =>
           reason !== ""
             ? submitReversal()
-            : notification.warning({
+            : createToast({
                 message: "O campo motivo não pode estar vazio",
+                status: "warning",
               })
         }
       >

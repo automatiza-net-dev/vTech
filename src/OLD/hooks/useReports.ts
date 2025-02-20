@@ -386,7 +386,9 @@ export const useDetailedSalesReport = (filters, reload) => {
   };
 
   useEffect(() => {
-    fetchData();
+    if(reload > 0) {
+      fetchData();
+    }
   }, [reload]);
 
   return {

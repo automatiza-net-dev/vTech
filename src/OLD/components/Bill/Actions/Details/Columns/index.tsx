@@ -44,6 +44,11 @@ export const productsColumns = [
     key: "auth_data",
     dataIndex: "auth_data",
   },
+  {
+    title: "Dados cancelamento",
+    key: "cancelled",
+    dataIndex: "cancelled"
+  }
 ];
 
 export const serviceFiscalDocumentsColumns = [

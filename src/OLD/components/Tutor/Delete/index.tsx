@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 // Components
-import { Popconfirm, notification } from "antd";
+import { Popconfirm } from "antd";
 
 // Services
 import { petsService } from "@/OLD/services/patient.service";

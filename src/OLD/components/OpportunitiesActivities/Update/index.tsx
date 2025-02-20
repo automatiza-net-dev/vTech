@@ -3,11 +3,11 @@ import { memo, useState, useEffect, useCallback } from "react";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "../FormChild";
 
 import moment from "moment";
-import { Button } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
 
 const Update = memo(function ({
@@ -25,6 +25,8 @@ const Update = memo(function ({
   const [execution, setExecution] = useState(false);
   const [showNewActivity, setShowNewActivity] = useState(false);
   const [newActivityModal, setNewActivityModal] = useState(false);
+
+  const {createToast} = useToast()
 
   useEffect(() => {
     setData({
@@ -45,9 +47,8 @@ const Update = memo(function ({
       .executeActivity(activity?.id, { observation: data?.observation })
       .then((_res) => {
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Atividade executada com sucesso!",
-        });
+
+        return createToast({ status: "success",  message: "Atividade executada com sucesso!" })
       });
   };
 
@@ -68,16 +69,13 @@ const Update = memo(function ({
       setNewActivityModal(true);
 
       if (!execution) {
-        return notification.success({
-          message: "Atividade atualizada com sucesso!",
-        });
+        
+        return createToast({ status: "success",  message: "Atividade atualizada com sucesso!" })
       } else {
         submitExecution();
       }
     } catch (error) {
-      return notification.error({
-        message: "Houve um erro ao atualizar a atividade",
-      });
+      createToast({ status: "error",  message: "Houve um erro ao atualizar a atividade" })
     }
   }
 
@@ -95,16 +93,12 @@ const Update = memo(function ({
       setLoading(false);
 
       if (!execution) {
-        return notification.success({
-          message: "Atividade atualizada com sucesso!",
-        });
+        return createToast({ status: "success",  message: "Atividade atualizada com sucesso!" })
       } else {
         submitExecution();
       }
     } catch (error) {
-      return notification.error({
-        message: "Houve um erro ao atualizar a atividade",
-      });
+      return createToast({ status: "error",  message: "Houve um erro ao atualizar a atividade" }) 
     }
   }
 

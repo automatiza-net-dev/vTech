@@ -10,7 +10,7 @@ import moment from "moment";
 
 import { Container } from "./styles";
 import { Button, PageWrapper } from "infinity-forge";
-import { Table, Modal, notification } from "antd";
+import { Table, Modal } from "antd";
 import FormChild from "./FormChild";
 import Actions from "./Actions";
 import Filters from "./Filters";
@@ -27,7 +27,7 @@ function PlansGroup() {
 
   const listPlansGroupPermission = useUserHasPermission("GPC00");
   const canCreatePlansGroup = useUserHasPermission("GPC01");
-
+  const { createToast } = useToast();
   const { plansGroup } = usePlansGroup(filters, reload);
 
   const formatPlansGroup = () => {
@@ -58,8 +58,9 @@ function PlansGroup() {
     plansGroupService
       .create(data)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Grupo de planos de contas cadastrado com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
@@ -67,11 +68,13 @@ function PlansGroup() {
         setLoading(false);
 
         return err?.response?.data.errors
-          ? notification.error({
+          ? createToast({
               message: `houve um erro ao efetuar o cadastro, verifique o campo: ${err?.response?.data.errors[0].field}`,
+              status: "error",
             })
-          : notification.error({
+          : createToast({
               message: "Houve um problema ao efetuar o cadastro do grupo...",
+              status: "error",
             });
       })
       .finally(() => {

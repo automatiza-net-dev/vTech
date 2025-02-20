@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { memo, useCallback, useEffect, useState } from "react";
 
-import { Form, notification } from "antd";
+import { Form } from "antd";
 import { LoadingSpin } from "@/OLD/components/mini-components";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useAuth } from "@/OLD/hooks/useAuth";
@@ -11,8 +11,7 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import { Container } from "./styles";
 import moment from "moment";
 
-import { Select, FormHandler } from "infinity-forge";
-import { useToast } from "infinity-forge";
+import { Select, FormHandler, useToast } from "infinity-forge";
 
 export function Edit({ id, setVisible }) {
   const [data, setData] = useState();
@@ -25,7 +24,6 @@ export function Edit({ id, setVisible }) {
   const { createToast } = useToast();
 
   const editPatientPermission = useUserHasPermission("PET02");
-
   const handleSubmit = useCallback(() => {
     setLoading(true);
 
@@ -71,15 +69,6 @@ export function Edit({ id, setVisible }) {
           status: "error",
         });
       }
-
-      /*
-      if (!data.tutors.length) {
-        setLoading(false);
-        return notification.error({
-          message: "Selecione um tutor para este paciente"
-        });
-      }
-      */
 
       if (!data?.vaccineOrigin) {
         setLoading(false);

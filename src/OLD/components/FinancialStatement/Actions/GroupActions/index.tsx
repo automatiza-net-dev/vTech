@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { memo, useState, useCallback, useEffect } from "react";
 
-import {  Popconfirm, Modal, notification } from "antd";
+import {  Popconfirm, Modal } from "antd";
 import DownFormChild from "../FormChild";
 import { financesService } from "@/OLD/services/finances.service";
 
@@ -10,11 +10,14 @@ import { BsArrowCounterclockwise } from "react-icons/bs";
 import { IoMdDownload } from "react-icons/io";
 
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 function GroupActions({ group, setReload }: any) {
   const [downData, setDownData] = useState({});
   const [downVisible, setDownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const {createToast} = useToast()
 
   const downGroupTitles = useCallback(() => {
     setLoading(true);
@@ -34,14 +37,13 @@ function GroupActions({ group, setReload }: any) {
       .then((_res) => {
         setDownVisible(false);
         setReload((prv) => !prv);
-        return notification.success({ message: "Grupo baixado com sucesso!" });
+        return createToast({ status: "success", message: "Grupo baixado com sucesso!" })
       })
       .catch((err) => {
         const errMessage = err?.response?.data?.errors;
         if (errMessage) {
-          return notification.error({
-            message: errMessage[0].message,
-          });
+
+          return createToast({ status: "error", message: errMessage[0].message })
         }
       });
   }, [downData]);

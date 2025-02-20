@@ -6,9 +6,8 @@ import { supplierService } from "@/OLD/services/supplier.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { notification } from "antd";
 import FormChild from "../FormChild";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 const CreateSupplier = memo(function CreateSupplier() {
@@ -19,19 +18,23 @@ const CreateSupplier = memo(function CreateSupplier() {
   const createSupplierPermission = useUserHasPermission("FOR01");
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   const submit = useCallback(() => {
     if (!data?.corporateName) {
       setLoading(false);
-      return notification.warning({
+
+      return createToast({
         message: "Informe a sua razão social",
+        status: "warning",
       });
     }
 
     if (!data?.name) {
       setLoading(false);
-      return notification.warning({
+      return createToast({
         message: "Informe seu nome fantasia",
+        status: "warning",
       });
     }
 
@@ -39,11 +42,15 @@ const CreateSupplier = memo(function CreateSupplier() {
     supplierService
       .create({ ...data, photo: photo })
       .then((_res) =>
-        notification.success({ message: "Fornecedor cadastrado com sucesso!" })
+        createToast({
+          message: "Fornecedor cadastrado com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) => {
-        return notification.error({
+        createToast({
           message: "verifique os campos informados",
+          status: "error",
         });
       })
       .finally(() => {
@@ -56,15 +63,13 @@ const CreateSupplier = memo(function CreateSupplier() {
     <AccessDenied loading={createSupplierPermission} />
   ) : (
     <PageWrapper title="Cadastrar novo fornecedor">
-
       <FormChild
         submit={submit}
         setPhoto={setPhoto}
         data={data}
         setData={setData}
       />
-
-      </PageWrapper>
+    </PageWrapper>
   );
 });
 

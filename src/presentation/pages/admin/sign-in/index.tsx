@@ -36,7 +36,7 @@ export function SignInAdmin() {
 
             cookies.set("token", { value: response?.token });
 
-            await loadUser({ roleName: "controller" });
+            await loadUser({ roleName: "controller"});
           }}
         >
           <h3>Painel do franqueador</h3>

@@ -7,7 +7,6 @@ import { CreateTypeService } from "./Create";
 import { List } from "./List";
 import { Single } from "./Single";
 import { Input } from "./styles";
-import { notification } from "antd";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";

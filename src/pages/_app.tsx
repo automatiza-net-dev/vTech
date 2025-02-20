@@ -24,13 +24,12 @@ import { SignIn } from "@/OLD/components/Authentication/SignIn";
 
 import {
   themes,
-  ButtonInfinityForge,
-  InfinityForgeInjections,
-  SchedulingContextProvider,
-  LoaderOnRouteChange,
-  SignInAdmin,
   Forbidden,
+  SignInAdmin,
   NotificationsModal,
+  LoaderOnRouteChange,
+  ButtonInfinityForge,
+  SchedulingContextProvider,
 } from "@/presentation";
 import { RemoteLoadUserDashboard, RemoteMenu } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -88,7 +87,7 @@ export default function App({ Component, pageProps }) {
         loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
         InjectedRemotes={{
           menu: {
-            menu: ((menus as any) || { items: [] } as any) as any,
+            menu: menus || { items: [] } as any,
           } as any,
           user: {
             getRole: async () => {

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 // Components
 import { Container, PatientBox } from "./styles";
-import { List, Dropdown, Col, Row, notification } from "antd";
+import { List, Dropdown, Col, Row } from "antd";
 import ViewOccurrence from "../ViewOccurrence";
 import ByHour from "../ByHour";
 import ByPatient from "../ByPatient";
@@ -334,7 +334,12 @@ const PatientData = memo(function PatientData({
                       idTooltip="outlineplus"
                       closeOnClick
                       position="bottom-center"
-                      trigger={<AiOutlinePlus onClick={() => setSelectedPatient(item)} className="plus-icon" />}
+                      trigger={
+                        <AiOutlinePlus
+                          onClick={() => setSelectedPatient(item)}
+                          className="plus-icon"
+                        />
+                      }
                       content={menu(
                         setFormsVisible,
                         item,

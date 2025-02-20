@@ -2,8 +2,6 @@ import React, { useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { notification } from "antd";
-
 import { Button, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -24,17 +22,20 @@ export default function PathologyCreatePaage() {
 
   const canCreatePathology = useUserHasPermission("PAT01");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const submitData = useCallback(() => {
     if (!(data && data.description && data.description.length > 0)) {
-      return createToast({ status: "error", message:"Insira um titulo"  })
+      return createToast({ status: "error", message: "Insira um titulo" });
     }
     if (!(data && data.definition && data.definition.length > 0)) {
-      return  createToast({ status: "error", message:"Insira uma descrição"  })
+      return createToast({ status: "error", message: "Insira uma descrição" });
     }
     if (!(body && body.length > 0)) {
-      return   createToast({ status: "error", message:"Insira o corpo do documento" })
+      return createToast({
+        status: "error",
+        message: "Insira o corpo do documento",
+      });
     }
     if (loading) return;
     setLoading(true);
@@ -46,13 +47,15 @@ export default function PathologyCreatePaage() {
         template: body,
       })
       .then((res) => {
-       
-        createToast({ status: "success", message: "Documento criado com sucesso", })
+        createToast({
+          status: "success",
+          message: "Documento criado com sucesso",
+        });
 
         router.back();
       })
       .catch((err) => {
-        createToast({ status: "error", message: "Erro ao criar documento", })
+        createToast({ status: "error", message: "Erro ao criar documento" });
       })
       .finally(() => setLoading(false));
   }, [loading, data, body]);

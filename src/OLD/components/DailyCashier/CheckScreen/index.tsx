@@ -15,7 +15,6 @@ import {
   Button,
   Switch,
   Popconfirm,
-  notification,
   Modal,
   Input,
 } from "antd";
@@ -24,6 +23,7 @@ const { TextArea } = Input;
 import { checkingCashierColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 function CheckScreen() {
   const [formattedPayments, setFormattedPayments] = useState([]);
@@ -35,6 +35,8 @@ function CheckScreen() {
 
   const { info } = useInfoDailyCasher(router.query.innerpage);
   const user = useMe();
+
+  const { createToast } = useToast();
 
   const formatPayments = () => {
     setFormattedPayments(
@@ -102,7 +104,8 @@ function CheckScreen() {
       })
       .then((_res) => {
         setLoading(false);
-        return notification.success({ message: "itens enviados com sucesso!" });
+
+        return createToast({ status: "success", message: "itens enviados com sucesso!" })
       })
       .catch((err) => {
         setLoading(false);
@@ -119,9 +122,8 @@ function CheckScreen() {
       .then((_res) => {
         setLoading(false);
         cb && cb();
-        return notification.success({
-          message: "Itens conferidos com sucesso!",
-        });
+
+        return createToast({ status: "success", message: "Itens conferidos com sucesso!" })
       })
       .catch((err) => {
         setLoading(false);
@@ -138,7 +140,8 @@ function CheckScreen() {
       })
       .then((_res) => {
         setLoading(false);
-        notification.success({ message: "Caixa conferido com sucesso!" });
+
+        createToast({ status: "success", message: "Caixa conferido com sucesso!" })
         router.back();
       })
       .catch((_err) => {
@@ -155,9 +158,8 @@ function CheckScreen() {
       })
       .then((_res) => {
         setLoading(false);
-        notification.success({
-          message: "Caixa revisão solicitada com sucesso!",
-        });
+       
+        createToast({ status: "success", message: "Caixa revisão solicitada com sucesso!" })
         router.back();
       })
       .catch((_err) => {
@@ -229,9 +231,7 @@ function CheckScreen() {
           type="primary"
           onClick={() => {
             if (data?.filter((item) => !item.conference)?.length > 0) {
-              return notification.warning({
-                message: "Ainda há pagamentos pendentes para conferência",
-              });
+              return createToast({ status: "warning", message: "Ainda há pagamentos pendentes para conferência" })
             }
 
             setObservationsData({

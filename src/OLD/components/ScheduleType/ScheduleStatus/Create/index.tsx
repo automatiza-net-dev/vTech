@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Form, Input, Modal, notification } from "antd";
-import { Button } from "infinity-forge";
+import { Form, Input, Modal } from "antd";
+import { Button, useToast } from "infinity-forge";
 import { memo, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -11,21 +11,17 @@ export const Create = memo(() => {
   const queryClient = useQueryClient();
 
   const canCreateScheduleStatus = useUserHasPermission("AST01");
+  const { createToast } = useToast();
 
   const { mutate, loading } = useMutation(
     (payload) => scheduleTypeServices.createStatus(payload),
     {
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao cadastrar status",
-        });
+        createToast({ message: "Erro ao cadastrar status", status: "error" });
       },
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Status cadastrado",
-        });
+        createToast({ message: "Status cadastrado", status: "success" });
+
         setPayload(null);
         setIsVisible(false);
         queryClient.invalidateQueries("getAllStatus");

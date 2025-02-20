@@ -36,8 +36,8 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button } from "infinity-forge";
-import { Table,  Modal, notification } from "antd";
+import { Button, useToast } from "infinity-forge";
+import { Table, Modal } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "@/OLD/components/Titles/Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -74,6 +74,8 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   const [checkingAccountId, setCheckingAccountId] = useState(false);
   const [createTitleVisible, setCreateTitleVisible] = useState(false);
   const [id, setId] = useState([]);
+
+  const { createToast } = useToast();
 
   const { finances, loadingFinances } = useGroupedFinances(filters, reload);
   const { paymentMethods } = usePaymentMethods();
@@ -174,34 +176,33 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
           ...finance,
           document:
             finance?.source === "GROUP" ? (
-                <span
-                  onClick={() => {
-                    setCheckingAccountId(
-                      finance?.payment_methods_checking_account_id
-                    );
-                    setGroupData({
-                      type: finance?.type,
-                      expirationDate: moment(
-                        finance?.expiration_date,
-                        "YYYY-MM-DD[T]HH:mm:ss"
-                      ).format("YYYY-MM-DD"),
-                      paymentMethodId: finance?.payment_method_id,
-                      tefFlagId: finance?.tef_flag_id,
-                      tefAcquirerId: finance?.tef_acquirente_id || false,
-                      paymentDate: finance?.payment_date
-                        ? moment(
-                            finance?.payment_date,
-                            "YYYY-MM-DD[T]HH:mm:ss"
-                          ).format("YYYY-MM-DD")
-                        : null,
-                    });
-                    setGroupDetailsVisible(true);
-                  }}
-                  className="uk-link"
-                >
-                  {finance?.document || "Doc"}
-                </span>
-             
+              <span
+                onClick={() => {
+                  setCheckingAccountId(
+                    finance?.payment_methods_checking_account_id
+                  );
+                  setGroupData({
+                    type: finance?.type,
+                    expirationDate: moment(
+                      finance?.expiration_date,
+                      "YYYY-MM-DD[T]HH:mm:ss"
+                    ).format("YYYY-MM-DD"),
+                    paymentMethodId: finance?.payment_method_id,
+                    tefFlagId: finance?.tef_flag_id,
+                    tefAcquirerId: finance?.tef_acquirente_id || false,
+                    paymentDate: finance?.payment_date
+                      ? moment(
+                          finance?.payment_date,
+                          "YYYY-MM-DD[T]HH:mm:ss"
+                        ).format("YYYY-MM-DD")
+                      : null,
+                  });
+                  setGroupDetailsVisible(true);
+                }}
+                className="uk-link"
+              >
+                {finance?.document || "Doc"}
+              </span>
             ) : (
               <span
                 onClick={() => {
@@ -330,7 +331,10 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return notification.warning({ message: "Plano de contas obrigatório" });
+      return createToast({
+        status: "warning",
+        message: "Plano de contas obrigatório",
+      });
     }
 
     financesService
@@ -343,19 +347,21 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
       })
       .then((_res) => {
         setEdit(false);
-        notification.success({ message: "Parcela atualizada com sucesso!" });
+        createToast({
+          status: "success",
+          message: "Parcela atualizada com sucesso!",
+        });
       })
       .catch((err) => {
         error = true;
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          return createToast({ status: "error", message: messageArr[1] });
         }
 
-        return notification.error({
-          message: "Houve um erro ao atualizar a parcela selecionada...",
-        });
+        return  createToast({ status: "error", message:  "Houve um erro ao atualizar a parcela selecionada..." });
       })
       .finally(() => {
         setLoading(false);
@@ -565,7 +571,10 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
           <PrintScreen data={finances} loading={loadingFinances} />
         </div>
       </div>
-      <div className="uk-flex uk-flex-right uk-margin-small-top" style={{ gap: 20 }}>
+      <div
+        className="uk-flex uk-flex-right uk-margin-small-top"
+        style={{ gap: 20 }}
+      >
         <Button text="Exportar (Excel)" onClick={() => handleExport()} />
 
         <Button text="Imprimir" onClick={() => imprimir()} />

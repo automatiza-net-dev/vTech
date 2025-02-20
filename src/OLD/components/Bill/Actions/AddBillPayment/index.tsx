@@ -21,7 +21,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import CardPanel from "./CardPanel";
 import { Container } from "./styles";
 import NonTefPanel from "./NonTefPanel";
@@ -221,8 +221,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       ) !== "NÃO" &&
       !formData?.installments
     ) {
-
-     return createToast({
+      return createToast({
         status: "error",
         message: "Selecione a quantidade de parcelas",
       });

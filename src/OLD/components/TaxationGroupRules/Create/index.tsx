@@ -11,15 +11,7 @@ import { taxationGroupRulesService } from "@/OLD/services/taxation-group-rules.s
 import { taxationGroupsService } from "@/OLD/services/taxation-group.service";
 
 // Components
-import {
-  Alert,
-  Button,
-  Input,
-  InputNumber,
-  Modal,
-  notification,
-  Select,
-} from "antd";
+import { Alert, Button, Input, InputNumber, Modal, Select } from "antd";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { BR_STATES } from "../data/br_states";
 import { ICMS_CST_NAO_SIMPLES, ICMS_CST_SIMPLES } from "../data/icms_cst";
@@ -28,10 +20,11 @@ import {
   PIS_COFINS_CST_ENTRADA,
   PIS_COFINS_CST_SAIDA,
 } from "../data/pis_cofins_cst";
+import { useToast } from "infinity-forge";
 
 function CreateTaxationGroupRule({ visible, hide }) {
   const queryClient = useQueryClient();
-
+  const { createToast } = useToast();
   const [data, setData] = useState({});
   const [selectedState, setSelectedState] = useState(null);
 
@@ -70,8 +63,9 @@ function CreateTaxationGroupRule({ visible, hide }) {
     (newData) => taxationGroupRulesService.storeTaxationGroupRule(newData),
     {
       onSuccess: async () => {
-        notification.success({
+        createToast({
           message: "Grupo cadastrado com sucesso!",
+          status: "success",
         });
         await queryClient.invalidateQueries(["taxation-group-rules"]);
         // setData({})

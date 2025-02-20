@@ -9,22 +9,21 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { EditTwoTone, DeleteTwoTone, CheckOutlined } from "@ant-design/icons";
 import { VscTasklist } from "react-icons/vsc";
 
-import { notification, Popconfirm, Modal } from "antd";
+import { Popconfirm, Modal } from "antd";
 import EditForm from "./EditForm";
 import ProductivityItems from "@/OLD/components/mini-components/ProductivityItems";
 import ServiceDetails from "../Single";
+import { useToast } from "infinity-forge";
 
 const verifyErrors = (msg) => {
   const fields = msg?.map((item) => item?.field);
 
   if (fields?.includes("subgroupId")) {
-    return notification.warning({ message: "Campo subgrupo obrigatório" });
+    return "Campo subgrupo obrigatório";
   }
 
   if (fields?.includes("taxationGroupId")) {
-    return notification.warning({
-      message: "campo grupo de imposto obrigatório",
-    });
+    return "campo grupo de imposto obrigatório";
   }
 };
 
@@ -38,22 +37,27 @@ const Actions = memo(function Actions({ service, setReload }) {
 
   const canEditService = useUserHasPermission("SRV02");
   const canDeleteService = useUserHasPermission("SRV03");
+  const { createToast } = useToast();
 
   const router = useRouter();
 
   const removeService = useCallback(() => {
     if (!canDeleteService) {
-      return notification.error({ message: "Ação não permitida" });
+      return createToast({ message: "Ação não permitida", status: "error" });
     }
 
     servicesService
       .removeService(service.id)
       .then((_res) =>
-        notification.success({ message: "Serviço removido com sucesso!" })
+        createToast({
+          message: "Serviço removido com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) =>
-        notification.error({
+        createToast({
           message: "Houve um erro ao remover o serviço selecionado",
+          status: "error",
         })
       )
       .finally(() => {
@@ -89,10 +93,15 @@ const Actions = memo(function Actions({ service, setReload }) {
         active: data?.active === "true" ? true : false,
       })
       .then((_res) =>
-        notification.success({ message: "Serviço atualizado com sucesso!" })
+        createToast({
+          message: "Serviço atualizado com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) => {
-        verifyErrors(err?.response?.data?.errors);
+        const message = verifyErrors(err?.response?.data?.errors);
+        createToast({ message, status: "warning" });
+
         error = true;
         setLoading(false);
       })
@@ -107,21 +116,21 @@ const Actions = memo(function Actions({ service, setReload }) {
 
   return (
     <section className="uk-flex uk-flex-around">
-        <CheckOutlined
-          onClick={() => {
-            setServiceId(service?.id);
-            setDetailsVisible(true);
-            {
-              /* router.push(`/dashboard/servico/${service?.id}`); */
-            }
-          }}
-        />
-        <VscTasklist
-          onClick={() => {
-            setServiceId(service?.id);
-            setProductivityVisible(true);
-          }}
-        />
+      <CheckOutlined
+        onClick={() => {
+          setServiceId(service?.id);
+          setDetailsVisible(true);
+          {
+            /* router.push(`/dashboard/servico/${service?.id}`); */
+          }
+        }}
+      />
+      <VscTasklist
+        onClick={() => {
+          setServiceId(service?.id);
+          setProductivityVisible(true);
+        }}
+      />
 
       {/*canEditService && <EditTwoTone onClick={() => setUpdateVisible(true)} />*/}
       <Popconfirm

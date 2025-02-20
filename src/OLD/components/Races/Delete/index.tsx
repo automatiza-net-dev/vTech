@@ -1,36 +1,33 @@
 // @ts-nocheck
 import React, { memo, useEffect } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
-import { notification, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "react-query";
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { useToast } from "infinity-forge";
 
 export const Delete = memo(function Delete({ id, reload, setReload }) {
   const queryClient = useQueryClient();
 
   const permissions = permissionControl("racas");
-
   const canDeleteRace = useUserHasPermission("RAC03");
+
+  const { createToast } = useToast();
 
   const { mutate, loading } = useMutation(
     (id) => animalServices.deleteRace(id),
     {
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Raça deletada",
-        });
+        createToast({ message: "Raça deletada", status: "success" });
+
         setReload(!reload);
         queryClient.invalidateQueries("getRaces");
       },
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao deletar Raça",
-        });
+        createToast({ message: "Erro ao deletar Raça", status: "error" });
       },
     }
   );
@@ -41,7 +38,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         title="Deseja realmete excluir essa Raça?"
         onConfirm={() =>
           !permissions?.RAC3
-            ? notification.error({ message: "Ação não permitida" })
+            ? createToast({ message: "Ação não permitida", status: "error" })
             : mutate(id)
         }
         okText="Sim"
@@ -49,9 +46,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         placement="left"
         loading={loading}
       >
-        {canDeleteRace && (
-            <DeleteTwoTone twoToneColor="red" />
-        )}
+        {canDeleteRace && <DeleteTwoTone twoToneColor="red" />}
       </Popconfirm>
     </div>
   );

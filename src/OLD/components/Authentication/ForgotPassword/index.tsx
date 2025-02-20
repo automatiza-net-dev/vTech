@@ -1,7 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-import { notification } from "antd";
 import { Button, useToast } from "infinity-forge";
 
 import { Container } from "./styles";
@@ -21,8 +20,7 @@ export function ForgotPassword() {
     (e) => {
       e.preventDefault();
       if (email === "") {
-
-        createToast({ status: "error", message: "Preencha o campo de email", })
+        createToast({ status: "error", message: "Preencha o campo de email" });
 
         return;
       }

@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 import { servicesService } from "@/OLD/services/services.service";
 
 import { Container } from "./styles";
-import { Table, notification } from "antd";
-import { Button, Error, PageWrapper } from "infinity-forge";
+import { Table } from "antd";
+import { Button, Error, PageWrapper, useToast } from "infinity-forge";
 import Header from "./Header";
 import Edit from "./Edit";
 
@@ -17,13 +17,11 @@ const verifyErrors = (msg) => {
   const fields = msg?.map((item) => item?.field);
 
   if (fields?.includes("subgroupId")) {
-    return notification.warning({ message: "Campo subgrupo obrigatório" });
+    return "Campo subgrupo obrigatório";
   }
 
   if (fields?.includes("taxationGroupId")) {
-    return notification.warning({
-      message: "campo grupo de imposto obrigatório",
-    });
+    return "campo grupo de imposto obrigatório";
   }
 };
 
@@ -38,6 +36,7 @@ const Single = memo(function Single({
   const [reload, setReload] = useState(false);
 
   const router = useRouter();
+  const { createToast } = useToast();
 
   const getService = useCallback(() => {
     setLoading(true);
@@ -126,12 +125,15 @@ const Single = memo(function Single({
       setLoading(false);
       setReload((prv) => !prv);
       setVisible(false);
-      notification.success({
+      createToast({
         message: "Serviço atualizado com sucesso!",
+        status: "success",
       });
+
       setLoading(false);
       setReloadService && setReloadService((prv) => !prv);
-      return verifyErrors(err?.response?.data?.errors);
+      const message = verifyErrors(err?.response?.data?.errors);
+      createToast({ message, status: "warning" });
     } catch (error) {
       setLoading(false);
     }

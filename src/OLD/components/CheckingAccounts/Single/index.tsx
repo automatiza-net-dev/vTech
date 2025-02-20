@@ -12,8 +12,8 @@ import { checkingAccountService } from "@/OLD/services/checkingAccount.service";
 // Components
 import { Container } from "./styles";
 import FormChild from "../FormChild";
-import { Button, PageWrapper } from "infinity-forge";
-import { Descriptions, Modal, notification } from "antd";
+import { Button, PageWrapperm, useToast } from "infinity-forge";
+import { Descriptions, Modal } from "antd";
 const { Item } = Descriptions;
 
 const Single = memo(function Single() {
@@ -26,6 +26,8 @@ const Single = memo(function Single() {
     router.query.subpage,
     reload
   );
+
+  const { createToast } = useToast();
 
   useEffect(() => {
     setData({
@@ -50,19 +52,29 @@ const Single = memo(function Single() {
     checkingAccountService
       .updateCheckingAccount(checkingAccount?.id, data)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Conta atualizada com sucesso!",
+          status: "success",
         })
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+
+          createToast({
+            message: messageArr[1],
+            status: "error",
+          });
+
+          return;
         }
-        return notification.error({
+
+        createToast({
           message: "Houve um erro ao atualizar os dados da conta!",
+          status: "error",
         });
+        return;
       })
       .finally(() => {
         setReload(!reload);
@@ -74,7 +86,9 @@ const Single = memo(function Single() {
   return (
     <PageWrapper title="Detalhes da conta bancária">
       <Container>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+        >
           <Button onClick={() => router.back()} text="Voltar" />
 
           <Button onClick={() => setUpdateVisible(true)} text="Editar" />

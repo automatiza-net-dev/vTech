@@ -13,8 +13,8 @@ import "moment/locale/pt-br";
 import { EditTwoTone } from "@ant-design/icons";
 
 // Components
-import { Table, notification } from "antd";
-import { Button, PageWrapper } from "infinity-forge";
+import { Table } from "antd";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import { useQuery } from "react-query";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -29,6 +29,7 @@ const TaxOperations = memo(function TaxOperations() {
   const [filters, setFilters] = useState({ active: "active" });
   const [visible, setVisible] = useState(false);
   const [selectedTax, setSelectedTax] = useState(null);
+  const { createToast } = useToast();
 
   const listTaxOperationsPermission = useUserHasPermission("OPF00");
   const canCreateTaxOperationService = useUserHasPermission("OPF01");
@@ -91,7 +92,10 @@ const TaxOperations = memo(function TaxOperations() {
                     size={15}
                     onClick={() => {
                       !editPermission
-                        ? notification.error({ message: "Ação não permitida" })
+                        ? createToast({
+                            message: "Ação não permitida",
+                            status: "error",
+                          })
                         : setSelectedTax(item);
                     }}
                   />

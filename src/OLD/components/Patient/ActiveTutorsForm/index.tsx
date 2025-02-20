@@ -6,7 +6,8 @@ import { petsService } from "@/OLD/services/patient.service";
 
 // Components
 import { Container } from "./styles";
-import { Popconfirm, Button, notification } from "antd";
+import { Popconfirm, Button } from "antd";
+import { useToast } from "infinity-forge";
 
 const ActiveTutorsForm = memo(function ({
   patient,
@@ -17,18 +18,17 @@ const ActiveTutorsForm = memo(function ({
   const [selectedTutor, setSelectedTutor] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const {createToast} = useToast()
+
   const submitMainTutor = useCallback(() => {
     setLoading(true);
     petsService
       .setMainTutor(patient?.id, selectedTutor?.id)
-      .then((_) =>
-        notification.success({ message: "Tutor ativo definido com sucesso!" })
+      .then((_) => createToast({ status: "success", message: "Tutor ativo definido com sucesso!" })
       )
       .catch((err) => {
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao definir o tutor ativo...",
-        });
+        return  createToast({ status: "error", message: "Houve um erro ao definir o tutor ativo..." })
       })
       .finally(() => {
         setLoading(false);

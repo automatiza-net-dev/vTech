@@ -1,20 +1,20 @@
 // @ts-nocheck
-import { Badge, notification, Table, Tag } from "antd";
+import { Badge, Table, Tag } from "antd";
 import { memo, useEffect } from "react";
 import { useQuery } from "react-query";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { columns } from "./columns";
+import { useToast } from "infinity-forge";
 
 export const List = memo(({ searchText }) => {
+  const { createToast } = useToast();
+
   const { data, loading } = useQuery(
     ["getAllStatus", searchText],
     () => scheduleTypeServices.getAllStatus(searchText),
     {
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao buscar os status",
-        });
+        createToast({ message: "Erro ao buscar os status", status: "error" });
       },
     }
   );

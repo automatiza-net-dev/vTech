@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { notification } from "antd";
 import { CustomSection } from "./styles";
 import { Vaccine } from "./Single";
 
@@ -24,7 +23,7 @@ export default function LastUpdates({
   const router = useRouter();
   const patientId = router.query.subpage;
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAppointmentsByTag = useCallback(() => {
     timelineService
@@ -41,8 +40,12 @@ export default function LastUpdates({
         );
       })
       .catch((_err) => {
-        createToast({ status: "error", message: "Houve um erro ao buscar as últimas atualizações lançadas..." })
-      })
+        createToast({
+          status: "error",
+          message:
+            "Houve um erro ao buscar as últimas atualizações lançadas...",
+        });
+      });
   }, [router.query.subpage, reload, filter]);
 
   useEffect(() => {
@@ -51,9 +54,7 @@ export default function LastUpdates({
 
   return (
     <div className="uk-flex uk-flex-between">
-      <section className="uk-width-1-5">
-        
-      </section>
+      <section className="uk-width-1-5"></section>
       <CustomSection>
         {selectedUpdate && (
           <Vaccine

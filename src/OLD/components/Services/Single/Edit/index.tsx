@@ -5,15 +5,17 @@ import { productService } from "@/OLD/services/product.service";
 
 import { EditTwoTone } from "@ant-design/icons";
 
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import FormChild from "./FormChild";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+import { useToast } from "infinity-forge";
 
 const Edit = memo(function Edit({ unitVariation, setReload }) {
   const [updateVisible, setUpdateVisible] = useState(false);
   const [data, setData] = useState({});
+  const { createToast } = useToast();
 
   useEffect(() => {
     updateVisible &&
@@ -47,12 +49,16 @@ const Edit = memo(function Edit({ unitVariation, setReload }) {
         costPrice: convertIntlCurrency(data?.costPrice),
       })
       .then((res) =>
-        notification.success({ message: "Serviço atualizado com sucesso!" })
+        createToast({
+          message: "Serviço atualizado com sucesso!",
+          status: "success",
+        })
       )
       .catch((_err) => {
         error = true;
-        return notification.error({
+        createToast({
           message: "Houve um erro ao atualizar as informações do serviço",
+          status: "error",
         });
       })
       .finally(() => {

@@ -16,7 +16,7 @@ export function useLoadBudget({ id }: { id: Budget["id"] }) {
       return {
         ...response,
         items: formatProductsApiToCartItems({ items: response?.items }),
-      };
+      } 
     },
     enabled: !!id,
   });

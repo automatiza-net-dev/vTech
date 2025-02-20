@@ -2,7 +2,6 @@
 import {
   Form,
   Modal,
-  notification,
   Select,
   Checkbox,
   DatePicker,
@@ -19,6 +18,7 @@ import * as yup from "yup";
 import { days } from "../Create/weekdays";
 import { EditTwoTone } from "@ant-design/icons";
 import moment from "moment";
+import { useToast } from "infinity-forge";
 
 export const Edit = ({ item }) => {
   const queryClient = useQueryClient();
@@ -30,6 +30,8 @@ export const Edit = ({ item }) => {
   const [allChecked, setAllChecked] = useState(false);
   const { Option } = Select;
   const [payload, setPayload] = useState({});
+
+  const {createToast} = useToast()
 
   const schema = yup
     .object({
@@ -93,16 +95,11 @@ export const Edit = ({ item }) => {
     },
     {
       onError: () => {
-        notification.error({
-          message: "Erro",
-          description: "Erro ao editar indisponibilidade",
-        });
+        createToast({ status: "error", message: "Erro ao editar indisponibilidade" })
       },
       onSuccess: () => {
-        notification.success({
-          message: "Sucesso",
-          description: "Sucesso ao editar indisponibilidade",
-        });
+        createToast({ status: "success", message: "Sucesso ao editar indisponibilidade" })
+      
         setIsVisible(false);
         queryClient.invalidateQueries("getAbsences");
       },

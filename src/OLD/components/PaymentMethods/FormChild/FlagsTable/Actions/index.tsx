@@ -14,7 +14,8 @@ import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 
 // Components
 import InstallmentsPanel from "./InstallmentsPanel";
-import { Modal, notification, Input, Select } from "antd";
+import { Modal, Input, Select } from "antd";
+import { useToast } from "infinity-forge";
 const { Option } = Select;
 
 const Actions = memo(function Actions({ flag, reload, setReload }) {
@@ -24,6 +25,7 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
   const [installmentsData, setInstallmentsData] = useState([]);
 
   const { acquirers } = useTefAcquirers(updateVisible);
+  const { createToast } = useToast();
 
   useEffect(() => {
     setData({
@@ -32,7 +34,7 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
       fee: flag?.fee,
       active: flag?.active,
       daysUntilTransfer: flag?.days_until_transfer,
-      installmentsWithoutPassword: flag?.installments_without_password
+      installmentsWithoutPassword: flag?.installments_without_password,
     });
   }, [flag]);
 
@@ -42,14 +44,16 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
     paymentMethodsService
       .updateFlag(flag?.id, data)
       .then((_res) =>
-        notification.success({
+        createToast({
           message: "Informações atualizadas com sucesso!",
+          status: "success",
         })
       )
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        return createToast({
           message: "Houve um erro ao atualizar as informações da bandeira...",
+          status: "error",
         });
       })
       .finally(() => {

@@ -7,8 +7,8 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button } from "infinity-forge";
-import { notification, Modal } from "antd";
+import { Button, useToast } from "infinity-forge";
+import { Modal } from "antd";
 import DownTitles from "../DownTitles";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
@@ -24,6 +24,7 @@ const ButtonsPanel = memo(function ButtonsPanel({
   const [downTitlesVisible, setDownTitlesVisible] = useState(false);
 
   const { titles, setTitles } = useAuth();
+  const { createToast } = useToast();
 
   const downTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}04`
@@ -60,7 +61,10 @@ const ButtonsPanel = memo(function ButtonsPanel({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        notification.success({ message: "Aceite realizado com sucesso!" });
+        createToast({
+          message: "Aceite realizado com sucesso!",
+          status: "success",
+        });
       })
       .catch((_err) => setLoading(false));
   }, [titles]);
@@ -93,13 +97,14 @@ const ButtonsPanel = memo(function ButtonsPanel({
           })
         );
         setReload((prv) => !prv);
-        return notification.success({
+        return createToast({
           message: "Items adicionados com sucesso ao borderô",
+          status: "success",
         });
       })
       .catch((err) => {
         setReload((prv) => !prv);
-        return notification.error({ message: "Erro" });
+        return createToast({ message: "Erro", status: "error" });
       });
   }, [titles]);
 

@@ -8,6 +8,7 @@ import {
   LoaderCircle,
   InputDatePicker,
 } from "infinity-forge";
+import * as yup from "yup"
 import moment from "moment";
 
 import { ReportDRE } from "./report";
@@ -17,6 +18,8 @@ import * as S from "./styles";
 export function DreReport() {
   const [months, setMonths] = useState(0);
   const [dateDRE, setDateDRE] = useState(null);
+
+  console.log(months)
 
   const { data, mutate, isFetching } = useQuery({
     queryKey: ["DRE", dateDRE, months],
@@ -30,6 +33,7 @@ export function DreReport() {
 
       return response;
     },
+    enabled: !!dateDRE
   });
 
   return (
@@ -46,8 +50,10 @@ export function DreReport() {
           <FormHandler
             initialData={{ competence: dateDRE }}
             onSucess={async (data) => {
+              console.log(data)
               setDateDRE(data.competence);
             }}
+            schema={{ competence: yup.string().required("Campo requerido") }}
             button={{ text: "CARREGAR DRE" }}
           >
             <div className="filters-container">

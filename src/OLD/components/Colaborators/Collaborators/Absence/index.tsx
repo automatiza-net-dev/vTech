@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState } from "react";
-import { notification, Table } from "antd";
+import { Table } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useColaborator } from "@/OLD/hooks/useColaborators";
@@ -15,7 +15,7 @@ import moment from "moment";
 
 // Components
 import { Container } from "./styles";
-import { Button, Select, FormHandler } from "infinity-forge";
+import { Button, Select, FormHandler, useToast } from "infinity-forge";
 
 export const Absence = ({ edit }) => {
   const router = useRouter();
@@ -23,14 +23,16 @@ export const Absence = ({ edit }) => {
   const [params, setParams] = useState({ user: userId });
   const { colaborator } = useColaborator(userId, false);
 
+  const { createToast } = useToast();
+
   const { data, loading } = useQuery({
     queryKey: ["getAbsences", params],
     queryFn: () => calendarService.getAbsences(params),
     refetchOnWindowFocus: false,
     onError: () => {
-      notification.error({
-        message: "Erro",
-        description: "Erro ao buscar ausencias e indisponibilidades",
+      createToast({
+        message: "Erro ao buscar ausencias e indisponibilidades",
+        status: "error",
       });
     },
   });
@@ -126,9 +128,11 @@ export const Absence = ({ edit }) => {
         >
           <Button
             onClick={() => {
-              notification.success({
+              createToast({
                 message: "Informações salvas com sucesso!",
+                status: "success",
               });
+
               router.back();
             }}
             text="Salvar"

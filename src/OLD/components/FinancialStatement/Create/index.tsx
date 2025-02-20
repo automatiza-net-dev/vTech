@@ -26,12 +26,12 @@ import {
   Select,
   Button,
   AutoComplete,
-  notification,
   Radio,
 } from "antd";
 import Installments from "./Installments";
 
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
+import { useToast } from "infinity-forge";
 const { Option } = Select;
 const { Group } = Radio;
 
@@ -61,6 +61,8 @@ export const Create = memo(function Create({ type }) {
 
   const router = useRouter();
 
+  const {createToast} = useToast()
+
   const submitInstallments = useCallback(async () => {
     setLoading(true);
     let error = false;
@@ -75,16 +77,15 @@ export const Create = memo(function Create({ type }) {
     financesService
       .createMultiple({ items })
       .then((_res) => {
-        notification.success({
-          message: `Parcelas salvas com sucesso!`,
-        });
+
+        createToast({ status: "success", message: `Parcelas salvas com sucesso!` })
+       
         router.back();
       })
       .catch((_err) => {
         error = true;
-        return notification.error({
-          description: `Verifique os campos da parcela`,
-        });
+
+        return createToast({ status: "error", message: "Erro ao salvar parcela" })
       });
   }, [installments]);
 
@@ -215,21 +216,21 @@ export const Create = memo(function Create({ type }) {
           e.preventDefault();
 
           if (!data?.clientId && clinic?.unitConfig?.requires_finance_client) {
-            return notification.warning({
-              message: "Selecione um títular para o título",
-            });
+            return createToast({message:"Selecione um títular para o título",status:"warning"})
+             
           }
 
           if (!data?.paymentMethodId) {
-            return notification.warning({
-              message: "Verifique o campo obrigatório: Forma Pagamento",
-            });
+            return createToast({message:"Verifique o campo obrigatório: Forma Pagamento",status:"warning"})
+
+
+            
           }
 
           if (!data?.accountPlanId) {
-            return notification.warning({
-              message: "Verifique o campo obrigatório: Plano Contas",
-            });
+            return createToast({message:"Verifique o campo obrigatório: Plano Contas",status:"warning"})
+
+           
           }
 
           !submitStage ? setSubmitStage(true) : submitInstallments();

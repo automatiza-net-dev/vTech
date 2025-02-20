@@ -4,14 +4,16 @@ import { memo, useState } from "react";
 import { useReceiptsReport } from "@/OLD/hooks/useReports";
 
 import { Container } from "./styles";
-import { Button, notification } from "antd";
+import { Button } from "antd";
 import Filters from "./Filters";
 
 import PrintTable from "./PrintTable";
+import { useToast } from "infinity-forge";
 
 const ReceiptsReports = memo(function ReceiptsReports() {
   const [filters, setFilters] = useState({ noSearch: true });
   const [reload, setReload] = useState([]);
+  const { createToast } = useToast();
 
   const { reports } = useReceiptsReport(filters, reload);
 
@@ -25,13 +27,17 @@ const ReceiptsReports = memo(function ReceiptsReports() {
           className="uk-margin-small-top"
           onClick={() => {
             if (!filters?.businessUnit) {
-              return notification.warning({
-                message: "Informe pelo menos uma unidade"
+              createToast({
+                message: "Informe pelo menos uma unidade",
+                status: "warning",
               });
+
+              return;
             }
 
             if (!filters?.fromDate) {
-              return notification.warning({ message: "informe o período" });
+              createToast({ message: "informe o período", status: "warning" });
+              return;
             }
             setFilters((prv) => ({ ...prv, noSearch: false }));
             setReload((prv) => !prv);

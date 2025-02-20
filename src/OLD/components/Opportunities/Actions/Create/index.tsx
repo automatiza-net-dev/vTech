@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import moment from "moment";
 import { AxiosError } from "axios";
-import { PageWrapper, useAuthAdmin } from "infinity-forge";
+import { PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
 
 import { useMe } from "@/presentation";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
 import FormChild from "../../FormChild";
 import { Container } from "../../styles";
-import { notification, Modal } from "antd";
+import { Modal } from "antd";
 import { Patient } from "@/OLD/components/Patient";
 import { Tutor } from "@/OLD/components/Tutor";
 
@@ -35,6 +35,8 @@ export default function Create({
   const { clinic } = useProfile();
   const { crmData, setCrmData } = useAuth();
 
+  const { createToast } = useToast();
+
   const router = useRouter();
 
   async function createOpportunity() {
@@ -55,19 +57,22 @@ export default function Create({
     try {
       await opportunitiesService.create(newObj);
 
-      notification.success({
+      createToast({
+        status: "success",
         message: "Oportunidade cadastrada com sucesso!",
       });
 
       router.back();
     } catch (error) {
       if (error instanceof AxiosError) {
-        return notification.error({
+        return createToast({
+          status: "error",
           message: error?.response?.data?.title,
         });
       }
 
-      return notification.error({
+      return createToast({
+        status: "error",
         message: "Verifique os campos informados...",
       });
     }

@@ -12,7 +12,7 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { notification, Popconfirm, Modal } from "antd";
+import { Popconfirm, Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
@@ -22,6 +22,7 @@ import { PageWrapper, useToast } from "infinity-forge";
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
 import { LaunchRelatedSale } from "./launch-related-sale";
+import { CancelAction } from "./cancel";
 
 const Container = styled.div`
   display: flex;
@@ -163,6 +164,9 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
           )}
         </>
       )}
+
+      <CancelAction bill={bill} />
+
       {convertTreatmentPermission && (
         <ConvertBillToTreatment bill={bill} setReload={setReload} />
       )}

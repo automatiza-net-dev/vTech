@@ -6,7 +6,7 @@ import React, { memo, useCallback, useEffect, useState } from "react";
 import { patientExamsService } from "@/OLD/services/patientExam.service";
 
 // Components
-import { Table, notification } from "antd";
+import { Table } from "antd";
 import { Container } from "./styles";
 import { AddExam } from "@/OLD/components/Attendance/Forms";
 
@@ -32,7 +32,7 @@ const ListPatientExams = memo(function ListPatientExams({
   // const [arquivesVisible, setArquivesVisible] = useState(false);
   const [arquives, setArquives] = useState([]);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getAllExams = useCallback(() => {
     setLoading(true);
@@ -66,7 +66,11 @@ const ListPatientExams = memo(function ListPatientExams({
       })
       .catch((_err) => {
         setLoading(false);
-        createToast({ status: "error", message:  "Houve um problema ao recuperar os exames pendentes do paciente...",})
+        createToast({
+          status: "error",
+          message:
+            "Houve um problema ao recuperar os exames pendentes do paciente...",
+        });
       })
       .finally(() => {
         setLoading(false);

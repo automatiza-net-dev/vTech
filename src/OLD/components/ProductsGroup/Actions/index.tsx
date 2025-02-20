@@ -6,8 +6,7 @@ import { productService } from "@/OLD/services/product.service";
 
 import { useShowProductGroup } from "@/OLD/hooks/useProductGroup";
 
-import { notification } from "antd";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useToast } from "infinity-forge";
 import AddOrRemoveItem from "./AddOrRemoveItem";
 import CreateOrUpdateForm from "./CreateOrUpdateForm";
 
@@ -22,7 +21,7 @@ function Actions({ type }: { type: "create" | "update" }) {
   const [action, setAction] = useState("create");
 
   const { productGroup } = useShowProductGroup(kit?.id, reload);
-
+  const { createToast } = useToast();
   const formatData = () => {
     setData({
       ...data,
@@ -67,13 +66,14 @@ function Actions({ type }: { type: "create" | "update" }) {
         setKit(res.data);
 
         setReload((prv) => !prv);
-        notification.success({ message: "Kit criado com sucesso!" });
+        createToast({ message: "Kit criado com sucesso!", status: "success" });
       })
       .catch((_err) => {
         setLoading(false);
         setReload((prv) => !prv);
-        notification.error({
+        createToast({
           message: "Erro ao cadastrar kit, verifique os campos informados",
+          status: "error",
         });
       })
       .finally(() => setLoading(false));
@@ -94,14 +94,21 @@ function Actions({ type }: { type: "create" | "update" }) {
       })
       .then((_res) => {
         setReload((prv) => !prv);
-        notification.success({ message: "Kit atualizado com sucesso!" });
+        createToast({
+          message: "Kit atualizado com sucesso!",
+          status: "success",
+        });
+
         router.back();
       })
       .catch((_err) => {
         setLoading(false);
-        return notification.error({
+        createToast({
           message: "Verifique os campos informados",
+          status: "error",
         });
+
+        return;
       })
       .finally(() => {
         setLoading(false);

@@ -6,7 +6,7 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Popconfirm, notification, Modal } from "antd";
+import { Popconfirm, Modal } from "antd";
 import FormChild from "./FormChild";
 
 import { FiLock, FiUnlock } from "react-icons/fi";
@@ -18,6 +18,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
+import { useToast } from "infinity-forge";
 
 function BorderoActions({
   bordero,
@@ -36,6 +37,8 @@ function BorderoActions({
   const [revertModalVisible, setRevertModalVisible] = useState(false);
   const [revertData, setRevertData] = useState({});
 
+  const {createToast} = useToast()
+
   const downBorderoPermission = useUserHasPermission(
     `${accessControlTitles(type)}08`
   );
@@ -52,20 +55,18 @@ function BorderoActions({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Bordero Fechado com sucesso!",
-        });
+
+        return createToast({ status: "success", message: "Bordero Fechado com sucesso!", })
       })
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
-          return notification.error({
-            message: err?.response?.data?.message?.split(":")[1],
-          });
+       
+
+         return createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1], })
         }
-        return notification.error({
-          message: "Houve um erro interno ao fechar o bordero",
-        });
+
+        return createToast({ status: "error", message: "Houve um erro interno ao fechar o bordero", })
       });
   }, [bordero]);
 
@@ -77,20 +78,14 @@ function BorderoActions({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Bordero reaberto com sucesso!",
-        });
+        return  createToast({ status: "success", message: "Bordero reaberto com sucesso!", })
       })
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
-          return notification.error({
-            message: err?.response?.data?.message?.split(":")[1],
-          });
+          return  createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1], })
         }
-        return notification.error({
-          message: "Houve um erro interno ao reabrir o bordero",
-        });
+        return  createToast({ status: "error", message: "Houve um erro interno ao reabrir o bordero", })
       });
   }, [bordero]);
 
@@ -102,21 +97,15 @@ function BorderoActions({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        return notification.success({
-          message: "Bordero removido com sucesso!",
-        });
+        return  createToast({ status: "success", message: "Bordero removido com sucesso!", })
       })
       .catch((err) => {
         setLoading(false);
 
         if (err?.response?.data?.message) {
-          return notification.error({
-            message: err?.response?.data?.message?.split(":")[1],
-          });
+          return  createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1] })
         }
-        return notification.error({
-          message: "Houve um erro interno ao remover o bordero",
-        });
+        return reateToast({ status: "error", message:  "Houve um erro interno ao remover o bordero" })
       });
   }, [bordero]);
 
@@ -142,21 +131,15 @@ function BorderoActions({
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-        return notification.success({
-          message: "Bordero baixado com sucesso!",
-        });
+        return   reateToast({ status: "success", message:  "Bordero baixado com sucesso!", })
       })
       .catch((err) => {
         setLoading(false);
 
         if (err?.response?.data?.message) {
-          return notification.error({
-            message: err?.response?.data?.message?.split(":")[1],
-          });
+          return createToast({ status: "error", message:  err?.response?.data?.message?.split(":")[1], })
         }
-        return notification.error({
-          message: "Houve um erro interno ao executar a baixa do bordero",
-        });
+        return createToast({ status: "error", message:  "Houve um erro interno ao executar a baixa do bordero", })
       });
   }, [downData, bordero]);
 
@@ -177,17 +160,12 @@ function BorderoActions({
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-        return notification.success({
-          message: "Bordero estornado com sucesso!",
-        });
+        return createToast({ status: "success", message:  "Bordero estornado com sucesso!", })
       })
       .catch((err) => {
         setLoading(false);
 
-        return notification.error({
-          message:
-            "Houve um erro interno ao estornar o bordero selecionado #err",
-        });
+        return  createToast({ status: "error", message:  "Houve um erro interno ao estornar o bordero selecionado #err" })
       });
   }, [revertData, bordero]);
 

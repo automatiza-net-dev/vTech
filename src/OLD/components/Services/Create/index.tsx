@@ -6,8 +6,8 @@ import { servicesService } from "@/OLD/services/services.service";
 import { useSubgroups } from "@/OLD/hooks/useSubgroup";
 
 import { Container } from "./styles";
-import { Input, Select, notification, Form, Switch } from "antd";
-import { Button, PageWrapper } from "infinity-forge";
+import { Input, Select, Form, Switch } from "antd";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import DataForm from "./Data";
 import PriceForm from "./Price";
 
@@ -20,18 +20,19 @@ const Create = memo(function ({ setVisible }) {
   const [type, setType] = useState("data");
 
   const { subgroups } = useSubgroups();
+  const { createToast } = useToast();
 
   const verifyFields = (fields) => {
     if (fields?.includes("subgroupId")) {
-      return notification.warning({ message: "Informe o subgrupo" });
+      return "Informe o subgrupo";
     }
 
     if (fields?.includes("taxationGroupId")) {
-      return notification.warning({ message: "Informe o grupo de imposto" });
+      return "Informe o grupo de imposto";
     }
 
     if (fields?.includes("price.price")) {
-      return notification.warning({ message: "Informe o Valor" });
+      return "Informe o Valor";
     }
   };
 
@@ -53,12 +54,18 @@ const Create = memo(function ({ setVisible }) {
         },
       })
       .then((_res) =>
-        notification.success({ message: "Serviço cadastrado com sucesso!" })
+        createToast({
+          message: "Serviço cadastrado com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) => {
         error = true;
         setLoading(false);
-        return verifyFields(err.response.data.errors.map((msg) => msg?.field));
+        const message = verifyFields(
+          err.response.data.errors.map((msg) => msg?.field)
+        );
+        createToast({ message, status: "warning" });
       })
       .finally(() => {
         !error && setVisible(false);

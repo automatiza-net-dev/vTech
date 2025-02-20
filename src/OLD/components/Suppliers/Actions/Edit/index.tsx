@@ -7,16 +7,15 @@ import { supplierService } from "@/OLD/services/supplier.service";
 import { useSingleSupplier } from "@/OLD/hooks/useSuppliers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { notification } from "antd";
 import FormChild from "../FormChild";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 export function EditSupplier() {
   const [data, setData] = useState({});
   const [photo, setPhoto] = useState();
   const [loading, setLoading] = useState(false);
-
+  const { createToast } = useToast();
   const router = useRouter();
   const id = router?.query?.id;
 
@@ -57,8 +56,10 @@ export function EditSupplier() {
   const submit = useCallback(() => {
     if (!data?.corporateName) {
       setLoading(false);
-      return notification.warning({
+
+      return createToast({
         message: "Informe a sua razão social",
+        status: "warning",
       });
     }
 
@@ -66,12 +67,19 @@ export function EditSupplier() {
     supplierService
       .update(supplier?.id, data)
       .then((_res) => {
-        notification.success({ message: "fornecedor atualizado com sucesso" });
+        createToast({
+          message: "fornecedor atualizado com sucesso",
+          status: "success",
+        });
+
         router.back();
       })
       .catch((_err) => {
         setLoading(false);
-        notification.error({ message: "houve um erro ao editar o fornecedor" });
+        createToast({
+          message: "houve um erro ao editar o fornecedo",
+          status: "error",
+        });
       })
       .finally(() => {
         setLoading(false);

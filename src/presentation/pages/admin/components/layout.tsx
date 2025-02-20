@@ -1,12 +1,14 @@
-import { Error, PrivatePage, useAuthAdmin } from "infinity-forge";
+import { Error, PrivatePage } from "infinity-forge";
 
+import { useRouter } from "next/router";
+
+import { RemoteBusinessUnits } from "@/data";
+import { container, TypesAutomatiza } from "@/container";
 import { DictionaryQueryProvider, useLoadAllAvailableUnits } from "@/presentation";
+
 import { Layout } from "./layout-infinity-forge-remover-apos-atualizar/layout";
 
 import * as S from "./styles";
-import { container, TypesAutomatiza } from "@/container";
-import { RemoteBusinessUnits } from "@/data";
-import { useRouter } from "next/router";
 
 export function LayoutAdmin({ children }) {
   return (
@@ -23,7 +25,6 @@ export function LayoutAdmin({ children }) {
 
 function LayoutPage({ children }) {
 
- const { user} = useAuthAdmin();
  const avaiableUnits = useLoadAllAvailableUnits?.();
 
  const router = useRouter()
@@ -36,11 +37,6 @@ function LayoutPage({ children }) {
       value: companie.id,
     })),
     onChangeWorkSpace: async (value: any) => {
-      if (
-        value.workspace !==
-        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
-          ?.id
-      ) {
         await container
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
           .swap({ unitId: value?.workspace, dashboard: true });
@@ -49,7 +45,6 @@ function LayoutPage({ children }) {
           pathname: "/dashboard",
           query: { reload: "true" },
         });
-      }
     },
   };
 

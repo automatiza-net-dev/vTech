@@ -13,11 +13,12 @@ import { paymentMethodsService } from "@/OLD/services/paymentMethods.service";
 
 // Components
 import { Container as CustomForm } from "./styles";
-import { Checkbox, Select, Input, notification, Button } from "antd";
+import { Checkbox, Select, Input, Button } from "antd";
 const { Option } = Select;
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useToast } from "infinity-forge";
 
 function CardFlags({ method, reload, setReload, setVisible, methodId }) {
   const [data, setData] = useState({});
@@ -27,6 +28,8 @@ function CardFlags({ method, reload, setReload, setVisible, methodId }) {
     false,
     method?.type === "CREDITO" ? "C" : "D"
   );
+
+  const { createToast } = useToast();
 
   const submitFlag = useCallback(() => {
     setLoading(true);
@@ -38,20 +41,26 @@ function CardFlags({ method, reload, setReload, setVisible, methodId }) {
         checkingAccountId: method?.checkingAccountId,
       })
       .then((_res) =>
-        notification.success({ message: "Bandeira cadastrada com sucesso!" })
+        createToast({
+          message: "Bandeira cadastrada com sucesso!",
+          status: "success",
+        })
       )
       .catch((err) => {
         error = true;
         setLoading(false);
         const errMessage = err?.response?.data?.errors;
         if (errMessage) {
-          return notification.error({
+          return createToast({
             message: errMessage[0].message,
+            status: "error",
           });
         }
-        return notification.error({
+
+        return createToast({
           message:
             "Houve um erro ao cadastrar a bandeira ao metodo selecionado...",
+          status: "error",
         });
       })
       .finally(() => {

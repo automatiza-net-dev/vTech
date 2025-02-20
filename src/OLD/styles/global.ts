@@ -43,6 +43,8 @@ input, textarea {
     
 
     button:last-child {
+        border: 0;
+        border-radius: 5px;
         width: fit-content;
         height: 40px;
         padding: 0 40px !important;

@@ -10,10 +10,10 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { examService } from "@/OLD/services/exams.service";
 
 // Components
-import { Input, Switch, notification } from "antd";
+import { Input, Switch } from "antd";
 import { Container } from "./styles";
 import Editor from "@/OLD/components/Editor";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -25,20 +25,18 @@ const CreateExam = memo(function CreateExam() {
   const router = useRouter();
   const canCreateExams = useUserHasPermission("EXA01");
 
+  const {createToast} = useToast()
+
   const submitExam = useCallback(() => {
     setLoading(true);
     examService
       .createExam({ ...data, description: body })
       .then((_res) => {
-        return notification.success({
-          message: "Exame cadastrado com sucesso!",
-        });
+        return createToast({ status: "success", message: "Exame cadastrado com sucesso!" })
       })
       .catch((err) => {
         error = true;
-        return notification.error({
-          message: err.response.data.errors[0].message,
-        });
+        return  createToast({ status: "success", message: err.response.data.errors[0].message })
       })
       .finally(() => {
         setLoading(false);

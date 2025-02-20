@@ -8,11 +8,12 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { dailyMovementsService } from "@/OLD/services/dailyMovements.service";
 
 import { Container } from "./styles";
-import { notification, Modal } from "antd";
+import { Modal } from "antd";
 import FormChild from "../FormChild";
 
 import { GiConfirmed } from "react-icons/gi";
 import { VscLock, VscUnlock, VscCheckAll, VscBook } from "react-icons/vsc";
+import { useToast } from "infinity-forge";
 
 function Actions ({ movement, reload, setReload, setReport }) {
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,8 @@ function Actions ({ movement, reload, setReload, setReport }) {
   const closeDailyMovementPermission = useUserHasPermission("MOV02");
   const checkDailyMovementPermission = useUserHasPermission("MOV03");
 
+  const {createToast} = useToast()
+
   const closeDailyMovement = useCallback(() => {
     setLoading(true);
     dailyMovementsService
@@ -32,21 +35,16 @@ function Actions ({ movement, reload, setReload, setReport }) {
         userId: userInfo?.data?.id,
         observations: data?.observations,
       })
-      .then((_res) =>
-        notification.success({
-          message: "Movimentação diária fechada com sucesso!",
-        })
+      .then((_res) => createToast({ status: "success", message: "Movimentação diária fechada com sucesso!" })
       )
       .catch((err) => {
         if (err.response.data?.message) {
           const message = err.response.data.message.split(":")[1];
 
-          return notification.error({ message });
+          return createToast({ status: "error", message: message})
         }
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao fechar a movimentação diária...",
-        });
+        return  createToast({ status: "error", message: "Houve um erro ao fechar a movimentação diária...",})
       })
       .finally(() => {
         setLoading(false);
@@ -65,19 +63,15 @@ function Actions ({ movement, reload, setReload, setReport }) {
         userId: userInfo?.data?.id,
       })
       .then((res) =>
-        notification.success({
-          message: "Movimentação reaberta com sucesso",
-        })
+       createToast({ status: "success", message: "Movimentação reaberta com sucesso",})
       )
       .catch((err) => {
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return     createToast({ status: "error", message:  messageArr[1],})
         }
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao reabrir a movimentação diária",
-        });
+        return  createToast({ status: "error", message:  "Houve um erro ao reabrir a movimentação diária",})
       })
       .finally(() => {
         setLoading(false);
@@ -96,20 +90,16 @@ function Actions ({ movement, reload, setReload, setReport }) {
         userId: userInfo?.data?.id,
       })
       .then((_res) =>
-        notification.success({
-          message: "Movimentação verificada com sucesso!",
-        })
+        createToast({ status: "success", message:   "Movimentação verificada com sucesso!",})
       )
       .catch((err) => {
         setLoading(false);
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
-          return notification.error({ message: messageArr[1] });
+          return    createToast({ status: "error", message:   messageArr[1],})
         }
         setLoading(false);
-        return notification.error({
-          message: "Houve um erro ao verificar a movimentação diária",
-        });
+        return  createToast({ status: "error", message:   "Houve um erro ao verificar a movimentação diária",})
       })
       .finally(() => {
         setLoading(false);

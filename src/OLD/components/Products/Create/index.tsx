@@ -17,7 +17,6 @@ import {
   Radio,
   Select,
   Form,
-  notification,
   AutoComplete,
   Switch,
 } from "antd";
@@ -25,7 +24,7 @@ import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { Container } from "../styles";
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
@@ -52,24 +51,6 @@ const listToTree = (arr = []) => {
 
   return result;
 };
-
-// const renderTree = (arr = []) => {
-//   return arr.map((item) => {
-//     if (item.children.length > 0) {
-//       return (
-//         <Select.OptGroup key={item.id} label={item.description}>
-//           {renderTree(item.children)}
-//         </Select.OptGroup>
-//       )
-//     }
-
-//     return (
-//       <Select.Option key={item.id} value={item.id}>
-//         {item.description}
-//       </Select.Option>
-//     )
-//   })
-// }
 
 const CreateProduct = memo(function CreateProduct({ setVisible }) {
   const { push, back } = useRouter();
@@ -100,6 +81,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
   const { data: taxationGroups } = useQuery(["taxation-groups"], async () => {
     return taxationGroupsService.listTaxationGroups();
   });
+  const { createToast } = useToast();
 
   const { data: unitsData } = useQuery(
     [
@@ -115,21 +97,31 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
 
   const verifyFields = (fields) => {
     if (fields.includes("subgroupId")) {
-      return notification.warning({ message: "Informe o subgrupo" });
+      return createToast({
+        message: "Informe o subgrupo",
+        status: "warning",
+      });
     }
 
     if (fields.includes("purpose")) {
-      return notification.warning({
+      return createToast({
         message: "Informe o propósito do produto",
+        status: "warning",
       });
     }
 
     if (fields.includes("taxationGroupId")) {
-      return notification.warning({ message: "Informe o grupo de imposto" });
+      return createToast({
+        message: "Informe o grupo de imposto",
+        status: "warning",
+      });
     }
 
     if (fields.includes("icmsOrigin")) {
-      return notification.warning({ message: "Informe a origem icms" });
+      return createToast({
+        message: "Informe a origem icms",
+        status: "warning",
+      });
     }
   };
 
@@ -138,8 +130,9 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
     {
       onSuccess: async () => {
         setVisible(false);
-        return notification.success({
+        return createToast({
           message: "Produto cadastrado com sucesso!",
+          status: "success",
         });
       },
       onError: (err) => {
@@ -188,9 +181,11 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
     });
 
     if (!valid) {
-      notification.warning({
+      createToast({
         message: "Você precisa selecionar todas as opções de variação",
+        status: "warning",
       });
+
       return;
     }
 

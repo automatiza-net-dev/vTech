@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { notification, Radio, Upload } from "antd";
+import { Radio, Upload } from "antd";
 import Editor from "@/OLD/components/Editor";
 import { useRouter } from "next/router";
 import React, { useState, useCallback } from "react";
@@ -9,7 +9,7 @@ import { documentServices } from "@/OLD/services/document.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 const { Group } = Radio;
@@ -31,6 +31,8 @@ const DocumentCreate = React.memo(function DocumentCreate() {
 
   const permissions = permissionControl("documentos");
 
+  const {createToast} = useToast()
+
   const beforeUpload = (file) => {
     //doc docx
     const extension = file?.name?.split(".");
@@ -41,9 +43,8 @@ const DocumentCreate = React.memo(function DocumentCreate() {
     ) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return notification.error({
-          message: "Você só pode upar arquivos até 2MB!",
-        });
+
+        return createToast({ status: "error", message: "Você só pode upar arquivos até 2MB!" })
       }
     }
 
@@ -52,32 +53,21 @@ const DocumentCreate = React.memo(function DocumentCreate() {
 
   const submitData = useCallback(() => {
     if (!permissions?.DOC1) {
-      return notification.error({
-        message: "Ação não permitida",
-      });
+      return  createToast({ status: "error", message: "Ação não permitida" })
     }
 
     if (!(data && data.title && data.title.length > 0)) {
-      return notification.error({
-        message: "Insira um titulo",
-      });
+      return  createToast({ status: "error", message: "Insira um titulo" })
     }
     if (!(data && data.description && data.description.length > 0)) {
-      return notification.error({
-        message: "Insira uma descrição",
-      });
+      return   createToast({ status: "error", message: "Insira uma descrição" })
     }
     if (!(body && body.length > 0) && data?.type === "text") {
-      return notification.error({
-        message: "Insira o corpo do documento",
-      });
+      return createToast({ status: "error", message: "Insira o corpo do documento" })
     }
 
     if (data?.type === "import" && !file) {
-      return notification.error({
-        message:
-          "É necessário que seja adicionado um documento do tipo '.doc' ou '.docx'",
-      });
+      return createToast({ status: "error", message:  "É necessário que seja adicionado um documento do tipo '.doc' ou '.docx'" })
     }
     if (loading) return;
     setLoading(true);
@@ -90,16 +80,13 @@ const DocumentCreate = React.memo(function DocumentCreate() {
           template: body,
         })
         .then((res) => {
-          notification.success({
-            message: "Documento criado com sucesso",
-          });
+
+          createToast({ status: "success", message:  "Documento criado com sucesso" }) 
           router.back();
         })
         .catch((err) => {
           setLoading(false);
-          notification.error({
-            message: "Erro ao criar documento",
-          });
+          createToast({ status: "error", message:  "Erro ao criar documento" }) 
         });
     } else {
       const formData = new FormData();
@@ -113,16 +100,14 @@ const DocumentCreate = React.memo(function DocumentCreate() {
         .createWithDoc(formData)
         .then((res) => {
           setLoading(false);
-          notification.success({
-            message: "Documento criado com sucesso",
-          });
+        
+          createToast({ status: "success", message:  "Documento criado com sucesso" }) 
+
           router.back();
         })
         .catch((err) => {
           setLoading(false);
-          notification.error({
-            message: "Erro ao criar documento",
-          });
+          createToast({ status: "error", message:  "Erro ao criar documento" }) 
         });
     }
   }, [loading, data, body, file]);
