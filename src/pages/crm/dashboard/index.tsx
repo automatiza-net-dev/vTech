@@ -1,18 +1,9 @@
-import {
-  ChartsSection,
-  LayoutDashboard,
-  TablesSection,
-} from "@/presentation";
-import { PageWrapper } from "infinity-forge";
+import { DashboardPage, LayoutDashboard } from "@/presentation";
 
 export default function CrmDashboardPage() {
   return (
     <LayoutDashboard>
-      <PageWrapper title="Dashboard CRM">
-        <ChartsSection  />
-
-        <TablesSection  />
-      </PageWrapper>
+      <DashboardPage type="crm" />
     </LayoutDashboard>
   );
 }
