@@ -11,7 +11,7 @@ import { InputBox } from "./styles";
 
 import { places } from "@/OLD/utils/places";
 
-const Filters = React.memo(function Filters({ filters, setFilters }) {
+function Filters({ filters, setFilters }) {
   const [cities, setCities] = React.useState([]);
 
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -127,6 +127,6 @@ const Filters = React.memo(function Filters({ filters, setFilters }) {
       <hr />
     </section>
   );
-});
+}
 
 export default Filters;
