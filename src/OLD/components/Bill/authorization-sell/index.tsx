@@ -26,6 +26,8 @@ import {
 } from "./components";
 
 import * as S from "./styles";
+import { onSubmitAprroveCancel, onSubmitCancel } from "./submit-cancel";
+import { Fragment } from "react";
 
 export function AuthorizationSell(
   props: {
@@ -36,6 +38,8 @@ export function AuthorizationSell(
   const { data, isFetching } = useLoadBill(props);
 
   const hasPermissionToCancel = usePermission("VEN18");
+  const hasPermissionToCancelItems = usePermission("VEN19");
+  const hasPermissionToCancelPayments = usePermission("VEN20");
 
   const queryClient = useQueryClient();
 
@@ -49,6 +53,56 @@ export function AuthorizationSell(
     return <LoaderCircle size={30} color="#ccc" />;
   }
 
+  const schema =
+    data.cancelled === "P"
+      ? {
+          billItems: yup
+            .array()
+            .nullable()
+            .of(
+              yup
+                .object()
+                .nullable()
+                .shape({
+                  note: yup
+                    .string()
+                    .test("not", "Campo requerido", (value, context) => {
+                      if (!context.parent.id) {
+                        return true;
+                      }
+
+                      return !!value;
+                    }),
+                })
+            ),
+            billPayments: yup
+            .object()
+            .test("valid-structure", "Estrutura inválida", (value) => {
+              if (!value || typeof value !== "object") return false;
+  
+              return Object.values(value).every((payment) =>
+                yup
+                  .object()
+                  .shape({
+                    items: yup
+                      .array()
+                      .of(
+                        yup.object().shape({
+                          note: yup.string().test("not", "Campo requerido", (value, context) => {
+                            if (!context.parent.cancelled) {
+                              return true;
+                            }
+                            return !!value;
+                          }),
+                        })
+                      ),
+                  })
+                  .isValidSync(payment)
+              );
+            }),
+        }
+      : {};
+
   return (
     <Error name="AuthorizationSell">
       <S.AuthorizationSell>
@@ -56,47 +110,32 @@ export function AuthorizationSell(
 
         <div className="form_cancel">
           <FormHandler
+            debugMode
             onSucess={async (data) => {
-              const payload = {
-                cancelReason: data.cancelReason,
-                userEmail: data.userEmail,
-                userPwd: data.userPwd,
-                billId: props.id,
-                billItems: data?.billItems
-                  ?.filter((item) => item.active)
-                  .map((item) => ({
-                    ...item,
-                    quantity: Number(item.quantity || 0),
-                  })) || [],
-                billPayments: data?.billPayments?.filter((item) => !!item) || [],
-                notes: " ",
-              };
+              if (props.cancelled === "P") {
+                await onSubmitAprroveCancel({ data, props });
+              }
 
-              await api({
-                url: "bills/request-cancellation",
-                method: "post",
-                body: payload,
-              });
-
-              await queryClient.invalidateQueries({
-                queryKey: ["bills", true],
-              });
-
-              await queryClient.invalidateQueries({
-                queryKey: ["bills", false],
-              });
-
-              props.onSuccess && props?.onSuccess();
+              if (!props.cancelled) {
+                await onSubmitCancel({ data, props, queryClient });
+              }
             }}
             schema={{
               userEmail: yup.string().required("Campo requerido"),
               userPwd: yup.string().required("Campo requerido"),
+              ...schema,
             }}
             button={
-              props?.isCancelled
+              props?.isCancelled || props.cancelled === "P"
+                ? hasPermissionToCancelItems || hasPermissionToCancelPayments
+                  ? {
+                      text: "SALVAR AVALIAÇÃO",
+                    }
+                  : undefined
+                : props?.isCancelled
                 ? {
                     text: hasPermissionToCancel
-                      ? "CANCELAR"
+                      ? "SOLICITAR CANCELAMENTO"
                       : "Usuario não possui permissão para solicitar o cancelamento de vendas",
                     disabled: !hasPermissionToCancel,
                   }
@@ -106,15 +145,22 @@ export function AuthorizationSell(
             cleanFieldsOnSubmit={false}
             isStickyButtons
           >
-            {props?.isCancelled && (
-              <PermissionItem hash="VEN18">
-                <div className="row">
-                  <Input name="userEmail" label="Email" />
-                  <InputPassword label="Senha" name="userPwd" />
-                  <Input label="Motivo do cancelamento" name="cancelReason" />
-                </div>
-              </PermissionItem>
-            )}
+            {props?.isCancelled ||
+              (props.cancelled === "P" && (
+                <PermissionItem hash="VEN18">
+                  <div className="row">
+                    <Input name="userEmail" label="Email" />
+                    <InputPassword label="Senha" name="userPwd" />
+
+                    {!props.cancelled && (
+                      <Input
+                        label="Motivo do cancelamento"
+                        name="cancelReason"
+                      />
+                    )}
+                  </div>
+                </PermissionItem>
+              ))}
 
             <TableItems {...data} isCancelled={props.isCancelled} />
 
@@ -123,8 +169,8 @@ export function AuthorizationSell(
                 (payment) => payment.block === index + 1
               );
 
-              if(!paymentsList || paymentsList.length === 0) {
-                return <></>
+              if (!paymentsList || paymentsList.length === 0) {
+                return <Fragment key={index + "block"} />;
               }
 
               return (
@@ -135,6 +181,7 @@ export function AuthorizationSell(
                   <TablePayments
                     paymentsList={paymentsList}
                     isCancelled={props?.isCancelled}
+                    cancelledStatus={props.cancelled}
                   />
                 </Accordion>
               );

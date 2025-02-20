@@ -2,13 +2,14 @@ import { useTable, InputSwitch, formatNumberToCurrency } from "infinity-forge";
 import moment from "moment";
 import { useFormikContext } from "formik";
 
-import { Payment } from "@/domain";
+import { Bill, Payment } from "@/domain";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { ApproveCancelPayment } from "../table-items/approve-cancel";
 
 export function TablePayments(props: {
   paymentsList: Payment[];
   isCancelled?: boolean;
-  cancelledStatus?: "P" | "A";
+  cancelledStatus?: Bill["cancelled"];
 }) {
   const { values, setFieldValue } = useFormikContext();
   const hasPermission = useUserHasPermission("VEN20");
@@ -128,6 +129,20 @@ export function TablePayments(props: {
             },
             props: {},
             allProps: true,
+          },
+        },
+        {
+          id: "id",
+          label: "Autorização",
+          enabled: props.cancelledStatus === "P" && hasPermission,
+          Component: {
+            Element: (item: any) => {
+              if (!item.cancelled) {
+                return <></>;
+              }
+
+              return <ApproveCancelPayment  {...item} />;
+            },
           },
         },
       ],

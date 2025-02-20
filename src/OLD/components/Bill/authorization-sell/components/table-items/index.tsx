@@ -4,8 +4,12 @@ import { Bill, Product } from "@/domain";
 import { authorizationFormater } from "../../utils";
 
 import { Cancel } from "./cancel";
+import { ApproveCancel } from "./approve-cancel";
+import { usePermission } from "@/presentation";
 
 export function TableItems(props: Bill & { isCancelled?: boolean }) {
+
+    const hasPermissionToCancelItems = usePermission("VEN19");
 
   const { Table } = useTable<Product>({
     configs: { errorMessage: "Não possui items", tableData: props.items },
@@ -127,7 +131,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "id",
           label: "Autorização",
-          enabled: !props.isCancelled,
+          enabled: !!(!props.isCancelled && !props.cancelled),
           Component: {
             Element: (item) => {
               return (
@@ -146,9 +150,25 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
             Element: Cancel as any,
           },
         },
+        {
+          id: "id",
+          label: "Autorização",
+          enabled: props.cancelled === "P" && hasPermissionToCancelItems,
+          Component: {
+            Element: (item: any) => {
+
+              if(!item.cancelled) {
+                return <></>
+              }
+
+              return <ApproveCancel {...item} />
+            },
+          },
+        }
       ],
     },
   });
 
   return Table;
 }
+

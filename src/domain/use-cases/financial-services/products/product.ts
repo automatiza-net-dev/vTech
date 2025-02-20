@@ -35,6 +35,7 @@ export type Variation = {
 
 export type Product = {
   id: string;
+  cancelled?: "P" | "S" | "N" | null;
   approved?: boolean;
   approvalDate?: string;
   courtesy_approved_at?: string;
