@@ -25,7 +25,6 @@ export const Profile = styled("div")`
 
     h1 {
       color: ${(props) => props.theme.darkColor};
-      font-size: 32px;
       font-weight: 700;
       text-transform: capitalize;
       text-align: left;

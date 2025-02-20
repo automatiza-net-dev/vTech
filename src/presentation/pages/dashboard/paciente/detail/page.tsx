@@ -90,6 +90,7 @@ export function PacientePage() {
       <ProfileInfos patient={data} />
       
       <ActionsPatient />
+      
       <Tab tabs={tabs} />
     </S.Paciente>
   );
