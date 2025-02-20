@@ -115,12 +115,16 @@ export function AuthorizationSell(
               </PermissionItem>
             )}
 
-            <TableItems {...data} isCancelled={props.isCancelled}/>
+            <TableItems {...data} isCancelled={props.isCancelled} />
 
             {Array.from({ length: maxBlock }).map((_, index) => {
               const paymentsList = data.payments.filter(
                 (payment) => payment.block === index + 1
               );
+
+              if(!paymentsList || paymentsList.length === 0) {
+                return <></>
+              }
 
               return (
                 <Accordion
@@ -137,23 +141,25 @@ export function AuthorizationSell(
           </FormHandler>
         </div>
 
-        {data && !props.isCancelled && (
-          <AuthorizationPaymentForm
-            auth={"VEN16"}
-            bill={data}
-            onSuccess={async () => {
-              await queryClient.invalidateQueries({
-                queryKey: ["RemoteLoadBill", false],
-              });
+        <div className="authorization_form">
+          {data && !props.isCancelled && (
+            <AuthorizationPaymentForm
+              auth={"VEN16"}
+              bill={data}
+              onSuccess={async () => {
+                await queryClient.invalidateQueries({
+                  queryKey: ["RemoteLoadBill", false],
+                });
 
-              await queryClient.invalidateQueries({
-                queryKey: ["RemoteLoadBill", true],
-              });
+                await queryClient.invalidateQueries({
+                  queryKey: ["RemoteLoadBill", true],
+                });
 
-              props.onSuccess && props?.onSuccess();
-            }}
-          />
-        )}
+                props.onSuccess && props?.onSuccess();
+              }}
+            />
+          )}
+        </div>
       </S.AuthorizationSell>
     </Error>
   );

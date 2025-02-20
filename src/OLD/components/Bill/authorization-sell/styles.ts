@@ -76,7 +76,8 @@ export const AuthorizationSell = styled.div`
     }
   }
 
-  form {
+  .authorization_form {
+    form {
     margin: 0 auto;
 
     button {
@@ -119,4 +120,7 @@ export const AuthorizationSell = styled.div`
       }
     }
   }
+  }
+
+
 `;
