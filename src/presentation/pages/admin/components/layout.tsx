@@ -36,11 +36,6 @@ function LayoutPage({ children }) {
       value: companie.id,
     })),
     onChangeWorkSpace: async (value: any) => {
-      if (
-        value.workspace !==
-        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
-          ?.id
-      ) {
         await container
           .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
           .swap({ unitId: value?.workspace, dashboard: true });
@@ -49,7 +44,6 @@ function LayoutPage({ children }) {
           pathname: "/dashboard",
           query: { reload: "true" },
         });
-      }
     },
   };
 
