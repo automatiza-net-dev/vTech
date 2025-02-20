@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { container, TypesAutomatiza } from "@/container";
 
 import moment from "moment";
-import { useAuthAdmin, Button, useToast, api } from "infinity-forge";
+import { useAuthAdmin, Button, useToast, api, cookies } from "infinity-forge";
 
 import { sessionService } from "@/OLD/services/session.service";
 
@@ -65,9 +65,7 @@ export function SignIn() {
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
           })) as any);
 
-        await container.get<Storage>(TypesAutomatiza.storage).set("token", {
-          value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
-        });
+        await cookies.set('token', { value: getBusinessUnits?.data?.token || loginResponse?.data?.token })
 
         if (loginResponse?.message) {
           return createToast({
@@ -76,12 +74,8 @@ export function SignIn() {
           });
         }
 
-        router.push(
-          `/dashboard?fromDate=${moment().format(
-            "YYYY-MM-DD"
-          )}&toDate=${moment().format("YYYY-MM-DD")}`
-        );
-        loadUser({ roleName: "user" });
+        await loadUser({ roleName: "user" });
+
       } catch (err: any) {
         createToast({
           status: "error",
