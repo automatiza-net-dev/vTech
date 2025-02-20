@@ -11,8 +11,12 @@ export const DreReport = styled("section")`
 
   form > div {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 20px;
+
+    .form-button  {
+      margin-top: 25px;
+    }
 
     .conntent_form_infinity_forge {
       > div {
