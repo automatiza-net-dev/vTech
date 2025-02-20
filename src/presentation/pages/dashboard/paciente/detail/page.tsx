@@ -20,7 +20,7 @@ import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/Hospit
 import * as S from "./styles";
 
 export function PacientePage() {
-  const { data, isFetching } = useLoadPatient();
+  const { data, isLoading } = useLoadPatient();
 
   const queryClient = useQueryClient();
 
@@ -28,7 +28,7 @@ export function PacientePage() {
     queryClient.invalidateQueries(["RemotePatient"]);
   }, []);
 
-  if (isFetching || !data) {
+  if (isLoading || !data) {
     return <>Carregando...</>;
   }
 

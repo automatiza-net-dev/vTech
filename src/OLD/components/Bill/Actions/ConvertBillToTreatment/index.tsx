@@ -7,7 +7,7 @@ import { billService } from "@/OLD/services/bills.service";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { useToast } from "infinity-forge";
 
-const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
+export default function ConvertBillToTreatment({
   bill,
   setReload,
 }) {
@@ -52,6 +52,5 @@ const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
       style={{ cursor: "pointer" }}
     />
   );
-});
+}
 
-export default ConvertBillToTreatment;

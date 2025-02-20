@@ -72,7 +72,7 @@ export default function Bills() {
           />
         ),
         actions: (
-          <BillActions bill={bill} cashiers={cashiers} client={bill?.client} />
+          <BillActions bill={bill} cashiers={cashiers} client={bill?.client} setReload={setReload} />
         ),
       };
     });

@@ -105,7 +105,7 @@ export function AuthorizationSell(
             cleanFieldsOnSubmit={false}
             isStickyButtons
           >
-            {!props?.isCancelled && (
+            {props?.isCancelled && (
               <PermissionItem hash="VEN18">
                 <div className="row">
                   <Input name="userEmail" label="Email" />
@@ -149,6 +149,8 @@ export function AuthorizationSell(
               await queryClient.invalidateQueries({
                 queryKey: ["RemoteLoadBill", true],
               });
+
+              props.onSuccess && props?.onSuccess();
             }}
           />
         )}

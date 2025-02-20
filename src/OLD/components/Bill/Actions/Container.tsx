@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
@@ -12,12 +11,11 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { Popconfirm, Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
-import { PageWrapper, useToast } from "infinity-forge";
+import { Modal, PageWrapper, useToast } from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
@@ -33,7 +31,7 @@ const Container = styled.div`
   }
 `;
 
-function BillActions({ bill, client, setReload = false, cashiers }) {
+function BillActions({ bill, client, setReload, cashiers }: any) {
   const [filters, setFilters] = React.useState({});
   const [selectedId, setSelectedId] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
@@ -190,32 +188,36 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
         />
       )}
 
-      {detailsVisible && (
-        <Modal
-          visible={detailsVisible}
-          footer={null}
-          width={1400}
-          onCancel={() => {
-            setSelectedId(false);
-            setDetailsVisible(false);
-          }}
-        >
-          <PageWrapper title="Detalhes da Venda">
-            <Details billId={selectedId} setVisible={setDetailsVisible} />
-          </PageWrapper>
-        </Modal>
-      )}
+      <Modal
+        open={detailsVisible}
+        styles={{ maxWidth: 1400, width: "100%" }}
+        onClose={() => {
+          setSelectedId(false);
+          setDetailsVisible(false);
+        }}
+      >
+        <PageWrapper title="Detalhes da Venda">
+          <Details billId={selectedId} setVisible={setDetailsVisible} />
+        </PageWrapper>
+      </Modal>
 
-      {paymentsVisible && (
-        <Modal
-          width={1500}
-          visible={paymentsVisible}
-          footer={null}
-          onCancel={() => setPaymentsVisible(false)}
-        >
-          <AddBillPayment billId={bill?.id} setVisible={setPaymentsVisible} />
-        </Modal>
-      )}
+      <Modal
+        styles={{ maxWidth: 1500, width: "100%" }}
+        open={paymentsVisible}
+        onClose={() => {
+          setPaymentsVisible(false);
+          queryClient.invalidateQueries(["RemotePatient"]);
+        }}
+      >
+        <AddBillPayment
+          billId={bill?.id}
+          setReloadBill={setReload}
+          setVisible={(value) => {
+            setPaymentsVisible(value);
+            queryClient.invalidateQueries(["RemotePatient"]);
+          }}
+        />
+      </Modal>
     </Container>
   );
 }

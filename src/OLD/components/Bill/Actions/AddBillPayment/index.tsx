@@ -34,7 +34,7 @@ import { Select, FormHandler, useToast, BadRequestError } from "infinity-forge";
 import { Button } from "infinity-forge";
 import { AxiosError } from "axios";
 
-const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
+function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
   const [reload, setReload] = useState(false);
   const [filters, setFilters] = useState({ active: true });
   const [cashierFilters, setCashierFilters] = useState({
@@ -162,6 +162,11 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       createToast({ status: "error", message: "Há valores pendentes" });
       return;
     }
+    queryClient.invalidateQueries(["bills"]);
+    queryClient.invalidateQueries(["bills", false]);
+    queryClient.invalidateQueries(["bills", true]);
+    setReloadBill & setReloadBill(s => !s)
+    queryClient.invalidateQueries(["paymentsPreview"]);
 
     closePayment();
 
@@ -236,7 +241,9 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
     mutate(paylaod, {
       onSuccess: () => {
         queryClient.invalidateQueries(["bills"]);
-        queryClient.invalidateQueries(["RemotePatient"]);
+        queryClient.invalidateQueries(["bills", false]);
+        queryClient.invalidateQueries(["bills", true]);
+        setReloadBill & setReloadBill(s => !s)
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
           expirationDate: moment(),
@@ -276,8 +283,10 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
             message: "Não existe caixa diário aberto",
           });
         }
-
         queryClient.invalidateQueries(["bills"]);
+        setReloadBill & setReloadBill(s => !s)
+        queryClient.invalidateQueries(["bills", false]);
+        queryClient.invalidateQueries(["bills", true]);
       },
     });
   }, [formData, billId]);
@@ -408,6 +417,6 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
       </div>
     </Container>
   );
-});
+}
 
 export default AddBillPayment;

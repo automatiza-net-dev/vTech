@@ -101,8 +101,6 @@ export function AuthorizationPaymentForm({
 
   return (
     <div style={{ maxWidth: 520, margin: "0 auto" }}>
-      
-   
     <FormHandler
       schema={{
         email: yup.string().required("E-mail é obrigatório"),
@@ -122,6 +120,7 @@ export function AuthorizationPaymentForm({
           }),
         },
       ]}
+      isStickyButtons
     >
       <div className="row">
         <Input name="email" label="Email Usuário" />
