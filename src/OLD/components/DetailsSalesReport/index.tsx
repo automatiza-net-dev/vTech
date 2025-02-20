@@ -4,7 +4,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Button } from "antd";
 import Filters from "./Filters";
-import { api, PageWrapper } from "infinity-forge";
+import { api, PageWrapper, useToast } from "infinity-forge";
 
 import * as XLSX from "xlsx/xlsx.mjs";
 import moment from "moment";
@@ -16,6 +16,7 @@ function DetailsSalesReport() {
   const [filters, setFilters] = React.useState<any>({});
 
   const { clinic } = useProfile();
+  const { createToast } = useToast();
 
   React.useEffect(() => {
     setFilters({ ...filters, economicGroups: [clinic?.economicGroup?.id] });
@@ -24,6 +25,19 @@ function DetailsSalesReport() {
   const handleExport = async () => {
     const keys = Object.keys(filters);
     let newObj = { ...filters };
+
+    if (!keys.includes("fromDate")) {
+      createToast({ status: "error", message: "Data inicial é obrigatória" });
+
+      return;
+    }
+
+    if (!keys.includes("toDate")) {
+      createToast({ status: "error", message: "Data final é obrigatória" });
+
+      return;
+    }
+
 
     if (keys.includes("fromDate")) {
       newObj = {
