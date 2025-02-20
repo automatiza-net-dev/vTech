@@ -2,14 +2,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 
-import { container, TypesAutomatiza } from "@/container";
-
-import moment from "moment";
 import { useAuthAdmin, Button, useToast, api, cookies } from "infinity-forge";
 
 import { sessionService } from "@/OLD/services/session.service";
-
-import { Storage } from "@/infra";
 
 import { Container } from "./styles";
 
