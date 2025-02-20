@@ -1,4 +1,4 @@
-import { FormHandler, Input, Textarea, useToast } from "infinity-forge";
+import { FormHandler, Input, InputPassword, Textarea, useToast } from "infinity-forge";
 
 import { Bill, Budget } from "@/domain";
 import { RemoteBills, RemoteBudget } from "@/data";
@@ -125,7 +125,7 @@ export function AuthorizationPaymentForm({
       <div className="row">
         <Input name="email" label="Email Usuário" />
 
-        <Input label="Senha" name="password" type="password" />
+        <InputPassword label="Senha" name="password"  />
       </div>
 
       <Textarea label="Descrição" name="description" />

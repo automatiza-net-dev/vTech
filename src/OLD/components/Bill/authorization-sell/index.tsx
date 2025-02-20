@@ -5,6 +5,7 @@ import {
   Accordion,
   FormHandler,
   LoaderCircle,
+  InputPassword,
 } from "infinity-forge";
 import * as yup from "yup";
 import { useQueryClient } from "react-query";
@@ -61,13 +62,13 @@ export function AuthorizationSell(
                 userEmail: data.userEmail,
                 userPwd: data.userPwd,
                 billId: props.id,
-                billItems: data.billItems
+                billItems: data?.billItems
                   ?.filter((item) => item.active)
                   .map((item) => ({
                     ...item,
                     quantity: Number(item.quantity || 0),
-                  })),
-                billPayments: data.billPayments?.filter((item) => !!item),
+                  })) || [],
+                billPayments: data?.billPayments?.filter((item) => !!item) || [],
                 notes: " ",
               };
 
@@ -109,7 +110,7 @@ export function AuthorizationSell(
               <PermissionItem hash="VEN18">
                 <div className="row">
                   <Input name="userEmail" label="Email" />
-                  <Input label="Senha" name="userPwd" />
+                  <InputPassword label="Senha" name="userPwd" />
                   <Input label="Motivo do cancelamento" name="cancelReason" />
                 </div>
               </PermissionItem>
