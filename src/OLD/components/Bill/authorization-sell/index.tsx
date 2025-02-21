@@ -57,38 +57,35 @@ export function AuthorizationSell(
     data.cancelled === "P"
       ? {
           billItems: yup
-            .object().nullable()
-            .test(
-              "billItems",
-              "Validação de billItems",
-              function (value) {
-                if(!value) {
-                  return true
-                }
-
-                for (const key of Object.keys(value)) {
-                  const item = value[key];
-
-                  if (!item.note) {
-                    return this.createError({
-                      path: `billItems.${key}.note`,
-                      message:
-                        "Campo requerido",
-                    });
-                  }
-                }
-
+            .object()
+            .nullable()
+            .test("billItems", "Validação de billItems", function (value) {
+              if (!value) {
                 return true;
               }
-            ),
+
+              for (const key of Object.keys(value)) {
+                const item = value[key];
+
+                if (!item.note) {
+                  return this.createError({
+                    path: `billItems.${key}.note`,
+                    message: "Campo requerido",
+                  });
+                }
+              }
+
+              return true;
+            }),
           billPayments: yup
-            .object().nullable()
+            .object()
+            .nullable()
             .test(
               "billPayments",
               "Validação de billPayments",
               function (value) {
-                if(!value) {
-                  return true
+                if (!value) {
+                  return true;
                 }
 
                 for (const key of Object.keys(value)) {
@@ -97,8 +94,7 @@ export function AuthorizationSell(
                   if (!item.note) {
                     return this.createError({
                       path: `billPayments.${key}.note`,
-                      message:
-                        "Campo requerido",
+                      message: "Campo requerido",
                     });
                   }
                 }
@@ -110,6 +106,8 @@ export function AuthorizationSell(
       : {};
 
   const maxBlocks = Array.from({ length: maxBlock });
+
+  console.log(props?.isCancelled || props?.cancelled === "P", "?");
 
   return (
     <Error name="AuthorizationSell">
@@ -133,7 +131,7 @@ export function AuthorizationSell(
               ...schema,
             }}
             button={
-              props?.isCancelled || props.cancelled === "P"
+              props?.isCancelled && props?.cancelled === "P"
                 ? hasPermissionToCancelItems || hasPermissionToCancelPayments
                   ? {
                       text: "SALVAR AVALIAÇÃO",
