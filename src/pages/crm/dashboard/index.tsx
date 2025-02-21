@@ -1,4 +1,7 @@
-import { DashboardPage, LayoutDashboard } from "@/presentation";
+import {
+  LayoutDashboard,
+  DashboardPage,
+} from "@/presentation";
 
 export default function CrmDashboardPage() {
   return (

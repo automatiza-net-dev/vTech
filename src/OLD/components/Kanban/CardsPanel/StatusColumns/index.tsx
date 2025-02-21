@@ -1,5 +1,5 @@
-// @ts-nocheck
-import { memo, useState, useEffect } from "react";
+//@ts-nocheck
+import { useState, useEffect } from "react";
 
 import { useRouter } from "next/router";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -301,19 +301,19 @@ function StatusColumns({
                                 <div>Anotações: {act?.description}</div>
                               </div>
                             }
-                          >
-                            <BsFillClockFill
-                              color={detectClockColor(
-                                act?.executionDate,
-                                act?.duration
-                              )}
-                              onClick={() => {
-                                setSelectedOpportunity(op);
-                                setSelectedActivity(act);
-                                setUpdateActVisible(true);
-                              }}
-                            />
-                          </Tooltip>
+                          ></Tooltip>
+
+                          <BsFillClockFill
+                            color={detectClockColor(
+                              act?.executionDate,
+                              act?.duration
+                            )}
+                            onClick={() => {
+                              setSelectedOpportunity(op);
+                              setSelectedActivity(act);
+                              setUpdateActVisible(true);
+                            }}
+                          />
                         </div>
                       );
                     }
