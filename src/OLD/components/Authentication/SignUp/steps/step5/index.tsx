@@ -1,110 +1,62 @@
-import React, { useCallback, useState } from "react";
+import { api, FormHandler, InputPassword, useToast } from "infinity-forge";
 
-import { Button, useToast } from "infinity-forge";
+import * as yup from "yup";
 
-import api from "@/OLD/services";
-
-export const signUpUser = [
-  {
-    label: "Senha",
-    id: "password",
-    type: "password",
-  },
-  {
-    label: "Confirmar senha",
-    id: "password_confirmation",
-    type: "password",
-  },
-];
+import * as S from "./styles"
 
 export function Step5(props) {
-  const [data, setData] = useState<{
-    name?: string;
-    email?: string;
-    phone?: string;
-    password?: string;
-    password_confirmation?: string;
-  }>({
-    ...props.data,
-    phone: props.data.phone.replace(/[^0-9]/g, ""),
-  });
-  const [loading, setLoading] = useState(false);
 
   const { createToast } = useToast();
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      let errorCount = 0;
-      e.preventDefault();
+  console.log({ props })
 
-      Object.keys(data).forEach((key) => {
-        if (data[key] === "") {
-          errorCount++;
-        }
-      });
+  async function handleSubmit(data) {
+    const payload = {
+      ...props.data,
+      ...data,
+      systemName: process.env.clientName,
+      phone: props.data.phone.replace(/[^0-9]/g, ""),
+    };
 
-      if (errorCount === 0) {
-        if (data.password === data.password_confirmation) {
-          setLoading(true);
-          try {
-            await api.post(`/auth/register`, {
-              ...data,
-              email: props.data?.email,
-              systemName: process.env.clientName,
-            });
+    await api({
+      method: "post",
+      url: "auth/register",
+      body: payload,
+    });
 
-            props.setData({
-              ...props.data,
-              singnUpForm: data,
-              success: true,
-            });
-            props.setStep((prv) => prv + 1);
-          } catch (err: any) {
-            createToast({
-              status: "error",
-              message:
-                err?.response?.status === 422
-                  ? "Email ou documento já cadastrado"
-                  : "Erro ao criar conta",
-            });
-          }
-          setLoading(false);
-        } else {
-          createToast({ status: "error", message: "Senhas não conferem" });
-        }
-      } else {
-        createToast({
-          status: "error",
-          message: "Por favor, preencha todos os campos",
-        });
-      }
-    },
-    [data, props]
-  );
+    props.setData({
+      ...props.data,
+      singnUpForm: data,
+      success: true,
+    });
+
+    props.setStep((prv) => prv + 1);
+  }
 
   return (
-    <div>
+    <S.Step5>
       <h3>
         Ótimo! agora para concluir seu cadastro preencha os campos abaixo.
       </h3>
-      <form
-        className={"uk-flex uk-flex-column"}
-        onSubmit={(e) => handleSubmit(e)}
+
+      <FormHandler
+        button={{ text: "Cadastrar" }}
+        isStickyButtons
+        cleanFieldsOnSubmit={false}
+        schema={{
+          password: yup.string().required("Campo requerido"),
+          password_confirmation: yup
+          .string()
+          .oneOf([yup.ref("password")], "As senhas devem ser iguais")
+          .required("Campo requerido"),
+        }}
+        onSucess={async (data) => {
+          handleSubmit(data);
+        }}
       >
-        {signUpUser.map((item) => (
-          <div key={item.id} className="uk-flex uk-flex-column">
-            <label htmlFor={item.id}>{item.label}</label>
-            <input
-              className="uk-input uk-width-1-2 uk-margin-bottom"
-              type={item.type}
-              id={item.id}
-              onChange={(e) => setData({ ...data, [item.id]: e.target.value })}
-              required={true}
-            />
-          </div>
-        ))}
-        <Button text={loading ? "Carregando..." : "Cadastrar"} type="submit" />
-      </form>
-    </div>
+        <InputPassword name="password" label="Senha" />
+        <InputPassword name="password_confirmation" label="Confirmar senha" />
+      </FormHandler>
+    </S.Step5>
   );
 }
