@@ -18,7 +18,7 @@ export async function onSubmitCancel({ data, queryClient, props }) {
   };
 
   await api({
-    url: "bills/review-cancellation",
+    url: "bills/request-cancellation",
     method: "post",
     body: payload,
   });
@@ -67,15 +67,15 @@ export async function onSubmitAprroveCancel({ data, props }) {
 
   const payload = {
     ...data,
-    billItems,
-    billPayments,
-    userEmail: data.userEmail,
-    userPwd: data.userPwd,
+    billItems: billItems || [],
+    billPayments: billPayments || [],
+    email: data.userEmail,
+    password: data.userPwd,
     billId: props.id,
   };
 
   await api({
-    url: "bills/request-cancellation",
+    url: "bills/review-cancellation",
     method: "post",
     body: payload,
   });

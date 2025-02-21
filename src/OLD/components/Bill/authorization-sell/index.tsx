@@ -116,6 +116,7 @@ export function AuthorizationSell(
 
         <div className="form_cancel">
           <FormHandler
+            debugMode
             onSucess={async (data) => {
               if (props.cancelled === "P") {
                 await onSubmitAprroveCancel({ data, props });
@@ -150,22 +151,18 @@ export function AuthorizationSell(
             cleanFieldsOnSubmit={false}
             isStickyButtons
           >
-            {props?.isCancelled ||
-              (props.cancelled === "P" && (
-                <PermissionItem hash="VEN18">
-                  <div className="row">
-                    <Input name="userEmail" label="Email" />
-                    <InputPassword label="Senha" name="userPwd" />
+            {(props?.isCancelled || props.cancelled === "P") && (
+              <PermissionItem hash="VEN18">
+                <div className="row">
+                  <Input name="userEmail" label="Email" />
+                  <InputPassword label="Senha" name="userPwd" />
 
-                    {!props.cancelled && (
-                      <Input
-                        label="Motivo do cancelamento"
-                        name="cancelReason"
-                      />
-                    )}
-                  </div>
-                </PermissionItem>
-              ))}
+                  {!props.cancelled && (
+                    <Input label="Motivo do cancelamento" name="cancelReason" />
+                  )}
+                </div>
+              </PermissionItem>
+            )}
 
             <TableItems {...data} isCancelled={props.isCancelled} />
 

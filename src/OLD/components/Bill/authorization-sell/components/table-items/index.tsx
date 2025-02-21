@@ -122,6 +122,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "courtesy",
           label: "Pendência",
+          enabled:  !!props.cancelled,
           Component: {
             Element: (item) => (
               <p className="font-14-regular">
@@ -145,9 +146,14 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           },
         },
         {
+          id: "cancelledQuantity",
+          label: "Qtd Canc.",
+          enabled: !!props.isCancelled && (props.cancelled === "P" || props.cancelled === "A"),
+        },
+        {
           id: "custom" as any,
           label: "Cancelar",
-          enabled: !!props.isCancelled,
+          enabled: !!props.isCancelled && !props.cancelled,
           Component: {
             Element: Cancel as any,
           },
