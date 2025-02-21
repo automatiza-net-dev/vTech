@@ -11,8 +11,10 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
     const hasPermissionToCancelItems = usePermission("VEN19");
 
+  console.log(props.items)
+
   const { Table } = useTable<Product>({
-    configs: { errorMessage: "Não possui items", tableData: props.items },
+    configs: { tableKeyItem: "id", errorMessage: "Não possui items", tableData: props.items },
     columnsConfiguration: {
       columns: [
         { id: "quantity", label: "Qtd." },
@@ -143,7 +145,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           },
         },
         {
-          id: "id",
+          id: "custom" as any,
           label: "Cancelar",
           enabled: !!props.isCancelled,
           Component: {
@@ -151,7 +153,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           },
         },
         {
-          id: "id",
+          id: "custom2" as any,
           label: "Autorização",
           enabled: props.cancelled === "P" && hasPermissionToCancelItems,
           Component: {

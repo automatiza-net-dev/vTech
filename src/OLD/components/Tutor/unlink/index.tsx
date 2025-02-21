@@ -39,7 +39,7 @@ export function Unlink({ patientId, tutorId, customSubmit }: IUnlinkProps) {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         id="Capa_1"
-        enable-background="new 0 0 512 512"
+        enableBackground="new 0 0 512 512"
         height="auto"
         viewBox="0 0 512 512"
         width="100%"

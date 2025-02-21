@@ -3,8 +3,7 @@ import moment from "moment";
 import { useFormikContext } from "formik";
 
 import { Bill, Payment } from "@/domain";
-import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { ApproveCancelPayment } from "../table-items/approve-cancel";
+import { ApproveCancelPayment } from "./approve-cancel-payment";
 
 export function TablePayments(props: {
   paymentsList: Payment[];
@@ -12,12 +11,13 @@ export function TablePayments(props: {
   cancelledStatus?: Bill["cancelled"];
 }) {
   const { values, setFieldValue } = useFormikContext();
-  const hasPermission = useUserHasPermission("VEN20");
+  // const hasPermission = useUserHasPermission("VEN20");
 
   const { Table } = useTable({
     configs: {
       errorMessage: "Não possui pagamentos",
       tableData: props.paymentsList,
+      tableKeyItem: "id", 
     },
     columnsConfiguration: {
       columns: [
@@ -110,12 +110,11 @@ export function TablePayments(props: {
           },
         },
         {
-          id: "id",
+          id: "custom1" as any,
           label: "Cancelar",
           enabled:
             props.isCancelled === true &&
-            props?.cancelledStatus === "P" &&
-            hasPermission,
+            props?.cancelledStatus === "P" ,
           Component: {
             Element: (payment) => {
               return (
@@ -132,17 +131,11 @@ export function TablePayments(props: {
           },
         },
         {
-          id: "id",
+          id: "custom2" as any,
           label: "Autorização",
-          enabled: props.cancelledStatus === "P" && hasPermission,
+          enabled: props.cancelledStatus === "P" ,
           Component: {
-            Element: (item: any) => {
-              if (!item.cancelled) {
-                return <></>;
-              }
-
-              return <ApproveCancelPayment  {...item} />;
-            },
+            Element: ApproveCancelPayment as any,
           },
         },
       ],

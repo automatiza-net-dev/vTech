@@ -54,7 +54,7 @@ export function GerarDocumentoVenda({
             button
           ) : (
             <svg
-              enable-background="new 0 0 512 512"
+              enableBackground="new 0 0 512 512"
               height="22"
               viewBox="0 0 512 512"
               width="22"

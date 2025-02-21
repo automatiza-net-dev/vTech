@@ -1,17 +1,18 @@
+import { Payment } from "@/domain";
 import { Input, InputRadio } from "infinity-forge";
-
-import { Product } from "@/domain";
 
 import * as S from "./styles";
 
-export function ApproveCancel(item: Product & { index: number }) {
+export function ApproveCancelPayment(item: Payment & { index: number }) {
+  const baseName = `billPayments.${item.id}`;
 
-  const baseName = `billItems.${item.id}`;
-
+  if(!item.cancelled) {
+    return <></>
+  }
 
   return (
     <S.Cancel>
- <InputRadio
+      <InputRadio
         name={`${baseName}.cancelled`}
         options={[
           { label: "Sim", value: "Sim" },
@@ -23,4 +24,3 @@ export function ApproveCancel(item: Product & { index: number }) {
     </S.Cancel>
   );
 }
-

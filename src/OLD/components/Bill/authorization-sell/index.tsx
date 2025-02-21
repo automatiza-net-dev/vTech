@@ -57,51 +57,59 @@ export function AuthorizationSell(
     data.cancelled === "P"
       ? {
           billItems: yup
-            .array()
-            .nullable()
-            .of(
-              yup
-                .object()
-                .nullable()
-                .shape({
-                  note: yup
-                    .string()
-                    .test("not", "Campo requerido", (value, context) => {
-                      if (!context.parent.id) {
-                        return true;
-                      }
+            .object().nullable()
+            .test(
+              "billItems",
+              "Validação de billItems",
+              function (value) {
+                if(!value) {
+                  return true
+                }
 
-                      return !!value;
-                    }),
-                })
+                for (const key of Object.keys(value)) {
+                  const item = value[key];
+
+                  if (!item.note) {
+                    return this.createError({
+                      path: `billItems.${key}.note`,
+                      message:
+                        "Campo requerido",
+                    });
+                  }
+                }
+
+                return true;
+              }
             ),
-            billPayments: yup
-            .object()
-            .test("valid-structure", "Estrutura inválida", (value) => {
-              if (!value || typeof value !== "object") return false;
-  
-              return Object.values(value).every((payment) =>
-                yup
-                  .object()
-                  .shape({
-                    items: yup
-                      .array()
-                      .of(
-                        yup.object().shape({
-                          note: yup.string().test("not", "Campo requerido", (value, context) => {
-                            if (!context.parent.cancelled) {
-                              return true;
-                            }
-                            return !!value;
-                          }),
-                        })
-                      ),
-                  })
-                  .isValidSync(payment)
-              );
-            }),
+          billPayments: yup
+            .object().nullable()
+            .test(
+              "billPayments",
+              "Validação de billPayments",
+              function (value) {
+                if(!value) {
+                  return true
+                }
+
+                for (const key of Object.keys(value)) {
+                  const item = value[key];
+
+                  if (!item.note) {
+                    return this.createError({
+                      path: `billPayments.${key}.note`,
+                      message:
+                        "Campo requerido",
+                    });
+                  }
+                }
+
+                return true;
+              }
+            ),
         }
       : {};
+
+  const maxBlocks = Array.from({ length: maxBlock });
 
   return (
     <Error name="AuthorizationSell">
@@ -110,7 +118,6 @@ export function AuthorizationSell(
 
         <div className="form_cancel">
           <FormHandler
-            debugMode
             onSucess={async (data) => {
               if (props.cancelled === "P") {
                 await onSubmitAprroveCancel({ data, props });
@@ -164,7 +171,7 @@ export function AuthorizationSell(
 
             <TableItems {...data} isCancelled={props.isCancelled} />
 
-            {Array.from({ length: maxBlock }).map((_, index) => {
+            {maxBlocks.map((_, index) => {
               const paymentsList = data.payments.filter(
                 (payment) => payment.block === index + 1
               );
@@ -175,7 +182,12 @@ export function AuthorizationSell(
 
               return (
                 <Accordion
-                  key={index + "block"}
+                  key={
+                    paymentsList.reduce(
+                      (reducer, item) => reducer + item.id,
+                      ""
+                    ) || ""
+                  }
                   Header={() => <PaymentHeader paymentsList={paymentsList} />}
                 >
                   <TablePayments
