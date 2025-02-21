@@ -88,6 +88,7 @@ export type ProductCart = {
   discountValue: number;
   budgetItemId?: string;
   billItemId?: string;
+  approved?: boolean;
   productVariationId: Variation["id"];
   saleValue: BusinessUnitProduct["price"];
   unitaryValue: BusinessUnitProduct["price"];

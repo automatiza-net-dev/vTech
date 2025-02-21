@@ -42,6 +42,7 @@ export function formatProductsApiToCartItems({
           id: item?.id,
           billItemId: item?.id,
           budgetItemId: item?.id,
+          approved: item?.approved,
           exceedDiscount: item?.max_discount,
           total: item?.total_value,
           quantity: item?.quantity,

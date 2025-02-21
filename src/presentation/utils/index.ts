@@ -6,3 +6,4 @@ export * from "./use-query";
 export * from "./use-resize";
 export * from "./is-third-party-user";
 export * from "./transform-to-negative-number"
+export * from "./transform-string-to-number"

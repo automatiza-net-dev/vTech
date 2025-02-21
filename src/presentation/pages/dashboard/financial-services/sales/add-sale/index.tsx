@@ -118,7 +118,7 @@ export function AddSale({
 
   async function handleSubmit(data, _, initialValues) {
     try {
-      const formatItemsCart = formatCart(data.cart, data?.maxDiscount);
+      const formatItemsCart = formatCart(data.cart, initialData.cart);
 
       const payload = {
         ...data,

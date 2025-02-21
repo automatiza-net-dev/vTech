@@ -18,6 +18,7 @@ export type Cart = {
   courtesy_approved_at?: Product["courtesy_approved_at"];
   variations: {
     id: string;
+    approved?: boolean;
     billItemId?:  Bill["items"][0]["id"];
     budgetItemId?: Budget["items"][0]["id"];
     exceedDiscount?: boolean;

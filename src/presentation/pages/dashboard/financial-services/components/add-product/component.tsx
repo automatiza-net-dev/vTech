@@ -2,7 +2,7 @@ import { useFormikContext } from "formik";
 import { Icon, Input, useAuthAdmin, InputCurrency } from "infinity-forge";
 
 import { DiscountPercentage, SelectProduct, Total } from "./components";
-import { AuthorizationStatusProduct } from "@/presentation";
+import { AuthorizationStatusProduct, transformStringToNumber } from "@/presentation";
 
 import { Cart } from "./interfaces";
 
@@ -19,8 +19,6 @@ export function AddProduct() {
 
   const cart = values["cart"];
   const isPossibleChangePricesProducs = user?.unit?.unitConfig?.alter_prices;
-
-  console.log(values["cart"]);
 
   function handleInputChange({
     value,
@@ -192,19 +190,11 @@ export function AddProduct() {
                               : (value as string),
                         });
 
-                        function transformarStringParaNumero(str) {
-                          if(!str) {
-                            return 0
-                          }
-
-                          return parseFloat(str.replace(',', '.'));
-                        }
-
                         if (
                           !variation.courtesy &&
                           variation?.discountValue &&
-                          transformarStringParaNumero(variation?.discountValue) > 0 &&
-                          transformarStringParaNumero(value) >=
+                          transformStringToNumber(variation?.discountValue) > 0 &&
+                          transformStringToNumber(value as any) >=
                             (variation.maximum_discount_percentage / 100) *
                               variation.saleValue
                         ) {
