@@ -8,7 +8,7 @@ function verifyIsApproved(
   initialCartItem?: Cart["variations"][0]
 ) {
   if (!initialCartItem) {
-    return undefined;
+    return false;
   }
 
   if (transformStringToNumber(cartItem.discountValue) >  transformStringToNumber(initialCartItem.discountValue)) {
