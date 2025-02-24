@@ -74,7 +74,7 @@ export const useShowFinance = (ids, reload, search = true) => {
 
     setLoading(true);
     financesService
-      .getAllFinances({ ids: ids })
+      .getAllFinances({ ids: Array.isArray(ids) ? ids : [ids] })
       .then((res) => setFinances(res.data))
       .catch((_err) => setLoading(false))
       .finally(() => setLoading(false));

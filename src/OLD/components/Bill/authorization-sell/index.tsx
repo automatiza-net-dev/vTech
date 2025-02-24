@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import {
   api,
   Error,
@@ -24,10 +26,9 @@ import {
   PaymentHeader,
   AuthorizationInformations,
 } from "./components";
+import { onSubmitAprroveCancel, onSubmitCancel } from "./submit-cancel";
 
 import * as S from "./styles";
-import { onSubmitAprroveCancel, onSubmitCancel } from "./submit-cancel";
-import { Fragment } from "react";
 
 export function AuthorizationSell(
   props: {
@@ -106,8 +107,6 @@ export function AuthorizationSell(
       : {};
 
   const maxBlocks = Array.from({ length: maxBlock });
-
-  console.log(props?.isCancelled || props?.cancelled === "P", "?");
 
   return (
     <Error name="AuthorizationSell">

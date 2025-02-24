@@ -27,7 +27,7 @@ function Component({ pedingStatus, bill }) {
         onClose={() => setVisible(false)}
         styles={{ maxWidth: 1400 }}
       >
-        <AuthorizationSell {...bill} isCancelled onSuccess={() => setVisible(false)} />
+        <AuthorizationSell {...bill} isCancelled={!pedingStatus} onSuccess={() => setVisible(false)} />
       </Modal>
     </>
   );
