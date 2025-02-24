@@ -7,24 +7,20 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button, useToast } from "infinity-forge";
+import { Button, Popconfirm, useToast } from "infinity-forge";
 import { Modal } from "antd";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import DownTitles from "../../Titles/DownTitles";
 
-function ButtonsPanel({
-  setReload,
-  type,
-  setFilters,
-}: any) {
+function ButtonsPanel({ setReload, type, setFilters }: any) {
   const [loading, setLoading] = useState(false);
   const [showBaixaModal, setShowBaixaModal] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const { titles, setTitles } = useAuth();
 
@@ -67,7 +63,10 @@ function ButtonsPanel({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        createToast({ status: "success", message: "Aceite realizado com sucesso!" })
+        createToast({
+          status: "success",
+          message: "Aceite realizado com sucesso!",
+        });
       })
       .catch((_err) => setLoading(false));
   }, [titles]);
@@ -104,11 +103,14 @@ function ButtonsPanel({
         );
         setReload((prv) => !prv);
 
-        return    createToast({ status: "success", message:"Items adicionados com sucesso ao borderô" })
+        return createToast({
+          status: "success",
+          message: "Items adicionados com sucesso ao borderô",
+        });
       })
       .catch((err) => {
         setReload((prv) => !prv);
-        return createToast({ status: "error", message:"Erro"  })
+        return createToast({ status: "error", message: "Erro" });
       });
   }, [titles]);
 
@@ -149,10 +151,15 @@ function ButtonsPanel({
           />
         )}
         {addItemsBorderoPermission && (
-          <Button
-            onClick={() => submitItemsBordero()}
-            text="Adicionar itens ao borderô"
-          />
+          <Popconfirm
+            onConfirm={() => {
+              submitItemsBordero();
+            }}
+            title="Você deseja adcionar os itens a um borderô?"
+            placement="topLeft"
+          >
+            <Button type="button" text="Adicionar itens ao borderô" />
+          </Popconfirm>
         )}
       </section>
       <hr />
