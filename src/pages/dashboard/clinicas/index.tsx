@@ -138,8 +138,8 @@ function Page() {
       columns: [
         { id: "identification", label: "Identificação" },
         { id: "document", label: "CNPJ" },
-        { id: "companyName", label: "Razão social" },
-        { id: "fantasyName", label: "Nome Fantasia" },
+        { id: "company_name", label: "Razão social" },
+        { id: "fantasy_name", label: "Nome Fantasia" },
         { id: "phone", label: "Telefone" },
       ],
       actions: {
