@@ -14,13 +14,12 @@ import { Bill } from "@/domain";
 export default function PrintScreen({ bill }: { bill: Bill }) {
   const [higherBlock, setHigherBlock] = useState(0);
   const blockArr = Array.from(Array(higherBlock).keys());
-  const { clinic } = useProfile();
 
   let finalValue = 0;
   let totalDiscount = 0;
   let totalValue = 0;
 
-  bill?.items.forEach((item) => {
+  bill?.items?.forEach((item) => {
     finalValue += item?.total_value || 0;
     totalDiscount += item?.discount_value || 0;
     totalValue += item?.sale_value || 0;
@@ -82,7 +81,7 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
       <section className="uk-flex uk-flex-around">
         <div>
           <label>Código</label>
-          {bill?.items.map((item) => (
+          {bill?.items?.map((item) => (
             <p className="uk-margin-remove uk-text-center">
               {item?.productVariation?.product?.reference_code}
             </p>
@@ -90,7 +89,7 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
         </div>
         <div>
           <label>Descrição</label>
-          {bill?.items.map((item) => (
+          {bill?.items?.map((item) => (
             <p className="uk-margin-remove uk-text-left">
               {item?.productVariation?.product?.description}
             </p>
@@ -98,13 +97,13 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
         </div>
         <div>
           <label>Qtd.</label>
-          {bill?.items.map((item) => (
+          {bill?.items?.map((item) => (
             <p className="uk-margin-remove uk-text-center">{item?.quantity}</p>
           ))}
         </div>
         <div>
           <label>R$ Unit.</label>
-          {bill?.items.map((item) => (
+          {bill?.items?.map((item) => (
             <p className="uk-margin-remove uk-text-center">
               {currencyFormatter(item?.unitary_value)}
             </p>
@@ -112,7 +111,7 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
         </div>
         <div>
           <label>R$ Desc.</label>
-          {bill?.items.map((item) => (
+          {bill?.items?.map((item) => (
             <p className="uk-margin-remove uk-text-center">
               {currencyFormatter(item?.total_value - item?.sale_value)}
             </p>
@@ -120,7 +119,7 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
         </div>
         <div>
           <label>R$ Total</label>
-          {bill?.items.map((item) => (
+          {bill?.items?.map((item) => (
             <p className="uk-margin-remove uk-text-center">
               {currencyFormatter(item?.total_value)}
             </p>
@@ -170,17 +169,17 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
           return (
             <div className="uk-flex uk-flex-around">
               <p className="uk-margin-remove uk-text-left uk-width-2-4">
-                {payments[0]?.paymentMethod?.description}&nbsp;-&nbsp;
-                {payments[0]?.flag && payments[0]?.flag?.description}
+                {payments?.[0]?.paymentMethod?.description}&nbsp;-&nbsp;
+                {payments?.[0]?.flag && payments[0]?.flag?.description}
               </p>
-              <p className="uk-margin-remove uk-text-left uk-width-1-4 ">
+             {payments && <p className="uk-margin-remove uk-text-left uk-width-1-4 ">
                 {currencyFormatter(
-                  payments.reduce(
+                  payments?.reduce(
                     (acc, current) => acc + current.total_value,
                     0
                   )
                 )}
-              </p>
+              </p>}
               <p className="uk-margin-remove uk-text-left uk-width-1-4">
                 {payments?.length} Parcelas
               </p>
