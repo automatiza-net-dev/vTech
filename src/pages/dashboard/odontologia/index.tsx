@@ -2,9 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 
 export default function Odontologia() {
-  const [departament, setDepartament] = useState(json[0]);
-  const [itensSelected, setItensSelected] = useState([]);
-  const [itensOrcamento, setItensOrcamento] = useState([]);
+  const [departament, setDepartament] = useState<any>(json[0]);
+  const [itensSelected, setItensSelected] = useState<any>([]);
+  const [itensOrcamento, setItensOrcamento] = useState<any>([]);
 
   const handleDepartamentSelect = (selectedDepartament) => {
     setDepartament(selectedDepartament);
@@ -247,7 +247,7 @@ export const Container = styled.div`
   }
 `;
 
-const ItemCard = styled.div`
+const ItemCard = styled.div<any>`
   display: flex;
   align-items: center;
   cursor: pointer;
