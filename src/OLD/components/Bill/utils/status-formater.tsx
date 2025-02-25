@@ -19,7 +19,13 @@ function Component({ pedingStatus, bill }) {
           color: "#007bff",
         }}
       >
-        {pedingStatus ? "Pendente" : "Pendente cancelamento"}
+        {pedingStatus
+          ? "Pendente"
+          : bill?.cancelled === "P"
+          ? "Pendente avaliação técnica"
+          : bill?.cancelled === "A"
+          ? "Finalizar cancelamento"
+          : "Pendente avaliação financeira"}
       </button>
 
       <Modal
@@ -27,7 +33,11 @@ function Component({ pedingStatus, bill }) {
         onClose={() => setVisible(false)}
         styles={{ maxWidth: 1400 }}
       >
-        <AuthorizationSell {...bill} isCancelled={!pedingStatus} onSuccess={() => setVisible(false)} />
+        <AuthorizationSell
+          {...bill}
+          isCancelled={!pedingStatus}
+          onSuccess={() => setVisible(false)}
+        />
       </Modal>
     </>
   );

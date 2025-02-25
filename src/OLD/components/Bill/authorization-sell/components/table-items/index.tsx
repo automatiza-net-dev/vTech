@@ -11,7 +11,6 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
     const hasPermissionToCancelItems = usePermission("VEN19");
 
-  console.log(props.items)
 
   const { Table } = useTable<Product>({
     configs: { tableKeyItem: "id", errorMessage: "Não possui items", tableData: props.items },

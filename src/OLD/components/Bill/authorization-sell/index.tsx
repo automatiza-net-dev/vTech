@@ -8,6 +8,8 @@ import {
   FormHandler,
   LoaderCircle,
   InputPassword,
+  InputSwitch,
+  InputRadio,
 } from "infinity-forge";
 import * as yup from "yup";
 import { useQueryClient } from "react-query";
@@ -26,7 +28,7 @@ import {
   PaymentHeader,
   AuthorizationInformations,
 } from "./components";
-import { onSubmitAprroveCancel, onSubmitCancel } from "./submit-cancel";
+import { onSubmitAprroveCancel, onSubmitCancel, onSubmitFinishCancel } from "./submit-cancel";
 
 import * as S from "./styles";
 
@@ -104,6 +106,10 @@ export function AuthorizationSell(
               }
             ),
         }
+      : data.cancelled === "A"
+      ? {
+          cancelled: yup.string().required("Campo requerido"),
+        }
       : {};
 
   const maxBlocks = Array.from({ length: maxBlock });
@@ -117,13 +123,27 @@ export function AuthorizationSell(
           <FormHandler
             debugMode
             onSucess={async (data) => {
+              if (props.cancelled === "A") {
+                await onSubmitFinishCancel({ data, props });
+              }
+
               if (props.cancelled === "P") {
                 await onSubmitAprroveCancel({ data, props });
               }
 
               if (!props.cancelled) {
-                await onSubmitCancel({ data, props, queryClient });
+                await onSubmitCancel({ data, props });
               }
+
+              await queryClient.invalidateQueries({
+                queryKey: ["bills", true],
+              });
+
+              await queryClient.invalidateQueries({
+                queryKey: ["bills", false],
+              });
+
+              props.onSuccess && props?.onSuccess();
             }}
             schema={{
               userEmail: yup.string().required("Campo requerido"),
@@ -131,7 +151,9 @@ export function AuthorizationSell(
               ...schema,
             }}
             button={
-              props?.isCancelled && props?.cancelled === "P"
+              props?.isCancelled && props?.cancelled === "A"
+                ? { text: "FINALIZAR CANCELAMENTO" }
+                : props?.isCancelled && props?.cancelled === "P"
                 ? hasPermissionToCancelItems || hasPermissionToCancelPayments
                   ? {
                       text: "SALVAR AVALIAÇÃO",
@@ -156,8 +178,29 @@ export function AuthorizationSell(
                   <Input name="userEmail" label="Email" />
                   <InputPassword label="Senha" name="userPwd" />
 
-                  {!props.cancelled && (
-                    <Input label="Motivo do cancelamento" name="cancelReason" />
+                  {!props.cancelled ||
+                    (props.cancelled === "A" && (
+                      <Input
+                        label={
+                          props.cancelled === "A"
+                            ? "Observações do cancelamento"
+                            : "Motivo do cancelamento"
+                        }
+                        name="cancelReason"
+                      />
+                    ))}
+
+                  {props.cancelled === "A" && (
+                    <div style={{ maxWidth: 150, width: "100%" }}>
+                      <InputRadio
+                        options={[
+                          { label: "Sim", value: "true" },
+                          { label: "Não", value: "false" },
+                        ]}
+                        name="cancelled"
+                        label="Aprovar cancelamento?"
+                      />
+                    </div>
                   )}
                 </div>
               </PermissionItem>

@@ -72,43 +72,43 @@ export function TablePayments(props: {
         //   label: "Dados Autorização",
         //   id: "authorization",
         // },
-        {
-          id: "id",
-          label: "Cancelar",
-          enabled: !!props.isCancelled && !props?.cancelledStatus,
-          Component: {
-            Element: (payment) => {
-              return (
-                <div
-                  className="uk-flex"
-                  style={{ gap: "10px", alignItems: "center" }}
-                >
-                  <InputSwitch
-                    onChangeInput={(value) => {
-                      if (value) {
-                        const actualValues = values?.["billPayments"]
-                          ? [...values["billPayments"], payment.id]
-                          : [payment.id];
-                        setFieldValue("billPayments", actualValues);
-                      } else {
-                        setFieldValue(
-                          "billPayments",
-                          values?.["billPayments"]?.filter(
-                            (item) => item !== payment.id
-                          )
-                        );
-                      }
-                    }}
-                    name={`activePayment${payment.id}`}
-                    options={[{ label: "", value: payment.id }]}
-                  />
-                </div>
-              );
-            },
-            props: {},
-            allProps: true,
-          },
-        },
+        // {
+        //   id: "id",
+        //   label: "Cancelar",
+        //   enabled: !!props.isCancelled && !props?.cancelledStatus,
+        //   Component: {
+        //     Element: (payment) => {
+        //       return (
+        //         <div
+        //           className="uk-flex"
+        //           style={{ gap: "10px", alignItems: "center" }}
+        //         >
+        //           <InputSwitch
+        //             onChangeInput={(value) => {
+        //               if (value) {
+        //                 const actualValues = values?.["billPayments"]
+        //                   ? [...values["billPayments"], payment.id]
+        //                   : [payment.id];
+        //                 setFieldValue("billPayments", actualValues);
+        //               } else {
+        //                 setFieldValue(
+        //                   "billPayments",
+        //                   values?.["billPayments"]?.filter(
+        //                     (item) => item !== payment.id
+        //                   )
+        //                 );
+        //               }
+        //             }}
+        //             name={`activePayment${payment.id}`}
+        //             options={[{ label: "", value: payment.id }]}
+        //           />
+        //         </div>
+        //       );
+        //     },
+        //     props: {},
+        //     allProps: true,
+        //   },
+        // },
         {
           id: "custom1" as any,
           label: "Cancelar",

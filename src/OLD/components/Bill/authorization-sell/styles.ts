@@ -70,6 +70,11 @@ export const AuthorizationSell = styled.div`
   }
 
   .form_cancel {
+    .list-radios {
+      gap: 20px;
+      display: flex;
+    }
+
     .form-button > div {
       display: flex;
       justify-content: flex-end;

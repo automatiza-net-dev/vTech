@@ -1,6 +1,6 @@
 import { api } from "infinity-forge";
 
-export async function onSubmitCancel({ data, queryClient, props }) {
+export async function onSubmitCancel({ data, props }) {
   const payload = {
     cancelReason: data.cancelReason,
     userEmail: data.userEmail,
@@ -22,17 +22,24 @@ export async function onSubmitCancel({ data, queryClient, props }) {
     method: "post",
     body: payload,
   });
-
-  await queryClient.invalidateQueries({
-    queryKey: ["bills", true],
-  });
-
-  await queryClient.invalidateQueries({
-    queryKey: ["bills", false],
-  });
-
-  props.onSuccess && props?.onSuccess();
 }
+
+export async function onSubmitFinishCancel({ data, props }) {
+  const payload = {
+    cancelled: data.cancelled === "true" ? true : false,
+    userEmail: data.userEmail,
+    userPwd: data.userPwd,
+    billId: props.id,
+    notes: data.cancelReason,
+  };
+
+  await api({
+    url: "bills/request-cancellation",
+    method: "post",
+    body: payload,
+  });
+}
+
 
 export async function onSubmitAprroveCancel({ data, props }) {
   const billPayments =
