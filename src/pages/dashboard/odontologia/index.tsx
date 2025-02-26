@@ -1,3 +1,4 @@
+import { FormHandler, hexToRgbA, Input } from "infinity-forge";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -5,49 +6,7 @@ export default function Odontologia() {
   const [departament, setDepartament] = useState<any>(json[0]);
   const [itensSelected, setItensSelected] = useState<any>([]);
   const [itensOrcamento, setItensOrcamento] = useState<any>([]);
-
-  const handleDepartamentSelect = (selectedDepartament) => {
-    setDepartament(selectedDepartament);
-    setItensSelected([]);
-  };
-
-  const handleItemSelection = (item) => {
-    setItensSelected((prev) =>
-      prev.some((i) => i.description === item.description)
-        ? prev.filter((i) => i.description !== item.description)
-        : [...prev, item]
-    );
-  };
-
-  const handleServiceSelection = (service) => {
-    setItensOrcamento((prev) => {
-      const newOrcamento = [...prev];
-      itensSelected.forEach((item) => {
-        if (
-          !newOrcamento.some(
-            (o) =>
-              o.item.description === item.description &&
-              o.service.description === service.description
-          )
-        ) {
-          newOrcamento.push({ item, service });
-        }
-      });
-      return newOrcamento;
-    });
-  };
-
-  const clearSelectedItems = () => {
-    setItensSelected([]);
-  };
-
-  const clearOrcamentos = () => {
-    setItensOrcamento([]);
-  };
-
-  const removeOrcamento = (index) => {
-    setItensOrcamento((prev) => prev.filter((_, i) => i !== index));
-  };
+  const [query, setQuery] = useState("");
 
   return (
     <Container>
@@ -57,7 +16,10 @@ export default function Odontologia() {
             key={dept.departament}
             type="button"
             className="button-select-departament"
-            onClick={() => handleDepartamentSelect(dept)}
+            onClick={() => {
+              setDepartament(dept);
+              setItensSelected([]);
+            }}
           >
             <img src={dept.image} alt={dept.departament} />
           </button>
@@ -65,82 +27,148 @@ export default function Odontologia() {
       </div>
 
       {departament && (
-        <div className="items-container">
-          {departament.itens.map((item) => (
-            <ItemCard
-              key={item.description}
-              onClick={() => handleItemSelection(item)}
-              selected={itensSelected.some(
-                (i) => i.description === item.description
-              )}
-            >
-              <img src={item.image} alt={item.description} />
-              <Checkbox
-                type="checkbox"
-                checked={itensSelected.some(
+        <div style={{ width: "100%" }}>
+          <div className={"items-container" + ` ${departament.departament}`}>
+            {departament.itens.map((item) => (
+              <ItemCard
+                key={item.description}
+                onClick={() =>
+                  setItensSelected((prev) =>
+                    prev.some((i) => i.description === item.description)
+                      ? prev.filter((i) => i.description !== item.description)
+                      : [...prev, item]
+                  )
+                }
+                selected={itensSelected.some(
                   (i) => i.description === item.description
                 )}
-                readOnly
-              />
-            </ItemCard>
-          ))}
-        </div>
-      )}
-
-      <div className="button-container">
-        {itensSelected.length > 0 && (
-          <button
-            type="button"
-            className="font-14-regular"
-            onClick={clearSelectedItems}
-          >
-            Limpar Itens Selecionados
-          </button>
-        )}
-        {itensOrcamento.length > 0 && (
-          <button
-            type="button"
-            className="font-14-regular"
-            onClick={clearOrcamentos}
-          >
-            Limpar Orçamentos
-          </button>
-        )}
-      </div>
-
-      {itensSelected.length > 0 && (
-        <div className="services-container">
-          {departament.services.map((service) => (
-            <button
-              key={service.description}
-              type="button"
-              className="service-button font-14-regular"
-              onClick={() => handleServiceSelection(service)}
-            >
-              {service.description} - R$ {service.price}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {itensOrcamento.length > 0 && (
-        <div className="orcamento-container">
-          {itensOrcamento.map((orc, index) => (
-            <div key={index} className="orcamento-item" style={{ gap: 20 }}>
-              <span className="font-14-regular">
-                {orc.item.description} - {orc.service.description} - R${" "}
-                {orc.service.price}
-              </span>
-              <button
-                type="button"
-                onClick={() => removeOrcamento(index)}
-                style={{ background: "transparent", border: 0, color: "red" }}
               >
-                🗑️
+                <img src={item.image} alt={item.description} />
+                <Checkbox
+                  type="checkbox"
+                  checked={itensSelected.some(
+                    (i) => i.description === item.description
+                  )}
+                  readOnly
+                />
+              </ItemCard>
+            ))}
+          </div>
+
+          {itensSelected.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                marginTop: 10,
+              }}
+            >
+              <button
+                style={{
+                  border: 0,
+                  background: "transparent",
+                  backgroundColor: "transparent",
+                  color: "red",
+                  marginBottom: 10,
+                }}
+                type="button"
+                className="font-12-bold"
+                onClick={() => setItensSelected([])}
+              >
+                Limpar Itens Selecionados
               </button>
             </div>
-          ))}
+          )}
+
+          {itensOrcamento.length > 0 && (
+            <div className="orcamento-container">
+              {itensOrcamento.map((orc, index) => (
+                <div key={index} className="orcamento-item" style={{ gap: 20 }}>
+                  <span className="font-14-regular">
+                    {orc.item.description} - {orc.service.description} - R${" "}
+                    {orc.service.price}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setItensOrcamento((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      )
+                    }
+                    style={{
+                      background: "transparent",
+                      border: 0,
+                      color: "red",
+                    }}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {itensOrcamento.length > 0 && (
+            <div
+              className="button-container"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 10,
+              }}
+            >
+              <button
+                type="button"
+                className="font-14-regular"
+                onClick={() => setItensOrcamento([])}
+              >
+                Limpar Orçamentos
+              </button>
+            </div>
+          )}
         </div>
+      )}
+
+      {itensSelected.length > 0 ? (
+        <div style={{ width: 300 }}>
+          <div className="services-container">
+            <FormHandler initialData={{ query }}>
+              <Input
+                name="query"
+                placeholder="Buscar"
+              />
+            </FormHandler>
+            {departament.services.map((service) => (
+              <button
+                key={service.description}
+                type="button"
+                className="service-button font-14-regular"
+                onClick={() =>
+                  setItensOrcamento((prev) => {
+                    const newOrcamento = [...prev];
+                    itensSelected.forEach((item) => {
+                      if (
+                        !newOrcamento.some(
+                          (o) =>
+                            o.item.description === item.description &&
+                            o.service.description === service.description
+                        )
+                      ) {
+                        newOrcamento.push({ item, service });
+                      }
+                    });
+                    return newOrcamento;
+                  })
+                }
+              >
+                {service.description}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div style={{ width: 300 }}></div>
       )}
     </Container>
   );
@@ -149,14 +177,75 @@ export default function Odontologia() {
 // Styled Components
 export const Container = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 20px;
   padding: 20px;
 
   .departament-selection {
     display: flex;
+    flex-direction: column;
     gap: 15px;
+    width: 150px;
+
+    button {
+      width: 100%;
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 10px 0px;
+      border: 1px solid transparent;
+      transition: 0.3s;
+
+      img {
+        width: 100%;
+      }
+
+      &:hover {
+        border: 1px solid ${(props) => props.theme.primaryColor};
+      }
+    }
+  }
+
+  .services-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 300px;
+  }
+
+  .Arcada {
+    transition: 0.3s;
+  }
+
+  .Quadrante {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 0 !important;
+
+    > div {
+      width: 100%;
+      flex-direction: column;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  .Dentes {
+    display: grid !important;
+    grid-template-columns: repeat(16, 1fr);
+    row-gap: 0 !important;
+
+    > div {
+      flex-direction: column !important;
+      padding: 0 !important;
+      border: 0 !important;
+      margin: 5px 0;
+
+      img {
+        width: 29px;
+      }
+    }
   }
 
   .button-select-departament {
@@ -173,15 +262,13 @@ export const Container = styled.div`
     object-fit: contain;
   }
 
-  .button-select-departament:hover {
-    transform: scale(1.1);
-  }
-
   .items-container,
   .services-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    width: 100%;
+    justify-content: center;
   }
 
   .item-card {
@@ -213,9 +300,9 @@ export const Container = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid ${(props) => hexToRgbA(props.theme.primaryColor, 0.6)};
     border-radius: 8px;
-    background: #eef;
+    background: ${(props) => hexToRgbA(props.theme.primaryColor, 0.4)};
   }
 
   .orcamento-item {
@@ -316,7 +403,7 @@ const json = [
   },
   {
     departament: "Quadrante",
-    image: "/images/odontologia/quadrante/departament.png",
+    image: "/images/odontologia/quadrante/quadrante.png",
     itens: [
       {
         description: "Quadrante 1",
@@ -369,123 +456,163 @@ const json = [
     ],
     itens: [
       {
-        description: "18",
+        description: "1",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "2",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "3",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "4",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "5",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "6",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "7",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "8",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "9",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "10",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "11",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "12",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "13",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "15",
+        image: "/images/odontologia/dentes/18.png",
+        obs: true,
+      },
+      {
+        description: "16",
         image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "17",
-        image: "/images/odontologia/dentes/17.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "16",
-        image: "/images/odontologia/dentes/16.png",
+        description: "18",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "15",
-        image: "/images/odontologia/dentes/15.png",
+        description: "19",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "14",
-        image: "/images/odontologia/dentes/14.png",
-        obs: true,
-      },
-      {
-        description: "13",
-        image: "/images/odontologia/dentes/13.png",
-        obs: true,
-      },
-      {
-        description: "12",
-        image: "/images/odontologia/dentes/12.png",
-        obs: true,
-      },
-      {
-        description: "11",
-        image: "/images/odontologia/dentes/11.png",
+        description: "20",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "21",
-        image: "/images/odontologia/dentes/21.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "22",
-        image: "/images/odontologia/dentes/22.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "23",
-        image: "/images/odontologia/dentes/23.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "24",
-        image: "/images/odontologia/dentes/24.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "25",
-        image: "/images/odontologia/dentes/25.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "26",
-        image: "/images/odontologia/dentes/26.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "27",
-        image: "/images/odontologia/dentes/27.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
         description: "28",
-        image: "/images/odontologia/dentes/28.png",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "48",
-        image: "/images/odontologia/dentes/48.png",
+        description: "29",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "47",
-        image: "/images/odontologia/dentes/47.png",
+        description: "30",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "46",
-        image: "/images/odontologia/dentes/46.png",
+        description: "31",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "45",
-        image: "/images/odontologia/dentes/45.png",
+        description: "32",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
       {
-        description: "44",
-        image: "/images/odontologia/dentes/44.png",
-        obs: true,
-      },
-      {
-        description: "43",
-        image: "/images/odontologia/dentes/43.png",
-        obs: true,
-      },
-      {
-        description: "42",
-        image: "/images/odontologia/dentes/42.png",
-        obs: true,
-      },
-      {
-        description: "41",
-        image: "/images/odontologia/dentes/41.png",
+        description: "33",
+        image: "/images/odontologia/dentes/18.png",
         obs: true,
       },
     ],
