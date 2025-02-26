@@ -8,12 +8,14 @@ import { ApproveCancel } from "./approve-cancel";
 import { usePermission } from "@/presentation";
 
 export function TableItems(props: Bill & { isCancelled?: boolean }) {
-
-    const hasPermissionToCancelItems = usePermission("VEN19");
-
+  const hasPermissionToCancelItems = usePermission("VEN19");
 
   const { Table } = useTable<Product>({
-    configs: { tableKeyItem: "id", errorMessage: "Não possui items", tableData: props.items },
+    configs: {
+      tableKeyItem: "id",
+      errorMessage: "Não possui items",
+      tableData: props.items,
+    },
     columnsConfiguration: {
       columns: [
         { id: "quantity", label: "Qtd." },
@@ -58,9 +60,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.sale_value) 
-                  }
+                  {formatNumberToCurrency(product?.sale_value)}
                 </p>
               );
             },
@@ -75,9 +75,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.unitary_value) 
-                  }
+                  {formatNumberToCurrency(product?.unitary_value)}
                 </p>
               );
             },
@@ -93,9 +91,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.discount_value) 
-                  }
+                  {formatNumberToCurrency(product?.discount_value)}
                 </p>
               );
             },
@@ -110,9 +106,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.total_value) 
-                  }
+                  {formatNumberToCurrency(product?.total_value)}
                 </p>
               );
             },
@@ -121,11 +115,15 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "courtesy",
           label: "Pendência",
-          enabled:  !!props.cancelled,
+          enabled: !!props.cancelled,
           Component: {
             Element: (item) => (
               <p className="font-14-regular">
-                {item?.courtesy ? "Cortesia" : item?.max_discount ? "desc.max" : "Não" }
+                {item?.courtesy
+                  ? "Cortesia"
+                  : item?.max_discount
+                  ? "desc.max"
+                  : "Não"}
               </p>
             ),
           },
@@ -147,7 +145,9 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "cancelledQuantity",
           label: "Qtd Canc.",
-          enabled: !!props.isCancelled && (props.cancelled === "P" || props.cancelled === "A"),
+          enabled:
+            !!props.isCancelled &&
+            (props.cancelled === "P" || props.cancelled === "A"),
         },
         {
           id: "custom" as any,
@@ -160,22 +160,29 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "custom2" as any,
           label: "Autorização",
-          enabled: props.cancelled === "P" && hasPermissionToCancelItems,
+          enabled: props.isCancelled && !!props.cancelled && hasPermissionToCancelItems,
           Component: {
             Element: (item: any) => {
-
-              if(!item.cancelled) {
-                return <></>
+              if (!item.cancelled) {
+                return <></>;
               }
 
-              return <ApproveCancel {...item} />
+              if (item.cancelled === "S" || item.cancelled === "N") {
+                return (
+                  <p className="font-14-bold">
+                    {item.cancelled === "S" ? "Aprovado" : "Não aprovado"}{" "}
+                    <br /> {item?.reviewCancelNotes || "Sem obs"}
+                  </p>
+                );
+              }
+
+              return <ApproveCancel {...item} />;
             },
           },
-        }
+        },
       ],
     },
   });
 
   return Table;
 }
-

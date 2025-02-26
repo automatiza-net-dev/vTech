@@ -28,7 +28,7 @@ import {
   PaymentHeader,
   AuthorizationInformations,
 } from "./components";
-import { onSubmitAprroveCancel, onSubmitCancel, onSubmitFinishCancel } from "./submit-cancel";
+import { onSubmitAprroveCancel, onSubmitAprroveCancelF, onSubmitCancel, onSubmitFinishCancel } from "./submit-cancel";
 
 import * as S from "./styles";
 
@@ -59,52 +59,52 @@ export function AuthorizationSell(
   const schema =
     data.cancelled === "P"
       ? {
-          billItems: yup
-            .object()
-            .nullable()
-            .test("billItems", "Validação de billItems", function (value) {
-              if (!value) {
-                return true;
-              }
+          // billItems: yup
+          //   .object()
+          //   .nullable()
+          //   .test("billItems", "Validação de billItems", function (value) {
+          //     if (!value) {
+          //       return true;
+          //     }
 
-              for (const key of Object.keys(value)) {
-                const item = value[key];
+          //     for (const key of Object.keys(value)) {
+          //       const item = value[key];
 
-                if (!item.note) {
-                  return this.createError({
-                    path: `billItems.${key}.note`,
-                    message: "Campo requerido",
-                  });
-                }
-              }
+          //       if (!item.note) {
+          //         return this.createError({
+          //           path: `billItems.${key}.note`,
+          //           message: "Campo requerido",
+          //         });
+          //       }
+          //     }
 
-              return true;
-            }),
-          billPayments: yup
-            .object()
-            .nullable()
-            .test(
-              "billPayments",
-              "Validação de billPayments",
-              function (value) {
-                if (!value) {
-                  return true;
-                }
+          //     return true;
+          //   }),
+          // billPayments: yup
+          //   .object()
+          //   .nullable()
+          //   .test(
+          //     "billPayments",
+          //     "Validação de billPayments",
+          //     function (value) {
+          //       if (!value) {
+          //         return true;
+          //       }
 
-                for (const key of Object.keys(value)) {
-                  const item = value[key];
+          //       for (const key of Object.keys(value)) {
+          //         const item = value[key];
 
-                  if (!item.note) {
-                    return this.createError({
-                      path: `billPayments.${key}.note`,
-                      message: "Campo requerido",
-                    });
-                  }
-                }
+          //         if (!item.note) {
+          //           return this.createError({
+          //             path: `billPayments.${key}.note`,
+          //             message: "Campo requerido",
+          //           });
+          //         }
+          //       }
 
-                return true;
-              }
-            ),
+          //       return true;
+          //     }
+          //   ),
         }
       : data.cancelled === "A"
       ? {
@@ -123,6 +123,11 @@ export function AuthorizationSell(
           <FormHandler
             debugMode
             onSucess={async (data) => {
+
+              if(props.cancelled === "F") {
+                await onSubmitAprroveCancelF({ data, props });
+              }
+
               if (props.cancelled === "A") {
                 await onSubmitFinishCancel({ data, props });
               }
@@ -178,8 +183,8 @@ export function AuthorizationSell(
                   <Input name="userEmail" label="Email" />
                   <InputPassword label="Senha" name="userPwd" />
 
-                  {!props.cancelled ||
-                    (props.cancelled === "A" && (
+                  {(!props.cancelled ||
+                    props.cancelled === "A") && (
                       <Input
                         label={
                           props.cancelled === "A"
@@ -188,7 +193,7 @@ export function AuthorizationSell(
                         }
                         name="cancelReason"
                       />
-                    ))}
+                    )}
 
                   {props.cancelled === "A" && (
                     <div style={{ maxWidth: 150, width: "100%" }}>

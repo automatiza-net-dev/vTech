@@ -1,23 +1,23 @@
-import { useTable, InputSwitch, formatNumberToCurrency } from "infinity-forge";
+import { useTable, formatNumberToCurrency } from "infinity-forge";
+
 import moment from "moment";
-import { useFormikContext } from "formik";
 
 import { Bill, Payment } from "@/domain";
 import { ApproveCancelPayment } from "./approve-cancel-payment";
+import { ApproveCancelPaymentF } from "./approve-cancel-paymebt-f";
 
 export function TablePayments(props: {
   paymentsList: Payment[];
   isCancelled?: boolean;
   cancelledStatus?: Bill["cancelled"];
 }) {
-  const { values, setFieldValue } = useFormikContext();
   // const hasPermission = useUserHasPermission("VEN20");
 
   const { Table } = useTable({
     configs: {
       errorMessage: "Não possui pagamentos",
       tableData: props.paymentsList,
-      tableKeyItem: "id", 
+      tableKeyItem: "id",
     },
     columnsConfiguration: {
       columns: [
@@ -65,6 +65,23 @@ export function TablePayments(props: {
           },
         },
         {
+          id: "finance",
+          label: "Data de pagamento",
+          Component: {
+            Element: (payment) => {
+              return (
+                <p className="font-16-regular">
+                  {payment?.finance?.payment_date
+                    ? moment(payment?.finance?.payment_date).format(
+                        "DD/MM/YYYY"
+                      )
+                    : "Em aberto"}
+                </p>
+              );
+            },
+          },
+        },
+        {
           id: "nsu_document",
           label: "Comprovante/NSU",
         },
@@ -75,7 +92,7 @@ export function TablePayments(props: {
         // {
         //   id: "id",
         //   label: "Cancelar",
-        //   enabled: !!props.isCancelled && !props?.cancelledStatus,
+        //   enabled: props.isCancelled && props?.cancelledStatus === "F",
         //   Component: {
         //     Element: (payment) => {
         //       return (
@@ -112,9 +129,7 @@ export function TablePayments(props: {
         {
           id: "custom1" as any,
           label: "Cancelar",
-          enabled:
-            props.isCancelled === true &&
-            props?.cancelledStatus === "P" ,
+          enabled: props.isCancelled === true && props?.cancelledStatus === "P",
           Component: {
             Element: (payment) => {
               return (
@@ -133,9 +148,41 @@ export function TablePayments(props: {
         {
           id: "custom2" as any,
           label: "Autorização",
-          enabled: props.cancelledStatus === "P" ,
+          enabled: props.cancelledStatus === "P",
           Component: {
-            Element: ApproveCancelPayment as any,
+            Element: (item) => <ApproveCancelPayment {...(item as any)} />,
+          },
+        },
+        {
+          id: "custom3" as any,
+          label: "Autorização",
+          enabled: props.cancelledStatus === "F",
+          Component: {
+            Element: (item) => (
+              <ApproveCancelPaymentF
+                {...(item as any)}
+                cancelledStatus={props.cancelledStatus}
+              />
+            ),
+          },
+        },
+        {
+          id: "custom4" as any,
+          label: "Autorização",
+          enabled: props.isCancelled && props.cancelledStatus === "A",
+          Component: {
+            Element: (item: any) => {
+              if (item.cancelled === "S" || item.cancelled === "N") {
+                return (
+                  <p className="font-14-bold">
+                    {item.cancelled === "S" ? "Aprovado" : "Não aprovado"}{" "}
+                    <br /> {item?.reviewCancelNotes || "Sem obs"}
+                  </p>
+                );
+              }
+
+              return <></>;
+            },
           },
         },
       ],

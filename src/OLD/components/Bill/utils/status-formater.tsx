@@ -47,14 +47,17 @@ export const cancelledStatus = {
   P: "Cancelamento pendente",
   A: "Cancelamento avaliado",
   N: "Cancelamento não autorizado",
-  S: "Cancelamento autorizaado",
+  S: "Cancelamento autorizado",
 };
 
 export const billStatusFormatter = (bill) => {
   const { status, pending } = bill;
-  const pedingStatus = status === "ABERTA" && pending;
 
-  if (pedingStatus || bill?.cancelled === "P" || bill?.cancelled === "A") {
+  const isCancelled = bill?.cancelled === "P" || bill?.cancelled === "A" || bill?.cancelled === "F";
+
+  const pedingStatus = status === "ABERTA" && pending && !isCancelled;
+
+  if (pedingStatus || isCancelled) {
     return <Component bill={bill} pedingStatus={pedingStatus} />;
   }
 

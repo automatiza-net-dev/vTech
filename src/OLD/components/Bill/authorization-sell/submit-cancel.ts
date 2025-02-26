@@ -30,11 +30,14 @@ export async function onSubmitFinishCancel({ data, props }) {
     userEmail: data.userEmail,
     userPwd: data.userPwd,
     billId: props.id,
-    notes: data.cancelReason,
+    note: data.cancelReason,
+    // billPayments: [],
+    // billItems: [],
+
   };
 
   await api({
-    url: "bills/request-cancellation",
+    url: "bills/finish-cancellation",
     method: "post",
     body: payload,
   });
@@ -42,20 +45,6 @@ export async function onSubmitFinishCancel({ data, props }) {
 
 
 export async function onSubmitAprroveCancel({ data, props }) {
-  const billPayments =
-    data.billPayments &&
-    Object.keys(data.billPayments as any)?.reduce((reducer, item) => {
-      const value = data.billPayments[item];
-
-      return [
-        ...reducer,
-        {
-          id: item,
-          note: value.note,
-          cancelled: value.cancelled === "Sim" ? true : false,
-        },
-      ];
-    }, [] as any);
 
   const billItems =
     data.billItems &&
@@ -75,6 +64,39 @@ export async function onSubmitAprroveCancel({ data, props }) {
   const payload = {
     ...data,
     billItems: billItems || [],
+    billPayments:  [],
+    email: data.userEmail,
+    password: data.userPwd,
+    billId: props.id,
+  };
+
+  await api({
+    url: "bills/review-cancellation",
+    method: "post",
+    body: payload,
+  });
+}
+
+
+export async function onSubmitAprroveCancelF({ data, props }) {
+  const billPayments =
+    data.billPayments &&
+    Object.keys(data.billPayments as any)?.reduce((reducer, item) => {
+      const value = data.billPayments[item];
+
+      return [
+        ...reducer,
+        {
+          id: item,
+          note: value.note,
+          cancelled: value?.cancelled?.includes("Sim") ? true : false,
+        },
+      ];
+    }, [] as any)?.filter(item => item.cancelled);
+
+  const payload = {
+    ...data,
+    billItems: [],
     billPayments: billPayments || [],
     email: data.userEmail,
     password: data.userPwd,

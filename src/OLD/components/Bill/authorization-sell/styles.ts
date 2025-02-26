@@ -89,6 +89,10 @@ export const AuthorizationSell = styled.div`
       width: 100%;
     }
 
+    .eye {
+      width: auto !important;
+    }
+
     button:disabled {
       opacity: 0.8;
       cursor: not-allowed;

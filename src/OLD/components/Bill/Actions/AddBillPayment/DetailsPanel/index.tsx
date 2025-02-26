@@ -111,7 +111,7 @@ export const DetailsPanel = memo(function DetailsPanel({
                       paymentMethodFlagInstallmentId:
                         formData?.installmentsList?.find(
                           (installment) => installment?.installment === i + 1
-                        ).id,
+                        )?.id,
                     });
                   };
 
