@@ -14,7 +14,7 @@ export function ApproveCancelPaymentF(
   const { values } = useFormikContext();
   const value = getIn(values, `${baseName}.cancelled`);
 
-  if (item.cancelledStatus === "P") {
+  if (item.cancelledStatus === "P" || item?.finance?.payment_date) {
     return <></>;
   }
 
