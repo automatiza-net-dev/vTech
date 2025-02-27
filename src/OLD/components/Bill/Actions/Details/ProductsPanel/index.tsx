@@ -49,13 +49,13 @@ const ProductsPanel = memo(function ProductsPanel({
       return "Pendente de Liberação";
     }
     if (!pending && !approved && approved_at !== null) {
-      return `Não aprovado por ${approvedUser} em ${moment(approved_at).format(
+      return `Não aprovado por ${approvedUser?.name} em ${moment(approved_at).format(
         "DD/MM/YYYY"
       )}`;
     }
 
     if (!pending && approved) {
-      return `Aprovado por ${approvedUser} em ${moment(approved_at).format(
+      return `Aprovado por ${approvedUser?.name} em ${moment(approved_at).format(
         "DD/MM/YYYY"
       )}`;
     }

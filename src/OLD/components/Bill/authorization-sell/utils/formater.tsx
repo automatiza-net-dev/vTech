@@ -18,7 +18,7 @@ export function authorizationFormater(billItem, type = "product") {
       return (
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
           <CheckIcon />
-          Autorizado por {approvedUser?.name} em{" "}
+          Parcelamento autorizado por {approvedUser?.name} em{" "}
           {moment(approved_at).format("DD/MM/YYYY")}
         </span>
       );
@@ -28,7 +28,7 @@ export function authorizationFormater(billItem, type = "product") {
       return (
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
           <CloseIcon />
-          Não Autorizado por {approvedUser?.name} em {moment(courtesy_approved_at).format("DD/MM/YYYY")}
+         Parcelamento não Autorizado por {approvedUser?.name} em {moment(courtesy_approved_at).format("DD/MM/YYYY")}
         </span>
       );
     }

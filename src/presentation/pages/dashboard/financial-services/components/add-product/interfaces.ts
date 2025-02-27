@@ -10,6 +10,7 @@ export type Cart = {
   id: Product["id"];
   courtesy: boolean;
   toSubmit?: boolean;
+  hasCourtesy?: boolean;
   authData?: JSX.Element;
   approved?: Product["approved"];
   approvalDate?: Product["approvalDate"];

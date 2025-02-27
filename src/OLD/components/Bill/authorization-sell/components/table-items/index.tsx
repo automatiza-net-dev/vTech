@@ -19,6 +19,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
     columnsConfiguration: {
       childrens: {
         childrenKey: "treatmentExecutions",
+        omitEmptyList: true,
         columns: [
           { id: "item_produtividade", label: "Item produtividade" },
           { id: "data_agendamento", label: "Data agendameto" },

@@ -184,8 +184,8 @@ export function AddSale({
         onSucess={handleSubmit}
         cleanFieldsOnSubmit={false}
       >
-        <h2 className="font-24-bold">
-          {type === "edit" ? "Editar" : "Criar"} venda
+        <h2 className="font-22-bold">
+          {type === "edit" ? "Editar" : "Criar"} venda {bill?.data?.tag && " - " + bill?.data?.tag}
         </h2>
 
         <div className="row">

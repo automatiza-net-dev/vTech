@@ -50,6 +50,8 @@ export function AuthorizationPaymentForm({
       const payload = {
         ...data,
         approved,
+        userEmail: data?.email,
+        userPwd: data?.password,
         itemsIdList,
         paymentsIdList,
         reason: data.description,

@@ -212,7 +212,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
     paymentMethods?.length > 0 && filterMethods();
   }, [paymentMethods]);
 
-  const submitPayment = useCallback(() => {
+  const submitPayment = useCallback((params) => {
     if (cashiers.length === 0) {
       return createToast({
         status: "error",
@@ -234,6 +234,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
 
     const paylaod = {
       ...formData,
+      maxParcelas: params?.maxParcelas || formData?.maxParcelas,
       installmentsValue: convertIntlCurrency(formData?.installmentsValue),
       billId,
     };
@@ -255,9 +256,12 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
         });
       },
       onError: (err) => {
+
         if (err instanceof AxiosError) {
-          if (window.confirm(err.response.data.message)) {
-            mutate({ ...paylaod, maxParcelas: true });
+          if (window.confirm(err.response.data.message) && !params?.maxParcelas) {
+           
+            
+            submitPayment({maxParcelas: true })
             setFormData({
               expirationDate: moment(),
             });
@@ -265,6 +269,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
 
           return;
         }
+
 
         if (
           err.response.data.message.includes(

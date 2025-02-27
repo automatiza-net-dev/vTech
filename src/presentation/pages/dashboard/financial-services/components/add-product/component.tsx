@@ -99,7 +99,7 @@ export function AddProduct() {
             <h3 className="font-12-bold">CORTESIA</h3>
           </div>
           <div>
-            <h3 className="font-12-bold">Dados Autorização</h3>
+            <h3 className="font-12-bold">Autorização cortesia/desconto</h3>
           </div>
         </div>
       )}
@@ -248,6 +248,7 @@ export function AddProduct() {
                         )}
                       </div>
                     </div>
+                    
                     <div className="cortesia">
                       <div>
                         <input

@@ -40,7 +40,7 @@ export const productsColumns = [
     dataIndex: "max_discount",
   },
   {
-    title: "Dados Autorização",
+    title: "Autorização cortesia/desconto",
     key: "auth_data",
     dataIndex: "auth_data",
   },

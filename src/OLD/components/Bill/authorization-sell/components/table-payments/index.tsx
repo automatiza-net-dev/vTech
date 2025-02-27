@@ -3,7 +3,6 @@ import { useTable, formatNumberToCurrency } from "infinity-forge";
 import moment from "moment";
 
 import { Bill, Payment } from "@/domain";
-import { ApproveCancelPayment } from "./approve-cancel-payment";
 import { ApproveCancelPaymentF } from "./approve-cancel-paymebt-f";
 
 export function TablePayments(props: {
@@ -126,33 +125,6 @@ export function TablePayments(props: {
         //     allProps: true,
         //   },
         // },
-        {
-          id: "custom1" as any,
-          label: "Cancelar",
-          enabled: props.isCancelled === true && props?.cancelledStatus === "P",
-          Component: {
-            Element: (payment) => {
-              return (
-                <div
-                  className="uk-flex"
-                  style={{ gap: "10px", alignItems: "center" }}
-                >
-                  Novo
-                </div>
-              );
-            },
-            props: {},
-            allProps: true,
-          },
-        },
-        {
-          id: "custom2" as any,
-          label: "Autorização",
-          enabled: props.cancelledStatus === "P",
-          Component: {
-            Element: (item) => <ApproveCancelPayment {...(item as any)} />,
-          },
-        },
         {
           id: "custom3" as any,
           label: "Autorização",
