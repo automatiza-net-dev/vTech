@@ -1,6 +1,6 @@
-import { formatNumberToCurrency, useTable } from "infinity-forge";
+import { Column, formatNumberToCurrency, useTable } from "infinity-forge";
 
-import { Bill, Product } from "@/domain";
+import { Bill, Product, TreatmentExecutions } from "@/domain";
 import { authorizationFormater } from "../../utils";
 
 import { Cancel } from "./cancel";
@@ -17,6 +17,17 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
       tableData: props.items,
     },
     columnsConfiguration: {
+      childrens: {
+        childrenKey: "treatmentExecutions",
+        columns: [
+          { id: "item_produtividade", label: "Item produtividade" },
+          { id: "data_agendamento", label: "Data agendameto" },
+          { id: "data_execucao", label: "Data de execução" },
+          { id: "usuario_execucao", label: "Usuário execução" },
+          { id: "observations", label: "Observação" },
+        ] as Column<TreatmentExecutions>[],
+        
+      },
       columns: [
         { id: "quantity", label: "Qtd." },
         {
@@ -160,7 +171,10 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "custom2" as any,
           label: "Autorização",
-          enabled: props.isCancelled && !!props.cancelled && hasPermissionToCancelItems,
+          enabled:
+            props.isCancelled &&
+            !!props.cancelled &&
+            hasPermissionToCancelItems,
           Component: {
             Element: (item: any) => {
               if (!item.cancelled) {

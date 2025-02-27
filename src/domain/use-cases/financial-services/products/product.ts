@@ -33,6 +33,18 @@ export type Variation = {
   kitItems: [];
 };
 
+export type TreatmentExecutions = {
+  bid: string;
+  item_produtividade: string;
+  treatment_id: number;
+  treatment_item_id: number;
+  vid: string;
+  data_agendamento: Date;
+  data_execucao: Date;
+  observations: string;
+  usuario_execucao: string;
+};
+
 export type Product = {
   id: string;
   cancelledQuantity?: number;
@@ -45,6 +57,7 @@ export type Product = {
   description: string;
   quantity: string | number;
   type: "product";
+  treatmentExecutions?: TreatmentExecutions[];
   courtesyApprovedUser?: {
     id: string;
     name: string;
