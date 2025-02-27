@@ -171,7 +171,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         },
         {
           id: "custom2" as any,
-          label: "Autorização",
+          label: "Cancelamento",
           enabled:
             props.isCancelled &&
             !!props.cancelled &&
