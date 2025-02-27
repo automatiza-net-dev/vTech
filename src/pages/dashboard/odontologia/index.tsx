@@ -1,4 +1,4 @@
-import { FormHandler, hexToRgbA, Input } from "infinity-forge";
+import { FormHandler, hexToRgbA, Input, Layout } from "infinity-forge";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -9,7 +9,8 @@ export default function Odontologia() {
   const [query, setQuery] = useState("");
 
   return (
-    <Container>
+    <Layout>
+  <Container>
       <div className="departament-selection">
         {json.map((dept) => (
           <button
@@ -171,6 +172,8 @@ export default function Odontologia() {
         <div style={{ width: 300 }}></div>
       )}
     </Container>
+    </Layout>
+  
   );
 }
 

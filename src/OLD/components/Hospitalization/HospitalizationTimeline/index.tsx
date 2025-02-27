@@ -153,13 +153,59 @@ export function HospitalizationTimeline({
       </footer>
     </Modal>
   ) : (
-    <Timeline
-      data={completeTimeline}
-      setVisible={setVisible}
-      modal={modal}
-      patientData={patientData}
-      setReload={setReload}
-      allowEdit={!patientData?.finished_at}
-    />
+    <>
+      <div className="uk-flex">
+        <Select
+          mode="multiple"
+          style={{ width: "50%" }}
+          placeholder="Selecione os filtros"
+          onChange={handleFilterChange}
+          value={selectedFilters}
+        >
+          {filterOptions.map((option) => (
+            <Option key={option.value} value={option.value}>
+              {option.label}
+            </Option>
+          ))}
+        </Select>
+        <DatePicker.RangePicker
+          className="uk-margin-small-right"
+          format="DD/MM/YYYY"
+          style={{ marginLeft: "16px" }}
+          onChange={handleDateRangeChange}
+        />
+
+        <Button
+          style={{ marginTop: "00px" }}
+          text="Imprimir"
+          onClick={() => imprimir()}
+        />
+      </div>
+      <div>
+        <div style={{ display: "none" }}>
+          <div>
+            <PrintHeader />
+            <h4>Registros de internação</h4>
+          </div>
+        </div>
+        <Timeline
+          data={filteredAndDateRangeTimelineData && filteredAndDateRangeTimelineData.length > 0 ?filteredAndDateRangeTimelineData : completeTimeline}
+          setVisible={setVisible}
+          modal={modal}
+          patientData={patientData}
+          setReload={setReload}
+          allowEdit={!patientData?.finished_at}
+        />
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintContent
+              obj={filteredAndDateRangeTimelineData}
+              patient={patientData}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+ 
   );
 }
