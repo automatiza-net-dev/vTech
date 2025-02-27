@@ -40,7 +40,7 @@ export function HospitalizationTimeline({
   const [endDate, setEndDate] = useState(null);
   const [reload, setReload] = useState(false);
 
-  const { timelineData } = useTimeline(
+  const timeLine = useTimeline(
     patientData?.id,
     modal ? visible : false,
     reload
@@ -48,6 +48,8 @@ export function HospitalizationTimeline({
 
   const { timelineData: completeTimeline } =
     useCompleteHospitalizationsTimeline(patientData?.id, !modal, reload);
+
+    const timelineData = completeTimeline && completeTimeline.length > 0 ? completeTimeline : timeLine?.timelineData;
 
   const componentRef = useRef();
 
@@ -189,7 +191,7 @@ export function HospitalizationTimeline({
           </div>
         </div>
         <Timeline
-          data={filteredAndDateRangeTimelineData && filteredAndDateRangeTimelineData.length > 0 ?filteredAndDateRangeTimelineData : completeTimeline}
+          data={filteredAndDateRangeTimelineData}
           setVisible={setVisible}
           modal={modal}
           patientData={patientData}
