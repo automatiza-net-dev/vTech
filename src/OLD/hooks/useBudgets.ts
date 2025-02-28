@@ -2,6 +2,8 @@
 import { useMutation, useQuery } from "react-query";
 import { budgetService } from "@/OLD/services/budgets.service";
 
+  import { useQuery as useQueryInfinityForge } from "infinity-forge"
+
 import moment from "moment";
 import { useEffect, useState } from "react";
 
@@ -85,7 +87,7 @@ export const useCompleteBudget = (id, enabled = false) => {
       if (!id) {
         return {};
       }
-      return budgetService.getCompleteBudget(id);
+      return budgetService.getCompleteBudget(id) as any;
     },
     {
       enabled,
