@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
@@ -12,12 +11,12 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { Popconfirm, Modal } from "antd";
+import {  Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
-import { Modal, PageWrapper, Popconfirm, useToast } from "infinity-forge";
+import { PageWrapper, Popconfirm, useToast } from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
