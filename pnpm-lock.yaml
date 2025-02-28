@@ -75,8 +75,13 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.0.0)
       infinity-forge:
+<<<<<<< HEAD
         specifier: 7.2.2
         version: 7.2.2(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+=======
+        specifier: 7.3.5
+        version: 7.3.5(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+>>>>>>> 7c8fd61c (v)
       inversify:
         specifier: ^6.0.2
         version: 6.2.2(reflect-metadata@0.2.2)
@@ -1849,8 +1854,13 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
+<<<<<<< HEAD
   infinity-forge@7.2.2:
     resolution: {integrity: sha512-1B8OkxG99eF5VbZePzn3PamnFJ20VP5j2v7gul0mN1jE/8tZPynkuay1/vyDpLKRex7I7bZ0I1AYOKEil9wVYg==}
+=======
+  infinity-forge@7.3.5:
+    resolution: {integrity: sha512-p0pgkw1ND2x6beqCPl1SWwvJ99fanviLn5wP7sr+EzJd7BqhWn15DzAgCj2oIcnD0ip7D3b+n+Npz/JNPq81ag==}
+>>>>>>> 7c8fd61c (v)
     peerDependencies:
       react: '>=16'
 
@@ -5242,7 +5252,11 @@ snapshots:
 
   indent-string@4.0.0: {}
 
+<<<<<<< HEAD
   infinity-forge@7.2.2(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+=======
+  infinity-forge@7.3.5(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+>>>>>>> 7c8fd61c (v)
     dependencies:
       '@next/third-parties': 15.1.7(next@15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       axios: 1.7.9

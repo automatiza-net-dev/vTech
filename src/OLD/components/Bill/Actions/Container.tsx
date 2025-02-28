@@ -17,7 +17,7 @@ import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
-import { PageWrapper, useToast } from "infinity-forge";
+import { Modal, PageWrapper, Popconfirm, useToast } from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
@@ -183,11 +183,13 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
       />
 
       {removeBillPermission && (
-        <DeleteTwoTone
-          onClick={() => removeBill()}
-          twoToneColor={"red"}
-          className="icon"
-        />
+        <Popconfirm
+          title={`Confirma exclusao da venda ${bill?.tag}?`}
+          onConfirm={() => removeBill()}
+          position="leftTop"
+        >
+          <DeleteTwoTone twoToneColor={"red"} className="icon" />
+        </Popconfirm>
       )}
 
       {detailsVisible && (

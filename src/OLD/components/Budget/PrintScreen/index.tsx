@@ -17,10 +17,7 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
 
   const { getWord } = useDictionary();
 
-  const budget =
-    printDetails?.origin !== "show"
-      ? useCompleteBudget(printDetails?.budgetId, printDetails?.hookEnable)
-      : { data: budgetData };
+  const budget = { data: budgetData };
 
   return (
     <S.PrintScreen className="uk-container">

@@ -15,28 +15,22 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
   const [higherBlock, setHigherBlock] = useState(0);
   const blockArr = Array.from(Array(higherBlock).keys());
 
-  let finalValue = 0;
-  let totalDiscount = 0;
-  let totalValue = 0;
-
-  bill?.items?.forEach((item) => {
-    finalValue += item?.total_value || 0;
-    totalDiscount += item?.discount_value || 0;
-    totalValue += item?.sale_value || 0;
-  });
-
   bill?.payments?.map((item) => {
     if (item?.block > higherBlock) {
       setHigherBlock(item?.block);
     }
   });
+
   const { user } = useAuthAdmin();
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  
   return (
     <S.PrintScreen>
       <PrintHeader />
+
       <hr />
-      <section className="uk-flex  uk-margin-top">
+      
+      <section className="uk-flex  uk-margin-top" style={{ gap: 20 }}>
         <div style={{ maxWidth: 200 }}>
           <label>Cliente</label>
           <p className="uk-margin-remove">{bill?.client?.name}</p>
@@ -67,100 +61,104 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
             {bill?.status == "ABERTA" ? "Aberta" : "Baixada"}
           </p>
         </div>
-        {process.env.client !== "liftone" && (
+
+        {bill?.patient && (
           <div>
             <label>Paciente</label>
             <p className="uk-margin-remove">{bill?.patient?.name}</p>
           </div>
         )}
       </section>
-      <hr />
-      <h4 className="uk-margin-top uk-text-center">
-        <strong>Itens</strong>
-      </h4>
-      <section className="uk-flex uk-flex-around">
-        <div>
-          <label>Código</label>
-          {bill?.items?.map((item) => (
-            <p className="uk-margin-remove uk-text-center">
-              {item?.productVariation?.product?.reference_code}
-            </p>
-          ))}
-        </div>
-        <div>
-          <label>Descrição</label>
-          {bill?.items?.map((item) => (
-            <p className="uk-margin-remove uk-text-left">
-              {item?.productVariation?.product?.description}
-            </p>
-          ))}
-        </div>
-        <div>
-          <label>Qtd.</label>
-          {bill?.items?.map((item) => (
-            <p className="uk-margin-remove uk-text-center">{item?.quantity}</p>
-          ))}
-        </div>
-        <div>
-          <label>R$ Unit.</label>
-          {bill?.items?.map((item) => (
-            <p className="uk-margin-remove uk-text-center">
-              {currencyFormatter(item?.unitary_value)}
-            </p>
-          ))}
-        </div>
-        <div>
-          <label>R$ Desc.</label>
-          {bill?.items?.map((item) => (
-            <p className="uk-margin-remove uk-text-center">
-              {currencyFormatter(item?.total_value - item?.sale_value)}
-            </p>
-          ))}
-        </div>
-        <div>
-          <label>R$ Total</label>
-          {bill?.items?.map((item) => (
-            <p className="uk-margin-remove uk-text-center">
-              {currencyFormatter(item?.total_value)}
-            </p>
-          ))}
-        </div>
-      </section>
-      <hr />
-      <h4 className="uk-margin-top uk-text-center">
-        <strong>Total</strong>
-      </h4>
-      <section className="uk-flex uk-flex-around">
-        <div>
-          <label>Valor Total</label>
-          <p className="uk-margin-remove uk-text-center">
-            {currencyFormatter(totalValue)}
-          </p>
-        </div>
-        <div>
-          <label>Descontos totais</label>
-          <p className="uk-margin-remove uk-text-center">
-            {currencyFormatter(totalDiscount)}
-          </p>
-        </div>
-        <div>
-          <label>Valor Final</label>
-          <p className="uk-margin-remove uk-text-center">
-            {currencyFormatter(finalValue)}
-          </p>
-        </div>
-        {/* <div className="uk-flex uk-flex-around">
-        <h5 className="uk-margin-top uk-text-bold"> Total </h5>
-        <p className="uk-margin-top uk-text-right">{totalValue}</p>
-        <p className="uk-margin-top uk-text-right">{totalDiscount}</p>
-        <p className="uk-margin-top uk-text-right">{finalValue}</p>
-      </div> */}
-      </section>
 
       <hr />
+
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          textAlign: "center",
+          fontSize: "14px",
+        }}
+      >
+        <thead>
+          <tr
+            style={{
+              backgroundColor: "#f4f4f4",
+              borderBottom: "2px solid #ddd",
+            }}
+          >
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+              Código
+            </th>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+              Descrição
+            </th>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>Qtd.</th>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+              R$ Unit.
+            </th>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+              R$ Desc.
+            </th>
+            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+              R$ Total
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {bill?.items?.map((item, index) => (
+            <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                {item?.productVariation?.product?.reference_code}
+              </td>
+              <td
+                style={{
+                  padding: "10px",
+                  border: "1px solid #ddd",
+                  textAlign: "left",
+                }}
+              >
+                {item?.productVariation?.product?.description}
+              </td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                {item?.quantity}
+              </td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                {currencyFormatter(item?.unitary_value)}
+              </td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                {currencyFormatter(item?.discount_value)}
+              </td>
+              <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                {currencyFormatter(item?.total_value)}
+              </td>
+            </tr>
+          ))}
+
+          <tr style={{ fontWeight: "bold", backgroundColor: "#f9f9f9" }}>
+            <td style={{ padding: "10px", border: "1px solid #ddd" }}>Total</td>
+            <td style={{ padding: "10px", border: "1px solid #ddd" }}></td>
+            <td style={{ padding: "10px", border: "1px solid #ddd" }}></td>
+            <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+              <p style={{ margin: 0 }}>{currencyFormatter(bill?.total_value + bill?.discount_value)}</p>
+            </td>
+            <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+              <p style={{ margin: 0 }}>{currencyFormatter(bill?.discount_value)}</p>
+            </td>
+            <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+              <p style={{ margin: 0 }}>{currencyFormatter(bill?.total_value)}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <hr />
+
       <h4 className="uk-margin-top uk-text-center">
         <strong>Pagamentos</strong>
       </h4>
+
       {blockArr?.length > 0 &&
         blockArr?.map((i) => {
           const payments = bill?.payments?.filter(
@@ -172,14 +170,16 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
                 {payments?.[0]?.paymentMethod?.description}&nbsp;-&nbsp;
                 {payments?.[0]?.flag && payments[0]?.flag?.description}
               </p>
-             {payments && <p className="uk-margin-remove uk-text-left uk-width-1-4 ">
-                {currencyFormatter(
-                  payments?.reduce(
-                    (acc, current) => acc + current.total_value,
-                    0
-                  )
-                )}
-              </p>}
+              {payments && (
+                <p className="uk-margin-remove uk-text-left uk-width-1-4 ">
+                  {currencyFormatter(
+                    payments?.reduce(
+                      (acc, current) => acc + current.total_value,
+                      0
+                    )
+                  )}
+                </p>
+              )}
               <p className="uk-margin-remove uk-text-left uk-width-1-4">
                 {payments?.length} Parcelas
               </p>
