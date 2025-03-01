@@ -11,7 +11,7 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import {  Modal } from "antd";
+import { Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
@@ -32,7 +32,7 @@ const Container = styled.div`
   }
 `;
 
-function BillActions({ bill, client, setReload = false, cashiers }) {
+function BillActions({ bill, client, setReload, cashiers }: any) {
   const [filters, setFilters] = React.useState({});
   const [selectedId, setSelectedId] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
@@ -183,9 +183,10 @@ function BillActions({ bill, client, setReload = false, cashiers }) {
 
       {removeBillPermission && (
         <Popconfirm
+          idTooltip="confirm"
           title={`Confirma exclusao da venda ${bill?.tag}?`}
           onConfirm={() => removeBill()}
-          position="leftTop"
+          position="top-left"
         >
           <DeleteTwoTone twoToneColor={"red"} className="icon" />
         </Popconfirm>

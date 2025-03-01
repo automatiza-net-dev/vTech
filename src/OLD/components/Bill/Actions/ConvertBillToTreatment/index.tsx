@@ -10,7 +10,7 @@ import { useToast } from "infinity-forge";
 const ConvertBillToTreatment = memo(function ConvertBillToTreatment({
   bill,
   setReload,
-}) {
+}: any) {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();

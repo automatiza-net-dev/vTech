@@ -34,7 +34,7 @@ import { Select, FormHandler, useToast, BadRequestError } from "infinity-forge";
 import { Button } from "infinity-forge";
 import { AxiosError } from "axios";
 
-const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }) {
+const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any) {
   const [reload, setReload] = useState(false);
   const [filters, setFilters] = useState({ active: true });
   const [cashierFilters, setCashierFilters] = useState({
