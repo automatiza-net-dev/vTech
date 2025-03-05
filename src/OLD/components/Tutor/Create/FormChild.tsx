@@ -40,6 +40,7 @@ const { Option } = Select;
 import { viacepService } from "@/OLD/services/viacep.service";
 import { sortItems } from "@/OLD/utils/sortItems";
 import { useToast } from "infinity-forge";
+import { useSystem } from "@/presentation";
 
 export const FormChild = React.memo(function FormChild({
   data,
@@ -136,6 +137,8 @@ export const FormChild = React.memo(function FormChild({
       })
       .catch((err) => setLoading(false));
   };
+
+  const {unit} = useSystem()
 
   return (
     <div
@@ -324,7 +327,7 @@ export const FormChild = React.memo(function FormChild({
                 label={
                   <span>
                     Profissão
-                    {process.env.client === "sancla" ? (
+                    {unit.system.type === "Vet" ? (
                       !isSchedule ? (
                         <span style={{ color: "red" }}>*</span>
                       ) : (
@@ -442,7 +445,8 @@ export const FormChild = React.memo(function FormChild({
                 />
               </Form.Item>
             </section>
-            {process.env.client === "liftone" && (
+            
+            {unit.system.type !== "Vet" && (
               <div className="uk-flex">
                 <div className="uk-flex uk-flex-column uk-width-1-6">
                   <label>Diabetes</label>

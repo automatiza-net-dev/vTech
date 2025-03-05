@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 // Services
 import { timelineService } from "@/OLD/services/timeline.service";
 
-import { useLoadPatient } from "@/presentation";
+import { useLoadPatient, useSystem } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -30,8 +30,6 @@ function WeightForm({
   const { data: patient } = useLoadPatient();
 
   const { createToast } = useToast();
-
-  const systemName = process.env.clientName;
 
   useEffect(() => {
     updateData &&

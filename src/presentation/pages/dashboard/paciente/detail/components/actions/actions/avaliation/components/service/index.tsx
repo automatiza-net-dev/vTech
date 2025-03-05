@@ -27,6 +27,7 @@ import {
   useLoadSchedule,
   PdfPatientAttendance,
   useLoadAllScheduleStatuses,
+  useSystem,
 } from "@/presentation";
 import { TimeLine } from "@/domain";
 import { RemoteAttendances, RemoteChangeStatus } from "@/data";
@@ -54,6 +55,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   const handlePrint = useReactToPrint({ contentRef: componentRef });
 
+  const { unit } = useSystem();
   const { user } = useAuthAdmin();
 
   const timeLine = attendance || props;
@@ -89,7 +91,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         [!attendanceId ? "open" : "update"]({
           ...payload,
           id: attendanceId
-            ? process.env.client === "liftone"
+            ? unit.system.type !== "Vet"
               ? timeLine._id
               : attendanceId
             : undefined,
@@ -265,7 +267,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           )}
         </div>
 
-        {process.env.client === "liftone" && (
+        {unit.system.type === "Vet" && (
           <InputFile name="photos" isLocalFile multiple />
         )}
       </FormHandler>

@@ -13,6 +13,7 @@ import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 import { sortItems } from "@/OLD/utils/sortItems";
 import masks from "@/OLD/utils/masks";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useSystem } from "@/presentation";
 
 export default function FastCreateTutor({
   visible,
@@ -39,6 +40,7 @@ export default function FastCreateTutor({
   const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
 
   const submitButton = useRef();
+  const {unit} = useSystem()
 
   const {createToast} = useToast()
 
@@ -139,8 +141,7 @@ export default function FastCreateTutor({
           gender: patientData?.patientGender,
         });
         setTutorsReload && setTutorsReload((prv) => !prv);
-        res?.data?.patient?.id &&
-          vincPatientToTutor(res?.data?.patient?.id, res?.data?.tutor?.id);
+        res?.data?.patient?.id &&  vincPatientToTutor(res?.data?.patient?.id, res?.data?.tutor?.id);
         setLoading(false);
         setVisible(false);
         setPatientData({});
@@ -183,10 +184,10 @@ export default function FastCreateTutor({
           tutorName: verifyTutorName(data?.tutorName),
         })
         .then((res) => {
-          process.env.client === "sancla"
+          unit.system.type === "Vet"
             ? setPayload({
                 ...payload,
-                clientId: res?.data?.tutor.id,
+                clientId: res?.data?.patient?.id || patientData?.id,
                 contactId: res.data.tutor.id,
                 tutorName: res.data?.tutor.name,
                 contact: { cellphone: data?.tutorPhone },
@@ -212,10 +213,11 @@ export default function FastCreateTutor({
                 originId: data?.tutorOriginId,
                 clientOriginItemDescription: data?.clientOriginItemDescription,
               });
-          process.env.client === "sancla" &&
-            vincPatientToTutor(patientData?.id, res?.data?.id);
+
+          unit.system.type === "Vet" && vincPatientToTutor(patientData?.id, res?.data?.tutor?.id);
+
           setTutorsReload && setTutorsReload((prv) => !prv);
-          // setSearch(res?.data?.name);
+         
           setVisible(false);
         })
         .catch((err) => {
@@ -237,7 +239,7 @@ export default function FastCreateTutor({
         onCancel={() => setVisible(false)}
         footer={null}
         title={
-          process.env.client === "liftone"
+          unit.system.type !== "Vet"
             ? "Cadastro rápido de Clientes"
             : "Cadastro rápido de tutor e paciente"
         }
@@ -246,14 +248,14 @@ export default function FastCreateTutor({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            !patientSubmit || process.env.client === "liftone"
+            !patientSubmit || unit.system.type !== "Vet"
               ? createOnlyTutor()
               : fastCreate();
           }}
         >
           <div className="uk-flex uk-flex-around">
             <section className="uk-width-1-3">
-              {process.env.client !== "liftone" && (
+              {   unit.system.type === "Vet" && (
                 <>
                   Tutor
                   <hr />
@@ -355,7 +357,7 @@ export default function FastCreateTutor({
               )}
             </section>
 
-            {process.env.client !== "liftone" && (
+            {unit.system.type === "Vet" && (
               <section className="uk-width-1-3">
                 Paciente
                 <hr />
@@ -516,7 +518,8 @@ export default function FastCreateTutor({
               }
             />
           </div>
-          {process.env.client !== "liftone" && (
+          
+          {unit.system.type === "Vet" && (
             <div className="uk-margin-small-top">
               <label>Selecionar Pet</label>
               <Select

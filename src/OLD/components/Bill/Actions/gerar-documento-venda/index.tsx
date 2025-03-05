@@ -1,6 +1,7 @@
-import api from "@/OLD/services";
 import { useState } from "react";
-import { LoaderCircle, useToast } from "infinity-forge";
+
+import { useSystem } from "@/presentation";
+import { api, LoaderCircle, useToast } from "infinity-forge";
 
 export function GerarDocumentoVenda({
   bill,
@@ -15,20 +16,25 @@ export function GerarDocumentoVenda({
 }) {
   const [loading, setLoading] = useState(false);
 
+  const { unit } = useSystem();
   const { createToast } = useToast();
 
   return (
     <>
-      {process.env.client === "liftone" && (
+      {unit?.configs?.businessUnits?.generate_bill_documents && (
         <button
           disabled={loading}
           type="button"
           onClick={async () => {
             try {
               setLoading(true);
-              await api.post("/product-documents/generate", {
-                billId: bill.id,
-                patientId: client.id,
+              await api({
+                url: "product-documents/generate",
+                method: "post",
+                body: {
+                  billId: bill.id,
+                  patientId: client.id,
+                },
               });
 
               createToast({

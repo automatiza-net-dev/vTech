@@ -9,6 +9,7 @@ import {
   DateToYYYYMMDD,
   useVerifyPermissions,
   useLoadAllSchedulesUser,
+  useSystem,
 } from "@/presentation";
 
 export function useSubmitSchedule() {
@@ -62,6 +63,7 @@ export function useSubmitSchedule() {
   }
 
   const { createToast } = useToast();
+  const { unit } = useSystem();
   const clearCache = useQueryClient((state) => state.clearCache);
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
@@ -76,7 +78,7 @@ export function useSubmitSchedule() {
 
     const meridianEndHour = moment(meridianStartHour)
       .add(Number(data.duration), "minutes")
-      .format("YYYY-MM-DDTHH:mm:ssZ")
+      .format("YYYY-MM-DDTHH:mm:ssZ");
 
     if (data?.hasServicesStage && data?.executions.length === 0) {
       return createToast({
@@ -150,10 +152,7 @@ export function useSubmitSchedule() {
             .get<RemoteCRM>(CrmTypes.RemoteCRM)
             .loadAll({
               client: payload.patientId,
-              contact:
-                process.env.client === "liftone"
-                  ? payload.patientId
-                  : payload.holderId,
+              contact: unit?.system?.type === "Vet" ? payload.holderId: payload.patientId,
             });
 
           if (

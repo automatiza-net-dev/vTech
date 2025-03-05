@@ -11,6 +11,7 @@ import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useAuthAdmin } from "infinity-forge";
 import { cancelledStatus } from "../../../utils/status-formater";
+import { useSystem } from "@/presentation";
 
 export default function Header({
   bill,
@@ -29,6 +30,8 @@ export default function Header({
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
+
+  const {unit} = useSystem()
 
   return (
     <Container className="uk-margin-top">
@@ -115,7 +118,7 @@ export default function Header({
           <label>Nome Cliente</label>
           <Input disabled value={bill?.client?.name} />
         </div>
-        {process.env.client !== "liftone" && (
+        {unit.system.type === "Vet" && (
           <div className="uk-margin-small-right">
             <label>Nome paciente</label>
             <Input disabled value={bill?.patient?.name} />

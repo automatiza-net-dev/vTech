@@ -10,15 +10,18 @@ import { Container } from "./styles";
 import { Collapse } from "antd";
 const { Panel } = Collapse;
 import Variables from "./Variables";
+import { useSystem } from "@/presentation";
 
 const LabelsPanel = memo(function ({ body, setBody }: any) {
   const { templates } = useTextReplace();
+
+  const {unit} = useSystem()
 
   return (
     <Container className="uk-margin-small-left">
       <h5 className="uk-heading-line">Variáveis:</h5>
       <Collapse>
-        {process.env.client !== "liftone" && (
+        {unit.system.type === "Vet" && (
           <Panel header="Dependente (Pet)">
             <Variables
               body={body}
@@ -29,7 +32,7 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
             />
           </Panel>
         )}
-        <Panel header={process.env.client !== "liftone" ? "Tutor" : "Cliente"}>
+        <Panel header={unit.system.type === "Vet" ? "Tutor" : "Cliente"}>
           <Variables
             body={body}
             setBody={setBody}
@@ -49,7 +52,7 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
         </Panel>
         <Panel
           header={
-            process.env.client !== "liftone" ? "Veterinário" : "Profissional"
+            unit.system.type === "Vet" ? "Veterinário" : "Profissional"
           }
         >
           <Variables

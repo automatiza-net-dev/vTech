@@ -18,7 +18,7 @@ import {
   useUpdateSellerAndReviewer,
 } from "@/OLD/hooks/useBudgets";
 import { useQueryClient } from "react-query";
-import { useLoadPaymentsPreview } from "@/presentation";
+import { useLoadPaymentsPreview, useSystem } from "@/presentation";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 const { Panel } = Collapse;
@@ -181,6 +181,8 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
 
   const componentRef = React.useRef();
 
+  const {unit} = useSystem()
+
   const handleFn = (item: any) => {
     mutate(
       {
@@ -305,7 +307,8 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
                 {data?.client?.tutor?.document}
               </span>
             </div>
-            {process.env.client !== "liftone" && (
+
+            {unit.system.type === "Vet" && (
               <div className="uk-flex uk-flex-column uk-width-1-1">
                 <span className="uk-text-small">Paciente</span>
                 <span className="uk-text-default">
@@ -314,7 +317,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
               </div>
             )}
 
-            {process.env.client !== "liftone" && (
+            {unit.system.type === "Vet" && (
               <>
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <div className="uk-flex">
@@ -385,7 +388,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
                   </div>
                 </div>
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  {process.env.clientName === "LiftOne" && (
+                  {unit?.unitConfig?.reviewer && unit?.unitConfig?.reviewer !== "N" && (
                     <>
                       <div className="uk-flex">
                         <span className="uk-text-small uk-margin-right">
@@ -430,6 +433,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
                           </div>
                         )}
                       </div>
+
                       <div className="uk-width-1-2">
                         <AutoComplete
                           disabled={!editFields?.reviewer}

@@ -12,7 +12,7 @@ import { petsService } from "@/OLD/services/patient.service";
 import { Unlink } from "../unlink";
 import { AddPatient } from "./AddPatient";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
-import { FormCreateTutor, useVerifyPermissions } from "@/presentation";
+import { FormCreateTutor, useSystem, useVerifyPermissions } from "@/presentation";
 import PatientDetails from "@/presentation/pages/dashboard/paciente/patient-info/patient-info";
 
 import { convertDate } from "@/OLD/utils/convertDate";
@@ -157,11 +157,13 @@ export function Single({
     tutor?.photo && setPhotoSrc(process.env.NEXT_PUBLIC_API + tutor?.photo);
   }, [tutor]);
 
+  const {unit} = useSystem()
+
   return loading ? (
     <LoadingSkeleton />
   ) : (
     <div>
-      <h2>{process.env.client === "liftone" ? "Cliente" : "Tutor"}</h2>
+      <h2>{unit.system.type !== "Vet" ? "Cliente" : "Tutor"}</h2>
       <div
         className="uk-card uk-card-body uk-margin-bottom"
         style={{ background: "#fff", borderRadius: "20px", marginTop: "50px" }}
@@ -201,7 +203,7 @@ export function Single({
                 gap: 10,
               }}
             >
-              {process.env.client === "liftone" && (
+              {unit.system.type !== "Vet" && (
                 <Link href={`/dashboard/paciente/${tutor?.id}`}>
                   <Button
                     type="secondary"
@@ -224,7 +226,7 @@ export function Single({
               />
             </div>
           </div>
-          {process.env.client === "liftone" && (
+          {unit.system.type !== "Vet" && (
             <div>
               <div>
                 <label>Diabetes: {tutor?.diabetes ? "Sim" : "Não"}</label>
@@ -351,7 +353,7 @@ export function Single({
         </>
       </div>
 
-      {process.env.client !== "liftone" && (
+      {unit.system.type === "Vet" && (
         <>
           <div className="uk-flex uk-flex-between uk-margin-bottom">
             <h3 className="uk-margin-remove">Pacientes</h3>

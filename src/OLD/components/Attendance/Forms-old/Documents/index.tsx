@@ -11,7 +11,7 @@ import { RemotePatient } from "@/data";
 import { container, patientTypes } from "@/container";
 
 // Hooks
-import { useMe } from "@/presentation/hooks";
+import { useMe, useSystem } from "@/presentation/hooks";
 import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
@@ -45,6 +45,8 @@ export default function Documents({
   const patient = useLoadPatient();
   const queryClient = useQueryClient();
 
+  const {unit} = useSystem()
+
   async function registerPrint() {
     try {
       await container
@@ -71,7 +73,7 @@ export default function Documents({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-          process.env.client == "sancla"
+        unit.system.type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
         dependentId: patient?.data?.id,

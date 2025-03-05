@@ -13,7 +13,7 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
-import { useMe } from "@/presentation/hooks";
+import { useMe, useSystem } from "@/presentation/hooks";
 import { useLoadPatient, useLoadAllScheduleStatuses } from "@/presentation";
 
 // Utils
@@ -58,7 +58,7 @@ export default function LaunchExam({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const systemName = process.env.clientName;
+  const {unit} = useSystem()
 
   const replaceText = (str, setState) => {
     setLoading(true);
@@ -68,7 +68,7 @@ export default function LaunchExam({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-          systemName !== "LiftOne" ? patient.data?.tutor?.id : patient.data?.id,
+        unit.system.type === "Vet" ? patient.data?.tutor?.id : patient.data?.id,
         dependentId: patient.data?.id,
       })
       .then((res) => setState(res.data.result))

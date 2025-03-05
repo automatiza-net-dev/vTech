@@ -5,7 +5,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container, RowBox } from "./styles";
 import { Empty } from "antd";
-import { PrintHeader } from "@/presentation";
+import { PrintHeader, useSystem } from "@/presentation";
 import { Button } from "infinity-forge";
 
 import ReactToPrint, { useReactToPrint } from "react-to-print";
@@ -19,9 +19,11 @@ function PrintTable({ reports }) {
 
   const componentRef = useRef();
 
+  const {unit} = useSystem()
+
   const handleExport = () => {
     const formatted =
-      process.env.client !== "liftone"
+      unit?.system?.type === "Vet"
         ? reports?.map((item) => ({
             unidade_de_negocios: item?.unit?.identification,
             cidade: item?.unit?.city,

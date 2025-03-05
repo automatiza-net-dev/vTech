@@ -17,6 +17,7 @@ import {
   useLoadPatient,
   useMe,
   useLoadAllScheduleStatuses,
+  useSystem,
 } from "@/presentation/hooks";
 
 import FormChild from "./FormChild";
@@ -40,7 +41,9 @@ function AddMedicalRecipe({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const systemName = process.env.clientName;
+  const {unit} = useSystem()
+
+ 
 
   const queryClient = useQueryClient();
 
@@ -52,7 +55,7 @@ function AddMedicalRecipe({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-          systemName !== "LiftOne"
+        unit.system.type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
         dependentId: patient?.data?.id,

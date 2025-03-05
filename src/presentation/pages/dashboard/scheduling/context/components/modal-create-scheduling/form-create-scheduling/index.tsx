@@ -5,9 +5,10 @@ import {
   Textarea,
   FormHandler,
   useAuthAdmin,
+  TextEditor,
 } from "infinity-forge";
 
-import { useScheduling } from "@/presentation";
+import { useScheduling, useSystem } from "@/presentation";
 
 import {
   SelectServices,
@@ -19,12 +20,10 @@ import { useSubmitSchedule } from "./handleSubmit";
 import * as S from "./styles";
 
 export function FormCreateScheduling() {
-  const me = useAuthAdmin();
-  const { submit, scheduleUsers } = useSubmitSchedule();
 
-  const createSchedulingArgs = useScheduling(
-    (state) => state.createSchedulingArgs
-  );
+  const { unit } = useSystem();
+  const { submit, scheduleUsers } = useSubmitSchedule();
+  const createSchedulingArgs = useScheduling((state) => state.createSchedulingArgs);
 
   const initialData = {
     userId: createSchedulingArgs?.scheduleUser?.id
@@ -35,7 +34,7 @@ export function FormCreateScheduling() {
       ? [createSchedulingArgs.event.event.serviceType.id]
       : [],
     holderId:
-      process.env.client === "sancla"
+    unit?.system?.type === "Vet"
         ? createSchedulingArgs?.event?.event?.holder?.id
           ? [createSchedulingArgs.event.event.holder.id]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
@@ -43,7 +42,7 @@ export function FormCreateScheduling() {
           : []
         : undefined,
     holderName:
-      process.env.client === "sancla"
+      unit?.system?.type === "Vet"
         ? createSchedulingArgs?.event?.event?.holder?.name
           ? [createSchedulingArgs.event.event.holder.name]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
@@ -57,12 +56,12 @@ export function FormCreateScheduling() {
     }),
     date: moment(createSchedulingArgs?.date).format("YYYY-MM-DD"),
     patientId:
-      process.env.client === "liftone"
+      unit?.system?.type !== "Vet"
         ? [
             createSchedulingArgs?.event?.event?.patient?.id ||
               createSchedulingArgs?.id,
           ]
-        : process.env.client === "sancla"
+        : unit?.system?.type === "Vet"
         ? createSchedulingArgs?.id
           ? [createSchedulingArgs?.id]
           : []
@@ -70,12 +69,12 @@ export function FormCreateScheduling() {
         ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
         : [],
     patientName:
-      process.env.client === "liftone"
+      unit?.system?.type !== "Vet"
         ? [
             createSchedulingArgs?.event?.event?.patient?.name ||
               createSchedulingArgs?.name,
           ]
-        : process.env.client === "sancla"
+        : unit?.system?.type === "Vet"
         ? createSchedulingArgs?.event?.event?.patient?.name
           ? [createSchedulingArgs.event.event.patient.name]
           : createSchedulingArgs?.name
@@ -99,6 +98,7 @@ export function FormCreateScheduling() {
         onSucess={submit}
         initialData={initialData}
         cleanFieldsOnSubmit={false}
+        disableEnterKeySubmitForm
       >
         <div className="top">
           <h2 className="font-18-bold">
@@ -127,7 +127,7 @@ export function FormCreateScheduling() {
               type="number"
               name="duration"
               readOnly={
-                !me?.user?.unit?.unitConfig?.allow_change_schedule_duration
+                !unit?.unitConfig?.allow_change_schedule_duration
               }
               label="Duração consulta (minutos)"
             />
@@ -137,13 +137,13 @@ export function FormCreateScheduling() {
         <div className="row">
           <Input
             name={
-              process.env.client === "sancla" ? "holderName" : "patientName"
+              unit?.system?.type === "Vet" ? "holderName" : "patientName"
             }
             disabled
-            label={process.env.client === "sancla" ? "Tutor" : "Cliente"}
+            label={unit?.system?.type === "Vet" ? "Tutor" : "Cliente"}
           />
 
-          {process.env.client === "sancla" && (
+          {unit?.system?.type === "Vet" && (
             <Input name="patientName" disabled label="Paciente" />
           )}
         </div>
@@ -168,7 +168,7 @@ export function FormCreateScheduling() {
           />
         </div>
 
-        <Textarea name="majorComplaint" label="Principal queixa" />
+        <TextEditor name="majorComplaint" label="Principal queixa" />
       </FormHandler>
     </S.FormCreateScheduling>
   );

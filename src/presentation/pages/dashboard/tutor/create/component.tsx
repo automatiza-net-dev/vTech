@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { Modal, Button } from "infinity-forge";
 
-import { useVerifyPermissions } from "@/presentation";
+import { useSystem, useVerifyPermissions } from "@/presentation";
 
 import { CreateTutorForm } from "./components/form";
 import { ICreateTutorFormProps } from "./components/form/interfaces";
@@ -25,6 +25,8 @@ export function FormCreateTutor({
 
   const router = useRouter();
   const isCRM = router.asPath.includes("crm");
+
+  const {unit} = useSystem()
 
   if (!canCreate) {
     return <></>;
@@ -63,7 +65,7 @@ export function FormCreateTutor({
         ) : (
           <Button
             text={
-              process.env.client === "sancla" ? "Novo Tutor" : "Novo Cliente"
+              unit?.system?.type === "Vet" ? "Novo Tutor" : "Novo Cliente"
             }
             type="button"
             onClick={() => setOpen(true)}

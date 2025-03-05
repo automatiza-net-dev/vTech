@@ -16,6 +16,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import masks from "@/OLD/utils/masks";
 import moment from "moment";
+import { useSystem } from "@/presentation";
 
 export function Edit({
   tutorId,
@@ -31,6 +32,8 @@ export function Edit({
 
   const { originConfig, setOriginConfig } = useAuth();
   const { createToast } = useToast();
+
+  const {unit} = useSystem()
 
   const editTutorPermission = useUserHasPermission("TUT02");
 
@@ -51,7 +54,7 @@ export function Edit({
 
     return createToast({
       message: `Erro ao editar ${
-        process.env.client === "LiftOne" ? "Cliente" : "Tutor"
+        unit.system.type !== "Vet" ? "Cliente" : "Tutor"
       }`,
       status: "error",
     });
@@ -299,7 +302,7 @@ export function Edit({
         updateContacts(() => setVisible(false));
         return createToast({
           message: `${
-            process.env.client === "liftone" ? "Cliente" : "Tutor"
+            unit.system.type !== "Vet" ? "Cliente" : "Tutor"
           } editado!`,
           status: "success",
         });
@@ -377,8 +380,7 @@ export function Edit({
   ) : (
     <Container>
       <h2>
-        {" "}
-        {process.env.client === "liftone" ? "Editar cliente" : "Editar Tutor"}
+        {unit.system.type !== "Vet" ? "Editar cliente" : "Editar Tutor"}
       </h2>
 
       <Form

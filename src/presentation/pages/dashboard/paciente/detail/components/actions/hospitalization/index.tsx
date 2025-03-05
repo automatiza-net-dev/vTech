@@ -18,6 +18,7 @@ import {
   PermissionItem,
   useLoadPatient,
   useLoadAllBusinessUsers,
+  useSystem,
 } from "@/presentation";
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -31,11 +32,13 @@ export function Hospitalization() {
 
   const router = useRouter();
 
+  const { unit } = useSystem();
+
   const beds = useLoadBeds();
   const patient = useLoadPatient();
   const businessUsers = useLoadAllBusinessUsers();
 
-  if (process.env.client === "liftone") {
+  if (unit.system.type !== "Vet") {
     return <></>;
   }
 

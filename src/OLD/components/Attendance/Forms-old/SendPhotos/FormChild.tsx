@@ -7,7 +7,7 @@ import { PlusOutline } from "styled-icons/evaicons-outline";
 
 // Components
 import { Button, FormHandler, useToast } from "infinity-forge";
-import { NewAttachments } from "@/presentation";
+import { NewAttachments, useSystem } from "@/presentation";
 import { Upload, Input, Select, Popconfirm } from "antd";
 
 const { Option } = Select;
@@ -26,13 +26,14 @@ function FormChild({
   setPhotosVisible,
   remove,
 }) {
-  const systemName = process.env.clientName;
+
+  const {unit} = useSystem()
 
   const { createToast } = useToast();
 
   return (
     <FormHandler isStickyButtons>
-      {systemName !== "LiftOne" ? (
+      {unit.system.type === "Vet" ? (
         <div>
           <label>Titulo</label>
           <Input

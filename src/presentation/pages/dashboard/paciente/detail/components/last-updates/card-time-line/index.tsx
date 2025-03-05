@@ -1,4 +1,6 @@
 import moment from "moment";
+
+import { useSystem } from "@/presentation";
 import { useActionsPatient } from "../../actions/actions/options";
 
 import { CardTimeLineProps } from "./interfaces";
@@ -11,6 +13,8 @@ export function CardTimeLine({
   setTimeLineSelected,
 }: CardTimeLineProps) {
   const actionsPatient = useActionsPatient();
+
+  const {unit} = useSystem()
 
   const Action = actionsPatient.list?.find(
     (action) =>
@@ -150,7 +154,7 @@ export function CardTimeLine({
         </div>
         <div className="icons">
           {Action?.Icon && Action?.Icon}
-          {process.env.client === "liftone" &&
+          {unit.system.type !== "Vet" &&
             timeline?.timeline_info?.$meta?.bill_document_id && (
               <svg
                 id="Capa_1"

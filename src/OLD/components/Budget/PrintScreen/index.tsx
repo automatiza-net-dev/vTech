@@ -4,7 +4,7 @@ import React from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 
-import { PrintHeader } from "@/presentation";
+import { PrintHeader, useSystem } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -18,6 +18,8 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
   const { getWord } = useDictionary();
 
   const budget = { data: budgetData };
+
+  const {unit} = useSystem()
 
   return (
     <S.PrintScreen className="uk-container">
@@ -63,13 +65,14 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
           </p>
         </div>
 
-        {process.env.client !== "liftone" && (
+        {unit?.system?.type === "Vet" && (
           <div>
             <label>Paciente</label>
             <p className="ukk-margin-remove">{budget?.data?.patient?.name}</p>
           </div>
         )}
       </section>
+
       <h4 className="uk-margin-top uk-text-center">
         <strong>Itens confirmados</strong>
       </h4>

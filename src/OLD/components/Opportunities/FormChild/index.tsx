@@ -20,6 +20,7 @@ import {
   FormCreatePatient,
   FormCreateTutor,
   useLoadCampaings,
+  useSystem,
 } from "@/presentation";
 import { SelectMidia } from "./select-midia";
 import { container, TypesAutomatiza } from "@/container";
@@ -138,6 +139,11 @@ export default function FormChild({
       });
   }, [type, crmStatus]);
 
+  const {unit} = useSystem()
+
+
+  console.log(data, "@@")
+
   return (
     <Container
       onSubmit={async (e) => {
@@ -209,8 +215,8 @@ export default function FormChild({
             )}
           </div>
         </div>
-        {(process.env.client === "sancla" ||
-          user?.unit?.system?.type === "Vet") && (
+        {
+          unit?.system?.type === "Vet" && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">
@@ -293,11 +299,11 @@ export default function FormChild({
                   value={data?.patientName}
                   onChange={(val) => setData({ ...data, patientName: val })}
                   onSelect={(_val, opt) => {
-                    setData({
-                      ...data,
+                    setData(state => ({
+                      ...state,
                       clientId: opt?.id,
                       patientName: opt?.value,
-                    });
+                    }));
                   }}
                   filterOption={(val, opt) =>
                     normalizeStr(opt?.value.toUpperCase()).includes(
@@ -362,8 +368,8 @@ export default function FormChild({
                 value={data?.castrated}
                 onChange={(val) => setData({ ...data, castrated: val })}
               >
-                <Option value="true">Sim</Option>
-                <Option value="false">Não</Option>
+                <Option value={true}>Sim</Option>
+                <Option value={false}>Não</Option>
               </SelectAnt>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
@@ -639,10 +645,7 @@ export default function FormChild({
                 <Button type="submit" text="Salvar" />
 
                 <Button
-                  onClick={() => {
-                    footer ? setVisible(false) : setEdit(false);
-                    setReload((prv) => !prv);
-                  }}
+                    onClick={() => () => router.push("/crm/kanban")}
                   text="Cancelar"
                 />
               </footer>

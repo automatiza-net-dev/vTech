@@ -28,7 +28,6 @@ export function useLoadAllSchedulesUser({
   return useQuery({
     queryKey: "RemoteLoadAllSchedulesUser" + to + lista_cancelados,
     queryFn: fetcher,
-    enableCache: true,
     enabled,
   });
 }
@@ -36,21 +35,17 @@ export function useLoadAllSchedulesUser({
 export function useLoadAllSchedulesUserWeek(
   to: string,
   from: string,
-  users?: string[],
+  users: string[],
   lista_cancelados?: boolean
 ) {
   async function fetcher() {
-    if (users) {
-      const response = await container
-        .get<RemoteLoadAllSchedulesUsersWeek>(
-          patientTypes.RemoteLoadAllSchedulesUsersWeek
-        )
-        .loadAll({ users, from, to, lista_cancelados });
+    const response = await container
+      .get<RemoteLoadAllSchedulesUsersWeek>(
+        patientTypes.RemoteLoadAllSchedulesUsersWeek
+      )
+      .loadAll({ users, from, to, lista_cancelados });
 
-      return response;
-    }
-
-    return null;
+    return response;
   }
 
   const refetchKeyWeekCalendar =

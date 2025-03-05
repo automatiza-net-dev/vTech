@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 
 import { Event, ScheduleUser } from "@/domain";
-import { DateToDDMMYYYY } from "@/presentation";
+import { DateToDDMMYYYY, useSystem } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -20,22 +20,22 @@ export function ToolTipContent({
   timeText: string;
   scheduleUser: ScheduleUser;
 }) {
+  const { unit } = useSystem();
+
   const infos = {
     tutor: {
       icon: <Person2Icon />,
       text:
-        process.env.client === "liftone"
-          ? event.event.patient?.name + " -- RG: " + event.event.patient?.tag
-          : event.event?.holder?.name +
-            " - " +
-            event.event?.holder?.tutor?.cellphone,
+        unit.system.type !== "Vet"
+          ? event.event.patient?.name
+          : event.event?.holder?.name + " - " + event.event?.holder?.tutor?.cellphone,
     },
     paciente: {
       icon: <PetsIcon />,
       text:
-        process.env.client === "liftone"
+        unit.system.type !== "Vet"
           ? ""
-          : event.event.patient?.name + " -- RG: " + event.event.patient?.tag,
+          : event.event.patient?.name + " - RG: " + event.event.patient?.tag,
     },
     race: {
       icon: (
@@ -53,11 +53,9 @@ export function ToolTipContent({
         </svg>
       ),
       text:
-        process.env.client === "liftone"
+        unit.system.type !== "Vet"
           ? ""
-          : event?.event?.specie?.description +
-            " > " +
-            event?.event?.race?.description,
+          : event?.event?.specie?.description + " > " + event?.event?.race?.description,
     },
     reavaliacao: {
       icon: <ListAltIcon />,

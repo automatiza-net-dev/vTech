@@ -19,6 +19,7 @@ import { opportunitiesActivitiesColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
+import { useSystem } from "@/presentation";
 
 const OpActivities = memo(function OpActivities({
   origin = "none",
@@ -50,6 +51,7 @@ const OpActivities = memo(function OpActivities({
   const { clinic } = useProfile();
 
   useEffect(() => {
+    console.log(opportunity)
     setOpportunitiesData({
       balance: opportunity?.balance,
       active: opportunity?.active,
@@ -83,7 +85,7 @@ const OpActivities = memo(function OpActivities({
       castrated: opportunity?.castrated || false,
       patient: op?.client,
       contact: opportunity?.contact,
-      weight: opportunity?.client?.weight,
+      weight: opportunity?.weight,
       gender: opportunity?.client?.gender,
       originDescription: opportunity?.clientOrigin?.description,
       originId: opportunity?.clientOrigin?.id,
@@ -127,6 +129,8 @@ const OpActivities = memo(function OpActivities({
       : setActivities([]);
   }, [opportunity, op, actTypes, colaborators]);
 
+  const { unit } = useSystem();
+
   async function updateOpportunity() {
     setLoading(true);
 
@@ -144,16 +148,17 @@ const OpActivities = memo(function OpActivities({
       clientId: opportunitiesData?.clientId,
       contactDate: moment(opportunitiesData?.contactDate).toISOString(),
       originId: opportunitiesData?.originId,
-      weight: opportunitiesData?.weight,
-      gender: opportunitiesData?.gender,
-      castrated: opportunitiesData?.castrated || false,
-      raceId: opportunitiesData?.raceId,
       marketingCampaignId: opportunitiesData?.marketingCampaignId,
       clientOriginItemDescription:
         opportunitiesData?.clientOriginItemDescription,
     };
 
-    process.env.client === "liftone" && delete formattedData?.castrated;
+    if (unit.system.type === "Vet") {
+      formattedData.castrated = opportunitiesData?.castrated || false;
+      formattedData.weight = opportunitiesData?.weight;
+      formattedData.gender = opportunitiesData?.gender;
+      formattedData.raceId = opportunitiesData?.raceId;
+    }
 
     opportunitiesService
       .update(opportunity?.id, formattedData)

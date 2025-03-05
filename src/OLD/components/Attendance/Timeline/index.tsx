@@ -19,6 +19,7 @@ import { HospitalizationTimeline } from "../../Hospitalization/HospitalizationTi
 
 import { Tabs, Select, Tag } from "antd";
 import PatientHistoric from "./Historic";
+import { useSystem } from "@/presentation";
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -26,8 +27,9 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
   const [activeTab, setActiveTab] = React.useState("1");
   const [filter, setFilter] = useState("all");
   const { hospitalizations } = useHospitalizations();
+  
+  const {unit} = useSystem()
 
-  const systemName = process.env.clientName;
 
   const findPatient = hospitalizations?.find(
     (hospitalization) => hospitalization?.patient?.id === patient?.id
@@ -135,7 +137,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
             filter={filter}
           />
         </TabPane>
-        {process.env.client !== "liftone" && (
+        {unit.system.type === "Vet" && (
           <TabPane tab="Tutores" key="9">
             <TutorsList
               filters={{ patientId: patient?.id }}
@@ -146,7 +148,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
             />
           </TabPane>
         )}
-        {process.env.client !== "liftone" && (
+        {unit.system.type === "Vet" && (
           <TabPane tab="Vacinas Lançadas" key="11">
             <VaccinesLauchedList
               reload={reload}
@@ -162,7 +164,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
             reloadExtern={reloadExtern}
           />
         </TabPane>
-        {process.env.client !== "liftone" && (
+        {unit.system.type === "Vet" && (
           <TabPane tab="Registros de internação" key="13">
             <HospitalizationTimeline
               patientData={{ ...findPatient, patient }}

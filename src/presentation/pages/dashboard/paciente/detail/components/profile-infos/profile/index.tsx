@@ -7,6 +7,7 @@ import { FormCreatePatient } from "../../../../create";
 
 import * as S from "./styles";
 import { useState } from "react";
+import { useSystem } from "@/presentation/hooks";
 
 export function ProfileImage({ src }: { src: string | null }) {
   const [imgError, setImgError] = useState(false);
@@ -41,6 +42,7 @@ export function Profile(props: Patient) {
     community,
   } = props;
 
+  const {unit} = useSystem()
   const queryClient = useQueryClient();
 
   return (
@@ -77,7 +79,7 @@ export function Profile(props: Patient) {
               </span>
             )}
 
-            {process.env.clientName === "Sanclá" ? (
+            {unit.system.type === "Vet" ? (
               <>
                 <span>
                   <a href={tutor?.cellphone ? `tel:${tutor?.cellphone}` : ""}>
