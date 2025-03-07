@@ -19,7 +19,7 @@ const getClinicsByUser = async (params = {}) => {
   });
 };
 
-const getColaborators = async ({ name, document, phone, role }) => {
+const getColaborators = async ({ name, document, phone, role }: any) => {
   return await api.get(
     `/business-units/users${name ? `?name=${name}` : ""}${
       document ? `${name ? "&" : "?"}document=${document}` : ""
