@@ -182,9 +182,10 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
 
       {removeBillPermission && (
         <Popconfirm
+          idTooltip="removebill"
           title={`Confirma exclusao da venda ${bill?.tag}?`}
           onConfirm={() => removeBill()}
-          position="leftTop"
+          position="top-left"
         >
           <DeleteTwoTone twoToneColor={"red"} className="icon" />
         </Popconfirm>
