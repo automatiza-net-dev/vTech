@@ -126,7 +126,13 @@ export default function FormChild({
     return "ok";
   };
 
+  const [showSpecie, setShowSpecie] = useState(false);
+
   useEffect(() => {
+    setTimeout(() => {
+      setShowSpecie(true);
+    }, 300);
+
     prvsValues && setData({ ...data, ...prvsValues });
   }, [prvsValues]);
 
@@ -137,6 +143,8 @@ export default function FormChild({
         statusId: crmStatus.find((st) => st?.tag === "N")?.id,
       });
   }, [type, crmStatus]);
+
+  console.log(data, "@@")
 
   return (
     <Container
@@ -309,36 +317,38 @@ export default function FormChild({
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">
-                <label>{`Espécie > Raça do pet`}</label>
-                <AutoComplete
-                  value={data?.raceDescription || ""}
-                  disabled={!footer ? !edit : false}
-                  className="uk-width-1-1"
-                  onChange={(e: any) => {
-                    const choosed = races.find(
-                      (option: any) => option.value === e
-                    ) as any;
-                    setData({
-                      ...data,
-                      raceId: choosed?.id,
-                      raceDescription: choosed?.value,
-                    });
-                  }}
-                  placeholder="Digite o nome da raça"
-                  filterOption={(inputValue: any, option: any) =>
-                    option.value
-                      .toUpperCase()
-                      .indexOf(inputValue.toUpperCase()) !== -1
-                  }
-                >
-                  {races.map((option: any, key) => {
-                    return (
-                      <Option key={key} value={option.value}>
-                        {option.value}
-                      </Option>
-                    );
-                  })}
-                </AutoComplete>
+                <label>Espécie {">"} Raça do pet</label>
+
+                {showSpecie && (
+                  <FormHandler
+                    disableEnterKeySubmitForm
+                    initialData={{ species: data?.raceId }}
+                  >
+                    <Select
+                      name="species"
+                      options={
+                        races.map((race: any) => ({
+                          label: race.value,
+                          value: race.id,
+                        })) || []
+                      }
+                      disabled={!footer ? !edit : false}
+                      onlyOneValue
+                      placeholder="Digite o nome da raça"
+                      onChangeInput={(value) => {
+                        const choosed = races.find(
+                          (option: any) => option.value === value
+                        ) as any;
+
+                        setData({
+                          ...data,
+                          raceId: choosed?.id,
+                          raceDescription: choosed?.value,
+                        });
+                      }}
+                    />
+                  </FormHandler>
+                )}
               </div>
             </div>
             <div className="uk-width-1-4 uk-margin-small-right">
