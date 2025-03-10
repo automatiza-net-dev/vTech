@@ -46,8 +46,8 @@ function Component({ pedingStatus, bill }) {
 export const cancelledStatus = {
   P: "Cancelamento pendente",
   A: "Cancelamento avaliado",
-  N: "Cancelamento não autorizado",
-  S: "Cancelamento autorizado",
+  // N: "Cancelamento não autorizado",
+  // S: "Cancelamento autorizado",
 };
 
 export const billStatusFormatter = (bill) => {
@@ -63,11 +63,36 @@ export const billStatusFormatter = (bill) => {
 
   const statusStyles = {
     ABERTA: <span style={{ color: "red" }}>Aberta</span>,
-    EXTORNADA: "Extornada",
+    ESTORNADA: "Estornada",
     BAIXADA: <span style={{ color: "green" }}>Baixada</span>,
   };
 
-  return bill.cancelled
-    ? cancelledStatus[bill.cancelled]
-    : statusStyles[status] || status;
+  return cancelledStatus?.[bill?.cancelled] ? cancelledStatus[bill.cancelled]  : (statusStyles[status] || status);
 };
+
+export const statusBillText = (bill) => {
+
+  if(bill?.cancelled === "P") {
+    return "Pendente avaliação técnica"
+  }
+
+  if(bill?.cancelled === "F") {
+    return "Pendente avaliação financeira"
+  }
+
+  if(bill?.cancelled === "A") {
+
+    return "Finalizar cancelamento"
+  }
+
+  if(bill?.cancelled === "N") {
+
+    return "Cancelamento não aprovado"
+  }
+
+  if(bill?.cancelled === "S") {
+    return "Cancelamento aprovado"
+  }
+
+  return ""
+}

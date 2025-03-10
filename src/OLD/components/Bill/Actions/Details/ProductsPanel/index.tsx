@@ -16,6 +16,8 @@ import { useBillPaymentsReceipts, PrintPaymentReceipts } from "@/presentation";
 import moment from "moment";
 import { paymentsColumns } from "./columns";
 
+import * as S from "./styles";
+
 const ProductsPanel = memo(function ProductsPanel({
   payments,
   remove,
@@ -49,15 +51,15 @@ const ProductsPanel = memo(function ProductsPanel({
       return "Pendente de Liberação";
     }
     if (!pending && !approved && approved_at !== null) {
-      return `Não aprovado por ${approvedUser?.name} em ${moment(approved_at).format(
-        "DD/MM/YYYY"
-      )}`;
+      return `Não aprovado por ${approvedUser?.name} em ${moment(
+        approved_at
+      ).format("DD/MM/YYYY")}`;
     }
 
     if (!pending && approved) {
-      return `Aprovado por ${approvedUser?.name} em ${moment(approved_at).format(
-        "DD/MM/YYYY"
-      )}`;
+      return `Aprovado por ${approvedUser?.name} em ${moment(
+        approved_at
+      ).format("DD/MM/YYYY")}`;
     }
 
     return "-";
@@ -67,8 +69,8 @@ const ProductsPanel = memo(function ProductsPanel({
   const imprimir2 = useReactToPrint({ contentRef: componentRef });
 
   function FormatProductCanceled({ text, item }: { text: string; item: any }) {
-    if(!item) {
-      return text
+    if (!item) {
+      return text;
     }
     return (
       <>
@@ -120,9 +122,7 @@ const ProductsPanel = memo(function ProductsPanel({
           cancelled: (
             <div className="font-16-regular" style={{ textAlign: "right" }}>
               {payment?.cancelled === "P" ? (
-                <FormatProductCanceled
-                  text={"Revisão pendente"}
-                />
+                <FormatProductCanceled text={"Revisão pendente"} />
               ) : payment?.cancelled === "S" ? (
                 <FormatProductCanceled text={"Aprovado por"} item={payment} />
               ) : payment?.cancelled === "N" ? (
@@ -225,7 +225,15 @@ const ProductsPanel = memo(function ProductsPanel({
             ) : (
               "Venda já finalizada"
             )}
-            <Table dataSource={formatedPayments} columns={paymentsColumns} />
+
+            <S.ProductsPanel>
+              <div className="table_formated">
+                <Table
+                  dataSource={formatedPayments}
+                  columns={paymentsColumns}
+                />
+              </div>
+            </S.ProductsPanel>
           </>
         </Panel>
         <section style={{ display: "none" }}>

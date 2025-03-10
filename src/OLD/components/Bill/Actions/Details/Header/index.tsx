@@ -10,7 +10,11 @@ import { Container } from "./styles";
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useAuthAdmin } from "infinity-forge";
-import { cancelledStatus } from "../../../utils/status-formater";
+import {
+  billStatusFormatter,
+  cancelledStatus,
+  statusBillText,
+} from "../../../utils/status-formater";
 
 export default function Header({
   bill,
@@ -33,10 +37,7 @@ export default function Header({
   return (
     <Container className="uk-margin-top">
       <div style={{ marginTop: -40, textAlign: "right" }}>
-        <p className="font-16-regular">
-          Status Venda:{" "}
-          {bill?.cancelled ? cancelledStatus[bill?.cancelled] : bill?.status}
-        </p>
+        <p className="font-16-regular">Status Venda: {bill?.status}</p>
       </div>
       <section className="uk-flex uk-flex-center">
         <div className="uk-margin-small-right">
@@ -189,20 +190,29 @@ export default function Header({
               />
             </div>
 
-              <div className="uk-margin-small-right">
-                <label>R$ Prod Cancelados</label>
-                <Input disabled value={(bill?.cancelValueProducts || 0)?.toFixed(2)} />
-              </div>
+            <div className="uk-margin-small-right">
+              <label>R$ Prod Cancelados</label>
+              <Input
+                disabled
+                value={(bill?.cancelValueProducts || 0)?.toFixed(2)}
+              />
+            </div>
 
-              <div className="uk-margin-small-right">
-                <label>R$ Serv. Cancelados</label>
-                <Input disabled value={(bill?.cancelValueServices || 0)?.toFixed(2)} />
-              </div>
+            <div className="uk-margin-small-right">
+              <label>R$ Serv. Cancelados</label>
+              <Input
+                disabled
+                value={(bill?.cancelValueServices || 0)?.toFixed(2)}
+              />
+            </div>
 
-              <div className="uk-margin-small-right">
-                <label>R$ Total. Cancelados</label>
-                <Input disabled value={(bill?.cancelValueTotal || 0)?.toFixed(2)} />
-              </div>
+            <div className="uk-margin-small-right">
+              <label>R$ Total. Cancelados</label>
+              <Input
+                disabled
+                value={(bill?.cancelValueTotal || 0)?.toFixed(2)}
+              />
+            </div>
 
             <div className="uk-margin-small-right">
               <label>Usuário solicitação</label>
@@ -235,6 +245,13 @@ export default function Header({
               <label>Obs Cancelamento</label>
               <Input disabled value={bill?.cancelObservation} />
             </div>
+
+            {bill?.cancelled && (
+              <div className="uk-margin-small-right">
+                <label>Status cancelamento</label>
+                <Input disabled value={statusBillText(bill)} />
+              </div>
+            )}
           </section>
         </>
       )}

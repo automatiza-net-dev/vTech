@@ -337,9 +337,9 @@ const Details = memo(function Details({ billId, setVisible }: any) {
     }
   );
 
-  function FormatProductCanceled({ text, item }: { text: string, item: any }) {
-    if(!item) {
-      return text
+  function FormatProductCanceled({ text, item }: { text: string; item: any }) {
+    if (!item) {
+      return text;
     }
     return (
       <>
@@ -370,12 +370,13 @@ const Details = memo(function Details({ billId, setVisible }: any) {
             courtesy: item?.courtesy ? "Sim" : "Não",
             max_discount: item?.max_discount ? "Sim" : "Não",
             auth_data: <AuthorizationStatusProduct item={item} />,
+            cancelledStatus: item?.cancelled,
             cancelled: (
               <div className="font-16-regular" style={{ textAlign: "right" }}>
                 {item?.cancelled === "P" ? (
-                  <FormatProductCanceled text={"Revisão pendente"}  />
+                  <FormatProductCanceled text={"Revisão pendente"} />
                 ) : item.cancelled === "S" ? (
-                  <FormatProductCanceled text={"Aprovado por"} item={item}/>
+                  <FormatProductCanceled text={"Aprovado por"} item={item} />
                 ) : item.cancelled === "N" ? (
                   <FormatProductCanceled text={"Recusado por"} item={item} />
                 ) : (
@@ -793,8 +794,20 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       />
       <section className="uk-margin-top">
         <h4 className="uk-margin-remove">Produtos - Serviços Ativos</h4>
-        <Table columns={productsColumns} dataSource={formatedProducts} />
+        <Table columns={productsColumns} dataSource={formatedProducts?.filter(item => item.cancelledStatus !== "S")} />
       </section>
+
+      {data?.cancelled === "S" && (
+        <section className="uk-margin-top">
+          <h4 className="uk-margin-remove">Produtos - Serviços Cancelados</h4>
+          <Table
+            columns={productsColumns}
+            dataSource={formatedProducts?.filter(
+              (item) => item.cancelledStatus === "S"
+            )}
+          />
+        </section>
+      )}
       <section>
         <h4 className="uk-margin-remove">Pagamentos</h4>
         {blockArr?.length > 0 &&
@@ -807,6 +820,7 @@ const Details = memo(function Details({ billId, setVisible }: any) {
             />
           ))}
       </section>
+
       <section className="uk-margin-top">
         <h4 className="uk-margin-remove">Observações</h4>
         <TextArea readOnly value={data?.additional_information} />
