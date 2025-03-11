@@ -144,7 +144,6 @@ export default function FormChild({
       });
   }, [type, crmStatus]);
 
-  console.log(data, "@@")
 
   return (
     <Container
@@ -322,10 +321,10 @@ export default function FormChild({
                 {showSpecie && (
                   <FormHandler
                     disableEnterKeySubmitForm
-                    initialData={{ species: data?.raceId }}
                   >
                     <Select
                       name="species"
+                      controlledInitialValue={{ value: data?.raceId }}
                       options={
                         races.map((race: any) => ({
                           label: race.value,
@@ -336,6 +335,10 @@ export default function FormChild({
                       onlyOneValue
                       placeholder="Digite o nome da raça"
                       onChangeInput={(value) => {
+                        if(value === data.raceId) {
+                          return;
+                        }
+
                         const choosed = races.find(
                           (option: any) => option.value === value
                         ) as any;
@@ -414,7 +417,7 @@ export default function FormChild({
                 value: collab?.name,
                 key: collab?.id,
               }))}
-              value={data?.collabName || user.firstName}
+              value={data?.collabName || user?.firstName}
               onChange={(val) => setData({ ...data, collabName: val })}
               onSelect={(_, opt) => {
                 setData({ ...data, userId: opt?.id, collabName: opt?.value });
