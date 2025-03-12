@@ -1,9 +1,9 @@
-import {  useRef } from "react";
+import { useRef } from "react";
 
 import { Button, Empty } from "antd";
 import { PrintHeader } from "@/presentation";
 
-import  { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 
@@ -11,11 +11,9 @@ import { Container, RowBox } from "./styles";
 import { reportsService } from "@/OLD/services/reports.service";
 
 function PrintTable({ schedules, filters, setReload, setFilters }) {
-
   const componentRef = useRef();
 
   const handleExport = async (data) => {
-
     const keys = Object.keys(data);
     let newObj = { ...data };
 
@@ -29,7 +27,7 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
 
     const response = await reportsService
       .getSchedulingReports(newObj)
-      .then((res) => res.data)
+      .then((res) => res.data);
 
     const formatted =
       process.env.client !== "liftone"
@@ -86,6 +84,8 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
             ultimo_peso: item?.peso_paciente,
             obito_dep: item?.obito_paciente,
             data_obito_dep: item?.data_obito_paciente || "-",
+            "Usuario Lancamento Agenda": item?.creation_user_name,
+            "Profissional Responsavel": item?.professional_user_name,
           }))
         : schedules?.map((item) => ({
             unidade_de_negocios: item?.identification,
@@ -127,6 +127,8 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
             bairro_cliente: item?.district,
             cidade: item?.city,
             uf: item?.state,
+            "Usuario Lancamento Agenda": item?.creation_user_name,
+            "Profissional Responsavel": item?.professional_user_name,
           }));
 
     let wb = XLSX.utils.book_new(),
@@ -173,6 +175,10 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
                 ? "cpf_cnpj_resp"
                 : "cpf_cnpj_cliente"}
             </div>
+
+            <div>Usuario Lancamento Agenda</div>
+
+            <div>Profissional Responsavel</div>
           </section>{" "}
           {schedules?.length > 0 ? (
             <section className="table-box">
@@ -201,6 +207,8 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
                   )}
                   <div>{item?.nome_tutor}</div>
                   <div>{item?.cpf_cnpj_tutor}</div>
+                  <div>{item?.creation_user_name}</div>
+                  <div>{item?.professional_user_name}</div>
                 </RowBox>
               ))}
             </section>
@@ -230,7 +238,7 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
 
             setTimeout(() => {
               imprimir();
-            }, 400)
+            }, 400);
           }}
         >
           Imprimir
