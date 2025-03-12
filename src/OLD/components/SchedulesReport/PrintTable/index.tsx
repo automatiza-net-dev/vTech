@@ -1,29 +1,40 @@
-// @ts-nocheck
-import { memo, useRef, useState } from "react";
-
-import { useProfile } from "@/OLD/hooks/useProfile";
-import { useAuth } from "@/OLD/hooks/useAuth";
+import {  useRef } from "react";
 
 import { Button, Empty } from "antd";
 import { PrintHeader } from "@/presentation";
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import  { useReactToPrint } from "react-to-print";
 import moment from "moment";
 import * as XLSX from "xlsx/xlsx.mjs";
 
 import { Container, RowBox } from "./styles";
+import { reportsService } from "@/OLD/services/reports.service";
 
-function PrintTable({ schedules, filters, values, setReload, setFilters }) {
-  const { clinic } = useProfile();
+function PrintTable({ schedules, filters, setReload, setFilters }) {
 
   const componentRef = useRef();
 
-  const handleExport = () => {
+  const handleExport = async (data) => {
+
+    const keys = Object.keys(data);
+    let newObj = { ...data };
+
+    if (keys.includes("fromDate")) {
+      newObj = {
+        ...newObj,
+        fromDate: moment(data?.fromDate).startOf("day").format("YYYY-MM-DD"),
+        toDate: moment(data.toDate).endOf("day").format("YYYY-MM-DD"),
+      };
+    }
+
+    const response = await reportsService
+      .getSchedulingReports(newObj)
+      .then((res) => res.data)
+
     const formatted =
       process.env.client !== "liftone"
-        ? schedules?.map((item) => ({
+        ? response?.map((item) => ({
             unidade_de_negocios: item?.identification,
-            cidade: item?.unit_city,
             estado: item?.unit_state,
             data_inicio: item?.start_hour_date,
             hora_inicio: item?.start_hour_time,
@@ -78,7 +89,6 @@ function PrintTable({ schedules, filters, values, setReload, setFilters }) {
           }))
         : schedules?.map((item) => ({
             unidade_de_negocios: item?.identification,
-            cidade: item?.unit_city,
             estado: item?.unit_state,
             data_inicio: item?.start_hour_date,
             hora_inicio: item?.start_hour_time,
@@ -131,7 +141,7 @@ function PrintTable({ schedules, filters, values, setReload, setFilters }) {
 
   return (
     <>
-      <Container ref={componentRef} className="uk-margin-small-top">
+      <Container ref={componentRef as any} className="uk-margin-small-top">
         <div className="clinic-header">
           <PrintHeader />
           <div className="uk-text-center">
@@ -206,9 +216,7 @@ function PrintTable({ schedules, filters, values, setReload, setFilters }) {
         <Button
           className="uk-margin-small-right"
           onClick={() => {
-            setFilters((prv) => ({ ...prv, noSearch: false }));
-            setReload((prv) => !prv);
-            handleExport();
+            handleExport(filters);
           }}
         >
           Exportar (Excel)
@@ -219,7 +227,10 @@ function PrintTable({ schedules, filters, values, setReload, setFilters }) {
           onClick={() => {
             setFilters((prv) => ({ ...prv, noSearch: false }));
             setReload((prv) => !prv);
-            imprimir();
+
+            setTimeout(() => {
+              imprimir();
+            }, 400)
           }}
         >
           Imprimir

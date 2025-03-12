@@ -79,7 +79,7 @@ export function PacientePage() {
     },
     {
       title: "Negociações",
-      content: (props) => <Negotiations />,
+      content: () => <Negotiations />,
       key: "negotiations",
       active: process.env.client === "liftone",
     },

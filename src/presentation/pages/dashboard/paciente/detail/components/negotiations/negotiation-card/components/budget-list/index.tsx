@@ -77,24 +77,38 @@ export function BudgetsList({
               </h3>
 
               {budget?.items?.map((item) => (
-                <div key={item.id} className="content">
-                  <div>
-                    {item.quantity}x{" "}
-                    {item?.productVariation?.product.description}
+                <>
+                  <div key={item.id} className="content">
+                    <div>
+                      {item.quantity}x{" "}
+                      {item?.productVariation?.product.description}
+                    </div>
+
+                    <div>
+                      {item.discount_value
+                        ? formatNumberToCurrency(item.discount_value)
+                        : "-"}
+                    </div>
+
+                    <div>
+                      {item.total_value
+                        ? formatNumberToCurrency(item.total_value)
+                        : "-"}
+                    </div>
                   </div>
 
-                  <div>
-                    {item.discount_value
-                      ? formatNumberToCurrency(item.discount_value)
-                      : "-"}
-                  </div>
-
-                  <div>
-                    {item.total_value
-                      ? formatNumberToCurrency(item.total_value)
-                      : "-"}
-                  </div>
-                </div>
+                  {tutors && (
+                    <Select
+                      label="Responsável Financeiro"
+                      name={pathName + `.financialResponsibleId`}
+                      onlyOneValue
+                      options={tutors?.map((tutor) => ({
+                        label: tutor?.name,
+                        value: tutor?.id,
+                      }))}
+                    />
+                  )}
+                </>
               ))}
 
               <div className="content">
@@ -136,19 +150,9 @@ export function BudgetsList({
             <Modal open={open} onClose={() => setOpen(false)}>
               {open && <AddBudgetNew budgetId={budget.id} setModal={setOpen} />}
             </Modal>
+
             {showObservations && (
               <div>
-                {tutors && (
-                  <Select
-                    label="Responsável Financeiro"
-                    name={pathName + `.financialResponsibleId`}
-                    onlyOneValue
-                    options={tutors?.map((tutor) => ({
-                      label: tutor?.name,
-                      value: tutor?.id,
-                    }))}
-                  />
-                )}
                 <div className="form_budget">
                   <Select
                     onlyOneValue
