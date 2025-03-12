@@ -120,10 +120,12 @@ export function AddSale({
     try {
       const formatItemsCart = formatCart(data.cart, initialData.cart);
 
+      console.log(window.alert(billId));
+
       const payload = {
         ...data,
         billId: type === "edit" ? billId : null,
-        originBillId: (internalCode && billId) ?? null,
+        originBillId: billId || null,
         cart: undefined,
         items: formatItemsCart,
         billDate: new Date().toISOString(),

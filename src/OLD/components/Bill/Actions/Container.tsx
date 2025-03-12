@@ -199,7 +199,7 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
         <ConvertBillToTreatment bill={bill} setReload={setReload} />
       )}
 
-      <LaunchRelatedSale billId={bill.id} internalCode={bill?.internalCode} />
+      <LaunchRelatedSale {...bill} />
 
       <Tooltip
         idTooltip="test"

@@ -17,6 +17,7 @@ export type Bill = {
   product_value: number;
   internalCode: string;
   service_value: number;
+  origin_bill_id?: string | null;
   discount_value: number;
   fee_value: number | null;
   delivery_value: number;
