@@ -45,7 +45,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
     discountValue: currencyFormatter(0),
     originalValue: currencyFormatter(0),
   });
-  const [titleType, setTitleType] = useState("");
+  const [titleType, setTitleType] = useState("DEBITO");
   const { createToast } = useToast();
 
   const { paymentMethods } = usePaymentMethods(false, false);
@@ -222,9 +222,27 @@ export default function Create({ type = "", setVisible, setReload }: any) {
       {!type && (
         <Container>
           <div className="uk-margin-xlarge-right">
-            <Group onChange={(e) => setTitleType(e.target.value)}>
+            <Group
+            value={titleType}
+              onChange={(e) => {
+                setTitleType(e.target.value);
+                setPlansOptions(
+                  plans
+                    ?.map((plan) => {
+                      return {
+                        ...plan,
+                        value: plan?.description,
+                        key: plan?.id,
+                      };
+                    })
+                    .filter((planOption) => {
+                      return planOption.type === e.target.value;
+                    })
+                );
+              }}
+            >
               <Radio value="DEBITO">À pagar</Radio>
-              <Radio value="CREADITO">À receber</Radio>
+              <Radio value="CREDITO">À receber</Radio>
             </Group>
           </div>
         </Container>
