@@ -63,7 +63,7 @@ export const Columns = (selectAllFinances, hasInternalCode) => [
     key: "internalCode",
   } : {},
   {
-    title: "Conf",
+    title: "Aceite",
     dataIndex: "accept",
     key: "accept",
     render: (accept) =>

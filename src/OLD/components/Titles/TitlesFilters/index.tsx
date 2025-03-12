@@ -208,7 +208,7 @@ const TitlesFilters = memo(function TitlesFilters({
               { label: "Não", value: "NAO" },
             ]}
             name="accept"
-            label="Aceito"
+            label="Aceite"
           />
 
           <InputRadio

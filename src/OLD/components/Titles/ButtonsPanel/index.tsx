@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { memo, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -7,17 +6,13 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button, useToast } from "infinity-forge";
+import { api, Button, Popconfirm, useToast } from "infinity-forge";
 import { Modal } from "antd";
 import DownTitles from "../DownTitles";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
-const ButtonsPanel = memo(function ButtonsPanel({
-  setReload,
-  type,
-  setFilters,
-}) {
+function ButtonsPanel({ setReload, type, setFilters }) {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -28,6 +23,15 @@ const ButtonsPanel = memo(function ButtonsPanel({
 
   const downTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}04`
+  );
+
+  const removeAceite = useUserHasPermission(
+    `${accessControlTitles(type)}11`
+  );
+
+
+  const permissionToDelete = useUserHasPermission(
+    `${accessControlTitles(type)}03`
   );
 
   const checkTitlePermission = useUserHasPermission(
@@ -128,13 +132,77 @@ const ButtonsPanel = memo(function ButtonsPanel({
         {checkTitlePermission && (
           <Button
             onClick={handleButtonClick}
-            text={!loading ? "Aceite / Conferência" : "Enviando..."}
+            text={!loading ? "Aceite" : "Enviando..."}
           />
         )}
+
+  {(removeAceite) && (
+          <Popconfirm
+            idTooltip="delete"
+            cancelText="cancelar"
+            okText="confirmar"
+            position="top-right"
+            title="Confirma a retirada do aceite?"
+            onConfirm={async () => {
+              setLoading(true);
+
+              await api({
+                url: "finances/not-accept-many",
+                method: "post",
+                body: {
+                  type: (type === "receive" || type === "CREDITO") ? "Credito" : "Debito",
+                  ids: titles.map((finance) => finance?.id),
+                },
+              });
+
+              setReload((prv) => !prv);
+
+              createToast({
+                message: "Items retirados com sucessso",
+                status: "success",
+              });
+
+              setLoading(false);
+            }}
+          >
+            <Button text={!loading ? "Retirar aceite" : "Enviando..."} />
+          </Popconfirm>
+        )}
+
         <Button
           onClick={() => submitItemsBordero()}
           text="Adicionar itens borderô"
         />
+
+        {permissionToDelete && (
+          <Popconfirm
+            idTooltip="delete"
+            cancelText="cancelar"
+            okText="confirmar"
+            position="top-right"
+            title="Confirma a exclusão dos registros?"
+            onConfirm={async () => {
+              await api({
+                url: "finances/delete-multiple",
+                method: "put",
+                body: {
+                  idList: titles.map((finance) => finance?.id),
+                },
+              });
+
+              setReload((prv) => !prv);
+              createToast({
+                message: "Items deletados com sucessso",
+                status: "success",
+              });
+            }}
+          >
+            <Button
+              type="button"
+              text="Excluir"
+            />
+          </Popconfirm>
+        )}
       </section>
       <hr />
       <Modal
@@ -155,6 +223,6 @@ const ButtonsPanel = memo(function ButtonsPanel({
       </Modal>
     </div>
   );
-});
+}
 
 export default ButtonsPanel;

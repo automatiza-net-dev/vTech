@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { memo, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -7,7 +6,7 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button, Popconfirm, useToast } from "infinity-forge";
+import { api, Button, Popconfirm, useToast } from "infinity-forge";
 import { Modal } from "antd";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
@@ -28,6 +27,10 @@ function ButtonsPanel({ setReload, type, setFilters }: any) {
     `${accessControlTitles(type)}04`
   );
 
+  const removeAceiteTRC = useUserHasPermission(`TRC11`);
+
+  const removeAceiteTPG = useUserHasPermission(`TPG11`);
+
   const checkTitlePermission = useUserHasPermission(
     `${accessControlTitles(type)}06`
   );
@@ -35,6 +38,10 @@ function ButtonsPanel({ setReload, type, setFilters }: any) {
   const addItemsBorderoPermission = useUserHasPermission(
     `${accessControlTitles(type)}07`
   );
+
+  const permissionToDeleteTRC = useUserHasPermission(`TRC03`);
+
+  const permissionToDeleteTPG = useUserHasPermission(`TPG03`);
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -147,18 +154,80 @@ function ButtonsPanel({ setReload, type, setFilters }: any) {
         {checkTitlePermission && (
           <Button
             onClick={handleButtonClick}
-            text={!loading ? "Aceite / Conferência" : "Enviando..."}
+            text={!loading ? "Realizar aceite" : "Enviando..."}
           />
         )}
+
+        {(removeAceiteTPG || removeAceiteTRC) && (
+          <Popconfirm
+            idTooltip="delete"
+            cancelText="cancelar"
+            okText="confirmar"
+            position="top-right"
+            title="Confirma a retirada do aceite?"
+            onConfirm={async () => {
+              setLoading(true);
+
+              await api({
+                url: "finances/not-accept-many",
+                method: "post",
+                body: {
+                  type: "Todos",
+                  ids: titles.map((finance) => finance?.id),
+                },
+              });
+
+              setReload((prv) => !prv);
+
+              createToast({
+                message: "Items retirados com sucessso",
+                status: "success",
+              });
+
+              setLoading(false);
+            }}
+          >
+            <Button text={!loading ? "Retirar aceite" : "Enviando..."} />
+          </Popconfirm>
+        )}
+
         {addItemsBorderoPermission && (
           <Popconfirm
             onConfirm={() => {
               submitItemsBordero();
             }}
+            idTooltip="a"
             title="Você deseja adcionar os itens a um borderô?"
-            placement="topLeft"
+            position="top-right"
           >
             <Button type="button" text="Adicionar itens ao borderô" />
+          </Popconfirm>
+        )}
+
+        {(permissionToDeleteTRC || permissionToDeleteTPG) && (
+          <Popconfirm
+            idTooltip="delete"
+            cancelText="cancelar"
+            okText="confirmar"
+            position="top-right"
+            title="Confirma a exclusão dos registros?"
+            onConfirm={async () => {
+              await api({
+                url: "finances/delete-multiple",
+                method: "put",
+                body: {
+                  idList: titles.map((finance) => finance?.id),
+                },
+              });
+
+              setReload((prv) => !prv);
+              createToast({
+                message: "Items deletados com sucessso",
+                status: "success",
+              });
+            }}
+          >
+            <Button type="button" text="Excluir" />
           </Popconfirm>
         )}
       </section>

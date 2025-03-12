@@ -1,4 +1,5 @@
 import { Checkbox } from "antd";
+import { BsCheck, BsX } from "react-icons/bs";
 
 export const Columns = (selectAllFinances) => [
   {
@@ -56,6 +57,17 @@ export const Columns = (selectAllFinances) => [
     dataIndex: "nsu",
     key: "nsu"
   },
+    {
+      title: "Aceite",
+      dataIndex: "accept",
+      key: "accept",
+      render: (accept) =>
+        accept === "SIM" ? (
+          <BsCheck fontSize={25} />
+        ) : accept === "NAO" ? (
+          <BsX fontSize={25} />
+        ) : null,
+    },
   {
     title: (
       <>

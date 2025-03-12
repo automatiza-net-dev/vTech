@@ -16,18 +16,27 @@ export const Document = styled.div`
     width: 20%;
 
     button {
-      width: fit-content;
-      height: 32px;
-      padding: 0 10px;
-      border: 1px solid #444;
-      color: #444;
-      background: #ff0000 !important;
-      color: #ffff;
-      border-color: #ff0000;
+      border: 0;
+      width: 90px;
+      display: flex;
 
-      &.printed {
-        background: #25d366 !important;
-        border-color: #25d366;
+      svg {
+        margin: 0;
+      }
+
+      .imprimir {
+        width: 90px;
+        background: #ff0000 !important;
+        height: 32px;
+        color: #ffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.printed {
+          background: #25d366 !important;
+          border-color: #25d366;
+        }
       }
 
       &:hover {
