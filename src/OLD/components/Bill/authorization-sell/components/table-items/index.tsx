@@ -6,6 +6,7 @@ import { authorizationFormater } from "../../utils";
 import { Cancel } from "./cancel";
 import { ApproveCancel } from "./approve-cancel";
 import { usePermission } from "@/presentation";
+import moment from "moment";
 
 export function TableItems(props: Bill & { isCancelled?: boolean }) {
   const hasPermissionToCancelItems = usePermission("VEN19");
@@ -22,12 +23,31 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         omitEmptyList: true,
         columns: [
           { id: "item_produtividade", label: "Item produtividade" },
-          { id: "data_agendamento", label: "Data agendameto" },
-          { id: "data_execucao", label: "Data de execução" },
+          {
+            id: "data_agendamento",
+            label: "Data agendameto",
+            Component: {
+              Element: (props) => (
+                <p className="font-16-regular">
+                  {props?.data_agendamento && moment(props.data_agendamento).format("DD/MM/YYYY")}
+                </p>
+              ),
+            },
+          },
+          {
+            id: "data_execucao",
+            label: "Data de execução",
+            Component: {
+              Element: (props) => (
+                <p className="font-16-regular">
+                  {props?.data_execucao && moment(props.data_execucao).format("DD/MM/YYYY")}
+                </p>
+              ),
+            },
+          },
           { id: "usuario_execucao", label: "Usuário execução" },
           { id: "observations", label: "Observação" },
         ] as Column<TreatmentExecutions>[],
-        
       },
       columns: [
         { id: "quantity", label: "Qtd." },

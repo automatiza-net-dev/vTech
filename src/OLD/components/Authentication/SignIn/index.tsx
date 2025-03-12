@@ -78,7 +78,7 @@ export function SignIn() {
           status: "error",
           duration: 7500,
           message:
-            err.response.data.message || "Erro ao logar. Por favor, tente novamente mais tarde.",
+            err?.response?.data?.message || "Erro ao logar. Por favor, tente novamente mais tarde.",
         });
       }finally {
         setLoading(false)

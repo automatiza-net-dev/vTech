@@ -13,15 +13,10 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
 import Negotiation from "@/OLD/components/Budget/Negotiation";
-import { Modal } from "infinity-forge";
+import { Modal, Tooltip } from "infinity-forge";
 
 import { useDictionary } from "@/presentation";
-import {
-  useToast,
-  LoaderCircle,
-  Select,
-  FormHandler,
-} from "infinity-forge";
+import { useToast, LoaderCircle, Select, FormHandler } from "infinity-forge";
 import {
   financialServicesContainer,
   financialServicesTypes,
@@ -295,14 +290,21 @@ export default function CompleteBudget({ budget, setReload = false }) {
   return (
     <>
       {confirmBudgetPermission && (
-        <BsCheckCircle
-        className="icon"
-        size={20}
-        onClick={() =>
-          validBudget ? setVisible((prevState) => !prevState) : null
-        }
-        style={{ opacity: validBudget ? 1 : 0.5 }}
-      />
+        <Tooltip
+          idTooltip="add-payment-prev"
+          content="Confirmar Orçamento"
+          enableHover
+          trigger={
+            <BsCheckCircle
+              className="icon"
+              size={20}
+              onClick={() =>
+                validBudget ? setVisible((prevState) => !prevState) : null
+              }
+              style={{ opacity: validBudget ? 1 : 0.5 }}
+            />
+          }
+        />
       )}
 
       <Modal
@@ -463,7 +465,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
                   },
                 }}
               >
-                <div style={{ display: "flex", width: "100%", gap: '10px' }}>
+                <div style={{ display: "flex", width: "100%", gap: "10px" }}>
                   <div style={{ width: "100%" }}>
                     <Select
                       name="type"

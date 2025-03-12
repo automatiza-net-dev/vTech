@@ -5,12 +5,9 @@ import { useRouter } from "next/router";
 import { billService } from "@/OLD/services/bills.service";
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { useToast } from "infinity-forge";
+import { Tooltip, useToast } from "infinity-forge";
 
-export default function ConvertBillToTreatment({
-  bill,
-  setReload,
-}) {
+export default function ConvertBillToTreatment({ bill, setReload }) {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -46,11 +43,18 @@ export default function ConvertBillToTreatment({
   };
 
   return (
-    <AiOutlineCheckCircle
-      onClick={() => convertBill(bill)}
-      size={20}
-      style={{ cursor: "pointer" }}
+    <Tooltip
+      idTooltip="test"
+      enableHover
+      position="top-right"
+      content={"Converter Venda em Tratamento"}
+      trigger={
+        <AiOutlineCheckCircle
+          onClick={() => convertBill(bill)}
+          size={20}
+          style={{ cursor: "pointer" }}
+        />
+      }
     />
   );
 }
-
