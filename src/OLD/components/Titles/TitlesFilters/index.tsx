@@ -113,7 +113,13 @@ const TitlesFilters = memo(function TitlesFilters({
           callbackResult: (formValues) => {
             setFilters((prev) => ({
               ...prev,
-              ...formValues,
+              fromIssue: formValues.fromIssue,
+              toIssue:formValues.toIssue,
+              fromExpiration: formValues.fromExpiration,
+              toExpiration: formValues.toExpiration,
+              fromPayment:  formValues.fromPayment,
+              toPayment: formValues.toPayment,
+              competence: formValues.competence
             }));
           },
         }}

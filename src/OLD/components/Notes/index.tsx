@@ -121,7 +121,7 @@ export function Notes() {
                   </>
                 )}
 
-                {!removeReceiptPermission && (
+                {removeReceiptPermission && (
                   <Popconfirm
                     title="Deseja remover esta nota de entrada?"
                     onConfirm={async () => {
