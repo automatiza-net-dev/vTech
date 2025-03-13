@@ -29,7 +29,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
             Component: {
               Element: (props) => (
                 <p className="font-16-regular">
-                  {props?.data_agendamento && moment(props.data_agendamento).format("DD/MM/YYYY")}
+                  {props?.data_agendamento && moment(props.data_agendamento).format("DD/MM/YYYY HH:mm")}
                 </p>
               ),
             },
@@ -40,7 +40,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
             Component: {
               Element: (props) => (
                 <p className="font-16-regular">
-                  {props?.data_execucao && moment(props.data_execucao).format("DD/MM/YYYY")}
+                  {props?.data_execucao && moment(props.data_execucao).format("DD/MM/YYYY HH:mm")}
                 </p>
               ),
             },
