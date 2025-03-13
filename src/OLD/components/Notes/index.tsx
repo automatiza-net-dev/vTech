@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { Container } from "./styles";
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { api, BadRequestError, Button, PageWrapper, UnauthorizedError, useToast } from "infinity-forge";
 import Create from "./Actions/Create";
 import Filters from "./Filters";
 import AddOrRemoveItem from "./Actions/AddOrRemoveItem";
@@ -46,7 +46,7 @@ export function Notes() {
 
   const { receipts } = useReceipts(filters, reload);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const router = useRouter();
   const listReceiptsPermission = useUserHasPermission("ENT00");
@@ -79,58 +79,70 @@ export function Notes() {
                 )}
                 {/* TODO CHAMAR MODAL EM TESE PARA ELIMINAR PAGINA... */}
                 {receipt?.status === "PendenteXml" && (
-                    <MdOutlineChecklist
-                      size={20}
-                      className="custom-icon"
-                      onClick={() =>
-                        router.push(
-                          `/dashboard/notas-entrada/xml/${receipt?.id}`
-                        )
-                      }
-                    />
+                  <MdOutlineChecklist
+                    size={20}
+                    className="custom-icon"
+                    onClick={() =>
+                      router.push(`/dashboard/notas-entrada/xml/${receipt?.id}`)
+                    }
+                  />
                 )}
                 {receipt?.status !== "Baixada" && addPaymentsPermission && (
-                    <MdMonetizationOn
-                      className="custom-icon"
-                      onClick={() => {
-                        setSelectedId(receipt?.id);
-                        setAddPaymentsScreenVisible(true);
-                      }}
-                    />
-                )}
-                {receipt?.status !== "Baixada" && (
-                    <FiLock onClick={() => finishReceipt(receipt?.id)} />
-                )}
-                  <CgDetailsMore
+                  <MdMonetizationOn
                     className="custom-icon"
                     onClick={() => {
-                      setDetailsVisible(true);
                       setSelectedId(receipt?.id);
-                      {
-                        /*
+                      setAddPaymentsScreenVisible(true);
+                    }}
+                  />
+                )}
+                {receipt?.status !== "Baixada" && (
+                  <FiLock onClick={() => finishReceipt(receipt?.id)} />
+                )}
+                <CgDetailsMore
+                  className="custom-icon"
+                  onClick={() => {
+                    setDetailsVisible(true);
+                    setSelectedId(receipt?.id);
+                    {
+                      /*
                       router.push(
                         `/dashboard/notas-entrada/detalhes/${receipt?.id}`
                         );
                       */
-                      }
-                    }}
-                  />
+                    }
+                  }}
+                />
                 {receipt?.status === "Baixada" && (
                   <>
                     {reopenReceiptPermission && (
-                        <FiUnlock onClick={() => reopenReceipt(receipt?.id)} />
+                      <FiUnlock onClick={() => reopenReceipt(receipt?.id)} />
                     )}
                   </>
                 )}
+
                 {removeReceiptPermission && (
-                    <Popconfirm
-                      title="Deseja remover esta nota de entrada?"
-                      onConfirm={() => createToast({ status: "error", message: "Verificar método" })
-                     
+                  <Popconfirm
+                    title="Deseja remover esta nota de entrada?"
+                    onConfirm={async () => {
+                      try {
+                        await api({
+                          url: "receipts/delete-receipt",
+                          method: "post",
+                          body: {
+                            receiptId: receipt?.id,
+                          },
+                        });
+  
+                        setReload((s) => !s);
+                      }catch(err) {
+                          createToast({ message: err?.error?.message, status: "warning" })
                       }
-                    >
-                      <DeleteTwoTone twoToneColor={"red"} />
-                    </Popconfirm>
+                
+                    }}
+                  >
+                    <DeleteTwoTone twoToneColor={"red"} />
+                  </Popconfirm>
                 )}
               </div>
             ),
@@ -145,7 +157,10 @@ export function Notes() {
 
   const verifyFile = (info) => {
     if (info?.file?.type !== "text/xml") {
-      return  createToast({ status: "error", message: "Apenas arquivos Xml são permitidos" })
+      return createToast({
+        status: "error",
+        message: "Apenas arquivos Xml são permitidos",
+      });
     }
     setXml(info?.file?.originFileObj);
   };
@@ -167,35 +182,50 @@ export function Notes() {
 
   const verifyErrors = (str) => {
     if (str === "E_NO_IDS") {
-      return  createToast({ status: "error", message: "Nenhum id informado" })
+      return createToast({ status: "error", message: "Nenhum id informado" });
     }
 
     if (str === "E_INVALID_FILE") {
-      return  createToast({ status: "error", message: "Arquivo inválido"})
+      return createToast({ status: "error", message: "Arquivo inválido" });
     }
 
     if (str === "E_IMPORTED") {
-      return createToast({ status: "error", message: "Arquivo já importado"})
+      return createToast({ status: "error", message: "Arquivo já importado" });
     }
 
     if (str === "E_INVALID_DOC") {
-      return  createToast({ status: "error", message: "CNPJ não pertence a nenhuma unidade"})
+      return createToast({
+        status: "error",
+        message: "CNPJ não pertence a nenhuma unidade",
+      });
     }
 
     if (str === "E_NO_DL") {
-      return  createToast({ status: "error", message: "É necessário um movimento diário para importação"})
+      return createToast({
+        status: "error",
+        message: "É necessário um movimento diário para importação",
+      });
     }
 
     if (str === "E_NO_VARIATION") {
-      return createToast({ status: "error", message: "Não foi possível encontrar um preço para o produto"})
+      return createToast({
+        status: "error",
+        message: "Não foi possível encontrar um preço para o produto",
+      });
     }
 
     if (str === "E_INTERNAL") {
-      return  createToast({ status: "error", message: "Não foi possível ler o arquivo"})
+      return createToast({
+        status: "error",
+        message: "Não foi possível ler o arquivo",
+      });
     }
 
     if (str === "E_NOT_FOUND") {
-      return  createToast({ status: "error", message: "Não foi possível encontrar um preço para o produto"})
+      return createToast({
+        status: "error",
+        message: "Não foi possível encontrar um preço para o produto",
+      });
     }
   };
 
@@ -204,13 +234,23 @@ export function Notes() {
       .finishReceipt({ receiptId: id })
       .then((res) => {
         setReload((prv) => !prv);
-        return  createToast({ status: "success", message: "Nota de entrada finalizada com sucesso"})
+        return createToast({
+          status: "success",
+          message: "Nota de entrada finalizada com sucesso",
+        });
       })
       .catch((err) => {
         if (err?.response?.data?.code === "E_NO_VARIATION") {
-          return  createToast({ status: "error", message: "Existem produtos da nota que ainda não foram relacionados"})
+          return createToast({
+            status: "error",
+            message:
+              "Existem produtos da nota que ainda não foram relacionados",
+          });
         } else {
-          return  createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1]})
+          return createToast({
+            status: "error",
+            message: err?.response?.data?.message?.split(":")[1],
+          });
         }
       });
   };
@@ -220,10 +260,16 @@ export function Notes() {
       .reopenReceipt({ receiptId: id })
       .then((_res) => {
         setReload((prv) => !prv);
-        return  createToast({ status: "success", message:  "Nota de entrada reaberta com sucesso!"})
+        return createToast({
+          status: "success",
+          message: "Nota de entrada reaberta com sucesso!",
+        });
       })
       .catch((err) => {
-        return  createToast({ status: "error", message:  "Houve um erro ao reabrir a nota"})
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao reabrir a nota",
+        });
       });
   };
 
