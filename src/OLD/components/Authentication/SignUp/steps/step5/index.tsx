@@ -6,10 +6,6 @@ import * as S from "./styles"
 
 export function Step5(props) {
 
-  const { createToast } = useToast();
-
-  console.log({ props })
-
   async function handleSubmit(data) {
     const payload = {
       ...props.data,

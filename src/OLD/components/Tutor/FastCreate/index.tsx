@@ -120,7 +120,7 @@ export default function FastCreateTutor({
       })
       .then((res) => {
         setSearch(res?.data?.tutor?.name);
-
+ 
         setPayload({
           ...payload,
           patientName: res?.data?.patient?.name,
@@ -186,7 +186,7 @@ export default function FastCreateTutor({
           process.env.client === "sancla"
             ? setPayload({
                 ...payload,
-                clientId: res?.data?.tutor.id,
+                clientId: res.data?.patient?.id || patientData?.id,
                 contactId: res.data.tutor.id,
                 tutorName: res.data?.tutor.name,
                 contact: { cellphone: data?.tutorPhone },

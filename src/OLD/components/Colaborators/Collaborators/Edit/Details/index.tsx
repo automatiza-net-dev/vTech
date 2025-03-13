@@ -134,7 +134,7 @@ function EditColaborator() {
          return createToast({ message: "CPF Inválido", status: "warning" })
         }
       })
-      .catch((err) => setLoading(false));
+      .catch((err) => setLoading(false)).finally(() => setLoading(false));
   };
 
   return (

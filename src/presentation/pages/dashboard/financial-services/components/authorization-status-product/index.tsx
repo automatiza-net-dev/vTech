@@ -23,7 +23,7 @@ export function useAuthorizationStatusProduct(
   }
 
   if (
-    (props?.courtesy || props?.max_discount) &&
+    ((props as any)?.hasCourtesy || props?.max_discount) &&
     props?.courtesy_approved_at === null
   ) {
     return "waiting";

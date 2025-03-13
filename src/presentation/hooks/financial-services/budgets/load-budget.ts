@@ -32,6 +32,7 @@ export function formatProductsApiToCartItems({
   return items.map((item) => {
     return {
       id: item.productVariation?.product?.id,
+      hasCourtesy: item?.courtesy,
       courtesy: item.productVariation?.product?.courtesy,
       approved: item?.approved,
       max_discount: item?.max_discount,
@@ -42,6 +43,7 @@ export function formatProductsApiToCartItems({
           id: item?.id,
           billItemId: item?.id,
           budgetItemId: item?.id,
+          approved: item?.approved,
           exceedDiscount: item?.max_discount,
           total: item?.total_value,
           quantity: item?.quantity,

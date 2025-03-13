@@ -1,6 +1,6 @@
 import { Bill } from "@/domain";
 import { AddSale } from "@/presentation";
-import { Icon, Modal } from "infinity-forge";
+import { Icon, Modal, Tooltip } from "infinity-forge";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -17,13 +17,21 @@ export default function AddBillItem({ bill }: { bill: Bill }) {
         <AddSale setModal={setOpen} billId={bill?.id} type="edit" />
       </Modal>
 
-      <Button
-        type="button"
-        style={{ background: "transparent", padding: 0, border: 0 }}
-        onClick={() => setOpen(true)}
-      >
-        <Icon name="IconEdit" color="#000" />
-      </Button>
+      <Tooltip
+        idTooltip="test"
+        enableHover
+        position="top-right"
+        content={"Adicionar Itens na Venda"}
+        trigger={
+          <Button
+            type="button"
+            style={{ background: "transparent", padding: 0, border: 0 }}
+            onClick={() => setOpen(true)}
+          >
+            <Icon name="IconEdit" color="#000" />
+          </Button>
+        }
+      />
     </>
   );
 }

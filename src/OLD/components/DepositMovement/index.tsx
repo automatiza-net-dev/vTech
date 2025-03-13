@@ -249,10 +249,11 @@ export const DepositMovements = memo(() => {
     });
   }, []);
 
-  return !canListDepositsMov || canListDepositsMov === "loading" ? (
-    <AccessDenied loading={canListDepositsMov} />
-  ) : (
-    <PageWrapper title="Movimentações Depositos Estoque">
+  // if(true) {
+  //   return <></>
+  // }
+
+  return   <PageWrapper title="Movimentações Depositos Estoque">
       <section>
         <div className="uk-margin-bottom uk-margin-small-top">
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ flex: 1 }}>
@@ -809,5 +810,4 @@ export const DepositMovements = memo(() => {
         </div>
       </section>
     </PageWrapper>
-  );
 });

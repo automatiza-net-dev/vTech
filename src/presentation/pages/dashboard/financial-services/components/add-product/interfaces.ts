@@ -10,6 +10,7 @@ export type Cart = {
   id: Product["id"];
   courtesy: boolean;
   toSubmit?: boolean;
+  hasCourtesy?: boolean;
   authData?: JSX.Element;
   approved?: Product["approved"];
   approvalDate?: Product["approvalDate"];
@@ -18,6 +19,7 @@ export type Cart = {
   courtesy_approved_at?: Product["courtesy_approved_at"];
   variations: {
     id: string;
+    approved?: boolean;
     billItemId?:  Bill["items"][0]["id"];
     budgetItemId?: Budget["items"][0]["id"];
     exceedDiscount?: boolean;

@@ -370,7 +370,7 @@ function TitlesFilters({
       </div>
       <div className="uk-width-1-5">
         <div className="">
-          <label>Aceito</label>
+          <label>Aceite</label>
           <br />
           <Group
             defaultValue="all"

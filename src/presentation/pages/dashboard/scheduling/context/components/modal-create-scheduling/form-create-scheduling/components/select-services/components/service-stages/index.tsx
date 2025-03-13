@@ -34,6 +34,10 @@ export function ServiceStages() {
             String(item?.treatmentExecutionId) +
             String(index);
 
+          if (!item.itemProdutividade) {
+            return <></>;
+          }
+
           return (
             <div key={String(id)} className="content">
               <div className="input-box">

@@ -1,8 +1,24 @@
 import { ProductCart } from "@/domain";
 
 import { Cart } from "../interfaces";
+import { transformStringToNumber } from "@/presentation/utils";
 
-export function formatCart(cart: Cart[], maxDiscount: boolean): ProductCart[] {
+function verifyIsApproved(
+  cartItem: Cart["variations"][0],
+  initialCartItem?: Cart["variations"][0]
+) {
+  if (!initialCartItem) {
+    return false;
+  }
+
+  if (transformStringToNumber(cartItem.discountValue) >  transformStringToNumber(initialCartItem.discountValue)) {
+    return false;
+  }
+
+  return cartItem.approved;
+}
+
+export function formatCart(cart: Cart[], initialCart: Cart[]): ProductCart[] {
   if (!cart || cart.length === 0) {
     return [];
   }
@@ -12,11 +28,18 @@ export function formatCart(cart: Cart[], maxDiscount: boolean): ProductCart[] {
     ?.map((variation) => {
       const verifyMaxDiscount = !!variation?.exceedDiscount ? true : false;
 
+      const initialCartItem = initialCart
+        ?.flatMap((item) => item.variations)
+        ?.find((item) => item.id === variation.id);
+
+      const approved = verifyIsApproved(variation, initialCartItem);
+
       return {
         billItemId: variation.billItemId || "",
         budgetItemId: variation.budgetItemId || "",
         maxDiscount: verifyMaxDiscount,
         courtesy: variation?.courtesy || false,
+        approved,
         discountValue:
           typeof variation.discountValue === "string"
             ? Number(

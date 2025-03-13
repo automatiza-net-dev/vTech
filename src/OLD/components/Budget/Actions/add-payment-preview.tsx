@@ -26,7 +26,7 @@ export default function AddPaymentPreview({
     <>
       <Tooltip
         idTooltip="add-payment-prev"
-        content="Adicionar prévia pagamento"
+        content="Lançar Pagamentos"
         enableHover
         trigger={
           <MdMonetizationOn

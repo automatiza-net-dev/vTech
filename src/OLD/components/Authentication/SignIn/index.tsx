@@ -1,28 +1,23 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 
-import { container, TypesAutomatiza } from "@/container";
-
-import moment from "moment";
-import { useAuthAdmin, Button, useToast, api } from "infinity-forge";
+import { useAuthAdmin, Button, useToast, api, cookies } from "infinity-forge";
 
 import { sessionService } from "@/OLD/services/session.service";
-
-import { Storage } from "@/infra";
 
 import { Container } from "./styles";
 
 export function SignIn() {
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
     ip: "",
   });
   const [saveAccess, setSaveAccess] = useState(false);
-  const { loadUser } = useAuthAdmin();
 
-  const router = useRouter();
+  const { createToast } = useToast();
+  const { loadUser } = useAuthAdmin();
 
   useEffect(() => {
     if (process.browser) {
@@ -36,10 +31,9 @@ export function SignIn() {
     }
   }, []);
 
-  const { createToast } = useToast();
-
   const handleSubmit = useCallback(
     async (e) => {
+      setLoading(true)
       e.preventDefault();
 
       if (data.email === "" || data.password === "") {
@@ -51,8 +45,11 @@ export function SignIn() {
       }
 
       try {
+        const systemUrl = new URL(window.location.origin).origin;
+
         const getBusinessUnits = await sessionService.login({
           ...data,
+          systemUrl,
           system: process.env.clientName,
         });
 
@@ -61,11 +58,12 @@ export function SignIn() {
           getBusinessUnits.data[0].businessUnits &&
           ((await sessionService.login({
             ...data,
+            systemUrl,
             system: process.env.clientName,
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
           })) as any);
 
-        await container.get<Storage>(TypesAutomatiza.storage).set("token", {
+        await cookies.set("token", {
           value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
         });
 
@@ -76,20 +74,17 @@ export function SignIn() {
           });
         }
 
-        router.push(
-          `/dashboard?fromDate=${moment().format(
-            "YYYY-MM-DD"
-          )}&toDate=${moment().format("YYYY-MM-DD")}`
-        );
-        loadUser({ roleName: "user" });
+        await loadUser({ roleName: "user" });
       } catch (err: any) {
+   
         createToast({
           status: "error",
+          duration: 7500,
           message:
-            err?.response?.data?.message || err?.response?.status === 422
-              ? "Usuário ou senha não existe"
-              : "Erro ao logar. Por favor, tente novamente mais tarde.",
+            err?.response?.data?.message || "Erro ao logar. Por favor, tente novamente mais tarde.",
         });
+      }finally {
+        setLoading(false)
       }
     },
     [data]
@@ -146,6 +141,7 @@ export function SignIn() {
               <Button
                 type="submit"
                 text="Entrar"
+                loading={loading}
                 style={{ width: "100%", borderRadius: "25px" }}
               />
 

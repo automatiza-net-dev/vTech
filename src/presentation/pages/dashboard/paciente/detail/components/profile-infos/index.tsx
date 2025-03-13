@@ -89,7 +89,9 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
   return (
     <Error name="ProfileInfos">
       <S.ProfileInfos>
+        
         <Profile {...patient} />
+
         {details && (
           <div className="details-box">
             {details?.map((detail) => {

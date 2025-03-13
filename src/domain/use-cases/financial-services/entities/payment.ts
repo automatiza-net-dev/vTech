@@ -3,6 +3,7 @@ import { PaymentMethod } from "../bills";
 export type Payment = {
   pending: boolean;
   id: string;
+  cancelled?: "P" | "N" | "S" | null;
   block: number;
   expiration_date: Date;
   fee_type: "SEM_JUROS";

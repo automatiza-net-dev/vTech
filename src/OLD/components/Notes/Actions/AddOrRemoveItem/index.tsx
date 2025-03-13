@@ -1,40 +1,40 @@
-// @ts-nocheck
 import { memo, useCallback, useEffect, useState } from "react";
 
 import { receiptService } from "@/OLD/services/receipt.service";
 
 import { useReceipt } from "@/OLD/hooks/useReceipts";
 
-import { Modal } from "antd";
 import FormChild from "@/OLD/components/Notes/FormChild";
 
 import moment from "moment";
 
 import { GrAddCircle } from "react-icons/gr";
-import { useToast } from "infinity-forge";
+import { Modal, useToast } from "infinity-forge";
 
-const AddOrRemoveItem = memo(function AddOrRemoveItem({
-  id,
-  setReload,
-  reload,
-}) {
+export default function AddOrRemoveItem({ id, setReload, reload }) {
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState({});
-  const [ids, setIds] = useState({ ids: [] });
+  const [ids, setIds] = useState<any>({ ids: [] });
 
   const { receipt } = useReceipt(ids, reload);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const addReceiptItemSubmit = (data, setState) => {
     receiptService
       .addReceiptItem(data)
       .then((res) => {
         setReload((prv) => !prv);
-        return  createToast({ status: "success",  message:"Item adicionado com sucesso" })
+        return createToast({
+          status: "success",
+          message: "Item adicionado com sucesso",
+        });
       })
       .catch((err) => {
-        return createToast({ status: "error",  message:"Houve um erro ao adicionar o item" })
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao adicionar o item",
+        });
       });
     setState([]);
   };
@@ -44,11 +44,17 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
       .removeReceiptItem({ itemId: id })
       .then((_res) => {
         setReload((prv) => !prv);
-       
-       return createToast({ status: "success",  message:"Item removido com sucesso" })
+
+        return createToast({
+          status: "success",
+          message: "Item removido com sucesso",
+        });
       })
       .catch((err) => {
-        return createToast({ status: "success",  message:"Houve um erro ao remover o item" })
+        return createToast({
+          status: "success",
+          message: "Houve um erro ao remover o item",
+        });
       });
   };
 
@@ -81,24 +87,22 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
 
   return (
     <>
-        <GrAddCircle
-          style={{ cursor: "pointer" }}
-          onClick={() => setVisible(true)}
-        />
-  
-      {visible && (
+      <GrAddCircle
+        style={{ cursor: "pointer" }}
+        onClick={() => setVisible(true)}
+      />
+
         <Modal
-          visible={visible}
-          title={
+          open={visible}
+          onClose={() => setVisible(false)}
+          styles={{ maxWidth: "1000px" }}
+        >
+          <h3 className="font-14-regular">
             <span>
               Adicionar itens&nbsp;&nbsp;Entrada código: {receipt[0]?.tag}
               &nbsp;&nbsp;Fornecedor: {receipt[0]?.supplier?.name}
             </span>
-          }
-          footer={null}
-          width={1000}
-          onCancel={() => setVisible(false)}
-        >
+          </h3>
           <FormChild
             data={data}
             setData={setData}
@@ -106,11 +110,8 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
             type="update"
             addItemSubmit={addReceiptItemSubmit}
             removeItemSubmit={removeReceiptItemSubmit}
-          />
+          />  
         </Modal>
-      )}
     </>
   );
-});
-
-export default AddOrRemoveItem;
+}

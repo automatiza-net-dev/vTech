@@ -73,7 +73,7 @@ export const useReceipts = (filters, reload) => {
 };
 
 export const useReceipt = (ids, reload) => {
-  const [receipt, setReceipt] = useState([]);
+  const [receipt, setReceipt] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

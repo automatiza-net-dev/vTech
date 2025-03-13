@@ -1,11 +1,9 @@
-// @ts-nocheck
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
 import moment from "moment";
 import { AxiosError } from "axios";
 import { PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
 
-import { useMe } from "@/presentation";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useProfile } from "@/OLD/hooks/useProfile";
@@ -40,7 +38,7 @@ export default function Create({
   const router = useRouter();
 
   async function createOpportunity() {
-    console.log(data?.castrated);
+  
     const newObj = {
       ...data,
       castrated: data?.castrated ? JSON.parse(data?.castrated) : "false",
@@ -101,6 +99,10 @@ export default function Create({
     setReload((prv) => !prv);
   }, [patientListVisible]);
 
+  console.log(data)
+
+  //ClientId está errado e deve averiguar o campo patient_id e colocar no ClientId o patient_id
+
   return (
     <PageWrapper title="Nova oportunidade">
       <Container>
@@ -140,6 +142,7 @@ export default function Create({
             />
           </Modal>
         )}
+
         {(process.env.client === "liftone" ||
           user?.unit?.system?.type !== "Vet") && (
           <Modal

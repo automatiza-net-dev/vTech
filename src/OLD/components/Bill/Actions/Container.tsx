@@ -11,12 +11,17 @@ import { CgDetailsMore } from "react-icons/cg";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { DeleteTwoTone } from "@ant-design/icons";
 
-import { Modal } from "antd";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
-import { PageWrapper, Popconfirm, useToast } from "infinity-forge";
+import {
+  Modal,
+  PageWrapper,
+  Popconfirm,
+  Tooltip,
+  useToast,
+} from "infinity-forge";
 
 import moment from "moment";
 import { MdMonetizationOn } from "react-icons/md";
@@ -136,29 +141,53 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           <AddBillItem bill={bill} />
 
           {addPaymentPermission && (
-            <MdMonetizationOn
-              className="icon"
-              size={20}
-              onClick={() => {
-                setSelectedId(bill?.id);
-                setPaymentsVisible(true);
-              }}
+            <Tooltip
+              idTooltip="test"
+              enableHover
+              position="top-right"
+              content={"Lançar Pagamentos"}
+              trigger={
+                <MdMonetizationOn
+                  className="icon"
+                  size={20}
+                  onClick={() => {
+                    setSelectedId(bill?.id);
+                    setPaymentsVisible(true);
+                  }}
+                />
+              }
             />
           )}
         </>
       )}
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
-          <FiLock onClick={() => closeBill()} size={20} className="icon" />
+          <Tooltip
+            idTooltip="test"
+            enableHover
+            position="top-right"
+            content={"Finalizar Venda"}
+            trigger={
+              <FiLock onClick={() => closeBill()} size={20} className="icon" />
+            }
+          />
         )}
 
       {(bill?.status === "BAIXADA" || bill?.status === "Venda Finalizada") && (
         <>
           {reopenBillPermission && (
-            <FiUnlock
-              onClick={() => reopenBillPayment()}
-              size={20}
-              className="icon"
+            <Tooltip
+              idTooltip="test"
+              enableHover
+              position="top-right"
+              content={"Reabrir Venda"}
+              trigger={
+                <FiUnlock
+                  onClick={() => reopenBillPayment()}
+                  size={20}
+                  className="icon"
+                />
+              }
             />
           )}
         </>
@@ -170,54 +199,72 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
         <ConvertBillToTreatment bill={bill} setReload={setReload} />
       )}
 
-      <LaunchRelatedSale billId={bill.id} internalCode={bill?.internalCode} />
+      <LaunchRelatedSale {...bill} />
 
-      <CgDetailsMore
-        size={25}
-        className="icon"
-        onClick={() => {
-          setSelectedId(bill?.id);
-          setDetailsVisible(true);
-        }}
+      <Tooltip
+        idTooltip="test"
+        enableHover
+        position="top-right"
+        content={"Detalhes da Venda"}
+        trigger={
+          <CgDetailsMore
+            size={25}
+            className="icon"
+            onClick={() => {
+              setSelectedId(bill?.id);
+              setDetailsVisible(true);
+            }}
+          />
+        }
       />
 
       {removeBillPermission && (
         <Popconfirm
-          idTooltip="confirm"
+          idTooltip="removebill"
           title={`Confirma exclusao da venda ${bill?.tag}?`}
           onConfirm={() => removeBill()}
           position="top-left"
         >
-          <DeleteTwoTone twoToneColor={"red"} className="icon" />
+          <Tooltip
+            idTooltip="test"
+            enableHover
+            position="top-right"
+            content={"Excluir Venda"}
+            trigger={<DeleteTwoTone twoToneColor={"red"} className="icon" />}
+          />
         </Popconfirm>
       )}
 
-      {detailsVisible && (
-        <Modal
-          visible={detailsVisible}
-          footer={null}
-          width={1400}
-          onCancel={() => {
-            setSelectedId(false);
-            setDetailsVisible(false);
-          }}
-        >
-          <PageWrapper title="Detalhes da Venda">
-            <Details billId={selectedId} setVisible={setDetailsVisible} />
-          </PageWrapper>
-        </Modal>
-      )}
+      <Modal
+        open={detailsVisible}
+        styles={{ maxWidth: 1400, width: "100%" }}
+        onClose={() => {
+          setSelectedId(false);
+          setDetailsVisible(false);
+        }}
+      >
+        <PageWrapper title="Detalhes da Venda">
+          <Details billId={selectedId} setVisible={setDetailsVisible} />
+        </PageWrapper>
+      </Modal>
 
-      {paymentsVisible && (
-        <Modal
-          width={1500}
-          visible={paymentsVisible}
-          footer={null}
-          onCancel={() => setPaymentsVisible(false)}
-        >
-          <AddBillPayment billId={bill?.id} setVisible={setPaymentsVisible} />
-        </Modal>
-      )}
+      <Modal
+        styles={{ maxWidth: 1500, width: "100%" }}
+        open={paymentsVisible}
+        onClose={() => {
+          setPaymentsVisible(false);
+          queryClient.invalidateQueries(["RemotePatient"]);
+        }}
+      >
+        <AddBillPayment
+          billId={bill?.id}
+          setReloadBill={setReload}
+          setVisible={(value) => {
+            setPaymentsVisible(value);
+            queryClient.invalidateQueries(["RemotePatient"]);
+          }}
+        />
+      </Modal>
     </Container>
   );
 }

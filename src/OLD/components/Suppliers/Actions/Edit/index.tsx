@@ -27,7 +27,7 @@ export function EditSupplier() {
 
     setData({
       name: supplier?.name,
-      corporateName: tutor?.corporate_name,
+      corporateName: tutor?.corporateName,
       active: supplier?.active,
       document: tutor?.document,
       inscription: tutor?.inscription,
