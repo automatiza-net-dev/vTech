@@ -1,35 +1,23 @@
-// @ts-nocheck
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
-import {
-  Col,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Skeleton,
-  Table,
-  Popconfirm,
-  AutoComplete,
-} from "antd";
+import { Col, Form, Input, Modal, Row, Table, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button, PageWrapper, useToast } from "infinity-forge";
 
-import AccessDenied from "@/OLD/components/AccessDenied";
 import { InputBox } from "./styles";
 import moment from "moment";
 import "moment/locale/pt-br";
-import { memo, useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 import { Select } from "antd";
+const { Option } = Select;
+
 import Link from "next/link";
 import { CgDetailsMore } from "react-icons/cg";
 import { useDepositMovements, useDeposits } from "@/OLD/hooks/useDeposits";
-import { adminService } from "@/OLD/services/admin.service";
 import { userService } from "@/OLD/services/user.service";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { productService } from "@/OLD/services/product.service";
@@ -39,6 +27,7 @@ import { MdOutlineClear } from "react-icons/md";
 import { MdLocalPrintshop } from "react-icons/md";
 
 import { sortItems } from "@/OLD/utils/sortItems";
+import { PermissionItem } from "@/presentation";
 
 const columns = [
   {
@@ -104,9 +93,17 @@ const initialCreateState = {
   items: [],
 };
 
-export const DepositMovements = memo(() => {
+export function DepositMovements() {
+  return (
+    <PermissionItem hash="MDE00" DaniedComponent={() => <>Usuário não autorizado</>}>
+      <Page />
+    </PermissionItem>
+  );
+}
+
+function Page() {
   const { clinic } = useProfile();
-  const [searchParams, setSearchParams] = useState({
+  const [searchParams, setSearchParams] = useState<any>({
     user: "",
     responsible: "",
     removal: "",
@@ -119,17 +116,18 @@ export const DepositMovements = memo(() => {
 
   const [openCreate, setOpenCreate] = useState(false);
 
-  const canListDepositsMov = useUserHasPermission("MDE00");
-  const canCreateDeposit = useUserHasPermission("MDE01");
   const canEditDeposit = useUserHasPermission("MDE02");
   const canRemoveDepositMov = useUserHasPermission("MDE03");
-  const componentRef = useRef();
 
-  const [values, setValues] = useState({});
-  const [movDetails, setMovDetails] = useState();
+  const canCreateDeposit = useUserHasPermission("MDE01");
+
+  const componentRef = useRef(null);
+
+  const [values, setValues] = useState<any>({});
+  const [movDetails, setMovDetails] = useState(false);
   const [createMovementData, setCreateMovementData] =
-    useState(initialCreateState);
-  const [addProductData, setAddProductData] = useState({
+    useState<any>(initialCreateState);
+  const [addProductData, setAddProductData] = useState<any>({
     partial: "",
     selectedProduct: "",
     quantity: 0,
@@ -164,7 +162,6 @@ export const DepositMovements = memo(() => {
 
   const imprimir = useReactToPrint({
     contentRef: componentRef,
-    onAfterPrint: setMovDetails(false),
   });
 
   const memoedProducts = useMemo(() => {
@@ -193,7 +190,7 @@ export const DepositMovements = memo(() => {
         setOpenCreate(false);
         depositMovementsQuery.refetch();
       },
-      onError: (err) => {
+      onError: (err: any) => {
         createToast({
           status: "error",
           message: err.response.data[0].message
@@ -249,11 +246,8 @@ export const DepositMovements = memo(() => {
     });
   }, []);
 
-  // if(true) {
-  //   return <></>
-  // }
-
-  return   <PageWrapper title="Movimentações Depositos Estoque">
+  return (
+    <PageWrapper title="Movimentações Depositos Estoque">
       <section>
         <div className="uk-margin-bottom uk-margin-small-top">
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ flex: 1 }}>
@@ -363,7 +357,7 @@ export const DepositMovements = memo(() => {
                   allowClear
                   onClear={() => {
                     const newObj = { ...searchParams };
-                    const newValuesObj = { ...values };
+                    let newValuesObj: any = { ...values };
                     delete newObj?.responsible;
                     delete newValuesObj?.responsible;
                     setSearchParams(newObj);
@@ -391,15 +385,15 @@ export const DepositMovements = memo(() => {
                   }
                 />
                 {/*
-							onChange={(e) =>
-                  setSearchParams((prev) => ({ ...prev, user: e }))
-                }
-                <Option value=""> Todos </Option>
-                {usersQuery.data?.map((elem) => (
-									<Option value={elem.id}>{elem.name}</Option>
-                ))}
-              </Select>
-								*/}
+          onChange={(e) =>
+              setSearchParams((prev) => ({ ...prev, user: e }))
+            }
+            <Option value=""> Todos </Option>
+            {usersQuery.data?.map((elem) => (
+              <Option value={elem.id}>{elem.name}</Option>
+            ))}
+          </Select>
+            */}
               </InputBox>
             </Col>
             <Col span={8}>
@@ -434,19 +428,19 @@ export const DepositMovements = memo(() => {
                   }
                 />
                 {/*
-              <Select
-                value={searchParams.responsible}
-                className="uk-width-1-1"
-                onChange={(e) =>
-                  setSearchParams((prev) => ({ ...prev, responsible: e }))
-                }
-              >
-                <Option value=""> Todos </Option>
-                {usersQuery.data?.map((elem) => (
-                  <Option value={elem.id}>{elem.name}</Option>
-                ))}
-              </Select>
-							*/}
+          <Select
+            value={searchParams.responsible}
+            className="uk-width-1-1"
+            onChange={(e) =>
+              setSearchParams((prev) => ({ ...prev, responsible: e }))
+            }
+          >
+            <Option value=""> Todos </Option>
+            {usersQuery.data?.map((elem) => (
+              <Option value={elem.id}>{elem.name}</Option>
+            ))}
+          </Select>
+          */}
               </InputBox>
             </Col>
             <Col span={4} className="uk-margin-top uk-flex uk-flex-right">
@@ -469,7 +463,6 @@ export const DepositMovements = memo(() => {
                 }}
               >
                 <Button
-                  type="primary"
                   onClick={() => setOpenCreate(true)}
                   text="Nova Movimentação"
                 />
@@ -519,6 +512,8 @@ export const DepositMovements = memo(() => {
                         .then((res) => setMovDetails(res?.data[0]));
 
                       imprimir();
+
+                      setMovDetails(false);
                     }}
                   >
                     <MdLocalPrintshop />
@@ -743,7 +738,7 @@ export const DepositMovements = memo(() => {
 
               <Table
                 columns={productColumns}
-                dataSource={createMovementData.items.map((elem) => ({
+                dataSource={createMovementData.items.map((elem: any) => ({
                   key: elem.productVariationId,
                   product: productsQuery.data.find(
                     (prod) => prod.price.id === elem.productVariationId
@@ -810,4 +805,5 @@ export const DepositMovements = memo(() => {
         </div>
       </section>
     </PageWrapper>
-});
+  );
+}
