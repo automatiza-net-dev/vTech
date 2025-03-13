@@ -6,7 +6,13 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { api, Button, Popconfirm, useToast } from "infinity-forge";
+import {
+  api,
+  BadRequestError,
+  Button,
+  Popconfirm,
+  useToast,
+} from "infinity-forge";
 import { Modal } from "antd";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
@@ -168,23 +174,36 @@ function ButtonsPanel({ setReload, type, setFilters }: any) {
             onConfirm={async () => {
               setLoading(true);
 
-              await api({
-                url: "finances/not-accept-many",
-                method: "post",
-                body: {
-                  type: "Todos",
-                  ids: titles.map((finance) => finance?.id),
-                },
-              });
+              try {
+                await api({
+                  url: "finances/not-accept-many",
+                  method: "post",
+                  body: {
+                    type: "Todos",
+                    ids: titles.map((finance) => finance?.id),
+                  },
+                });
 
-              setReload((prv) => !prv);
+                setReload((prv) => !prv);
 
-              createToast({
-                message: "Items retirados com sucessso",
-                status: "success",
-              });
+                createToast({
+                  message: "Items retirados com sucessso",
+                  status: "success",
+                });
 
-              setLoading(false);
+                setLoading(false);
+              } catch (err) {
+                if (err instanceof BadRequestError) {
+                  const message = err.error.message;
+
+                  createToast({
+                    message: message,
+                    status: "error",
+                  });
+                }
+              }finally {
+                setLoading(false);
+              }
             }}
           >
             <Button text={!loading ? "Retirar aceite" : "Enviando..."} />
@@ -212,19 +231,37 @@ function ButtonsPanel({ setReload, type, setFilters }: any) {
             position="top-right"
             title="Confirma a exclusão dos registros?"
             onConfirm={async () => {
-              await api({
-                url: "finances/delete-multiple",
-                method: "put",
-                body: {
-                  idList: titles.map((finance) => finance?.id),
-                },
-              });
+              setLoading(true);
 
-              setReload((prv) => !prv);
-              createToast({
-                message: "Items deletados com sucessso",
-                status: "success",
-              });
+              try {
+                await api({
+                  url: "finances/delete-multiple",
+                  method: "put",
+                  body: {
+                    idList: titles.map((finance) => finance?.id),
+                  },
+                });
+
+                setReload((prv) => !prv);
+
+                createToast({
+                  message: "Items retirados com sucessso",
+                  status: "success",
+                });
+
+                setLoading(false);
+              } catch (err) {
+                if (err instanceof BadRequestError) {
+                  const message = err.error.message;
+
+                  createToast({
+                    message: message,
+                    status: "error",
+                  });
+                }
+              } finally {
+                setLoading(false);
+              }
             }}
           >
             <Button type="button" text="Excluir" />
