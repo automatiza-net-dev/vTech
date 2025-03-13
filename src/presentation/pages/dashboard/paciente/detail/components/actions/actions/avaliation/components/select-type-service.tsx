@@ -17,7 +17,7 @@ export function SelectTypeService({
   initialService?: string;
   setBody?: Dispatch<SetStateAction<string>>;
 }) {
-  const { values, setFieldValue} = useFormikContext<any>();
+  const { values, setFieldValue } = useFormikContext<any>();
   const initialValue = values?.["scheduleServiceId"]?.[0];
 
   const patient = useLoadPatient();
@@ -44,14 +44,12 @@ export function SelectTypeService({
         base: resume,
       });
 
-      console.log(response, "ue")
-
-      setFieldValue("protocol", response.result)
+    setFieldValue("protocol", response.result);
     setBody && setBody(response.result);
   }
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue && !initialService) {
       AddInitialValueInResumeInput(initialValue);
     }
   }, [data, initialValue]);
