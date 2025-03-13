@@ -120,8 +120,6 @@ export function AddSale({
     try {
       const formatItemsCart = formatCart(data.cart, initialData.cart);
 
-      console.log(window.alert(billId));
-
       const payload = {
         ...data,
         billId: type === "edit" ? billId : null,

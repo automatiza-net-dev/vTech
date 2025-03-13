@@ -25,10 +25,7 @@ function ButtonsPanel({ setReload, type, setFilters }) {
     `${accessControlTitles(type)}04`
   );
 
-  const removeAceite = useUserHasPermission(
-    `${accessControlTitles(type)}11`
-  );
-
+  const removeAceite = useUserHasPermission(`${accessControlTitles(type)}11`);
 
   const permissionToDelete = useUserHasPermission(
     `${accessControlTitles(type)}03`
@@ -136,7 +133,7 @@ function ButtonsPanel({ setReload, type, setFilters }) {
           />
         )}
 
-  {(removeAceite) && (
+        {removeAceite && (
           <Popconfirm
             idTooltip="delete"
             cancelText="cancelar"
@@ -150,7 +147,10 @@ function ButtonsPanel({ setReload, type, setFilters }) {
                 url: "finances/not-accept-many",
                 method: "post",
                 body: {
-                  type: (type === "receive" || type === "CREDITO") ? "Credito" : "Debito",
+                  type:
+                    type === "receive" || type === "CREDITO"
+                      ? "Credito"
+                      : "Debito",
                   ids: titles.map((finance) => finance?.id),
                 },
               });
@@ -197,10 +197,7 @@ function ButtonsPanel({ setReload, type, setFilters }) {
               });
             }}
           >
-            <Button
-              type="button"
-              text="Excluir"
-            />
+            <Button type="button" text="Excluir" />
           </Popconfirm>
         )}
       </section>

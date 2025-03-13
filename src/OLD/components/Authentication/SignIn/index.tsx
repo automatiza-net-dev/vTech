@@ -31,7 +31,6 @@ export function SignIn() {
     }
   }, []);
 
-
   const handleSubmit = useCallback(
     async (e) => {
       setLoading(true)
@@ -46,8 +45,11 @@ export function SignIn() {
       }
 
       try {
+        const systemUrl = new URL(window.location.origin).origin;
+
         const getBusinessUnits = await sessionService.login({
           ...data,
+          systemUrl,
           system: process.env.clientName,
         });
 
@@ -56,6 +58,7 @@ export function SignIn() {
           getBusinessUnits.data[0].businessUnits &&
           ((await sessionService.login({
             ...data,
+            systemUrl,
             system: process.env.clientName,
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
           })) as any);
