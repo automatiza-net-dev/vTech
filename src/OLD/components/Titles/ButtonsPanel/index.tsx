@@ -129,7 +129,7 @@ function ButtonsPanel({ setReload, type, setFilters }) {
         {checkTitlePermission && (
           <Button
             onClick={handleButtonClick}
-            text={!loading ? "Aceite" : "Enviando..."}
+            text={!loading ? "Realizar Aceite" : "Enviando..."}
           />
         )}
 
@@ -207,7 +207,7 @@ function ButtonsPanel({ setReload, type, setFilters }) {
         onOk={handleConfirm}
         onCancel={handleCancel}
       >
-        <p>Deseja realizar a conferência?</p>
+        <p>Deseja realizar o aceite?</p>
       </Modal>
       <Modal
         title="Baixa de títulos"

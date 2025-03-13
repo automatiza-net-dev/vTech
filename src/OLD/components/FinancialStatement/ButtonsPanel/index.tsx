@@ -128,7 +128,7 @@ function ButtonsPanel({ setReload, type, setFilters }: any) {
         onOk={handleConfirm}
         onCancel={handleCancel}
       >
-        <p>Deseja realizar a conferência?</p>
+        <p>Deseja realizar a aceite?</p>
       </Modal>
 
       <Modal
