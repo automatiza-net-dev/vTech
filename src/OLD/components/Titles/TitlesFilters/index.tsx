@@ -113,6 +113,18 @@ const TitlesFilters = memo(function TitlesFilters({
           callbackResult: (formValues) => {
             setFilters((prev) => ({
               ...prev,
+              order: formValues.order,
+              unit: formValues.unit,
+              groupBorderos: formValues.groupBorderos,
+              reconciled: formValues.reconciled,
+              status: formValues.status,
+              plan: formValues.plan,
+              accept: formValues.accept,
+              paymentMethod: formValues.paymentMethod,
+              nsu: formValues.nsu,
+              client: formValues.client,
+              document: formValues.document,
+              fiscalNote: formValues.fiscalNote,
               fromIssue: formValues.fromIssue,
               toIssue:formValues.toIssue,
               fromExpiration: formValues.fromExpiration,
