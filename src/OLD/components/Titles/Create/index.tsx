@@ -213,7 +213,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
             bank: data?.bank,
             agency: data?.agency,
             account: data?.account,
-            accept: "SIM",
+            accept: "NAO",
           } as any;
         })
       );
