@@ -1,17 +1,14 @@
-// @ts-nocheck
-// Core
-import React, { memo } from "react";
+import React, { useState } from "react";
 
-// Utils
 import moment from "moment";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 // Components
 import { Container } from "./styles";
-import { Input, DatePicker, Select, AutoComplete } from "antd";
+import { Input, DatePicker, AutoComplete } from "antd";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-const { Option } = Select;
+import { Select } from "infinity-forge";
 
 function Installments({
   installments,
@@ -19,7 +16,9 @@ function Installments({
   index,
   paymentMethods,
   type,
+  paymentMethodSearch,
 }) {
+  const [initialValue] = useState(paymentMethodSearch)
   return (
     <Container className="uk-margin-top uk-padding-small">
       <div className="uk-flex">
@@ -80,7 +79,6 @@ function Installments({
         <div className="uk-margin-small-right">
           <label> Data Competência </label>
           <DatePicker
-            required
             className="uk-width-1-1"
             format="MM/YYYY"
             picker="month"
@@ -115,41 +113,28 @@ function Installments({
           />
         </div>
         <div className="uk-margin-small-right uk-width-1-2">
-          <label>Forma de pagamento</label>
-          <AutoComplete
-            value={
-              paymentMethods.find(
-                (method) => method.id === installments[index]?.paymentMethodId
-              )?.description
+      
+          <Select
+            label="Forma de pagamento"
+            name={`installments.methodpayment[${index}].paymentMethodId`}
+            controlledInitialValue={{ value: paymentMethods.find(item => item?.description === initialValue)?.id }}
+            onlyOneValue
+            options={
+              paymentMethods?.map((method) => ({
+                label: method?.description,
+                value: method?.id,
+              })) || []
             }
-            className="uk-width-1-1"
-            onChange={(e) => {
-              const obj = [...installments];
+            onChangeInput={(value) => {
+              const obj = installments;
+
               obj.splice(index, 1, {
                 ...installments[index],
-                paymentMethodId: e,
+                paymentMethodId: value,
               });
+
               setInstallments(obj);
             }}
-            options={paymentMethods.map((method) => ({
-              value: method?.description,
-              label: method?.description,
-            }))}
-            onSelect={(value) => {
-              const obj = [...installments];
-              obj.splice(index, 1, {
-                ...installments[index],
-                paymentMethodId: paymentMethods.find(
-                  (method) => method.id === value
-                )?.id,
-              });
-              setInstallments(obj);
-            }}
-            filterOption={(value, option) =>
-              normalizeStr(option.value.toUpperCase()).includes(
-                normalizeStr(value.toUpperCase())
-              )
-            }
           />
         </div>
         <div className="uk-width-1-3">

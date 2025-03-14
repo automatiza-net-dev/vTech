@@ -537,6 +537,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                   index={i}
                   paymentMethods={paymentMethods}
                   type={data?.parcType}
+                  paymentMethodSearch={paymentMethodSearch}
                 />
               ))}
             <hr />
