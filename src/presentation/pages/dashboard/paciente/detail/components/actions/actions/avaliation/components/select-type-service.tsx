@@ -18,7 +18,7 @@ export function SelectTypeService({
   setBody?: Dispatch<SetStateAction<string>>;
 }) {
   const { values, setFieldValue } = useFormikContext<any>();
-  const initialValue = values?.["scheduleServiceId"]?.[0];
+  const scheduleServiceId = values?.["scheduleServiceId"]?.[0];
 
   const patient = useLoadPatient();
   const { user } = useAuthAdmin();
@@ -49,10 +49,10 @@ export function SelectTypeService({
   }
 
   useEffect(() => {
-    if (initialValue && !initialService) {
-      AddInitialValueInResumeInput(initialValue);
+    if (scheduleServiceId && !initialService) {
+      AddInitialValueInResumeInput(scheduleServiceId);
     }
-  }, [data, initialValue]);
+  }, [data, scheduleServiceId]);
 
   if (!data || isFetching) {
     return <></>;
