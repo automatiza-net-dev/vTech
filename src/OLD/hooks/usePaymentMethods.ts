@@ -7,7 +7,7 @@ export const usePaymentMethods = (
   reload = false,
   search = true
 ) => {
-  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
