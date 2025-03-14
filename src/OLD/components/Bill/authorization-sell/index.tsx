@@ -1,15 +1,13 @@
 import { Fragment } from "react";
 
 import {
-  api,
   Error,
   Input,
   Accordion,
+  InputRadio,
   FormHandler,
   LoaderCircle,
   InputPassword,
-  InputSwitch,
-  InputRadio,
 } from "infinity-forge";
 import * as yup from "yup";
 import { useQueryClient } from "react-query";
@@ -28,9 +26,15 @@ import {
   PaymentHeader,
   AuthorizationInformations,
 } from "./components";
-import { onSubmitAprroveCancel, onSubmitAprroveCancelF, onSubmitCancel, onSubmitFinishCancel } from "./submit-cancel";
+import {
+  onSubmitAprroveCancel,
+  onSubmitAprroveCancelF,
+  onSubmitCancel,
+  onSubmitFinishCancel,
+} from "./submit-cancel";
 
 import * as S from "./styles";
+import { ApproveCancelGlobal } from "./components/approve-cancel-global";
 
 export function AuthorizationSell(
   props: {
@@ -66,10 +70,8 @@ export function AuthorizationSell(
           //     if (!value) {
           //       return true;
           //     }
-
           //     for (const key of Object.keys(value)) {
           //       const item = value[key];
-
           //       if (!item.note) {
           //         return this.createError({
           //           path: `billItems.${key}.note`,
@@ -77,7 +79,6 @@ export function AuthorizationSell(
           //         });
           //       }
           //     }
-
           //     return true;
           //   }),
           // billPayments: yup
@@ -90,10 +91,8 @@ export function AuthorizationSell(
           //       if (!value) {
           //         return true;
           //       }
-
           //       for (const key of Object.keys(value)) {
           //         const item = value[key];
-
           //         if (!item.note) {
           //           return this.createError({
           //             path: `billPayments.${key}.note`,
@@ -101,7 +100,6 @@ export function AuthorizationSell(
           //           });
           //         }
           //       }
-
           //       return true;
           //     }
           //   ),
@@ -122,22 +120,21 @@ export function AuthorizationSell(
         <div className="form_cancel">
           <FormHandler
             debugMode
-            onSucess={async (data) => {
-
-              if(props.cancelled === "F") {
-                await onSubmitAprroveCancelF({ data, props });
+            onSucess={async (formData) => {
+              if (props.cancelled === "F") {
+                await onSubmitAprroveCancelF({ formData, props });
               }
 
               if (props.cancelled === "A") {
-                await onSubmitFinishCancel({ data, props });
+                await onSubmitFinishCancel({ formData, props });
               }
 
               if (props.cancelled === "P") {
-                await onSubmitAprroveCancel({ data, props });
+               await onSubmitAprroveCancel({ items: data.items, formData, props });
               }
 
               if (!props.cancelled) {
-                await onSubmitCancel({ data, props });
+                await onSubmitCancel({ formData, props });
               }
 
               await queryClient.invalidateQueries({
@@ -180,33 +177,44 @@ export function AuthorizationSell(
             {(props?.isCancelled || props.cancelled === "P") && (
               <PermissionItem hash="VEN18">
                 <div className="row">
-                  <Input name="userEmail" label="Email" />
-                  <InputPassword label="Senha" name="userPwd" />
-
-                  {(!props.cancelled ||
-                    props.cancelled === "A") && (
-                      <Input
-                        label={
-                          props.cancelled === "A"
-                            ? "Observações do cancelamento"
-                            : "Motivo do cancelamento"
-                        }
-                        name="cancelReason"
-                      />
-                    )}
-
-                  {props.cancelled === "A" && (
-                    <div style={{ maxWidth: 150, width: "100%" }}>
-                      <InputRadio
-                        options={[
-                          { label: "Sim", value: "true" },
-                          { label: "Não", value: "false" },
-                        ]}
-                        name="cancelled"
-                        label="Aprovar cancelamento?"
-                      />
+                  {props.cancelled === "P" && (
+                    <div className="row">
+                      <ApproveCancelGlobal />
                     </div>
                   )}
+
+                  <div className="row">
+                    <div>
+                      <Input name="userEmail" label="Email" />
+                      <InputPassword label="Senha" name="userPwd" />
+                    </div>
+
+                    <div>
+                      {(!props.cancelled || props.cancelled === "A") && (
+                        <Input
+                          label={
+                            props.cancelled === "A"
+                              ? "Observações do cancelamento"
+                              : "Motivo do cancelamento"
+                          }
+                          name="cancelReason"
+                        />
+                      )}
+
+                      {props.cancelled === "A" && (
+                        <div style={{ maxWidth: 150, width: "100%" }}>
+                          <InputRadio
+                            options={[
+                              { label: "Sim", value: "true" },
+                              { label: "Não", value: "false" },
+                            ]}
+                            name="cancelled"
+                            label="Aprovar cancelamento?"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </PermissionItem>
             )}
