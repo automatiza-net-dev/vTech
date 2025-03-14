@@ -317,6 +317,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     label: item.name,
                     value: item.id,
                   }))}
+                  isClearable
                   name="select"
                   onlyOneValue
                   onChangeInput={(value) => {
