@@ -326,6 +326,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     });
 
                     if (optionSelected?.accountPlan && type !== "receive") {
+            
                       setPlanSearch(optionSelected?.accountPlan?.description);
 
                       setData((prv) => ({
@@ -398,28 +399,31 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                 </div>
 
                 <div className="uk-width-1-2">
-                  <label>Plano Contas</label>
-                  <AutoComplete
-                    value={planSearch}
-                    className="uk-width-1-1"
-                    options={plansOptions}
-                    onChange={(value) => setPlanSearch(value)}
-                    onSelect={(_, o) => {
-                      setData({ ...data, accountPlanId: o?.id });
-                      setPlanSearch(o?.description);
+        
+                  <SelectInfinityForge
+                    label="Plano Contas"
+                    controlledInitialValue={{
+                      value: data.accountPlanId,
                     }}
-                    filterOption={(value, option) =>
-                      normalizeStr(option.description.toUpperCase()).includes(
-                        normalizeStr(value.toUpperCase())
-                      )
+                    options={
+                      plansOptions.map((item) => ({
+                        label: item.description,
+                        value: item.id,
+                      })) || []
                     }
+                    name="plans_account"
+                    onlyOneValue
+                    onChangeInput={(value) => {
+                      const optionSelected = methodOptions.find(
+                        (item) => item.id === value
+                      );
+
+                      if(optionSelected?.description !== planSearch) {
+                        setData({ ...data, accountPlanId: value });
+                        setPlanSearch(optionSelected?.description);
+                      }
+                    }}
                   />
-                  {/*
-                {plans.length > 0 &&
-                  plans.map((plan) => (
-                    <Option value={plan?.id}>{plan?.description}</Option>
-                  ))}
-                  */}
                 </div>
               </div>
               <div className="uk-flex uk-margin-top">
@@ -571,7 +575,10 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     });
                   }
 
-                  if(!data?.installments && Number(data.installments || 0) === 0) {
+                  if (
+                    !data?.installments &&
+                    Number(data.installments || 0) === 0
+                  ) {
                     return createToast({
                       message: "Verifique o número de parcelas",
                       status: "warning",
