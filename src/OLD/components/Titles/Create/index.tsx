@@ -570,6 +570,13 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     });
                   }
 
+                  if(!data?.installments && Number(data.installments || 0) === 0) {
+                    return createToast({
+                      message: "Verifique o número de parcelas",
+                      status: "warning",
+                    });
+                  }
+
                   !submitStage ? setSubmitStage(true) : submitInstallments();
                 }}
                 className="uk-margin-right"
