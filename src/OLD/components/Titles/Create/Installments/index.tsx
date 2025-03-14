@@ -13,7 +13,7 @@ import { Input, DatePicker, Select, AutoComplete } from "antd";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 const { Option } = Select;
 
-const Installments = memo(function Installments({
+function Installments({
   installments,
   setInstallments,
   index,
@@ -318,6 +318,6 @@ const Installments = memo(function Installments({
       */}
     </Container>
   );
-});
+}
 
 export default Installments;

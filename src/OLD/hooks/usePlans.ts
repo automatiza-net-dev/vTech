@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { planService } from "@/OLD/services/plan.service";
 
 export const usePlans = (filters = false, reload = false, search = true) => {
-  const [plans, setPlans] = useState([]);
+  const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

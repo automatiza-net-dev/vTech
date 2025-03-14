@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { petsService } from "@/OLD/services/patient.service";
 
 export const useTutor = (filters = false, reload = false, fetch = true) => {
-  const [tutors, setTutors] = useState([]);
+  const [tutors, setTutors] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

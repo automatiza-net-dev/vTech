@@ -1,9 +1,5 @@
-// Core
-// @ts-nocheck
-import React, { memo, useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { useState, useCallback, useEffect } from "react";
 
-// Services
 import { financesService } from "@/OLD/services/finances.service";
 
 // Hooks
@@ -20,24 +16,28 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Components
 import { Container } from "./styles";
-import { Input, DatePicker, Select, Button, AutoComplete, Radio } from "antd";
+import { Input, DatePicker, Button, AutoComplete, Radio } from "antd";
 import Installments from "./Installments";
 
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
-import { useToast } from "infinity-forge";
-const { Option } = Select;
+import {
+  FormHandler,
+  useToast,
+  Select as SelectInfinityForge,
+} from "infinity-forge";
+
 const { Group } = Radio;
 
 export default function Create({ type = "", setVisible, setReload }: any) {
   const [submitStage, setSubmitStage] = useState(false);
-  const [installments, setInstallments] = useState([]);
+  const [installments, setInstallments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [formatedTutors, setFormatedTutors] = useState([]);
+  const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
   const [paymentMethodSearch, setPaymentMethodSearch] = useState("");
-  const [methodOptions, setMethodOptions] = useState([]);
-  const [plansOptions, setPlansOptions] = useState([]);
+  const [methodOptions, setMethodOptions] = useState<any[]>([]);
+  const [plansOptions, setPlansOptions] = useState<any[]>([]);
   const [planSearch, setPlanSearch] = useState("");
-  const [data, setData] = useState({
+  const [data, setData] = useState<any>({
     issueDate: moment(new Date()),
     feeValue: currencyFormatter(0),
     feePercentage: 0,
@@ -52,6 +52,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
   const { plans } = usePlans();
   const { tutors } = useTutor(false, false);
   const { suppliers } = useSuppliers(false, false);
+
   const { clinic } = useProfile();
 
   const submitInstallments = useCallback(async () => {
@@ -87,9 +88,9 @@ export default function Create({ type = "", setVisible, setReload }: any) {
         });
       })
       .catch((err) => {
-        error = true;
         return createToast({
-          message: "Verifique os campos da parcela",
+          message:
+            err.response?.data?.message || "Verifique os campos da parcela",
           status: "error",
         });
       });
@@ -113,7 +114,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
 
     const formattedClients = [...formattedTutors, ...formattedSuppliers];
 
-    const sortedClients = formattedClients.sort((a, b) => {
+    const sortedClients = formattedClients.sort((a: any, b: any) => {
       const nameA = a.value.toUpperCase();
       const nameB = b.value.toUpperCase();
 
@@ -139,6 +140,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
     paymentMethods?.length > 0 &&
       setMethodOptions(
         paymentMethods.map((method) => {
+          paymentMethods;
           return {
             ...method,
             value: method?.description,
@@ -191,7 +193,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
               "month"
             ),
             originalValue: data?.originalValue,
-            accept: data?.accept,
+            // accept: data?.accept,
             installment: index + 1,
             originFlag: "FINANCEIRO",
             paymentValue: data?.paymentValue,
@@ -212,7 +214,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
             agency: data?.agency,
             account: data?.account,
             accept: "SIM",
-          };
+          } as any;
         })
       );
   }, [data, titleType]);
@@ -223,7 +225,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
         <Container>
           <div className="uk-margin-xlarge-right">
             <Group
-            value={titleType}
+              value={titleType}
               onChange={(e) => {
                 setTitleType(e.target.value);
                 setPlansOptions(
@@ -253,215 +255,174 @@ export default function Create({ type = "", setVisible, setReload }: any) {
         Lançamento de títulos ({type === "receive" ? "Crédito" : "Débito"})
       </h3>
       */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
+        <FormHandler disableEnterKeySubmitForm>
+          <div>
+            <div className="form-body uk-padding uk-margin-top">
+              <div className="uk-flex">
+                <div className="uk-margin-small-right">
+                  <label> Data Emissão </label>
+                  <DatePicker
+                    className="uk-width-1-1"
+                    format="DD/MM/YYYY"
+                    onChange={(e) => setData({ ...data, issueDate: e })}
+                    value={data?.issueDate}
+                  />
+                </div>
+                <div className="uk-margin-small-right">
+                  <label> Data 1º parcela </label>
+                  <DatePicker
+                    className="uk-width-1-1"
+                    format="DD/MM/YYYY"
+                    onChange={(e) => setData({ ...data, expirationDate: e })}
+                    value={data?.expirationDate}
+                  />
+                </div>
+                <div className="uk-margin-right">
+                  <label>Documento</label>
+                  <Input
+                    value={data?.document}
+                    onChange={(e) =>
+                      setData({ ...data, document: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-right">
+                  <label>Nota fiscal</label>
+                  <Input
+                    value={data?.fiscalNote}
+                    onChange={(e) =>
+                      setData({ ...data, fiscalNote: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label>Tipo Parcelamento</label>
+                  <br />
+                  <Group
+                    defaultValue="recorrente"
+                    onChange={(e) =>
+                      setData({ ...data, parcType: e.target.value })
+                    }
+                  >
+                    <Radio value="rec">Recorrente</Radio>
 
-            if (
-              !data?.clientId &&
-              clinic?.unitConfig?.requires_finance_client
-            ) {
-              return createToast({
-                message: "Selecione um títular para o título",
-                status: "warning",
-              });
-            }
+                    <Radio value="parc">Parcelamento</Radio>
+                  </Group>
+                </div>
+              </div>
+              <div className="uk-margin-small-right uk-width-1-1">
+                <SelectInfinityForge
+                  label="Nome Titular"
+                  options={formatedTutors.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                  name="select"
+                  onlyOneValue
+                  onChangeInput={(value) => {
+                    const optionSelected = formatedTutors.find((item) => {
+                      return item.id === value;
+                    });
 
-            if (!data?.paymentMethodId) {
-              return createToast({
-                message: "Verifique o campo obrigatório: Forma Pagamento",
-                status: "warning",
-              });
-            }
+                    if (optionSelected?.accountPlan && type !== "receive") {
+                      setPlanSearch(optionSelected?.accountPlan?.description);
 
-            if (!data?.accountPlanId) {
-              return createToast({
-                message: "Verifique o campo obrigatório: Plano Contas",
-                status: "warning",
-              });
-            }
+                      setData((prv) => ({
+                        ...prv,
+                        accountPlanId: optionSelected?.accountPlan?.id,
+                        userName: optionSelected?.name,
+                        clientId: optionSelected?.id,
+                      }));
+                    } else {
+                      setPlanSearch("");
 
-            !submitStage ? setSubmitStage(true) : submitInstallments();
-          }}
-        >
-          <div className="form-body uk-padding uk-margin-top">
-            <div className="uk-flex">
-              <div className="uk-margin-small-right">
-                <label> Data Emissão </label>
-                <DatePicker
-                  required
-                  className="uk-width-1-1"
-                  format="DD/MM/YYYY"
-                  onChange={(e) => setData({ ...data, issueDate: e })}
-                  value={data?.issueDate}
-                />
-              </div>
-              <div className="uk-margin-small-right">
-                <label> Data 1º parcela </label>
-                <DatePicker
-                  required
-                  className="uk-width-1-1"
-                  format="DD/MM/YYYY"
-                  onChange={(e) => setData({ ...data, expirationDate: e })}
-                  value={data?.expirationDate}
-                />
-              </div>
-              <div className="uk-margin-right">
-                <label>Documento</label>
-                <Input
-                  value={data?.document}
-                  onChange={(e) =>
-                    setData({ ...data, document: e.target.value })
-                  }
-                />
-              </div>
-              <div className="uk-margin-right">
-                <label>Nota fiscal</label>
-                <Input
-                  value={data?.fiscalNote}
-                  onChange={(e) =>
-                    setData({ ...data, fiscalNote: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <label>Tipo Parcelamento</label>
-                <br />
-                <Group
-                  defaultValue="recorrente"
-                  onChange={(e) =>
-                    setData({ ...data, parcType: e.target.value })
-                  }
-                >
-                  <Radio value="rec">Recorrente</Radio>
-
-                  <Radio value="parc">Parcelamento</Radio>
-                </Group>
-              </div>
-            </div>
-            <div className="uk-margin-small-right uk-width-1-1">
-              <label>Nome Titular</label>
-              <AutoComplete
-                required
-                allowClear
-                onClear={() => {
-                  const newObj = { ...data, userName: "" };
-                  delete newObj?.clientId;
-                  setData(newObj);
-                }}
-                options={formatedTutors}
-                className="uk-width-1-1"
-                value={data?.userName}
-                onChange={(e) => {
-                  setData({ ...data, userName: e, clientId: null });
-                }}
-                onSelect={(inputValue, option) => {
-                  setData({
-                    ...data,
-                    userName: inputValue,
-                    clientId: option?.id,
-                  });
-                  if (option?.accountPlan && type !== "receive") {
-                    setPlanSearch(option?.accountPlan?.description);
-                    setData((prv) => ({
-                      ...prv,
-                      accountPlanId: option?.accountPlan?.id,
-                    }));
-                  }
-                }}
-                filterOption={(inputValue, option) => {
-                  if (
-                    normalizeStr(option.value.toUpperCase()).includes(
-                      normalizeStr(inputValue.toUpperCase())
-                    ) ||
-                    option?.tutor?.document?.includes(inputValue)
-                  ) {
-                    return option;
-                  }
-                }}
-              />
-            </div>
-            <div className="uk-margin-top uk-flex">
-              <div className="uk-margin-small-right uk-width-1-4">
-                <label>Valor parcela</label>
-                <Input
-                  required
-                  value={data?.originalValue}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      originalValue: currencyFormatter(
-                        convertIntlCurrency(e.target.value)
-                      ),
-                    })
-                  }
-                />
-              </div>
-              <div className="uk-margin-small-right uk-width-1-4">
-                <label>Nº Parcelas</label>
-                <Input
-                  type="number"
-                  required
-                  value={data?.installments}
-                  onChange={(e) =>
-                    setData({ ...data, installments: e.target.value })
-                  }
-                />
-              </div>
-              <div className="uk-margin-small-right uk-width-1-2">
-                <label>Forma Pagamento</label>
-                <AutoComplete
-                  onChange={(value) => setPaymentMethodSearch(value)}
-                  className="uk-width-1-1"
-                  options={methodOptions}
-                  value={paymentMethodSearch}
-                  onSelect={(_, option) => {
-                    setPaymentMethodSearch(option.description);
-                    setData({ ...data, paymentMethodId: option.id });
+                      setData({
+                        ...data,
+                        accountPlanId: undefined,
+                        userName: optionSelected?.name,
+                        clientId: optionSelected?.id,
+                      });
+                    }
                   }}
-                  filterOption={(value, option) =>
-                    normalizeStr(option.description.toUpperCase()).includes(
-                      normalizeStr(value.toUpperCase())
-                    )
-                  }
                 />
-                {/*
-                {paymentMethods.length > 0 &&
-                  paymentMethods.map((method, i) => (
-                    <Option key={i} value={method.id}>
-                      {method?.description}
-                    </Option>
-                  ))}
-                    */}
               </div>
-              <div className="uk-width-1-2">
-                <label>Plano Contas</label>
-                <AutoComplete
-                  required
-                  value={planSearch}
-                  className="uk-width-1-1"
-                  options={plansOptions}
-                  onChange={(value) => setPlanSearch(value)}
-                  onSelect={(_, o) => {
-                    setData({ ...data, accountPlanId: o?.id });
-                    setPlanSearch(o?.description);
-                  }}
-                  filterOption={(value, option) =>
-                    normalizeStr(option.description.toUpperCase()).includes(
-                      normalizeStr(value.toUpperCase())
-                    )
-                  }
-                />
-                {/*
+
+              <div className="uk-margin-top uk-flex">
+                <div className="uk-margin-small-right uk-width-1-4">
+                  <label>Valor parcela</label>
+                  <Input
+                    required
+                    value={data?.originalValue}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        originalValue: currencyFormatter(
+                          convertIntlCurrency(e.target.value)
+                        ),
+                      })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small-right uk-width-1-4">
+                  <label>Nº Parcelas</label>
+                  <Input
+                    type="number"
+                    required
+                    value={data?.installments}
+                    onChange={(e) =>
+                      setData({ ...data, installments: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small-right uk-width-1-2">
+                  <SelectInfinityForge
+                    label="Forma Pagamento"
+                    options={
+                      methodOptions.map((item) => ({
+                        label: item.description,
+                        value: item.id,
+                      })) || []
+                    }
+                    name="method_payments"
+                    onlyOneValue
+                    onChangeInput={(value) => {
+                      const optionSelected = methodOptions.find(
+                        (item) => item.id === value
+                      );
+
+                      setPaymentMethodSearch(optionSelected.description);
+                      setData((prev) => ({ ...prev, paymentMethodId: value }));
+                    }}
+                  />
+                </div>
+
+                <div className="uk-width-1-2">
+                  <label>Plano Contas</label>
+                  <AutoComplete
+                    value={planSearch}
+                    className="uk-width-1-1"
+                    options={plansOptions}
+                    onChange={(value) => setPlanSearch(value)}
+                    onSelect={(_, o) => {
+                      setData({ ...data, accountPlanId: o?.id });
+                      setPlanSearch(o?.description);
+                    }}
+                    filterOption={(value, option) =>
+                      normalizeStr(option.description.toUpperCase()).includes(
+                        normalizeStr(value.toUpperCase())
+                      )
+                    }
+                  />
+                  {/*
                 {plans.length > 0 &&
                   plans.map((plan) => (
                     <Option value={plan?.id}>{plan?.description}</Option>
                   ))}
                   */}
+                </div>
               </div>
-            </div>
-            <div className="uk-flex uk-margin-top">
-              {/*
+              <div className="uk-flex uk-margin-top">
+                {/*
             <div className="uk-margin-small-right">
               <label>Banco</label>
               <Input
@@ -484,7 +445,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
               />
             </div>
             */}
-              {/*
+                {/*
             <div>
               <label>CPF Portador</label>
               <Input
@@ -495,102 +456,131 @@ export default function Create({ type = "", setVisible, setReload }: any) {
               />
             </div>
             */}
+              </div>
+              <div className="uk-flex uk-margin-top">
+                <div className="uk-margin-small-right">
+                  <label>R$ Juros</label>
+                  <Input
+                    required
+                    value={data?.feeValue}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        feeValue: currencyFormatter(
+                          convertIntlCurrency(e.target.value)
+                        ),
+                      })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small-right">
+                  <label>% Taxa Juros</label>
+                  <Input
+                    required
+                    value={data?.feePercentage}
+                    onChange={(e) =>
+                      setData({ ...data, feePercentage: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small-right">
+                  <label>R$ Desconto</label>
+                  <Input
+                    required
+                    value={data?.discountValue}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        discountValue: currencyFormatter(
+                          convertIntlCurrency(e.target.value)
+                        ),
+                      })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small-right">
+                  <label>% Desconto</label>
+                  <Input
+                    required
+                    value={data?.discountPercentage}
+                    onChange={(e) =>
+                      setData({ ...data, discountPercentage: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="uk-margin-small-right">
+                  <label>Nº Comprovante / Nsu</label>
+                  <Input
+                    onChange={(e) =>
+                      setData({ ...data, nsuDocument: e.target.value })
+                    }
+                    value={data?.nsuDocument}
+                  />
+                </div>
+              </div>
+              <div className="uk-margin-top">
+                <label>Histórico</label>
+                <Input
+                  value={data?.historic}
+                  onChange={(e) =>
+                    setData({ ...data, historic: e.target.value })
+                  }
+                />
+              </div>
             </div>
-            <div className="uk-flex uk-margin-top">
-              <div className="uk-margin-small-right">
-                <label>R$ Juros</label>
-                <Input
-                  required
-                  value={data?.feeValue}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      feeValue: currencyFormatter(
-                        convertIntlCurrency(e.target.value)
-                      ),
-                    })
-                  }
+            {submitStage &&
+              installments?.length > 0 &&
+              installments?.map((_, i) => (
+                <Installments
+                  setInstallments={setInstallments as any}
+                  installments={installments}
+                  index={i}
+                  paymentMethods={paymentMethods}
+                  type={data?.parcType}
                 />
-              </div>
-              <div className="uk-margin-small-right">
-                <label>% Taxa Juros</label>
-                <Input
-                  required
-                  value={data?.feePercentage}
-                  onChange={(e) =>
-                    setData({ ...data, feePercentage: e.target.value })
+              ))}
+            <hr />
+            <footer className="uk-margin-top uk-flex uk-flex-right">
+              <Button
+                type="primary"
+                htmlType="button"
+                onClick={() => {
+                  if (
+                    !data?.clientId &&
+                    clinic?.unitConfig?.requires_finance_client
+                  ) {
+                    return createToast({
+                      message: "Selecione um títular para o título",
+                      status: "warning",
+                    });
                   }
-                />
-              </div>
-              <div className="uk-margin-small-right">
-                <label>R$ Desconto</label>
-                <Input
-                  required
-                  value={data?.discountValue}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      discountValue: currencyFormatter(
-                        convertIntlCurrency(e.target.value)
-                      ),
-                    })
+
+                  if (!data?.paymentMethodId) {
+                    return createToast({
+                      message: "Verifique o campo obrigatório: Forma Pagamento",
+                      status: "warning",
+                    });
                   }
-                />
-              </div>
-              <div className="uk-margin-small-right">
-                <label>% Desconto</label>
-                <Input
-                  required
-                  value={data?.discountPercentage}
-                  onChange={(e) =>
-                    setData({ ...data, discountPercentage: e.target.value })
+
+                  if (!data?.accountPlanId) {
+                    return createToast({
+                      message: "Verifique o campo obrigatório: Plano Contas",
+                      status: "warning",
+                    });
                   }
-                />
-              </div>
-              <div className="uk-margin-small-right">
-                <label>Nº Comprovante / Nsu</label>
-                <Input
-                  onChange={(e) =>
-                    setData({ ...data, nsuDocument: e.target.value })
-                  }
-                  value={data?.nsuDocument}
-                />
-              </div>
-            </div>
-            <div className="uk-margin-top">
-              <label>Histórico</label>
-              <Input
-                value={data?.historic}
-                onChange={(e) => setData({ ...data, historic: e.target.value })}
-              />
-            </div>
+
+                  !submitStage ? setSubmitStage(true) : submitInstallments();
+                }}
+                className="uk-margin-right"
+              >
+                {submitStage ? "Salvar" : "Avançar"}
+              </Button>
+              <Button htmlType="button" onClick={() => setVisible(false)}>
+                Sair
+              </Button>
+            </footer>
           </div>
-          {submitStage &&
-            installments?.length > 0 &&
-            installments?.map((_, i) => (
-              <Installments
-                setInstallments={setInstallments}
-                installments={installments}
-                index={i}
-                paymentMethods={paymentMethods}
-                plans={plansOptions}
-                type={data?.parcType}
-              />
-            ))}
-          <hr />
-          <footer className="uk-margin-top uk-flex uk-flex-right">
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="uk-margin-right"
-            >
-              {submitStage ? "Salvar" : "Avançar"}
-            </Button>
-            <Button htmlType="button" onClick={() => setVisible(false)}>
-              Sair
-            </Button>
-          </footer>
-        </form>
+        </FormHandler>
       </Container>
     </>
   );
