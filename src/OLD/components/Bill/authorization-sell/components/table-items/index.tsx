@@ -210,7 +210,8 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
                 );
               }
 
-              return <ApproveCancel {...item} />;
+              return <></>
+             return <ApproveCancel {...item} />;
             },
           },
         },

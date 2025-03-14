@@ -393,13 +393,15 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                       );
 
                       setPaymentMethodSearch(optionSelected.description);
-                      setData((prev) => ({ ...prev, paymentMethodId: value }));
+                      setData((prev) => {
+                        console.log(({ ...prev, paymentMethodId: value }))
+                        return ({ ...prev, paymentMethodId: value })
+                      });
                     }}
                   />
                 </div>
 
                 <div className="uk-width-1-2">
-        
                   <SelectInfinityForge
                     label="Plano Contas"
                     controlledInitialValue={{
@@ -414,12 +416,17 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     name="plans_account"
                     onlyOneValue
                     onChangeInput={(value) => {
-                      const optionSelected = methodOptions.find(
+          
+                      const optionSelected = plansOptions.find(
                         (item) => item.id === value
                       );
 
                       if(optionSelected?.description !== planSearch) {
-                        setData({ ...data, accountPlanId: value });
+                        
+                        setData(prev => {
+                          return  ({ ...prev, accountPlanId: value })
+                        });
+
                         setPlanSearch(optionSelected?.description);
                       }
                     }}

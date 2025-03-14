@@ -1,19 +1,20 @@
+import { Product } from "@/domain";
 import { api } from "infinity-forge";
 
-export async function onSubmitCancel({ data, props }) {
+export async function onSubmitCancel({ formData, props }) {
   const payload = {
-    cancelReason: data.cancelReason,
-    userEmail: data.userEmail,
-    userPwd: data.userPwd,
+    cancelReason: formData.cancelReason,
+    userEmail: formData.userEmail,
+    userPwd: formData.userPwd,
     billId: props.id,
     billItems:
-      data?.billItems
+      formData?.billItems
         ?.filter((item) => item.active)
         .map((item) => ({
           ...item,
           quantity: Number(item.quantity || 0),
         })) || [],
-    billPayments: data?.billPayments?.filter((item) => !!item) || [],
+    billPayments: formData?.billPayments?.filter((item) => !!item) || [],
     notes: " ",
   };
 
@@ -24,16 +25,15 @@ export async function onSubmitCancel({ data, props }) {
   });
 }
 
-export async function onSubmitFinishCancel({ data, props }) {
+export async function onSubmitFinishCancel({ formData, props }) {
   const payload = {
-    cancelled: data.cancelled === "true" ? true : false,
-    userEmail: data.userEmail,
-    userPwd: data.userPwd,
+    cancelled: formData.cancelled === "true" ? true : false,
+    userEmail: formData.userEmail,
+    userPwd: formData.userPwd,
     billId: props.id,
-    note: data.cancelReason,
+    note: formData.cancelReason,
     // billPayments: [],
     // billItems: [],
-
   };
 
   await api({
@@ -43,30 +43,28 @@ export async function onSubmitFinishCancel({ data, props }) {
   });
 }
 
+export async function onSubmitAprroveCancel({
+  formData,
+  props,
+  items,
+}: {
+  items: Product[];
+  props;
+  formData: any;
+}) {
 
-export async function onSubmitAprroveCancel({ data, props }) {
-
-  const billItems =
-    data.billItems &&
-    Object.keys(data.billItems as any)?.reduce((reducer, item) => {
-      const value = data.billItems[item];
-
-      return [
-        ...reducer,
-        {
-          id: item,
-          note: value.note,
-          cancelled: value.cancelled === "Sim" ? true : false,
-        },
-      ];
-    }, [] as any);
+  const billItems = items?.filter(item => item?.cancelled === "P")?.map((item) => ({
+    id: item.id,
+    note: formData.note,
+    cancelled: formData.cancelled === "Sim" ? true : false,
+  }));
 
   const payload = {
-    ...data,
+    ...formData,
     billItems: billItems || [],
-    billPayments:  [],
-    email: data.userEmail,
-    password: data.userPwd,
+    billPayments: [],
+    email: formData.userEmail,
+    password: formData.userPwd,
     billId: props.id,
   };
 
@@ -77,29 +75,30 @@ export async function onSubmitAprroveCancel({ data, props }) {
   });
 }
 
-
-export async function onSubmitAprroveCancelF({ data, props }) {
+export async function onSubmitAprroveCancelF({ formData, props }) {
   const billPayments =
-    data.billPayments &&
-    Object.keys(data.billPayments as any)?.reduce((reducer, item) => {
-      const value = data.billPayments[item];
+    formData.billPayments &&
+    Object.keys(formData.billPayments as any)
+      ?.reduce((reducer, item) => {
+        const value = formData.billPayments[item];
 
-      return [
-        ...reducer,
-        {
-          id: item,
-          note: value.note,
-          cancelled: value?.cancelled?.includes("Sim") ? true : false,
-        },
-      ];
-    }, [] as any)?.filter(item => item.cancelled);
+        return [
+          ...reducer,
+          {
+            id: item,
+            note: value.note,
+            cancelled: value?.cancelled?.includes("Sim") ? true : false,
+          },
+        ];
+      }, [] as any)
+      ?.filter((item) => item.cancelled);
 
   const payload = {
-    ...data,
+    ...formData,
     billItems: [],
     billPayments: billPayments || [],
-    email: data.userEmail,
-    password: data.userPwd,
+    email: formData.userEmail,
+    password: formData.userPwd,
     billId: props.id,
   };
 
