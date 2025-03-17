@@ -64,9 +64,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
     reconciled: "all",
   });
 
-
-
-
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
   const [suppliersFilters, setSuppliersFilters] = useState({});

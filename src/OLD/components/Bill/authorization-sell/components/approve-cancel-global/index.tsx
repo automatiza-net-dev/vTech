@@ -1,9 +1,13 @@
 import {
+  api,
   Input,
   InputPassword,
   InputRadio,
   InputSwitch,
+  Select,
   TextEditor,
+  useAuthAdmin,
+  useQuery,
 } from "infinity-forge";
 
 import { Bill } from "@/domain";
@@ -17,6 +21,23 @@ export function ApproveCancelGlobal({
   cancelled: Bill["cancelled"];
 }) {
   const { values, setFieldValue } = useFormikContext();
+
+  const { user } = useAuthAdmin();
+
+  const { data, isFetching } = useQuery({
+    queryKey: ["search-deposits", user?.unit?.id],
+    queryFn: async () => {
+      const response = await api({
+        url: "deposits/search-deposits",
+        method: "get",
+        body: { unitId: user?.unit?.id, status: "Ativo", type: "Venda" },
+      });
+      return response as any[];
+    },
+    enabled: cancelled === "A" && !!user?.unit?.id,
+  });
+
+
 
   return (
     <S.Cancel>
@@ -60,9 +81,25 @@ export function ApproveCancelGlobal({
           />
         )}
 
+        {cancelled === "A" && user?.unit?.configs?.businessUnits?.controls_deposit === true && (
+          <Select
+            label="Depósito estoque - devolução cancelamento"
+            name="depositId"
+            loading={isFetching}
+            onlyOneValue
+            options={
+              data?.map((item) => ({
+                label:
+                  item?.description + " " + item.principal ? "Principal" : "",
+                value: item?.id,
+              })) || []
+            }
+          />
+        )}
+
         <div className="row">
           <Input name="userEmail" label="Email" />
-          
+
           <InputPassword label="Senha" name="userPwd" />
         </div>
 
