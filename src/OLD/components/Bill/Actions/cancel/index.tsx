@@ -21,7 +21,7 @@ export function CancelAction({ bill }) {
         />
       </Modal>
 
-      {!bill?.cancelled && hasPermissionToCancel && (
+      {(!bill?.cancelled || bill?.cancelled === "N") && hasPermissionToCancel && (
         <Tooltip
           idTooltip="test"
           enableHover

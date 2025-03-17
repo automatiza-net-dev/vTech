@@ -67,6 +67,7 @@ export function ApproveCancelGlobal({
           <InputSwitch
             name="noPayments"
             label="Não cancelar nenhum pagamento"
+            design="checkbox"
             onChangeInput={(value) => {
               if (value === true) {
 
