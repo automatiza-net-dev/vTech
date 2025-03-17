@@ -60,8 +60,11 @@ export function ApproveCancelGlobal({
           />
         )}
 
-        <Input name="userEmail" label="Email" />
-        <InputPassword label="Senha" name="userPwd" />
+        <div className="row">
+          <Input name="userEmail" label="Email" />
+          
+          <InputPassword label="Senha" name="userPwd" />
+        </div>
 
         {cancelled === "F" && (
           <InputSwitch
@@ -70,10 +73,11 @@ export function ApproveCancelGlobal({
             design="checkbox"
             onChangeInput={(value) => {
               if (value === true) {
-
-                const newBillPayments = Object.keys((values as any)?.billPayments || {}).reduce((reducer, item) => {
-                  return {...reducer, [item]: {}}
-                }, {})
+                const newBillPayments = Object.keys(
+                  (values as any)?.billPayments || {}
+                ).reduce((reducer, item) => {
+                  return { ...reducer, [item]: {} };
+                }, {});
 
                 setFieldValue("billPayments", newBillPayments);
               }
