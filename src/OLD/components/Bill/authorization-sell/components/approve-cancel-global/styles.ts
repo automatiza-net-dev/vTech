@@ -3,20 +3,31 @@ import styled from "styled-components";
 export const Cancel = styled("div")`
   display: flex;
   padding: 5px 0;
+  gap: 15px;
+
+  > div {
+    width: 100%;
+  }
+
+  .input-content {
+      margin-top: 5px;
+    }
 
   .list-radios {
     display: flex;
-    flex-direction: column;
-    gap: 5px !important;
+    gap: 15px !important;
+    margin-bottom: 20px;
 
+ 
     label {
       display: flex;
       align-items: center;
       gap: 5px;
-
+      font-size: 15px !important;
+      
       input {
         height: 20px;
-        width: unset;
+        width: 20px;
       }
     }
   }

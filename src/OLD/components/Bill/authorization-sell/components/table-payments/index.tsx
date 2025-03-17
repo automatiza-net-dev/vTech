@@ -148,7 +148,7 @@ export function TablePayments(props: {
                 return (
                   <p className="font-14-bold">
                     {item.cancelled === "S" ? "Aprovado" : "Não aprovado"}{" "}
-                    <br /> {item?.reviewCancelNotes || "Sem obs"}
+                    <br /> <div dangerouslySetInnerHTML={{ __html: item?.reviewCancelNotes || "Sem obs" }} /> 
                   </p>
                 );
               }

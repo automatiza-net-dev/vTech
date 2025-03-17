@@ -2,8 +2,13 @@ import { Product } from "@/domain";
 import { api } from "infinity-forge";
 
 export async function onSubmitCancel({ formData, props }) {
+
+  if(!formData?.billItems || formData.billItems.length === 0 || !formData?.billItems?.find((item) => item.active)) {
+    throw window.alert("Selecione ao menos um item a ser cancelado")
+  }
+
   const payload = {
-    cancelReason: formData.cancelReason,
+    cancelReason: formData.notes,
     userEmail: formData.userEmail,
     userPwd: formData.userPwd,
     billId: props.id,
@@ -31,7 +36,7 @@ export async function onSubmitFinishCancel({ formData, props }) {
     userEmail: formData.userEmail,
     userPwd: formData.userPwd,
     billId: props.id,
-    note: formData.cancelReason,
+    note: formData.notes,
     // billPayments: [],
     // billItems: [],
   };
@@ -55,8 +60,8 @@ export async function onSubmitAprroveCancel({
 
   const billItems = items?.filter(item => item?.cancelled === "P")?.map((item) => ({
     id: item.id,
-    note: formData.note,
-    cancelled: formData.cancelled === "Sim" ? true : false,
+    note: formData.notes,
+    cancelled: formData.cancelled === "true" ? true : false,
   }));
 
   const payload = {
@@ -86,7 +91,7 @@ export async function onSubmitAprroveCancelF({ formData, props }) {
           ...reducer,
           {
             id: item,
-            note: value.note,
+            note: formData.notes,
             cancelled: value?.cancelled?.includes("Sim") ? true : false,
           },
         ];
@@ -95,6 +100,7 @@ export async function onSubmitAprroveCancelF({ formData, props }) {
 
   const payload = {
     ...formData,
+    noPayments: formData.noPayments,
     billItems: [],
     billPayments: billPayments || [],
     email: formData.userEmail,

@@ -203,15 +203,17 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               if (item.cancelled === "S" || item.cancelled === "N") {
                 return (
-                  <p className="font-14-bold">
+                  <div className="font-14-bold">
                     {item.cancelled === "S" ? "Aprovado" : "Não aprovado"}{" "}
-                    <br /> {item?.reviewCancelNotes || "Sem obs"}
-                  </p>
+                    <br /> <div dangerouslySetInnerHTML={{ __html: item?.reviewCancelNotes || "Sem obs" }} /> 
+                  </div>
                 );
               }
 
-              return <></>
-             return <ApproveCancel {...item} />;
+              return <div className="font-14-bold">
+                Cancelamento solicitado
+            </div>
+            //  return <ApproveCancel {...item} />;
             },
           },
         },
