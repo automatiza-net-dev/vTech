@@ -37,6 +37,7 @@ export async function onSubmitFinishCancel({ formData, props }) {
     userPwd: formData.userPwd,
     billId: props.id,
     note: formData.notes,
+    depositId: formData?.cancelled === "true" ? formData?.depositId : undefined
     // billPayments: [],
     // billItems: [],
   };

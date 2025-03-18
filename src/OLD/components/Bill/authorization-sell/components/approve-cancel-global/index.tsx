@@ -20,7 +20,7 @@ export function ApproveCancelGlobal({
 }: {
   cancelled: Bill["cancelled"];
 }) {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<{ cancelled?: string }>();
 
   const { user } = useAuthAdmin();
 
@@ -36,8 +36,6 @@ export function ApproveCancelGlobal({
     },
     enabled: cancelled === "A" && !!user?.unit?.id,
   });
-
-
 
   return (
     <S.Cancel>
@@ -81,21 +79,22 @@ export function ApproveCancelGlobal({
           />
         )}
 
-        {cancelled === "A" && user?.unit?.configs?.businessUnits?.controls_deposit === true && (
-          <Select
-            label="Depósito estoque - devolução cancelamento"
-            name="depositId"
-            loading={isFetching}
-            onlyOneValue
-            options={
-              data?.map((item) => ({
-                label:
-                  item?.description + " " + item.principal ? "Principal" : "",
-                value: item?.id,
-              })) || []
-            }
-          />
-        )}
+        {cancelled === "A" &&
+          values?.cancelled === "true" &&
+          user?.unit?.configs?.businessUnits?.controls_deposit === true && (
+            <Select
+              label="Depósito estoque - devolução cancelamento"
+              name="depositId"
+              loading={isFetching}
+              onlyOneValue
+              options={
+                data?.map((item) => ({
+                  label: (item?.description + " " + (item.principal ? "Principal" : "")),
+                  value: item?.id,
+                })) || []
+              }
+            />
+          )}
 
         <div className="row">
           <Input name="userEmail" label="Email" />
