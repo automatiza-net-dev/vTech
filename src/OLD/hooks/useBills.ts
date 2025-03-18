@@ -75,13 +75,12 @@ export const useShowBill = (id, enabled) => {
   return useQuery(
     ["bills", id],
     async () => {
-      if (!id) {
-        return (data = {});
-      }
-      return billService.getSingleBill(id);
+      const response = await billService.getSingleBill(id);
+
+      return response;
     },
     {
-      enabled,
+      enabled: enabled && !!id,
     }
   );
 };

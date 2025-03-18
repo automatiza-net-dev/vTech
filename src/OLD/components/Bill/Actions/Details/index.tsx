@@ -38,12 +38,12 @@ import { TbAlertTriangle } from "react-icons/tb";
 import { RiPrinterCloudLine } from "react-icons/ri";
 import { fiscalDocumentService } from "../../../../../OLD/services/fiscal-document.service";
 import moment from "moment";
-import { Icon, Button, useToast } from "infinity-forge";
+import { Icon, Button, useToast, api } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
 import { AxiosError } from "axios";
 
-const Details = memo(function Details({ billId, setVisible }: any) {
+export default function Details({ billId, setVisible }: any) {
   const [formatedProducts, setFormatedProducts] = useState<any>([]);
   const [higherBlock, setHigherBlock] = useState<any>(0);
   const blockArr = Array.from(Array(higherBlock).keys());
@@ -643,11 +643,16 @@ const Details = memo(function Details({ billId, setVisible }: any) {
   }, [data]);
 
   useEffect(() => {
-    setSeller({ seller: data?.sellerId, name: data?.seller?.name });
-    setFinResponsible({
-      name: data?.financialResponsible?.name,
-      id: data?.financialResponsible?.id,
-    });
+    if (data?.seller) {
+      setSeller({ seller: data?.sellerId, name: data?.seller?.name });
+    }
+
+    if (data?.financialResponsible?.name) {
+      setFinResponsible({
+        name: data?.financialResponsible?.name,
+        id: data?.financialResponsible?.id,
+      });
+    }
   }, [data, changeFields]);
 
   const componentRef = useRef();
@@ -683,50 +688,23 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       });
   };
 
-  const changeBillSeller = useCallback(() => {
-    billService
-      .updateBillSeller({
+  const changeBillSeller = useCallback(async () => {
+    await api({
+      method: "put",
+      url: "bills/update-seller",
+      body: {
         billId: data?.id,
         sellerId: seller?.id,
-        clientId: data?.client?.id,
-        patientId: data?.patient?.id,
-      })
-      .then((_res) => {
-        setChangeFields((prv) => ({ ...prv, seller: false }));
-        queryClient.invalidateQueries(["bills"]);
+      },
+    });
 
-        return createToast({
-          status: "success",
-          message: "Vendedor alterado!",
-        });
-      })
-      .catch((err) => {
-        if (err instanceof AxiosError) {
-          const message = err?.response?.data?.title;
+    setChangeFields((prv) => ({ ...prv, seller: false }));
+    queryClient.invalidateQueries(["bills"]);
 
-          if (message) {
-            return createToast({
-              status: "error",
-              message: message,
-            });
-          }
-
-          if (message?.includes("E_NOT_OPEN")) {
-            return createToast({
-              status: "warning",
-              message:
-                "Nota não está aberta, não é possível alterar o vendedor",
-            });
-          }
-
-          if (message?.includes("E_ERR")) {
-            return createToast({
-              status: "warning",
-              message: err?.response?.data?.message?.split(":")[1],
-            });
-          }
-        }
-      });
+    createToast({
+      status: "success",
+      message: "Vendedor alterado!",
+    });
   }, [data, seller]);
 
   const changeBillFinancialResponsible = useCallback(() => {
@@ -1170,6 +1148,4 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       </Modal>
     </Container>
   );
-});
-
-export default Details;
+}

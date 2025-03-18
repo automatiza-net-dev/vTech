@@ -154,7 +154,10 @@ export const useReducedFinances = (filters, reload) => {
       };
     }
     financesService
-      .getReducedFinances(newObj)
+      .getReducedFinances({
+        ...newObj,
+        accept: newObj?.accept === "all" ? "" : newObj?.accept,
+      })
       .then((res) => setFinances(res.data))
       .catch((err) => setLoading(false))
       .finally(() => setLoading(false));
@@ -261,7 +264,10 @@ export const useGroupedFinances = (filters, reload) => {
       };
     }
     financesService
-      .getGroupedFinances(newObj)
+      .getGroupedFinances({
+        ...newObj,
+        accept: newObj?.accept === "all" ? "" : newObj?.accept,
+      })
       .then((res) => setFinances(res.data))
       .catch((err) => setLoading(false))
       .finally(() => setLoading(false));

@@ -290,7 +290,10 @@ export default function TitlesFilters({
                 value: item.id,
               }))}
               onChangeInput={(value) => {
-                setFilters((prv) => ({ ...prv, tefFlagId: value }));
+                setFilters((prv) => {
+                  console.log("ue", prv)
+                  return ({ ...prv, tefFlagId: value })
+                });
               }}
             />
           </div>
@@ -298,14 +301,17 @@ export default function TitlesFilters({
           <div className="box">
             <Select
               label="Conta corrente"
-              name="flagDescription"
+              name="contaCorrente"
               onlyOneValue
               options={checkingAccounts?.data?.map((item) => ({
                 label: item?.description,
                 value: item.id,
               }))}
               onChangeInput={(value) => {
-                setFilters((prv) => ({ ...prv, checkingAccountId: value }));
+                setFilters((prv) => {
+                  console.log(prv,"????")
+                  return ({ ...prv, checkingAccountId: value })
+                });
               }}
             />
 

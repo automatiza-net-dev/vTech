@@ -4,17 +4,12 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Input, AutoComplete } from "antd";
+import { Input } from "antd";
 import { Container } from "./styles";
 
 import moment from "moment";
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FormHandler, Select, useAuthAdmin } from "infinity-forge";
-import {
-  billStatusFormatter,
-  cancelledStatus,
-  statusBillText,
-} from "../../../utils/status-formater";
+import { statusBillText } from "../../../utils/status-formater";
 
 export default function Header({
   bill,
@@ -92,29 +87,37 @@ export default function Header({
               )}
             </>
           )}
-          <FormHandler>
-            <Select
-              disabled={!changeFields?.seller}
-              controlledInitialValue={{
-                value: colaborators?.find((c) => c?.name === seller?.name)?.id,
-              }}
-              onlyOneValue
-              name="collaborator"
-              options={
-                colaborators?.map((item) => ({
-                  label: item.name,
-                  value: item.id,
-                })) || []
-              }
-              onChangeInput={(value) => {
-                const collaborator = colaborators?.find((c) => c?.id === value);
-              
-                if (collaborator?.name !== seller?.name) {
-                  setSeller({ id: collaborator?.id, name: collaborator?.name });
+          {seller?.name && (
+            <FormHandler disableEnterKeySubmitForm>
+              <Select
+                disabled={!changeFields?.seller}
+                controlledInitialValue={{
+                  value: colaborators?.find((c) => c?.name === seller?.name)
+                    ?.id,
+                }}
+                onlyOneValue
+                name="collaborator"
+                options={
+                  colaborators?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  })) || []
                 }
-              }}
-            />
-          </FormHandler>
+                onChangeInput={(value) => {
+                  const collaborator = colaborators?.find(
+                    (c) => c?.id === value
+                  );
+
+                  if (collaborator && collaborator?.name !== seller?.name) {
+                    setSeller({
+                      id: collaborator?.id,
+                      name: collaborator?.name,
+                    });
+                  }
+                }}
+              />
+            </FormHandler>
+          )}
         </div>
 
         <div className="uk-margin-small-right">
@@ -156,27 +159,33 @@ export default function Header({
               </span>
             </>
           )}
-          <AutoComplete
-            disabled={!changeFields?.finResponsible}
-            className="uk-width-1-1"
-            options={tutors?.map((tutor: any) => ({
-              ...tutor,
-              key: tutor?.id,
-              value: tutor?.name,
-            }))}
-            value={finResponsible?.name}
-            onChange={(val) =>
-              setFinResponsible((prv) => ({ ...prv, name: val }))
-            }
-            onSelect={(val, opt) =>
-              setFinResponsible({ name: opt?.value, id: opt?.id })
-            }
-            filterOption={(val, opt) =>
-              normalizeStr(opt?.value.toUpperCase()).includes(
-                normalizeStr(val.toUpperCase())
-              )
-            }
-          />
+
+          {finResponsible?.name && (
+            <FormHandler disableEnterKeySubmitForm>
+              <Select
+                disabled={!changeFields?.finResponsible}
+                controlledInitialValue={{
+                  value: tutors?.find((c) => c?.name === finResponsible?.name)
+                    ?.id,
+                }}
+                onlyOneValue
+                name="respfinanceiro"
+                options={
+                  tutors?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  })) || []
+                }
+                onChangeInput={(value) => {
+                  const tutor = tutors?.find((c) => c?.id === value);
+
+                  if (tutor && tutor?.name !== finResponsible?.name) {
+                    setFinResponsible({ name: tutor?.name, id: tutor?.id });
+                  }
+                }}
+              />
+            </FormHandler>
+          )}
         </div>
       </section>
 
