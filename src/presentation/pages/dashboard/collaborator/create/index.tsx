@@ -13,6 +13,7 @@ import {
   removeDigits,
   InputPassword,
   validatePhone,
+  useAuthAdmin,
 } from "infinity-forge";
 import * as yup from "yup";
 
@@ -22,6 +23,8 @@ export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
   const [open, setOpen] = useState(false);
 
   const { createToast } = useToast();
+
+  const { user } = useAuthAdmin()
 
   const { isFetching, data } = useQuery({
     queryKey: ["Roles"],
@@ -56,7 +59,8 @@ export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
               url: "business-units/create-collaborator",
               method: "post",
               body: {
-                ...data,
+                ...data, 
+                systemId: user?.unit?.system?.id,
                 phone: removeDigits(data.phone),
                 systemName: process.env.clientName,
               },

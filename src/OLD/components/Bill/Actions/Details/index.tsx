@@ -41,6 +41,7 @@ import moment from "moment";
 import { Icon, Button, useToast } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
+import { AxiosError } from "axios";
 
 const Details = memo(function Details({ billId, setVisible }: any) {
   const [formatedProducts, setFormatedProducts] = useState<any>([]);
@@ -700,25 +701,30 @@ const Details = memo(function Details({ billId, setVisible }: any) {
         });
       })
       .catch((err) => {
-        if (!message) {
-          return createToast({
-            status: "error",
-            message: "Houve um erro interno, tente novamente mais tarde",
-          });
-        }
+        if (err instanceof AxiosError) {
+          const message = err?.response?.data?.title;
 
-        if (message?.includes("E_NOT_OPEN")) {
-          return createToast({
-            status: "warning",
-            message: "Nota não está aberta, não é possível alterar o vendedor",
-          });
-        }
+          if (message) {
+            return createToast({
+              status: "error",
+              message: message,
+            });
+          }
 
-        if (message?.includes("E_ERR")) {
-          return createToast({
-            status: "warning",
-            message: err?.response?.data?.message?.split(":")[1],
-          });
+          if (message?.includes("E_NOT_OPEN")) {
+            return createToast({
+              status: "warning",
+              message:
+                "Nota não está aberta, não é possível alterar o vendedor",
+            });
+          }
+
+          if (message?.includes("E_ERR")) {
+            return createToast({
+              status: "warning",
+              message: err?.response?.data?.message?.split(":")[1],
+            });
+          }
         }
       });
   }, [data, seller]);
@@ -794,7 +800,12 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       />
       <section className="uk-margin-top">
         <h4 className="uk-margin-remove">Produtos - Serviços Ativos</h4>
-        <Table columns={productsColumns} dataSource={formatedProducts?.filter(item => item.cancelledStatus !== "S")} />
+        <Table
+          columns={productsColumns}
+          dataSource={formatedProducts?.filter(
+            (item) => item.cancelledStatus !== "S"
+          )}
+        />
       </section>
 
       {data?.cancelled === "S" && (

@@ -9,7 +9,7 @@ import { Container } from "./styles";
 
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { useAuthAdmin } from "infinity-forge";
+import { FormHandler, Select, useAuthAdmin } from "infinity-forge";
 import {
   billStatusFormatter,
   cancelledStatus,
@@ -92,26 +92,31 @@ export default function Header({
               )}
             </>
           )}
-          <AutoComplete
-            disabled={!changeFields?.seller}
-            value={seller?.name}
-            className="uk-width-1-1"
-            options={colaborators?.map((colab: any) => ({
-              ...colab,
-              value: colab?.name,
-              key: colab?.id,
-            }))}
-            onChange={(val) => setSeller({ ...seller, name: val })}
-            onSelect={(_, opt) => {
-              setSeller({ id: opt?.id, name: opt?.name });
-            }}
-            filterOption={(val, opt) =>
-              normalizeStr(opt?.value.toUpperCase()).includes(
-                normalizeStr(val.toUpperCase())
-              )
-            }
-          />
+          <FormHandler>
+            <Select
+              disabled={!changeFields?.seller}
+              controlledInitialValue={{
+                value: colaborators?.find((c) => c?.name === seller?.name)?.id,
+              }}
+              onlyOneValue
+              name="collaborator"
+              options={
+                colaborators?.map((item) => ({
+                  label: item.name,
+                  value: item.id,
+                })) || []
+              }
+              onChangeInput={(value) => {
+                const collaborator = colaborators?.find((c) => c?.id === value);
+              
+                if (collaborator?.name !== seller?.name) {
+                  setSeller({ id: collaborator?.id, name: collaborator?.name });
+                }
+              }}
+            />
+          </FormHandler>
         </div>
+
         <div className="uk-margin-small-right">
           <label>Nome Cliente</label>
           <Input disabled value={bill?.client?.name} />
