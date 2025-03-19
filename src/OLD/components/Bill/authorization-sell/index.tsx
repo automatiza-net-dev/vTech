@@ -130,7 +130,11 @@ export function AuthorizationSell(
               }
 
               if (props.cancelled === "P") {
-               await onSubmitAprroveCancel({ items: data.items, formData, props });
+                await onSubmitAprroveCancel({
+                  items: data.items,
+                  formData,
+                  props,
+                });
               }
 
               if (!props.cancelled) {
@@ -174,48 +178,9 @@ export function AuthorizationSell(
             cleanFieldsOnSubmit={false}
             isStickyButtons
           >
-            {(props?.isCancelled || props.cancelled === "P") && (
+            {(props?.isCancelled || props.cancelled === "P" || props.cancelled === "A") && (
               <PermissionItem hash="VEN18">
-                <div className="row">
-                  {props.cancelled === "P" && (
-                    <div className="row">
-                      <ApproveCancelGlobal />
-                    </div>
-                  )}
-
-                  <div className="row">
-                    <div>
-                      <Input name="userEmail" label="Email" />
-                      <InputPassword label="Senha" name="userPwd" />
-                    </div>
-
-                    <div>
-                      {(!props.cancelled || props.cancelled === "A") && (
-                        <Input
-                          label={
-                            props.cancelled === "A"
-                              ? "Observações do cancelamento"
-                              : "Motivo do cancelamento"
-                          }
-                          name="cancelReason"
-                        />
-                      )}
-
-                      {props.cancelled === "A" && (
-                        <div style={{ maxWidth: 150, width: "100%" }}>
-                          <InputRadio
-                            options={[
-                              { label: "Sim", value: "true" },
-                              { label: "Não", value: "false" },
-                            ]}
-                            name="cancelled"
-                            label="Aprovar cancelamento?"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                  <ApproveCancelGlobal cancelled={props.cancelled} />
               </PermissionItem>
             )}
 

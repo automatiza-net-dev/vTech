@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.0.0)
       infinity-forge:
-        specifier: 7.6.4
-        version: 7.6.4(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+        specifier: 7.7.4
+        version: 7.7.4(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
       inversify:
         specifier: ^6.0.2
         version: 6.2.2(reflect-metadata@0.2.2)
@@ -255,6 +255,28 @@ packages:
 
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
+
+  '@dnd-kit/accessibility@3.1.1':
+    resolution: {integrity: sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==}
+    peerDependencies:
+      react: '>=16.8.0'
+
+  '@dnd-kit/core@6.3.1':
+    resolution: {integrity: sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
+  '@dnd-kit/sortable@10.0.0':
+    resolution: {integrity: sha512-+xqhmIIzvAYMGfBYYnbKuNicfSsk4RksY2XdmJhT+HAC01nix6fHCztU68jooFiMUB01Ky3F0FyOvhG/BZrWkg==}
+    peerDependencies:
+      '@dnd-kit/core': ^6.3.0
+      react: '>=16.8.0'
+
+  '@dnd-kit/utilities@3.2.2':
+    resolution: {integrity: sha512-+MKAJEOfaBe5SmV6t34p80MMKhjvUz0vRrvVJbPT0WElzaOJ/1xs+D+KDv+tD/NE5ujfrChEcshd4fLn0wpiqg==}
+    peerDependencies:
+      react: '>=16.8.0'
 
   '@emnapi/runtime@1.3.1':
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
@@ -1849,8 +1871,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@7.6.4:
-    resolution: {integrity: sha512-leiPnM6k4rSFxa2fIZF60aMIWyRWC9CVXU6U4lu7DytMxt0z8NGtr/+ZRpTw8D3ZN4k0TXO/gZq8vErvU/nAOQ==}
+  infinity-forge@7.7.4:
+    resolution: {integrity: sha512-IilLO/11YlAq9x4PBySqZCgTWXcCZ5tYfsSrGemAN00XnQ+jZqHl+ZhpcnjQ6/DGRbl/sqBu0phmZx4Ci9mDIA==}
     peerDependencies:
       react: '>=16'
 
@@ -3470,6 +3492,31 @@ snapshots:
       lodash.once: 4.1.1
     transitivePeerDependencies:
       - supports-color
+
+  '@dnd-kit/accessibility@3.1.1(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
+      tslib: 2.8.1
+
+  '@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@dnd-kit/accessibility': 3.1.1(react@19.0.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.0.0)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      tslib: 2.8.1
+
+  '@dnd-kit/sortable@10.0.0(@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.0.0)
+      react: 19.0.0
+      tslib: 2.8.1
+
+  '@dnd-kit/utilities@3.2.2(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
+      tslib: 2.8.1
 
   '@emnapi/runtime@1.3.1':
     dependencies:
@@ -5242,8 +5289,11 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@7.6.4(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+  infinity-forge@7.7.4(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
     dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.0.0)
       '@next/third-parties': 15.1.7(next@15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       axios: 1.7.9
       cpx: 1.5.0

@@ -36,7 +36,7 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button, useToast } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import { Table, Modal } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "@/OLD/components/Titles/Actions";
@@ -58,7 +58,12 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
     order: "expiration_date",
     status: "ABERTO",
     noSearch: true,
+    type: "all",
+    groupBorderos: "sim",
+    accept: "all",
+    reconciled: "all",
   });
+
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
   const [suppliersFilters, setSuppliersFilters] = useState({});
@@ -361,7 +366,10 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
           return createToast({ status: "error", message: messageArr[1] });
         }
 
-        return  createToast({ status: "error", message:  "Houve um erro ao atualizar a parcela selecionada..." });
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao atualizar a parcela selecionada...",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -427,222 +435,196 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   return !listTitlesPermission || listTitlesPermission === "loading" ? (
     <AccessDenied loading={listTitlesPermission} />
   ) : (
-    <Container className="uk-padding">
-      <div className="uk-flex uk-flex-between">
-        <h3 className="uk-margin-remove">Controle financeiro</h3>
-        <div style={{ display: "flex", gap: 20 }}>
-          <Button
-            onClick={() => {
-              setFilters({ ...filters, noSearch: false });
-              setTitles([]);
-              setReload(!reload);
-            }}
-            text="Filtrar"
-          />
-          {createTitlePermission && (
-            <Button
-              onClick={() => {
-                setCreateTitleVisible(true);
-                {
-                  /*
-              
-                router.push(
-                  `/dashboard/${
-                    type === "receive"
-                    ? "titulos-receber/criar"
-                    : "titulos-pagar/criar"
-                  }`
-                  );
-                */
-                }
-              }}
-              text="Novo Título"
-            />
-          )}
-        </div>
-      </div>
-      <TitlesFilters
-        tefFlags={tefFlags}
-        checkingAccounts={checkingAccounts}
-        filters={filters}
-        setFilters={setFilters}
-        paymentMethods={paymentMethods}
-        tutors={tutors}
-        suppliers={suppliers}
-        plans={plans.filter((plan) => {
-          if (type === "receive") {
-            return plan?.type === "CREDITO";
-          } else {
-            return plan?.type === "DEBITO";
-          }
-        })}
-        reload={reload}
-        setReload={setReload}
-        clinics={clinics}
-        loadingFinances={loadingFinances}
-      />
-      <hr />
-      <div className="uk-width-1-1">
-        <div className="uk-flex uk-flex-right">
-          Saldo{" "}
-          {filters?.checkingAccountId
-            ? `Conta corrente ${
-                checkingAccounts.find(
-                  (account) => account?.id === filters?.checkingAccountId
-                )?.description
-              }: `
-            : `unidade ${clinic?.fantasy_name}: `}
-          {currencyFormatter(balance?.balance)}
-        </div>
-      </div>
-      {titles?.length > 0 && (
-        <ButtonsPanel
-          setReload={setReload}
+    <PageWrapper title="Controle financeiro">
+      <Container>
+        <TitlesFilters
+          setCreateTitleVisible={setCreateTitleVisible}
           type={type}
+          tefFlags={tefFlags}
+          checkingAccounts={checkingAccounts}
+          filters={filters}
           setFilters={setFilters}
+          paymentMethods={paymentMethods}
+          tutors={tutors}
+          suppliers={suppliers}
+          plans={plans.filter((plan) => {
+            if (type === "receive") {
+              return plan?.type === "CREDITO";
+            } else {
+              return plan?.type === "DEBITO";
+            }
+          })}
+          reload={reload}
+          setReload={setReload}
+          clinics={clinics}
+          loadingFinances={loadingFinances}
         />
-      )}
-      <Table
-        pagination={{ onChange: (page) => setCurrentPage(page) }}
-        columns={Columns(selectAllFinances)}
-        dataSource={formatedFinances}
-        footer={() => (
-          <footer className="uk-flex uk-flex-center">
-            <div className="uk-flex uk-flex-around custom-footer-box">
-              <div className="uk-width-1-2 uk-margin-right">
-                <strong>Total Crédito:&nbsp;</strong>
-                {currencyFormatter(
-                  finances?.length > 0 &&
-                    finances
-                      ?.filter((finance) => finance?.type === "CREDITO")
-                      .reduce((acc, current) => acc + current?.total_value, 0)
-                )}
-              </div>
-              <div className="uk-width-1-2 uk-margin-right">
-                <strong>Total Realizado Crédito:&nbsp;</strong>
-                {currencyFormatter(
-                  finances?.length > 0 &&
-                    finances
-                      ?.filter((finance) => finance?.type === "CREDITO")
-                      .reduce((acc, current) => acc + current?.payment_value, 0)
-                )}
-              </div>
-              <div className="uk-width-1-2 uk-margin-right">
-                <strong>Total a receber Crédito:&nbsp;</strong>
-                {currencyFormatter(
-                  finances?.length > 0 &&
-                    finances
-                      ?.filter(
-                        (finance) =>
-                          finance?.type === "CREDITO" &&
-                          finance?.status === "ABERTO"
-                      )
-                      .reduce((acc, current) => acc + current?.total_value, 0)
-                )}
-              </div>
-              <div className="uk-width-1-2 uk-margin-right">
-                <strong>Total Debitos:&nbsp;</strong>
-                {currencyFormatter(
-                  finances?.length > 0 &&
-                    finances
-                      ?.filter((finance) => finance?.type === "DEBITO")
-                      .reduce((acc, current) => acc + current?.total_value, 0)
-                )}
-              </div>
-              <div className="uk-width-1-2 uk-margin-right">
-                <strong>Total a vencer Debitos:&nbsp;</strong>
-                {currencyFormatter(
-                  finances?.length > 0 &&
-                    finances
-                      ?.filter(
-                        (finance) =>
-                          finance?.type === "DEBITO" &&
-                          finance?.status === "Aberto"
-                      )
-                      .reduce((acc, current) => acc + current?.total_value, 0)
-                )}
-              </div>
-            </div>
-          </footer>
-        )}
-      />
-      <div style={{ display: "none" }}>
-        <div ref={componentRef}>
-          <PrintScreen data={finances} loading={loadingFinances} />
+        <hr />
+        <div className="uk-width-1-1">
+          <div className="uk-flex uk-flex-right">
+            Saldo{" "}
+            {filters?.checkingAccountId
+              ? `Conta corrente ${
+                  checkingAccounts.find(
+                    (account) => account?.id === filters?.checkingAccountId
+                  )?.description
+                }: `
+              : `unidade ${clinic?.fantasy_name}: `}
+            {currencyFormatter(balance?.balance)}
+          </div>
         </div>
-      </div>
-      <div
-        className="uk-flex uk-flex-right uk-margin-small-top"
-        style={{ gap: 20 }}
-      >
-        <Button text="Exportar (Excel)" onClick={() => handleExport()} />
-
-        <Button text="Imprimir" onClick={() => imprimir()} />
-      </div>
-      {updateOpen && (
-        <Modal
-          title={`Informações do título - ${finance[0]?.document} - ${finance[0]?.installment} / ${finance[0]?.qty_installments}`}
-          width={1200}
-          visible={updateOpen}
-          onCancel={() => setUpdateOpen(false)}
-          footer={null}
-        >
-          <Edit
-            data={data}
-            setData={setData}
-            paymentMethods={paymentMethods}
-            plans={plans.filter((plan) => plan?.type === data?.type)}
-            submit={submitUpdate}
-            setVisible={setUpdateOpen}
-            edit={edit}
-            setEdit={setEdit}
-            source={"finances"}
-          />
-        </Modal>
-      )}
-      {borderoDetailsVisible && (
-        <Modal
-          visible={borderoDetailsVisible}
-          title="Detalhes bordero"
-          width={1200}
-          footer={null}
-          onCancel={() => setBorderoDetailsVisible(false)}
-        >
-          <BorderoDetails
-            borderoId={selectedBorderoId}
-            setVisible={setBorderoDetailsVisible}
-          />
-        </Modal>
-      )}
-      {groupDetailsVisible && (
-        <Modal
-          visible={groupDetailsVisible}
-          title="Grupo de pagamento"
-          width={1200}
-          footer={null}
-          onCancel={() => setGroupDetailsVisible(false)}
-        >
-          <PaymentGroupDetails
-            reload={reload}
+        {titles?.length > 0 && (
+          <ButtonsPanel
             setReload={setReload}
-            setGroupData={setGroupData}
-            groupData={groupData}
-            setVisible={setGroupDetailsVisible}
-            checkingAccountId={checkingAccountId}
-            setCheckingAccountId={setCheckingAccountId}
+            type={type}
+            setFilters={setFilters}
           />
+        )}
+        <Table
+          pagination={{ onChange: (page) => setCurrentPage(page) }}
+          columns={Columns(selectAllFinances)}
+          dataSource={formatedFinances}
+          footer={() => (
+            <footer className="uk-flex uk-flex-center">
+              <div className="uk-flex uk-flex-around custom-footer-box">
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total Crédito:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances?.length > 0 &&
+                      finances
+                        ?.filter((finance) => finance?.type === "CREDITO")
+                        .reduce((acc, current) => acc + current?.total_value, 0)
+                  )}
+                </div>
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total Realizado Crédito:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances?.length > 0 &&
+                      finances
+                        ?.filter((finance) => finance?.type === "CREDITO")
+                        .reduce(
+                          (acc, current) => acc + current?.payment_value,
+                          0
+                        )
+                  )}
+                </div>
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total a receber Crédito:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances?.length > 0 &&
+                      finances
+                        ?.filter(
+                          (finance) =>
+                            finance?.type === "CREDITO" &&
+                            finance?.status === "ABERTO"
+                        )
+                        .reduce((acc, current) => acc + current?.total_value, 0)
+                  )}
+                </div>
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total Debitos:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances?.length > 0 &&
+                      finances
+                        ?.filter((finance) => finance?.type === "DEBITO")
+                        .reduce((acc, current) => acc + current?.total_value, 0)
+                  )}
+                </div>
+                <div className="uk-width-1-2 uk-margin-right">
+                  <strong>Total a vencer Debitos:&nbsp;</strong>
+                  {currencyFormatter(
+                    finances?.length > 0 &&
+                      finances
+                        ?.filter(
+                          (finance) =>
+                            finance?.type === "DEBITO" &&
+                            finance?.status === "Aberto"
+                        )
+                        .reduce((acc, current) => acc + current?.total_value, 0)
+                  )}
+                </div>
+              </div>
+            </footer>
+          )}
+        />
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <PrintScreen data={finances} loading={loadingFinances} />
+          </div>
+        </div>
+        <div
+          className="uk-flex uk-flex-right uk-margin-small-top"
+          style={{ gap: 20 }}
+        >
+          <Button text="Exportar (Excel)" onClick={() => handleExport()} />
+
+          <Button text="Imprimir" onClick={() => imprimir()} />
+        </div>
+        {updateOpen && (
+          <Modal
+            title={`Informações do título - ${finance[0]?.document} - ${finance[0]?.installment} / ${finance[0]?.qty_installments}`}
+            width={1200}
+            visible={updateOpen}
+            onCancel={() => setUpdateOpen(false)}
+            footer={null}
+          >
+            <Edit
+              data={data}
+              setData={setData}
+              paymentMethods={paymentMethods}
+              plans={plans.filter((plan) => plan?.type === data?.type)}
+              submit={submitUpdate}
+              setVisible={setUpdateOpen}
+              edit={edit}
+              setEdit={setEdit}
+              source={"finances"}
+            />
+          </Modal>
+        )}
+        {borderoDetailsVisible && (
+          <Modal
+            visible={borderoDetailsVisible}
+            title="Detalhes bordero"
+            width={1200}
+            footer={null}
+            onCancel={() => setBorderoDetailsVisible(false)}
+          >
+            <BorderoDetails
+              borderoId={selectedBorderoId}
+              setVisible={setBorderoDetailsVisible}
+            />
+          </Modal>
+        )}
+        {groupDetailsVisible && (
+          <Modal
+            visible={groupDetailsVisible}
+            title="Grupo de pagamento"
+            width={1200}
+            footer={null}
+            onCancel={() => setGroupDetailsVisible(false)}
+          >
+            <PaymentGroupDetails
+              reload={reload}
+              setReload={setReload}
+              setGroupData={setGroupData}
+              groupData={groupData}
+              setVisible={setGroupDetailsVisible}
+              checkingAccountId={checkingAccountId}
+              setCheckingAccountId={setCheckingAccountId}
+            />
+          </Modal>
+        )}
+        <Modal
+          title="Novo título"
+          onCancel={() => setCreateTitleVisible(false)}
+          visible={createTitleVisible}
+          width={1200}
+          footer={null}
+        >
+          <CreateTitle setVisible={setCreateTitleVisible} />
         </Modal>
-      )}
-      <Modal
-        title="Novo título"
-        onCancel={() => setCreateTitleVisible(false)}
-        visible={createTitleVisible}
-        width={1200}
-        footer={null}
-      >
-        <CreateTitle setVisible={setCreateTitleVisible} />
-      </Modal>
-    </Container>
+      </Container>
+    </PageWrapper>
   );
 });
 

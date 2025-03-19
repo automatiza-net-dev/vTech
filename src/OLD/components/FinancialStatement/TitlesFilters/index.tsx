@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
-import moment from "moment";
-import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { sortItems } from "@/OLD/utils/sortItems";
+import {
+  api,
+  Input,
+  Button,
+  Select,
+  useQuery,
+  FormHandler,
+  useAuthAdmin,
+  InputDateRange,
+  InputDatePicker,
+} from "infinity-forge";
 
-import { MdOutlineClear } from "react-icons/md";
+import { Container } from "./styles";
 
-import { Container, InputBox } from "./styles";
-import { Input, Select, Radio, AutoComplete } from "antd";
-import { DatePicker } from "@mui/x-date-pickers";
-import { DateFilter } from "../../mini-components";
-import { FormHandler, InputDateRange } from "infinity-forge";
-const { Option } = Select;
-const { Group } = Radio;
-
-function TitlesFilters({
+export default function TitlesFilters({
+  type,
   filters,
   setFilters,
   paymentMethods,
@@ -27,403 +30,383 @@ function TitlesFilters({
   setReload,
   clinics,
   loadingFinances,
-  checkingAccounts,
-  tefFlags,
+  setCreateTitleVisible,
 }: any) {
-  const [formatedTutors, setFormatedTutors] = useState([]);
-  const [values, setValues] = useState<any>({});
-
+  const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
   const { setTitles } = useAuth();
 
-  sortItems(checkingAccounts, "description");
-  sortItems(plans, "description");
-  sortItems(suppliers, "name");
-  sortItems(tutors, "name");
-  sortItems(tefFlags, "description");
+  const clientOptions = useMemo(
+    () =>
+      formatedTutors?.map((tutor) => ({
+        label: tutor?.name,
+        value: tutor?.id,
+      })),
+    [formatedTutors]
+  );
+
+  const paymentMethodOptions = useMemo(
+    () =>
+      paymentMethods.map((method) => ({
+        label: method.description,
+        value: method.id,
+      })),
+    [paymentMethods]
+  );
+
+  const planOptions = useMemo(
+    () =>
+      plans.map((plan) => ({
+        label: plan.description,
+        value: plan.id,
+      })),
+    [plans]
+  );
 
   useEffect(() => {
-    document.addEventListener("keypress", (e) => {
+    const handleEnterKey = (e) => {
       if (e.key === "Enter" && !loadingFinances) {
-        setReload((prv) => !prv);
+        setReload((prev) => !prev);
         setTitles([]);
       }
-    });
-  }, []);
+    };
 
-  const formatTutors = () => {
-    const formattedTutors =
-      tutors?.map((tutor) => ({
-        ...tutor,
-        value: tutor?.name,
-      })) || [];
-
-    const formattedSuppliers = Array.isArray(suppliers)
-      ? suppliers.map((supplier) => ({
-          ...supplier,
-          value: supplier?.name,
-        }))
-      : [];
-
-    const formattedClients = [...formattedTutors, ...formattedSuppliers];
-
-    const sortedClients: any = formattedClients.sort((a, b) => {
-      const nameA = a.value.toUpperCase();
-      const nameB = b.value.toUpperCase();
-
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-
-    setFormatedTutors(sortedClients);
-  };
+    document.addEventListener("keypress", handleEnterKey);
+    return () => document.removeEventListener("keypress", handleEnterKey);
+  }, [loadingFinances]);
 
   useEffect(() => {
-    if (tutors?.length > 0 || Array.isArray(suppliers)) {
-      formatTutors();
-    }
+    const formatClients = () => {
+      const formattedTutors =
+        tutors?.map((tutor) => ({
+          ...tutor,
+          value: tutor.name,
+          key: tutor.id,
+        })) || [];
+
+      const formattedSuppliers = (suppliers || []).map((supplier) => ({
+        ...supplier,
+        value: supplier.name,
+        key: supplier.id,
+      }));
+
+      const sortedClients = [...formattedTutors, ...formattedSuppliers].sort(
+        (a, b) => a.value.localeCompare(b.value)
+      );
+
+      setFormatedTutors(sortedClients);
+    };
+
+    formatClients();
   }, [tutors, suppliers]);
 
-  return (
-    <Container className="uk-margin-top uk-flex">
+  const tfeFlags = useQuery({
+    queryKey: ["tfeFlags"],
+    queryFn: async () => {
+      const response = await api({
+        method: "get",
+        url: `payment-methods/tef-flags`,
+        body: {
+          type: "all",
+        },
+      });
 
-      <FormHandler
-        cleanFieldsOnSubmit={false}
-        initialData={filters}
-        onChangeForm={{
-          callbackResult: (formValues) => {
-            setFilters(formValues);
-          },
+      return response?.sort((a: any, b: any) => {
+        if (a["description"]?.toLowerCase() < b["description"]?.toLowerCase()) {
+          return -1;
+        }
+
+        if (a["description"]?.toLowerCase() > b["description"]?.toLowerCase()) {
+          return 1;
+        }
+
+        return 0;
+      });
+    },
+  });
+
+  const { user } = useAuthAdmin();
+
+  const checkingAccounts = useQuery({
+    queryKey: ["chekingAccounts"],
+    queryFn: async () => {
+      const response = await api({
+        method: "get",
+        url: `checking-accounts`,
+        body: { unit: user?.unit?.id },
+      });
+
+      return response;
+    },
+  });
+
+  const createTitlePermission = useUserHasPermission(
+    `${accessControlTitles(type)}01`
+  );
+
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          width: "100%",
+          gap: 20,
+          marginBottom: 20,
+          marginTop: -50
         }}
       >
-        <InputDateRange
-          enableFilter
-          id="Date"
-          placeholder="DD/MM/YYYY"
-          label="Data emissão"
-          names={["fromIssue", "toIssue"]}
-          isClearable
-        />
-
-<InputDateRange
-          enableFilter
-          id="DateExp"
-          placeholder="DD/MM/YYYY"
-          label="Data Vencimento"
-          names={["fromExpiration", "toExpiration"]}
-          isClearable
-        />
-
-<InputDateRange
-          enableFilter
-          id="DateExpPag"
-          placeholder="DD/MM/YYYY"
-          label="Data Pagamento"
-          names={["fromPayment", "toPayment"]}
-          isClearable
-        />
-      </FormHandler>
-    
-  
-
-      <div className="uk-width-1-5 uk-margin-right">
-        <div className="uk-flex">
-          <div className="">
-            <label>Data competência</label>
-            <InputBox>
-              <DatePicker
-                slotProps={{ textField: { variant: "standard" } }}
-                className="uk-width-1-1"
-                format="MM/YYYY"
-                value={filters?.competence}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    competence: moment(e),
-                  })
-                }
-              />
-              <MdOutlineClear
-                size={30}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  setFilters((prv) => ({
-                    ...prv,
-                    competence: null,
-                  }));
-                }}
-              />
-            </InputBox>
-          </div>
-          <div className="uk-margin-small-left">
-            <label>Comprov. / NSU</label>
-            <InputBox>
-              <Input
-                onChange={(e) =>
-                  setFilters({ ...filters, nsu: e.target.value })
-                }
-                value={filters?.nsu}
-              />
-            </InputBox>
-          </div>
-        </div>
-        <div className="uk-margin-small-top uk-flex">
-          <div className="uk-margin-small-right">
-            <label>Documento</label>
-            <InputBox>
-              <Input
-                value={filters?.document}
-                onChange={(e) =>
-                  setFilters({ ...filters, document: e.target.value })
-                }
-              />
-            </InputBox>
-          </div>
-          <div>
-            <label>Nota Fiscal</label>
-            <InputBox>
-              <Input
-                value={filters?.fiscalNote}
-                onChange={(e) =>
-                  setFilters({ ...filters, fiscalNote: e.target.value })
-                }
-              />
-            </InputBox>
-          </div>
-        </div>
-        <div className="uk-margin-small-right uk-width-1-1">
-          <label>Nome do Titular</label>
-          <InputBox>
-            <AutoComplete
-              options={formatedTutors}
-              className="uk-width-1-1"
-              onChange={(e) => {
-                setFilters({ ...filters, client: e });
-              }}
-              onSelect={(inputValue, option: any) =>
-                setFilters({ ...filters, client: option.id })
-              }
-            />
-          </InputBox>
-        </div>
-      </div>
-      <div className="uk-width-1-5 uk-margin-right">
-        <div className="">
-          <label>Forma de pagamento</label>
-          <InputBox>
-            <AutoComplete
-              value={
-                paymentMethods.find(
-                  (method) => method.id === filters?.paymentMethod
-                )?.description
-              }
-              onChange={(e) => setFilters({ ...filters, paymentMethod: e })}
-              className="uk-width-1-1"
-              options={paymentMethods.map((method) => ({
-                label: method.description,
-                value: method.id,
-              }))}
-              filterOption={(value, option: any) =>
-                normalizeStr(option.label.toUpperCase()).includes(
-                  normalizeStr(value.toUpperCase())
-                )
-              }
-            />
-          </InputBox>
-        </div>
-        <div className="uk-margin-small-top">
-          <label>Bandeira Tef.</label>
-          <InputBox>
-            <AutoComplete
-              className="uk-width-1-1"
-              options={tefFlags?.map((flag) => ({
-                ...flag,
-                value: flag?.description,
-              }))}
-              onChange={(val) =>
-                setValues((prv) => ({ ...prv, flagDescription: val }))
-              }
-              onSelect={(_, opt) => {
-                setValues((prv) => ({ ...prv, flagDescription: opt?.value }));
-                setFilters((prv) => ({ ...prv, tefFlagId: opt?.id }));
-              }}
-              value={values?.flagDescription}
-              filterOption={(value, option: any) =>
-                normalizeStr(option?.value?.toUpperCase()).includes(
-                  normalizeStr(value.toUpperCase())
-                )
-              }
-            />
-          </InputBox>
-        </div>
-        <div className="uk-margin-small-top">
-          <label>Conta corrente</label>
-          <InputBox>
-            <AutoComplete
-              className="uk-width-1-1"
-              options={checkingAccounts?.map((account) => ({
-                ...account,
-                value: account?.description,
-              }))}
-              value={values?.accountDescription}
-              onChange={(val) =>
-                setValues((prv) => ({ accountDescription: val }))
-              }
-              onSelect={(_, opt) => {
-                setValues((prv) => ({
-                  ...prv,
-                  accountDescription: opt?.value,
-                }));
-                setFilters((prv) => ({ ...prv, checkingAccountId: opt?.id }));
-              }}
-              filterOption={(value, option: any) =>
-                normalizeStr(option.value.toUpperCase()).includes(
-                  normalizeStr(value.toUpperCase())
-                )
-              }
-            />
-          </InputBox>
-        </div>
-      </div>
-      <div className="uk-width-1-5 uk-margin-right">
-        <div>
-          <div>
-            <label>Tipo título</label>
-            <br />
-            <Group
-              defaultValue="all"
-              onChange={(e) => {
-                if (e.target.value === "all") {
-                  const newObj = { ...filters };
-                  delete newObj?.type;
-                  setFilters(newObj);
-                }
-                setFilters({ ...filters, type: e.target.value });
-              }}
-            >
-              <Radio value="all">Todos</Radio>
-              <Radio value="CREDITO">Crédito</Radio>
-              <Radio value="DEBITO">Débito</Radio>
-            </Group>
-          </div>
-          <div className="uk-margin-small-top">
-            <label>Situação</label>
-            <br />
-            <Group
-              defaultValue="ABERTO"
-              onChange={(e) => {
-                if (e.target.value === "all") {
-                  const obj = { ...filters };
-                  delete obj.status;
-                  return setFilters(obj);
-                }
-                setFilters({ ...filters, status: e.target.value });
-              }}
-            >
-              <Radio value="all">Todos</Radio>
-              <Radio value="ABERTO">Aberto</Radio>
-              <Radio value="BAIXADO">Baixado</Radio>
-            </Group>
-          </div>
-          <div className="uk-margin-small-top">
-            <label>Plano Contas</label>
-            <InputBox>
-              <AutoComplete
-                value={
-                  plans.find((planDesc) => planDesc.id === filters?.plan)
-                    ?.description
-                }
-                onChange={(e) => setFilters({ ...filters, plan: e })}
-                className="uk-width-1-1"
-                options={plans.map((plan) => ({
-                  label: plan.description,
-                  value: plan.id,
-                }))}
-                filterOption={(value, option: any) =>
-                  normalizeStr(option.label.toUpperCase()).includes(
-                    normalizeStr(value.toUpperCase())
-                  )
-                }
-              />
-            </InputBox>
-          </div>
-          {/*
-          <div className="uk-margin-small-top">
-            <label>Agrupa títulos borderô</label>
-            <br />
-            <Group
-              value={filters?.groupBorderos}
-              onChange={(e) =>
-                setFilters({ ...filters, groupBorderos: e.target.value })
-              }
-            >
-              <Radio value="sim">Sim</Radio>
-              <Radio value="nao">Não</Radio>
-            </Group>
-          </div>
-          */}
-        </div>
-      </div>
-      <div className="uk-width-1-5">
-        <div className="">
-          <label>Aceite</label>
-          <br />
-          <Group
-            defaultValue="all"
-            onChange={(e) => {
-              if (e.target.value === "all") {
-                const obj = { ...filters };
-                delete obj.accept;
-                return setFilters(obj);
-              }
-              setFilters({ ...filters, accept: e.target.value });
+        {createTitlePermission && (
+          <Button
+            onClick={() => {
+              setCreateTitleVisible(true);
             }}
-          >
-            <Radio value="all">Todos</Radio>
-            <Radio value="SIM">Sim</Radio>
-            <Radio value="NAO">Não</Radio>
-          </Group>
-        </div>
-        <div className="uk-margin-small-top">
-          <label>Conciliado</label>
-          <br />
-          <Group
-            defaultValue="all"
-            onChange={(e) =>
-              setFilters({ ...filters, reconciled: e.target.value })
-            }
-          >
-            <Radio value="all">Todos</Radio>
-            <Radio value="true">Sim</Radio>
-            <Radio value="false">Não</Radio>
-          </Group>
-        </div>
-        <div className="uk-margin-small-top">
-          <label>Ordenar por</label>
-          <InputBox>
-            <Select
-              value={filters?.order}
-              className="select-component"
-              onChange={(e) => setFilters({ ...filters, order: e })}
-            >
-              <Option value="expiration_date">Data Vencimento</Option>
-              <Option value="issue_date">Data Emissão</Option>
-              <Option value="competence_date">Data Competência</Option>
-              <Option value="payment_date">Data Pagamento</Option>
-              <Option value="doc">Documento / Parcela</Option>
-            </Select>
-          </InputBox>
-        </div>
-        {/*<div className="uk-margin-top uk-flex uk-flex-right">
-        
-          </div>*/}
+            text="Novo título"
+          />
+        )}
+
+        <Button
+          onClick={() => {
+            setFilters((prev) => ({ ...prev, noSearch: false }));
+            setTitles([]);
+            setReload(!reload);
+          }}
+          text="Filtrar"
+        />
       </div>
-    </Container>
+
+      <hr />
+
+      <Container>
+        <FormHandler
+          cleanFieldsOnSubmit={false}
+          initialData={filters}
+          onChangeForm={{
+            callbackResult: (formValues) => {
+              setFilters((prev) => ({
+                ...prev,
+                order: formValues.order,
+                unit: formValues.unit,
+                groupBorderos: formValues.groupBorderos,
+                reconciled: formValues.reconciled,
+                status: formValues.status,
+                plan: formValues.plan,
+                accept: formValues.accept,
+                paymentMethod: formValues.paymentMethod,
+                nsu: formValues.nsu,
+                client: formValues.client,
+                document: formValues.document,
+                fiscalNote: formValues.fiscalNote,
+                fromIssue: formValues.fromIssue,
+                toIssue: formValues.toIssue,
+                fromExpiration: formValues.fromExpiration,
+                toExpiration: formValues.toExpiration,
+                fromPayment: formValues.fromPayment,
+                toPayment: formValues.toPayment,
+                competence: formValues.competence,
+              }));
+            },
+          }}
+        >
+          <div className="box">
+            <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data emissão"
+              names={["fromIssue", "toIssue"]}
+            />
+
+            <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data Vencimento"
+              names={["fromExpiration", "toExpiration"]}
+            />
+
+            <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data Pagamento"
+              names={["fromPayment", "toPayment"]}
+            />
+          </div>
+
+          <div className="box">
+            <InputDateRange
+              id="DateAccept"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data aceite"
+              names={["fromAcceptDate ", "toAcceptDate"]}
+            />
+
+            <div className="row">
+              <InputDatePicker
+                id="Date"
+                mode="month"
+                placeholder="MM/YYYY"
+                label="Data competência"
+                name="competence"
+              />
+
+              <Input label="Nº Comprovante / NSU" name="nsu" />
+            </div>
+
+            <div className="box">
+              <Input label="Documento" name="document" />
+              <Input label="Nota Fiscal" name="fiscalNote" />
+            </div>
+          </div>
+
+          <div className="box">
+            <Select
+              onlyOneValue
+              label="Nome do Titular"
+              name="client"
+              options={clientOptions}
+              isClearable
+            />
+
+            <Select
+              onlyOneValue
+              label="Forma de pagamento"
+              name="paymentMethod"
+              options={paymentMethodOptions}
+              isClearable
+            />
+
+            <Select
+              label="Bandeira Tef."
+              name="flagDescription"
+              onlyOneValue
+              options={tfeFlags?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              }))}
+              onChangeInput={(value) => {
+                setFilters((prv) => {
+                  console.log("ue", prv)
+                  return ({ ...prv, tefFlagId: value })
+                });
+              }}
+            />
+          </div>
+
+          <div className="box">
+            <Select
+              label="Conta corrente"
+              name="contaCorrente"
+              onlyOneValue
+              options={checkingAccounts?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              }))}
+              onChangeInput={(value) => {
+                setFilters((prv) => {
+                  console.log(prv,"????")
+                  return ({ ...prv, checkingAccountId: value })
+                });
+              }}
+            />
+
+            <Select
+              onlyOneValue
+              label="Plano Contas"
+              name="plan"
+              options={planOptions}
+              isClearable
+            />
+
+            <Select
+              onlyOneValue
+              options={[
+                { label: "Sim", value: "sim" },
+                { label: "Não", value: "false" },
+              ]}
+              name="groupBorderos"
+              label="Agrupa títulos borderô"
+            />
+          </div>
+
+          <div className="box">
+            <div className="row">
+              <Select
+                label="Tipo título"
+                onlyOneValue
+                name="type"
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Crédito", value: "CREDITO" },
+                  { label: "Débito", value: "DEBITO" },
+                ]}
+              />
+
+              <Select
+                name="status"
+                label="Situação"
+                onlyOneValue
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Aberto", value: "ABERTO" },
+                  { label: "Baixado", value: "BAIXADO" },
+                ]}
+              />
+            </div>
+
+            <div className="row">
+              <Select
+                onlyOneValue
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Sim", value: "SIM" },
+                  { label: "Não", value: "NAO" },
+                ]}
+                name="accept"
+                label="Aceite"
+              />
+
+              <Select
+                onlyOneValue
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Sim", value: "true" },
+                  { label: "Não", value: "false" },
+                ]}
+                name="reconciled"
+                label="Conciliado"
+              />
+            </div>
+
+            {/* <Select
+      label="Filial"
+      name="unit"
+      options={clinicOptions}
+      onlyOneValue
+      isClearable
+    /> */}
+
+            <Select
+              label="Ordenar por"
+              name="order"
+              onlyOneValue
+              isClearable
+              options={[
+                { label: "Data Vencimento", value: "expiration_date" },
+                { label: "Data Emissão", value: "issue_date" },
+                { label: "Data Competência", value: "competence_date" },
+                { label: "Data Pagamento", value: "payment_date" },
+                { label: "Documento / Parcela", value: "doc" },
+              ]}
+            />
+          </div>
+        </FormHandler>
+      </Container>
+    </>
   );
 }
-
-export default TitlesFilters;
