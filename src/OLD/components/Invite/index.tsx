@@ -6,6 +6,7 @@ import { Container, Body } from "./styles";
 import ExistentUser from "./ExistentUser";
 import NewUser from "./NewUser";
 import { Invite } from "@/domain";
+import { useConfigurationsSystem } from "@/presentation";
 
 interface IInvitesProps extends Invite {
   type: "accept" | "new";
@@ -14,17 +15,14 @@ interface IInvitesProps extends Invite {
 function Invites({ type, ...rest }: IInvitesProps) {
   const router = useRouter();
 
+  const { logo_url } = useConfigurationsSystem()
+
   const verifyImage = () => {
     return {
       backgroundImage:
         process.env.client === "sancla"
           ? `/assets/pet-sancla.jpeg`
           : `/assets/invite-liftone.jpeg`,
-
-      logo:
-        process.env.client === "sancla"
-          ? process.env.api + `/assets/logo-sancla.png`
-          : "/images/logo/lo-logo-green.png",
     };
   };
 
@@ -36,7 +34,7 @@ function Invites({ type, ...rest }: IInvitesProps) {
         </div>
       </section>
       <section>
-        <img className="logo" src={verifyImage().logo} />
+        <img className="logo" src={logo_url} />
         {type === "accept" ? <ExistentUser {...rest} /> : <NewUser {...rest} />}
       </section>
     </Container>
