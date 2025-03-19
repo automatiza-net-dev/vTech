@@ -6,6 +6,7 @@ import { useAuthAdmin, Button, useToast, api, cookies } from "infinity-forge";
 import { sessionService } from "@/OLD/services/session.service";
 
 import { Container } from "./styles";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function SignIn() {
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export function SignIn() {
 
   const handleSubmit = useCallback(
     async (e) => {
-      setLoading(true)
+      setLoading(true);
       e.preventDefault();
 
       if (data.email === "" || data.password === "") {
@@ -76,31 +77,27 @@ export function SignIn() {
 
         await loadUser({ roleName: "user" });
       } catch (err: any) {
-   
         createToast({
           status: "error",
           duration: 7500,
           message:
-            err?.response?.data?.message || "Erro ao logar. Por favor, tente novamente mais tarde.",
+            err?.response?.data?.message ||
+            "Erro ao logar. Por favor, tente novamente mais tarde.",
         });
-      }finally {
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     },
     [data]
   );
 
+  const { home_image_url } = useConfigurationsSystem();
+
   return (
     <Container>
       <img
         className="uk-margin-xlarge-right"
-        src={
-          process.env.client === "sancla"
-            ? "/img/Imagem_Logo_Gato.png"
-            : process.env.client === "clinicas"
-            ? "/img/clinicas_temp.png"
-            : "/img/lo-logo-green.png"
-        }
+        src={home_image_url}
         width="500"
       />
       <div className="left-side">

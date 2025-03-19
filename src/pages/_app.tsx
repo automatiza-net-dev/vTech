@@ -24,7 +24,6 @@ import { AppProvider } from "@/OLD/context/appContext";
 import { SignIn } from "@/OLD/components/Authentication/SignIn";
 
 import {
-  themes,
   Forbidden,
   SignInAdmin,
   NotificationsModal,
@@ -32,6 +31,7 @@ import {
   ButtonInfinityForge,
   SchedulingContextProvider,
   ConfigurationsSystemProvider,
+  ConfigurationSystem,
 } from "@/presentation";
 import { RemoteLoadUserDashboard, RemoteMenu } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -189,7 +189,16 @@ export default function App({ Component, pageProps }) {
               ),
             },
           }}
-          theme={themes[process.env.client || "sancla"]}
+          theme={{
+            black: "#000",
+            red: "#ef1717",
+            green: "#39b15d",
+            orange: "#f18805",
+            yellow: "#e1b400",
+            secondaryColor: "red",
+            darkColor: "#2B2B2B",
+            primaryColor: configurations.primary_color,
+          }}
         >
           <NotificationsModal />
 
@@ -238,7 +247,8 @@ function GambiarraTemporaria({ setMenus }) {
 }
 
 function useSystemConfigurations() {
-  const [configurations, setConfigurations] = useState(null);
+  const [configurations, setConfigurations] =
+    useState<ConfigurationSystem | null>(null);
 
   const ref = useRef(0);
 
