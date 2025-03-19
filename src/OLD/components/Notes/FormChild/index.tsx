@@ -25,7 +25,7 @@ const FormChild = memo(function FormChild({
   type = "create",
   addItemSubmit = false,
   removeItemSubmit = false,
-}) {
+}: any) {
   const [items, setItems] = useState([]);
   const [productType, setProductType] = useState("");
 
@@ -185,7 +185,7 @@ const FormChild = memo(function FormChild({
     if (type === "update") {
       setData((prv) => ({ ...prv, supName: data?.supName }));
     }
-  }, [data]);
+  }, []);
 
   return (
     <Container>
@@ -303,7 +303,7 @@ const FormChild = memo(function FormChild({
                   <div className="uk-width-1-3">
                     <label>Valor Unitário</label>
                     <Input
-                      disabled={!clinic?.unitConfig?.alter_prices}
+                      // disabled={!clinic?.unitConfig?.alter_prices}
                       placeholder="Valor Unitário"
                       value={product?.unitaryValue}
                       onChange={(e) => {

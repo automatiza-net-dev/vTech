@@ -12,10 +12,12 @@ export class RemoteAuthAdmin implements domainVtech.AuthAdmin {
     @inject(InfraTypes.authorizeAdminHttp) private readonly httpClient: domainVtech.HttpClient<domainVtech.AuthAdmin.Model>
   ) {}
   async auth(params: domainVtech.AuthAdmin.Params) {
+    const systemUrl = new URL(window.location.origin).origin;
+
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("auth/admin-login"),
       method: "post",
-      body: params,
+      body: {...params, systemUrl},
     });
 
     this.storage.set("token", { value: response?.token?.token });

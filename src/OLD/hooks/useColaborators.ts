@@ -27,7 +27,7 @@ export const useColaborator = (id, reload) => {
 };
 
 export const useColaborators = (fetch = true) => {
-  const [colaborators, setColaborators] = useState([]);
+  const [colaborators, setColaborators] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

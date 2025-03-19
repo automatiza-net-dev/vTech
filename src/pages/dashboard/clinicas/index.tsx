@@ -9,7 +9,10 @@ import {
   TableActionEdit,
 } from "infinity-forge";
 
+import { RemoteBusinessUnits } from "@/data";
+import { container, TypesAutomatiza } from "@/container";
 import { LayoutDashboard, useMe, usePermission } from "@/presentation";
+import { BusinessUnit } from "@/domain";
 
 function Page() {
   const canEditClinic = usePermission("CLI02");
@@ -19,13 +22,10 @@ function Page() {
   const user = useMe();
   const { createToast } = useToast();
 
-  const { data, isFetching } = useQuery({
+  const { data, mutate, isFetching } = useQuery({
     queryKey: ["load_users"],
     queryFn: async () => {
-      const response = await api({
-        url: "business-units/user",
-        method: "get",
-      });
+      const response = await container.get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits).loadAll( )
 
       return response;
     },
@@ -35,6 +35,23 @@ function Page() {
     isStickyButtons: true,
     button: { text: "Salvar" },
     initialDataIsTableItem: true,
+    modifyInitialData: (initialData) => {
+      console.log(initialData, '@')
+      return {
+        ...initialData,
+        address: {
+          bairro: initialData?.district,
+          logradouro: initialData?.address,
+          numero: initialData?.number,
+          complemento: initialData?.complement,
+          uf: initialData?.state,
+          localidade: initialData?.district,
+          postalCode: initialData?.postal_code,
+        },
+        companyName: initialData?.company_name,
+        fantasyName: initialData?.fantasy_name
+      }
+    },
     initialData: { economic_group_id: user?.data?.unit?.economicGroup?.id },
     onSucess: async (data) => {
 
@@ -43,16 +60,20 @@ function Page() {
         method: data.id ? "put" : "post",
         body: {
           ...data,
+          postalCode: data?.address?.postalCode,
           phone: removeDigits(data.phone),
           document: removeDigits(data.document),
           address: data.address?.logradouro,
           number: data.address?.numero,
           complement: data.address?.complemento,
-          state: data.address?.estado,
-          district: data.address?.localidade,
+          state: data.address?.uf,
+          district: data.address?.bairro,
+          city: data.address?.localidade,
           simple: !!data.simple,
         },
       });
+
+      await mutate()
 
       createToast({
         status: "success",
@@ -110,15 +131,15 @@ function Page() {
         },
       ],
     ],
-  } as TableActionCreate<any> & TableActionEdit<any>;
+  } as TableActionCreate<BusinessUnit> & TableActionEdit<BusinessUnit>;
 
   const { Table } = useTable({
     columnsConfiguration: {
       columns: [
         { id: "identification", label: "Identificação" },
         { id: "document", label: "CNPJ" },
-        { id: "companyName", label: "Razão social" },
-        { id: "fantasyName", label: "Nome Fantasia" },
+        { id: "company_name", label: "Razão social" },
+        { id: "fantasy_name", label: "Nome Fantasia" },
         { id: "phone", label: "Telefone" },
       ],
       actions: {

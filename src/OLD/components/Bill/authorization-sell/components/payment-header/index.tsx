@@ -8,6 +8,7 @@ export function PaymentHeader({ paymentsList }) {
         display: "flex",
         justifyContent: "space-between",
         gap: "10px",
+        width: "100%"
       }}
       className="font-16-medium"
     >

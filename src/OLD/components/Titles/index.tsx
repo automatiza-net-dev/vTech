@@ -45,12 +45,15 @@ import * as XLSX from "xlsx/xlsx.mjs";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 export default function Titles({ type }: any) {
+
   const [filters, setFilters] = useState({
-    type: type === "receive" ? "CREDITO" : "DEBITO",
+    type: !type ? "all" : type === "receive" ? "CREDITO" : "DEBITO",
     order: "expiration_date",
     status: "ABERTO",
     noSearch: true,
     groupBorderos: "sim",
+    accept: "all",
+    reconciled: "all",
   });
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
@@ -75,13 +78,10 @@ export default function Titles({ type }: any) {
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
   const { user } = useAuthAdmin();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
-  const createTitlePermission = useUserHasPermission(
-    `${accessControlTitles(type)}01`
-  );
   const listTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}00`
   );
@@ -238,7 +238,10 @@ export default function Titles({ type }: any) {
     delete newObj?.document;
 
     if (!newObj?.accountPlanId) {
-      return createToast({ status: "warning", message: "Plano de contas obrigatório" })
+      return createToast({
+        status: "warning",
+        message: "Plano de contas obrigatório",
+      });
     }
 
     financesService
@@ -250,8 +253,11 @@ export default function Titles({ type }: any) {
         value: convertIntlCurrency(newObj?.value),
       })
       .then((_res) => {
-        setEdit(false); createToast({ status: "success", message: "Parcela atualizada com sucesso!" })
-
+        setEdit(false);
+        createToast({
+          status: "success",
+          message: "Parcela atualizada com sucesso!",
+        });
       })
       .catch((err) => {
         error = true;
@@ -259,10 +265,13 @@ export default function Titles({ type }: any) {
         if (err?.response?.data?.message) {
           const messageArr = err?.response?.data?.message.split(":");
 
-          return createToast({ status: "error", message: messageArr[1] })
+          return createToast({ status: "error", message: messageArr[1] });
         }
-        
-        return createToast({ status: "error", message: "Houve um erro ao atualizar a parcela selecionada..." })
+
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao atualizar a parcela selecionada...",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -333,17 +342,8 @@ export default function Titles({ type }: any) {
       })`}
     >
       <Container>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          {createTitlePermission && (
-            <Button
-              onClick={() => {
-                setCreateTitleVisible(true);
-              }}
-              text="Novo título"
-            />
-          )}
-        </div>
         <TitlesFilters
+          type={type}
           filters={filters}
           setFilters={setFilters}
           paymentMethods={paymentMethods}
@@ -359,9 +359,9 @@ export default function Titles({ type }: any) {
           reload={reload}
           setReload={setReload}
           clinics={clinics}
+          setCreateTitleVisible={setCreateTitleVisible}
           loadingFinances={loadingFinances}
         />
-        <hr />
         {titles?.length > 0 && (
           <ButtonsPanel
             setReload={setReload}

@@ -64,7 +64,6 @@ export function useSubmitSchedule() {
 
   const { createToast } = useToast();
   const { unit } = useSystem();
-  const clearCache = useQueryClient((state) => state.clearCache);
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
   const overbookingPermission = useVerifyPermissions("AGE11");
@@ -171,12 +170,10 @@ export function useSubmitSchedule() {
 
         createToast({ message: "Sucesso!!", status: "success" });
 
-        setTimeout(() => {
-          clearCache();
-        }, 1000);
-
         setModalPatients(null);
         setCreateSchedulingArgs(null);
+
+        scheduleUsers.mutate()
 
         return;
       }

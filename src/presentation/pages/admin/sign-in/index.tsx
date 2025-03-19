@@ -24,11 +24,14 @@ export function SignInAdmin() {
           onSucess={async (data) => {
             const ipAddress = await api({ url: "ip", method: "get" }, "/api/");
 
+            const systemUrl = new URL(window.location.origin).origin;
+
             const response = await api({
               url: "auth/controller-login",
               method: "post",
               body: {
                 ...data,
+                systemUrl,
                 system: process.env.clientName,
                 ipAddress,
               },

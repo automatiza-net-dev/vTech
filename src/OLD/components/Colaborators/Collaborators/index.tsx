@@ -1,7 +1,6 @@
-// @ts-nocheck
-import React, { useCallback, useState, memo } from "react";
+import React, { useCallback, useState } from "react";
 
-import { Popover, Table } from "antd";
+import {  Table } from "antd";
 
 import { convertDate } from "@/OLD/utils/convertDate";
 import { Delete } from "./Delete";
@@ -9,28 +8,22 @@ import Link from "next/link";
 import { clinicService } from "@/OLD/services/clinic.service";
 import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
 
-// Components
-import { Button } from "infinity-forge";
 import { Input } from "./styles";
-import Create from "./Create";
 
-// Icons
 import { EditTwoTone } from "@ant-design/icons";
 
-// Utils
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { CreateCollaborator } from "@/presentation";
 
 function Colaborators() {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [refreshList, setRefreshList] = useState(false);
   const [filters, setFilters] = useState({});
-  const [createVisible, setCreateVisible] = useState(false);
 
   const { economicGroup } = useEconomicGroup();
 
-  const canCreateColaborator = useUserHasPermission("COL01");
   const canEditColaborator = useUserHasPermission("COL02");
   const canDeleteColaborator = useUserHasPermission("COL03");
 
@@ -132,7 +125,6 @@ function Colaborators() {
             placeholder="Busque por nome"
             onChange={(e) => setFilters({ ...filters, name: e.target.value })}
           />
-   
         </Input>
         <Input>
           <input
@@ -142,7 +134,6 @@ function Colaborators() {
               setFilters({ ...filters, document: e.target.value })
             }
           />
-
         </Input>
         <Input>
           <input
@@ -150,7 +141,6 @@ function Colaborators() {
             placeholder="Busque por telefone"
             onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
           />
-  
         </Input>
       </div>
       <div className="uk-margin-right uk-flex uk-flex-around">
@@ -160,18 +150,12 @@ function Colaborators() {
             placeholder="Busque por cargo"
             onChange={(e) => setFilters({ ...filters, role: e.target.value })}
           />
-        
         </Input>
         <Input>
           <input type="search" placeholder="Verificar funcionalidade" />
-    
         </Input>
         <div className="uk-margin-small-top">
-            <Button
-              disabled={!canCreateColaborator}
-              onClick={() => setCreateVisible(true)}
-              text="Cadastrar"
-            />
+          <CreateCollaborator onSuccess={() => setRefreshList(s => !s)} />
         </div>
       </div>
       <hr />
@@ -190,14 +174,8 @@ function Colaborators() {
           }}
         />
       </div>
-      <Create
-        visible={createVisible}
-        setVisible={setCreateVisible}
-        reload={refreshList}
-        setReload={setRefreshList}
-      />
     </div>
   );
-};
+}
 
 export default Colaborators;

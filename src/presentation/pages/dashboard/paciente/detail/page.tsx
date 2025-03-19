@@ -20,7 +20,7 @@ import { HospitalizationTimeline } from "@/OLD/components/Hospitalization/Hospit
 import * as S from "./styles";
 
 export function PacientePage() {
-  const { data, isFetching } = useLoadPatient();
+  const { data, isLoading } = useLoadPatient();
 
   const queryClient = useQueryClient();
 
@@ -31,7 +31,7 @@ export function PacientePage() {
     queryClient.invalidateQueries(["RemotePatient"]);
   }, []);
 
-  if (isFetching || !data) {
+  if (isLoading || !data) {
     return <>Carregando...</>;
   }
 
@@ -82,7 +82,7 @@ export function PacientePage() {
     },
     {
       title: "Negociações",
-      content: (props) => <Negotiations />,
+      content: () => <Negotiations />,
       key: "negotiations",
       active: unit?.system?.type !== "Vet",
     },
@@ -93,6 +93,7 @@ export function PacientePage() {
       <ProfileInfos patient={data} />
       
       <ActionsPatient />
+      
       <Tab tabs={tabs} />
     </S.Paciente>
   );

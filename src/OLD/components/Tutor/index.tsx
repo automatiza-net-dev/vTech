@@ -29,7 +29,7 @@ export function Tutor({
   origin = false,
   setReload = false,
   reload = false,
-}) {
+}: any) {
   const [filters, setFilters] = useState({ noSearch: true });
   const [fastCreateVisible, setFastCreateVisible] = useState(false);
   const [localReload, setLocalReload] = useState(false);

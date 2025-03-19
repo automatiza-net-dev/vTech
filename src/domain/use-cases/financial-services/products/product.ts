@@ -33,8 +33,22 @@ export type Variation = {
   kitItems: [];
 };
 
+export type TreatmentExecutions = {
+  bid: string;
+  item_produtividade: string;
+  treatment_id: number;
+  treatment_item_id: number;
+  vid: string;
+  data_agendamento: Date;
+  data_execucao: Date;
+  observations: string;
+  usuario_execucao: string;
+};
+
 export type Product = {
   id: string;
+  cancelledQuantity?: number;
+  cancelled?: "P" | "S" | "N" | null;
   approved?: boolean;
   approvalDate?: string;
   courtesy_approved_at?: string;
@@ -43,6 +57,7 @@ export type Product = {
   description: string;
   quantity: string | number;
   type: "product";
+  treatmentExecutions?: TreatmentExecutions[];
   courtesyApprovedUser?: {
     id: string;
     name: string;
@@ -87,6 +102,7 @@ export type ProductCart = {
   discountValue: number;
   budgetItemId?: string;
   billItemId?: string;
+  approved?: boolean;
   productVariationId: Variation["id"];
   saleValue: BusinessUnitProduct["price"];
   unitaryValue: BusinessUnitProduct["price"];

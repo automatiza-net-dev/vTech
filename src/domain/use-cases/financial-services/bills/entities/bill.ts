@@ -13,10 +13,11 @@ export type BillItem = Product & {};
 export type Bill = {
   id: string;
   bill_date: Date;
-  cancelled?: "P" | "A" | null;
+  cancelled?: "P" | "A" | "F" | "S" | "N" | null;
   product_value: number;
   internalCode: string;
   service_value: number;
+  origin_bill_id?: string | null;
   discount_value: number;
   fee_value: number | null;
   delivery_value: number;

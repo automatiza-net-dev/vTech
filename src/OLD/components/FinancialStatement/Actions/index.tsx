@@ -57,8 +57,8 @@ const Actions = memo(function Actions({
   const { paymentMethods } = usePaymentMethods(false, false, updateOpen);
   const { plans } = usePlans(false, false, updateOpen);
   const { titles, setTitles } = useAuth();
-  const { finance } = useShowFinance(financeId, reload, updateOpen);
-
+  const showFinance = useShowFinance(financeId, reload, updateOpen);
+  const finance = showFinance?.finances?.[0]
   const editTitlePermission = useUserHasPermission(
     `${accessControlTitles(type)}02`
   );

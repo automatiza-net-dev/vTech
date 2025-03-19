@@ -34,7 +34,7 @@ import { Select, FormHandler, useToast, BadRequestError } from "infinity-forge";
 import { Button } from "infinity-forge";
 import { AxiosError } from "axios";
 
-const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any) {
+function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
   const [reload, setReload] = useState(false);
   const [filters, setFilters] = useState({ active: true });
   const [cashierFilters, setCashierFilters] = useState({
@@ -162,6 +162,11 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
       createToast({ status: "error", message: "Há valores pendentes" });
       return;
     }
+    queryClient.invalidateQueries(["bills"]);
+    queryClient.invalidateQueries(["bills", false]);
+    queryClient.invalidateQueries(["bills", true]);
+    setReloadBill & setReloadBill(s => !s)
+    queryClient.invalidateQueries(["paymentsPreview"]);
 
     closePayment();
 
@@ -207,7 +212,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
     paymentMethods?.length > 0 && filterMethods();
   }, [paymentMethods]);
 
-  const submitPayment = useCallback(() => {
+  const submitPayment = useCallback((params) => {
     if (cashiers.length === 0) {
       return createToast({
         status: "error",
@@ -229,6 +234,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
 
     const paylaod = {
       ...formData,
+      maxParcelas: params?.maxParcelas || formData?.maxParcelas,
       installmentsValue: convertIntlCurrency(formData?.installmentsValue),
       billId,
     };
@@ -236,7 +242,9 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
     mutate(paylaod, {
       onSuccess: () => {
         queryClient.invalidateQueries(["bills"]);
-        queryClient.invalidateQueries(["RemotePatient"]);
+        queryClient.invalidateQueries(["bills", false]);
+        queryClient.invalidateQueries(["bills", true]);
+        setReloadBill & setReloadBill(s => !s)
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
           expirationDate: moment(),
@@ -248,9 +256,12 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
         });
       },
       onError: (err) => {
+
         if (err instanceof AxiosError) {
-          if (window.confirm(err.response.data.message)) {
-            mutate({ ...paylaod, maxParcelas: true });
+          if (window.confirm(err.response.data.message) && !params?.maxParcelas) {
+           
+            
+            submitPayment({maxParcelas: true })
             setFormData({
               expirationDate: moment(),
             });
@@ -258,6 +269,7 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
 
           return;
         }
+
 
         if (
           err.response.data.message.includes(
@@ -276,8 +288,10 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
             message: "Não existe caixa diário aberto",
           });
         }
-
         queryClient.invalidateQueries(["bills"]);
+        setReloadBill & setReloadBill(s => !s)
+        queryClient.invalidateQueries(["bills", false]);
+        queryClient.invalidateQueries(["bills", true]);
       },
     });
   }, [formData, billId]);
@@ -408,6 +422,6 @@ const AddBillPayment = memo(function AddBillPayment({ billId, setVisible }: any)
       </div>
     </Container>
   );
-});
+}
 
 export default AddBillPayment;

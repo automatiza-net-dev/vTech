@@ -3,7 +3,7 @@ import { Print } from "@/presentation";
 import { Document as IDocument } from "@/domain";
 import { container, TypesAutomatiza } from "@/container";
 import { useQueryClient } from "react-query";
-import { Button } from "infinity-forge";
+import { Button, Icon } from "infinity-forge";
 
 import * as S from "./styles";
 import { useRouter } from "next/router";
@@ -53,12 +53,11 @@ export function Document(props: IDocument) {
             ></div>
           }
         >
-          <Button
-            className={props?.printed_at ? "printed" : ""}
-            type="button"
-            svg={"IconPrint"}
-            text="Imprimir"
-          />
+          <div className={"imprimir " + (props?.printed_at ? "printed" : "")}>
+            <Icon name="IconPrint" />
+
+            Imprimir
+          </div>
         </Print>
       </div>
     </S.Document>

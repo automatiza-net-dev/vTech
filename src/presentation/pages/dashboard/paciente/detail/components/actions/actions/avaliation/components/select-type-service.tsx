@@ -17,12 +17,11 @@ export function SelectTypeService({
   initialService?: string;
   setBody?: Dispatch<SetStateAction<string>>;
 }) {
-  const { values, setFieldValue} = useFormikContext<any>();
-  const initialValue = values["scheduleServiceId"][0];
+  const { values, setFieldValue } = useFormikContext<any>();
+  const scheduleServiceId = values?.["scheduleServiceId"]?.[0];
 
   const patient = useLoadPatient();
   const { user } = useAuthAdmin();
-
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups({});
 
@@ -45,15 +44,15 @@ export function SelectTypeService({
         base: resume,
       });
 
-      setFieldValue("protocol", response.result)
+    setFieldValue("protocol", response.result);
     setBody && setBody(response.result);
   }
 
   useEffect(() => {
-    if (!initialValue) {
-      AddInitialValueInResumeInput(initialValue);
+    if (scheduleServiceId && !initialService) {
+      AddInitialValueInResumeInput(scheduleServiceId);
     }
-  }, [data, initialValue]);
+  }, [data, scheduleServiceId]);
 
   if (!data || isFetching) {
     return <></>;

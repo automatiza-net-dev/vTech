@@ -122,7 +122,7 @@ export default function FastCreateTutor({
       })
       .then((res) => {
         setSearch(res?.data?.tutor?.name);
-
+ 
         setPayload({
           ...payload,
           patientName: res?.data?.patient?.name,

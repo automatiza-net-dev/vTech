@@ -11,7 +11,7 @@ import { Container } from "./styles";
 import { Button, useToast } from "infinity-forge";
 import { Input, Modal } from "antd";
 
-export const DetailsPanel = memo(function DetailsPanel({
+export function DetailsPanel({
   formData,
   setFormData,
   submit,
@@ -111,7 +111,7 @@ export const DetailsPanel = memo(function DetailsPanel({
                       paymentMethodFlagInstallmentId:
                         formData?.installmentsList?.find(
                           (installment) => installment?.installment === i + 1
-                        ).id,
+                        )?.id,
                     });
                   };
 
@@ -161,4 +161,4 @@ export const DetailsPanel = memo(function DetailsPanel({
       </form>
     </Container>
   );
-});
+}

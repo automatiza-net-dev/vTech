@@ -50,7 +50,7 @@ export function ScheduleCard(props: Event) {
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         id="Capa_1"
-                        enable-background="new 0 0 511.856 511.856"
+                        enableBackground="new 0 0 511.856 511.856"
                         height="512"
                         viewBox="0 0 511.856 511.856"
                         width="512"

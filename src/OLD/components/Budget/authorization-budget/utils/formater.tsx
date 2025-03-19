@@ -18,8 +18,7 @@ export function authorizationFormater(billItem) {
       return (
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
           <CloseIcon />
-          Não Autorizado por {courtesyApprovedUser.name} em{" "}
-          {moment(courtesy_approved_at).format("DD/MM/YYYY")}
+          Não Autorizado por {courtesyApprovedUser.name} em {moment(courtesy_approved_at).format("DD/MM/YYYY")}
         </span>
       );
     }
@@ -42,8 +41,7 @@ export function authorizationFormater(billItem) {
     return (
       <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
         <CheckIcon />
-        Autorizado por {courtesyApprovedUser?.name} em{" "}
-        {moment(courtesy_approved_at).format("DD/MM/YYYY")}
+        Autorizado por {courtesyApprovedUser?.name} em {moment(courtesy_approved_at).format("DD/MM/YYYY")}
       </span>
     );
   }

@@ -6,7 +6,7 @@ import { DeleteTwoTone } from "@ant-design/icons";
 import { clinicService } from "@/OLD/services/clinic.service";
 import { useToast } from "infinity-forge";
 
-export const Delete = React.memo(function Delete({ id, setRefreshList }) {
+export function Delete({ id, setRefreshList }) {
 
   const {createToast} = useToast()
 
@@ -39,4 +39,4 @@ export const Delete = React.memo(function Delete({ id, setRefreshList }) {
       </Popconfirm>
     </div>
   );
-});
+}

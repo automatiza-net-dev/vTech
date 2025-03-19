@@ -18,7 +18,6 @@ import { DeleteTwoTone } from "@ant-design/icons";
 import {
   Checkbox,
   Input,
-  Modal,
   Popconfirm,
   Skeleton,
   Table,
@@ -38,11 +37,12 @@ import { TbAlertTriangle } from "react-icons/tb";
 import { RiPrinterCloudLine } from "react-icons/ri";
 import { fiscalDocumentService } from "../../../../../OLD/services/fiscal-document.service";
 import moment from "moment";
-import { Icon, Button, useToast } from "infinity-forge";
+import { Icon, Button, useToast, api, Modal } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
+import { AxiosError } from "axios";
 
-const Details = memo(function Details({ billId, setVisible }: any) {
+export default function Details({ billId, setVisible }: any) {
   const [formatedProducts, setFormatedProducts] = useState<any>([]);
   const [higherBlock, setHigherBlock] = useState<any>(0);
   const blockArr = Array.from(Array(higherBlock).keys());
@@ -337,9 +337,9 @@ const Details = memo(function Details({ billId, setVisible }: any) {
     }
   );
 
-  function FormatProductCanceled({ text, item }: { text: string, item: any }) {
-    if(!item) {
-      return text
+  function FormatProductCanceled({ text, item }: { text: string; item: any }) {
+    if (!item) {
+      return text;
     }
     return (
       <>
@@ -370,12 +370,13 @@ const Details = memo(function Details({ billId, setVisible }: any) {
             courtesy: item?.courtesy ? "Sim" : "Não",
             max_discount: item?.max_discount ? "Sim" : "Não",
             auth_data: <AuthorizationStatusProduct item={item} />,
+            cancelledStatus: item?.cancelled,
             cancelled: (
               <div className="font-16-regular" style={{ textAlign: "right" }}>
                 {item?.cancelled === "P" ? (
-                  <FormatProductCanceled text={"Revisão pendente"}  />
+                  <FormatProductCanceled text={"Revisão pendente"} />
                 ) : item.cancelled === "S" ? (
-                  <FormatProductCanceled text={"Aprovado por"} item={item}/>
+                  <FormatProductCanceled text={"Aprovado por"} item={item} />
                 ) : item.cancelled === "N" ? (
                   <FormatProductCanceled text={"Recusado por"} item={item} />
                 ) : (
@@ -641,11 +642,16 @@ const Details = memo(function Details({ billId, setVisible }: any) {
   }, [data]);
 
   useEffect(() => {
-    setSeller({ seller: data?.sellerId, name: data?.seller?.name });
-    setFinResponsible({
-      name: data?.financialResponsible?.name,
-      id: data?.financialResponsible?.id,
-    });
+    if (data?.seller) {
+      setSeller({ seller: data?.sellerId, name: data?.seller?.name });
+    }
+
+    if (data?.financialResponsible?.name) {
+      setFinResponsible({
+        name: data?.financialResponsible?.name,
+        id: data?.financialResponsible?.id,
+      });
+    }
   }, [data, changeFields]);
 
   const componentRef = useRef();
@@ -681,45 +687,23 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       });
   };
 
-  const changeBillSeller = useCallback(() => {
-    billService
-      .updateBillSeller({
+  const changeBillSeller = useCallback(async () => {
+    await api({
+      method: "put",
+      url: "bills/seller",
+      body: {
         billId: data?.id,
         sellerId: seller?.id,
-        clientId: data?.client?.id,
-        patientId: data?.patient?.id,
-      })
-      .then((_res) => {
-        setChangeFields((prv) => ({ ...prv, seller: false }));
-        queryClient.invalidateQueries(["bills"]);
+      },
+    });
 
-        return createToast({
-          status: "success",
-          message: "Vendedor alterado!",
-        });
-      })
-      .catch((err) => {
-        if (!message) {
-          return createToast({
-            status: "error",
-            message: "Houve um erro interno, tente novamente mais tarde",
-          });
-        }
+    setChangeFields((prv) => ({ ...prv, seller: false }));
+    queryClient.invalidateQueries(["bills"]);
 
-        if (message?.includes("E_NOT_OPEN")) {
-          return createToast({
-            status: "warning",
-            message: "Nota não está aberta, não é possível alterar o vendedor",
-          });
-        }
-
-        if (message?.includes("E_ERR")) {
-          return createToast({
-            status: "warning",
-            message: err?.response?.data?.message?.split(":")[1],
-          });
-        }
-      });
+    createToast({
+      status: "success",
+      message: "Vendedor alterado!",
+    });
   }, [data, seller]);
 
   const changeBillFinancialResponsible = useCallback(() => {
@@ -776,9 +760,6 @@ const Details = memo(function Details({ billId, setVisible }: any) {
 
   return (
     <Container className="">
-      {/*
-      <h3 className="uk-margin-remove">Venda - Detalhes</h3>
-      */}
       <Header
         bill={data}
         changeBillSeller={changeBillSeller}
@@ -793,8 +774,25 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       />
       <section className="uk-margin-top">
         <h4 className="uk-margin-remove">Produtos - Serviços Ativos</h4>
-        <Table columns={productsColumns} dataSource={formatedProducts} />
+        <Table
+          columns={productsColumns}
+          dataSource={formatedProducts?.filter(
+            (item) => item.cancelledStatus !== "S"
+          )}
+        />
       </section>
+
+      {data?.cancelled === "S" && (
+        <section className="uk-margin-top">
+          <h4 className="uk-margin-remove">Produtos - Serviços Cancelados</h4>
+          <Table
+            columns={productsColumns}
+            dataSource={formatedProducts?.filter(
+              (item) => item.cancelledStatus === "S"
+            )}
+          />
+        </section>
+      )}
       <section>
         <h4 className="uk-margin-remove">Pagamentos</h4>
         {blockArr?.length > 0 &&
@@ -807,6 +805,7 @@ const Details = memo(function Details({ billId, setVisible }: any) {
             />
           ))}
       </section>
+
       <section className="uk-margin-top">
         <h4 className="uk-margin-remove">Observações</h4>
         <TextArea readOnly value={data?.additional_information} />
@@ -871,11 +870,9 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       </footer>
 
       <Modal
-        title="Emissão de Nota Fiscal"
-        visible={openModal}
-        onCancel={() => setOpenModal(false)}
-        footer={null}
-        width={600}
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        styles={{ maxWidth: 600 }}
       >
         <Typography.Title level={4} style={{ textAlign: "center" }}>
           Selecione os documentos Fiscais a serem impressos
@@ -978,14 +975,12 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       </Modal>
 
       <Modal
-        title="Cancelamento de Nota Fiscal de Serviço"
-        visible={openCancelNfse}
-        onCancel={() => {
+        open={openCancelNfse}
+        onClose={() => {
           setOpenCancelNfse(false);
           setCancelNfseData({});
         }}
-        footer={null}
-        width={500}
+        styles={{ maxWidth: 500 }}
       >
         <form
           onSubmit={(e) => {
@@ -1028,14 +1023,12 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       </Modal>
 
       <Modal
-        title="Cancelamento de Nota Fiscal de Produto"
-        visible={openCancelNfe}
-        onCancel={() => {
+        open={openCancelNfe}
+        onClose={() => {
           setOpenCancelNfe(false);
           setCancelNfeData({});
         }}
-        footer={null}
-        width={500}
+        styles={{ maxWidth: 500 }}
       >
         <form
           onSubmit={(e) => {
@@ -1079,14 +1072,12 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       </Modal>
 
       <Modal
-        title="Inutilização de Nota Fiscal de Produto"
-        visible={openDisableNfe}
-        onCancel={() => {
+        open={openDisableNfe}
+        onClose={() => {
           setOpenDisableNfe(false);
           setDisableNfeData({});
         }}
-        footer={null}
-        width={500}
+        styles={{ maxWidth: 500 }}
       >
         <form
           onSubmit={(e) => {
@@ -1126,11 +1117,10 @@ const Details = memo(function Details({ billId, setVisible }: any) {
           </div>
         </form>
       </Modal>
+
       <Modal
-        title="Erros apresentados na nfe"
-        visible={nfeErrorsVisible}
-        onCancel={() => setNfeErrorsVisible(false)}
-        footer={null}
+        open={nfeErrorsVisible}
+        onClose={() => setNfeErrorsVisible(false)}
       >
         <div className="uk-flex uk-flex-between">
           <div className="uk-width-1-5">Código</div>
@@ -1145,6 +1135,4 @@ const Details = memo(function Details({ billId, setVisible }: any) {
       </Modal>
     </Container>
   );
-});
-
-export default Details;
+}

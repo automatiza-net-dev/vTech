@@ -7,6 +7,7 @@ import { Container } from "./styles";
 import ConfirmScreen from "@/OLD/components/mini-components/ConfirmScreen";
 
 import { unitsService } from "@/OLD/services/units.service";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function ForgotPassword() {
   const [email, setEmail] = React.useState("");
@@ -15,6 +16,7 @@ export function ForgotPassword() {
   const router = useRouter();
 
   const { createToast } = useToast();
+  const { id } = useConfigurationsSystem()
 
   const handleSubmit = React.useCallback(
     (e) => {
@@ -26,7 +28,7 @@ export function ForgotPassword() {
       }
 
       unitsService
-        .forgotPassword({ email, systemName: process.env.clientName })
+        .forgotPassword({ email, systemId: id, systemName: process.env.clientName })
         .then((_res) => {
           setSend(true);
 

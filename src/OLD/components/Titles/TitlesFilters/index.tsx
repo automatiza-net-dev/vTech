@@ -1,20 +1,25 @@
-import React, { memo, useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
 import {
+  api,
+  Input,
   Button,
   Select,
-  Input,
-  InputRadio,
+  useQuery,
   FormHandler,
+  useAuthAdmin,
   InputDateRange,
   InputDatePicker,
 } from "infinity-forge";
 
 import { Container } from "./styles";
 
-const TitlesFilters = memo(function TitlesFilters({
+export default function TitlesFilters({
+  type,
   filters,
   setFilters,
   paymentMethods,
@@ -25,6 +30,7 @@ const TitlesFilters = memo(function TitlesFilters({
   setReload,
   clinics,
   loadingFinances,
+  setCreateTitleVisible,
 }: any) {
   const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
   const { setTitles } = useAuth();
@@ -54,17 +60,6 @@ const TitlesFilters = memo(function TitlesFilters({
         value: plan.id,
       })),
     [plans]
-  );
-
-  const clinicOptions = useMemo(
-    () =>
-      (clinics &&
-        clinics?.map((clinic) => ({
-          value: clinic.id,
-          label: clinic.companyName,
-        }))) ||
-      [],
-    [clinics]
   );
 
   useEffect(() => {
@@ -104,168 +99,315 @@ const TitlesFilters = memo(function TitlesFilters({
     formatClients();
   }, [tutors, suppliers]);
 
+  const tfeFlags = useQuery({
+    queryKey: ["tfeFlags"],
+    queryFn: async () => {
+      const response = await api({
+        method: "get",
+        url: `payment-methods/tef-flags`,
+        body: {
+          type: "all",
+        },
+      });
+
+      return response?.sort((a: any, b: any) => {
+        if (a["description"]?.toLowerCase() < b["description"]?.toLowerCase()) {
+          return -1;
+        }
+
+        if (a["description"]?.toLowerCase() > b["description"]?.toLowerCase()) {
+          return 1;
+        }
+
+        return 0;
+      });
+    },
+  });
+
+  const { user } = useAuthAdmin();
+
+  const checkingAccounts = useQuery({
+    queryKey: ["chekingAccounts"],
+    queryFn: async () => {
+      const response = await api({
+        method: "get",
+        url: `checking-accounts`,
+        body: { unit: user?.unit?.id },
+      });
+
+      return response;
+    },
+  });
+
+  const createTitlePermission = useUserHasPermission(
+    `${accessControlTitles(type)}01`
+  );
+
   return (
-    <Container>
-      <FormHandler
-        cleanFieldsOnSubmit={false}
-        initialData={filters}
-        onChangeForm={{
-          callbackResult: (formValues) => {
-            setFilters((prev) => ({
-              ...prev,
-              ...formValues,
-            }));
-          },
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          width: "100%",
+          gap: 20,
+          marginBottom: 20,
+          marginTop: -50
         }}
       >
-        <div className="box">
-          <InputDateRange
-            id="Date"
-            isClearable
-            enableFilter
-            placeholder="DD/MM/YYYY"
-            label="Data emissão"
-            names={["fromIssue", "toIssue"]}
-          />
-
-          <InputDateRange
-            id="Date"
-            isClearable
-            enableFilter
-            placeholder="DD/MM/YYYY"
-            label="Data Vencimento"
-            names={["fromExpiration", "toExpiration"]}
-          />
-
-          <InputDateRange
-            id="Date"
-            isClearable
-            enableFilter
-            placeholder="DD/MM/YYYY"
-            label="Data Pagamento"
-            names={["fromPayment", "toPayment"]}
-          />
-        </div>
-
-        <div className="box">
-          <InputDatePicker
-            id="Date"
-            mode="month"
-            placeholder="MM/YYYY"
-            label="Data competência"
-            name="competence"
-          />
-
-          <div className="box">
-            <Input label="Documento" name="document" />
-            <Input label="Nota Fiscal" name="fiscalNote" />
-          </div>
-
-          <Input label="Nº Comprovante / NSU" name="nsu" />
-        </div>
-
-        <div className="box">
-          <Select
-            onlyOneValue
-            label="Nome do Titular"
-            name="client"
-            options={clientOptions}
-            isClearable
-          />
-
-          <Select
-            onlyOneValue
-            label="Forma de pagamento"
-            name="paymentMethod"
-            options={paymentMethodOptions}
-            isClearable
-          />
-
-          <Select
-            onlyOneValue
-            label="Plano Contas"
-            name="plan"
-            options={planOptions}
-            isClearable
-          />
-        </div>
-
-        <div className="box">
-          <InputRadio
-            options={[
-              { label: "Todos", value: "all" },
-              { label: "Aberto", value: "ABERTO" },
-              { label: "Baixado", value: "BAIXADO" },
-            ]}
-            name="status"
-            label="Situação"
-          />
-
-          <InputRadio
-            options={[
-              { label: "Todos", value: "all" },
-              { label: "Sim", value: "SIM" },
-              { label: "Não", value: "NAO" },
-            ]}
-            name="accept"
-            label="Aceito"
-          />
-
-          <InputRadio
-            options={[
-              { label: "Todos", value: "all" },
-              { label: "Sim", value: "true" },
-              { label: "Não", value: "false" },
-            ]}
-            name="reconciled"
-            label="Conciliado"
-          />
-
-          <InputRadio
-            options={[
-              { label: "Sim", value: "sim" },
-              { label: "Não", value: "false" },
-            ]}
-            name="groupBorderos"
-            label="Agrupa títulos borderô"
-          />
-        </div>
-
-        <div className="box">
-          <Select
-            label="Filial"
-            name="unit"
-            options={clinicOptions}
-            onlyOneValue
-            isClearable
-          />
-
-          <Select
-            label="Ordenar por"
-            name="order"
-            onlyOneValue
-            isClearable
-            options={[
-              { label: "Data Vencimento", value: "expiration_date" },
-              { label: "Data Emissão", value: "issue_date" },
-              { label: "Data Competência", value: "competence_date" },
-              { label: "Data Pagamento", value: "payment_date" },
-              { label: "Documento / Parcela", value: "doc" },
-            ]}
-          />
-
+        {createTitlePermission && (
           <Button
             onClick={() => {
-              setFilters((prev) => ({ ...prev, noSearch: false }));
-              setTitles([]);
-              setReload(!reload);
+              setCreateTitleVisible(true);
             }}
-            text="Filtrar"
+            text="Novo título"
           />
-        </div>
-      </FormHandler>
-    </Container>
-  );
-});
+        )}
 
-export default TitlesFilters;
+        <Button
+          onClick={() => {
+            setFilters((prev) => ({ ...prev, noSearch: false }));
+            setTitles([]);
+            setReload(!reload);
+          }}
+          text="Filtrar"
+        />
+      </div>
+
+      <hr />
+
+      <Container>
+        <FormHandler
+          cleanFieldsOnSubmit={false}
+          initialData={filters}
+          onChangeForm={{
+            callbackResult: (formValues) => {
+              setFilters((prev) => ({
+                ...prev,
+                order: formValues.order,
+                unit: formValues.unit,
+                groupBorderos: formValues.groupBorderos,
+                reconciled: formValues.reconciled,
+                status: formValues.status,
+                plan: formValues.plan,
+                accept: formValues.accept,
+                paymentMethod: formValues.paymentMethod,
+                nsu: formValues.nsu,
+                client: formValues.client,
+                document: formValues.document,
+                fiscalNote: formValues.fiscalNote,
+                fromIssue: formValues.fromIssue,
+                toIssue: formValues.toIssue,
+                fromExpiration: formValues.fromExpiration,
+                toExpiration: formValues.toExpiration,
+                fromPayment: formValues.fromPayment,
+                toPayment: formValues.toPayment,
+                competence: formValues.competence,
+              }));
+            },
+          }}
+        >
+          <div className="box">
+            <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data emissão"
+              names={["fromIssue", "toIssue"]}
+            />
+
+            <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data Vencimento"
+              names={["fromExpiration", "toExpiration"]}
+            />
+
+            <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data Pagamento"
+              names={["fromPayment", "toPayment"]}
+            />
+          </div>
+
+          <div className="box">
+            <InputDateRange
+              id="DateAccept"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
+              label="Data aceite"
+              names={["fromAcceptDate ", "toAcceptDate"]}
+            />
+
+            <div className="row">
+              <InputDatePicker
+                id="Date"
+                mode="month"
+                placeholder="MM/YYYY"
+                label="Data competência"
+                name="competence"
+              />
+
+              <Input label="Nº Comprovante / NSU" name="nsu" />
+            </div>
+
+            <div className="box">
+              <Input label="Documento" name="document" />
+              <Input label="Nota Fiscal" name="fiscalNote" />
+            </div>
+          </div>
+
+          <div className="box">
+            <Select
+              onlyOneValue
+              label="Nome do Titular"
+              name="client"
+              options={clientOptions}
+              isClearable
+            />
+
+            <Select
+              onlyOneValue
+              label="Forma de pagamento"
+              name="paymentMethod"
+              options={paymentMethodOptions}
+              isClearable
+            />
+
+            <Select
+              label="Bandeira Tef."
+              name="flagDescription"
+              onlyOneValue
+              options={tfeFlags?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              }))}
+              onChangeInput={(value) => {
+                setFilters((prv) => {
+                  console.log("ue", prv)
+                  return ({ ...prv, tefFlagId: value })
+                });
+              }}
+            />
+          </div>
+
+          <div className="box">
+            <Select
+              label="Conta corrente"
+              name="contaCorrente"
+              onlyOneValue
+              options={checkingAccounts?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              }))}
+              onChangeInput={(value) => {
+                setFilters((prv) => {
+                  console.log(prv,"????")
+                  return ({ ...prv, checkingAccountId: value })
+                });
+              }}
+            />
+
+            <Select
+              onlyOneValue
+              label="Plano Contas"
+              name="plan"
+              options={planOptions}
+              isClearable
+            />
+
+            <Select
+              onlyOneValue
+              options={[
+                { label: "Sim", value: "sim" },
+                { label: "Não", value: "false" },
+              ]}
+              name="groupBorderos"
+              label="Agrupa títulos borderô"
+            />
+          </div>
+
+          <div className="box">
+            <div className="row">
+              <Select
+                label="Tipo título"
+                onlyOneValue
+                disabled
+                name="type"
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Crédito", value: "CREDITO" },
+                  { label: "Débito", value: "DEBITO" },
+                ]}
+              />
+
+              <Select
+                name="status"
+                label="Situação"
+                onlyOneValue
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Aberto", value: "ABERTO" },
+                  { label: "Baixado", value: "BAIXADO" },
+                ]}
+              />
+            </div>
+
+            <div className="row">
+              <Select
+                onlyOneValue
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Sim", value: "SIM" },
+                  { label: "Não", value: "NAO" },
+                ]}
+                name="accept"
+                label="Aceite"
+              />
+
+              <Select
+                onlyOneValue
+                options={[
+                  { label: "Todos", value: "all" },
+                  { label: "Sim", value: "true" },
+                  { label: "Não", value: "false" },
+                ]}
+                name="reconciled"
+                label="Conciliado"
+              />
+            </div>
+
+            {/* <Select
+      label="Filial"
+      name="unit"
+      options={clinicOptions}
+      onlyOneValue
+      isClearable
+    /> */}
+
+            <Select
+              label="Ordenar por"
+              name="order"
+              onlyOneValue
+              isClearable
+              options={[
+                { label: "Data Vencimento", value: "expiration_date" },
+                { label: "Data Emissão", value: "issue_date" },
+                { label: "Data Competência", value: "competence_date" },
+                { label: "Data Pagamento", value: "payment_date" },
+                { label: "Documento / Parcela", value: "doc" },
+              ]}
+            />
+          </div>
+        </FormHandler>
+      </Container>
+    </>
+  );
+}

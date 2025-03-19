@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { memo, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -7,30 +6,36 @@ import { financesService } from "@/OLD/services/finances.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button, useToast } from "infinity-forge";
+import {
+  api,
+  BadRequestError,
+  Button,
+  Popconfirm,
+  useToast,
+} from "infinity-forge";
 import { Modal } from "antd";
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import DownTitles from "../../Titles/DownTitles";
 
-function ButtonsPanel({
-  setReload,
-  type,
-  setFilters,
-}: any) {
+function ButtonsPanel({ setReload, type, setFilters }: any) {
   const [loading, setLoading] = useState(false);
   const [showBaixaModal, setShowBaixaModal] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const { titles, setTitles } = useAuth();
 
   const downTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}04`
   );
+
+  const removeAceiteTRC = useUserHasPermission(`TRC11`);
+
+  const removeAceiteTPG = useUserHasPermission(`TPG11`);
 
   const checkTitlePermission = useUserHasPermission(
     `${accessControlTitles(type)}06`
@@ -39,6 +44,10 @@ function ButtonsPanel({
   const addItemsBorderoPermission = useUserHasPermission(
     `${accessControlTitles(type)}07`
   );
+
+  const permissionToDeleteTRC = useUserHasPermission(`TRC03`);
+
+  const permissionToDeleteTPG = useUserHasPermission(`TPG03`);
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -67,7 +76,10 @@ function ButtonsPanel({
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-        createToast({ status: "success", message: "Aceite realizado com sucesso!" })
+        createToast({
+          status: "success",
+          message: "Aceite realizado com sucesso!",
+        });
       })
       .catch((_err) => setLoading(false));
   }, [titles]);
@@ -104,11 +116,14 @@ function ButtonsPanel({
         );
         setReload((prv) => !prv);
 
-        return    createToast({ status: "success", message:"Items adicionados com sucesso ao borderô" })
+        return createToast({
+          status: "success",
+          message: "Items adicionados com sucesso ao borderô",
+        });
       })
       .catch((err) => {
         setReload((prv) => !prv);
-        return createToast({ status: "error", message:"Erro"  })
+        return createToast({ status: "error", message: "Erro" });
       });
   }, [titles]);
 
@@ -119,7 +134,7 @@ function ButtonsPanel({
         onOk={handleConfirm}
         onCancel={handleCancel}
       >
-        <p>Deseja realizar a conferência?</p>
+        <p>Deseja realizar a aceite?</p>
       </Modal>
 
       <Modal
@@ -145,14 +160,112 @@ function ButtonsPanel({
         {checkTitlePermission && (
           <Button
             onClick={handleButtonClick}
-            text={!loading ? "Aceite / Conferência" : "Enviando..."}
+            text={!loading ? "Realizar aceite" : "Enviando..."}
           />
         )}
+
+        {(removeAceiteTPG || removeAceiteTRC) && (
+          <Popconfirm
+            idTooltip="delete"
+            cancelText="cancelar"
+            okText="confirmar"
+            position="top-right"
+            title="Confirma a retirada do aceite?"
+            onConfirm={async () => {
+              setLoading(true);
+
+              try {
+                await api({
+                  url: "finances/not-accept-many",
+                  method: "post",
+                  body: {
+                    type: "Todos",
+                    ids: titles.map((finance) => finance?.id),
+                  },
+                });
+
+                setReload((prv) => !prv);
+
+                createToast({
+                  message: "Items retirados com sucessso",
+                  status: "success",
+                });
+
+                setLoading(false);
+              } catch (err) {
+                if (err instanceof BadRequestError) {
+                  const message = err.error.message;
+
+                  createToast({
+                    message: message,
+                    status: "error",
+                  });
+                }
+              }finally {
+                setLoading(false);
+              }
+            }}
+          >
+            <Button text={!loading ? "Retirar aceite" : "Enviando..."} />
+          </Popconfirm>
+        )}
+
         {addItemsBorderoPermission && (
-          <Button
-            onClick={() => submitItemsBordero()}
-            text="Adicionar itens ao borderô"
-          />
+          <Popconfirm
+            onConfirm={() => {
+              submitItemsBordero();
+            }}
+            idTooltip="a"
+            title="Você deseja adcionar os itens a um borderô?"
+            position="top-right"
+          >
+            <Button type="button" text="Adicionar itens ao borderô" />
+          </Popconfirm>
+        )}
+
+        {(permissionToDeleteTRC || permissionToDeleteTPG) && (
+          <Popconfirm
+            idTooltip="delete"
+            cancelText="cancelar"
+            okText="confirmar"
+            position="top-right"
+            title="Confirma a exclusão dos registros?"
+            onConfirm={async () => {
+              setLoading(true);
+
+              try {
+                await api({
+                  url: "finances/delete-multiple",
+                  method: "put",
+                  body: {
+                    idList: titles.map((finance) => finance?.id),
+                  },
+                });
+
+                setReload((prv) => !prv);
+
+                createToast({
+                  message: "Items retirados com sucessso",
+                  status: "success",
+                });
+
+                setLoading(false);
+              } catch (err) {
+                if (err instanceof BadRequestError) {
+                  const message = err.error.message;
+
+                  createToast({
+                    message: message,
+                    status: "error",
+                  });
+                }
+              } finally {
+                setLoading(false);
+              }
+            }}
+          >
+            <Button type="button" text="Excluir" />
+          </Popconfirm>
         )}
       </section>
       <hr />

@@ -118,12 +118,12 @@ export function AddSale({
 
   async function handleSubmit(data, _, initialValues) {
     try {
-      const formatItemsCart = formatCart(data.cart, data?.maxDiscount);
+      const formatItemsCart = formatCart(data.cart, initialData.cart);
 
       const payload = {
         ...data,
         billId: type === "edit" ? billId : null,
-        originBillId: (internalCode && billId) ?? null,
+        originBillId: billId || null,
         cart: undefined,
         items: formatItemsCart,
         billDate: new Date().toISOString(),
@@ -184,8 +184,8 @@ export function AddSale({
         onSucess={handleSubmit}
         cleanFieldsOnSubmit={false}
       >
-        <h2 className="font-24-bold">
-          {type === "edit" ? "Editar" : "Criar"} venda
+        <h2 className="font-22-bold">
+          {type === "edit" ? "Editar" : "Criar"} venda {bill?.data?.tag && " - " + bill?.data?.tag}
         </h2>
 
         <div className="row">

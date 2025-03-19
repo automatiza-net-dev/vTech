@@ -36,3 +36,5 @@ export type BusinessUnit = {
   city_registration: string;
   economicGroup: BusinessEconomicGroup;
 };
+
+

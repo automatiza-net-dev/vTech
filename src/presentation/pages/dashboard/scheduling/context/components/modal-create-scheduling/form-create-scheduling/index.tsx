@@ -54,7 +54,7 @@ export function FormCreateScheduling() {
       minute: "2-digit",
       hour12: false,
     }),
-    date: moment(createSchedulingArgs?.date).format("YYYY-MM-DD"),
+    date: createSchedulingArgs?.date,
     patientId:
       unit?.system?.type !== "Vet"
         ? [
@@ -85,10 +85,13 @@ export function FormCreateScheduling() {
         : [],
     executions: [],
   };
+
   const users = scheduleUsers?.map((user) => ({
     label: user.name,
     value: user.id,
   }));
+
+  console.log(moment(createSchedulingArgs?.date).format("YYYY-MM-DD"))
 
   return (
     <S.FormCreateScheduling>

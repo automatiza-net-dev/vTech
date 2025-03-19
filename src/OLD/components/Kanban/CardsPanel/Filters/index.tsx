@@ -170,18 +170,7 @@ function Filters({ filters, setFilters, setReload }) {
           </div>
         */}
         </div>
-        <div
-          style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
-        >
-          <Button
-            className=""
-            onClick={() => {
-              setFilters((prv) => ({ ...prv, noSearch: false }));
-              setReload((prv) => !prv);
-            }}
-            text="Filtrar"
-          />
-        </div>
+
       </div>
 
       <div className="uk-width-1-4 uk-margin-right">
@@ -373,6 +362,19 @@ function Filters({ filters, setFilters, setReload }) {
               ))}
           </Select>
         </InputBox>
+
+        <div
+          style={{ width: "100%", marginTop: 30, display: "flex", justifyContent: "flex-end" }}
+        >
+          <Button
+            className=""
+            onClick={() => {
+              setFilters((prv) => ({ ...prv, noSearch: false }));
+              setReload((prv) => !prv);
+            }}
+            text="Filtrar"
+          />
+        </div>
       </div>
     </section>
   );

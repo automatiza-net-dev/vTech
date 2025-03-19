@@ -1,15 +1,54 @@
-import { formatNumberToCurrency, useTable } from "infinity-forge";
+import { Column, formatNumberToCurrency, useTable } from "infinity-forge";
 
-import { Bill, Product } from "@/domain";
+import { Bill, Product, TreatmentExecutions } from "@/domain";
 import { authorizationFormater } from "../../utils";
 
 import { Cancel } from "./cancel";
+import { ApproveCancel } from "./approve-cancel";
+import { usePermission } from "@/presentation";
+import moment from "moment";
 
 export function TableItems(props: Bill & { isCancelled?: boolean }) {
+  const hasPermissionToCancelItems = usePermission("VEN19");
 
   const { Table } = useTable<Product>({
-    configs: { errorMessage: "Não possui items", tableData: props.items },
+    configs: {
+      tableKeyItem: "id",
+      errorMessage: "Não possui items",
+      tableData: props.items,
+    },
     columnsConfiguration: {
+      childrens: {
+        childrenKey: "treatmentExecutions",
+        omitEmptyList: true,
+        columns: [
+          { id: "item_produtividade", label: "Item produtividade" },
+          {
+            id: "data_agendamento",
+            label: "Data agendameto",
+            Component: {
+              Element: (props) => (
+                <p className="font-16-regular">
+                  {props?.data_agendamento && moment(props.data_agendamento).format("DD/MM/YYYY HH:mm")}
+                </p>
+              ),
+            },
+          },
+          {
+            id: "data_execucao",
+            label: "Data de execução",
+            Component: {
+              Element: (props) => (
+                <p className="font-16-regular">
+                  {props?.data_execucao && moment(props.data_execucao).format("DD/MM/YYYY HH:mm")}
+                </p>
+              ),
+            },
+          },
+          { id: "usuario_execucao", label: "Usuário execução" },
+          { id: "observations", label: "Observação" },
+        ] as Column<TreatmentExecutions>[],
+      },
       columns: [
         { id: "quantity", label: "Qtd." },
         {
@@ -53,9 +92,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.sale_value) 
-                  }
+                  {formatNumberToCurrency(product?.sale_value)}
                 </p>
               );
             },
@@ -70,9 +107,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.unitary_value) 
-                  }
+                  {formatNumberToCurrency(product?.unitary_value)}
                 </p>
               );
             },
@@ -88,9 +123,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.discount_value) 
-                  }
+                  {formatNumberToCurrency(product?.discount_value)}
                 </p>
               );
             },
@@ -105,9 +138,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
 
               return (
                 <p className="font-14-regular">
-                  {
-                    formatNumberToCurrency(product?.total_value) 
-                  }
+                  {formatNumberToCurrency(product?.total_value)}
                 </p>
               );
             },
@@ -119,7 +150,11 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           Component: {
             Element: (item) => (
               <p className="font-14-regular">
-                {item?.courtesy ? "Cortesia" : item?.max_discount ? "desc.max" : "Não" }
+                {item?.courtesy
+                  ? "Cortesia"
+                  : item?.max_discount
+                  ? "desc.max"
+                  : "Não"}
               </p>
             ),
           },
@@ -127,7 +162,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
         {
           id: "id",
           label: "Autorização",
-          enabled: props.isCancelled,
+          enabled: !!(!props.isCancelled && !props.cancelled),
           Component: {
             Element: (item) => {
               return (
@@ -139,11 +174,47 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           },
         },
         {
-          id: "id",
+          id: "cancelledQuantity",
+          label: "Qtd Canc.",
+          enabled:
+            !!props.isCancelled &&
+            (props.cancelled === "P" || props.cancelled === "A"),
+        },
+        {
+          id: "custom" as any,
           label: "Cancelar",
-          enabled: !!props.isCancelled,
+          enabled: !!props.isCancelled && !props.cancelled,
           Component: {
             Element: Cancel as any,
+          },
+        },
+        {
+          id: "custom2" as any,
+          label: "Cancelamento",
+          enabled:
+            props.isCancelled &&
+            !!props.cancelled &&
+            hasPermissionToCancelItems,
+          Component: {
+            Element: (item: any) => {
+              if (!item.cancelled) {
+                return <></>;
+              }
+
+              if (item.cancelled === "S" || item.cancelled === "N") {
+                return (
+                  <div className="font-14-bold">
+                    {item.cancelled === "S" ? "Aprovado" : "Não aprovado"}{" "}
+                    <br /> <div dangerouslySetInnerHTML={{ __html: item?.reviewCancelNotes || "Sem obs" }} /> 
+                  </div>
+                );
+              }
+
+              return <div className="font-14-bold">
+                Cancelamento solicitado
+            </div>
+            //  return <ApproveCancel {...item} />;
+            },
           },
         },
       ],

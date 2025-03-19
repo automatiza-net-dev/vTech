@@ -1,11 +1,12 @@
 import "reflect-metadata";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 import Head from "next/head";
 
 import {
+  api,
   BadRequestError,
   InfinityForgeProviders,
   useAuthAdmin,
@@ -30,6 +31,7 @@ import {
   LoaderOnRouteChange,
   ButtonInfinityForge,
   SchedulingContextProvider,
+  ConfigurationsSystemProvider,
 } from "@/presentation";
 import { RemoteLoadUserDashboard, RemoteMenu } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -49,163 +51,169 @@ export default function App({ Component, pageProps }) {
 
   const router = useRouter();
 
+  const { configurations } = useSystemConfigurations();
+
+  if (!configurations) {
+    return <></>;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
-      <InfinityForgeProviders
-        atena={{ disableAuth: true, roles: ["aa"] } as any}
-        i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
-        auth={{
-          ForbiddenCompoent: Forbidden,
-          roles: {
+      <ConfigurationsSystemProvider configurations={configurations}>
+        <InfinityForgeProviders
+          atena={{ disableAuth: true, roles: ["aa"] } as any}
+          i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
+          auth={{
+            ForbiddenCompoent: Forbidden,
+            roles: {
+              user: {
+                signInConfig: { Component: SignIn },
+                onSignOut: (user: any) => {
+                  queryClient.clear();
+                  queryClient.removeQueries();
+
+                  router.push("/");
+
+                  if (user?.isThirdParty) {
+                    window.location.href =
+                      "https://portal.liftonefranquias.com.br/";
+                  }
+                },
+              },
+              controller: {
+                signInConfig: {
+                  Component: SignInAdmin,
+                },
+                onSignOut: () => {
+                  queryClient.clear();
+                  queryClient.removeQueries();
+
+                  router.push("/");
+                },
+              },
+            },
+          }}
+          loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
+          InjectedRemotes={{
+            menu: {
+              menu: menus || ({ items: [] } as any),
+            } as any,
             user: {
-              signInConfig: { Component: SignIn },
-              onSignOut: (user: any) => {
-                queryClient.clear();
-                queryClient.removeQueries();
+              getRole: async () => {
+                try {
+                  const user = await container
+                    .get<RemoteLoadUserDashboard>(
+                      TypesAutomatiza.RemoteLoadUserDashboard
+                    )
+                    .load({});
 
-                router.push("/");
+                  if (!user?.user) {
+                    throw new BadRequestError({
+                      message: "Usuário com erro",
+                      code: "400",
+                    });
+                  }
 
-                if (user?.isThirdParty) {
-                  window.location.href =
-                    "https://portal.liftonefranquias.com.br/";
+                  const initialUserData = {
+                    ...user,
+                    avatar: user.user?.profile_picture || "",
+                    emailAddress: user?.user?.email || "",
+                    firstName: user?.user?.name || "",
+                    id: (user as any)?.user?.id || "",
+                    imagem: user.user?.profile_picture,
+                    isExternal: false,
+                    lastName: "",
+                  };
+
+                  return {
+                    role: initialUserData?.user?.type,
+                    user: initialUserData,
+                  };
+                } catch (err) {
+                  return { role: "", user: null };
                 }
               },
             },
             controller: {
-              signInConfig: {
-                Component: SignInAdmin,
-              },
-              onSignOut: () => {
-                queryClient.clear();
-                queryClient.removeQueries();
+              getRole: async () => {
+                try {
+                  const user = await container
+                    .get<RemoteLoadUserDashboard>(
+                      TypesAutomatiza.RemoteLoadUserDashboard
+                    )
+                    .load({});
 
-                router.push("/");
-              },
-            },
-          },
-        }}
-        loaderOnRouteChange={{ Component: LoaderOnRouteChange } as any}
-        InjectedRemotes={{
-          menu: {
-            menu: menus || { items: [] } as any,
-          } as any,
-          user: {
-            getRole: async () => {
-              try {
-                const user = await container
-                  .get<RemoteLoadUserDashboard>(
-                    TypesAutomatiza.RemoteLoadUserDashboard
-                  )
-                  .load({});
+                  if (!user?.user) {
+                    throw new BadRequestError({
+                      message: "Usuário com erro",
+                      code: "400",
+                    });
+                  }
 
-                if (!user?.user) {
-                  throw new BadRequestError({
-                    message: "Usuário com erro",
-                    code: "400",
-                  });
+                  const initialUserData = {
+                    ...user,
+                    avatar: user.user?.profile_picture || "",
+                    emailAddress: user?.user?.email || "",
+                    firstName: user?.user?.name || "",
+                    id: (user as any)?.user?.id || "",
+                    imagem: user.user?.profile_picture,
+                    isExternal: false,
+                    lastName: "",
+                  };
+
+                  return {
+                    role: initialUserData?.user?.type,
+                    user: initialUserData,
+                  };
+                } catch (err) {
+                  return { role: "", user: null };
                 }
-
-                const initialUserData = {
-                  ...user,
-                  avatar: user.user?.profile_picture || "",
-                  emailAddress: user?.user?.email || "",
-                  firstName: user?.user?.name || "",
-                  id: (user as any)?.user?.id || "",
-                  imagem: user.user?.profile_picture,
-                  isExternal: false,
-                  lastName: "",
-                };
-
-             
-
-                return {
-                  role: initialUserData?.user?.type,
-                  user: initialUserData,
-                };
-              } catch (err) {
-                return { role: "", user: null };
-              }
+              },
             },
-          },
-          controller: {
-            getRole: async () => {
-              try {
-                const user = await container
-                  .get<RemoteLoadUserDashboard>(
-                    TypesAutomatiza.RemoteLoadUserDashboard
-                  )
-                  .load({});
-
-                if (!user?.user) {
-                  throw new BadRequestError({
-                    message: "Usuário com erro",
-                    code: "400",
-                  });
-                }
-
-                const initialUserData = {
-                  ...user,
-                  avatar: user.user?.profile_picture || "",
-                  emailAddress: user?.user?.email || "",
-                  firstName: user?.user?.name || "",
-                  id: (user as any)?.user?.id || "",
-                  imagem: user.user?.profile_picture,
-                  isExternal: false,
-                  lastName: "",
-                };
-
-                return {
-                  role: initialUserData?.user?.type,
-                  user: initialUserData,
-                };
-              } catch (err) {
-                return { role: "", user: null };
-              }
+          }}
+          Configurations={{
+            chat: false,
+            menu: {
+              mode: "CollapsedMenu",
             },
-          },
-        }}
-        Configurations={{
-          chat: false,
-          menu: {
-            mode: "CollapsedMenu",
-          },
-          styles: { Button: ButtonInfinityForge },
-          notification: {
-            enable: true,
-            CustomComponent: (props) => (
-              <Link href={props?.link}>
-                <div className="top">
-                  <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
-                  <span>{props?.message}</span>
-                </div>
-              </Link>
-            ),
-          },
-        }}
-        theme={themes[process.env.client || "sancla"]}
-      >
-        <NotificationsModal />
+            styles: { Button: ButtonInfinityForge },
+            notification: {
+              enable: true,
+              CustomComponent: (props) => (
+                <Link href={props?.link}>
+                  <div className="top">
+                    <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
+                    <span>{props?.message}</span>
+                  </div>
+                </Link>
+              ),
+            },
+          }}
+          theme={themes[process.env.client || "sancla"]}
+        >
+          <NotificationsModal />
 
-        <GlobalStyles host={process.env.clientName} />
+          <GlobalStyles host={process.env.clientName} />
 
-        <SchedulingContextProvider>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <ConfigProvider locale={ptBR}>
-              <AppProvider>
-                <PermissionsProvider>
-                  <Head>
-                    <title>{process.env.clientName}</title>
-                  </Head>
+          <SchedulingContextProvider>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <ConfigProvider locale={ptBR}>
+                <AppProvider>
+                  <PermissionsProvider>
+                    <Head>
+                      <title>{process.env.clientName}</title>
+                    </Head>
 
-                  <GambiarraTemporaria setMenus={setMenus} />
+                    <GambiarraTemporaria setMenus={setMenus} />
 
-                  <Component {...pageProps} />
-                </PermissionsProvider>
-              </AppProvider>
-            </ConfigProvider>
-          </LocalizationProvider>
-        </SchedulingContextProvider>
-      </InfinityForgeProviders>
+                    <Component {...pageProps} />
+                  </PermissionsProvider>
+                </AppProvider>
+              </ConfigProvider>
+            </LocalizationProvider>
+          </SchedulingContextProvider>
+        </InfinityForgeProviders>
+      </ConfigurationsSystemProvider>
     </QueryClientProvider>
   );
 }
@@ -227,4 +235,29 @@ function GambiarraTemporaria({ setMenus }) {
   });
 
   return <></>;
+}
+
+function useSystemConfigurations() {
+  const [configurations, setConfigurations] = useState(null);
+
+  const ref = useRef(0);
+
+  useEffect(() => {
+    if (ref.current === 0) {
+      ref.current = 1;
+
+      (async () => {
+        const systemUrl = new URL(window.location.origin).origin;
+
+        const response = await api({
+          url: `systems/identification?url=${systemUrl}`,
+          method: "post",
+        });
+
+        setConfigurations(response);
+      })();
+    }
+  }, []);
+
+  return { configurations };
 }

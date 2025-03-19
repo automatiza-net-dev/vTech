@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
 import moment from "moment";
 import { AxiosError } from "axios";
@@ -102,6 +101,10 @@ export default function Create({
   useEffect(() => {
     setReload((prv) => !prv);
   }, [patientListVisible]);
+
+  console.log(data)
+
+  //ClientId está errado e deve averiguar o campo patient_id e colocar no ClientId o patient_id
 
   return (
     <PageWrapper title="Nova oportunidade">

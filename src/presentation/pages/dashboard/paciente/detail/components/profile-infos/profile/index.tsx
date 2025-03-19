@@ -57,7 +57,7 @@ export function Profile(props: Patient) {
             <FormCreatePatient
               onSuccess={() => queryClient.invalidateQueries(["RemotePatient"])}
               trigger={
-                <h1>
+                <h1 className="font-20-regular">
                   <span>{name}</span>
                 </h1>
               }

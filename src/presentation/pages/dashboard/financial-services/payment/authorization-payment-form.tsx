@@ -1,4 +1,4 @@
-import { FormHandler, Input, Textarea, useToast } from "infinity-forge";
+import { FormHandler, Input, InputPassword, Textarea, useToast } from "infinity-forge";
 
 import { Bill, Budget } from "@/domain";
 import { RemoteBills, RemoteBudget } from "@/data";
@@ -50,6 +50,8 @@ export function AuthorizationPaymentForm({
       const payload = {
         ...data,
         approved,
+        userEmail: data?.email,
+        userPwd: data?.password,
         itemsIdList,
         paymentsIdList,
         reason: data.description,
@@ -101,8 +103,6 @@ export function AuthorizationPaymentForm({
 
   return (
     <div style={{ maxWidth: 520, margin: "0 auto" }}>
-      
-   
     <FormHandler
       schema={{
         email: yup.string().required("E-mail é obrigatório"),
@@ -122,11 +122,12 @@ export function AuthorizationPaymentForm({
           }),
         },
       ]}
+      isStickyButtons
     >
       <div className="row">
         <Input name="email" label="Email Usuário" />
 
-        <Input label="Senha" name="password" type="password" />
+        <InputPassword label="Senha" name="password"  />
       </div>
 
       <Textarea label="Descrição" name="description" />

@@ -11,7 +11,7 @@ import {
   Table,
   Popconfirm,
 } from "antd";
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { InputBox } from "./styles";
 import moment from "moment";
@@ -63,14 +63,15 @@ const columns = [
 ];
 
 export const Deposits = memo(() => {
-  const { clinic } = useProfile();
+
+  const {user} = useAuthAdmin()
+
+  const clinicId = user?.unit?.id
 
   const [searchParams, setSearchParams] = useState({
-    description: "",
-    type: "",
-    status: "",
-    unitId: clinic?.id,
+    unitId: clinicId,
   });
+
   const [openCreate, setOpenCreate] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -96,16 +97,12 @@ export const Deposits = memo(() => {
   const depositsQuery = useQuery({
     queryKey: ["deposits", searchParams],
     queryFn: () => {
-      if (!searchParams?.unitId) {
-        return;
-      }
+
       return depositService
-        .searchDeposits(searchParams)
+        .searchDeposits({...searchParams, unitId: clinicId })
         .then(({ data }) => data);
     },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enabled: !!clinicId
   });
 
   const createDepositMutation = useMutation(
@@ -147,8 +144,8 @@ export const Deposits = memo(() => {
   const isDisabled = updateDepositMutation.isLoading;
 
   useEffect(() => {
-    setSearchParams((prv) => ({ ...prv, unitId: clinic?.id }));
-  }, [clinic]);
+    setSearchParams((prv) => ({ ...prv, unitId: clinicId }));
+  }, [clinicId]);
 
   const imprimir = useReactToPrint({
     contentRef: componentRef,

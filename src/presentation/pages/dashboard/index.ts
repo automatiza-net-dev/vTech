@@ -9,5 +9,6 @@ export * from "./vaccines";
 export * from "./scheduling";
 export * from "./relatorios";
 export * from "./_dashboard_";
+export * from "./collaborator";
 export * from "./hospitalization";
 export * from "./financial-services";

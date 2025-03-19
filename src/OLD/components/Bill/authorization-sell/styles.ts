@@ -70,18 +70,38 @@ export const AuthorizationSell = styled.div`
   }
 
   .form_cancel {
+    .list-radios {
+      gap: 20px;
+      display: flex;
+    }
+
     .form-button > div {
       display: flex;
       justify-content: flex-end;
     }
   }
 
-  form {
+  .authorization_form {
+    form {
     margin: 0 auto;
+
+    button {
+      width: 100%;
+    }
+
+    .eye {
+      width: auto !important;
+    }
 
     button:disabled {
       opacity: 0.8;
       cursor: not-allowed;
+    }
+
+    .form-button {
+      > div {
+        width: 100%;
+      }
     }
 
     .ant-collapse {
@@ -90,20 +110,26 @@ export const AuthorizationSell = styled.div`
 
     .conntent_form_infinity_forge {
       padding: 0 !important;
+
     }
 
     .form-button {
       display: flex;
       align-items: center;
+      flex-direction: row-reverse;
       gap: 5px;
 
       > div {
         width: 100%;
 
         button {
+          width: 100% !important;
           background: ${(props) => props.theme.primaryColor};
         }
       }
     }
   }
+  }
+
+
 `;
