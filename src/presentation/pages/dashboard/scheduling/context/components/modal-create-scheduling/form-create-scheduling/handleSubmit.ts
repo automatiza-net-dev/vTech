@@ -67,7 +67,9 @@ export function useSubmitSchedule() {
   const overbookingPermission = useVerifyPermissions("AGE11");
 
   async function submit(data, handlers) {
-    const startHour = moment(`${data.date}T${data.time}:00`);
+    const date = moment(data.date).format("YYYY-MM-DD");
+
+    const startHour = moment(`${date}T${data.time}:00`);
 
     const meridianStartHour = startHour
       .subtract(3, "hours")
@@ -75,7 +77,7 @@ export function useSubmitSchedule() {
 
     const meridianEndHour = moment(meridianStartHour)
       .add(Number(data.duration), "minutes")
-      .format("YYYY-MM-DDTHH:mm:ssZ")
+      .format("YYYY-MM-DDTHH:mm:ssZ");
 
     if (data?.hasServicesStage && data?.executions.length === 0) {
       return createToast({
@@ -174,7 +176,7 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-        scheduleUsers.mutate()
+        scheduleUsers.mutate();
 
         return;
       }
