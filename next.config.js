@@ -8,11 +8,6 @@ const nextConfig = {
     api: process.env.api,
     clientName: process.env.clientName
   },
-  experimental: {
-    turbo: {
-    
-    },
-  },
   reactStrictMode: false,
   compiler: {
     styledComponents: true
