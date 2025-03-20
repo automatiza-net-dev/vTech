@@ -161,7 +161,8 @@ export function Actions({
             {event?.event?.observation && (
               <p>
                 <strong>Observação: </strong>
-                {event?.event?.observation}
+
+                <span dangerouslySetInnerHTML={{ __html: event?.event?.observation || "" }}></span>
               </p>
             )}
           </div>
