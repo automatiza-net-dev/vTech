@@ -1,7 +1,7 @@
 import { useFormikContext } from "formik";
 import { Select, formatNumberToCurrency } from "infinity-forge";
 
-import { useLoadAllProducts } from "@/presentation";
+import { useConfigurationsSystem, useLoadAllProducts } from "@/presentation";
 
 import { Cart } from "../../interfaces";
 
@@ -13,6 +13,8 @@ export function SelectProduct() {
 
   const cart = values["cart"];
   const productsList = useLoadAllProducts();
+
+  const { type } = useConfigurationsSystem();
 
   const options =
     productsList.data?.map((product) => {
@@ -32,10 +34,7 @@ export function SelectProduct() {
         (product.reference_code ? " - Cod: " + product.reference_code : "");
 
       return {
-        label:
-          process.env.client === "sancla"
-            ? sanclaDescription
-            : liftOneDescription,
+        label: type === "Vet" ? sanclaDescription : liftOneDescription,
         value: product.id,
       };
     }) || [];

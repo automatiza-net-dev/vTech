@@ -90,6 +90,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
         [!attendanceId ? "open" : "update"]({
           ...payload,
+          typeSystem: type,
           id: attendanceId
             ? type !== "Vet"
               ? timeLine._id

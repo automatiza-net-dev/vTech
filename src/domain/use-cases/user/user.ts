@@ -9,7 +9,12 @@ export type SystemUser = {
     id: string;
     configs: {
       businessUnits: {
+        reviewer?: "N" | "S" | "O";
         generate_bill_documents?: boolean;
+        internalCode?: boolean;
+      }
+      schedules: {
+        syncScheduleMovements?: boolean;
       }
     }
     unitConfig: {

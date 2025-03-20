@@ -74,8 +74,10 @@ function ResultFile({
     file,
   });
 
+    const { type } = useConfigurationsSystem();
+
   const defaultProfile =
-    process.env.client === "sancla"
+  type === "Vet"
       ? "/images/pages/patient/pet.jpg"
       : "/images/pages/patient/humano.jpg";
 

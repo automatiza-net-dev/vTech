@@ -22,6 +22,7 @@ import {
   SelectSchedule,
   useLoadAllPatientTutor,
   useLoadAllDailyMovements,
+  useConfigurationsSystem,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
@@ -51,6 +52,8 @@ export function AddSale({
   const patient = useLoadPatient();
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
+
+  const configurationsSystem = useConfigurationsSystem()
 
   const internalCode = bill?.data?.internalCode;
 
@@ -91,13 +94,13 @@ export function AddSale({
   }
 
   const patientId =
-    process.env.client === "sancla"
+    configurationsSystem.type === "Vet"
       ? bill?.data?.patient?.id || patient?.data?.id
       : patient?.data?.id;
 
   const clientId = billId
     ? bill?.data?.client?.id
-    : process.env.client === "sancla"
+    : configurationsSystem.type === "Vet"
     ? patient.data?.tutor?.id
     : patientId;
 
@@ -112,7 +115,7 @@ export function AddSale({
       patient?.data?.tutor?.name ||
       patient?.data?.name,
     cart: type === "edit" ? bill?.data?.products : [],
-    sellerId: bill?.data?.seller?.id,
+    sellerId: bill?.data?.seller?.id || user?.id,
     financialResponsibleId: bill?.data?.financialResponsible?.id,
   };
 
@@ -191,7 +194,7 @@ export function AddSale({
         <div className="row">
           <SelectBudgetClient tutors={tutors} hideCheckbox />
 
-          {process.env.client === "sancla" ? (
+          {configurationsSystem.type === "Vet" ? (
             <SelectBudgetPatient tutors={tutors} />
           ) : (
             <>
@@ -204,7 +207,7 @@ export function AddSale({
             </>
           )}
 
-          {process.env.client === "sancla" && (
+          {configurationsSystem.type === "Vet"  && (
             <SelectClient
               name="financialResponsibleId"
               label="Responsável financeiro"

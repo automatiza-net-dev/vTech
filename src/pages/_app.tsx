@@ -261,8 +261,7 @@ function useConfigurationsSystemConfigurations() {
       ref.current = 1;
 
       (async () => {
-        const test = "http://localhost:3058"
-        const systemUrl = test || new URL(window.location.origin).origin;
+        const systemUrl =  new URL(window.location.origin).origin;
 
         const response = await api({
           url: `systems/identification?url=${systemUrl}`,

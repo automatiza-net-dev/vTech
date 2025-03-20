@@ -6,7 +6,7 @@ import { useFormikContext } from "formik";
 
 import { LoadAllSchedullingToMovement } from "@/domain";
 
-import { useLoadSchedulesToMovement } from "@/presentation";
+import { useConfigurationsSystem, useLoadSchedulesToMovement } from "@/presentation";
 
 export function SelectSchedule() {
   const { user } = useAuthAdmin();
@@ -18,6 +18,8 @@ export function SelectSchedule() {
   });
   const schedules = useLoadSchedulesToMovement(filters);
 
+  const { type } = useConfigurationsSystem()
+
   return (
     <>
       <div
@@ -26,7 +28,7 @@ export function SelectSchedule() {
           setFilters({
             type: "bill",
             patientId:
-              process.env.client === "sancla"
+            type === "Vet"
                 ? values?.patientId
                 : values?.clientId,
             businessUnitId: user.unit.id,

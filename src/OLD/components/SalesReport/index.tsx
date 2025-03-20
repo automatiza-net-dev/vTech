@@ -27,7 +27,7 @@ const SalesReport = memo(function SalesReport() {
     if (filters?.fromDate) {
       newObj = {
         ...filters,
-        fromDate: moment(filters?.fromDate).startOf("day").format("YYYY-MM-DD"),
+        fromDate: typeof filters?.formDate === "string" ?  filters?.formDate : moment(filters?.fromDate || new Date()).startOf("day").format("YYYY-MM-DD"),
         toDate: moment(filters?.toDate).endOf("day").format("YYYY-MM-DD"),
       };
 

@@ -21,6 +21,8 @@ import {
   SelectSchedule,
   useLoadAllPatientTutor,
   useLoadAllDailyMovements,
+  useConfigurationsSystem,
+  useSystem,
 } from "@/presentation";
 import { RemoteBudget } from "@/data";
 import { SelectBudgetClient, SelectBudgetPatient } from "./components";
@@ -50,13 +52,14 @@ export function AddBudgetNew({
   const { createToast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuthAdmin();
+  const { type } = useConfigurationsSystem();
 
-  console.log(user?.unit?.unitConfig?.reviewer)
+  const {unit} = useSystem()
 
-  const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
-  const hasSyncScheduleMovements =
-    user?.unit?.unitConfig?.syncScheduleMovements;
+  const userIsReviewer = unit?.configs?.businessUnits?.reviewer !== "N";
+
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
     (movement) => movement.status === "Aberto"
@@ -85,14 +88,16 @@ export function AddBudgetNew({
   }
 
   const patientId =
-    process.env.client === "sancla"
+    type === "Vet"
       ? budgetDetail?.data?.patient?.id || patient?.data?.id
       : undefined;
+
   const clientId = budgetId
     ? budgetDetail?.data?.client?.id
-    : process.env.client === "sancla"
+    : type === "Vet"
     ? patient.data?.tutor?.id
     : patient?.data?.id;
+
   const expirationDate = budgetId
     ? moment(budgetDetail.data.expiration_date).toDate()
     : moment(new Date()).add({ day: 1 }).toDate();
@@ -111,7 +116,7 @@ export function AddBudgetNew({
       patient?.data?.tutor?.name ||
       patient?.data?.name,
     cart: budgetDetail?.data?.items || [],
-    sellerId: budgetDetail?.data?.seller?.id,
+    sellerId: budgetDetail?.data?.seller?.id || user?.id,
     reviewerId: budgetDetail?.data?.reviewer?.id,
     observation: budgetDetail?.data?.observation,
     internalObservation: budgetDetail?.data?.internalObservation,
@@ -130,7 +135,10 @@ export function AddBudgetNew({
         });
       }
 
-      if (user?.unit?.unitConfig?.reviewer === "O" && (data?.reviewerId === "" || !data?.reviewerId)) {
+      if (
+        unit?.configs?.businessUnits?.reviewer === "O" &&
+        (data?.reviewerId === "" || !data?.reviewerId)
+      ) {
         return createToast({
           message: "Campo avaliador obrigatório",
           status: "error",
@@ -183,7 +191,7 @@ export function AddBudgetNew({
         return;
       }
 
-      throw err
+      throw err;
     }
   }
 
@@ -215,11 +223,8 @@ export function AddBudgetNew({
 
             <SelectBudgetClient tutors={tutors} />
 
-            {process.env.client === "sancla" && (
-              <>
-                <SelectBudgetPatient tutors={tutors} />
-              </>
-            )}
+            {type === "Vet" && <SelectBudgetPatient tutors={tutors} />}
+
             <SelectSeller userIsReviewer={userIsReviewer} />
 
             {hasInternalCode && (

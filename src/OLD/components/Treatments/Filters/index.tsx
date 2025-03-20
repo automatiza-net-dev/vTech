@@ -69,7 +69,7 @@ const Filters = memo(function Filters({ filters, setFilters }) {
           }
         />
       </InputBox>
-      {process.env.client !== "liftone" && (
+      {type === "Vet" && (
         <InputBox className="uk-width-1-5">
           <label>Paciente:</label>
           &nbsp;
