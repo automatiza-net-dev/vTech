@@ -28,7 +28,6 @@ export function useLoadAllSchedulesUser({
   return useQuery({
     queryKey: "RemoteLoadAllSchedulesUser" + to + lista_cancelados,
     queryFn: fetcher,
-    enableCache: true,
     enabled,
   });
 }

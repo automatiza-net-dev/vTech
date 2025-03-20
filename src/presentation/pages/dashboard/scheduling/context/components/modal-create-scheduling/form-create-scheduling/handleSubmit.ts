@@ -20,7 +20,7 @@ export function useSubmitSchedule() {
     setCreateSchedulingArgs,
   } = useScheduling((state) => state);
 
-  const refetch = useQueryClient(state => state.refetch)
+  const refetch = useQueryClient((state) => state.refetch);
 
   const scheduleUsers = useLoadAllSchedulesUser({
     to: DateToYYYYMMDD(selectedDate || new Date()) || "",
@@ -178,7 +178,11 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-        refetch("RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(data.date), { mode: "include" })
+        (selectedDate &&
+          DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) &&
+          refetch("RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(selectedDate), {
+            mode: "include",
+          });
 
         return;
       }
