@@ -6,6 +6,7 @@ import {
   FormHandler,
   useAuthAdmin,
   TextEditor,
+  InputDatePicker,
 } from "infinity-forge";
 
 import { useScheduling, useSystem } from "@/presentation";
@@ -91,8 +92,6 @@ export function FormCreateScheduling() {
     value: user.id,
   }));
 
-  console.log(moment(createSchedulingArgs?.date).format("YYYY-MM-DD"))
-
   return (
     <S.FormCreateScheduling>
       <FormHandler
@@ -158,7 +157,7 @@ export function FormCreateScheduling() {
         <h3>Data e horário</h3>
 
         <div className="row">
-          <Input
+          <InputDatePicker
             type="date"
             name="date"
             readOnly={createSchedulingArgs?.type === "edit"}

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { BadRequestError, useToast, useQueryClient } from "infinity-forge";
+import { BadRequestError, useQueryClient, useToast } from "infinity-forge";
 
 import { RemoteCRM, RemoteSchedule } from "@/data";
 import { CrmTypes, container, patientTypes } from "@/container";
@@ -20,6 +20,8 @@ export function useSubmitSchedule() {
     createSchedulingArgs,
     setCreateSchedulingArgs,
   } = useScheduling((state) => state);
+
+  const refetch = useQueryClient((state) => state.refetch);
 
   const scheduleUsers = useLoadAllSchedulesUser({
     to: DateToYYYYMMDD(selectedDate || new Date()) || "",
@@ -69,7 +71,9 @@ export function useSubmitSchedule() {
   const overbookingPermission = useVerifyPermissions("AGE11");
 
   async function submit(data, handlers) {
-    const startHour = moment(`${data.date}T${data.time}:00`);
+    const date = moment(data.date).format("YYYY-MM-DD");
+
+    const startHour = moment(`${date}T${data.time}:00`);
 
     const meridianStartHour = startHour
       .subtract(3, "hours")
@@ -173,7 +177,14 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-        scheduleUsers.mutate()
+          if (selectedDate && DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) {
+            refetch(
+              "RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(selectedDate),
+              {
+                mode: "include",
+              }
+            );
+          }
 
         return;
       }
