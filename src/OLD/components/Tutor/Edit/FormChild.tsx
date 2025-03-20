@@ -34,7 +34,7 @@ import { useProfessions } from "@/OLD/hooks/useProfessions";
 import { viacepService } from "@/OLD/services/viacep.service";
 import { sortItems } from "@/OLD/utils/sortItems";
 import moment from "moment";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function FormChild({
   data,
@@ -58,7 +58,7 @@ export function FormChild({
   const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
   const { createToast } = useToast();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   sortItems(tutorOrigins, "description");
 
@@ -425,7 +425,7 @@ export function FormChild({
                 />
               </Form.Item>
             </section>
-            {unit.system.type !== "Vet" && (
+            {type !== "Vet" && (
               <div className="uk-flex">
                 <div className="uk-flex uk-flex-column uk-width-1-6">
                   <label>Diabetes</label>

@@ -8,7 +8,7 @@ import { api, PageWrapper, useToast } from "infinity-forge";
 
 import * as XLSX from "xlsx/xlsx.mjs";
 import moment from "moment";
-import { PermissionItem, useSystem } from "@/presentation";
+import { PermissionItem, useConfigurationsSystem } from "@/presentation";
 
 import { Container } from "./styles";
 
@@ -18,7 +18,7 @@ function DetailsSalesReport() {
   const { clinic } = useProfile();
   const { createToast } = useToast();
 
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   React.useEffect(() => {
     setFilters({ ...filters, economicGroups: [clinic?.economicGroup?.id] });
@@ -55,7 +55,7 @@ function DetailsSalesReport() {
     });
 
     const formatted =
-      unit?.system?.type === "Vet"
+      type === "Vet"
         ? reports?.map((item: any) => ({
             sistema: item?.sistema,
             grupo: item?.grupo,

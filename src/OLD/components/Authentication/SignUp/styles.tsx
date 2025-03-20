@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div<{host?: string}>`
-  background-color: ${props => props.theme.primaryColor};
+  background-color: ${props => props.theme.primaryColor + "c9"};
   
   color: #ffffff !important;
   width: 100%;

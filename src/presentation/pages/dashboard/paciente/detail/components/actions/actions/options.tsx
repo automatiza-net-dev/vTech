@@ -12,7 +12,7 @@ import {
   useDictionary,
   useLoadPatient,
   useAssignTutor,
-  useSystem,
+  useConfigurationsSystem,
 } from "@/presentation";
 import Exams from "@/OLD/components/Attendance/Forms-old/AddExam";
 import Vaccines from "@/OLD/components/Attendance/Forms-old/Vaccines";
@@ -47,14 +47,14 @@ export function useActionsPatient(): {
   const patient = useLoadPatient();
   const assignutor = useAssignTutor();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const listActions = [
     {
       active: true,
       label:
-      unit.system.type !== "Vet" ? "Avaliação" : "Atendimentos",
-      value: unit.system.type !== "Vet" ? "Avaliação" : "Consulta",
+      type !== "Vet" ? "Avaliação" : "Atendimentos",
+      value: type !== "Vet" ? "Avaliação" : "Consulta",
       Icon: (
         <svg
           stroke="currentColor"
@@ -159,7 +159,7 @@ export function useActionsPatient(): {
       ),
     },
     {
-      active: !patient.data?.death && unit.system.type === "Vet",
+      active: !patient.data?.death && type === "Vet",
       label: "Óbito",
       value: "OBITO",
       Icon: (
@@ -268,7 +268,7 @@ export function useActionsPatient(): {
       ),
     },
     {
-      active: unit.system.type === "Vet",
+      active: type === "Vet",
       label: "Vacinas",
       value: "Vacinas",
       Icon: (
@@ -282,7 +282,7 @@ export function useActionsPatient(): {
       ),
     },
     {
-      active: unit.system.type === "Vet",
+      active: type === "Vet",
       label: "Vermífugo",
       value: "Vermifugos",
       Icon: (
@@ -386,7 +386,7 @@ export function useActionsPatient(): {
       SingleComponent: AddBudgetNew,
     },
     {
-      active: unit?.system?.type !== "Vet",
+      active: type !== "Vet",
       label: "Glicemia",
       value: "Glicemia",
       Icon: (
@@ -414,7 +414,7 @@ export function useActionsPatient(): {
       ),
     },
     {
-      active: unit?.system?.type !== "Vet",
+      active: type !== "Vet",
       label: "Pressão arterial",
       value: "Aferição de Pressão",
       Icon: (
@@ -442,7 +442,7 @@ export function useActionsPatient(): {
       ),
     },
     {
-      active: unit?.system?.type === "Vet",
+      active: type === "Vet",
       label: "Tutor",
       value: "Tutores",
       Icon: <Icon name="IconPerson" />,

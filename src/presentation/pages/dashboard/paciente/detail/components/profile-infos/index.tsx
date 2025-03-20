@@ -4,7 +4,7 @@ import { DetailCard, Error, IDetailCard } from "infinity-forge";
 import { useQueryClient } from "react-query";
 
 import { Patient } from "@/domain";
-import { FormCreateTutor, useSystem } from "@/presentation";
+import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
 
 import { Profile } from "./profile";
 
@@ -17,7 +17,7 @@ export type DetailCard = {
 export function ProfileInfos({ patient }: { patient: Patient }) {
   const queryClient = useQueryClient();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const details: DetailCard[] = [
     {
@@ -26,7 +26,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#4BC0C0",
       title: patient?.race,
       subTitle: patient?.specie,
-      active: unit.system.type === "Vet",
+      active: type === "Vet",
     },
     {
       id: 2,
@@ -42,7 +42,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#F4BF00",
       title: patient?.tutor?.name,
       subTitle: "Tutor Ativo",
-      active: !!(unit.system.type === "Vet" && patient.tutor),
+      active: !!(type === "Vet" && patient.tutor),
     },
     {
       id: 4,
@@ -76,7 +76,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#C700D9",
       title: patient.hypertension ? "Sim" : "Não",
       subTitle: "Hipertensão",
-      active: unit.system.type !== "Vet",
+      active: type !== "Vet",
     },
     {
       id: 8,
@@ -84,7 +84,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#002CCA",
       title: patient.diabetes ? "Sim" : "Não",
       subTitle: "Diabetes",
-      active: unit.system.type !== "Vet",
+      active: type !== "Vet",
     },
   ];
 

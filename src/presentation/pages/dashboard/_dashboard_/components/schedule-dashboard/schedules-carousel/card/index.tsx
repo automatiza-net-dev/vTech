@@ -4,7 +4,7 @@ import { HighlightText, SideBar, NextImage, Error } from "infinity-forge";
 
 import { Event } from "@/domain";
 import { IconCalendar } from "./icon";
-import { SideBarContent, useSystem } from "@/presentation";
+import { SideBarContent, useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -12,7 +12,7 @@ export function ScheduleCard(props: Event) {
   const [open, setOpen] = useState(false);
   const { holder, patient, serviceType, serviceStatus } = props.event;
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const timeTextStart = props.start?.substring(11, 16);
   const timeTextEnd = props.end?.substring(11, 16);
@@ -43,7 +43,7 @@ export function ScheduleCard(props: Event) {
             {patient?.name && (
               <h4>
                 {patient.name}{" "}
-                {unit.system.type === "Vet" && (
+                {type === "Vet" && (
                   <span>
                     (
                     <div className="icon">

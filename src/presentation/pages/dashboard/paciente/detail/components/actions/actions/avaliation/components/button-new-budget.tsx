@@ -14,7 +14,7 @@ import {
   useDictionary,
   useLoadPatient,
   useLoadAllPatientTutor,
-  useSystem,
+  useConfigurationsSystem,
 } from "@/presentation";
 
 export function ButtonNewBudget() {
@@ -26,7 +26,7 @@ export function ButtonNewBudget() {
   const { data, isFetching } = useLoadAllPatientTutor({});
 
   const { getWord } = useDictionary();
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   return (
     <>
@@ -73,13 +73,13 @@ export function ButtonNewBudget() {
           </div>
 
           <div className="row">
-            {unit.system.type === "Vet" && (
+            {type === "Vet" && (
               <Input name="patientId" label="Paciente" readOnly />
             )}
 
             <Select
               onlyOneValue
-              label={unit.system.type === "Vet" ? "Tutor" : "Cliente"}
+              label={type === "Vet" ? "Tutor" : "Cliente"}
               name={"clientId"}
               options={
                 data?.map((tutor) => ({

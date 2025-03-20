@@ -3,8 +3,8 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import api from "@/OLD/services";
-import { sessionService } from "@/OLD/services/session.service";
 import { useAuthAdmin, Button, useToast } from "infinity-forge";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function SignUpClinic() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export function SignUpClinic() {
   const { signOut } = useAuthAdmin();
 
   const { createToast } = useToast();
+  const { logo_url } = useConfigurationsSystem();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -67,12 +68,7 @@ export function SignUpClinic() {
             alignItems: "center",
           }}
         >
-          <img
-            src={
-              process.env.NEXT_PUBLIC_API +
-              `/assets/logo-${process.env.client}.png`
-            }
-          />
+          <img src={logo_url} />
           <h3>Cadastro por convite</h3>
         </div>
         <form onSubmit={handleSubmit}>

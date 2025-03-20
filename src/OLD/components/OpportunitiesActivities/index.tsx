@@ -19,7 +19,7 @@ import { opportunitiesActivitiesColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 const OpActivities = memo(function OpActivities({
   origin = "none",
@@ -129,7 +129,7 @@ const OpActivities = memo(function OpActivities({
       : setActivities([]);
   }, [opportunity, op, actTypes, colaborators]);
 
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   async function updateOpportunity() {
     setLoading(true);
@@ -153,7 +153,7 @@ const OpActivities = memo(function OpActivities({
         opportunitiesData?.clientOriginItemDescription,
     };
 
-    if (unit.system.type === "Vet") {
+    if (type === "Vet") {
       formattedData.castrated = opportunitiesData?.castrated || false;
       formattedData.weight = opportunitiesData?.weight;
       formattedData.gender = opportunitiesData?.gender;

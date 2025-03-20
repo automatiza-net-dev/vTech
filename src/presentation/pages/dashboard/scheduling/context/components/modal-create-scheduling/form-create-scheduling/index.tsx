@@ -1,15 +1,12 @@
-import moment from "moment";
 import {
   Input,
   Select,
-  Textarea,
   FormHandler,
-  useAuthAdmin,
   TextEditor,
   InputDatePicker,
 } from "infinity-forge";
 
-import { useScheduling, useSystem } from "@/presentation";
+import { useScheduling, useConfigurationsSystem, useSystem } from "@/presentation";
 
 import {
   SelectServices,
@@ -21,10 +18,13 @@ import { useSubmitSchedule } from "./handleSubmit";
 import * as S from "./styles";
 
 export function FormCreateScheduling() {
+  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem();
 
-  const { unit } = useSystem();
   const { submit, scheduleUsers } = useSubmitSchedule();
-  const createSchedulingArgs = useScheduling((state) => state.createSchedulingArgs);
+  const createSchedulingArgs = useScheduling(
+    (state) => state.createSchedulingArgs
+  );
 
   const initialData = {
     userId: createSchedulingArgs?.scheduleUser?.id
@@ -35,7 +35,7 @@ export function FormCreateScheduling() {
       ? [createSchedulingArgs.event.event.serviceType.id]
       : [],
     holderId:
-    unit?.system?.type === "Vet"
+      type === "Vet"
         ? createSchedulingArgs?.event?.event?.holder?.id
           ? [createSchedulingArgs.event.event.holder.id]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
@@ -43,7 +43,7 @@ export function FormCreateScheduling() {
           : []
         : undefined,
     holderName:
-      unit?.system?.type === "Vet"
+      type === "Vet"
         ? createSchedulingArgs?.event?.event?.holder?.name
           ? [createSchedulingArgs.event.event.holder.name]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
@@ -57,12 +57,12 @@ export function FormCreateScheduling() {
     }),
     date: createSchedulingArgs?.date,
     patientId:
-      unit?.system?.type !== "Vet"
+      type !== "Vet"
         ? [
             createSchedulingArgs?.event?.event?.patient?.id ||
               createSchedulingArgs?.id,
           ]
-        : unit?.system?.type === "Vet"
+        : type === "Vet"
         ? createSchedulingArgs?.id
           ? [createSchedulingArgs?.id]
           : []
@@ -70,12 +70,12 @@ export function FormCreateScheduling() {
         ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
         : [],
     patientName:
-      unit?.system?.type !== "Vet"
+      type !== "Vet"
         ? [
             createSchedulingArgs?.event?.event?.patient?.name ||
               createSchedulingArgs?.name,
           ]
-        : unit?.system?.type === "Vet"
+        : type === "Vet"
         ? createSchedulingArgs?.event?.event?.patient?.name
           ? [createSchedulingArgs.event.event.patient.name]
           : createSchedulingArgs?.name
@@ -128,9 +128,7 @@ export function FormCreateScheduling() {
             <Input
               type="number"
               name="duration"
-              readOnly={
-                !unit?.unitConfig?.allow_change_schedule_duration
-              }
+              readOnly={!unit?.unitConfig?.allow_change_schedule_duration}
               label="Duração consulta (minutos)"
             />
           </div>
@@ -138,14 +136,12 @@ export function FormCreateScheduling() {
 
         <div className="row">
           <Input
-            name={
-              unit?.system?.type === "Vet" ? "holderName" : "patientName"
-            }
+            name={type === "Vet" ? "holderName" : "patientName"}
             disabled
-            label={unit?.system?.type === "Vet" ? "Tutor" : "Cliente"}
+            label={type === "Vet" ? "Tutor" : "Cliente"}
           />
 
-          {unit?.system?.type === "Vet" && (
+          {type === "Vet" && (
             <Input name="patientName" disabled label="Paciente" />
           )}
         </div>

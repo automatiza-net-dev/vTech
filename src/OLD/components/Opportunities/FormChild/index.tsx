@@ -20,7 +20,7 @@ import {
   FormCreatePatient,
   FormCreateTutor,
   useLoadCampaings,
-  useSystem,
+  useConfigurationsSystem,
 } from "@/presentation";
 import { SelectMidia } from "./select-midia";
 import { container, TypesAutomatiza } from "@/container";
@@ -145,7 +145,7 @@ export default function FormChild({
       });
   }, [type, crmStatus]);
 
-  const {unit} = useSystem()
+  const configurationSystem = useConfigurationsSystem()
 
   return (
     <Container
@@ -219,7 +219,7 @@ export default function FormChild({
           </div>
         </div>
         {
-          unit?.system?.type === "Vet" && (
+          configurationSystem.type === "Vet" && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">

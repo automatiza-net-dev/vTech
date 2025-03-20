@@ -10,7 +10,7 @@ import {
   VaccinesTable,
   ActionsPatient,
 } from "./components";
-import { useLoadPatient, useSystem, VaccinesPanel } from "@/presentation";
+import { useLoadPatient, useConfigurationsSystem, VaccinesPanel } from "@/presentation";
 import { useQueryClient } from "react-query";
 
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
@@ -24,7 +24,7 @@ export function PacientePage() {
 
   const queryClient = useQueryClient();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
   
 
   useEffect(() => {
@@ -46,19 +46,19 @@ export function PacientePage() {
       title: "Tutores",
       content: (props) => <TutorsTable {...data} {...props} />,
       key: "tutors",
-      active: unit?.system?.type === "Vet",
+      active: type === "Vet",
     },
     {
       title: "Vacinas / Vermífugos lançados",
       content: (props) => <VaccinesTable {...data} {...props} />,
       key: "vaccines",
-      active: unit?.system?.type === "Vet",
+      active: type === "Vet",
     },
     {
       title: "Vacinas / Vermífugos Status",
       content: (props) => <VaccinesPanel patientId={data?.id} />,
       key: "vaccines status",
-      active: unit?.system?.type === "Vet",
+      active: type === "Vet",
     },
     {
       title: "Vendas",
@@ -72,7 +72,7 @@ export function PacientePage() {
         <HospitalizationTimeline patientData={data} modal={false} {...props} />
       ),
       key: "hospitalization",
-      active: unit?.system?.type === "Vet",
+      active: type === "Vet",
     },
     {
       title: "Histórico agenda",
@@ -84,7 +84,7 @@ export function PacientePage() {
       title: "Negociações",
       content: () => <Negotiations />,
       key: "negotiations",
-      active: unit?.system?.type !== "Vet",
+      active: type !== "Vet",
     },
   ].filter((item) => item.active);
 

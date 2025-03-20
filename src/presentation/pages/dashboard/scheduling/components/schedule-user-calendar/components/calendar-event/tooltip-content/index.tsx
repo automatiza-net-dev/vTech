@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 
 import { Event, ScheduleUser } from "@/domain";
-import { DateToDDMMYYYY, useSystem } from "@/presentation";
+import { DateToDDMMYYYY, useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -20,20 +20,20 @@ export function ToolTipContent({
   timeText: string;
   scheduleUser: ScheduleUser;
 }) {
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   const infos = {
     tutor: {
       icon: <Person2Icon />,
       text:
-        unit.system.type !== "Vet"
+        type !== "Vet"
           ? event.event.patient?.name
           : event.event?.holder?.name + " - " + event.event?.holder?.tutor?.cellphone,
     },
     paciente: {
       icon: <PetsIcon />,
       text:
-        unit.system.type !== "Vet"
+        type !== "Vet"
           ? ""
           : event.event.patient?.name + " - RG: " + event.event.patient?.tag,
     },
@@ -53,7 +53,7 @@ export function ToolTipContent({
         </svg>
       ),
       text:
-        unit.system.type !== "Vet"
+        type !== "Vet"
           ? ""
           : event?.event?.specie?.description + " > " + event?.event?.race?.description,
     },

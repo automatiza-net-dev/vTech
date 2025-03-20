@@ -18,7 +18,11 @@ import {
   useUpdateSellerAndReviewer,
 } from "@/OLD/hooks/useBudgets";
 import { useQueryClient } from "react-query";
-import { useLoadPaymentsPreview, useSystem } from "@/presentation";
+import {
+  useLoadPaymentsPreview,
+  useConfigurationsSystem,
+  useSystem,
+} from "@/presentation";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 const { Panel } = Collapse;
@@ -169,7 +173,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
   const { data, refetch } = useCompleteBudget(budget.id, true);
   const { mutate } = useUpdateBudgetItem();
   const { mutate: mutateSellerAndReviewer } = useUpdateSellerAndReviewer(
-    budget?.id,
+    budget?.id
   );
   const { user } = useAuthAdmin();
   const { data: budgetPayments } = useLoadPaymentsPreview({
@@ -181,7 +185,8 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
 
   const componentRef = React.useRef();
 
-  const {unit} = useSystem()
+  const { unit } = useSystem();
+  const { type } = useConfigurationsSystem();
 
   const handleFn = (item: any) => {
     mutate(
@@ -308,7 +313,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
               </span>
             </div>
 
-            {unit.system.type === "Vet" && (
+            {type === "Vet" && (
               <div className="uk-flex uk-flex-column uk-width-1-1">
                 <span className="uk-text-small">Paciente</span>
                 <span className="uk-text-default">
@@ -317,7 +322,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
               </div>
             )}
 
-            {unit.system.type === "Vet" && (
+            {type === "Vet" && (
               <>
                 <div className="uk-flex uk-flex-column uk-width-1-1">
                   <div className="uk-flex">
@@ -388,83 +393,84 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
                   </div>
                 </div>
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  {unit?.unitConfig?.reviewer && unit?.unitConfig?.reviewer !== "N" && (
-                    <>
-                      <div className="uk-flex">
-                        <span className="uk-text-small uk-margin-right">
-                          Avaliador
-                        </span>
-                        {!editFields?.reviewer ? (
-                          <span
-                            className="uk-link"
-                            onClick={() =>
-                              setEditFields((prv) => ({
-                                ...prv,
-                                reviewer: true,
-                              }))
-                            }
-                          >
-                            Alterar
+                  {unit?.unitConfig?.reviewer &&
+                    unit?.unitConfig?.reviewer !== "N" && (
+                      <>
+                        <div className="uk-flex">
+                          <span className="uk-text-small uk-margin-right">
+                            Avaliador
                           </span>
-                        ) : (
-                          <div>
-                            <span
-                              className="uk-link uk-margin-right"
-                              onClick={() => submitReviewerAndSeller()}
-                            >
-                              Salvar
-                            </span>
+                          {!editFields?.reviewer ? (
                             <span
                               className="uk-link"
-                              onClick={() => {
+                              onClick={() =>
                                 setEditFields((prv) => ({
                                   ...prv,
-                                  reviewer: false,
-                                }));
-                                setPayload((prv) => ({
-                                  ...prv,
-                                  reviewerName: budget?.reviewer?.name,
-                                  reviewerId: budget?.reviewer?.id,
-                                }));
-                              }}
+                                  reviewer: true,
+                                }))
+                              }
                             >
-                              Cancelar
+                              Alterar
                             </span>
-                          </div>
-                        )}
-                      </div>
+                          ) : (
+                            <div>
+                              <span
+                                className="uk-link uk-margin-right"
+                                onClick={() => submitReviewerAndSeller()}
+                              >
+                                Salvar
+                              </span>
+                              <span
+                                className="uk-link"
+                                onClick={() => {
+                                  setEditFields((prv) => ({
+                                    ...prv,
+                                    reviewer: false,
+                                  }));
+                                  setPayload((prv) => ({
+                                    ...prv,
+                                    reviewerName: budget?.reviewer?.name,
+                                    reviewerId: budget?.reviewer?.id,
+                                  }));
+                                }}
+                              >
+                                Cancelar
+                              </span>
+                            </div>
+                          )}
+                        </div>
 
-                      <div className="uk-width-1-2">
-                        <AutoComplete
-                          disabled={!editFields?.reviewer}
-                          className="uk-width-1-1"
-                          value={payload?.reviewerName}
-                          options={colaborators?.map((collab: any) => ({
-                            ...collab,
-                            value: collab?.name,
-                          }))}
-                          onChange={(val) =>
-                            setPayload((prv) => ({
-                              ...prv,
-                              reviewerName: val,
-                            }))
-                          }
-                          onSelect={(_, opt) =>
-                            setPayload((prv) => ({
-                              ...prv,
-                              reviewerId: opt?.id,
-                              reviewerName: opt?.value,
-                            }))
-                          }
-                          filterOption={(val, opt) =>
-                            normalizeStr(opt?.value.toUpperCase()).includes(
-                              normalizeStr(val?.toUpperCase())
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  )}
+                        <div className="uk-width-1-2">
+                          <AutoComplete
+                            disabled={!editFields?.reviewer}
+                            className="uk-width-1-1"
+                            value={payload?.reviewerName}
+                            options={colaborators?.map((collab: any) => ({
+                              ...collab,
+                              value: collab?.name,
+                            }))}
+                            onChange={(val) =>
+                              setPayload((prv) => ({
+                                ...prv,
+                                reviewerName: val,
+                              }))
+                            }
+                            onSelect={(_, opt) =>
+                              setPayload((prv) => ({
+                                ...prv,
+                                reviewerId: opt?.id,
+                                reviewerName: opt?.value,
+                              }))
+                            }
+                            filterOption={(val, opt) =>
+                              normalizeStr(opt?.value.toUpperCase()).includes(
+                                normalizeStr(val?.toUpperCase())
+                              )
+                            }
+                          />
+                        </div>
+                      </>
+                    )}
                 </div>
               </>
             )}

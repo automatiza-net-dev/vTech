@@ -17,7 +17,7 @@ import { Button, useToast } from "infinity-forge";
 
 import masks from "@/OLD/utils/masks";
 import moment from "moment";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
   const [data, setData] = React.useState();
@@ -121,7 +121,7 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
     return message;
   };
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const handleSubmit = useCallback(() => {
     setLoading(true);
@@ -149,7 +149,7 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
       }
     }
 
-    if (unit.system.type === "Vet" && !data?.professionId && !isSchedule) {
+    if (type === "Vet" && !data?.professionId && !isSchedule) {
       setLoading(false);
       return createToast({
         status: "error",
@@ -237,13 +237,13 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
       .then((res) => {
         setOriginConfig("");
         onSuccess && onSuccess(res.data);
-        if (unit.system.type !== "Vet") {
+        if (type !== "Vet") {
           createToast({ status: "success", message: "Cliente cadastrado!" });
         } else {
           createToast({
             status: "success",
             message: `${
-              unit.system.type !== "Vet" ? "Cliente" : "Tutor"
+              type !== "Vet" ? "Cliente" : "Tutor"
             } cadastrado!`,
           });
         }
@@ -296,7 +296,7 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
   ) : (
     <Container>
       <h2>
-        {unit.system.type !== "Vet"
+        {type !== "Vet"
           ? "Cadastrar novo cliente"
           : "Cadastrar novo tutor"}
       </h2>

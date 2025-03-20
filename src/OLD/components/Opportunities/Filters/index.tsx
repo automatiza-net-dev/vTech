@@ -290,7 +290,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
             />
           </InputBox>
         </div>
-        {user?.unit?.system?.type === "Vet" && (
+        {user?.type === "Vet" && (
           <div className="uk-width-1-5">
             <label>Nome pet</label>
             <InputBox className="uk-width-1-1">

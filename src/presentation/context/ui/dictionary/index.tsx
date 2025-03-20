@@ -1,6 +1,6 @@
 import { useAuthAdmin } from "infinity-forge";
 
-import { callApiOneTime, useSystem } from "@/presentation";
+import { callApiOneTime, useConfigurationsSystem } from "@/presentation";
 import { RemoteConfiguration } from "@/data";
 import { dictionaryStore } from "./store";
 import { useQuery } from "react-query";
@@ -9,9 +9,9 @@ import { container, TypesAutomatiza } from "@/container";
 export function useDictionary() {
   const lang = "ptBr";
 
-  const { unit } = useSystem()
+  const {type} = useConfigurationsSystem()
 
-  const client = unit?.system?.type === "Vet"
+  const client = type === "Vet"
       ? "cliente-veterinaria"
       : "cliente-estetica";
 

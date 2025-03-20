@@ -19,6 +19,7 @@ export function SignIn() {
 
   const { createToast } = useToast();
   const { loadUser } = useAuthAdmin();
+  const { name } = useConfigurationsSystem()
 
   useEffect(() => {
     if (process.browser) {
@@ -51,7 +52,7 @@ export function SignIn() {
         const getBusinessUnits = await sessionService.login({
           ...data,
           systemUrl,
-          system: process.env.clientName,
+          system: name,
         });
 
         const loginResponse =
@@ -60,7 +61,7 @@ export function SignIn() {
           ((await sessionService.login({
             ...data,
             systemUrl,
-            system: process.env.clientName,
+            system: name,
             business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
           })) as any);
 

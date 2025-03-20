@@ -4,7 +4,7 @@ import React from "react";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 
-import { PrintHeader, useSystem } from "@/presentation";
+import { PrintHeader, useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -19,7 +19,7 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
 
   const budget = { data: budgetData };
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   return (
     <S.PrintScreen className="uk-container">
@@ -65,7 +65,7 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
           </p>
         </div>
 
-        {unit?.system?.type === "Vet" && (
+        {type === "Vet" && (
           <div>
             <label>Paciente</label>
             <p className="ukk-margin-remove">{budget?.data?.patient?.name}</p>

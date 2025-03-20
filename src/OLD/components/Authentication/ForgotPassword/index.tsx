@@ -16,7 +16,7 @@ export function ForgotPassword() {
   const router = useRouter();
 
   const { createToast } = useToast();
-  const { id } = useConfigurationsSystem()
+  const { id, name, logo_url } = useConfigurationsSystem();
 
   const handleSubmit = React.useCallback(
     (e) => {
@@ -28,7 +28,11 @@ export function ForgotPassword() {
       }
 
       unitsService
-        .forgotPassword({ email, systemId: id, systemName: process.env.clientName })
+        .forgotPassword({
+          email,
+          systemId: id,
+          systemName: name,
+        })
         .then((_res) => {
           setSend(true);
 
@@ -65,14 +69,8 @@ export function ForgotPassword() {
   return (
     <Container className="uk-padding-large">
       <img src="/svg/fish_bowl.svg" width="50%" />
-      <div className="form-side">
-        <img
-          width="20%"
-          src={
-            process.env.NEXT_PUBLIC_API +
-            `/assets/logo-${process.env.client}.png`
-          }
-        />
+      <div className="form-side font-16">
+        <img width="20%" src={logo_url} />
         {!send ? (
           <>
             <h3>Solicitar restauração de senha</h3>

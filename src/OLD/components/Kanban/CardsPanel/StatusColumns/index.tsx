@@ -14,7 +14,7 @@ import { Menu, Dropdown, Button } from "antd";
 import { Modal, Tooltip } from "infinity-forge";
 import SyncOpportunity from "../SyncOpportunity";
 
-import { SideBarContent, useSystem } from "@/presentation";
+import { SideBarContent, useConfigurationsSystem } from "@/presentation";
 import { SideBar } from "infinity-forge";
 
 import { PlusOutline } from "styled-icons/evaicons-outline";
@@ -179,7 +179,7 @@ function StatusColumns({
     setSortedOpportunities(opportunities);
   }, [orderBy, opportunities]);
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   return (
     <Container className="uk-width-1-5">
@@ -209,7 +209,7 @@ function StatusColumns({
                 }}
               >
                 <strong>
-                  {op?.contact?.name || ""} {unit.system.type === "Vet" &&`(${op?.client?.name || " pac. não vinculado"})`}
+                  {op?.contact?.name || ""} {type === "Vet" &&`(${op?.client?.name || " pac. não vinculado"})`}
                 </strong>
                 
                 <div className="uk-flex uk-flex-between uk-width-1-1">

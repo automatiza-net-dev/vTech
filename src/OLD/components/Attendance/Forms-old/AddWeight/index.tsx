@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 // Services
 import { timelineService } from "@/OLD/services/timeline.service";
 
-import { useLoadPatient, useSystem } from "@/presentation";
+import { useLoadPatient, useConfigurationsSystem } from "@/presentation";
 
 // Utils
 import moment from "moment";

@@ -10,18 +10,18 @@ import { Container } from "./styles";
 import { Collapse } from "antd";
 const { Panel } = Collapse;
 import Variables from "./Variables";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 const LabelsPanel = memo(function ({ body, setBody }: any) {
   const { templates } = useTextReplace();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   return (
     <Container className="uk-margin-small-left">
       <h5 className="uk-heading-line">Variáveis:</h5>
       <Collapse>
-        {unit.system.type === "Vet" && (
+        {type === "Vet" && (
           <Panel header="Dependente (Pet)">
             <Variables
               body={body}
@@ -32,7 +32,7 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
             />
           </Panel>
         )}
-        <Panel header={unit.system.type === "Vet" ? "Tutor" : "Cliente"}>
+        <Panel header={type === "Vet" ? "Tutor" : "Cliente"}>
           <Variables
             body={body}
             setBody={setBody}
@@ -52,7 +52,7 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
         </Panel>
         <Panel
           header={
-            unit.system.type === "Vet" ? "Veterinário" : "Profissional"
+            type === "Vet" ? "Veterinário" : "Profissional"
           }
         >
           <Variables

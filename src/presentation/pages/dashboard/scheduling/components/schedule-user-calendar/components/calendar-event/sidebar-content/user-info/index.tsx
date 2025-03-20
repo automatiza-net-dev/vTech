@@ -9,7 +9,7 @@ import {
   FormCreateTutor,
   PermissionItem,
   useScheduling,
-  useSystem,
+  useConfigurationsSystem,
 } from "@/presentation";
 
 import { ContactForm } from "./contact-form";
@@ -20,7 +20,7 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
   const [showContact, setShowContact] = useState(false);
 
   const router = useRouter();
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
   const selectedDate = useScheduling((state) => state.selectedDate);
 
   const dateFormatted = DateToYYYYMMDD(selectedDate || new Date());
@@ -28,20 +28,20 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
   const contactInfo = {
     user: {
       text:
-      unit?.system?.type === "Vet"
+      type === "Vet"
           ? event?.event?.holder?.name
           : event?.event?.patient?.name,
       icon: <Icon name="IconUser" />,
     },
     phone: {
       text:
-         unit?.system?.type === "Vet"
+         type === "Vet"
           ? event?.event?.holder?.tutor?.cellphone || "Telefone não informado"
           : event?.event?.patient?.cellphone || "Telefone não informado",
       icon: <Icon name="PhoneIcon" />,
     },
     github:
-       unit?.system?.type === "Vet"
+       type === "Vet"
         ? {
             text: `${event?.event?.patient?.name} - RG: ${event?.event?.patient?.tag}`,
             icon: <Icon name="IconPet" color="#000" />,
@@ -64,7 +64,7 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
         </svg>
       ),
       text:
-         unit?.system?.type !== "Vet"
+         type !== "Vet"
           ? ""
           : event?.event?.specie?.description +
             " > " +
@@ -108,7 +108,7 @@ export function UserInfos({ event, setOpen }: { event: Event; setOpen }) {
                     isModal
                     origin="Agenda"
                     tutorId={
-                       unit?.system?.type === "Vet"
+                       type === "Vet"
                         ? event?.event?.holder?.id
                         : event.event.patient.id
                     }

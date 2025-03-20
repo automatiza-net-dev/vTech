@@ -8,7 +8,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import PrintFooter from "./PrintFooter";
 import PatientHeader from "./PetHeader";
-import { PrintHeader, useSystem } from "@/presentation";
+import { PrintHeader, useConfigurationsSystem } from "@/presentation";
 import { Container, PrintScreen } from "./styles";
 
 export default function Print({
@@ -27,7 +27,7 @@ export default function Print({
   const imprimir = useReactToPrint({
     contentRef: componentRef,
   });
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   return (
     <>
@@ -49,7 +49,7 @@ export default function Print({
             <PrintHeader />
           </div>
 
-          {unit.system.type === "Vet" && patient && (
+          {type === "Vet" && patient && (
             <PatientHeader patient={patient} tutor={patient?.tutor} />
           )}
           {title && (

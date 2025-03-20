@@ -5,7 +5,7 @@ import { Checkbox } from "antd";
 import { Button, useToast } from "infinity-forge";
 
 import styled from "styled-components";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function Step4(props) {
   const [inputs, setInputs] = useState<{ title?: string; value?: boolean }[]>(
@@ -50,10 +50,10 @@ export function Step4(props) {
     }
   }, [inputs]);
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   useEffect(() => {
-    if (unit.system.type !== "Vet") {
+    if (type !== "Vet") {
       setInputs([
         {
           title: "Clínica ou hospital",

@@ -15,22 +15,13 @@ interface IInvitesProps extends Invite {
 function Invites({ type, ...rest }: IInvitesProps) {
   const router = useRouter();
 
-  const { logo_url } = useConfigurationsSystem()
-
-  const verifyImage = () => {
-    return {
-      backgroundImage:
-        process.env.client === "sancla"
-          ? `/assets/pet-sancla.jpeg`
-          : `/assets/invite-liftone.jpeg`,
-    };
-  };
+  const { logo_url, home_image_url } = useConfigurationsSystem();
 
   return (
     <Container>
       <section>
         <div className="img-container">
-          <img src={process.env.api + verifyImage().backgroundImage} />
+          <img src={home_image_url} />
         </div>
       </section>
       <section>

@@ -16,7 +16,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import masks from "@/OLD/utils/masks";
 import moment from "moment";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function Edit({
   tutorId,
@@ -33,7 +33,7 @@ export function Edit({
   const { originConfig, setOriginConfig } = useAuth();
   const { createToast } = useToast();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const editTutorPermission = useUserHasPermission("TUT02");
 
@@ -54,7 +54,7 @@ export function Edit({
 
     return createToast({
       message: `Erro ao editar ${
-        unit.system.type !== "Vet" ? "Cliente" : "Tutor"
+        type !== "Vet" ? "Cliente" : "Tutor"
       }`,
       status: "error",
     });
@@ -302,7 +302,7 @@ export function Edit({
         updateContacts(() => setVisible(false));
         return createToast({
           message: `${
-            unit.system.type !== "Vet" ? "Cliente" : "Tutor"
+            type !== "Vet" ? "Cliente" : "Tutor"
           } editado!`,
           status: "success",
         });
@@ -380,7 +380,7 @@ export function Edit({
   ) : (
     <Container>
       <h2>
-        {unit.system.type !== "Vet" ? "Editar cliente" : "Editar Tutor"}
+        {type !== "Vet" ? "Editar cliente" : "Editar Tutor"}
       </h2>
 
       <Form

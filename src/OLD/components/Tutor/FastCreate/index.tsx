@@ -13,7 +13,7 @@ import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 import { sortItems } from "@/OLD/utils/sortItems";
 import masks from "@/OLD/utils/masks";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 export default function FastCreateTutor({
   visible,
@@ -40,7 +40,7 @@ export default function FastCreateTutor({
   const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
 
   const submitButton = useRef();
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const {createToast} = useToast()
 
@@ -184,7 +184,7 @@ export default function FastCreateTutor({
           tutorName: verifyTutorName(data?.tutorName),
         })
         .then((res) => {
-          unit.system.type === "Vet"
+          type === "Vet"
             ? setPayload({
                 ...payload,
                 clientId: res?.data?.patient?.id || patientData?.id,
@@ -214,7 +214,7 @@ export default function FastCreateTutor({
                 clientOriginItemDescription: data?.clientOriginItemDescription,
               });
 
-          unit.system.type === "Vet" && vincPatientToTutor(patientData?.id, res?.data?.tutor?.id);
+          type === "Vet" && vincPatientToTutor(patientData?.id, res?.data?.tutor?.id);
 
           setTutorsReload && setTutorsReload((prv) => !prv);
          
@@ -239,7 +239,7 @@ export default function FastCreateTutor({
         onCancel={() => setVisible(false)}
         footer={null}
         title={
-          unit.system.type !== "Vet"
+          type !== "Vet"
             ? "Cadastro rápido de Clientes"
             : "Cadastro rápido de tutor e paciente"
         }
@@ -248,14 +248,14 @@ export default function FastCreateTutor({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            !patientSubmit || unit.system.type !== "Vet"
+            !patientSubmit || type !== "Vet"
               ? createOnlyTutor()
               : fastCreate();
           }}
         >
           <div className="uk-flex uk-flex-around">
             <section className="uk-width-1-3">
-              {   unit.system.type === "Vet" && (
+              {   type === "Vet" && (
                 <>
                   Tutor
                   <hr />
@@ -357,7 +357,7 @@ export default function FastCreateTutor({
               )}
             </section>
 
-            {unit.system.type === "Vet" && (
+            {type === "Vet" && (
               <section className="uk-width-1-3">
                 Paciente
                 <hr />
@@ -519,7 +519,7 @@ export default function FastCreateTutor({
             />
           </div>
           
-          {unit.system.type === "Vet" && (
+          {type === "Vet" && (
             <div className="uk-margin-small-top">
               <label>Selecionar Pet</label>
               <Select

@@ -11,7 +11,7 @@ import { RemotePatient } from "@/data";
 import { container, patientTypes } from "@/container";
 
 // Hooks
-import { useMe, useSystem } from "@/presentation/hooks";
+import { useMe } from "@/presentation/hooks";
 import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
@@ -22,6 +22,7 @@ import { useToast } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
+import { useConfigurationsSystem } from "@/presentation";
 
 export default function Documents({
   modal,
@@ -45,7 +46,7 @@ export default function Documents({
   const patient = useLoadPatient();
   const queryClient = useQueryClient();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   async function registerPrint() {
     try {
@@ -73,7 +74,7 @@ export default function Documents({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-        unit.system.type === "Vet"
+        type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
         dependentId: patient?.data?.id,

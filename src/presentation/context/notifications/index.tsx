@@ -5,7 +5,7 @@ import { api, Button, useAuthAdmin, useQuery } from "infinity-forge";
 import { Modal } from "./modal";
 
 import * as S from "./styles";
-import { logo } from "@/presentation/utils";
+import { useConfigurationsSystem } from "../configurations";
 
 type Notification = {
   "id": number;
@@ -20,6 +20,7 @@ export function NotificationsModal() {
   const [open, setOpen] = useState(false);
 
   const { user } = useAuthAdmin()
+  const {logo_url} = useConfigurationsSystem()
 
   const { data, isFetching, mutate } = useQuery({
     queryKey: [user?.unit?.id, "notifications"],
@@ -48,7 +49,7 @@ export function NotificationsModal() {
       <Modal isNotPossibleClose hideCloseButton open={open} onClose={() => {}} styles={{ maxWidth: "700px", width: "100%" }}>
         <S.Notifications>
           <div>
-            <img className="logo" src={logo}  />
+            <img className="logo" src={logo_url}  />
 
             {notification.image && <img className="image" src={notification.image} />}
 

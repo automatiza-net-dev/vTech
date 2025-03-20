@@ -151,7 +151,7 @@ function Budgets() {
   const { getWord } = useDictionary();
 
   const columns =
-    user?.unit?.system?.type === "Vet" ? Columns(hasInternalCode, getWord("Orçamento")) : LiftColumns(hasInternalCode, getWord("Orçamento"));
+    user?.type === "Vet" ? Columns(hasInternalCode, getWord("Orçamento")) : LiftColumns(hasInternalCode, getWord("Orçamento"));
 
   const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
 
@@ -291,7 +291,7 @@ function Budgets() {
                 }
               />
             </Input>
-            {user?.unit?.system?.type === "Vet" && (
+            {user?.type === "Vet" && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
                 <AntInput
@@ -302,7 +302,7 @@ function Budgets() {
                 />
               </Input>
             )}
-            {user?.unit?.system?.type !== "Vet" && userIsReviewer && (
+            {user?.type !== "Vet" && userIsReviewer && (
               <Input style={{ width: "100%" }}>
                 <label>Avaliador</label>
                 <AutoComplete

@@ -1,7 +1,7 @@
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container, RowBox } from "./styles";
-import { PrintHeader, useSystem } from "@/presentation";
+import { PrintHeader, useConfigurationsSystem } from "@/presentation";
 
 import moment from "moment";
 import masks from "@/OLD/utils/masks";
@@ -9,7 +9,7 @@ import masks from "@/OLD/utils/masks";
 const PrintTable = ({ data, date }) => {
   const {  user } = useProfile();
 
-  const { unit } = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const events: any[] = [];
 
@@ -45,8 +45,8 @@ const PrintTable = ({ data, date }) => {
           <div className="small-width">Hora</div>
           <div className="small-width">Duração</div>
           <div>Profissional</div>
-          <div>{unit?.system?.type === "Vet" ? "Tutor" : "Paciente"}</div>
-          {unit?.system?.type === "Vet" && <div>Paciente</div>}
+          <div>{type === "Vet" ? "Tutor" : "Paciente"}</div>
+          {type === "Vet" && <div>Paciente</div>}
           <div>Agendamento</div>
           <div>Status</div>
           <div className="observation-field">Obs/Queixa</div>
@@ -75,7 +75,7 @@ const PrintTable = ({ data, date }) => {
                     Min
                   </div>
                   <div>{event?.name}</div>
-                  {unit?.system?.type === "Vet" ? (
+                  {type === "Vet" ? (
                     <div>
                       {event?.event?.holder?.name}
                       <br />
@@ -90,7 +90,7 @@ const PrintTable = ({ data, date }) => {
                         masks?.phone(event?.event?.patient?.cellphone)}
                     </div>
                   )}
-                  {unit?.system?.type === "Vet" && (
+                  {type === "Vet" && (
                     <div>{event?.event?.patient?.name}</div>
                   )}
                   <div>{event?.event?.serviceType?.description}</div>

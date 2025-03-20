@@ -19,7 +19,7 @@ import { HospitalizationTimeline } from "../../Hospitalization/HospitalizationTi
 
 import { Tabs, Select, Tag } from "antd";
 import PatientHistoric from "./Historic";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -28,7 +28,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
   const [filter, setFilter] = useState("all");
   const { hospitalizations } = useHospitalizations();
   
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
 
   const findPatient = hospitalizations?.find(
@@ -137,7 +137,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
             filter={filter}
           />
         </TabPane>
-        {unit.system.type === "Vet" && (
+        {type === "Vet" && (
           <TabPane tab="Tutores" key="9">
             <TutorsList
               filters={{ patientId: patient?.id }}
@@ -148,7 +148,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
             />
           </TabPane>
         )}
-        {unit.system.type === "Vet" && (
+        {type === "Vet" && (
           <TabPane tab="Vacinas Lançadas" key="11">
             <VaccinesLauchedList
               reload={reload}
@@ -164,7 +164,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
             reloadExtern={reloadExtern}
           />
         </TabPane>
-        {unit.system.type === "Vet" && (
+        {type === "Vet" && (
           <TabPane tab="Registros de internação" key="13">
             <HospitalizationTimeline
               patientData={{ ...findPatient, patient }}

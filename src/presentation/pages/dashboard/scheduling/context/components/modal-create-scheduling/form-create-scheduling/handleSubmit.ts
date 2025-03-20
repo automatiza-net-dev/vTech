@@ -9,7 +9,7 @@ import {
   DateToYYYYMMDD,
   useVerifyPermissions,
   useLoadAllSchedulesUser,
-  useSystem,
+  useConfigurationsSystem,
 } from "@/presentation";
 
 export function useSubmitSchedule() {
@@ -65,7 +65,7 @@ export function useSubmitSchedule() {
   }
 
   const { createToast } = useToast();
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
   const overbookingPermission = useVerifyPermissions("AGE11");
@@ -155,7 +155,7 @@ export function useSubmitSchedule() {
             .get<RemoteCRM>(CrmTypes.RemoteCRM)
             .loadAll({
               client: payload.patientId,
-              contact: unit?.system?.type === "Vet" ? payload.holderId: payload.patientId,
+              contact: type === "Vet" ? payload.holderId: payload.patientId,
             });
 
           if (

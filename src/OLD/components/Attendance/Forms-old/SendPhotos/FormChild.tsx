@@ -7,7 +7,7 @@ import { PlusOutline } from "styled-icons/evaicons-outline";
 
 // Components
 import { Button, FormHandler, useToast } from "infinity-forge";
-import { NewAttachments, useSystem } from "@/presentation";
+import { NewAttachments, useConfigurationsSystem } from "@/presentation";
 import { Upload, Input, Select, Popconfirm } from "antd";
 
 const { Option } = Select;
@@ -27,13 +27,13 @@ function FormChild({
   remove,
 }) {
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const { createToast } = useToast();
 
   return (
     <FormHandler isStickyButtons>
-      {unit.system.type === "Vet" ? (
+      {type === "Vet" ? (
         <div>
           <label>Titulo</label>
           <Input

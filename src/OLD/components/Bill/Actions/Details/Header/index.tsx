@@ -9,7 +9,7 @@ import { Container } from "./styles";
 
 import moment from "moment";
 
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 import { FormHandler, Select, useAuthAdmin } from "infinity-forge";
 import { statusBillText } from "../../../utils/status-formater";
 
@@ -31,7 +31,7 @@ export default function Header({
 
   const changeSellerPermission = useUserHasPermission("VEN14");
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   return (
     <Container className="uk-margin-top">
@@ -128,7 +128,7 @@ export default function Header({
           <label>Nome Cliente</label>
           <Input disabled value={bill?.client?.name} />
         </div>
-        {unit.system.type === "Vet" && (
+        {type === "Vet" && (
           <div className="uk-margin-small-right">
             <label>Nome paciente</label>
             <Input disabled value={bill?.patient?.name} />

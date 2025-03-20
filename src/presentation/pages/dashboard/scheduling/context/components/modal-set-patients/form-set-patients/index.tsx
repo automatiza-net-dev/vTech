@@ -1,7 +1,7 @@
 import { Input, InputMask, FormHandler, BadRequestError } from "infinity-forge";
 
 import {
-  useSystem,
+  useConfigurationsSystem,
   useScheduling,
   FormCreatePatient,
   useLoadAllPatientTutor,
@@ -17,13 +17,13 @@ export function FormSetClients() {
   const patientFilters = useScheduling((state) => state.patientsFilters);
   const setPatientsFilters = useScheduling((state) => state.setPatientsFilters);
 
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   const vetPatients = useLoadSchedulesPatients({
     patientFilters,
     enabled: !patientFilters
       ? false
-      : unit?.system?.type === "Vet"
+      : type === "Vet"
       ? true
       : false,
   });
@@ -32,7 +32,7 @@ export function FormSetClients() {
     patientFilters,
     enabled: !patientFilters
       ? false
-      : unit?.system?.type !== "Vet"
+      : type !== "Vet"
       ? true
       : false,
   });
@@ -67,7 +67,7 @@ export function FormSetClients() {
           throw new BadRequestError({
             code: "400",
             message:
-              unit?.system?.type === "Vet"
+              type === "Vet"
                 ? `Preencha pelo menos um dos campos de filtro (Nome do pet 2 caracteres, Telefone 3 caracteres, CPF 3 caracteres, Tutor 3 caracteres, RG Pet 1 caractere)`
                 : "Preencha pelo menos um dos campos de filtro (Telefone 3 caracteres, CPF 3 caracteres, nome 3 caracteres)",
           });
@@ -83,7 +83,7 @@ export function FormSetClients() {
           ),
         }}
       >
-        {unit?.system?.type === "Vet" && (
+        {type === "Vet" && (
           <>
             <div className="row first">
               <Input
@@ -176,7 +176,7 @@ export function FormSetClients() {
                 </svg>
               ),
             }}
-            name={unit?.system?.type === "Vet" ? "tutor" : "name"}
+            name={type === "Vet" ? "tutor" : "name"}
             placeholder="Nome"
           />
 
@@ -209,7 +209,7 @@ export function FormSetClients() {
 
         <div className="table-box">
           <div className="table" data-cy="table_patients">
-            {unit?.system?.type === "Vet" ? (
+            {type === "Vet" ? (
               <TableAnimals data={data} isLoading={isFetching} />
             ) : (
               <TableClients data={data} isLoading={isFetching} />

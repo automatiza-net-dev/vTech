@@ -17,10 +17,10 @@ import {
   useLoadPatient,
   useMe,
   useLoadAllScheduleStatuses,
-  useSystem,
 } from "@/presentation/hooks";
 
 import FormChild from "./FormChild";
+import { useConfigurationsSystem } from "@/presentation";
 
 function AddMedicalRecipe({
   modal,
@@ -41,9 +41,7 @@ function AddMedicalRecipe({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const {unit} = useSystem()
-
- 
+  const {type} = useConfigurationsSystem()
 
   const queryClient = useQueryClient();
 
@@ -55,7 +53,7 @@ function AddMedicalRecipe({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-        unit.system.type === "Vet"
+        type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
         dependentId: patient?.data?.id,

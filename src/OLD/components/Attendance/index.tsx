@@ -7,7 +7,7 @@ import { petsService } from "@/OLD/services/patient.service";
 
 import { Container } from "./styles";
 import { useToast } from "infinity-forge";
-import { useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 
 export default function Attendance() {
   const [patient, setPatient] = useState({});
@@ -19,7 +19,7 @@ export default function Attendance() {
   const patientId = router?.query?.subpage;
 
   const { createToast } = useToast();
-  const {unit} =useSystem()
+  const {type} = useConfigurationsSystem()
 
   const getTutorData = (Id?: any, id?: any): any => {
     petsService
@@ -69,7 +69,7 @@ export default function Attendance() {
   }, [patientId]);
 
   useEffect(() => {
-    unit.system.type === "Vet" ? getPet() : getPatientHuman();
+    type === "Vet" ? getPet() : getPatientHuman();
   }, [getPet]);
 
   return (
@@ -77,7 +77,7 @@ export default function Attendance() {
       <section>
         <TimeLine
           patient={
-            (unit.system.type === "Vet"
+            (type === "Vet"
               ? { ...patient, tutorData }
               : patient) as any
           }

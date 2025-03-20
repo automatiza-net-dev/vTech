@@ -54,7 +54,7 @@ export default function App({ Component, pageProps }) {
 
   const router = useRouter();
 
-  const { configurations } = useSystemConfigurations();
+  const { configurations } = useConfigurationsSystemConfigurations();
 
   if (!configurations) {
     return <></>;
@@ -206,7 +206,7 @@ export default function App({ Component, pageProps }) {
         >
           <NotificationsModal />
 
-          <GlobalStyles host={process.env.clientName} />
+          <GlobalStyles host={configurations.name} />
 
           <SchedulingContextProvider>
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -214,7 +214,7 @@ export default function App({ Component, pageProps }) {
                 <AppProvider>
                   <PermissionsProvider>
                     <Head>
-                      <title>{process.env.clientName}</title>
+                      <title>{configurations.name}</title>
                     </Head>
 
                     <GambiarraTemporaria setMenus={setMenus} />
@@ -250,7 +250,7 @@ function GambiarraTemporaria({ setMenus }) {
   return <></>;
 }
 
-function useSystemConfigurations() {
+function useConfigurationsSystemConfigurations() {
   const [configurations, setConfigurations] =
     useState<ConfigurationSystem | null>(null);
 
@@ -261,7 +261,8 @@ function useSystemConfigurations() {
       ref.current = 1;
 
       (async () => {
-        const systemUrl = new URL(window.location.origin).origin;
+        const test = "http://localhost:3058"
+        const systemUrl = test || new URL(window.location.origin).origin;
 
         const response = await api({
           url: `systems/identification?url=${systemUrl}`,

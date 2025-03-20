@@ -13,8 +13,8 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
-import { useMe, useSystem } from "@/presentation/hooks";
-import { useLoadPatient, useLoadAllScheduleStatuses } from "@/presentation";
+import { useMe } from "@/presentation/hooks";
+import { useLoadPatient, useLoadAllScheduleStatuses, useConfigurationsSystem } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -58,7 +58,7 @@ export default function LaunchExam({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const {unit} = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const replaceText = (str, setState) => {
     setLoading(true);
@@ -68,7 +68,7 @@ export default function LaunchExam({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-        unit.system.type === "Vet" ? patient.data?.tutor?.id : patient.data?.id,
+        type === "Vet" ? patient.data?.tutor?.id : patient.data?.id,
         dependentId: patient.data?.id,
       })
       .then((res) => setState(res.data.result))

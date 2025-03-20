@@ -14,7 +14,7 @@ import {
 import moment from "moment";
 
 import { RemoteTutor } from "@/data";
-import { useLoadTutor, useSystem } from "@/presentation";
+import { useLoadTutor, useConfigurationsSystem } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 import { Pets } from "../pets";
@@ -38,7 +38,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
   const { createToast } = useToast();
 
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   defineRequireFields(origin, ["CEP*"]);
 
@@ -93,7 +93,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
           <h2 className="font-22-bold">
             {tutorId
               ? `Editar - ${data?.name}`
-              : unit?.system?.type === "Vet"
+              : type === "Vet"
               ? "Novo Tutor"
               : "Novo Paciente"}
           </h2>
@@ -152,7 +152,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <Input name="tags" label="Tag / Observação" />
 
-                {unit?.system?.type !== "Vet" && (
+                {type !== "Vet" && (
                   <>
                     <InputSwitch label="Diabetes" name="diabetes" />
 
@@ -208,7 +208,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             ]}
           />
 
-          {unit.system.type === "Vet" && <Pets tutor={data} {...props} handleSuccess={handleSuccess} />}
+          {type === "Vet" && <Pets tutor={data} {...props} handleSuccess={handleSuccess} />}
         </FormHandler>
       </S.CreateTutorForm>
     </Error>

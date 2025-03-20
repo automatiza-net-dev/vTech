@@ -1,14 +1,14 @@
 import { Select } from "infinity-forge";
 import { useFormikContext } from "formik";
 
-import { useLoadAllPatientTutor, useSystem } from "@/presentation";
+import { useLoadAllPatientTutor, useConfigurationsSystem } from "@/presentation";
 
 export function SelectHolder() {
   const { setFieldValue, initialValues } = useFormikContext<any>();
 
   const { data } = useLoadAllPatientTutor({});
 
-  const { unit } = useSystem();
+  const {type} = useConfigurationsSystem();
 
   const initialValue = [
     {
@@ -22,8 +22,8 @@ export function SelectHolder() {
 
   return (
     <Select
-      label={unit?.system?.type === "Vet" ? "Tutor" : "Cliente"}
-      name={unit?.system?.type === "Vet" ? "holderId" : "patientId"}
+      label={type === "Vet" ? "Tutor" : "Cliente"}
+      name={type === "Vet" ? "holderId" : "patientId"}
       options={
         initialValue ||
         data?.map((tutor) => ({
@@ -35,7 +35,7 @@ export function SelectHolder() {
       disabled={(data && data.length === 0) || !!initialValue}
       placeholder="Cliente"
       onChangeInput={() => {
-        if (unit?.system?.type === "Vet") {
+        if (type === "Vet") {
           setFieldValue("patientId", []);
           setFieldValue("scheduleServiceTypeId", []);
         }

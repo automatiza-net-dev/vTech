@@ -46,7 +46,7 @@ export function Tutor({
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <PageWrapper
-      title={user?.unit?.system?.type === "Vet" ? "Tutores" : "Clientes"}
+      title={user?.type === "Vet" ? "Tutores" : "Clientes"}
     >
       <div>
         <div className="uk-flex uk-margin-bottom uk-flex-between uk-width-1-1">
@@ -56,7 +56,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Nome ${
-                    user?.unit?.system?.type === "Vet"
+                    user?.type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
@@ -72,7 +72,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Telefone ${
-                    user?.unit?.system?.type === "Vet"
+                    user?.type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
@@ -81,7 +81,7 @@ export function Tutor({
                   }
                 />
               </Input>
-              {user?.unit?.system?.type === "Vet" && (
+              {user?.type === "Vet" && (
                 <Input>
                   <input
                     type="search"
@@ -99,7 +99,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`CPF ${
-                    user?.unit?.system?.type === "Vet"
+                    user?.type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
