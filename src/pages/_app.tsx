@@ -11,6 +11,7 @@ import {
   InfinityForgeProviders,
   useAuthAdmin,
   useQuery,
+  queryStore,
 } from "infinity-forge";
 
 import { ConfigProvider } from "antd";
@@ -46,6 +47,8 @@ import { PermissionsProvider } from "@/presentation/context/permissions";
 
 const queryClient = new QueryClient();
 
+const queryStoreClient = queryStore();
+
 export default function App({ Component, pageProps }) {
   const [menus, setMenus] = useState<any>(null);
 
@@ -61,6 +64,7 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
+          queryClient={queryStoreClient}
           atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{

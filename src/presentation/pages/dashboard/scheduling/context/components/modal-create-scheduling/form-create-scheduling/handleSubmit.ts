@@ -1,5 +1,5 @@
 import moment from "moment";
-import { BadRequestError, useToast, useQueryClient } from "infinity-forge";
+import { BadRequestError, useQueryClient, useToast } from "infinity-forge";
 
 import { RemoteCRM, RemoteSchedule } from "@/data";
 import { CrmTypes, container, patientTypes } from "@/container";
@@ -19,6 +19,8 @@ export function useSubmitSchedule() {
     createSchedulingArgs,
     setCreateSchedulingArgs,
   } = useScheduling((state) => state);
+
+  const refetch = useQueryClient(state => state.refetch)
 
   const scheduleUsers = useLoadAllSchedulesUser({
     to: DateToYYYYMMDD(selectedDate || new Date()) || "",
@@ -176,7 +178,7 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-        scheduleUsers.mutate();
+        refetch("RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(data.date), { mode: "include" })
 
         return;
       }
