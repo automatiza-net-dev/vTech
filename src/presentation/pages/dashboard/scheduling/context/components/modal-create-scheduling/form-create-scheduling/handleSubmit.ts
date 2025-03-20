@@ -178,11 +178,14 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-        (selectedDate &&
-          DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) &&
-          refetch("RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(selectedDate), {
-            mode: "include",
-          });
+          if (selectedDate && DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) {
+            refetch(
+              "RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(selectedDate),
+              {
+                mode: "include",
+              }
+            );
+          }
 
         return;
       }
