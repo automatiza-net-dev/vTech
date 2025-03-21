@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.0.0)
       infinity-forge:
-        specifier: ^7.7.7
-        version: 7.7.7(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+        specifier: ^7.7.8
+        version: 7.7.8(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
       inversify:
         specifier: ^6.0.2
         version: 6.2.2(reflect-metadata@0.2.2)
@@ -1875,8 +1875,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@7.7.7:
-    resolution: {integrity: sha512-5dQs+wvDNNEz1835bnp98HCz/vn+merrIRJ79ToCfg6YIR4aUTbMDzeaTyFrld/w+v1x+TKnJNj6uql4FH6q9Q==}
+  infinity-forge@7.7.8:
+    resolution: {integrity: sha512-nymNCP/IxHbavTYDUpKw6VDLQejPcscbcLzLA7kd1iH+T5IuK1nUQbXTAKUea+ugFTCV6uVDMstePkQAqMtjzQ==}
     peerDependencies:
       react: '>=16'
 
@@ -5300,7 +5300,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@7.7.7(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+  infinity-forge@7.7.8(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
