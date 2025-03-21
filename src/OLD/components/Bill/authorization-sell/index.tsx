@@ -121,6 +121,7 @@ export function AuthorizationSell(
           <FormHandler
             debugMode
             onSucess={async (formData) => {
+              console.log(formData)
               if (props.cancelled === "F") {
                 await onSubmitAprroveCancelF({ formData, props });
               }
