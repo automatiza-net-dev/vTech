@@ -137,7 +137,7 @@ export function AuthorizationSell(
                 });
               }
 
-              if (!props.cancelled) {
+              if (!props.cancelled || props?.cancelled === "N") {
                 await onSubmitCancel({ formData, props });
               }
 
