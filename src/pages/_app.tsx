@@ -56,6 +56,10 @@ export default function App({ Component, pageProps }) {
 
   const { configurations } = useConfigurationsSystemConfigurations();
 
+  if(!configurations) {
+    return <></>
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigurationsSystemProvider configurations={configurations}>
@@ -247,17 +251,7 @@ function GambiarraTemporaria({ setMenus }) {
 }
 
 function useConfigurationsSystemConfigurations() {
-  const [configurations, setConfigurations] = useState<ConfigurationSystem>({
-    colors: "",
-    home_image_url: "",
-    id: 0,
-    logo_url: "",
-    name: "",
-    primary_color: "",
-    secondary_color: "",
-    type: "",
-    url: "",
-  });
+  const [configurations, setConfigurations] = useState<ConfigurationSystem | null>(null);
 
   const ref = useRef(0);
 
@@ -273,9 +267,6 @@ function useConfigurationsSystemConfigurations() {
               url: `systems/identification?url=${systemUrl}`,
               method: "post",
             },
-            window.location.origin.includes("dev")
-              ? "https://vetech-api-dev.automatiza.net/"
-              : "https://vetech-api.automatiza.net/"
           );
 
           setConfigurations(response);
