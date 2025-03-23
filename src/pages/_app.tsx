@@ -1,21 +1,28 @@
-import 'reflect-metadata'
+import "reflect-metadata";
 
-import React, { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/router'
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 
-import Head from 'next/head'
+import Head from "next/head";
 
-import { api, BadRequestError, InfinityForgeProviders, useAuthAdmin, useQuery, queryStore } from 'infinity-forge'
+import {
+  api,
+  BadRequestError,
+  InfinityForgeProviders,
+  useAuthAdmin,
+  useQuery,
+  queryStore,
+} from "infinity-forge";
 
-import { ConfigProvider } from 'antd'
-import ptBR from 'antd/lib/locale/pt_BR'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { ConfigProvider } from "antd";
+import ptBR from "antd/lib/locale/pt_BR";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
-import GlobalStyles from '@/OLD/styles/global'
-import { AppProvider } from '@/OLD/context/appContext'
-import { SignIn } from '@/OLD/components/Authentication/SignIn'
+import GlobalStyles from "@/OLD/styles/global";
+import { AppProvider } from "@/OLD/context/appContext";
+import { SignIn } from "@/OLD/components/Authentication/SignIn";
 
 import {
   Forbidden,
@@ -26,55 +33,50 @@ import {
   SchedulingContextProvider,
   ConfigurationsSystemProvider,
   ConfigurationSystem,
-} from '@/presentation'
-import { RemoteLoadUserDashboard, RemoteMenu } from '@/data'
-import { TypesAutomatiza, container } from '@/container'
+} from "@/presentation";
+import { RemoteLoadUserDashboard, RemoteMenu } from "@/data";
+import { TypesAutomatiza, container } from "@/container";
 
-import 'moment/locale/pt-br'
+import "moment/locale/pt-br";
 
-import 'antd/dist/antd.css'
-import '@/OLD/styles/uikit.css'
-import 'infinity-forge/dist/infinity-forge.css'
-import Link from 'next/link'
-import { PermissionsProvider } from '@/presentation/context/permissions'
+import "antd/dist/antd.css";
+import "@/OLD/styles/uikit.css";
+import "infinity-forge/dist/infinity-forge.css";
+import Link from "next/link";
+import { PermissionsProvider } from "@/presentation/context/permissions";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-const queryStoreClient = queryStore()
+const queryStoreClient = queryStore();
 
 export default function App({ Component, pageProps }) {
-  const [menus, setMenus] = useState<any>(null)
+  const [menus, setMenus] = useState<any>(null);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const { configurations } = useConfigurationsSystemConfigurations()
-
-  console.log({ configurations })
-
-  if (!configurations) {
-    return <></>
-  }
+  const { configurations } = useConfigurationsSystemConfigurations();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
           queryClient={queryStoreClient}
-          atena={{ disableAuth: true, roles: ['aa'] } as any}
-          i18n={{ roleToEditLanguage: ['aa'], disableEditMode: true } as any}
+          atena={{ disableAuth: true, roles: ["aa"] } as any}
+          i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
             ForbiddenCompoent: Forbidden,
             roles: {
               user: {
                 signInConfig: { Component: SignIn },
                 onSignOut: (user: any) => {
-                  queryClient.clear()
-                  queryClient.removeQueries()
+                  queryClient.clear();
+                  queryClient.removeQueries();
 
-                  router.push('/')
+                  router.push("/");
 
                   if (user?.isThirdParty) {
-                    window.location.href = 'https://portal.liftonefranquias.com.br/'
+                    window.location.href =
+                      "https://portal.liftonefranquias.com.br/";
                   }
                 },
               },
@@ -83,10 +85,10 @@ export default function App({ Component, pageProps }) {
                   Component: SignInAdmin,
                 },
                 onSignOut: () => {
-                  queryClient.clear()
-                  queryClient.removeQueries()
+                  queryClient.clear();
+                  queryClient.removeQueries();
 
-                  router.push('/')
+                  router.push("/");
                 },
               },
             },
@@ -100,33 +102,35 @@ export default function App({ Component, pageProps }) {
               getRole: async () => {
                 try {
                   const user = await container
-                    .get<RemoteLoadUserDashboard>(TypesAutomatiza.RemoteLoadUserDashboard)
-                    .load({})
+                    .get<RemoteLoadUserDashboard>(
+                      TypesAutomatiza.RemoteLoadUserDashboard
+                    )
+                    .load({});
 
                   if (!user?.user) {
                     throw new BadRequestError({
-                      message: 'Usuário com erro',
-                      code: '400',
-                    })
+                      message: "Usuário com erro",
+                      code: "400",
+                    });
                   }
 
                   const initialUserData = {
                     ...user,
-                    avatar: user.user?.profile_picture || '',
-                    emailAddress: user?.user?.email || '',
-                    firstName: user?.user?.name || '',
-                    id: (user as any)?.user?.id || '',
+                    avatar: user.user?.profile_picture || "",
+                    emailAddress: user?.user?.email || "",
+                    firstName: user?.user?.name || "",
+                    id: (user as any)?.user?.id || "",
                     imagem: user.user?.profile_picture,
                     isExternal: false,
-                    lastName: '',
-                  }
+                    lastName: "",
+                  };
 
                   return {
                     role: initialUserData?.user?.type,
                     user: initialUserData,
-                  }
+                  };
                 } catch (err) {
-                  return { role: '', user: null }
+                  return { role: "", user: null };
                 }
               },
             },
@@ -134,33 +138,35 @@ export default function App({ Component, pageProps }) {
               getRole: async () => {
                 try {
                   const user = await container
-                    .get<RemoteLoadUserDashboard>(TypesAutomatiza.RemoteLoadUserDashboard)
-                    .load({})
+                    .get<RemoteLoadUserDashboard>(
+                      TypesAutomatiza.RemoteLoadUserDashboard
+                    )
+                    .load({});
 
                   if (!user?.user) {
                     throw new BadRequestError({
-                      message: 'Usuário com erro',
-                      code: '400',
-                    })
+                      message: "Usuário com erro",
+                      code: "400",
+                    });
                   }
 
                   const initialUserData = {
                     ...user,
-                    avatar: user.user?.profile_picture || '',
-                    emailAddress: user?.user?.email || '',
-                    firstName: user?.user?.name || '',
-                    id: (user as any)?.user?.id || '',
+                    avatar: user.user?.profile_picture || "",
+                    emailAddress: user?.user?.email || "",
+                    firstName: user?.user?.name || "",
+                    id: (user as any)?.user?.id || "",
                     imagem: user.user?.profile_picture,
                     isExternal: false,
-                    lastName: '',
-                  }
+                    lastName: "",
+                  };
 
                   return {
                     role: initialUserData?.user?.type,
                     user: initialUserData,
-                  }
+                  };
                 } catch (err) {
-                  return { role: '', user: null }
+                  return { role: "", user: null };
                 }
               },
             },
@@ -168,14 +174,14 @@ export default function App({ Component, pageProps }) {
           Configurations={{
             chat: false,
             menu: {
-              mode: 'CollapsedMenu',
+              mode: "CollapsedMenu",
             },
             styles: { Button: ButtonInfinityForge },
             notification: {
               enable: true,
               CustomComponent: (props) => (
                 <Link href={props?.link}>
-                  <div className='top'>
+                  <div className="top">
                     <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
                     <span>{props?.message}</span>
                   </div>
@@ -184,13 +190,13 @@ export default function App({ Component, pageProps }) {
             },
           }}
           theme={{
-            black: '#000',
-            red: '#ef1717',
-            green: '#39b15d',
-            orange: '#f18805',
-            yellow: '#e1b400',
-            secondaryColor: 'red',
-            darkColor: '#2B2B2B',
+            black: "#000",
+            red: "#ef1717",
+            green: "#39b15d",
+            orange: "#f18805",
+            yellow: "#e1b400",
+            secondaryColor: "red",
+            darkColor: "#2B2B2B",
             primaryColor: configurations.primary_color,
           }}
         >
@@ -218,49 +224,65 @@ export default function App({ Component, pageProps }) {
         </InfinityForgeProviders>
       </ConfigurationsSystemProvider>
     </QueryClientProvider>
-  )
+  );
 }
 
 function GambiarraTemporaria({ setMenus }) {
-  const { roleUser } = useAuthAdmin()
+  const { roleUser } = useAuthAdmin();
 
   useQuery({
-    queryKey: ['menus', roleUser],
+    queryKey: ["menus", roleUser],
     queryFn: async () => {
-      return container.get<RemoteMenu>(TypesAutomatiza.RemoteMenuAutomatiza).loadAll({})
+      return container
+        .get<RemoteMenu>(TypesAutomatiza.RemoteMenuAutomatiza)
+        .loadAll({});
     },
     enableCache: true,
     onSuccess: (data) => {
-      setMenus(data)
+      setMenus(data);
     },
-  })
+  });
 
-  return <></>
+  return <></>;
 }
 
 function useConfigurationsSystemConfigurations() {
-  const [configurations, setConfigurations] = useState<ConfigurationSystem | null>(null)
+  const [configurations, setConfigurations] = useState<ConfigurationSystem>({
+    colors: "",
+    home_image_url: "",
+    id: 0,
+    logo_url: "",
+    name: "",
+    primary_color: "",
+    secondary_color: "",
+    type: "",
+    url: "",
+  });
 
-  const ref = useRef(0)
+  const ref = useRef(0);
 
   useEffect(() => {
     if (ref.current === 0) {
-      ref.current = 1
-
-      ;(async () => {
-        const systemUrl = new URL(window.location.origin).origin
+      ref.current = 1;
+      (async () => {
+        const systemUrl = new URL(window.location.origin).origin;
 
         setTimeout(async () => {
-          const response = await api({
-            url: `systems/identification?url=${systemUrl}`,
-            method: 'post',
-          })
+          const response = await api(
+            {
+              url: `systems/identification?url=${systemUrl}`,
+              method: "post",
+            },
+            window.location.origin.includes("dev")
+              ? "https://vetech-api-dev.automatiza.net/"
+              : "https://vetech-api.automatiza.net/"
+          );
 
-          setConfigurations(response)
-        }, 1000)
-      })()
+          setConfigurations(response);
+        }, 1000);
+      })();
     }
-  }, [])
+  }, []);
 
-  return { configurations }
+  return { configurations };
 }
