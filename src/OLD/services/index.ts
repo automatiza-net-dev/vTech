@@ -5,7 +5,7 @@ import { Storage } from "infinity-forge";
 
 const api = () => {
   const instance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API,
+    baseURL: process.env.api?.slice(0, -1),
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers":
