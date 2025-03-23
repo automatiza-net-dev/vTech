@@ -49,6 +49,8 @@ export default function App({ Component, pageProps }) {
 
   const { configurations } = useConfigurationsSystemConfigurations()
 
+  console.log({ configurations })
+
   if (!configurations) {
     return <></>
   }
