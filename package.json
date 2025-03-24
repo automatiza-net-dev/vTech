@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "dev": "next dev -p 3059",
+    "dev": "next dev -p 3060",
     "build": "next build",
     "build:debug": "next build --debug",
     "start": "next start -p 3060",
@@ -45,6 +45,7 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.6",
     "html-react-parser": "^3.0.8",
+    "infinity-forge": "^7.8.9",
     "inversify": "^6.0.2",
     "moment": "^2.29.1",
     "next": "^15.1.6",
