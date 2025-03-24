@@ -8,7 +8,7 @@ import { currencyFormatter } from "..";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { useCompleteBudget, useConfirmBudget } from "@/OLD/hooks/useBudgets";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
-import { useLoadAllPatientTutor } from "@/presentation/hooks";
+import { useLoadAllPatientTutor, useConfigurationsSystem } from "@/presentation/hooks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
@@ -91,6 +91,8 @@ export default function CompleteBudget({ budget, setReload = false }) {
     budget.id,
     visible
   );
+
+  const {type} = useConfigurationsSystem()
 
   const [formData, setFormData] = React.useState({
     id: budget?.id,
@@ -334,7 +336,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
               </span>
             )}
           </div>
-          {process.env.client !== "liftone" && (
+          {type === "Vet" && (
             <div className="uk-flex uk-flex-column uk-width-1-1">
               <span className="uk-text-small">Paciente</span>
               <span className="uk-text-default">

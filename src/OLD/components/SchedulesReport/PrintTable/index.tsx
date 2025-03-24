@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
 import { Button, Empty } from "antd";
-import { PrintHeader } from "@/presentation";
+import { PrintHeader, useConfigurationsSystem } from "@/presentation";
 
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
@@ -12,6 +12,8 @@ import { reportsService } from "@/OLD/services/reports.service";
 
 function PrintTable({ schedules, filters, setReload, setFilters }) {
   const componentRef = useRef();
+
+  const { type } = useConfigurationsSystem();
 
   const handleExport = async (data) => {
     const keys = Object.keys(data);
@@ -30,7 +32,7 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
       .then((res) => res.data);
 
     const formatted =
-      process.env.client !== "liftone"
+      type === "Vet"
         ? response?.map((item) => ({
             unidade_de_negocios: item?.identification,
             estado: item?.unit_state,
@@ -165,13 +167,13 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
             <div>cancelado_em</div>
             <div>tem_retorno</div>
             <div>e_um_retorno</div>
-            {process.env.client !== "liftone" && <div>nome_pet</div>}
-            {process.env.client !== "liftone" && <div>rg_paciente</div>}
+            {type === "Vet" && <div>nome_pet</div>}
+            {type === "Vet" && <div>rg_paciente</div>}
             <div>
-              {process.env.client !== "liftone" ? "tutor_resp" : "cliente_resp"}
+              {type === "Vet" ? "tutor_resp" : "cliente_resp"}
             </div>
             <div>
-              {process.env.client !== "liftone"
+              {type === "Vet"
                 ? "cpf_cnpj_resp"
                 : "cpf_cnpj_cliente"}
             </div>
@@ -199,10 +201,10 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
                   <div>{item?.data_cancelamento}</div>
                   <div>{item?.tem_retorno}</div>
                   <div>{item?.e_retorno}</div>
-                  {process.env.client !== "liftone" && (
+                  {type === "Vet" && (
                     <div>{item?.nome_paciente}</div>
                   )}
-                  {process.env.client !== "liftone" && (
+                  {type === "Vet" && (
                     <div>{item?.rg_paciente}</div>
                   )}
                   <div>{item?.nome_tutor}</div>

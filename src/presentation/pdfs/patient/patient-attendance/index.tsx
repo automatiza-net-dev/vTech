@@ -1,8 +1,8 @@
 import moment from "moment";
 import { useAuthAdmin } from "infinity-forge";
 
-import { TimeLine, User } from "@/domain";
-import { useLoadPatient } from "@/presentation";
+import { TimeLine } from "@/domain";
+import { useConfigurationsSystem, useLoadPatient } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -12,12 +12,14 @@ export function PdfPatientAttendance(
   const { user } = useAuthAdmin();
   const { data } = useLoadPatient();
 
+  const { type } = useConfigurationsSystem();
+
   return (
     <S.PdfPatientAttendance>
       <div className="row">
         <span className="font-14-regular">
           <strong>
-            {process.env.client === "sancla" ? "Pet:" : "Paciente:"}:
+            {type === "Vet" ? "Pet:" : "Paciente:"}:
           </strong>
           <span>{data?.name || "-"}</span>
         </span>
@@ -38,7 +40,7 @@ export function PdfPatientAttendance(
       </div>
 
       <div className="row">
-        {process.env.client === "sancla" && (
+        {type === "Vet" && (
           <span className="font-14-regular">
             <strong>Espécie:</strong>
             <span>{data?.specie || "-"}</span>
@@ -51,7 +53,7 @@ export function PdfPatientAttendance(
       </div>
 
       <div className="row">
-        {process.env.client === "sancla" && (
+        {type === "Vet" && (
           <span className="font-14-regular">
             <strong>Raça:</strong>
             <span>{data?.race || "-"}</span>
@@ -63,7 +65,7 @@ export function PdfPatientAttendance(
         </span>
       </div>
 
-      {process.env.client === "sancla" && (
+      {type === "Vet" && (
         <div className="row">
           <span className="font-14-regular">
             <strong>Pelagem:</strong>

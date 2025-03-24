@@ -6,6 +6,7 @@ import { userService } from "@/OLD/services/user.service";
 import ConfirmScreen from "@/OLD/components/mini-components/ConfirmScreen";
 
 import { Container } from "./styles";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function ResetPassword({ type = "reset" }) {
   const [send, setSend] = useState(false);
@@ -15,6 +16,7 @@ export function ResetPassword({ type = "reset" }) {
   });
 
   const { createToast } = useToast();
+  const { logo_url } = useConfigurationsSystem();
 
   const router = useRouter();
 
@@ -82,12 +84,7 @@ export function ResetPassword({ type = "reset" }) {
     <Container className="uk-padding-large">
       <img src="/svg/dog_walking.svg" width="60%" />
       <div className="form-side">
-        <img
-          src={
-            process.env.NEXT_PUBLIC_API +
-            `/assets/logo-${process.env.client}.png`
-          }
-        />
+        <img src={logo_url} />
         {!send ? (
           <>
             <h3>Crie uma senha nova</h3>

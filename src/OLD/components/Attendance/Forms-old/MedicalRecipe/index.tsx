@@ -20,6 +20,7 @@ import {
 } from "@/presentation/hooks";
 
 import FormChild from "./FormChild";
+import { useConfigurationsSystem } from "@/presentation";
 
 function AddMedicalRecipe({
   modal,
@@ -40,7 +41,7 @@ function AddMedicalRecipe({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const systemName = process.env.clientName;
+  const {type} = useConfigurationsSystem()
 
   const queryClient = useQueryClient();
 
@@ -52,7 +53,7 @@ function AddMedicalRecipe({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-          systemName !== "LiftOne"
+        type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
         dependentId: patient?.data?.id,

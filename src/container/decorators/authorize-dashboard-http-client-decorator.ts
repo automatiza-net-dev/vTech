@@ -20,7 +20,6 @@ export class AuthorizeDashboardHttpClientDecorator
       headers: Object.assign(data.headers || {}, {
         Authorization: `Bearer ${storageToken?.value || ""}`,
         flag: "user",
-        "X-System": process.env.clientName,
       }),
     });
 

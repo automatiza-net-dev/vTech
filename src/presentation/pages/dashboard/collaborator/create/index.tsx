@@ -13,18 +13,17 @@ import {
   removeDigits,
   InputPassword,
   validatePhone,
-  useAuthAdmin,
 } from "infinity-forge";
 import * as yup from "yup";
 
-import { PermissionItem } from "@/presentation";
+import { PermissionItem, useConfigurationsSystem } from "@/presentation";
 
 export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
   const [open, setOpen] = useState(false);
 
   const { createToast } = useToast();
 
-  const { user } = useAuthAdmin()
+  const {id, name} = useConfigurationsSystem()
 
   const { isFetching, data } = useQuery({
     queryKey: ["Roles"],
@@ -60,9 +59,9 @@ export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
               method: "post",
               body: {
                 ...data, 
-                systemId: user?.unit?.system?.id,
+                systemId: id,
                 phone: removeDigits(data.phone),
-                systemName: process.env.clientName,
+                systemName: name,
               },
             });
 

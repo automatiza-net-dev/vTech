@@ -41,8 +41,7 @@ const ExistentUser = memo(function ExistentUser(props) {
       >
         <div className="header-section custom-margin-top">
           <h2>
-            Ola {props.email}, bem vindo ao sistema de gestão{" "}
-            {process.env.clientName}.
+            Ola {props.email}, bem vindo ao sistema de gestão.
           </h2>
           <h2>
             Você recebeu um convite de {props?.invitedBy?.name} para ter acesso

@@ -74,8 +74,7 @@ export default function NewUser(props: Invite) {
       >
         <section className="header-section">
           <h2>
-            Olá, {props?.email}, bem vindo ao sistema de gestão{" "}
-            {process.env.clientName}
+            Olá, {props?.email}, bem vindo ao sistema de gestão
           </h2>
           <h2>
             Você recebeu um convite de {props?.invitedBy?.name} para ter acesso
