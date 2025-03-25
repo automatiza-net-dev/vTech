@@ -1,8 +1,6 @@
-// @ts-nocheck
-// Core
+//@ts-nocheck
 import { memo, useCallback, useState } from "react";
 
-// Services
 import { productService } from "@/OLD/services/product.service";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 import { taxationGroupsService } from "@/OLD/services/taxation-group.service";
@@ -10,7 +8,8 @@ import { unitsService } from "@/OLD/services/units.service";
 import { variationGroupService } from "@/OLD/services/variation-group.service";
 import Masks from "@/OLD/utils/masks";
 
-// Components
+import styled from "styled-components";
+
 import {
   Input,
   InputNumber,
@@ -24,16 +23,16 @@ import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { Container } from "../styles";
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, Icon, PageWrapper, useToast } from "infinity-forge";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
-const listToTree = (arr = []) => {
-  const map = {};
-  let node;
-  const result = [];
+const listToTree = (arr = [] as any[]) => {
+  const map: any = {};
+  let node: any;
+  const result: any = [];
 
   for (let i = 0; i < arr.length; i += 1) {
     map[arr[i].id] = i;
@@ -52,7 +51,7 @@ const listToTree = (arr = []) => {
   return result;
 };
 
-const CreateProduct = memo(function CreateProduct({ setVisible }) {
+const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
   const { push, back } = useRouter();
   const [data, setData] = useState({
     type: "product",
@@ -92,8 +91,6 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
     ],
     () => unitsService.listUnits("PRODUCT")
   );
-
-  sortItems(unitsData?.data, "name");
 
   const verifyFields = (fields) => {
     if (fields.includes("subgroupId")) {
@@ -395,7 +392,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
                       <Option value={false}>Não</Option>
                     </Select>
                   </div>
-                  
+
                   {data?.fractioned && (
                     <>
                       <div className="uk-width-1-4">
@@ -447,21 +444,21 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
                         flexDirection: "column",
                       }}
                     >
+
                       <label>* Grupo de imposto</label>
                       <Select
                         className="uk-width-1-1"
                         required
-                        value={data?.taxationGroupId}
-                        onChange={(value) =>
-                          setData({ ...data, taxationGroupId: value })
+                        value={String(data?.taxationGroupId)}
+                        onChange={(value) => {
+                          console.log(value);
+                          setData((prev) => ({ ...prev, taxationGroupId: String(value) }))
                         }
-                      >
-                        {taxationGroups?.map((item) => (
-                          <Select.Option key={item.id} value={item.id}>
-                            {item.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
+         
+                        }
+                        options={taxationGroups.map(item => ({ label: item.name, value: item.id }))}
+                      />
+                     
                     </Form.Item>
                   </div>
 
@@ -593,7 +590,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
                       <Input.TextArea
                         value={data?.features}
                         onChange={(e) =>
-                          setData({ ...data, features: e.target.value })
+                          setData((prev) => ({ ...prev, features: e.target.value }))
                         }
                       />
                     </Form.Item>
@@ -634,104 +631,112 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
 
                 <hr />
 
-                <div className="uk-flex">
-                  <Button onClick={addVariation} text="Adicionar variação" />
-                </div>
+                <CSS>
+                  <div className="uk-flex">
+                    <Button onClick={addVariation} text="Adicionar variação" />
+                  </div>
 
-                {data?.variations.map((item, index) => (
-                  <div
-                    key={`variation-div-${index}`}
-                    className={"uk-margin-top"}
-                  >
-                    <div className="uk-flex uk-flex-inline">
-                      <h5 className="uk-padding-small uk-padding-remove-vertical uk-padding-remove-left">
-                        Variação {index + 1}
-                      </h5>
-                      <Button
-                        onClick={() => removeVariation(item.ref)}
-                        disabled={data.variations.length === 1}
-                        text="Remover"
-                      />
-                    </div>
-
-                    <div className="uk-margin-top">
-                      <div className="uk-flex uk-flex-between">
-                        <div className="uk-width-1-1">
-                          <Form.Item
-                            labelAlign="left"
-                            style={{
-                              width: "100%",
-                              display: "flex",
-                              flexDirection: "column",
-                            }}
-                          >
-                            <label>Código de Barras</label>
-                            <Input
-                              maxLength={15}
-                              value={item.barcode}
-                              onChange={(e) => {
-                                const variations = data.variations;
-                                variations[index].barcode = e.target.value;
-                                setData({ ...data, variations });
-                              }}
-                            />
-                          </Form.Item>
-                        </div>
+                      <div className="list">
+                      {data?.variations.map((item, index) => (
+                    <div
+                      key={`variation-div-${index}`}
+                      className={"uk-margin-top"}
+                    >
+                      <div className="uk-flex uk-flex-inline" style={{ justifyContent: "space-between", width: "100%" }}>
+                        <h5 className="uk-padding-small uk-padding-remove-vertical uk-padding-remove-left">
+                          Variação {index + 1}
+                        </h5>
+                        <button 
+                        style={{ border: 0, background: "transparent", border: 0 }}
+                          onClick={() => removeVariation(item.ref)}
+                          disabled={data.variations.length === 1}
+                          className="remove"
+                        >
+                          <Icon name="IconDelete" color="red" />
+                          </button>
                       </div>
-                    </div>
 
-                    {data?.variationGroup && (
                       <div className="uk-margin-top">
                         <div className="uk-flex uk-flex-between">
-                          {variationGroupsData
-                            ?.find((g) => g.id === data.variationGroup)
-                            .variations.map((variation, vIndex) => (
-                              <div
-                                key={`variation-${variation.id}`}
-                                className="uk-width-1-1 uk-padding uk-padding-remove-vertical uk-padding-remove-left"
-                              >
-                                <Form.Item
-                                  label={variation.description}
-                                  required
-                                  labelAlign="left"
-                                  style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <Select
-                                    className="uk-width-1-1"
-                                    required
-                                    onChange={(value) => {
-                                      const variations = data.variations;
-
-                                      variations[index]["variation_options"][
-                                        vIndex
-                                      ] = value;
-
-                                      setData({ ...data, variations });
-                                    }}
-                                  >
-                                    {variation.options.map((option) => (
-                                      <Select.Option
-                                        key={`variation-option-${option.id}`}
-                                        value={option.id}
-                                      >
-                                        {option.description}
-                                      </Select.Option>
-                                    ))}
-                                  </Select>
-                                </Form.Item>
-                              </div>
-                            ))}
+                          <div className="uk-width-1-1">
+                            <Form.Item
+                              labelAlign="left"
+                              style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <label>Código de Barras</label>
+                              <Input
+                                maxLength={15}
+                                value={item.barcode}
+                                onChange={(e) => {
+                                  const variations = data.variations;
+                                  variations[index].barcode = e.target.value;
+                                  setData({ ...data, variations });
+                                }}
+                              />
+                            </Form.Item>
+                          </div>
                         </div>
                       </div>
-                    )}
 
-                    <hr />
-                  </div>
-                ))}
+                      {data?.variationGroup && (
+                        <div className="uk-margin-top">
+                          <div className="">
+                            {variationGroupsData
+                              ?.find((g) => g.id === data.variationGroup)
+                              .variations.map((variation, vIndex) => (
+                                <div
+                                  key={`variation-${variation.id}`}
+                                  className="uk-width-1-1 uk-padding uk-padding-remove-vertical uk-padding-remove-left"
+                                >
+                                  <Form.Item
+                                    label={variation.description}
+                                    required
+                                    labelAlign="left"
+                                    style={{
+                                      width: "100%",
+                                      display: "flex",
+                                      flexDirection: "column",
+                                    }}
+                                  >
+                                    <Select
+                                      className="uk-width-1-1"
+                                      required
+                                      onChange={(value) => {
+                                        const variations = data.variations;
+
+                                        variations[index]["variation_options"][
+                                          vIndex
+                                        ] = value;
+
+                                        setData({ ...data, variations });
+                                      }}
+                                    >
+                                      {variation.options.map((option) => (
+                                        <Select.Option
+                                          key={`variation-option-${option.id}`}
+                                          value={option.id}
+                                        >
+                                          {option.description}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <hr />
+                    </div>
+                  ))}
+                      </div>
+               
+                </CSS>
               </>
             )}
 
@@ -1025,3 +1030,26 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
 });
 
 export default CreateProduct;
+
+const CSS = styled("div")`
+  h5 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+
+    > div {
+      border: 1px solid #ccc;
+      padding: 15px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+`;
