@@ -395,6 +395,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }) {
                       <Option value={false}>Não</Option>
                     </Select>
                   </div>
+                  
                   {data?.fractioned && (
                     <>
                       <div className="uk-width-1-4">
