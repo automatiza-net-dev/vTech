@@ -12,7 +12,7 @@ export function CreateOdontogram() {
     <S.CreateOdontogram>
       <Departaments />
 
-     <div className="content_create">
+     {/* <div className="content_create">
         <Services />
 
         <div>
@@ -20,7 +20,7 @@ export function CreateOdontogram() {
 
           <ServicesSelected />
         </div>
-      </div> 
+      </div>  */}
     </S.CreateOdontogram>
   );
 }

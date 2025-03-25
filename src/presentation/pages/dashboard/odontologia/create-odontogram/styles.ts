@@ -8,27 +8,7 @@ export const CreateOdontogram = styled.div`
   gap: 20px;
   padding: 20px;
 
-  .departament-selection {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 150px;
 
-    button {
-      width: 100%;
-      box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 10px 0px;
-      border: 1px solid transparent;
-      transition: 0.3s;
-
-      img {
-        width: 100%;
-      }
-
-      &:hover {
-        border: 1px solid ${(props) => props.theme.primaryColor};
-      }
-    }
-  }
 
   .services-container {
     display: flex;
@@ -74,19 +54,7 @@ export const CreateOdontogram = styled.div`
     }
   }
 
-  .button-select-departament {
-    width: 120px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
 
-  .button-select-departament img {
-    width: 100%;
-    height: 80px;
-    object-fit: contain;
-  }
 
   .items-container,
   .services-container {
