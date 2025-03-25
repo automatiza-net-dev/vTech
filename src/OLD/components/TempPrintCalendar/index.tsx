@@ -7,14 +7,17 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 import { Container } from "./styles";
 import PrintTable from "./PrintTable";
 import { Button } from "infinity-forge";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function PrintSchedule({ data, date }) {
+
+  const {name} = useConfigurationsSystem()
   
   const componentRef = useRef();
   const imprimir = useReactToPrint({ contentRef:componentRef  })
   
   return (
-    <Container host={process.env.clientName}>
+    <Container host={name}>
      <Button text="Imprimir" onClick={() => imprimir()}>Imprimir</Button>
 
       <div style={{ display: "none" }}>

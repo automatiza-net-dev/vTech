@@ -6,7 +6,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Button, Empty } from "antd";
 import { Container, RowBox } from "./styles";
-import { PrintHeader } from "@/presentation";
+import { PrintHeader, useConfigurationsSystem } from "@/presentation";
 
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -18,93 +18,75 @@ function PrintTable({ data = [], loading }) {
 
   const componentRef = useRef();
 
+  const { type } = useConfigurationsSystem();
+
   const handleExport = () => {
-    const formatted =
-      process.env.client !== "liftone"
-        ? data?.map((item) => ({
-            unidade_de_negocios: item?.unit?.identification,
-            cidade: item?.unit.city,
-            uf: item?.unit?.state,
-            data_venda: item?.billDate
-              ? moment(item?.billDate).format("DD/MM/YYYY")
-              : "-",
-            hora_venda: item?.billDate
-              ? moment(item?.billDate).format("HH:mm")
-              : "-",
-            codigo_venda: item?.tag,
-            valor_servicos: item?.serviceValue,
-            valor_produtos: item?.productValue,
-            valor_total: item?.totalValue,
-            valor_pago: item?.paidValue,
-            valor_aberto: item?.missingPaymentValue,
-            data_cadastro_cliente: item?.client?.createdAt
-              ? moment(item?.client?.createdAt).format("DD/MM/YYYY")
-              : "-",
-            nome_cliente: item?.client?.name,
-            cpf_cnpj: item?.client?.document,
-            celular_cliente: item?.client?.cellphone,
-            origem_cliente: item?.client?.origin,
-            profissao_cliente: item?.client?.profession,
-            cep_cliente: item?.client?.postalCode,
-            endereco_cliente: item?.client?.street,
-            numero_endereco_cliente: item?.client?.number,
-            complemento_endereco_cliente: item?.client?.complement,
-            bairro_endereco_cliente: item?.client?.district,
-            cidade_cliente: item?.client?.city,
-            uf_cliente: item?.client?.state,
-            dependente: item?.patient?.name,
-            dependente_rg: item?.patient?.tag,
-            data_nasc_dep: item?.patient?.birthDate
-              ? moment(item?.patient?.birthDate).format("DD/MM/YYYYY")
-              : "-",
-            genero_dep: item?.patient?.gender,
-            especie_dep: item?.patient?.race?.specie?.description,
-            raca_dep: item?.patient?.race?.description,
-            castrado_dep: item?.patient?.castrated ? "Sim" : "Não",
-            vacinado_dep: item?.vaccineOrigin || "-",
-            ultimo_peso: item?.patient?.weight,
-            obito_dep: item?.patient?.death ? "Sim" : "Não",
-            data_obito_dep: item?.patient?.deathDate
+    const formatted = data.map((item) => {
+     const payload = {
+        unidade_de_negocios: item?.unit?.identification,
+        cidade: item?.unit.city,
+        uf: item?.unit?.state,
+        data_venda: item?.billDate
+          ? moment(item?.billDate).format("DD/MM/YYYY")
+          : "-",
+        hora_venda: item?.billDate
+          ? moment(item?.billDate).format("HH:mm")
+          : "-",
+        codigo_venda: item?.tag,
+        valor_servicos: item?.serviceValue,
+        valor_produtos: item?.productValue,
+        valor_total: item?.totalValue,
+        valor_pago: item?.paidValue,
+        valor_aberto: item?.missingPaymentValue,
+        data_cadastro_cliente: item?.client?.createdAt
+          ? moment(item?.client?.createdAt).format("DD/MM/YYYY")
+          : "-",
+        nome_cliente: item?.client?.name,
+        cpf_cnpj: item?.client?.document,
+        celular_cliente: item?.client?.cellphone,
+        origem_cliente: item?.client?.origin,
+        profissao_cliente: item?.client?.profession,
+        cep_cliente: item?.client?.postalCode,
+        endereco_cliente: item?.client?.street,
+        numero_endereco_cliente: item?.client?.number,
+        complemento_endereco_cliente: item?.client?.complement,
+        bairro_endereco_cliente: item?.client?.district,
+        cidade_cliente: item?.client?.city,
+        uf_cliente: item?.client?.state,
+
+        //
+        dependente: type === "Vet" ? item?.patient?.name : undefined,
+        dependente_rg: type === "Vet" ? item?.patient?.tag : undefined,
+        data_nasc_dep:
+          type === "Vet"
+            ? item?.patient?.birthDate
+              ? moment(item?.patient?.birthDate).format("DD/MM/YYYY")
+              : "-"
+            : undefined,
+        genero_dep: type === "Vet" ? item?.patient?.gender : undefined,
+        especie_dep:
+          type === "Vet" ? item?.patient?.race?.specie?.description : undefined,
+        raca_dep: type === "Vet" ? item?.patient?.race?.description : undefined,
+        castrado_dep: type === "Vet" ? (item?.patient?.castrated ? "Sim" : "Não") : undefined,
+        vacinado_dep: type === "Vet" ? item?.vaccineOrigin || "-" : undefined,
+        ultimo_peso: type === "Vet" ? item?.patient?.weight : undefined,
+        obito_dep: type === "Vet" ? (item?.patient?.death ? "Sim" : "Não") : undefined,
+        data_obito_dep:
+          type === "Vet"
+            ? item?.patient?.deathDate
               ? moment(item?.patient?.deathDate).format("DD/MM/YYYY")
-              : "-",
-            data_venda_anterior: item?.pastSaleDate
-              ? moment(item?.pastSaleDate).format("DD/MM/YYYY")
-              : "-",
-            usuario_agendamento: item?.originUser || "-",
-          }))
-        : data?.map((item) => ({
-            unidade_de_negocios: item?.unit?.identification,
-            cidade: item?.unit.city,
-            uf: item?.unit?.state,
-            data_venda: item?.billDate
-              ? moment(item?.billDate).format("DD/MM/YYYY")
-              : "-",
-            codigo_venda: item?.tag,
-            valor_servicos: item?.serviceValue,
-            valor_produtos: item?.productValue,
-            valor_total: item?.totalValue,
-            valor_pago: item?.paidValue,
-            valor_aberto: item?.missingPaymentValue,
-            data_cadastro_cliente: item?.client?.createdAt
-              ? moment(item?.client?.createdAt).format("DD/MM/YYYY")
-              : "-",
-            nome_cliente: item?.client?.name,
-            cpf_cnpj: item?.client.document,
-            celular_cliente: item?.client?.cellphone,
-            origem_cliente: item?.client?.origin,
-            profissao_cliente: item?.client?.profession,
-            cep_cliente: item?.client?.postalCode,
-            endereco_cliente: item?.client?.street,
-            numero_endereco_cliente: item?.client?.number,
-            complemento_endereco_cliente: item?.client?.complement,
-            bairro_endereco_cliente: item?.client?.district,
-            cidade_cliente: item?.client?.city,
-            uf_cliente: item?.client?.state,
-            data_venda_anterior: item?.pastSaleDate
-              ? moment(item?.pastSaleDate).format("DD/MM/YYYY")
-              : "-",
-            usuario_agendamento: item?.originUser || "-",
-          }));
+              : "-"
+            : undefined,
+        //
+
+        data_venda_anterior: item?.pastSaleDate
+          ? moment(item?.pastSaleDate).format("DD/MM/YYYY")
+          : "-",
+        usuario_agendamento: item?.originUser || "-",
+      };
+
+      return Object.fromEntries(Object.entries(payload).filter(([_, v]) => v !== undefined));
+    });
 
     let wb = XLSX.utils.book_new(),
       ws = XLSX.utils.json_to_sheet(formatted);
@@ -141,7 +123,7 @@ function PrintTable({ data = [], loading }) {
             <div>cliente_resp</div>
             <div>telefone</div>
             <div>origem_cliente</div>
-            {process.env.client !== "liftone" && (
+            {type === "Vet" && (
               <>
                 <div>pet</div>
                 <div>rg_pet</div>
@@ -189,7 +171,7 @@ function PrintTable({ data = [], loading }) {
                   <div>{item?.client?.name}</div>
                   <div>{item?.client?.cellphone}</div>
                   <div>{item?.client?.origin}</div>
-                  {process.env.client === "liftone" && (
+                  {type !== "Vet" && (
                     <>
                       <div>{item?.patient?.name}</div>
                       <div>{item?.patient?.tag}</div>

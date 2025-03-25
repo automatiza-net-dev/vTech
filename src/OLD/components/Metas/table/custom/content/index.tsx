@@ -60,7 +60,6 @@ export function ModalContent({ mutateTable, ...props }) {
       >
         <div className="input-manager-box">
           <InputManager
-            gridColumns={1}
             name="ranges"
             loading={isLoading}
             inputPath="ranges"

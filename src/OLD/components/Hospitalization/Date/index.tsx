@@ -7,18 +7,9 @@ import moment from "moment";
 import styled from "styled-components";
 
 const Container = styled.div`
-  .LiftOne-button {
-    background-color: var(--lo-blue);
-    border-radius: 5px;
-  }
 
-  .Sanclá-button {
-    background-color: var(--orange);
-    border-radius: 5px;
-  }
-
-  .Vetech-button {
-    background-color: var(--blue);
+  .button-client {
+    background-color: ${props => props.theme.primaryColor};
     border-radius: 5px;
   }
 
@@ -45,7 +36,7 @@ export default function Date({
       }`}
     >
       <button
-        className={`uk-button bgDarkCyan bgCyanHover ${process.env.clientName}-button`}
+        className={`uk-button bgDarkCyan bgCyanHover button-client`}
         onClick={() =>
           setSelectedDate(moment(selectedDate).subtract(1, "days"))
         }
@@ -62,7 +53,7 @@ export default function Date({
         className="uk-text-center"
       />
       <button
-        className={`uk-button bgDarkCyan bgCyanHover ${process.env.clientName}-button`}
+        className={`uk-button bgDarkCyan bgCyanHover button-client`}
         onClick={() => setSelectedDate(moment(selectedDate).add(1, "days"))}
       >
         <Icon name="IconRightNavigation" color="#fff" />

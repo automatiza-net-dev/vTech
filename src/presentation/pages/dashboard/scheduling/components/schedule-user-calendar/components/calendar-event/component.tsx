@@ -55,6 +55,7 @@ export function CalendarEvent({
   };
 
   const convertedColor = convertColorToHex(color);
+  const holderName = event?.event?.holder?.name?.split(" ")?.[0]
 
   return (
     <>
@@ -101,7 +102,7 @@ export function CalendarEvent({
               className="fc-event-title fc-sticky"
               style={{ fontSize: "12px" }}
             >
-              {event?.event?.holder?.name?.split(" ")[0]} - {title}
+              {holderName ? holderName + " - " : ""} {title}
             </div>
 
             {showNameScheduleUser && (

@@ -7,12 +7,15 @@ import { FormCreatePatient } from "../../../../create";
 
 import * as S from "./styles";
 import { useState } from "react";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function ProfileImage({ src }: { src: string | null }) {
   const [imgError, setImgError] = useState(false);
 
+  const { type } = useConfigurationsSystem();
+
   const DEFAULT_AVATAR =
-    process?.env?.client === "sancla"
+    type === "Vet"
       ? "/images/pages/patient/pet.jpg"
       : "/images/pages/patient/humano.jpg";
 
@@ -41,6 +44,7 @@ export function Profile(props: Patient) {
     community,
   } = props;
 
+  const { type } = useConfigurationsSystem();
   const queryClient = useQueryClient();
 
   return (
@@ -77,7 +81,7 @@ export function Profile(props: Patient) {
               </span>
             )}
 
-            {process.env.clientName === "Sanclá" ? (
+            {type === "Vet" ? (
               <>
                 <span>
                   <a href={tutor?.cellphone ? `tel:${tutor?.cellphone}` : ""}>

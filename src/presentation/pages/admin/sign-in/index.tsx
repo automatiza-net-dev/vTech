@@ -10,9 +10,12 @@ import {
 } from "infinity-forge";
 
 import * as S from "./styles";
+import { useConfigurationsSystem } from "@/presentation/context";
 
 export function SignInAdmin() {
   const { loadUser } = useAuthAdmin();
+
+  const {name} = useConfigurationsSystem()
 
   return (
     <S.Login>
@@ -32,7 +35,7 @@ export function SignInAdmin() {
               body: {
                 ...data,
                 systemUrl,
-                system: process.env.clientName,
+                system: name,
                 ipAddress,
               },
             });

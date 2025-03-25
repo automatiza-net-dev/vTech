@@ -4,6 +4,7 @@ import moment from "moment";
 import { AxiosError } from "axios";
 import { PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
 
+import { useMe, useConfigurationsSystem } from "@/presentation";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useProfile } from "@/OLD/hooks/useProfile";
@@ -37,14 +38,16 @@ export default function Create({
 
   const router = useRouter();
 
+  const {type} = useConfigurationsSystem()
+
   async function createOpportunity() {
-  
     const newObj = {
       ...data,
       castrated: data?.castrated ? JSON.parse(data?.castrated) : "false",
       businessUnitId: clinic?.id,
       contactDate: moment(data?.contactDate).toISOString(),
       value: convertIntlCurrency(data?.value),
+      clientId: type === "Vet" ?  data?.patient_id : undefined
     };
 
     if (newObj.clientId === "-") {
@@ -121,8 +124,7 @@ export default function Create({
           />
         )}
 
-        {(process.env.client === "sancla" ||
-          user?.unit?.system?.type === "Vet") && (
+        {user?.type === "Vet" && (
           <Modal
             title={"Selecionar paciente"}
             width={1200}
@@ -142,9 +144,7 @@ export default function Create({
             />
           </Modal>
         )}
-
-        {(process.env.client === "liftone" ||
-          user?.unit?.system?.type !== "Vet") && (
+        {user?.type !== "Vet" && (
           <Modal
             title={"Selecionar Cliente"}
             width={1200}

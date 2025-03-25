@@ -8,6 +8,8 @@ import { Input } from "antd";
 import { Container } from "./styles";
 
 import moment from "moment";
+
+import { useConfigurationsSystem } from "@/presentation";
 import { FormHandler, Select, useAuthAdmin } from "infinity-forge";
 import { statusBillText } from "../../../utils/status-formater";
 
@@ -28,6 +30,8 @@ export default function Header({
   const hasInternalCode = user?.unit?.unitConfig?.internalCode;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
+
+  const {type} = useConfigurationsSystem()
 
   return (
     <Container className="uk-margin-top">
@@ -124,7 +128,7 @@ export default function Header({
           <label>Nome Cliente</label>
           <Input disabled value={bill?.client?.name} />
         </div>
-        {process.env.client !== "liftone" && (
+        {type === "Vet" && (
           <div className="uk-margin-small-right">
             <label>Nome paciente</label>
             <Input disabled value={bill?.patient?.name} />

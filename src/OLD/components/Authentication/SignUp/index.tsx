@@ -4,10 +4,13 @@ import { ResultPage } from "./steps/result";
 import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
 
 import { Container, Body } from "./styles";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function SignUp() {
   const [activeStep, setActiveStep] = React.useState(1);
   const [data, setData] = React.useState({});
+
+  const { logo_url } = useConfigurationsSystem();
 
   return (
     <Container>
@@ -16,10 +19,7 @@ export function SignUp() {
           <div className="Steps">
             <img
               className="logo"
-              src={
-                process.env.NEXT_PUBLIC_API +
-                `/assets/logo-${process.env.client}.png`
-              }
+              src={logo_url}
               width={100}
             />
             {activeStep === 1 && (

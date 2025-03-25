@@ -12,6 +12,8 @@ const { Option } = Select;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useSystem } from "@/presentation";
+import moment from "moment";
 
 function Filters({
   filters,
@@ -24,14 +26,14 @@ function Filters({
   const [values, setValues] = useState({});
 
   const { businessUnits } = useBusinessUnitsByUser(false);
-  const { clinic } = useProfile();
+  const { unit } = useSystem();
 
   sortItems(tutors, "name");
   sortItems(patients, "name");
 
   useEffect(() => {
-    setFilters({ ...filters, economicGroups: [clinic?.economicGroup?.id] });
-  }, [clinic]);
+    setFilters({ ...filters, fromDate: moment(filters?.fromDate || new Date())?.startOf("day")?.format("YYYY-MM-DD"), economicGroups: [unit?.economicGroup?.id] });
+  }, [unit]);
 
   return (
     <section className="uk-margin-small-top">

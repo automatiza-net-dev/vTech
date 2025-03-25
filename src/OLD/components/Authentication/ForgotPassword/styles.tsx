@@ -2,7 +2,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background-color: ${process.env.client === "liftone" ? "var(--lo-blue)" : "var(--orange-light-1)"};
+  background-color: ${props => props.theme.primaryColor};
   min-height: 100vh;
   display: flex;
   align-items: center;

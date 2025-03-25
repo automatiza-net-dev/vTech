@@ -3,14 +3,18 @@ import { api, FormHandler, InputPassword, useToast } from "infinity-forge";
 import * as yup from "yup";
 
 import * as S from "./styles"
+import { useConfigurationsSystem } from "@/presentation";
 
 export function Step5(props) {
+
+  const { id, name } = useConfigurationsSystem()
 
   async function handleSubmit(data) {
     const payload = {
       ...props.data,
       ...data,
-      systemName: process.env.clientName,
+      systemId: id,
+      systemName: name,
       phone: props.data.phone.replace(/[^0-9]/g, ""),
     };
 

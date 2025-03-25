@@ -130,11 +130,7 @@ input, textarea {
     }
 
     .bgDarkBlue {
-        background-color: ${
-          process.env.client === "sancla"
-            ? "var(--orange-light-1)"
-            : "var(--lo-blue)"
-        };
+        background-color:  ${(props) => props.theme.primaryColor};
     }
 
     .bgBlueHover:hover {
@@ -182,11 +178,7 @@ input, textarea {
 
     /* Adiciona a barra arrastável */
     ::-webkit-scrollbar-thumb {
-        background-color: ${
-          process.env.client === "sancla"
-            ? "var(--orange-light-1)"
-            : "var(--lo-blue)"
-        };
+        background-color: ${(props) => props.theme.primaryColor};
     }
 
     /*
@@ -202,12 +194,7 @@ input, textarea {
     }
 
     .colorButton{
-        background-color: red;
-        background-color: ${
-          process.env.client === "sancla"
-            ? "var(--orange-light-1)"
-            : "var(--lo-blue)"
-        } !important;
+        background-color: ${(props) => props.theme.primaryColor};
     }
 
     .colorButtonWhite{
@@ -237,11 +224,7 @@ input, textarea {
     }
 
     .uk-button-primary {
-        background-color: ${
-          process.env.client === "sancla"
-            ? "var(--orange-light-1)"
-            : "var(--lo-blue)"
-        };
+        background-color: ${(props) => props.theme.primaryColor};
         
         &:hover {
             text-decoration: none;

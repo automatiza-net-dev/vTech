@@ -3,15 +3,7 @@ import { useCallback, useState, useEffect } from "react";
 
 import { profileService } from "@/OLD/services/External/profileService";
 
-import {
-  Badge,
-  Button,
-  Dropdown,
-  Layout,
-  Menu,
-  Modal,
-  Radio,
-} from "antd";
+import { Badge, Button, Dropdown, Layout, Menu, Modal, Radio } from "antd";
 import Link from "next/link";
 import { Container } from "./styles";
 const { Group } = Radio;
@@ -25,7 +17,7 @@ import { sessionService } from "@/OLD/services/session.service";
 import { userService } from "@/OLD/services/user.service";
 
 import { sortItems } from "@/OLD/utils/sortItems";
-import { useIsThirdPartyUser } from "@/presentation";
+import { useConfigurationsSystem, useIsThirdPartyUser } from "@/presentation";
 import { useAuthAdmin, useToast } from "infinity-forge";
 
 const Header = ({ origin = "dashboard" }) => {
@@ -40,6 +32,7 @@ const Header = ({ origin = "dashboard" }) => {
   const router = useRouter();
 
   const { signOut } = useAuthAdmin();
+  const { logo_url } = useConfigurationsSystem();
 
   sortItems(units, "identification");
 
@@ -58,15 +51,13 @@ const Header = ({ origin = "dashboard" }) => {
   );
 
   const startChangePassword = () => {
-    userService
-      .startChangePassword()
-      .then(() =>
-        createToast({
-          status: "success",
-          message:
-            "Solicitação encaminhada com sucesso!, em instantes você receberá um e-mail com instruções",
-        })
-      );
+    userService.startChangePassword().then(() =>
+      createToast({
+        status: "success",
+        message:
+          "Solicitação encaminhada com sucesso!, em instantes você receberá um e-mail com instruções",
+      })
+    );
   };
 
   const detectMessage = () => {
@@ -98,13 +89,7 @@ const Header = ({ origin = "dashboard" }) => {
           <div className="uk-flex uk-flex-middle">
             <Link href="/dashboard">
               <div className="logo-container">
-                <img
-                  src={
-                    process.env.NEXT_PUBLIC_API +
-                    `/assets/logo-${process.env.client}.png`
-                  }
-                  width="35px"
-                />
+                <img src={logo_url} width="35px" />
               </div>
             </Link>
           </div>
@@ -199,8 +184,7 @@ const Header = ({ origin = "dashboard" }) => {
                 <div className="profile-img uk-flex uk-flex-center uk-flex-middle">
                   <img
                     src={
-                      process.env.NEXT_PUBLIC_API +
-                      `/assets/logo-${process.env.client}.png`
+                      logo_url
                     }
                     width="27px"
                     height="27px"

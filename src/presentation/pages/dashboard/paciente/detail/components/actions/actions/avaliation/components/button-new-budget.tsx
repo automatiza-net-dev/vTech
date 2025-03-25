@@ -14,6 +14,7 @@ import {
   useDictionary,
   useLoadPatient,
   useLoadAllPatientTutor,
+  useConfigurationsSystem,
 } from "@/presentation";
 
 export function ButtonNewBudget() {
@@ -25,6 +26,7 @@ export function ButtonNewBudget() {
   const { data, isFetching } = useLoadAllPatientTutor({});
 
   const { getWord } = useDictionary();
+  const {type} = useConfigurationsSystem();
 
   return (
     <>
@@ -71,13 +73,13 @@ export function ButtonNewBudget() {
           </div>
 
           <div className="row">
-            {process.env.client === "sancla" && (
+            {type === "Vet" && (
               <Input name="patientId" label="Paciente" readOnly />
             )}
 
             <Select
               onlyOneValue
-              label={process.env.client === "sancla" ? "Tutor" : "Cliente"}
+              label={type === "Vet" ? "Tutor" : "Cliente"}
               name={"clientId"}
               options={
                 data?.map((tutor) => ({
