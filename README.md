@@ -12,7 +12,7 @@ NEXT_PUBLIC_API=https://vetech-api.automatiza.net
 plataform=web
 client=sancla
 clientName=Sanclá
-
+a
 
 #HMG-----------------------------
 #LIFTONE - HMG
