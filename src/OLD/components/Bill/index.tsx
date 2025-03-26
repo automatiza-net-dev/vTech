@@ -274,7 +274,7 @@ export default function Bills() {
           <div className="uk-margin-top">
             <Table
               columns={
-                user?.type === "Vet"
+                user?.user?.type === "Vet"
                   ? Columns(hasInternalCode)
                   : LiftColumns(hasInternalCode)
               }

@@ -146,6 +146,8 @@ function ModalListagem({ bill }) {
 export function ModalListagemDocumentosVenda({ bill, refresh }) {
   const [modal, setModal] = useState(false);
 
+  console.log(bill)
+
   return (
     <>
       <Modal
@@ -164,7 +166,7 @@ export function ModalListagemDocumentosVenda({ bill, refresh }) {
           onClick={async () => setModal(true)}
           style={{ background: "transparent", border: "0", padding: "0" }}
         >
-          <a>{bill?.document_status}</a>
+          {bill?.documents_status}
         </button>
     </>
   );

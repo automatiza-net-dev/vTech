@@ -4,12 +4,11 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "dev": "next dev -p 3058",
-    "build": "next build",
-    "build:debug": "next build --debug",
-    "start": "next start -p 3060",
-    "type-check": "tsc",
-    "test": "cypress open"
+    "lift": "next dev -p 3059",
+    "sancla": "next dev -p 3058",
+    "clinicas": "next dev -p 3057",
+    "odonto": "next dev -p 3060",
+    "build": "next build"
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
