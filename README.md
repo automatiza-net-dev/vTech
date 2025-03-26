@@ -13,7 +13,7 @@ plataform=web
 client=sancla
 clientName=Sanclá
 a
-
+a
 #HMG-----------------------------
 #LIFTONE - HMG
 # api=https://vetech-api.creativecode.dev.br/
