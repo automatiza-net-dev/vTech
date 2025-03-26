@@ -23,7 +23,7 @@ function ModalListagem({ bill }) {
     queryKey: ["LoadDocuments"],
     queryFn: async () => {
       const response = await api({
-        url: `/product-documents/documents/${bill?.id}`,
+        url: `product-documents/documents/${bill?.id}`,
         method: "get",
       });
 
@@ -105,7 +105,7 @@ function ModalListagem({ bill }) {
             try {
               await api({
                 method: "post",
-                url: "/product-documents/generate",
+                url: "product-documents/generate",
                 body: {
                   billId: bill.id,
                   patientId: bill.client.id,
