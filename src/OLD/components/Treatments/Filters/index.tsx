@@ -10,15 +10,15 @@ import { AutoComplete, Input } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { useConfigurationsSystem } from "@/presentation";
 
 const Filters = memo(function Filters({ filters, setFilters }) {
   const [values, setValues] = useState({});
 
   const { tutors } = useTutor();
   const { patients } = usePatients();
-  
 
-  
+  const { type } = useConfigurationsSystem()
 
   return (
     <section className="uk-flex uk-flex-around uk-margin-top">
