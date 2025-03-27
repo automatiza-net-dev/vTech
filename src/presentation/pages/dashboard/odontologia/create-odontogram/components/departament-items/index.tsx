@@ -1,49 +1,42 @@
 import { useFormikContext } from "formik";
-import { api, useQuery } from "infinity-forge";
+import { ItemDepartament, useDepartamentItems } from "../../hooks";
+
+import * as S from "./styles";
 
 export function DepartamentItems() {
-  const { values } = useFormikContext<{ departament: string | undefined }>();
+  const { data } = useDepartamentItems();
 
-  const {} = useQuery({
-    queryKey: ["DepartamentItems", values?.departament],
-    queryFn: async () => {
-      return api({
-        url: "departments/list-products-movements",
-        method: "get",
-        body: { departamentId: values?.departament },
-      });
-    },
-    enabled: !!values.departament,
-  });
+  const { values, setFieldValue } = useFormikContext<{
+    departamentItems: ItemDepartament[];
+  }>();
+
+  const departamentItems = values?.departamentItems;
 
   return (
     <>
       <div style={{ width: "100%" }}>
         <div className={"items-container"}>
-          {/* {departament.itens.map((item) => (
+          {data?.[0]?.items?.map((item) => (
             <S.ItemCard
               key={item.description}
-              onClick={() =>
-                setItensSelected((prev) =>
-                  prev.some((i) => i.description === item.description)
-                    ? prev.filter((i) => i.description !== item.description)
-                    : [...prev, item]
-                )
-              }
-              selected={itensSelected.some(
-                (i) => i.description === item.description
-              )}
+              onClick={() => {
+                setFieldValue(
+                  "departamentItems",
+                  departamentItems?.some((i) => i.id === item.id)
+                    ? departamentItems?.filter((i) => i.id !== item.id)
+                    : [...(departamentItems || []), item]
+                );
+              }}
+              selected={departamentItems?.some((i) => i.id === item.id)}
             >
-              <img src={item.image} alt={item.description} />
+              <img src={item.photo} alt={item.description} />
               <S.Checkbox
                 type="checkbox"
-                checked={itensSelected.some(
-                  (i) => i.description === item.description
-                )}
+                checked={departamentItems?.some((i) => i.id === item.id)}
                 readOnly
               />
             </S.ItemCard>
-          ))} */}
+          ))}
         </div>
       </div>
     </>

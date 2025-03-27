@@ -6,11 +6,14 @@ import { memo, useCallback, useState } from "react";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Select } from "antd";
 import { useMutation, useQueryClient } from "react-query";
+
+  import { Modal } from "infinity-forge"
+
 const { TextArea } = Input;
 
-const CreateSubgroup = memo(function CreateSubgroup({
+export default function CreateSubgroup({
   visible,
   hide,
   subgroups = [],
@@ -30,7 +33,6 @@ const CreateSubgroup = memo(function CreateSubgroup({
 
         queryClient.invalidateQueries(["subgroups"]);
         setData({ description: "", parent: null });
-        hide();
       },
       onError: (error) => {
         createToast({
@@ -45,12 +47,17 @@ const CreateSubgroup = memo(function CreateSubgroup({
     mutate(data);
   }, [data]);
 
+  console.log(visible)
+
   return (
-    <Modal visible={visible} footer={null} title="Cadastro de subgrupos">
+    <Modal open={visible} onClose={() => hide()}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           submitExam();
+
+        hide();
+
         }}
       >
         <div className="uk-margin-top">
@@ -99,6 +106,5 @@ const CreateSubgroup = memo(function CreateSubgroup({
       </form>
     </Modal>
   );
-});
+}
 
-export default CreateSubgroup;

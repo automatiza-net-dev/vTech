@@ -44,7 +44,7 @@ export function LaunchRelatedSale({ id, origin_bill_id }: Bill) {
       )}
       
       <Modal
-        styles={{ maxWidth: 1200, width: "100%" }}
+        styles={{ maxWidth: 1500, width: "100%" }}
         onClose={() => setModal(false)}
         open={modal}
       >

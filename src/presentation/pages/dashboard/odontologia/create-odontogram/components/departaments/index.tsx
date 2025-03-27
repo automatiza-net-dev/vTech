@@ -3,7 +3,7 @@ import { api, useQuery } from "infinity-forge";
 
 export type Departament = {
   systemId: string;
-  photo: string;
+  image: string;
   economicGroupId: string;
   businessUnitId: string;
   departmentId: string;
@@ -11,9 +11,12 @@ export type Departament = {
 };
 
 import * as S from "./styles"
+import { ItemDepartament } from "../../hooks";
 
 export function Departaments() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<{
+      departamentItems: ItemDepartament[];
+    }>();
 
   const { data } = useQuery({
     queryKey: "departaments",
@@ -35,11 +38,10 @@ export function Departaments() {
           className="button-select-departament"
           onClick={() => {
             setFieldValue("departament", dept.departmentId);
-            // setDepartament(dept);
-            // setItensSelected([]);
+            setFieldValue("departamentItems", []);
           }}
         >
-          <img src={dept.photo} />
+          <img src={dept?.image} />
 
           {dept.description}
         </button>

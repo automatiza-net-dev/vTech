@@ -75,12 +75,17 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.0.0)
       infinity-forge:
+<<<<<<< HEAD
         specifier: ^7.8.9
 <<<<<<< HEAD
         version: 7.8.9(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
 =======
         version: 7.8.9(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
 >>>>>>> 3ec51b8e7eaea53a2608b381b1b7891ee935bbe1
+=======
+        specifier: ^8.0.1
+        version: 8.0.1(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+>>>>>>> 6c478520405aa76bebe10883e407a04ebdcadd34
       inversify:
         specifier: ^6.0.2
         version: 6.2.2(reflect-metadata@0.2.2)
@@ -127,7 +132,7 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2
       styled-components:
-        specifier: ^6.1.15
+        specifier: ^6.1.16
         version: 6.1.16(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       styled-icons:
         specifier: ^10.45.0
@@ -1893,8 +1898,13 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@7.8.9:
-    resolution: {integrity: sha512-zXknlUp3sn1b7aGeAESTKXIrBU6lqb3Nxlm03imsazdOw3oxFIR07EYn+gJnlH0VtPqJ0dDL6aNvh28hTU6FaQ==}
+  infinity-forge@7.9.12:
+    resolution: {integrity: sha512-qvkn48k+yen5s/Hufqv58eoYiyI6/dAs0x/vWXGZwURY1PeHK/hnwAiAJX41RuTI1mG2fRjKjQiprRzDIFJHcw==}
+    peerDependencies:
+      react: '>=16'
+
+  infinity-forge@8.0.1:
+    resolution: {integrity: sha512-0vcHsD9+cyrJOkMJldn3boOtYGhJj+rnpflbZAWxKw50mHZvZCV0tVcSiE/PONittBKb5QJ6mBECW1h3UovYmA==}
     peerDependencies:
       react: '>=16'
 
@@ -5353,10 +5363,14 @@ snapshots:
   indent-string@4.0.0: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   infinity-forge@7.8.9(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.18)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
 =======
   infinity-forge@7.8.9(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
 >>>>>>> 3ec51b8e7eaea53a2608b381b1b7891ee935bbe1
+=======
+  infinity-forge@7.9.12(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+>>>>>>> 6c478520405aa76bebe10883e407a04ebdcadd34
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -5389,6 +5403,43 @@ snapshots:
       react-select: 5.10.1(@types/react@18.3.19)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       styled-components: 6.1.16(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 >>>>>>> 3ec51b8e7eaea53a2608b381b1b7891ee935bbe1
+      yup: 1.6.1
+      zustand: 5.0.3(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@emotion/is-prop-valid'
+      - '@opentelemetry/api'
+      - '@playwright/test'
+      - '@types/react'
+      - babel-plugin-macros
+      - babel-plugin-react-compiler
+      - debug
+      - immer
+      - sass
+      - supports-color
+      - use-sync-external-store
+
+  infinity-forge@8.0.1(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.0.0)
+      '@next/third-parties': 15.2.3(next@15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      axios: 1.8.4
+      cpx: 1.5.0
+      formik: 2.4.6(react@19.0.0)
+      fs: 0.0.1-security
+      infinity-forge: 7.9.12(@emotion/is-prop-valid@1.3.1)(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
+      moment: 2.30.1
+      motion: 12.5.0(@emotion/is-prop-valid@1.3.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      next: 15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      node: 22.14.0
+      quill: 2.0.3
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      react-select: 5.10.1(@types/react@18.3.19)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      styled-components: 6.1.16(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       yup: 1.6.1
       zustand: 5.0.3(@types/react@18.3.19)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
     transitivePeerDependencies:

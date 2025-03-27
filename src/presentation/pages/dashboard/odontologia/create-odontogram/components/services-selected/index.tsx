@@ -1,7 +1,16 @@
+import { useFormikContext } from "formik";
+import { ItemDepartament, ProductDepartament } from "../../hooks";
+
 export function ServicesSelected() {
+
+ const {setFieldValue, values} = useFormikContext<{
+  departamentItems: ItemDepartament[];
+  services: { departamentItem: ItemDepartament, service: ProductDepartament  }[]
+}>();
+
   return (
     <>
-      {itensSelected.length > 0 && (
+      {values?.services && values?.services?.length > 0 && (
         <div
           style={{
             display: "flex",
@@ -20,27 +29,26 @@ export function ServicesSelected() {
             }}
             type="button"
             className="font-12-bold"
-            onClick={() => setItensSelected([])}
+            onClick={() => setFieldValue("departamentItems", [])}
           >
             Limpar Itens Selecionados
           </button>
         </div>
       )}
 
-      {itensOrcamento.length > 0 && (
+      {values?.services && values?.services?.length > 0 && (
         <div className="orcamento-container">
-          {itensOrcamento.map((orc, index) => (
+          {values?.services.map((orc, index) => (
             <div key={index} className="orcamento-item" style={{ gap: 20 }}>
               <span className="font-14-regular">
-                {orc.item.description} - {orc.service.description} - R${" "}
-                {orc.service.price}
+                {orc?.departamentItem?.description} - {orc?.service?.description} - R${" "}
+                {orc?.service?.price}
               </span>
               <button
                 type="button"
-                onClick={() =>
-                  setItensOrcamento((prev) =>
-                    prev.filter((_, i) => i !== index)
-                  )
+                onClick={() => {
+                  setFieldValue("services", values.services.filter((_, i) => i !== index))
+                }
                 }
                 style={{
                   background: "transparent",
@@ -55,7 +63,7 @@ export function ServicesSelected() {
         </div>
       )}
 
-      {itensOrcamento.length > 0 && (
+      {values?.services && values?.services?.length > 0 && (
         <div
           className="button-container"
           style={{
@@ -67,7 +75,7 @@ export function ServicesSelected() {
           <button
             type="button"
             className="font-14-regular"
-            onClick={() => setItensOrcamento([])}
+            onClick={() => setFieldValue("services", [])}
           >
             Limpar Orçamentos
           </button>

@@ -62,6 +62,11 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           status: "success",
           message: "Venda finalizada com sucesso!",
         });
+        
+        console.log(_res, "@")
+
+        queryClient.invalidateQueries(["bills"]);
+        setReload && setReload((prv) => !prv);
       })
       .catch((err) => {
         const errorMessage =
@@ -70,10 +75,6 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
 
         createToast({ status: "error", message: errorMessage });
       })
-      .finally(() => {
-        queryClient.invalidateQueries(["bills"]);
-        setReload && setReload((prv) => !prv);
-      });
   }, [bill?.id, queryClient, setReload]);
 
   const reopenBillPayment = React.useCallback(() => {

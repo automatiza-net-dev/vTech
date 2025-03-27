@@ -12,15 +12,15 @@ export function CreateOdontogram() {
     <S.CreateOdontogram>
       <Departaments />
 
-     {/* <div className="content_create">
-        <Services />
+      <div className="container_orcamento">
+         <Services /> 
 
-        <div>
+        <div >
           <DepartamentItems />
 
-          <ServicesSelected />
+           <ServicesSelected /> 
         </div>
-      </div>  */}
+      </div>  
     </S.CreateOdontogram>
   );
 }

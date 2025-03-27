@@ -2,13 +2,13 @@ import { hexToRgbA } from "infinity-forge";
 import styled from "styled-components"
 
 export const CreateOdontogram = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+
   gap: 20px;
   padding: 20px;
 
-
+.container_orcamento {
+  display: flex;
+}
 
   .services-container {
     display: flex;
@@ -126,21 +126,5 @@ export const CreateOdontogram = styled.div`
   .button-container button:hover {
     background: #c82333;
   }
-`;
-
-export const ItemCard = styled.div<any>`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  background-color: ${(props) => (props.selected ? "#e0f7fa" : "#fff")};
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin: 5px 0;
-`;
-
-export const Checkbox = styled.input`
-  margin-left: 10px;
-  cursor: pointer;
 `;
 
