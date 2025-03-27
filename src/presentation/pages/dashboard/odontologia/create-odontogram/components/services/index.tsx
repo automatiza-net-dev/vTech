@@ -1,71 +1,61 @@
-import { FormHandler, Input } from "infinity-forge";
-
-import {
-  DepartmentItem,
-  ItemDepartament,
-  ProductDepartament,
-  useDepartamentItems,
-} from "../../hooks";
 import { useFormikContext } from "formik";
+import { ItemDepartament, useDepartamentItems } from "../../hooks";
+import { Cart } from "@/presentation/pages/dashboard/financial-services";
+
+import * as S from "./styles";
 
 export function Services() {
   const { data } = useDepartamentItems();
 
   const { setFieldValue, values } = useFormikContext<{
+    departament: string | undefined;
     departamentItems: ItemDepartament[];
-    services: {
-      departamentItem: ItemDepartament;
-      service: ProductDepartament;
-    }[];
+    cart: Cart[];
   }>();
 
+  if (!values.departament) {
+    return <></>;
+  }
+
   return (
-    <>
-      <div style={{ width: 300 }}>
-        <div className="services-container">
-          <FormHandler initialData={{ query: "" }}>
-            <Input name="query" placeholder="Buscar" />
-          </FormHandler>
+    <S.Services>
+      <div className="services-container">
+        {data?.[0]?.products?.map((service) => (
+          <button
+            key={service.description}
+            type="button"
+            className="service-button font-14-regular"
+            onClick={() => {
+              let newOrcamento = values?.cart || [];
 
-          {data?.[0]?.products?.map((service) => (
-            <button
-              key={service.description}
-              type="button"
-              className="service-button font-14-regular"
-              onClick={() => {
-                let newOrcamento: {
-                  departamentItem: ItemDepartament;
-                  service: ProductDepartament;
-                }[] = values?.services || [];
+              values.departamentItems.forEach((item) => {
+                if (
+                  !newOrcamento.some((o) => {
+                    return (
+                      o.departmentItemId !== item.id && o.id === service.id
+                    );
+                  })
+                ) {
+                  newOrcamento.push({
+                    id: service.product_variation_id,
+                    price: service.price,
+                    courtesy: service.courtesy,
+                    departamentDescription: item.description,
+                    observation: "",
+                    productDescription: service?.description,
+                    departmentId: Number(values.departament || "0"),
+                    departmentItemId: item.id,
+                  } as Cart);
+                }
+              });
 
-                console.log(values.departamentItems)
-
-                values.departamentItems.forEach((item) => {
-                  if (
-                    !newOrcamento.some((o) => {
-                      console.log(
-                        o.departamentItem.id === item.id,
-                        o.service.id === service.id, "@@"
-                      );
-
-                      return (
-                        o.departamentItem.id === item.id &&
-                        o.service.id === service.id
-                      );
-                    })
-                  ) {
-                    newOrcamento.push({ departamentItem: item, service });
-                  }
-                });
-
-                setFieldValue("services", newOrcamento);
-              }}
-            >
-              {service.description}
-            </button>
-          ))}
-        </div>
+              setFieldValue("cart", newOrcamento);
+            }}
+          >
+            {service.description}
+          </button>
+        ))}
       </div>
-    </>
+    </S.Services>
   );
 }

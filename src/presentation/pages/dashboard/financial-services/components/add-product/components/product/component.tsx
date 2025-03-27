@@ -10,13 +10,11 @@ import { AuthorizationStatusProduct } from "../../../authorization-status-produc
 
 import { Cart } from "../../interfaces";
 
-import * as S from "./styles"
+import * as S from "./styles";
 
 export function AddProductDefault() {
   const { values, setFieldValue, setFieldError } = useFormikContext<{
     cart: Cart[];
-    product_selected: string | undefined;
-    clientId?: string;
   }>();
 
   const cart = values["cart"];

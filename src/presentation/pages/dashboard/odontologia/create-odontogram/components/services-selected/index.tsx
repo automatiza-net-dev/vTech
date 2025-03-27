@@ -1,86 +1,92 @@
 import { useFormikContext } from "formik";
-import { ItemDepartament, ProductDepartament } from "../../hooks";
+import { ItemDepartament } from "../../hooks";
+
+import { Cart } from "@/presentation/pages/dashboard/financial-services";
+
+import * as S from "./styles";
+import { useTable } from "infinity-forge";
 
 export function ServicesSelected() {
+  const { setFieldValue, values } = useFormikContext<{
+    departamentItems: ItemDepartament[];
+    cart: Cart[];
+  }>();
 
- const {setFieldValue, values} = useFormikContext<{
-  departamentItems: ItemDepartament[];
-  services: { departamentItem: ItemDepartament, service: ProductDepartament  }[]
-}>();
+  const agrouppedCart = values.cart.reduce((reducer, cartItem) => {
+
+    const groupName = cartItem.id;
+    const actualGroup = reducer?.[groupName] || [];
+
+    return {...reducer, [groupName]: [...actualGroup, cartItem]}
+  }, {})
 
   return (
-    <>
-      {values?.services && values?.services?.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            marginTop: 10,
-          }}
-        >
-          <button
-            style={{
-              border: 0,
-              background: "transparent",
-              backgroundColor: "transparent",
-              color: "red",
-              marginBottom: 10,
-            }}
-            type="button"
-            className="font-12-bold"
-            onClick={() => setFieldValue("departamentItems", [])}
-          >
-            Limpar Itens Selecionados
-          </button>
+    <S.ServicesSelected>
+      {((values?.cart && values?.cart?.length > 0) ||
+        (values?.departamentItems && values?.departamentItems?.length > 0)) && (
+        <div className="top">
+          {values?.departamentItems && values?.departamentItems?.length > 0 && (
+            <button
+              type="button"
+              className="font-12-bold"
+              onClick={() => setFieldValue("departamentItems", [])}
+            >
+              Limpar Itens Selecionados
+            </button>
+          )}
+
+          {values?.cart && values?.cart?.length > 0 && (
+            <button
+              type="button"
+              className="font-12-bold"
+              onClick={() => setFieldValue("cart", [])}
+            >
+              Limpar Orçamentos
+            </button>
+          )}
         </div>
       )}
 
-      {values?.services && values?.services?.length > 0 && (
+      {values?.cart && values?.cart?.length > 0 && (
         <div className="orcamento-container">
-          {values?.services.map((orc, index) => (
-            <div key={index} className="orcamento-item" style={{ gap: 20 }}>
-              <span className="font-14-regular">
-                {orc?.departamentItem?.description} - {orc?.service?.description} - R${" "}
-                {orc?.service?.price}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setFieldValue("services", values.services.filter((_, i) => i !== index))
-                }
-                }
-                style={{
-                  background: "transparent",
-                  border: 0,
-                  color: "red",
-                }}
-              >
-                🗑️
-              </button>
-            </div>
+          {Object.keys(agrouppedCart).map((orc) => (
+            <GroupCart key={orc} agrouppedCart={agrouppedCart} />
           ))}
         </div>
       )}
-
-      {values?.services && values?.services?.length > 0 && (
-        <div
-          className="button-container"
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginTop: 10,
-          }}
-        >
-          <button
-            type="button"
-            className="font-14-regular"
-            onClick={() => setFieldValue("services", [])}
-          >
-            Limpar Orçamentos
-          </button>
-        </div>
-      )}
-    </>
+    </S.ServicesSelected>
   );
 }
+
+function GroupCart({ agrouppedCart }: { agrouppedCart: { [key: string]: Cart[] } }) {
+
+  //pegar os itns e fazer usbitems porém fazer uma estrutura em que possar ser lido o nome da categoria em uma linha com algumas informações e poder expadir com os itens do carrinho
+  const {} = useTable({ columnsConfiguration: { columns: [{ label: "" }] }, configs: { disableRoutingUpdateFilters: Object.keys() } })
+
+
+  return <></>
+}
+
+
+{/* <div key={index} className="orcamento-item" style={{ gap: 20 }}>
+<span className="font-14-regular">
+  {orc?.departamentDescription} - {orc?.productDescription} - R${" "}
+  {orc?.price}
+</span>
+<button
+  type="button"
+  onClick={() => {
+    setFieldValue(
+      "cart",
+      values.cart.filter((_, i) => i !== index)
+    );
+  }}
+  style={{
+    background: "transparent",
+    border: 0,
+    color: "red",
+  }}
+>
+  🗑️
+</button>
+</div> */}

@@ -1,17 +1,8 @@
 import { api, useQuery } from "infinity-forge";
 
-import { useFormikContext } from "formik";
+import { Product } from "@/domain";
 
-export type ProductDepartament = {
-  id: string;
-  description: string;
-  type: "service" | "product";
-  courtesy: boolean;
-  stock: number;
-  maximum_discount_percentage: number;
-  price: number;
-  cost_price: number;
-}
+import { useFormikContext } from "formik";
 
 export type ItemDepartament = {
   id: number;
@@ -26,7 +17,7 @@ export type DepartmentItem = {
   description: string;
   image: string | null;
   items: ItemDepartament[];
-  products: ProductDepartament[];
+  products: Product[];
 };
 
 export function useDepartamentItems() {

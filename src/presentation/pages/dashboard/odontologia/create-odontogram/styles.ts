@@ -1,21 +1,13 @@
 import { hexToRgbA } from "infinity-forge";
-import styled from "styled-components"
+import styled from "styled-components";
 
 export const CreateOdontogram = styled.div`
-
   gap: 20px;
   padding: 20px;
 
-.container_orcamento {
-  display: flex;
-}
-
-  .services-container {
+  .container_orcamento {
     display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 300px;
+    gap: 15px;
   }
 
   .Arcada {
@@ -53,8 +45,6 @@ export const CreateOdontogram = styled.div`
       }
     }
   }
-
-
 
   .items-container,
   .services-container {
@@ -127,4 +117,3 @@ export const CreateOdontogram = styled.div`
     background: #c82333;
   }
 `;
-

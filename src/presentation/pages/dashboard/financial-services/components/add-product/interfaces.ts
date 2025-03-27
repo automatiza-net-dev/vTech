@@ -8,6 +8,8 @@ import {
 
 export type Cart = {
   id: Product["id"];
+  productDescription?: string;
+  price?: number;
   courtesy: boolean;
   toSubmit?: boolean;
   hasCourtesy?: boolean;
@@ -17,10 +19,14 @@ export type Cart = {
   max_discount?: Product["max_discount"];
   courtesyApprovedUser?: Product["courtesyApprovedUser"];
   courtesy_approved_at?: Product["courtesy_approved_at"];
-  variations: {
+  departmentId: number;
+  departmentItemId: number;
+  departamentDescription?: string;
+  observation?: string;
+  variations?: {
     id: string;
     approved?: boolean;
-    billItemId?:  Bill["items"][0]["id"];
+    billItemId?: Bill["items"][0]["id"];
     budgetItemId?: Budget["items"][0]["id"];
     exceedDiscount?: boolean;
     total: number;

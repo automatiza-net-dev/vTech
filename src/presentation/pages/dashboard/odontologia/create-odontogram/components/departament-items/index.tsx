@@ -13,12 +13,13 @@ export function DepartamentItems() {
   const departamentItems = values?.departamentItems;
 
   return (
-    <>
-      <div style={{ width: "100%" }}>
+    <S.DepartamentItems>
+     
         <div className={"items-container"}>
           {data?.[0]?.items?.map((item) => (
-            <S.ItemCard
+            <div
               key={item.description}
+              className="item-card"
               onClick={() => {
                 setFieldValue(
                   "departamentItems",
@@ -27,18 +28,18 @@ export function DepartamentItems() {
                     : [...(departamentItems || []), item]
                 );
               }}
-              selected={departamentItems?.some((i) => i.id === item.id)}
+           
             >
               <img src={item.photo} alt={item.description} />
-              <S.Checkbox
+              <input
                 type="checkbox"
                 checked={departamentItems?.some((i) => i.id === item.id)}
                 readOnly
               />
-            </S.ItemCard>
+            </div>
           ))}
         </div>
-      </div>
-    </>
+     
+    </S.DepartamentItems>
   );
 }

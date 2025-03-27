@@ -46,8 +46,10 @@ export type TreatmentExecutions = {
 };
 
 export type Product = {
-  id: string;
+  id: string | number;
+  price?: number;
   cancelledQuantity?: number;
+  product_variation_id?: number;
   cancelled?: "P" | "S" | "N" | null;
   approved?: boolean;
   approvalDate?: string;

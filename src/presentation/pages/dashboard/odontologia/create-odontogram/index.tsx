@@ -13,14 +13,12 @@ export function CreateOdontogram() {
       <Departaments />
 
       <div className="container_orcamento">
-         <Services /> 
+        <Services />
 
-        <div >
-          <DepartamentItems />
+        <DepartamentItems />
+      </div>
 
-           <ServicesSelected /> 
-        </div>
-      </div>  
+      <ServicesSelected />
     </S.CreateOdontogram>
   );
 }
