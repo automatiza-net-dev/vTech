@@ -1,4 +1,3 @@
-import { Budget } from "../budget";
 
 export type BusinessUnitProduct = {
   id: string;
@@ -21,7 +20,7 @@ export type BusinessUnitProduct = {
 };
 
 export type Variation = {
-  id: string;
+  id: string | number;
   product_id: string;
   barcode: string;
   active: boolean;
@@ -102,8 +101,8 @@ export type Product = {
 export type ProductCart = {
   quantity: number;
   discountValue: number;
-  budgetItemId?: string;
-  billItemId?: string;
+  budgetItemId?: string | number;
+  billItemId?: string | number;
   approved?: boolean;
   productVariationId: Variation["id"];
   saleValue: BusinessUnitProduct["price"];

@@ -32,20 +32,30 @@ export function Services() {
                 if (
                   !newOrcamento.some((o) => {
                     return (
-                      o.departmentItemId !== item.id && o.id === service.id
+                      o?.variations?.[0]?.departmentItemId !== item.id && o?.variations?.[0]?.productVariationId === service.id
                     );
                   })
                 ) {
                   newOrcamento.push({
-                    id: service.product_variation_id,
-                    price: service.price,
-                    courtesy: service.courtesy,
-                    departamentDescription: item.description,
+                    id: service.product_variation_id ||  0,
                     observation: "",
-                    productDescription: service?.description,
-                    departmentId: Number(values.departament || "0"),
-                    departmentItemId: item.id,
-                  } as Cart);
+                    courtesy: false,
+                    variations: [{
+                      id: String(Math.random()),
+                      quantity: 1,
+                      maximum_discount_percentage: 0,
+                      saleValue: service.price || 0,
+                      total: service.price || 0,
+                      unitaryValue: service.price || 0,
+                      discountValue: 0,
+                      productVariationId: service.product_variation_id || 0,
+                      courtesy: false,
+                      departmentItemId: item.id,
+                      departamentDescription: item.description,
+                      departmentId: Number(values.departament || "0"),
+                      description: service?.description,
+                    }]
+                  })
                 }
               });
 

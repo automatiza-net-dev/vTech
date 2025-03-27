@@ -7,7 +7,7 @@ export const ServicesSelected = styled("div")`
     display: flex;
     width: 100%;
     justify-content: flex-end;
-    background: #f7f7f7;
+    background:rgb(196, 196, 196);
     align-items: center;
     padding: 10px;
     gap: 20px;

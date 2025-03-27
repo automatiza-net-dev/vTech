@@ -180,6 +180,7 @@ export function AddSale({
   return (
     <S.AddSale>
       <FormHandler
+      debugMode
         isStickyButtons
         disableEnterKeySubmitForm
         button={{ text: "SALVAR" }}

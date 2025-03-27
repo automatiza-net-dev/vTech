@@ -4,7 +4,7 @@ import { ItemDepartament } from "../../hooks";
 import { Cart } from "@/presentation/pages/dashboard/financial-services";
 
 import * as S from "./styles";
-import { useTable } from "infinity-forge";
+import { formatNumberToCurrency, useTable } from "infinity-forge";
 
 export function ServicesSelected() {
   const { setFieldValue, values } = useFormikContext<{
@@ -13,12 +13,11 @@ export function ServicesSelected() {
   }>();
 
   const agrouppedCart = values.cart.reduce((reducer, cartItem) => {
-
     const groupName = cartItem.id;
     const actualGroup = reducer?.[groupName] || [];
 
-    return {...reducer, [groupName]: [...actualGroup, cartItem]}
-  }, {})
+    return { ...reducer, [groupName]: [...actualGroup, cartItem] };
+  }, {});
 
   return (
     <S.ServicesSelected>
@@ -48,27 +47,68 @@ export function ServicesSelected() {
       )}
 
       {values?.cart && values?.cart?.length > 0 && (
-        <div className="orcamento-container">
-          {Object.keys(agrouppedCart).map((orc) => (
-            <GroupCart key={orc} agrouppedCart={agrouppedCart} />
-          ))}
+        <div>
+ 
+            <GroupCart agrouppedCart={agrouppedCart} />
+       
         </div>
       )}
     </S.ServicesSelected>
   );
 }
 
-function GroupCart({ agrouppedCart }: { agrouppedCart: { [key: string]: Cart[] } }) {
+function GroupCart({
+  agrouppedCart,
+}: {
+  agrouppedCart: { [key: string]: Cart[] };
+}) {
+  const { Table } = useTable<{ productName: string; items: Cart[] }>({
+    columnsConfiguration: {
+      columns: [{ id: "productName", label: "Serviço" }],
+      childrens: {
+        childrenKey: "items",
+        columns: [
+          {
+            id: "departamentDescription",
+            label: "Departamento",
+            Component: {
+              Element: (props) => (
+                <p className="font-16-regular">
+                  {props?.variations?.[0]?.departamentDescription}
+                </p>
+              ),
+            },
+          },
+          {
+            id: "unitaryValue",
+            label: "Preço",
+            width: 900,
+            Component: {
+              Element: (props) => (
+                <p className="font-16-regular">
+                  {formatNumberToCurrency(props?.variations?.[0]?.unitaryValue || 0)}
+                </p>
+              ),
+            },
+          },
+        ],
+        omitEmptyList: true,
+      },
+    },
+    configs: {
+      tableData: Object.keys(agrouppedCart).map((item) => ({
+        productName: agrouppedCart[item]?.[0]?.variations?.[0]?.description,
+        items: agrouppedCart[item],
+      })),
+      errorMessage: "Não há grupos no momento",
+    },
+  });
 
-  //pegar os itns e fazer usbitems porém fazer uma estrutura em que possar ser lido o nome da categoria em uma linha com algumas informações e poder expadir com os itens do carrinho
-  const {} = useTable({ columnsConfiguration: { columns: [{ label: "" }] }, configs: { disableRoutingUpdateFilters: Object.keys() } })
-
-
-  return <></>
+  return Table;
 }
 
-
-{/* <div key={index} className="orcamento-item" style={{ gap: 20 }}>
+{
+  /* <div key={index} className="orcamento-item" style={{ gap: 20 }}>
 <span className="font-14-regular">
   {orc?.departamentDescription} - {orc?.productDescription} - R${" "}
   {orc?.price}
@@ -89,4 +129,5 @@ function GroupCart({ agrouppedCart }: { agrouppedCart: { [key: string]: Cart[] }
 >
   🗑️
 </button>
-</div> */}
+</div> */
+}
