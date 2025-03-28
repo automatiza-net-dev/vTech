@@ -1,75 +1,78 @@
 import { useFormikContext } from "formik";
-import { Icon, Input, InputCurrency, useAuthAdmin } from "infinity-forge";
+import { InputCurrency } from "infinity-forge";
 
-import { transformStringToNumber } from "@/presentation";
-
-import { Total } from "./total";
-import { SelectProduct } from "./select-product";
-import { DiscountPercentage } from "./discount-percentage";
+import {
+  Total,
+  SelectProduct,
+  InputCourtesy,
+  InputQuantity,
+  InputDiscount,
+  InputUnitaryValue,
+  DiscountPercentage,
+} from "./components";
 import { AuthorizationStatusProduct } from "../../../authorization-status-product";
 
 import { Cart } from "../../interfaces";
 
 import * as S from "./styles";
 
+export function handleInputChangeCart({
+  value,
+  cart,
+  setFieldValue,
+  pathName,
+  fieldName,
+  indexProduct,
+  indexVariation,
+}: {
+  cart;
+  setFieldValue;
+  pathName: string;
+  fieldName: string;
+  indexProduct: number;
+  value: string | number | boolean;
+  indexVariation: number;
+}) {
+  try {
+    const product = cart[indexProduct];
+    const variation = product.variations[indexVariation];
+
+    setFieldValue(`${pathName}.${fieldName}`, value);
+
+    if (typeof value !== "boolean") {
+      const quantity = fieldName === "quantity" ? value : variation.quantity;
+      const unitaryValue =
+        fieldName === "unitaryValue" ? value : variation.unitaryValue;
+      const discountValue =
+        fieldName === "discountValue" ? value : variation.discountValue;
+
+      const formattedUnitaryValue =
+        typeof unitaryValue === "number"
+          ? unitaryValue
+          : Number(unitaryValue?.replaceAll(",", ".") || 0);
+
+      const formattedDiscountValue =
+        typeof discountValue === "number"
+          ? discountValue
+          : Number(discountValue?.replaceAll(",", ".") || 0);
+
+      const total =
+        Number(quantity || 1) * formattedUnitaryValue - formattedDiscountValue;
+
+      setFieldValue(`${pathName}.total`, total.toFixed(2));
+    }
+    setFieldValue(`${pathName}.${fieldName}`, value);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export function AddProductDefault() {
-  const { values, setFieldValue, setFieldError } = useFormikContext<{
+  const { values } = useFormikContext<{
     cart: Cart[];
   }>();
 
   const cart = values["cart"];
-
-  const { user } = useAuthAdmin();
-
-  const isPossibleChangePricesProducs = user?.unit?.unitConfig?.alter_prices;
-
-  function handleInputChange({
-    value,
-    pathName,
-    fieldName,
-    indexProduct,
-    indexVariation,
-  }: {
-    pathName: string;
-    fieldName: string;
-    indexProduct: number;
-    value: string | number | boolean;
-    indexVariation: number;
-  }) {
-    try {
-      const product = cart[indexProduct];
-      const variation = product.variations[indexVariation];
-
-      setFieldValue(`${pathName}.${fieldName}`, value);
-
-      if (typeof value !== "boolean") {
-        const quantity = fieldName === "quantity" ? value : variation.quantity;
-        const unitaryValue =
-          fieldName === "unitaryValue" ? value : variation.unitaryValue;
-        const discountValue =
-          fieldName === "discountValue" ? value : variation.discountValue;
-
-        const formattedUnitaryValue =
-          typeof unitaryValue === "number"
-            ? unitaryValue
-            : Number(unitaryValue?.replaceAll(",", ".") || 0);
-
-        const formattedDiscountValue =
-          typeof discountValue === "number"
-            ? discountValue
-            : Number(discountValue?.replaceAll(",", ".") || 0);
-
-        const total =
-          Number(quantity || 1) * formattedUnitaryValue -
-          formattedDiscountValue;
-
-        setFieldValue(`${pathName}.total`, total.toFixed(2));
-      }
-      setFieldValue(`${pathName}.${fieldName}`, value);
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   return (
     <S.AddProduct
@@ -114,19 +117,13 @@ export function AddProductDefault() {
               {product?.variations?.map((variation, indexVariation) => {
                 const pathName = `cart[${indexProduct}].variations[${indexVariation}]`;
 
-                const maxDiscount =
-                  Number(variation.quantity) * Number(variation.unitaryValue);
-
-                const percentageDiscount = (
-                  (Number(
-                    (typeof variation.discountValue === "string"
-                      ? (variation.discountValue as string).replaceAll(",", ".")
-                      : variation.discountValue) || 0
-                  ) /
-                    (Number(variation.quantity || 1) *
-                      Number(variation.unitaryValue || 0))) *
-                  100
-                ).toFixed(2);
+                const propsInput = {
+                  indexProduct: indexProduct,
+                  indexVariation: indexVariation,
+                  pathName: pathName,
+                  product: product,
+                  variation: variation,
+                };
 
                 return (
                   <div key={variation.productVariationId} className="cart_item">
@@ -136,101 +133,11 @@ export function AddProductDefault() {
                       </h4>
                     </div>
 
-                    <Input
-                      type="number"
-                      name={pathName + `.quantity`}
-                      readOnly={!!product.variations?.[0]?.billItemId}
-                      onChangeInput={(value) => {
-                        handleInputChange({
-                          value: value as string,
-                          pathName,
-                          indexProduct,
-                          indexVariation,
-                          fieldName: "quantity",
-                        });
-                      }}
-                      controlledInitialValue={{
-                        value: String(variation?.quantity),
-                      }}
-                    />
+                    <InputQuantity {...propsInput} />
 
-                    <InputCurrency
-                      name={pathName + `.unitaryValue`}
-                      readOnly={
-                        !isPossibleChangePricesProducs || variation?.courtesy
-                      }
-                      onChangeInput={(value) => {
-                        handleInputChange({
-                          value: value as string,
-                          pathName,
-                          indexProduct,
-                          indexVariation,
-                          fieldName: "unitaryValue",
-                        });
-                      }}
-                      controlledInitialValue={{
-                        value: String(variation?.unitaryValue),
-                      }}
-                    />
+                    <InputUnitaryValue {...propsInput} />
 
-                    <InputCurrency
-                      controlledInitialValue={{
-                        value: String(variation?.discountValue),
-                      }}
-                      name={pathName + `.discountValue`}
-                      max={maxDiscount}
-                      errorMessageMax={() =>
-                        `Desconto exedido R$${maxDiscount}`
-                      }
-                      readOnly={!!(Number(variation.unitaryValue) === 0)}
-                      onChangeInput={(value) => {
-                        handleInputChange({
-                          indexVariation,
-                          pathName,
-                          indexProduct,
-                          fieldName: "discountValue",
-                          value:
-                            Number(value) > maxDiscount
-                              ? maxDiscount
-                              : (value as string),
-                        });
-
-                        if (
-                          !variation.courtesy &&
-                          variation?.discountValue &&
-                          transformStringToNumber(variation?.discountValue) >
-                            0 &&
-                          transformStringToNumber(value as any) >=
-                            (variation.maximum_discount_percentage / 100) *
-                              variation.saleValue
-                        ) {
-                          handleInputChange({
-                            indexVariation,
-                            pathName,
-                            indexProduct,
-                            fieldName: "exceedDiscount",
-                            value: true,
-                          });
-                        } else {
-                          handleInputChange({
-                            indexVariation,
-                            pathName,
-                            indexProduct,
-                            fieldName: "exceedDiscount",
-                            value: false,
-                          });
-                        }
-
-                        if (Number(value) > maxDiscount) {
-                          setTimeout(() => {
-                            setFieldError(
-                              pathName + `.discountValue`,
-                              "O valor do desconto, não pode ser maior que o valor total."
-                            );
-                          }, 500);
-                        }
-                      }}
-                    />
+                    <InputDiscount {...propsInput} />
 
                     <div className="total">
                       <div>
@@ -243,84 +150,12 @@ export function AddProductDefault() {
                         />
 
                         {!!variation.discountValue && (
-                          <DiscountPercentage
-                            percentageDiscount={Number(
-                              percentageDiscount.replaceAll(",", ".")
-                            )}
-                            maximum_discount_percentage={
-                              variation.maximum_discount_percentage
-                            }
-                          />
+                          <DiscountPercentage variation={variation} />
                         )}
                       </div>
                     </div>
 
-                    <div className="cortesia">
-                      <div>
-                        <input
-                          type="checkbox"
-                          disabled={!product?.courtesy}
-                          checked={product?.variations?.[0]?.courtesy}
-                          onChange={(e) => {
-                            handleInputChange({
-                              value: !variation?.courtesy as boolean,
-                              pathName,
-                              indexProduct,
-                              indexVariation,
-                              fieldName: "courtesy",
-                            });
-
-                            if (e.target.checked) {
-                              handleInputChange({
-                                value: 0,
-                                pathName,
-                                indexProduct,
-                                indexVariation,
-                                fieldName: "unitaryValue",
-                              });
-
-                              handleInputChange({
-                                value: 0,
-                                pathName,
-                                indexProduct,
-                                indexVariation,
-                                fieldName: "discountValue",
-                              });
-
-                              handleInputChange({
-                                value: 0,
-                                pathName,
-                                indexProduct,
-                                indexVariation,
-                                fieldName: "total",
-                              });
-                            } else {
-                              handleInputChange({
-                                value: variation?.saleValue,
-                                pathName,
-                                indexProduct,
-                                indexVariation,
-                                fieldName: "unitaryValue",
-                              });
-                            }
-                          }}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="delete"
-                        onClick={() => {
-                          setFieldValue(
-                            "cart",
-                            cart.filter(
-                              (_, cartIndex) => cartIndex !== indexProduct
-                            )
-                          );
-                        }}
-                      >
-                        <Icon name="IconDelete" />
-                      </button>
-                    </div>
+                    <InputCourtesy {...propsInput} />
 
                     <div className="dados-autorizacao">
                       <AuthorizationStatusProduct item={product} />

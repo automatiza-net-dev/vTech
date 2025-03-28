@@ -5,6 +5,8 @@ import { Cart } from "@/presentation/pages/dashboard/financial-services";
 
 import * as S from "./styles";
 import { formatNumberToCurrency, useTable } from "infinity-forge";
+import { InputQuantity } from "@/presentation/pages/dashboard/financial-services/components/add-product/components";
+import { memo } from "react";
 
 export function ServicesSelected() {
   const { setFieldValue, values } = useFormikContext<{
@@ -48,9 +50,7 @@ export function ServicesSelected() {
 
       {values?.cart && values?.cart?.length > 0 && (
         <div>
- 
-            <GroupCart agrouppedCart={agrouppedCart} />
-       
+          <GroupCart agrouppedCart={agrouppedCart} cart={values.cart} />
         </div>
       )}
     </S.ServicesSelected>
@@ -58,11 +58,17 @@ export function ServicesSelected() {
 }
 
 function GroupCart({
+  cart,
   agrouppedCart,
 }: {
+  cart: Cart[];
   agrouppedCart: { [key: string]: Cart[] };
 }) {
-  const { Table } = useTable<{ productName: string; items: Cart[] }>({
+  const { Table } = useTable<{
+    id: string;
+    productName: string;
+    items: Cart[];
+  }>({
     columnsConfiguration: {
       columns: [{ id: "productName", label: "Serviço" }],
       childrens: {
@@ -72,23 +78,41 @@ function GroupCart({
             id: "departamentDescription",
             label: "Departamento",
             Component: {
-              Element: (props) => (
-                <p className="font-16-regular">
-                  {props?.variations?.[0]?.departamentDescription}
-                </p>
-              ),
+              Element: (props) => {
+                console.log(props);
+
+                return (
+                  <p className="font-16-regular">
+                    {props?.variations?.[0]?.departamentDescription}
+                  </p>
+                );
+              },
             },
           },
           {
-            id: "unitaryValue",
-            label: "Preço",
-            width: 900,
+            id: "departamentDescription",
+            label: "quantity",
             Component: {
-              Element: (props) => (
-                <p className="font-16-regular">
-                  {formatNumberToCurrency(props?.variations?.[0]?.unitaryValue || 0)}
-                </p>
-              ),
+              Element: (props) => {
+
+                const indexProduct = cart.findIndex(
+                  (item) =>
+                    item?.variations?.[0]?.departmentItemId ===
+                      props?.variations?.[0]?.departmentItemId
+                );
+
+                const pathName = `cart[${indexProduct}].variations[0]`;
+
+                const propsInput = {
+                  indexProduct: indexProduct,
+                  indexVariation: 0,
+                  pathName: pathName,
+                  product: props,
+                  variation: props?.variations?.[0],
+                };
+
+                return <InputQuantity {...propsInput} />;
+              },
             },
           },
         ],
@@ -97,6 +121,7 @@ function GroupCart({
     },
     configs: {
       tableData: Object.keys(agrouppedCart).map((item) => ({
+        id: agrouppedCart[item]?.[0]?.variations?.[0]?.id,
         productName: agrouppedCart[item]?.[0]?.variations?.[0]?.description,
         items: agrouppedCart[item],
       })),
@@ -105,29 +130,4 @@ function GroupCart({
   });
 
   return Table;
-}
-
-{
-  /* <div key={index} className="orcamento-item" style={{ gap: 20 }}>
-<span className="font-14-regular">
-  {orc?.departamentDescription} - {orc?.productDescription} - R${" "}
-  {orc?.price}
-</span>
-<button
-  type="button"
-  onClick={() => {
-    setFieldValue(
-      "cart",
-      values.cart.filter((_, i) => i !== index)
-    );
-  }}
-  style={{
-    background: "transparent",
-    border: 0,
-    color: "red",
-  }}
->
-  🗑️
-</button>
-</div> */
 }

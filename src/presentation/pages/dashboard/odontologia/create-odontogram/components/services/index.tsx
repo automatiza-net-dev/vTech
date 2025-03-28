@@ -37,7 +37,7 @@ export function Services() {
                   })
                 ) {
                   newOrcamento.push({
-                    id: service.product_variation_id ||  0,
+                    id: service.id ||  0,
                     observation: "",
                     courtesy: false,
                     variations: [{
