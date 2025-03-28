@@ -1,9 +1,7 @@
 import { useFormikContext } from "formik";
 import { Select, formatNumberToCurrency } from "infinity-forge";
 
-import { useConfigurationsSystem, useLoadAllProducts } from "@/presentation";
-
-import { Cart } from "../../interfaces";
+import { Cart, useConfigurationsSystem, useLoadAllProducts } from "@/presentation";
 
 export function SelectProduct() {
   const { values, setFieldValue } = useFormikContext<{
