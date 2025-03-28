@@ -135,7 +135,7 @@ function Activities({
       <Table
         className="uk-margin-small-top"
         columns={
-          user?.unit?.system?.type === "Vet"
+          user?.type === "Vet"
             ? opportunitiesActivitiesColumnsComplete
             : liftOneOpportunitiesActivitiesColumnsComplete
         }

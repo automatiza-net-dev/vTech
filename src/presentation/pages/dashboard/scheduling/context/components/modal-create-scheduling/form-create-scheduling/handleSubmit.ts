@@ -1,5 +1,5 @@
 import moment from "moment";
-import { BadRequestError, useToast, useQueryClient } from "infinity-forge";
+import { BadRequestError, useQueryClient, useToast } from "infinity-forge";
 
 import { RemoteCRM, RemoteSchedule } from "@/data";
 import { CrmTypes, container, patientTypes } from "@/container";
@@ -9,6 +9,7 @@ import {
   DateToYYYYMMDD,
   useVerifyPermissions,
   useLoadAllSchedulesUser,
+  useConfigurationsSystem,
 } from "@/presentation";
 
 export function useSubmitSchedule() {
@@ -19,6 +20,8 @@ export function useSubmitSchedule() {
     createSchedulingArgs,
     setCreateSchedulingArgs,
   } = useScheduling((state) => state);
+
+  const refetch = useQueryClient((state) => state.refetch);
 
   const scheduleUsers = useLoadAllSchedulesUser({
     to: DateToYYYYMMDD(selectedDate || new Date()) || "",
@@ -62,6 +65,7 @@ export function useSubmitSchedule() {
   }
 
   const { createToast } = useToast();
+  const {type} = useConfigurationsSystem();
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
   const overbookingPermission = useVerifyPermissions("AGE11");
@@ -151,10 +155,7 @@ export function useSubmitSchedule() {
             .get<RemoteCRM>(CrmTypes.RemoteCRM)
             .loadAll({
               client: payload.patientId,
-              contact:
-                process.env.client === "liftone"
-                  ? payload.patientId
-                  : payload.holderId,
+              contact: type === "Vet" ? payload.holderId: payload.patientId,
             });
 
           if (
@@ -176,7 +177,14 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-        scheduleUsers.mutate();
+          if (selectedDate && DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) {
+            refetch(
+              "RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(selectedDate),
+              {
+                mode: "include",
+              }
+            );
+          }
 
         return;
       }

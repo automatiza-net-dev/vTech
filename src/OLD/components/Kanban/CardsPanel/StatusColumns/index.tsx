@@ -14,7 +14,7 @@ import { Menu, Dropdown, Button } from "antd";
 import { Modal, Tooltip } from "infinity-forge";
 import SyncOpportunity from "../SyncOpportunity";
 
-import { SideBarContent } from "@/presentation";
+import { SideBarContent, useConfigurationsSystem } from "@/presentation";
 import { SideBar } from "infinity-forge";
 
 import { PlusOutline } from "styled-icons/evaicons-outline";
@@ -179,6 +179,8 @@ function StatusColumns({
     setSortedOpportunities(opportunities);
   }, [orderBy, opportunities]);
 
+  const {type} = useConfigurationsSystem()
+
   return (
     <Container className="uk-width-1-5">
       <div className="title-header uk-box-shadow-medium">
@@ -207,10 +209,9 @@ function StatusColumns({
                 }}
               >
                 <strong>
-                  {op?.contact?.name || ""}
-                  {process.env.client !== "liftone" &&
-                    `(${op?.client?.name || "pac. não vinculado"})`}
+                  {op?.contact?.name || ""} {type === "Vet" &&`(${op?.client?.name || " pac. não vinculado"})`}
                 </strong>
+                
                 <div className="uk-flex uk-flex-between uk-width-1-1">
                   <div>
                     Abertura: {moment(op?.openingDate).format("DD/MM/YYYY")}

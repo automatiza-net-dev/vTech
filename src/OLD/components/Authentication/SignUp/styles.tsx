@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div<{host?: string}>`
-  background-color: ${process.env.client === "liftone" ? "var(--lo-blue)" : "var(--orange-light-1)"};
+  background-color: ${props => props.theme.primaryColor + "c9"};
   
   color: #ffffff !important;
   width: 100%;

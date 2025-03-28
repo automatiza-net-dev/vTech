@@ -22,7 +22,7 @@ export default function ValidaTerceiros() {
         const token = router.query.token as string;
 
         const response = await axios.get<User>(
-          process.env.NEXT_PUBLIC_API + "/auth/me",
+          process.env.api + "auth/me",
           {
             headers: { Authorization: "Bearer " + token },
           }

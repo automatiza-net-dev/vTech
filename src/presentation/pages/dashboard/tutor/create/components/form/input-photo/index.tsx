@@ -5,6 +5,8 @@ import { InputProps, Icon, FileSystemType } from "infinity-forge";
 import { TooltipContainer } from "infinity-forge/dist/ui/components/tooltip/styles";
 
 import { useFile, useRenderedFile } from "infinity-forge";
+import { useConfigurationsSystem } from "@/presentation";
+
 import { FileButton } from "infinity-forge/dist/ui/components/form/input-file/styles";
 
 import * as S from "./styles";
@@ -12,8 +14,10 @@ import * as S from "./styles";
 export function InputPhoto(props: InputProps) {
   const { LabelFileArea, InputFile, UploadCamera, field } = useFile(props);
 
+  const { type } = useConfigurationsSystem();
+
   const defaultProfile =
-    process.env.client === "sancla"
+    type === "Vet"
       ? "/images/pages/patient/pet.jpg"
       : "/images/pages/patient/humano.jpg";
 
@@ -70,8 +74,10 @@ function ResultFile({
     file,
   });
 
+    const { type } = useConfigurationsSystem();
+
   const defaultProfile =
-    process.env.client === "sancla"
+  type === "Vet"
       ? "/images/pages/patient/pet.jpg"
       : "/images/pages/patient/humano.jpg";
 

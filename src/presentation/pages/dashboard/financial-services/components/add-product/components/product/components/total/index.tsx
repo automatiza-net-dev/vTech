@@ -1,7 +1,7 @@
 import { useFormikContext } from "formik";
 import { formatNumberToCurrency } from "infinity-forge";
 
-import { Cart } from "../../interfaces";
+import { Cart } from "../../../../interfaces";
 
 import * as S from "./styles";
 

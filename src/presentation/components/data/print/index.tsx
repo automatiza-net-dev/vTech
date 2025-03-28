@@ -6,6 +6,7 @@ import { useAuthAdmin } from "infinity-forge";
 import { User } from "@/domain";
 
 import * as S from "./styles";
+import { useConfigurationsSystem } from "@/presentation/context";
 
 export function Print({
   children,
@@ -19,6 +20,7 @@ export function Print({
   const { user } = useAuthAdmin();
 
   const printContentRef = useRef<HTMLDivElement>(null);
+  const {logo_url} = useConfigurationsSystem()
 
   const item = (
     <button
@@ -70,7 +72,7 @@ export function Print({
                   maxHeight: "60px",
                   objectFit: "contain",
                 }}
-                src={`/images/logo/${process.env.client}.png`}
+                src={logo_url}
               />
 
               <p className="font-12-bold">

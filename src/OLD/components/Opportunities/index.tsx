@@ -126,7 +126,7 @@ function Opportunities({
       <hr className="" />
       <Table
         columns={
-          user?.unit?.system?.type === "Vet"
+          user?.type === "Vet"
             ? opportunitiesColumns
             : liftOneOpportunitiesColumns
         }

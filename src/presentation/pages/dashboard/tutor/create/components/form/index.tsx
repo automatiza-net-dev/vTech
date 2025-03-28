@@ -14,7 +14,7 @@ import {
 import moment from "moment";
 
 import { RemoteTutor } from "@/data";
-import { useLoadTutor } from "@/presentation";
+import { useLoadTutor, useConfigurationsSystem } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 import { Pets } from "../pets";
@@ -24,11 +24,11 @@ import { defineRequireFields } from "./utils/define-required-fields";
 
 import { initialData } from "./initial-data";
 import { SelectGender } from "./select-gender";
+import { InputCorporateName } from "./input-corporate-name";
 
 import { ICreateTutorFormProps } from "./interfaces";
 
 import * as S from "./styles";
-import { InputCorporateName } from "./input-corporate-name";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
@@ -37,6 +37,8 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { data, isFetching, mutate } = useLoadTutor(tutorId);
 
   const { createToast } = useToast();
+
+  const {type} = useConfigurationsSystem();
 
   defineRequireFields(origin, ["CEP*"]);
 
@@ -91,7 +93,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
           <h2 className="font-22-bold">
             {tutorId
               ? `Editar - ${data?.name}`
-              : process.env.client === "sancla"
+              : type === "Vet"
               ? "Novo Tutor"
               : "Novo Paciente"}
           </h2>
@@ -150,23 +152,21 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <Input name="tags" label="Tag / Observação" />
 
-                {process.env.client === "liftone" && (
+                {type !== "Vet" && (
                   <>
                     <InputSwitch label="Diabetes" name="diabetes" />
 
                     <InputSwitch label="Hipertensão" name="hypertension" />
                   </>
                 )}
+
+                {tutorId && (
+                  <div className="row">
+                    <InputSwitch name="active" label="Ativo" />
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-
-          <div className="file">
-            {tutorId && (
-              <div className="row">
-                <InputSwitch name="active" label="Ativo" />
-              </div>
-            )}
           </div>
 
           <Contacts origin={origin} />
@@ -208,7 +208,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             ]}
           />
 
-          <Pets tutor={data} {...props} handleSuccess={handleSuccess} />
+          {type === "Vet" && <Pets tutor={data} {...props} handleSuccess={handleSuccess} />}
         </FormHandler>
       </S.CreateTutorForm>
     </Error>

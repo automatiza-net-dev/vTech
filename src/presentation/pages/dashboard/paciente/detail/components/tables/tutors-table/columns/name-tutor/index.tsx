@@ -17,6 +17,7 @@ export function NameTutor(props) {
           selectedId={props?.id}
         />
       </Modal>
+      
       {props?.name && (
         <span className="custom-link" onClick={() => setModal(true)}>
           {props.name}

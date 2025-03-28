@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { servicesService } from "@/OLD/services/services.service";
 
@@ -7,7 +7,7 @@ import { useSubgroups } from "@/OLD/hooks/useSubgroup";
 
 import { Container } from "./styles";
 import { Input, Select, Form, Switch } from "antd";
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, PageWrapper, Tab, useToast } from "infinity-forge";
 import DataForm from "./Data";
 import PriceForm from "./Price";
 
@@ -72,6 +72,28 @@ const Create = memo(function ({ setVisible }) {
       });
   }, [data, price]);
 
+  const memoized = useMemo(() => {
+    return    <Tab
+    onChangeTab={(tab) => setType(tab.key)}
+    tabs={[
+      {
+        title: "Dados cadastrais",
+        key: "data",
+        content: () => {
+          return <DataForm data={data} setData={setData} />;
+        },
+      },
+      {
+        key: "price",
+        title: "Preço",
+        content: () => {
+          return <PriceForm data={price} setData={setPrice} />;
+        },
+      },
+    ]}
+  />
+  }, [])
+
   return (
     <PageWrapper title="Cadastro de serviços">
       <Container>
@@ -91,7 +113,7 @@ const Create = memo(function ({ setVisible }) {
                     required
                     value={data?.description}
                     onChange={(e) =>
-                      setData({ ...data, description: e.target.value })
+                      setData(prev => ({ ...prev, description: e.target.value }))
                     }
                   />
                 </Form.Item>
@@ -103,7 +125,7 @@ const Create = memo(function ({ setVisible }) {
                   <Input
                     value={data?.referenceCode}
                     onChange={(e) =>
-                      setData({ ...data, referenceCode: e.target.value })
+                      setData(prev => ({ ...prev, referenceCode: e.target.value }))
                     }
                   />
                 </Form.Item>
@@ -117,7 +139,7 @@ const Create = memo(function ({ setVisible }) {
                     value={data.subgroupId}
                     className="uk-width-1-1"
                     placeholder="Selecione"
-                    onChange={(val) => setData({ ...data, subgroupId: val })}
+                    onChange={(val) => setData((prev) => ({ ...prev, subgroupId: val }))}
                   >
                     {subgroups.length > 0 &&
                       subgroups.map((subgroup) => (
@@ -135,7 +157,7 @@ const Create = memo(function ({ setVisible }) {
                   <Select
                     className="uk-width-1-1"
                     placeholder="Selecione"
-                    onChange={(val) => setData({ ...data, serviceType: val })}
+                    onChange={(val) => setData((prev) => ({ ...prev, serviceType: val }))}
                   >
                     <Option value="service">Serviço</Option>
                     <Option value="exam">Exame</Option>
@@ -160,30 +182,7 @@ const Create = memo(function ({ setVisible }) {
               </div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                onClick={() => setType("data")}
-                // type={type === "data" && "primary"}
-                text="Dados cadastrais"
-              />
-              <Button
-                onClick={() => setType("price")}
-                type={type === "price" && "primary"}
-                text="Preço"
-              />
-            </div>
-            <section className="uk-margin-top">
-              {type === "data" && <DataForm data={data} setData={setData} />}
-              {type === "price" && (
-                <PriceForm data={price} setData={setPrice} />
-              )}
-            </section>
+         {memoized}
           </section>
           <hr />
           <footer

@@ -4,7 +4,6 @@ import { useField, useFormikContext } from "formik";
 import { Button, InputControl, Modal, Select, useToast } from "infinity-forge";
 
 import {
-  ClientPermission,
   FormCreatePatient,
   useLoadSchedulesPatients,
 } from "@/presentation";
@@ -15,7 +14,6 @@ import { ICreateTutorFormProps } from "../form/interfaces";
 import * as S from "./styles";
 
 export function Pets({
-  tutor,
   addPet,
   handleSuccess,
 }: {
@@ -49,7 +47,7 @@ export function Pets({
   const pets = values["patients"] || [];
 
   return (
-    <ClientPermission client="sancla">
+    
       <InputControl name="holders">
         <S.Pets>
           {values.patients && values.patients.length > 0 && (
@@ -186,6 +184,6 @@ export function Pets({
           </Modal>
         </S.Pets>
       </InputControl>
-    </ClientPermission>
+    
   );
 }

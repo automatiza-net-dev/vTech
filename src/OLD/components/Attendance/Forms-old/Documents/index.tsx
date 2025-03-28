@@ -22,6 +22,7 @@ import { useToast } from "infinity-forge";
 import moment from "moment";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
+import { useConfigurationsSystem } from "@/presentation";
 
 export default function Documents({
   modal,
@@ -44,6 +45,8 @@ export default function Documents({
   const router = useRouter();
   const patient = useLoadPatient();
   const queryClient = useQueryClient();
+
+  const {type} = useConfigurationsSystem()
 
   async function registerPrint() {
     try {
@@ -71,7 +74,7 @@ export default function Documents({
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
         tutorId:
-          process.env.client == "sancla"
+        type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
         dependentId: patient?.data?.id,

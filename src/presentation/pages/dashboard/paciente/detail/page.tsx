@@ -10,7 +10,7 @@ import {
   VaccinesTable,
   ActionsPatient,
 } from "./components";
-import { useLoadPatient, VaccinesPanel } from "@/presentation";
+import { useLoadPatient, useConfigurationsSystem, VaccinesPanel } from "@/presentation";
 import { useQueryClient } from "react-query";
 
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
@@ -23,6 +23,9 @@ export function PacientePage() {
   const { data, isLoading } = useLoadPatient();
 
   const queryClient = useQueryClient();
+
+  const {type} = useConfigurationsSystem()
+  
 
   useEffect(() => {
     queryClient.invalidateQueries(["RemotePatient"]);
@@ -43,19 +46,19 @@ export function PacientePage() {
       title: "Tutores",
       content: (props) => <TutorsTable {...data} {...props} />,
       key: "tutors",
-      active: process.env.clientName === "Sanclá",
+      active: type === "Vet",
     },
     {
       title: "Vacinas / Vermífugos lançados",
       content: (props) => <VaccinesTable {...data} {...props} />,
       key: "vaccines",
-      active: process.env.clientName === "Sanclá",
+      active: type === "Vet",
     },
     {
       title: "Vacinas / Vermífugos Status",
       content: (props) => <VaccinesPanel patientId={data?.id} />,
       key: "vaccines status",
-      active: process.env.clientName === "Sanclá",
+      active: type === "Vet",
     },
     {
       title: "Vendas",
@@ -69,7 +72,7 @@ export function PacientePage() {
         <HospitalizationTimeline patientData={data} modal={false} {...props} />
       ),
       key: "hospitalization",
-      active: process.env.clientName === "Sanclá",
+      active: type === "Vet",
     },
     {
       title: "Histórico agenda",
@@ -81,7 +84,7 @@ export function PacientePage() {
       title: "Negociações",
       content: () => <Negotiations />,
       key: "negotiations",
-      active: process.env.client === "liftone",
+      active: type !== "Vet",
     },
   ].filter((item) => item.active);
 

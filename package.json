@@ -4,12 +4,11 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "dev": "next dev -p 3058",
-    "build": "next build",
-    "build:debug": "next build --debug",
-    "start": "next start -p 3060",
-    "type-check": "tsc",
-    "test": "cypress open"
+    "lift": "next dev -p 3059",
+    "sancla": "next dev -p 3058",
+    "clinicas": "next dev -p 3057",
+    "odonto": "next dev -p 3060",
+    "build": "next build"
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
@@ -45,7 +44,7 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.6",
     "html-react-parser": "^3.0.8",
-    "infinity-forge": "7.7.4",
+    "infinity-forge": "^8.1.2",
     "inversify": "^6.0.2",
     "moment": "^2.29.1",
     "next": "^15.1.6",
@@ -61,7 +60,7 @@
     "react-quill": "^2.0.0",
     "react-to-print": "^3.0.5",
     "reflect-metadata": "^0.2.2",
-    "styled-components": "^6.1.15",
+    "styled-components": "^6.1.16",
     "styled-icons": "^10.45.0",
     "xlsx": "^0.18.5",
     "yup": "^1.6.1",

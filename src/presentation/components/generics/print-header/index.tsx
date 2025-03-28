@@ -5,14 +5,17 @@ import { useAuthAdmin } from 'infinity-forge'
 import masks from "@/OLD/utils/masks";
 
 import * as S from './styles';
+import { useConfigurationsSystem } from "@/presentation/context";
 
 export function PrintHeader() {
   const unit = useAuthAdmin()?.user?.unit;
 
+  const {logo_url} = useConfigurationsSystem()
+
   return (
     <S.PrintHeader>
       <div>
-        <img src={`/images/logo/${process.env.client}.png`} width="100" />
+        <img src={logo_url} width="100" />
       </div>
       <div>
         <p>{unit?.fantasy_name}</p>

@@ -15,6 +15,7 @@ import { Button } from "infinity-forge";
 import { places } from "@/OLD/utils/places";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function Filters({ filters, setFilters, values, setValues, setReload }) {
   const [cities, setCities] = useState([]);
@@ -23,6 +24,8 @@ export function Filters({ filters, setFilters, values, setValues, setReload }) {
   const { patients } = usePatients();
   const { tutors } = useTutor(false, false);
   const { scheduleStatus } = useScheduleStatus();
+
+  const { type} =useConfigurationsSystem()
 
   // const { allEconomicGroup } = useEconomicGroup();
 
@@ -154,7 +157,7 @@ export function Filters({ filters, setFilters, values, setValues, setReload }) {
           </Select>
         </InputBox>
 
-        {process.env.client !== "liftone" && (
+        {type === "Vet" && (
           <InputBox className="uk-width-1-3">
             <label>Paciente</label>
             <AutoComplete

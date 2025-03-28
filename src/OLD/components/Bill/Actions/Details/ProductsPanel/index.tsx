@@ -79,7 +79,7 @@ const ProductsPanel = memo(function ProductsPanel({
           moment(item?.reviewCancelDate).format("DD/MM/YYYY HH:mm")}{" "}
         <br />
         {item?.reviewCancelNotes && (
-          <p className="font-14-regular">{item?.reviewCancelNotes}</p>
+          <p className="font-14-regular" dangerouslySetInnerHTML={{ __html: item?.reviewCancelNotes || "" }} />
         )}
       </>
     );
@@ -120,15 +120,31 @@ const ProductsPanel = memo(function ProductsPanel({
               ` (${payment?.finance?.paymentMethod?.description})`
             : "-",
           cancelled: (
-            <div className="font-16-regular" style={{ textAlign: "right" }}>
-              {payment?.cancelled === "P" ? (
-                <FormatProductCanceled text={"Revisão pendente"} />
-              ) : payment?.cancelled === "S" ? (
-                <FormatProductCanceled text={"Aprovado por"} item={payment} />
-              ) : payment?.cancelled === "N" ? (
-                <FormatProductCanceled text={"Recusado por"} item={payment} />
-              ) : (
-                <></>
+            <div
+              className="font-16-regular"
+              style={{ textAlign: "right", display: "flex", alignItems: "center", gap: 15 }}
+            >
+              <div>
+                {payment?.cancelled === "P" ? (
+                  <FormatProductCanceled text={"Revisão pendente"} />
+                ) : payment?.cancelled === "S" ? (
+                  <FormatProductCanceled text={"Aprovado por"} item={payment} />
+                ) : payment?.cancelled === "N" ? (
+                  <FormatProductCanceled text={"Recusado por"} item={payment} />
+                ) : (
+                  <></>
+                )}
+              </div>
+
+              {payment?.cancelled === "S" && (
+                <div
+                  style={{
+                    height: 20,
+                    minWidth: 20,
+                    borderRadius: "100%",
+                    background: "red",
+                  }}
+                />
               )}
             </div>
           ),

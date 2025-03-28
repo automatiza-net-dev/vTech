@@ -121,6 +121,7 @@ export function AuthorizationSell(
           <FormHandler
             debugMode
             onSucess={async (formData) => {
+              console.log(formData)
               if (props.cancelled === "F") {
                 await onSubmitAprroveCancelF({ formData, props });
               }
@@ -137,7 +138,7 @@ export function AuthorizationSell(
                 });
               }
 
-              if (!props.cancelled) {
+              if (!props.cancelled || props?.cancelled === "N") {
                 await onSubmitCancel({ formData, props });
               }
 

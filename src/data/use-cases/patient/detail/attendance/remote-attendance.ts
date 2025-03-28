@@ -18,10 +18,10 @@ export class RemoteAttendances
     private readonly httpClient: domain.HttpClient
   ) {}
 
-  async open(params: domain.OpenAttendace.Params) {
+  async open(params: domain.OpenAttendace.Params & { typeSystem?: "Vet" }) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(
-        process.env.client === "sancla"
+        params.typeSystem === "Vet"
           ? `attendances/open`
           : "n-timeline/evaluation"
       ),
@@ -35,10 +35,10 @@ export class RemoteAttendances
     return response as domain.OpenAttendace.Model;
   }
 
-  async update(params: domain.UpdateAttendace.Params) {
+  async update(params: domain.UpdateAttendace.Params & { typeSystem?: "Vet" }) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make(
-        process.env.client === "sancla"
+      params.typeSystem === "Vet"
           ? `attendances/update/${params.id}`
           : `n-timeline/evaluation/${params.id}`
       ),
