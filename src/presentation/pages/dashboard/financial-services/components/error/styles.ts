@@ -9,9 +9,7 @@ export const ErrorDailyBox = styled("div")`
   height: 100%;
 
   svg {
-    height: 90px;
     width: auto;
-    margin-bottom: 50px;
   }
 
   p {

@@ -12,12 +12,14 @@ import {
 
 import api from "@/OLD/services";
 import { step02Schema } from "./schema";
-import { SelectUF, SelectCity } from "@/presentation";
+import { SelectUF, SelectCity, useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
 export function Step2(props) {
   const router = useRouter();
+
+  const { id } = useConfigurationsSystem()
 
   const { createToast } = useToast();
 
@@ -25,6 +27,7 @@ export function Step2(props) {
     try {
       await api?.post("/users/send-confirmation", {
         email: props?.data?.email,
+        systemId: id,
         ...formData,
       });
     } catch (err: any) {

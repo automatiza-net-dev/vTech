@@ -177,9 +177,12 @@ export function AddSale({
     }
   }
 
+  console.log(initialData)
+
   return (
     <S.AddSale>
       <FormHandler
+      debugMode
         isStickyButtons
         disableEnterKeySubmitForm
         button={{ text: "SALVAR" }}
@@ -252,3 +255,5 @@ export function AddSale({
     </S.AddSale>
   );
 }
+
+

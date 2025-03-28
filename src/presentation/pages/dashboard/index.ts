@@ -6,6 +6,7 @@ export * from "./bills";
 export * from "./reports";
 export * from "./paciente";
 export * from "./vaccines";
+export * from "./odontologia"
 export * from "./scheduling";
 export * from "./relatorios";
 export * from "./_dashboard_";
