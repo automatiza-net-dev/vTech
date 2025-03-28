@@ -56,8 +56,9 @@ export default function App({ Component, pageProps }) {
 
   const { configurations } = useConfigurationsSystemConfigurations();
 
-  if(!configurations) {
-    return <></>
+
+  if (!configurations) {
+    return <></>;
   }
 
   return (
