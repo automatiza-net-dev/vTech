@@ -4,9 +4,8 @@ import { ItemDepartament } from "../../hooks";
 import { Cart } from "@/presentation/pages/dashboard/financial-services";
 
 import * as S from "./styles";
-import { formatNumberToCurrency, useTable } from "infinity-forge";
-import { InputQuantity } from "@/presentation/pages/dashboard/financial-services/components/add-product/components";
-import { memo } from "react";
+import {  useTable } from "infinity-forge";
+import { InputQuantity, InputUnitaryValue, InputDiscount, InputTotal, InputCourtesy } from "@/presentation/pages/dashboard/financial-services/components/add-product/components";
 
 export function ServicesSelected() {
   const { setFieldValue, values } = useFormikContext<{
@@ -90,8 +89,8 @@ function GroupCart({
             },
           },
           {
-            id: "departamentDescription",
-            label: "quantity",
+            id: "quantity",
+            label: "Quantidade",
             Component: {
               Element: (props) => {
 
@@ -115,6 +114,111 @@ function GroupCart({
               },
             },
           },
+          {
+            id: "unitaryValue",
+            label: "R$ Unitario",
+            Component: {
+              Element: (props) => {
+
+                const indexProduct = cart.findIndex(
+                  (item) =>
+                    item?.variations?.[0]?.departmentItemId ===
+                      props?.variations?.[0]?.departmentItemId
+                );
+
+                const pathName = `cart[${indexProduct}].variations[0]`;
+
+                const propsInput = {
+                  indexProduct: indexProduct,
+                  indexVariation: 0,
+                  pathName: pathName,
+                  product: props,
+                  variation: props?.variations?.[0],
+                };
+
+                return <InputUnitaryValue {...propsInput} />;
+              },
+            },
+          },
+          {
+            id: "discountValue",
+            label: "R$ Desconto",
+            Component: {
+              Element: (props) => {
+
+                const indexProduct = cart.findIndex(
+                  (item) =>
+                    item?.variations?.[0]?.departmentItemId ===
+                      props?.variations?.[0]?.departmentItemId
+                );
+
+                const pathName = `cart[${indexProduct}].variations[0]`;
+
+                const propsInput = {
+                  indexProduct: indexProduct,
+                  indexVariation: 0,
+                  pathName: pathName,
+                  product: props,
+                  variation: props?.variations?.[0],
+                };
+
+                return <InputDiscount {...propsInput} />;
+              },
+            },
+          },
+
+          {
+            id: "total",
+            label: "R$ Total",
+            Component: {
+              Element: (props) => {
+
+                const indexProduct = cart.findIndex(
+                  (item) =>
+                    item?.variations?.[0]?.departmentItemId ===
+                      props?.variations?.[0]?.departmentItemId
+                );
+
+                const pathName = `cart[${indexProduct}].variations[0]`;
+
+                const propsInput = {
+                  indexProduct: indexProduct,
+                  indexVariation: 0,
+                  pathName: pathName,
+                  product: props,
+                  variation: props?.variations?.[0],
+                };
+
+                return <InputTotal {...propsInput} />;
+              },
+            },
+          },
+          {
+            id: "courtesy",
+            label: "Cortesia",
+            Component: {
+              Element: (props) => {
+
+                const indexProduct = cart.findIndex(
+                  (item) =>
+                    item?.variations?.[0]?.departmentItemId ===
+                      props?.variations?.[0]?.departmentItemId
+                );
+
+                const pathName = `cart[${indexProduct}].variations[0]`;
+
+                const propsInput = {
+                  indexProduct: indexProduct,
+                  indexVariation: 0,
+                  pathName: pathName,
+                  product: props,
+                  variation: props?.variations?.[0],
+                };
+
+                return <InputCourtesy {...propsInput} />
+              }
+            }
+          }
         ],
         omitEmptyList: true,
       },

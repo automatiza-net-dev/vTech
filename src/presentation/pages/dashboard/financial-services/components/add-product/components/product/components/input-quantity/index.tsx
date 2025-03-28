@@ -19,9 +19,10 @@ export function InputQuantity({
   return (
     <Input
       type="number"
+      onChangeMode="blur"
       name={pathName + `.quantity`}
       readOnly={!!product.variations?.[0]?.billItemId}
-      onChangeInput={(value) => {
+      onChangeBlur={(value) => {
         handleInputChangeCart({
           cart,
           setFieldValue,
@@ -31,9 +32,6 @@ export function InputQuantity({
           indexVariation,
           fieldName: "quantity",
         });
-      }}
-      controlledInitialValue={{
-        value: String(variation?.quantity),
       }}
     />
   );

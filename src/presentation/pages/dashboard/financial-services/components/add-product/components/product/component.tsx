@@ -9,6 +9,7 @@ import {
   InputDiscount,
   InputUnitaryValue,
   DiscountPercentage,
+  InputTotal,
 } from "./components";
 import { AuthorizationStatusProduct } from "../../../authorization-status-product";
 
@@ -139,21 +140,7 @@ export function AddProductDefault() {
 
                     <InputDiscount {...propsInput} />
 
-                    <div className="total">
-                      <div>
-                        <InputCurrency
-                          controlledInitialValue={{
-                            value: String(variation?.total),
-                          }}
-                          name={pathName + `.total`}
-                          readOnly
-                        />
-
-                        {!!variation.discountValue && (
-                          <DiscountPercentage variation={variation} />
-                        )}
-                      </div>
-                    </div>
+                    <InputTotal {...propsInput} />
 
                     <InputCourtesy {...propsInput} />
 

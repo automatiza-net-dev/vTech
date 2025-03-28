@@ -25,7 +25,8 @@ export function InputUnitaryValue({
     <InputCurrency
       name={pathName + `.unitaryValue`}
       readOnly={!isPossibleChangePricesProducs || variation?.courtesy}
-      onChangeInput={(value) => {
+      onChangeMode="blur"
+      onChangeBlur={(value) => {
         handleInputChangeCart({
           cart,
           setFieldValue,
@@ -36,9 +37,9 @@ export function InputUnitaryValue({
           fieldName: "unitaryValue",
         });
       }}
-      controlledInitialValue={{
-        value: String(variation?.unitaryValue),
-      }}
+      // controlledInitialValue={{
+      //   value: String(variation?.unitaryValue),
+      // }}
     />
   );
 }

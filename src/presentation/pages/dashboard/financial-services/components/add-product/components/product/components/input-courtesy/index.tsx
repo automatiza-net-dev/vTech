@@ -3,6 +3,8 @@ import { Icon } from "infinity-forge";
 import { Cart } from "../../../../interfaces";
 import { handleInputChangeCart } from "../../component";
 
+import * as S from "./styles"
+
 export function InputCourtesy({
   product,
   pathName,
@@ -11,7 +13,7 @@ export function InputCourtesy({
   indexVariation,
 }: {
   variation;
-  product: Cart;
+  product: any;
   pathName: string;
   indexProduct: number;
   indexVariation: number;
@@ -23,7 +25,7 @@ export function InputCourtesy({
   const cart = values["cart"];
 
   return (
-    <div className="cortesia">
+    <S.InputCourtesy>
       <div>
         <input
           type="checkbox"
@@ -96,6 +98,6 @@ export function InputCourtesy({
       >
         <Icon name="IconDelete" />
       </button>
-    </div>
+    </S.InputCourtesy>
   );
 }

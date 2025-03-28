@@ -23,14 +23,15 @@ export function InputDiscount({
 
   return (
     <InputCurrency
-      controlledInitialValue={{
-        value: String(variation?.discountValue),
-      }}
+      // controlledInitialValue={{
+      //   value: String(variation?.discountValue),
+      // }}
       name={pathName + `.discountValue`}
       max={maxDiscount}
       errorMessageMax={() => `Desconto exedido R$${maxDiscount}`}
       readOnly={!!(Number(variation.unitaryValue) === 0)}
-      onChangeInput={(value) => {
+      onChangeMode="blur"
+      onChangeBlur={(value) => {
         handleInputChangeCart({
           cart,
           setFieldValue,

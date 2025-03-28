@@ -1,4 +1,4 @@
-import { CartVariation } from "../../../interfaces";
+import { CartVariation } from "../../../../interfaces";
 
 export function DiscountPercentage({
   variation,
