@@ -16,7 +16,7 @@ export function useLoadBudget({ id }: { id: Budget["id"] }) {
       return {
         ...response,
         items: formatProductsApiToCartItems({ items: response?.items }),
-      } 
+      };
     },
     enabled: !!id,
   });
@@ -53,11 +53,12 @@ export function formatProductsApiToCartItems({
           productVariationId: item?.productVariation?.id,
           saleValue: item?.sale_value,
           unitaryValue: item?.unitary_value,
-          maximum_discount_percentage:
-            item?.productVariation?.businessUnitProducts?.[0]
-              ?.maximum_discount_percentage || 0,
+          departmentId: item?.department_id,
+          departmentItemId: item?.department_item_id,
+          departamentDescription: item?.department_item_description,
+          maximum_discount_percentage: item?.productVariation?.businessUnitProducts?.[0]?.maximum_discount_percentage || 0,
         },
       ],
-    };
+    } as any;
   });
 }

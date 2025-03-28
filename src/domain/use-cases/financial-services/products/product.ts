@@ -46,6 +46,9 @@ export type TreatmentExecutions = {
 
 export type Product = {
   id: string | number;
+  department_id?: number;
+  department_item_id?: number;
+  department_item_description: string;
   price?: number;
   cancelledQuantity?: number;
   product_variation_id?: number;

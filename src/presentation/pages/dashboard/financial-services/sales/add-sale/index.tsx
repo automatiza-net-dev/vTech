@@ -177,6 +177,8 @@ export function AddSale({
     }
   }
 
+  console.log(initialData)
+
   return (
     <S.AddSale>
       <FormHandler
@@ -253,3 +255,5 @@ export function AddSale({
     </S.AddSale>
   );
 }
+
+
