@@ -5,9 +5,11 @@ export const CreateOdontogram = styled.div`
   gap: 20px;
   padding: 20px;
 
-  .container_orcamento {
+
+  .content {
     display: flex;
-    gap: 15px;
+    gap: 20px;
+    margin-bottom: 15px;
   }
 
   .Arcada {

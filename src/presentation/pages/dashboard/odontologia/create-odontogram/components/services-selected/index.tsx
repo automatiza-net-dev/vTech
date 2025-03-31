@@ -4,8 +4,14 @@ import { ItemDepartament } from "../../hooks";
 import { Cart } from "@/presentation/pages/dashboard/financial-services";
 
 import * as S from "./styles";
-import {  useTable } from "infinity-forge";
-import { InputQuantity, InputUnitaryValue, InputDiscount, InputTotal, InputCourtesy } from "@/presentation/pages/dashboard/financial-services/components/add-product/components";
+import { formatNumberToCurrency, useTable } from "infinity-forge";
+import {
+  InputQuantity,
+  InputUnitaryValue,
+  InputDiscount,
+  InputTotal,
+  InputCourtesy,
+} from "@/presentation/pages/dashboard/financial-services/components/add-product/components";
 
 export function ServicesSelected() {
   const { setFieldValue, values } = useFormikContext<{
@@ -22,30 +28,66 @@ export function ServicesSelected() {
 
   return (
     <S.ServicesSelected>
-      {((values?.cart && values?.cart?.length > 0) ||
-        (values?.departamentItems && values?.departamentItems?.length > 0)) && (
-        <div className="top">
-          {values?.departamentItems && values?.departamentItems?.length > 0 && (
-            <button
-              type="button"
-              className="font-12-bold"
-              onClick={() => setFieldValue("departamentItems", [])}
-            >
-              Limpar Itens Selecionados
-            </button>
-          )}
+      <div className="top">
+        <div className="services_informations">
+          <h3 className="font-16-regular">Itens Adicionados</h3>
 
-          {values?.cart && values?.cart?.length > 0 && (
-            <button
-              type="button"
-              className="font-12-bold"
-              onClick={() => setFieldValue("cart", [])}
-            >
-              Limpar Orçamentos
-            </button>
-          )}
+          <span className="font-16-regular">
+            {values?.cart?.reduce(
+              (reducer, item) =>
+                reducer +
+                item?.variations?.reduce(
+                  (reducer, item) => Number(item.quantity) + Number(reducer),
+                  0
+                ),
+              0
+            )}{" "}
+            itens
+          </span>
+
+          <span className="font-16-regular">
+            total:{" "}
+            {formatNumberToCurrency(
+              values?.cart?.reduce(
+                (reducer, item) =>
+                  reducer +
+                  item?.variations?.reduce(
+                    (reducer, item) => Number(item?.total) + Number(reducer),
+                    0
+                  ),
+                0
+              )
+            )}
+          </span>
         </div>
-      )}
+
+        {((values?.cart && values?.cart?.length > 0) ||
+          (values?.departamentItems &&
+            values?.departamentItems?.length > 0)) && (
+          <div style={{ display: "flex", gap: 20 }}>
+            {values?.departamentItems &&
+              values?.departamentItems?.length > 0 && (
+                <button
+                  type="button"
+                  className="font-14-bold"
+                  onClick={() => setFieldValue("departamentItems", [])}
+                >
+                  Limpar Itens Selecionados
+                </button>
+              )}
+
+            {values?.cart && values?.cart?.length > 0 && (
+              <button
+                type="button"
+                className="font-14-bold"
+                onClick={() => setFieldValue("cart", [])}
+              >
+                Limpar Orçamentos
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       {values?.cart && values?.cart?.length > 0 && (
         <div>
@@ -66,10 +108,16 @@ function GroupCart({
   const { Table } = useTable<{
     id: string;
     productName: string;
+    quantity: number;
+    total: string;
     items: Cart[];
   }>({
     columnsConfiguration: {
-      columns: [{ id: "productName", label: "Serviço" }],
+      columns: [
+        { id: "productName", label: "Serviço", width: 200 },
+        { id: "quantity", label: "Quantidade", width: 50 },
+        { id: "total", label: "Total", width: 1500 },
+      ],
       childrens: {
         childrenKey: "items",
         columns: [
@@ -93,11 +141,10 @@ function GroupCart({
             label: "Quantidade",
             Component: {
               Element: (props) => {
-
                 const indexProduct = cart.findIndex(
                   (item) =>
                     item?.variations?.[0]?.departmentItemId ===
-                      props?.variations?.[0]?.departmentItemId
+                    props?.variations?.[0]?.departmentItemId
                 );
 
                 const pathName = `cart[${indexProduct}].variations[0]`;
@@ -119,11 +166,10 @@ function GroupCart({
             label: "R$ Unitario",
             Component: {
               Element: (props) => {
-
                 const indexProduct = cart.findIndex(
                   (item) =>
                     item?.variations?.[0]?.departmentItemId ===
-                      props?.variations?.[0]?.departmentItemId
+                    props?.variations?.[0]?.departmentItemId
                 );
 
                 const pathName = `cart[${indexProduct}].variations[0]`;
@@ -145,11 +191,10 @@ function GroupCart({
             label: "R$ Desconto",
             Component: {
               Element: (props) => {
-
                 const indexProduct = cart.findIndex(
                   (item) =>
                     item?.variations?.[0]?.departmentItemId ===
-                      props?.variations?.[0]?.departmentItemId
+                    props?.variations?.[0]?.departmentItemId
                 );
 
                 const pathName = `cart[${indexProduct}].variations[0]`;
@@ -172,11 +217,10 @@ function GroupCart({
             label: "R$ Total",
             Component: {
               Element: (props) => {
-
                 const indexProduct = cart.findIndex(
                   (item) =>
                     item?.variations?.[0]?.departmentItemId ===
-                      props?.variations?.[0]?.departmentItemId
+                    props?.variations?.[0]?.departmentItemId
                 );
 
                 const pathName = `cart[${indexProduct}].variations[0]`;
@@ -198,11 +242,10 @@ function GroupCart({
             label: "Cortesia",
             Component: {
               Element: (props) => {
-
                 const indexProduct = cart.findIndex(
                   (item) =>
                     item?.variations?.[0]?.departmentItemId ===
-                      props?.variations?.[0]?.departmentItemId
+                    props?.variations?.[0]?.departmentItemId
                 );
 
                 const pathName = `cart[${indexProduct}].variations[0]`;
@@ -215,10 +258,10 @@ function GroupCart({
                   variation: props?.variations?.[0],
                 };
 
-                return <InputCourtesy {...propsInput} />
-              }
-            }
-          }
+                return <InputCourtesy {...propsInput} />;
+              },
+            },
+          },
         ],
         omitEmptyList: true,
       },
@@ -228,6 +271,26 @@ function GroupCart({
         id: agrouppedCart[item]?.[0]?.variations?.[0]?.id,
         productName: agrouppedCart[item]?.[0]?.variations?.[0]?.description,
         items: agrouppedCart[item],
+        total: formatNumberToCurrency(
+          agrouppedCart[item]?.reduce(
+            (reducer, item) =>
+              reducer +
+              item.variations.reduce(
+                (reducer, i) => reducer + Number(i.total),
+                0
+              ),
+            0
+          )
+        ),
+        quantity: agrouppedCart[item]?.reduce(
+          (reducer, item) =>
+            reducer +
+            item.variations.reduce(
+              (reducer, i) => reducer + Number(i.quantity),
+              0
+            ),
+          0
+        ),
       })),
       errorMessage: "Não há grupos no momento",
     },

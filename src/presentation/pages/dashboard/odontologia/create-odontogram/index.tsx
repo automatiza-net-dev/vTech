@@ -10,12 +10,13 @@ import * as S from "./styles";
 export function CreateOdontogram() {
   return (
     <S.CreateOdontogram>
-      <Departaments />
-
-      <div className="container_orcamento">
+      <div className="content">
         <Services />
 
-        <DepartamentItems />
+        <div>
+          <Departaments />
+          <DepartamentItems />
+        </div>
       </div>
 
       <ServicesSelected />
