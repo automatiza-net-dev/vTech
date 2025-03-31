@@ -257,7 +257,8 @@ const Edit = memo(function Edit({
 
                 setData({
                   ...data,
-                  tefFlagId: undefined,
+                  tefFlagId: "",
+                  checkingAccountId: paymentSelected?.checkingAccount?.id || data?.checkingAccountId,
                   paymentMethodId: paymentSelected?.id,
                 });
               }}
