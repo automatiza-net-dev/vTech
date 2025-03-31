@@ -270,7 +270,17 @@ function useConfigurationsSystemConfigurations() {
             },
           );
 
-          setConfigurations(response);
+          setConfigurations({
+            "id": 2,
+            "name": "LiftOne",
+            "type": "Clinicas",
+            "colors": "#4BC0C0,#FFCD56,#FFA740,#925BE3,#F06297,#00B7CC,#00C7DE,#00D3EB,#00DEF7,#00E5FF,red,blue,green,yellow,purple",
+            "url": "http://localhost:3059",
+            "primary_color": "#005862",
+            "secondary_color": "",
+            "home_image_url": "https://automatiza-cdn.s3.sa-east-1.amazonaws.com/home/liftone.png",
+            "logo_url": "/assets/logo-liftone.png"
+        });
         }, 1000);
       })();
     }
