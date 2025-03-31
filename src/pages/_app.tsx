@@ -263,12 +263,12 @@ function useConfigurationsSystemConfigurations() {
         const systemUrl = new URL(window.location.origin).origin;
 
         setTimeout(async () => {
-          const response = await api(
-            {
-              url: `systems/identification?url=${systemUrl}`,
-              method: "post",
-            },
-          );
+          // const response = await api(
+          //   {
+          //     url: `systems/identification?url=${systemUrl}`,
+          //     method: "post",
+          //   },
+          // );
 
           setConfigurations({
             "id": 2,
