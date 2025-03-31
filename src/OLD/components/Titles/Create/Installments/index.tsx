@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import moment from "moment";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
@@ -9,6 +9,7 @@ import { Container } from "./styles";
 import { Input, DatePicker, AutoComplete } from "antd";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { Select } from "infinity-forge";
+import { useFormikContext } from "formik";
 
 function Installments({
   installments,
@@ -18,7 +19,22 @@ function Installments({
   type,
   paymentMethodSearch,
 }) {
-  const [initialValue] = useState(paymentMethodSearch)
+  const [flags, setFlags] = useState([]);
+  const [initialValue] = useState(paymentMethodSearch);
+
+  useEffect(() => {
+    const newFlags = paymentMethods
+      .find((method) => method?.id === installments?.[index]?.paymentMethodId)
+      ?.flags?.map((flag: any) => ({
+        label: flag?.flag?.description,
+        value: flag?.flag?.id,
+      }));
+
+    setFlags(newFlags);
+  }, []);
+
+  const { setFieldValue } = useFormikContext();
+
   return (
     <Container className="uk-margin-top uk-padding-small">
       <div className="uk-flex">
@@ -113,11 +129,10 @@ function Installments({
           />
         </div>
         <div className="uk-margin-small-right uk-width-1-2">
-      
           <Select
             label="Forma de pagamento"
             name={`installments.methodpayment[${index}].paymentMethodId`}
-            controlledInitialValue={{ value: paymentMethods.find(item => item?.description === initialValue)?.id }}
+            value={installments?.[index]?.paymentMethodId}
             onlyOneValue
             options={
               paymentMethods?.map((method) => ({
@@ -131,12 +146,54 @@ function Installments({
               obj.splice(index, 1, {
                 ...installments[index],
                 paymentMethodId: value,
+                tefFlagId: "",
+              });
+
+              setFlags(
+                paymentMethods
+                  .find((method) => method?.id === value)
+                  ?.flags?.map((flag: any) => ({
+                    label: flag?.flag?.description,
+                    value: flag?.flag?.id,
+                  }))
+              );
+
+              setFieldValue(
+                `installments.methodpayment[${index}].tefFlagId`,
+                ""
+              );
+
+              setInstallments(obj);
+            }}
+          />
+        </div>
+
+        <div className="uk-margin-small-right uk-width-1-2">
+          <Select
+            label="Bandeira"
+            name={`installments.methodpayment[${index}].tefFlagId`}
+            onlyOneValue
+            options={flags}
+            value={installments?.[index]?.tefFlagId || ""}
+            onChangeInput={(value) => {
+              const obj = installments;
+
+              obj.splice(index, 1, {
+                ...installments[index],
+                tefAcquirerId: paymentMethods
+                  .find(
+                    (payment) =>
+                      payment.id === installments?.[index]?.paymentMethodId
+                  )
+                  ?.flags?.find((item) => item?.flag?.id === value)?.acquirer?.id,
+                tefFlagId: value,
               });
 
               setInstallments(obj);
             }}
           />
         </div>
+
         <div className="uk-width-1-3">
           <label>Nº Comprovante / Nsu</label>
           <Input
