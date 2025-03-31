@@ -15,7 +15,11 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 // Components
 import { Input, Select, Button, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useAuthAdmin } from "infinity-forge";
+import {
+  FormHandler,
+  useAuthAdmin,
+  Select as SelectInfinityForge,
+} from "infinity-forge";
 const { Option } = Select;
 
 const Edit = memo(function Edit({
@@ -229,52 +233,55 @@ const Edit = memo(function Edit({
       </div>
       <div className="uk-flex uk-margin-top">
         <div className="uk-margin-small-right uk-width-1-4">
-          <label>Forma pagamento</label>
-          <AutoComplete
-            disabled={allowPaymentMethodEdit()}
-            value={
-              paymentMethods.find(
-                (method) => method.id === data?.paymentMethodId
-              )?.description
-            }
-            className="uk-width-1-1"
-            onChange={(val) => setData({ ...data, paymentMethodId: val })}
-            onSelect={(_, opt) => {
-              setFlags(opt?.flags);
-              setData({
-                ...data,
-                paymentMethodId: opt?.id,
-              });
-            }}
-            options={paymentMethods.map((method) => ({
-              ...method,
-              value: method?.description,
-            }))}
-            filterOption={(value, option) =>
-              normalizeStr(option.value.toUpperCase()).includes(
-                normalizeStr(value.toUpperCase())
-              )
-            }
-          />
+          <FormHandler>
+            <SelectInfinityForge
+              disabled={allowPaymentMethodEdit()}
+              label="Forma pagamento"
+              name="paymentMethodId"
+              onlyOneValue
+              options={paymentMethods.map((method) => ({
+                label: method.description,
+                value: method?.id,
+              }))}
+              value={
+                paymentMethods.find(
+                  (method) => method.id === data?.paymentMethodId
+                )?.id
+              }
+              onChangeInput={(value) => {
+                const paymentSelected = paymentMethods?.find(
+                  (payment) => String(payment.id) === value
+                );
+
+                setFlags(paymentSelected?.flags);
+
+                setData({
+                  ...data,
+                  tefFlagId: undefined,
+                  paymentMethodId: paymentSelected?.id,
+                });
+              }}
+            />
+          </FormHandler>
         </div>
+
         <div className="uk-width-1-4 uk-margin-small-right">
-          <label>Bandeira</label>
-          <br />
-          <Select
-            disabled={allowPaymentMethodEdit()}
-            value={data?.tefFlagId}
-            className="uk-width-1-1"
-            onChange={(val) => {
-              setData({ ...data, tefFlagId: val });
-            }}
-          >
-            {flags?.length > 0 &&
-              flags?.map((flag, i) => (
-                <Option value={flag?.flag?.id} key={i}>
-                  {flag?.flag?.description}
-                </Option>
-              ))}
-          </Select>
+          <FormHandler>
+            <SelectInfinityForge
+              disabled={allowPaymentMethodEdit()}
+              label="Bandeira"
+              name="tefFlagId"
+              onlyOneValue
+              options={flags?.map((flag) => ({
+                label: flag?.flag?.description,
+                value: flag?.flag?.id,
+              }))}
+              value={data?.tefFlagId}
+              onChangeInput={(value) => {
+                setData({ ...data, tefFlagId: value });
+              }}
+            />
+          </FormHandler>
         </div>
         <div className="uk-width-1-4 uk-margin-small-right">
           <label>Nº Comprovante / Nsu</label>
@@ -301,30 +308,27 @@ const Edit = memo(function Edit({
 
       <div className="uk-flex uk-margin-top">
         <div className="uk-width-1-4 uk-margin-small-right">
-          <label>Plano Contas</label>
-          <AutoComplete
-            disabled={!edit}
-            value={
-              plans.find((plan) => plan.id === data?.accountPlanId)?.description
-            }
-            className="uk-width-1-1"
-            onChange={(val) => setData({ ...data, accountPlanId: val })}
-            onSelect={(_, opt) =>
-              setData({
-                ...data,
-                accountPlanId: opt?.id,
-              })
-            }
-            options={plans.map((plan) => ({
-              ...plan,
-              value: plan?.description,
-            }))}
-            filterOption={(value, option) =>
-              normalizeStr(option.value.toUpperCase()).includes(
-                normalizeStr(value.toUpperCase())
-              )
-            }
-          />
+          {Array.isArray(plans) && plans.length > 0 && (
+            <FormHandler>
+              <SelectInfinityForge
+                label="Plano Contas"
+                disabled={!edit}
+                value={data?.accountPlanId}
+                controlledInitialValue={{ value: data?.accountPlanId }}
+                name="accountPlanId"
+                onlyOneValue
+                options={plans?.map((plan) => ({
+                  label: plan.description,
+                  value: plan.id,
+                }))}
+                value={data?.tefFlagId}
+                onChangeInput={(value) => {
+                  if(value !== data?.accountPlanId)
+                  setData({ ...data, accountPlanId: value });
+                }}
+              />
+            </FormHandler>
+          )}
         </div>
         <div className="uk-width-1-3 uk-margin-small-right">
           <label>Conta Corrente</label>

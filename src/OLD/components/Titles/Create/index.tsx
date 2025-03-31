@@ -213,11 +213,27 @@ export default function Create({ type = "", setVisible, setReload }: any) {
             bank: data?.bank,
             agency: data?.agency,
             account: data?.account,
+            tefFlagId: data?.tefFlagId,
+            tefAcquirerId: paymentMethods
+                  .find(
+                    (payment) =>
+                      payment.id === installments?.[index]?.paymentMethodId
+                  )
+                  ?.flags?.find((item) => item?.flag?.id === data?.tefFlagId)?.acquirer?.id,
             accept: "NAO",
           } as any;
         })
       );
   }, [data, titleType]);
+
+  const [flags, setFlags] = useState([])
+
+    useEffect(() => {
+      setFlags(
+        paymentMethods.find((method) => method?.id === data?.paymentMethodId)
+          ?.flags
+      );
+    }, [data, paymentMethods]);
 
   return (
     <>
@@ -310,7 +326,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                   </Group>
                 </div>
               </div>
-              <div className="uk-margin-small-right uk-width-1-1">
+              <div className="uk-margin-small-right uk-width-1-1" style={{ display: "flex", gap: 15 }}>
                 <SelectInfinityForge
                   label="Nome Titular"
                   options={formatedTutors.map((item) => ({
@@ -347,10 +363,8 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     }
                   }}
                 />
-              </div>
 
-              <div className="uk-margin-top uk-flex">
-                <div className="uk-margin-small-right uk-width-1-4">
+<div >
                   <label>Valor parcela</label>
                   <Input
                     required
@@ -365,7 +379,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     }
                   />
                 </div>
-                <div className="uk-margin-small-right uk-width-1-4">
+                <div >
                   <label>Nº Parcelas</label>
                   <Input
                     type="number"
@@ -376,6 +390,10 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     }
                   />
                 </div>
+              </div>
+
+              <div className="uk-margin-top uk-flex">
+         
                 <div className="uk-margin-small-right uk-width-1-2">
                   <SelectInfinityForge
                     label="Forma Pagamento"
@@ -394,11 +412,26 @@ export default function Create({ type = "", setVisible, setReload }: any) {
 
                       setPaymentMethodSearch(optionSelected.description);
                       setData((prev) => {
-                        console.log(({ ...prev, paymentMethodId: value }))
-                        return ({ ...prev, paymentMethodId: value })
+                        return ({ ...prev, tefFlagId: undefined, paymentMethodId: value })
                       });
                     }}
                   />
+                </div>
+
+                <div className="uk-margin-small-right uk-width-1-2">
+               <SelectInfinityForge
+                           label="Bandeira"
+                           name="tefFlagId"
+                           onlyOneValue
+                           options={flags?.map((flag: any) => ({
+                             label: flag?.flag?.description,
+                             value: flag?.flag?.id,
+                           }))}
+                           value={data?.tefFlagId}
+                           onChangeInput={(value) => {
+                             setData({ ...data, tefFlagId: value });
+                           }}
+                         />
                 </div>
 
                 <div className="uk-width-1-2">

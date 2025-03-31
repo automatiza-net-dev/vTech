@@ -28,7 +28,7 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button, PageWrapper, useAuthAdmin, useToast } from "infinity-forge";
+import { Button, PageWrapper, useAuthAdmin, useToast, Modal as ModalInfinityForge } from "infinity-forge";
 import { Table, Modal } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "./Actions";
@@ -475,15 +475,13 @@ export default function Titles({ type }: any) {
             />
           </Modal>
         )}
-        <Modal
-          title="Novo título"
-          onCancel={() => setCreateTitleVisible(false)}
-          visible={createTitleVisible}
-          width={1200}
-          footer={null}
+        <ModalInfinityForge
+          onClose={() => setCreateTitleVisible(false)}
+          open={createTitleVisible}
+          styles={{ maxWidth: "1200px" }}
         >
           <CreateTitle type={type} setVisible={setCreateTitleVisible} />
-        </Modal>
+        </ModalInfinityForge>
       </Container>
     </PageWrapper>
   );
