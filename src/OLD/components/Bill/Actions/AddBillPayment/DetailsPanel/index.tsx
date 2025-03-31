@@ -86,7 +86,7 @@ export function DetailsPanel({
             <label>Nº Comprovante / NSU</label>
             <Input
               required={formData?.requiresDocument}
-              type="number"
+              type="text"
               onChange={(e) =>
                 setFormData({ ...formData, nsuDocument: e.target.value })
               }
