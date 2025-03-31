@@ -4,18 +4,21 @@ import { Button, useToast } from "infinity-forge";
 import { useRouter } from "next/router";
 import { Container } from "../ForgotPassword/styles";
 import { userService } from "@/OLD/services/user.service";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function AdditionalLicence() {
   const router = useRouter();
   const [loading, setLoadig] = React.useState(false);
 
   const { createToast } = useToast();
+  const { logo_url } = useConfigurationsSystem();
 
   const handleAddLicence = React.useCallback(() => {
     setLoadig(true);
+    
     userService
       .addLicence()
-      .then((res) => {
+      .then(() => {
         setLoadig(false);
         createToast({
           status: "success",
@@ -33,20 +36,20 @@ export function AdditionalLicence() {
   return (
     <Container className="uk-padding-large">
       <img src="/svg/cautious_dog.svg" width="60%" />
+      
       <div className="form-side">
-        <img
-          src={
-            process.env.NEXT_PUBLIC_API +
-            `/assets/logo-${process.env.client}.png`
-          }
-        />
+        
+        <img src={logo_url} />
+
         <h4 style={{ textAlign: "center" }}>
           Sua licença de teste expirou. Deseja adicionar uma licença adicional?
         </h4>
+      
         <Button
           onClick={handleAddLicence}
           text={loading ? "Carregando..." : "Adicionar licença"}
         />
+      
       </div>
     </Container>
   );

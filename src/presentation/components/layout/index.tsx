@@ -8,8 +8,8 @@ import {
 } from "infinity-forge";
 
 import {
-  logo,
   DictionaryQueryProvider,
+  useConfigurationsSystem,
   useLoadAllAvailableUnits,
 } from "@/presentation";
 import { RemoteBusinessUnits } from "@/data";
@@ -31,7 +31,9 @@ function LayoutPage({ children }) {
   const router = useRouter();
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
-  const { user, roleUser, loadUser } = useAuthAdmin();
+  const { user, roleUser } = useAuthAdmin();
+
+  const {logo_url} = useConfigurationsSystem()
 
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({
@@ -67,7 +69,7 @@ function LayoutPage({ children }) {
         <Layout
           workspaces={workspaces as any}
           logo={{
-            src: logo,
+            src: logo_url,
             href: "/dashboard",
           }}
           profile={

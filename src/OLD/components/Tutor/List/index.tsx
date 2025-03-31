@@ -434,7 +434,7 @@ export function List({
     <Container>
       <Table
         columns={
-          user?.unit?.system?.type === "Vet"
+          user?.type === "Vet"
             ? petToVinc
               ? selectTutorColumns
               : columns

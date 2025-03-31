@@ -226,16 +226,20 @@ export function VaccinesVermifugeReport({
                 name="status"
                 options={[
                   {
-                    label: "Dose Pendente - atrasada",
-                    value: "Dose Pendente - atrasada",
+                    label: "Doses Não Aplicadas",
+                    value: "Doses não aplicadas",
                   },
                   {
-                    label: "Dose Pendente - em dia",
-                    value: "Dose Pendente - em dia",
+                    label: "Doses Atrasadas",
+                    value: "Doses atrasadas",
                   },
                   {
-                    label: "Dose aplicada",
-                    value: "Dose aplicada",
+                    label: "Doses Futuras",
+                    value: "Doses futuras",
+                  },
+                  {
+                    label: "Doses Aplicadas",
+                    value: "Doses aplicadas",
                   },
                 ]}
               />

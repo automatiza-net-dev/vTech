@@ -1,18 +1,9 @@
-// @ts-nocheck
 import styled from "styled-components";
 
-// tmp-style
-
 export const Container = styled.div`
-  background-image: ${({ host }) =>
-    process.env.client === "sancla" ? 'url("/img/bg-sancla.jpg")' : "none"};
   padding: 40px 80px;
   min-height: 100vh;
-  background-color: ${process.env.client === "liftone"
-    ? "var(--lo-blue)"
-    : process.env.client === "clinicas"
-    ? "#7f7f7f"
-    : "var(--orange-light-1)"};
+  background-color: ${props => props.theme.primaryColor};
 
   display: flex;
   align-items: center;

@@ -28,7 +28,7 @@ function Filters({ filters, setFilters, setReload }) {
   const { patients } = usePatients(
     false,
     false,
-    user?.unit?.system?.type === "clinicas"
+    user?.type === "clinicas"
   );
   const { colaborators } = useColaborators();
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -126,7 +126,7 @@ function Filters({ filters, setFilters, setReload }) {
       </div>
 
       <div className="uk-width-1-4 uk-margin-left">
-        {user?.unit?.system?.type === "Vet" && (
+        {user?.type === "Vet" && (
           <>
             <label>Paciente</label>
             <InputBox className="">
@@ -152,7 +152,7 @@ function Filters({ filters, setFilters, setReload }) {
             <Option value="contactDate">Data Contato</Option>
             <Option value="openingDate">Data Abertura</Option>
             <Option value="contact">Nome cliente</Option>
-            {user?.unit?.system?.type === "Vet" && (
+            {user?.type === "Vet" && (
               <Option value="client">Paciente</Option>
             )}
           </Select>

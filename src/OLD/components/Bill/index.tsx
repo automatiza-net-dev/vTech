@@ -205,7 +205,7 @@ export default function Bills() {
                   }
                 />
               </Input>
-              {user?.unit?.system?.type === "Vet" && (
+              {user?.type === "Vet" && (
                 <Input style={{ width: "100%" }}>
                   <Label>Paciente</Label>
                   <AntInput
@@ -274,7 +274,7 @@ export default function Bills() {
           <div className="uk-margin-top">
             <Table
               columns={
-                user?.unit?.system?.type === "Vet"
+                user?.user?.type === "Vet"
                   ? Columns(hasInternalCode)
                   : LiftColumns(hasInternalCode)
               }
@@ -323,7 +323,7 @@ export default function Bills() {
 
         <Modal
           open={visible}
-          styles={{ maxWidth: "1200px", width: "100%" }}
+          styles={{ maxWidth: "1500px", width: "100%" }}
           stylesContent={{ height: "70dvh" }}
           onClose={() => setVisible(false)}
         >

@@ -45,20 +45,11 @@ export const AddSale = styled("div")`
     }
   }
 
+  .container-switch {
+    width: 100%;
+  }
+
   .error {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 100%;
-
-    svg {
-      height: 90px;
-      width: auto;
-      margin-bottom: 50px;
-    }
-
     p {
       font-size: 18px;
     }

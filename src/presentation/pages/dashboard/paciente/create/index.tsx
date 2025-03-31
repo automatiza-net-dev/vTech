@@ -16,6 +16,7 @@ import {
   FormCreateTutor,
   isValidDate,
   useLoadPatient,
+  useConfigurationsSystem,
   useVerifyPermissions,
 } from "@/presentation";
 import { RemotePatient } from "@/data";
@@ -217,15 +218,17 @@ export function FormCreatePatient({
 }: IFormCreatePatientProps) {
   const [open, setOpen] = useState(false);
 
+  const {type} = useConfigurationsSystem();
+
   const canCreate = useVerifyPermissions(
-    process.env.client === "sancla" ? "PET01" : "TUT01"
+    type === "Vet" ? "PET01" : "TUT01"
   );
 
   if (!canCreate) {
     return <></>;
   }
 
-  if (process.env.client === "liftone") {
+  if (type !== "Vet") {
     return (
       <FormCreateTutor
         isModal={isModal}

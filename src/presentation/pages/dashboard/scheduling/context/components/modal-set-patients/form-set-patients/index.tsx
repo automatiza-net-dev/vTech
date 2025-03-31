@@ -1,6 +1,7 @@
-import { BadRequestError, FormHandler, Input, InputMask } from "infinity-forge";
+import { Input, InputMask, FormHandler, BadRequestError } from "infinity-forge";
 
 import {
+  useConfigurationsSystem,
   useScheduling,
   FormCreatePatient,
   useLoadAllPatientTutor,
@@ -16,16 +17,28 @@ export function FormSetClients() {
   const patientFilters = useScheduling((state) => state.patientsFilters);
   const setPatientsFilters = useScheduling((state) => state.setPatientsFilters);
 
-  const { data, isFetching, mutate } =
-    process.env.client === "sancla"
-      ? useLoadSchedulesPatients({
-          patientFilters,
-          enabled: !patientFilters ? false : true,
-        })
-      : useLoadAllPatientTutor({
-          patientFilters,
-          enabled: !patientFilters ? false : true,
-        });
+  const {type} = useConfigurationsSystem();
+
+  const vetPatients = useLoadSchedulesPatients({
+    patientFilters,
+    enabled: !patientFilters
+      ? false
+      : type === "Vet"
+      ? true
+      : false,
+  });
+
+  const normalPatients = useLoadAllPatientTutor({
+    patientFilters,
+    enabled: !patientFilters
+      ? false
+      : type !== "Vet"
+      ? true
+      : false,
+  });
+
+  const data = vetPatients.data || normalPatients.data;
+  const isFetching = vetPatients.isFetching || normalPatients.isFetching;
 
   return (
     <S.FormSetClients>
@@ -54,7 +67,7 @@ export function FormSetClients() {
           throw new BadRequestError({
             code: "400",
             message:
-              process.env.client === "sancla"
+              type === "Vet"
                 ? `Preencha pelo menos um dos campos de filtro (Nome do pet 2 caracteres, Telefone 3 caracteres, CPF 3 caracteres, Tutor 3 caracteres, RG Pet 1 caractere)`
                 : "Preencha pelo menos um dos campos de filtro (Telefone 3 caracteres, CPF 3 caracteres, nome 3 caracteres)",
           });
@@ -70,7 +83,7 @@ export function FormSetClients() {
           ),
         }}
       >
-        {process.env.client === "sancla" && (
+        {type === "Vet" && (
           <>
             <div className="row first">
               <Input
@@ -163,7 +176,7 @@ export function FormSetClients() {
                 </svg>
               ),
             }}
-            name={process.env.client === "liftone" ? "name" : "tutor"}
+            name={type === "Vet" ? "tutor" : "name"}
             placeholder="Nome"
           />
 
@@ -193,13 +206,12 @@ export function FormSetClients() {
             mask="___.___.___-__"
           />
         </div>
+
         <div className="table-box">
           <div className="table" data-cy="table_patients">
-            {process.env.client === "sancla" && (
+            {type === "Vet" ? (
               <TableAnimals data={data} isLoading={isFetching} />
-            )}
-
-            {process.env.client === "liftone" && (
+            ) : (
               <TableClients data={data} isLoading={isFetching} />
             )}
           </div>

@@ -30,31 +30,33 @@ export function formatCart(cart: Cart[], initialCart: Cart[]): ProductCart[] {
 
       const initialCartItem = initialCart
         ?.flatMap((item) => item.variations)
-        ?.find((item) => item.id === variation.id);
+        ?.find((item) => item?.id === variation?.id);
 
       const approved = verifyIsApproved(variation, initialCartItem);
 
       return {
-        billItemId: variation.billItemId || "",
-        budgetItemId: variation.budgetItemId || "",
+        billItemId: variation?.billItemId || "",
+        budgetItemId: variation?.budgetItemId || "",
         maxDiscount: verifyMaxDiscount,
         courtesy: variation?.courtesy || false,
         approved,
         discountValue:
-          typeof variation.discountValue === "string"
+          typeof variation?.discountValue === "string"
             ? Number(
                 (variation?.discountValue as string)?.replaceAll(",", ".") || 0
               )
-            : Number(variation.discountValue || 0),
-        productVariationId: variation.productVariationId,
-        quantity: Number(variation.quantity),
-        saleValue: variation.saleValue,
+            : Number(variation?.discountValue || 0),
+        productVariationId: variation?.productVariationId,
+        quantity: Number(variation?.quantity),
+        saleValue: variation?.saleValue,
         unitaryValue:
-          typeof variation.unitaryValue === "string"
+          typeof variation?.unitaryValue === "string"
             ? Number(
                 (variation?.unitaryValue as string)?.replaceAll(",", ".") || 0
               )
-            : Number(variation.unitaryValue || 0),
+            : Number(variation?.unitaryValue || 0),
       };
     });
 }
+
+

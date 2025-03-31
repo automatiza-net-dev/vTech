@@ -64,13 +64,13 @@ const Subgroups = memo(function Subgroups() {
               }
             />
           </Input>
-          <div className="uk-margin-small-top">
+         {canCreateSubGroup && <div className="uk-margin-small-top">
             <Button
               onClick={() => setVisible(true)}
-              disabled={!canCreateSubGroup}
               text="Cadastro"
+              type="button"
             />
-          </div>
+          </div>}
         </div>
         <hr />
         <Table

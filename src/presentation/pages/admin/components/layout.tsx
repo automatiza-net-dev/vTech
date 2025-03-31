@@ -4,7 +4,11 @@ import { useRouter } from "next/router";
 
 import { RemoteBusinessUnits } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
-import { DictionaryQueryProvider, useLoadAllAvailableUnits } from "@/presentation";
+import {
+  DictionaryQueryProvider,
+  useConfigurationsSystem,
+  useLoadAllAvailableUnits,
+} from "@/presentation";
 
 import { Layout } from "./layout-infinity-forge-remover-apos-atualizar/layout";
 
@@ -12,10 +16,7 @@ import * as S from "./styles";
 
 export function LayoutAdmin({ children }) {
   return (
-    <PrivatePage
-      signInRole="controller"
-      roles={["controller", "system"]}
-    >
+    <PrivatePage signInRole="controller" roles={["controller", "system"]}>
       <DictionaryQueryProvider>
         <LayoutPage>{children}</LayoutPage>
       </DictionaryQueryProvider>
@@ -24,10 +25,10 @@ export function LayoutAdmin({ children }) {
 }
 
 function LayoutPage({ children }) {
+  const { logo_url } = useConfigurationsSystem();
+  const avaiableUnits = useLoadAllAvailableUnits?.();
 
- const avaiableUnits = useLoadAllAvailableUnits?.();
-
- const router = useRouter()
+  const router = useRouter();
 
   const workspaces = {
     list: avaiableUnits?.data?.map((companie) => ({
@@ -37,14 +38,14 @@ function LayoutPage({ children }) {
       value: companie.id,
     })),
     onChangeWorkSpace: async (value: any) => {
-        await container
-          .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
-          .swap({ unitId: value?.workspace, dashboard: true });
+      await container
+        .get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits)
+        .swap({ unitId: value?.workspace, dashboard: true });
 
-        router.push({
-          pathname: "/dashboard",
-          query: { reload: "true" },
-        });
+      router.push({
+        pathname: "/dashboard",
+        query: { reload: "true" },
+      });
     },
   };
 
@@ -53,9 +54,7 @@ function LayoutPage({ children }) {
       <S.Layout>
         <Layout
           logo={{
-            src:
-              process.env.NEXT_PUBLIC_API +
-              `/assets/logo-${process.env.client}.png`,
+            src: logo_url,
             href: "/dashboard",
           }}
           workspaces={workspaces as any}

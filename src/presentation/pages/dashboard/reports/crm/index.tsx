@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 import {
+  useConfigurationsSystem,
   useLoadAllAvailableUnits,
   useLoadAllBusinessUsers,
 } from "@/presentation";
@@ -24,8 +25,11 @@ import { formatLiftoneArquive, formatSanclaArquive } from "./utils";
 
 export function CrmReports() {
   const router = useRouter();
-  const businessUnits = useLoadAllAvailableUnits();
+
   const users = useLoadAllBusinessUsers();
+  const { type } = useConfigurationsSystem();
+  const businessUnits = useLoadAllAvailableUnits();
+
   async function handleExport(payload) {
     const data = {
       ...payload,
@@ -48,7 +52,7 @@ export function CrmReports() {
       .loadOpportunitiesReport(data);
 
     const formatted =
-      process.env.client === "sancla"
+      type === "Vet"
         ? formatSanclaArquive(reports)
         : formatLiftoneArquive(reports);
 

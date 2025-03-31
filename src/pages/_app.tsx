@@ -11,6 +11,7 @@ import {
   InfinityForgeProviders,
   useAuthAdmin,
   useQuery,
+  queryStore,
 } from "infinity-forge";
 
 import { ConfigProvider } from "antd";
@@ -24,7 +25,6 @@ import { AppProvider } from "@/OLD/context/appContext";
 import { SignIn } from "@/OLD/components/Authentication/SignIn";
 
 import {
-  themes,
   Forbidden,
   SignInAdmin,
   NotificationsModal,
@@ -32,6 +32,7 @@ import {
   ButtonInfinityForge,
   SchedulingContextProvider,
   ConfigurationsSystemProvider,
+  ConfigurationSystem,
 } from "@/presentation";
 import { RemoteLoadUserDashboard, RemoteMenu } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -46,14 +47,15 @@ import { PermissionsProvider } from "@/presentation/context/permissions";
 
 const queryClient = new QueryClient();
 
+const queryStoreClient = queryStore();
+
 export default function App({ Component, pageProps }) {
   const [menus, setMenus] = useState<any>(null);
 
   const router = useRouter();
 
-  const { configurations } = useSystemConfigurations();
+  const { configurations } = useConfigurationsSystemConfigurations();
 
-  console.log({ configurations })
 
   if (!configurations) {
     return <></>;
@@ -63,6 +65,7 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
+          queryClient={queryStoreClient}
           atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
@@ -191,11 +194,20 @@ export default function App({ Component, pageProps }) {
               ),
             },
           }}
-          theme={themes[process.env.client || "sancla"]}
+          theme={{
+            black: "#000",
+            red: "#ef1717",
+            green: "#39b15d",
+            orange: "#f18805",
+            yellow: "#e1b400",
+            secondaryColor: "red",
+            darkColor: "#2B2B2B",
+            primaryColor: configurations.primary_color,
+          }}
         >
           <NotificationsModal />
 
-          <GlobalStyles host={process.env.clientName} />
+          <GlobalStyles host={configurations.name} />
 
           <SchedulingContextProvider>
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -203,7 +215,7 @@ export default function App({ Component, pageProps }) {
                 <AppProvider>
                   <PermissionsProvider>
                     <Head>
-                      <title>{process.env.clientName}</title>
+                      <title>{configurations.name}</title>
                     </Head>
 
                     <GambiarraTemporaria setMenus={setMenus} />
@@ -239,24 +251,27 @@ function GambiarraTemporaria({ setMenus }) {
   return <></>;
 }
 
-function useSystemConfigurations() {
-  const [configurations, setConfigurations] = useState(null);
+function useConfigurationsSystemConfigurations() {
+  const [configurations, setConfigurations] = useState<ConfigurationSystem | null>(null);
 
   const ref = useRef(0);
 
   useEffect(() => {
     if (ref.current === 0) {
       ref.current = 1;
-
       (async () => {
         const systemUrl = new URL(window.location.origin).origin;
 
-        const response = await api({
-          url: `systems/identification?url=${systemUrl}`,
-          method: "post",
-        });
+        setTimeout(async () => {
+          const response = await api(
+            {
+              url: `systems/identification?url=${systemUrl}`,
+              method: "post",
+            },
+          );
 
-        setConfigurations(response);
+          setConfigurations(response);
+        }, 1000);
       })();
     }
   }, []);

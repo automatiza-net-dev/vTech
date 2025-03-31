@@ -19,6 +19,7 @@ import { sessionService } from "@/OLD/services/session.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { InfraTypes, container } from "@/container";
 import { useAuthAdmin, useQuery, useQueryClient } from "infinity-forge";
+import { useConfigurationsSystem } from "@/presentation";
 
 const icons = [
   {
@@ -57,6 +58,7 @@ export const Navbar = React.memo(function Navbar({
   const router = useRouter();
 
   const { signOut } = useAuthAdmin();
+  const {logo_url} = useConfigurationsSystem()
 
   React.useEffect(() => {
     async () => {
@@ -99,8 +101,7 @@ export const Navbar = React.memo(function Navbar({
             <div className="profile-img">
               <img
                 src={
-                  process.env.NEXT_PUBLIC_API +
-                  `/assets/logo-${process.env.client}.png`
+                  logo_url
                 }
                 width="30px"
                 height="30px"

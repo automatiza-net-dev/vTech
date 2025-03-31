@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-type ConfigurationSystem = {
+export type ConfigurationSystem = {
   colors: string;
   home_image_url: string;
   id: number;

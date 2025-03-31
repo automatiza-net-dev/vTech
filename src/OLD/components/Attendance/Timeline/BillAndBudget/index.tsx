@@ -11,7 +11,7 @@ import BillActions from "@/OLD/components/Bill/Actions/Container";
 import { billAndBudgetColumns, billAndBudgetLiftColumns } from "./Columns";
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { useDictionary } from "@/presentation";
+import { useDictionary, useConfigurationsSystem } from "@/presentation";
 
 import { billStatusFormatter } from "@/OLD/components/Bill/utils/status-formater";
 import { budgetStatusFormatter } from "@/OLD/components/Budget";
@@ -31,6 +31,7 @@ export function BillAndBudget({ patient }) {
   const [cashierFilters, setCashierFilters] = useState({});
 
 
+  const {type} = useConfigurationsSystem()
   const { getWord } = useDictionary();
   const { cashiers } = useDailyCasher(cashierFilters);
   const { salesMetadata } = usePatientSalesMetadata(patient?.id, reload);
@@ -83,7 +84,7 @@ export function BillAndBudget({ patient }) {
   return (
     <Table
       columns={
-        process.env.client === "liftone"
+        type !== "Vet"
           ? billAndBudgetLiftColumns
           : billAndBudgetColumns
       }

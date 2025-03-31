@@ -9,7 +9,7 @@ export const Container = styled.div`
   }
 
   header {
-    background-color: ${process.env.client === "sancla" ? "var(--orange-light-1)" : "var(--lo-blue)"};
+    background-color: ${props => props.theme.primaryColor};
   }
 
   .logo-container {

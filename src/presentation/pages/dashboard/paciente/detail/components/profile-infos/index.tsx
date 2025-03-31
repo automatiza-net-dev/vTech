@@ -4,7 +4,7 @@ import { DetailCard, Error, IDetailCard } from "infinity-forge";
 import { useQueryClient } from "react-query";
 
 import { Patient } from "@/domain";
-import { FormCreateTutor } from "@/presentation";
+import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
 
 import { Profile } from "./profile";
 
@@ -17,6 +17,8 @@ export type DetailCard = {
 export function ProfileInfos({ patient }: { patient: Patient }) {
   const queryClient = useQueryClient();
 
+  const {type} = useConfigurationsSystem()
+
   const details: DetailCard[] = [
     {
       id: 1,
@@ -24,7 +26,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#4BC0C0",
       title: patient?.race,
       subTitle: patient?.specie,
-      active: process.env.clientName === "Sanclá",
+      active: type === "Vet",
     },
     {
       id: 2,
@@ -40,7 +42,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#F4BF00",
       title: patient?.tutor?.name,
       subTitle: "Tutor Ativo",
-      active: !!(process.env.clientName === "Sanclá" && patient.tutor),
+      active: !!(type === "Vet" && patient.tutor),
     },
     {
       id: 4,
@@ -74,7 +76,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#C700D9",
       title: patient.hypertension ? "Sim" : "Não",
       subTitle: "Hipertensão",
-      active: process.env.clientName === "LiftOne",
+      active: type !== "Vet",
     },
     {
       id: 8,
@@ -82,7 +84,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#002CCA",
       title: patient.diabetes ? "Sim" : "Não",
       subTitle: "Diabetes",
-      active: process.env.clientName === "LiftOne",
+      active: type !== "Vet",
     },
   ];
 

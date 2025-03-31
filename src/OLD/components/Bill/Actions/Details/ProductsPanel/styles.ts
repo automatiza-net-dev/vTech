@@ -4,7 +4,10 @@ export const ProductsPanel = styled("div")`
 
 .table_formated {
     tr {
-    background-color: #ff000069;
+   
+    > td {
+      background-color: transparent !important;
+    }
   }
 }
  

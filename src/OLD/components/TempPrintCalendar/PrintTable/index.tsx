@@ -1,13 +1,15 @@
 import { useProfile } from "@/OLD/hooks/useProfile";
 
 import { Container, RowBox } from "./styles";
-import { PrintHeader } from "@/presentation";
+import { PrintHeader, useConfigurationsSystem } from "@/presentation";
 
 import moment from "moment";
 import masks from "@/OLD/utils/masks";
 
 const PrintTable = ({ data, date }) => {
-  const { clinic, user } = useProfile();
+  const {  user } = useProfile();
+
+  const {type} = useConfigurationsSystem()
 
   const events: any[] = [];
 
@@ -27,18 +29,24 @@ const PrintTable = ({ data, date }) => {
 
   events.sort((a, b) => moment(a.start).diff(moment(b.start)));
 
+  const formatDate = () => {
+    const [year, month, day] = date.split('-');
+    return `${day}/${month}/${year}`;
+  };
+  
+
   return (
     <Container >
       <div className="clinic-header">
         <PrintHeader />
-        {date && <h4 className="uk-text-center">Agendamento do dia {date}</h4>}
+        {date && <h4 className="uk-text-center">Agendamentos do dia {formatDate()}</h4>}
         <div className="header-table">
           <div className="small-width">Data</div>
           <div className="small-width">Hora</div>
           <div className="small-width">Duração</div>
           <div>Profissional</div>
-          <div>{process.env.client !== "liftone" ? "Tutor" : "Paciente"}</div>
-          {process.env.client !== "liftone" && <div>Paciente</div>}
+          <div>{type === "Vet" ? "Tutor" : "Paciente"}</div>
+          {type === "Vet" && <div>Paciente</div>}
           <div>Agendamento</div>
           <div>Status</div>
           <div className="observation-field">Obs/Queixa</div>
@@ -67,7 +75,7 @@ const PrintTable = ({ data, date }) => {
                     Min
                   </div>
                   <div>{event?.name}</div>
-                  {process.env.client !== "liftone" ? (
+                  {type === "Vet" ? (
                     <div>
                       {event?.event?.holder?.name}
                       <br />
@@ -82,7 +90,7 @@ const PrintTable = ({ data, date }) => {
                         masks?.phone(event?.event?.patient?.cellphone)}
                     </div>
                   )}
-                  {process.env.client !== "liftone" && (
+                  {type === "Vet" && (
                     <div>{event?.event?.patient?.name}</div>
                   )}
                   <div>{event?.event?.serviceType?.description}</div>

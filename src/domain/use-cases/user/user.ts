@@ -7,10 +7,21 @@ export type SystemUser = {
   name: string;
   unit: {
     id: string;
+    configs: {
+      businessUnits: {
+        reviewer?: "N" | "S" | "O";
+        generate_bill_documents?: boolean;
+        internalCode?: boolean;
+      }
+      schedules: {
+        syncScheduleMovements?: boolean;
+      }
+    }
     unitConfig: {
       interval: number;
       alter_prices?: boolean;
       requires_client_document?: boolean;
+      reviewer: "N" | "S" | "O"
       allow_change_schedule_duration?: boolean;
     };
     system: {

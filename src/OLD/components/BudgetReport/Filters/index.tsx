@@ -13,6 +13,7 @@ import { Button } from "infinity-forge";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
+import { useConfigurationsSystem } from "@/presentation";
 
 export function Filters({ filters, setFilters, values, setValues, setReload }) {
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -22,6 +23,8 @@ export function Filters({ filters, setFilters, values, setValues, setReload }) {
 
   sortItems(patients, "name");
   sortItems(tutors, "name");
+
+  const {type} = useConfigurationsSystem()
 
   return (
     <div className="uk-margin-small-top">
@@ -147,7 +150,7 @@ export function Filters({ filters, setFilters, values, setValues, setReload }) {
             }
           />
         </InputBox>
-        {process.env.client !== "liftone" && (
+        {type === "Vet" && (
           <InputBox className="uk-width-1-3">
             <label>Paciente</label>
             <AutoComplete
