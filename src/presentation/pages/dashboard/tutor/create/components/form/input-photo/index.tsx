@@ -35,7 +35,7 @@ export function InputPhoto(props: InputProps) {
             <S.ResultFileStyled>
               <div style={{ height: 200, width: 200 }} className="image_box">
                 <img
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
                   src={defaultProfile}
                 />
                 <Icon name="IconEditImage" color="#000" />
@@ -95,7 +95,7 @@ function ResultFile({
   return (
     <S.ResultFileStyled>
       <div className="image_box">
-        {!onErrorImage ? <Image /> : <img src={defaultProfile} />}
+        {!onErrorImage ? <Image /> : <img src={defaultProfile} style={{ objectFit: "cover" }} />}
 
         <Icon name="IconEditImage" color="#000" />
       </div>

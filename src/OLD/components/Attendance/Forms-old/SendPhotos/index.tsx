@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Core
-import { useLoadPatient, useMe } from "@/presentation";
+import { ImageUploadS3, useLoadPatient, useMe } from "@/presentation";
 import React, { memo, useState, useCallback, useEffect } from "react";
 
 // Services
@@ -290,11 +290,8 @@ export default function SendPhotos({
 
             return item.status !== "pending" ? (
               <p className="uk-margin-remove uk-flex uk-flex-between uk-flex-middle uk-margin-small-top">
-                <img
-                  src={process.env.NEXT_PUBLIC_API + item?.url}
-                  width={150}
-                  className="uk-margin-small-right"
-                />
+                <ImageUploadS3 src={item?.url} />
+              
                 <a
                   className="uk-link"
                   target="_blank"

@@ -7,7 +7,7 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useProfile } from "@/OLD/hooks/useProfile";
-import { useLoadPatient } from "@/presentation";
+import { ImageUploadS3, useLoadPatient } from "@/presentation";
 
 // Components
 import { Popconfirm } from "antd";
@@ -88,6 +88,8 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       formData.append("medias[]", item.originFileObj);
     });
 
+
+
     timelineService
       .insertObservations(formData)
       .then(async (_res) => {
@@ -114,6 +116,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
 
   const submitUpdate = useCallback(() => {
     setLoading(true);
+
     const formData = new FormData();
     formData.append("tag", patient.data?.id);
     formData.append("observation", data?.observations);
@@ -302,10 +305,8 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
                   style={{ marginTop: "10px" }}
                 >
                   {extension !== "pdf" ? (
-                    <img
-                      src={process.env.NEXT_PUBLIC_API + item?.url}
-                      width={150}
-                      className="uk-margin-small-right"
+                    <ImageUploadS3
+                      src={item?.url}
                     />
                   ) : (
                     <div style={{ width: "70px" }}>

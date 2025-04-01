@@ -17,6 +17,7 @@ import { liftOneOpportunitiesColumns, opportunitiesColumns } from "./columns";
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import masks from "@/OLD/utils/masks";
+import { useConfigurationsSystem } from "@/presentation";
 
 function Opportunities({
   title = true,
@@ -111,6 +112,8 @@ function Opportunities({
     });
   }, []);
 
+  const { type } = useConfigurationsSystem()
+
   return (
     <Container>
       <section className="uk-width-1-1">
@@ -126,7 +129,7 @@ function Opportunities({
       <hr className="" />
       <Table
         columns={
-          user?.type === "Vet"
+          type === "Vet"
             ? opportunitiesColumns
             : liftOneOpportunitiesColumns
         }

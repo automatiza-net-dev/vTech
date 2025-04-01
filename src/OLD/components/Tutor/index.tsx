@@ -15,7 +15,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { usePatientTutors } from "@/OLD/hooks/usePatientTutors";
 
 import { Button, PageWrapper, useAuthAdmin } from "infinity-forge";
-import { FormCreateTutor } from "@/presentation";
+import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
 import { useRouter } from "next/router";
 
 export function Tutor({
@@ -36,7 +36,7 @@ export function Tutor({
   const [createTutorVisible, setCreateTutorVisible] = useState(false);
 
   const { fetchPatientTutors } = usePatientTutors(filters);
-  const { user } = useAuthAdmin();
+  const { type } = useConfigurationsSystem();
 
   const router = useRouter();
 
@@ -46,7 +46,7 @@ export function Tutor({
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <PageWrapper
-      title={user?.type === "Vet" ? "Tutores" : "Clientes"}
+      title={type === "Vet" ? "Tutores" : "Clientes"}
     >
       <div>
         <div className="uk-flex uk-margin-bottom uk-flex-between uk-width-1-1">
@@ -56,7 +56,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Nome ${
-                    user?.type === "Vet"
+                    type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
@@ -72,7 +72,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`Telefone ${
-                    user?.type === "Vet"
+                    type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}
@@ -81,7 +81,7 @@ export function Tutor({
                   }
                 />
               </Input>
-              {user?.type === "Vet" && (
+              {type === "Vet" && (
                 <Input>
                   <input
                     type="search"
@@ -99,7 +99,7 @@ export function Tutor({
                 <input
                   type="search"
                   placeholder={`CPF ${
-                    user?.type === "Vet"
+                    type === "Vet"
                       ? "Tutor"
                       : "Cliente"
                   }`}

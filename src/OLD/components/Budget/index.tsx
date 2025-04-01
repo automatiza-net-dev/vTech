@@ -1,5 +1,4 @@
-// @ts-nocheck
-// Core
+//@ts-nocheck
 import * as React from "react";
 import { useEffect } from "react";
 
@@ -7,8 +6,6 @@ import { Modal as ModalInfinityForge } from "infinity-forge";
 
 // Hooks
 import { useFindPartialBudgets } from "@/OLD/hooks/useBudgets";
-import { usePatients } from "@/OLD/hooks/usePatients";
-import { useTutor } from "@/OLD/hooks/useTutor";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 
@@ -17,7 +14,6 @@ import { Columns, LiftColumns } from "./Columns";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Components
-import CreateBudget from "./Create";
 import { Modal, PageWrapper } from "infinity-forge";
 import BudgetActions from "./Actions/Container";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -30,8 +26,7 @@ import moment from "moment/moment";
 
 // Icons
 import { MdOutlineClear } from "react-icons/md";
-import { AddBudgetNew, TriggerModal, useDictionary } from "@/presentation";
-import Link from "next/link";
+import { AddBudgetNew, TriggerModal, useConfigurationsSystem, useDictionary, useSystem } from "@/presentation";
 import { AuthorizationBudget } from "./authorization-budget";
 
 export const dateFormatter = (date) => {
@@ -100,29 +95,19 @@ const mapper = (data = [], setReload) => {
   });
 };
 
-const handleDateInput = (data) => {
-  if (!data) return null;
-
-  if (!Array.isArray(data)) return null;
-
-  return data;
-};
-
 function Budgets() {
   const [filters, setFilters] = React.useState({
     noSearch: true,
   });
   const [reload, setReload] = React.useState(false);
   const [modalCriar, setModalCriar] = React.useState(false);
-  const { data, refetch } = useFindPartialBudgets(filters, reload);
+  const { data } = useFindPartialBudgets(filters, reload);
 
   const { colaborators } = useColaborators();
-  const { user } = useAuthAdmin();
 
-  const [patientSearch, setPatientSearch] = React.useState("");
+
   const [values, setValues] = React.useState({});
 
-  const createBudgetPermission = useUserHasPermission("ORC01");
   const listBudgetPermission = useUserHasPermission("ORC00");
 
   useEffect(() => {
@@ -147,14 +132,18 @@ function Budgets() {
     setFilters((prv) => ({ ...prv, budget_id: id, noSearch: false }));
     setReload((prv) => !prv);
   };
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+
+
+  const { unit } = useSystem()
+  const { type } = useConfigurationsSystem()
+
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
   const { getWord } = useDictionary();
 
   const columns =
-    user?.type === "Vet" ? Columns(hasInternalCode, getWord("Orçamento")) : LiftColumns(hasInternalCode, getWord("Orçamento"));
+    type === "Vet" ? Columns(hasInternalCode, getWord("Orçamento")) : LiftColumns(hasInternalCode, getWord("Orçamento"));
 
-  const userIsReviewer = user?.unit?.unitConfig?.reviewer !== "N";
-
+  const userIsReviewer = unit?.unitConfig?.reviewer !== "N";
 
   return !listBudgetPermission || listBudgetPermission === "loading" ? (
     <AccessDenied loading={listBudgetPermission} />
@@ -291,7 +280,7 @@ function Budgets() {
                 }
               />
             </Input>
-            {user?.type === "Vet" && (
+            {type === "Vet" && (
               <Input style={{ width: "100%" }}>
                 <Label>Paciente</Label>
                 <AntInput
@@ -302,7 +291,7 @@ function Budgets() {
                 />
               </Input>
             )}
-            {user?.type !== "Vet" && userIsReviewer && (
+            {type !== "Vet" && userIsReviewer && (
               <Input style={{ width: "100%" }}>
                 <label>Avaliador</label>
                 <AutoComplete

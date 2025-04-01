@@ -18,11 +18,13 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { MdOutlineClear } from "react-icons/md";
+import { useConfigurationsSystem } from "@/presentation";
 
 function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
   const [values, setValues] = useState({});
 
   const { user } = useAuthAdmin();
+  const {type} = useConfigurationsSystem()
   const { businessUnits } = useBusinessUnitsByUser(false);
 
   const router = useRouter();
@@ -290,7 +292,7 @@ function Filters({ filters, setFilters, setReload, crmStatus, colaborators }) {
             />
           </InputBox>
         </div>
-        {user?.type === "Vet" && (
+        {type === "Vet" && (
           <div className="uk-width-1-5">
             <label>Nome pet</label>
             <InputBox className="uk-width-1-1">

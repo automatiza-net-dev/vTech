@@ -18,6 +18,7 @@ import {
   opportunitiesActivitiesColumnsComplete,
 } from "../Columns";
 import moment from "moment";
+import { useConfigurationsSystem } from "@/presentation";
 
 const detectClockColor = (date, duration) => {
   if (moment(date) > moment()) {
@@ -51,6 +52,7 @@ function Activities({
   const [formattedActivities, setFormattedActivities] = useState(false);
 
   const { user } = useAuthAdmin();
+  const {type} = useConfigurationsSystem()
 
   const { allActivities } = useShowActivities(
     filters,
@@ -135,7 +137,7 @@ function Activities({
       <Table
         className="uk-margin-small-top"
         columns={
-          user?.type === "Vet"
+          type === "Vet"
             ? opportunitiesActivitiesColumnsComplete
             : liftOneOpportunitiesActivitiesColumnsComplete
         }
