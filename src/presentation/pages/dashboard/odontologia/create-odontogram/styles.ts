@@ -5,6 +5,12 @@ export const CreateOdontogram = styled.div`
   padding-top: 5px;
   padding-bottom: 10px;
 
+  .mid {
+    max-width: 100%;
+    overflow: hidden;
+    width: -webkit-fill-available;
+  }
+
   .content {
     display: flex;
     gap: 20px;

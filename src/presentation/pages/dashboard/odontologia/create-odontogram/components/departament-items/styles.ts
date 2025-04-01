@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const DepartamentItems = styled("div")`
-  background-color: #f7f7f7;
   padding: 10px;
   width: 100%;
 

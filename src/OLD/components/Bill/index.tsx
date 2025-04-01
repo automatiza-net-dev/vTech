@@ -323,7 +323,7 @@ export default function Bills() {
 
         <Modal
           open={visible}
-          styles={{ maxWidth: "1500px", width: "100%" }}
+          styles={{ maxWidth: "90%", width: "100%" }}
           stylesContent={{ height: "70dvh" }}
           onClose={() => setVisible(false)}
         >

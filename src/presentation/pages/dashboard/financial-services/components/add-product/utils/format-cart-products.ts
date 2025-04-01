@@ -11,7 +11,10 @@ function verifyIsApproved(
     return false;
   }
 
-  if (transformStringToNumber(cartItem.discountValue) >  transformStringToNumber(initialCartItem.discountValue)) {
+  if (
+    transformStringToNumber(cartItem.discountValue) >
+    transformStringToNumber(initialCartItem.discountValue)
+  ) {
     return false;
   }
 
@@ -46,6 +49,8 @@ export function formatCart(cart: Cart[], initialCart: Cart[]): ProductCart[] {
                 (variation?.discountValue as string)?.replaceAll(",", ".") || 0
               )
             : Number(variation?.discountValue || 0),
+        departamentId: variation?.departmentId,
+        departmentItemId: variation?.departmentItemId,
         productVariationId: variation?.productVariationId,
         quantity: Number(variation?.quantity),
         saleValue: variation?.saleValue,
@@ -58,5 +63,3 @@ export function formatCart(cart: Cart[], initialCart: Cart[]): ProductCart[] {
       };
     });
 }
-
-

@@ -13,7 +13,7 @@ export function CreateOdontogram() {
       <div className="content">
       <Departaments />
 
-        <div style={{ width: "100%" }}>
+        <div className="mid">
           <DepartamentItems />
 
           <ServicesSelected />
