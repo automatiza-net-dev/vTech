@@ -2,12 +2,19 @@ import { hexToRgbA } from "infinity-forge";
 import styled from "styled-components";
 
 export const CreateOdontogram = styled.div`
-  gap: 20px;
-  padding: 20px;
+  padding-top: 5px;
+  padding-bottom: 10px;
 
-  .container_orcamento {
+  .mid {
+    max-width: 100%;
+    overflow: hidden;
+    width: -webkit-fill-available;
+  }
+
+  .content {
     display: flex;
-    gap: 15px;
+    gap: 20px;
+    margin-bottom: 15px;
   }
 
   .Arcada {
@@ -68,16 +75,24 @@ export const CreateOdontogram = styled.div`
   .service-button {
     padding: 10px 15px;
     border: none;
-    background: #007bff;
+    background: #5cc100;
     color: white;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.2s;
+
+    &:hover {
+      background: rgb(74, 153, 1);
+    }
+
+    &:disabled {
+      opacity: 0.55; 
+      background-color: #ccc;
+      color: #0000006a;
+      cursor: not-allowed;
+    }
   }
 
-  .service-button:hover {
-    background: #0056b3;
-  }
 
   .orcamento-container {
     display: grid;
