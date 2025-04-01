@@ -177,8 +177,6 @@ export function AddSale({
     }
   }
 
-  console.log(initialData)
-
   return (
     <S.AddSale>
       <FormHandler
@@ -190,9 +188,9 @@ export function AddSale({
         onSucess={handleSubmit}
         cleanFieldsOnSubmit={false}
       >
-        <h2 className="font-22-bold">
+        {/* <h2 className="font-22-bold">
           {type === "edit" ? "Editar" : "Criar"} venda {bill?.data?.tag && " - " + bill?.data?.tag}
-        </h2>
+        </h2> */}
 
         <div className="row">
           <SelectBudgetClient tutors={tutors} hideCheckbox />

@@ -11,12 +11,22 @@ export const DepartamentItems = styled("div")`
     cursor: pointer;
     padding: 10px;
     border: 1px solid #ccc;
+    background-color: #fff;
     border-radius: 5px;
     margin: 5px 0;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
   }
 
   input {
-    margin-left: 10px;
     cursor: pointer;
+    margin-top: 2px;
   }
 `;

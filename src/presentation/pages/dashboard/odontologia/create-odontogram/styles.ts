@@ -2,9 +2,8 @@ import { hexToRgbA } from "infinity-forge";
 import styled from "styled-components";
 
 export const CreateOdontogram = styled.div`
-  gap: 20px;
-  padding: 20px;
-
+  padding-top: 5px;
+  padding-bottom: 10px;
 
   .content {
     display: flex;
