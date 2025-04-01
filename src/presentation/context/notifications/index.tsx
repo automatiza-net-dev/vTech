@@ -20,12 +20,12 @@ type Notification = {
 export function NotificationsModal() {
   const [open, setOpen] = useState(false);
 
-  const {unit} = useSystem()
+  const context = useSystem?.()
   const { user } = useAuthAdmin()
   const {logo_url} = useConfigurationsSystem()
 
   const { data, isFetching, mutate } = useQuery({
-    queryKey: [unit?.id, "notifications"],
+    queryKey: [context?.unit?.id, "notifications"],
     queryFn: async () => {
       const response = await api({ url: "Notifications/list-notifications", method: "get" })
 
