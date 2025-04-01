@@ -30,7 +30,6 @@ export function formatProductsApiToCartItems({
   if (!items || items.length === 0) return [];
 
   return items.map((item) => {
-    console.log(item, "@@@@@@")
     return {
       id: item.productVariation?.product?.id,
       hasCourtesy: item?.courtesy,
