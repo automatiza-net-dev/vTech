@@ -20,6 +20,7 @@ import {
   useAuthAdmin,
   Select as SelectInfinityForge,
 } from "infinity-forge";
+import { useSystem } from "@/presentation";
 const { Option } = Select;
 
 const Edit = memo(function Edit({
@@ -46,8 +47,9 @@ const Edit = memo(function Edit({
   const editPaymentMethodPermission = useUserHasPermission(
     `${accessControlTitles(data?.type)}10`
   );
+  const { unit } = useSystem()
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
 
   useEffect(() => {
     setFlags(

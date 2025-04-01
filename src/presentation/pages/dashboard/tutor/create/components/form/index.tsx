@@ -9,12 +9,15 @@ import {
   FormHandler,
   InputCpfCnpj,
   InputSwitch,
-  useAuthAdmin,
 } from "infinity-forge";
 import moment from "moment";
 
 import { RemoteTutor } from "@/data";
-import { useLoadTutor, useConfigurationsSystem } from "@/presentation";
+import {
+  useLoadTutor,
+  useConfigurationsSystem,
+  useSystem,
+} from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
 import { Pets } from "../pets";
@@ -32,13 +35,11 @@ import * as S from "./styles";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
-  const unitConfig = useAuthAdmin()?.user?.unit?.unitConfig;
 
-  const { data, isFetching, mutate } = useLoadTutor(tutorId);
-
+  const { unit } = useSystem();
   const { createToast } = useToast();
-
-  const {type} = useConfigurationsSystem();
+  const { type } = useConfigurationsSystem();
+  const { data, isFetching, mutate } = useLoadTutor(tutorId);
 
   defineRequireFields(origin, ["CEP*"]);
 
@@ -49,7 +50,8 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   const isRegister = origin === "Cadastro";
 
   const requiresDocument =
-    (isRegister && unitConfig?.requires_client_document) || isRegister;
+    (isRegister && unit?.configs?.businessUnits?.requires_client_document) ||
+    isRegister;
 
   async function handleSuccess(data) {
     const payload = {
@@ -208,7 +210,9 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             ]}
           />
 
-          {type === "Vet" && <Pets tutor={data} {...props} handleSuccess={handleSuccess} />}
+          {type === "Vet" && (
+            <Pets tutor={data} {...props} handleSuccess={handleSuccess} />
+          )}
         </FormHandler>
       </S.CreateTutorForm>
     </Error>

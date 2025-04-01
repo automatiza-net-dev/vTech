@@ -236,7 +236,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
     });
   }, [budget]);
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
   const imprimirCompleto = useReactToPrint({ contentRef: componentRef });
 
   return (

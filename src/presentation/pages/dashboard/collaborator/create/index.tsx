@@ -67,15 +67,6 @@ export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
 
             onSuccess && onSuccess()
 
-            // await api({
-            //   url: "invites",
-            //   method: "post",
-            //   body: {
-            //     businessUnitId: user?.unit?.id,
-            //     roleId: data.roleId,
-            //     email: data?.email,
-            //   },
-            // });
 
             createToast({
               status: "success",

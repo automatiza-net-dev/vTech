@@ -14,6 +14,7 @@ export type SystemUser = {
         internalCode?: boolean;
         alter_prices?: boolean;
         requires_client_document?: boolean;
+        controls_deposit?: boolean;
       };
       schedules: {
         syncScheduleMovements?: boolean;
@@ -21,6 +22,9 @@ export type SystemUser = {
         interval?: number;
         allow_change_schedule_duration?: boolean;
       };
+      receipts: {
+        generates_finances_on_receipts_finish?: boolean;
+      }
     };
     system: {
       id: number;

@@ -1,11 +1,12 @@
-import { useQuery, api, BadRequestError, useAuthAdmin } from "infinity-forge";
+import { useQuery, api, BadRequestError } from "infinity-forge";
 
 import { Dashboard, LoadDashboard } from "@/domain";
 import { RemoteCRM, RemoteDashboard } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
+import { useSystem } from "@/presentation/hooks";
 
 export function useLoadDashboard({ type, filters }: { type?: "crm" | "admin", filters: any }) {
-  const { user } = useAuthAdmin();
+  const { user, unit } = useSystem();
 
   async function fetcher() {
     try {
@@ -43,8 +44,8 @@ export function useLoadDashboard({ type, filters }: { type?: "crm" | "admin", fi
     queryKey: [
       "dasboard",
       type,
-      user?.user?.id,
-      user?.unit?.id,
+      user?.id,
+      unit?.id,
       JSON.stringify(filters)
     ],
     queryFn: fetcher,

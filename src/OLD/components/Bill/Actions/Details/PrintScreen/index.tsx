@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 
-import { useProfile } from "@/OLD/hooks/useProfile";
-
-import { PrintHeader } from "@/presentation";
+import { Bill } from "@/domain";
+import { PrintHeader, useSystem } from "@/presentation";
 
 import * as S from "./styles";
 
 import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { useAuthAdmin } from "infinity-forge";
-import { Bill } from "@/domain";
 
 export default function PrintScreen({ bill }: { bill: Bill }) {
   const [higherBlock, setHigherBlock] = useState(0);
@@ -21,15 +18,15 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
     }
   });
 
-  const { user } = useAuthAdmin();
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
-  
+  const { unit } = useSystem();
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+
   return (
     <S.PrintScreen>
       <PrintHeader />
 
       <hr />
-      
+
       <section className="uk-flex  uk-margin-top" style={{ gap: 20 }}>
         <div style={{ maxWidth: 200 }}>
           <label>Cliente</label>
@@ -141,18 +138,24 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
             <td style={{ padding: "10px", border: "1px solid #ddd" }}></td>
             <td style={{ padding: "10px", border: "1px solid #ddd" }}></td>
             <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-              <p style={{ margin: 0 }}>{currencyFormatter(bill?.total_value + bill?.discount_value)}</p>
+              <p style={{ margin: 0 }}>
+                {currencyFormatter(bill?.total_value + bill?.discount_value)}
+              </p>
             </td>
             <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-              <p style={{ margin: 0 }}>{currencyFormatter(bill?.discount_value)}</p>
+              <p style={{ margin: 0 }}>
+                {currencyFormatter(bill?.discount_value)}
+              </p>
             </td>
             <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-              <p style={{ margin: 0 }}>{currencyFormatter(bill?.total_value)}</p>
+              <p style={{ margin: 0 }}>
+                {currencyFormatter(bill?.total_value)}
+              </p>
             </td>
           </tr>
         </tbody>
       </table>
-      
+
       <hr />
 
       <h4 className="uk-margin-top uk-text-center">

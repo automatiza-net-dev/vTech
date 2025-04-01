@@ -27,6 +27,7 @@ import { Select } from "antd";
 import Link from "next/link";
 import { CgDetailsMore } from "react-icons/cg";
 import { MdLocalPrintshop } from "react-icons/md";
+import { useSystem } from "@/presentation";
 
 const columns = [
   {
@@ -64,9 +65,9 @@ const columns = [
 
 export const Deposits = memo(() => {
 
-  const {user} = useAuthAdmin()
+  const {unit} = useSystem()
 
-  const clinicId = user?.unit?.id
+  const clinicId = unit?.id
 
   const [searchParams, setSearchParams] = useState({
     unitId: clinicId,
