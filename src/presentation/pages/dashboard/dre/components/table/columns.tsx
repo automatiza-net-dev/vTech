@@ -19,7 +19,7 @@ export const columns = [
     Component: {
       Element: (props) => (props?.active ? "Sim" : "Não"),
       props: {},
-      allProps: true,
+      
     },
   },
 ] as Column<DreGroup>[];

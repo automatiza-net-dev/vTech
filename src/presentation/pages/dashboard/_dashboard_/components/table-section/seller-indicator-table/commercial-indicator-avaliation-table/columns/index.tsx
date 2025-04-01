@@ -9,7 +9,7 @@ export const columns: Column<any>[] = [
     Component: {
       Element: (props) => <span>{props.qtdAvaliacoes || "-"}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -20,7 +20,7 @@ export const columns: Column<any>[] = [
     Component: {
       Element: (props) => <span>{props.totalAvaliado || "-"}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -31,7 +31,7 @@ export const columns: Column<any>[] = [
     Component: {
       Element: (props) => <span>{props?.ticketMedioAvaliacoes || "-"}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

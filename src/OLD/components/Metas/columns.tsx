@@ -15,7 +15,7 @@ export const columns = [
     Component: {
       Element: (props) => (props?.active ? "Sim" : "Não"),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -24,7 +24,7 @@ export const columns = [
     Component: {
       Element: (props) => convertDate(props?.created_at),
       props: {},
-      allProps: true,
+      
     },
   },
 ];

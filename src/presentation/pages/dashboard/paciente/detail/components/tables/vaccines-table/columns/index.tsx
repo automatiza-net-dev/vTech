@@ -13,7 +13,7 @@ export const columns: Column<ScheduleVaccine>[] = [
     Component: {
       Element: (props) => <NameVaccine {...props} />,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -29,7 +29,7 @@ export const columns: Column<ScheduleVaccine>[] = [
         </div>
       ),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -42,7 +42,7 @@ export const columns: Column<ScheduleVaccine>[] = [
         <div>{props?.vaccine?.type === "vaccine" ? "Vacina" : "Vermífugo"}</div>
       ),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -55,7 +55,7 @@ export const columns: Column<ScheduleVaccine>[] = [
         <div>{moment(props.created_at).format("DD/MM/YYYY")}</div>
       ),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -66,7 +66,7 @@ export const columns: Column<ScheduleVaccine>[] = [
     Component: {
       Element: (props) => <div>{props.user.name}</div>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

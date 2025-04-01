@@ -12,7 +12,7 @@ export function columns(label: string | undefined): Column<BudgetsUser>[] {
       Component: {
         Element: (props) => <span>{props.name}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -25,7 +25,7 @@ export function columns(label: string | undefined): Column<BudgetsUser>[] {
           <PeriodTable {...props.total} index={props.index} />
         ),
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -38,7 +38,7 @@ export function columns(label: string | undefined): Column<BudgetsUser>[] {
           <PeriodTable {...props.confirmed} index={props.index} />
         ),
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -51,7 +51,7 @@ export function columns(label: string | undefined): Column<BudgetsUser>[] {
           <PeriodTable {...props.cancelled} index={props.index} />
         ),
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -62,7 +62,7 @@ export function columns(label: string | undefined): Column<BudgetsUser>[] {
       Component: {
         Element: (props) => <PeriodTable {...props.open} index={props.index} />,
         props: {},
-        allProps: true,
+        
       },
     },
   ];

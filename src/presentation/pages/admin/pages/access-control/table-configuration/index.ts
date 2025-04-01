@@ -16,8 +16,6 @@ export const tableConfiguration: Column<any>[] = [
     width: 200,
     Component: {
       Element: StatusRoleController as any,
-      allProps: true,
-      defaultProps: {},
       props: {}
     }, 
   },
@@ -27,8 +25,6 @@ export const tableConfiguration: Column<any>[] = [
     width: 200,
     Component: {
       Element: ExternalAccessRoleController as any,
-      allProps: true,
-      defaultProps: {},
       props: {}
     },
   },
@@ -39,8 +35,6 @@ export const tableConfiguration: Column<any>[] = [
     Component: {
       Element: ActionsListAccessControls as any,
       props: {},
-      allProps: true,
-      defaultProps: {}
     }
   }
 ];

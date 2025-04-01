@@ -34,7 +34,7 @@ export function TablePayments(props: {
               );
             },
             props: {},
-            allProps: true,
+            
           },
         },
         {
@@ -122,7 +122,7 @@ export function TablePayments(props: {
         //       );
         //     },
         //     props: {},
-        //     allProps: true,
+        //     
         //   },
         // },
         {

@@ -16,7 +16,7 @@ export const columns: Column<SubgroupInvoicing>[] = [
         </span>
       ),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -27,7 +27,7 @@ export const columns: Column<SubgroupInvoicing>[] = [
     Component: {
       Element: (props) => <span>{props.quantity}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -38,7 +38,7 @@ export const columns: Column<SubgroupInvoicing>[] = [
     Component: {
       Element: (props) => <span>{props.total}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -49,7 +49,7 @@ export const columns: Column<SubgroupInvoicing>[] = [
     Component: {
       Element: (props) => <span>{props.percentage}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

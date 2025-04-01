@@ -10,7 +10,7 @@ export const columns = (avalConvertionColumn: boolean): Column<any>[] => {
       Component: {
         Element: (props) => <span>{props.userName || "-"}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -21,7 +21,7 @@ export const columns = (avalConvertionColumn: boolean): Column<any>[] => {
       Component: {
         Element: (props) => <span>{props.qtdClientes || "-"}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -32,7 +32,7 @@ export const columns = (avalConvertionColumn: boolean): Column<any>[] => {
       Component: {
         Element: (props) => <span>{props.valorRealizado || "-"}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -43,7 +43,7 @@ export const columns = (avalConvertionColumn: boolean): Column<any>[] => {
       Component: {
         Element: (props) => <span>{props.ticketMedioRealizado || "-"}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
 
@@ -55,7 +55,7 @@ export const columns = (avalConvertionColumn: boolean): Column<any>[] => {
       Component: {
         Element: (props) => <span>{props.participacaoRealizado}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -67,7 +67,7 @@ export const columns = (avalConvertionColumn: boolean): Column<any>[] => {
       Component: {
         Element: (props) => <span>{props.conversaoAvaliacoes}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
   ];
