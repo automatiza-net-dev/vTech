@@ -3,19 +3,41 @@ import styled from "styled-components";
 export const ServiceStages = styled("div")`
   .radio-box {
     gap: 10px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    padding: 10px;
-    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h3 {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
     .content {
       display: flex;
+      margin-bottom: 15px;
+      width: 100%;
     }
 
     .input-box {
-      width: 10%;
+      width: 20px;
+      display: flex
+;
+    align-items: center;
     }
+
     label {
-      width: 80%;
+      width: 200px;
+      margin-bottom: 0;
+    }
+    
+    .information {
+      width: 175px;
+    }
+
+    .text {
+      display: flex;
+      gap: 30px;
+      font-size: 14px;
     }
   }
 `;

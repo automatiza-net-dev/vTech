@@ -3,8 +3,9 @@ import { billService } from "@/OLD/services/bills.service";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { Tooltip, useToast } from "infinity-forge";
 import { useSystem } from "@/presentation";
+import { Bill } from "@/domain";
 
-export default function ConvertBillToTreatment({ bill, setReload }) {
+export default function ConvertBillToTreatment({ bill, setReload }: { bill: Bill, setReload?: any }) {
 
 
   const { unit } = useSystem()
@@ -34,7 +35,12 @@ export default function ConvertBillToTreatment({ bill, setReload }) {
       });
   };
 
-  if(!unit?.configs?.bills?.generate_treatment_opened_bill) {
+  //false - só baixada 
+  //true - em ambas
+
+  const generate_treatment_opened_bill = unit?.configs?.bills?.generate_treatment_opened_bill
+
+  if((!generate_treatment_opened_bill && bill.status !== "BAIXADA") || (generate_treatment_opened_bill && bill.status !== "ABERTA" && bill.status !== "BAIXADA")) {
     return <></>
   }
 
