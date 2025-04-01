@@ -1,21 +1,14 @@
-// @ts-nocheck
-// Core
+//@ts-nocheck
 import * as React from "react";
 
-import { useAuthAdmin } from "infinity-forge";
-
-// Hooks
 import { useRouter } from "next/router";
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 
-// Utils
 import { Columns, LiftColumns } from "./Columns";
 import moment from "moment";
 
-// Icons
 import { MdOutlineClear } from "react-icons/md";
 
-// Components
 import { Input as AntInput, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -27,7 +20,7 @@ import { useGetAllBills } from "../../../OLD/hooks/useBills";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 
-import { AddSale, PermissionItem } from "@/presentation";
+import { AddSale, PermissionItem, useConfigurationsSystem, useSystem } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";
 
@@ -43,7 +36,7 @@ export default function Bills() {
   });
   const [reload, setReload] = React.useState(false);
 
-  const { user } = useAuthAdmin();
+  const { type } = useConfigurationsSystem();
   const { data } = useGetAllBills(filters, reload);
   const { cashiers } = useDailyCasher(false, filters);
 
@@ -98,7 +91,9 @@ export default function Bills() {
     }
   }, [router.query]);
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const { unit } = useSystem()
+
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
 
   return (
     <PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
@@ -205,7 +200,7 @@ export default function Bills() {
                   }
                 />
               </Input>
-              {user?.type === "Vet" && (
+              {type === "Vet" && (
                 <Input style={{ width: "100%" }}>
                   <Label>Paciente</Label>
                   <AntInput
@@ -274,7 +269,7 @@ export default function Bills() {
           <div className="uk-margin-top">
             <Table
               columns={
-                user?.user?.type === "Vet"
+                type === "Vet"
                   ? Columns(hasInternalCode)
                   : LiftColumns(hasInternalCode)
               }
@@ -323,7 +318,7 @@ export default function Bills() {
 
         <Modal
           open={visible}
-          styles={{ maxWidth: "1500px", width: "100%" }}
+          styles={{ maxWidth: "90%", width: "100%" }}
           stylesContent={{ height: "70dvh" }}
           onClose={() => setVisible(false)}
         >

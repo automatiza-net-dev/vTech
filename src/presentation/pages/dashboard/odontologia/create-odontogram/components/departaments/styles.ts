@@ -2,8 +2,16 @@ import styled from "styled-components";
 
 export const Departaments = styled("div")`
   display: flex;
-  gap: 15px;
   margin-bottom: 20px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
   .button-select-departament {
     width: 120px;
@@ -21,8 +29,13 @@ export const Departaments = styled("div")`
       object-fit: contain;
     }
 
+    &.active {
+      border: 1px solid #5cc100;
+    }
+
     &:hover {
-      border: 1px solid ${(props) => props.theme.primaryColor};
+      border: 1px solid #5cc100;
     }
   }
+
 `;

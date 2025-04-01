@@ -19,7 +19,7 @@ export function InputUnitaryValue({
 
   const { unit } = useSystem();
 
-  const isPossibleChangePricesProducs = unit?.unitConfig?.alter_prices;
+  const isPossibleChangePricesProducs = unit?.configs?.businessUnits?.alter_prices;
 
   return (
     <InputCurrency

@@ -206,9 +206,9 @@ export function AddBudgetNew({
         cleanFieldsOnSubmit={false}
       >
         <div className="content_form">
-          <h2 className="font-24-bold">
+          {/* <h2 className="font-24-bold">
             {budgetId ? "Atualizar" : "Criar"} {getWord("Orçamento")}
-          </h2>
+          </h2> */}
 
           <div className="row">
             <div className="expirationDate">

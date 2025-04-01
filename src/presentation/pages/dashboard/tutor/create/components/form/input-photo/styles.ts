@@ -16,6 +16,7 @@ export const ResultFileStyled = styled("div")`
 
     img {
       width: 100%;
+      object-fit: contain !important;
     }
 
     > svg {

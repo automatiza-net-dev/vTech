@@ -22,7 +22,7 @@ export function Cancel(item: Product & { index: number }) {
         <div style={{ display: "none" }}>
           <Input
             name={`billItems[${item.index}].id`}
-            controlledInitialValue={{ value: item.id }}
+            controlledInitialValue={{ value: String(item.id) }}
           />
         </div>
   

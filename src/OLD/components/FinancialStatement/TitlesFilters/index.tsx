@@ -17,6 +17,7 @@ import {
 } from "infinity-forge";
 
 import { Container } from "./styles";
+import { useSystem } from "@/presentation";
 
 export default function TitlesFilters({
   type,
@@ -124,15 +125,15 @@ export default function TitlesFilters({
     },
   });
 
-  const { user } = useAuthAdmin();
-
+  const {unit} = useSystem()
+  
   const checkingAccounts = useQuery({
     queryKey: ["chekingAccounts"],
     queryFn: async () => {
       const response = await api({
         method: "get",
         url: `checking-accounts`,
-        body: { unit: user?.unit?.id },
+        body: { unit: unit?.id },
       });
 
       return response;

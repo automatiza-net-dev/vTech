@@ -10,15 +10,18 @@ import * as S from "./styles";
 export function CreateOdontogram() {
   return (
     <S.CreateOdontogram>
+      <div className="content">
       <Departaments />
 
-      <div className="container_orcamento">
+        <div className="mid">
+          <DepartamentItems />
+
+          <ServicesSelected />
+        </div>
+
         <Services />
 
-        <DepartamentItems />
       </div>
-
-      <ServicesSelected />
     </S.CreateOdontogram>
   );
 }

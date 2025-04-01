@@ -1,15 +1,24 @@
 import styled from "styled-components";
 
 export const Services = styled("div")`
-  width: 250px;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 5px;
   background: "#fff";
   border-radius: 5px;
+  border: 1px solid rgba(31, 31, 31, 0.22);
+  padding: 10px;
+  max-width: 250px;
 
-  button {
-    width: 100%;
-    
+  .services-list {
+    overflow: auto;
+    max-height: 450px;
+    padding: 0 5px;
+
+    button {
+      width: 100%;
+      margin-bottom: 15px;
+    }
   }
 `;

@@ -12,7 +12,7 @@ export const columns: Column<Tutor>[] = [
     Component: {
       Element: NameTutor,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -23,7 +23,7 @@ export const columns: Column<Tutor>[] = [
     Component: {
       Element: (props) => <div>{props.email}</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -34,7 +34,7 @@ export const columns: Column<Tutor>[] = [
     Component: {
       Element: (props) => <div>{props.tag}</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -45,7 +45,7 @@ export const columns: Column<Tutor>[] = [
     Component: {
       Element: (props) => <div>{props.cellphone}</div>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

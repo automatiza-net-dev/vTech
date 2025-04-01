@@ -128,7 +128,7 @@ export function FormCreateScheduling() {
             <Input
               type="number"
               name="duration"
-              readOnly={!unit?.unitConfig?.allow_change_schedule_duration}
+              readOnly={!unit?.configs?.schedules?.allow_change_schedule_duration}
               label="Duração consulta (minutos)"
             />
           </div>

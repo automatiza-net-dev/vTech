@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { LoadAllReturnableEvents } from "@/domain";
 
-import { useLoadAllReturnableEvents } from "@/presentation/hooks";
+import { useLoadAllReturnableEvents, useSystem } from "@/presentation/hooks";
 
 import moment from "moment";
 import { Tab, TabItem, useAuthAdmin } from "infinity-forge";
@@ -14,14 +14,14 @@ import * as S from "./styles";
 export function SidebarTabs({ event }: { event: Event }) {
   const [showInfos, setShowInfos] = useState(false);
   const [params, setParams] = useState<LoadAllReturnableEvents.Params>({});
-
+  
+  const { unit } = useSystem();
   const returnableEvents = useLoadAllReturnableEvents(params);
-  const { user } = useAuthAdmin();
 
   function handleShowInfos() {
     setParams({
       scheduleId: event?.event?.id,
-      businessUnitId: user?.unit?.id,
+      businessUnitId: unit?.id,
     });
     setShowInfos(!showInfos);
   }

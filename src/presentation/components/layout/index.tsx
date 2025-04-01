@@ -11,6 +11,7 @@ import {
   DictionaryQueryProvider,
   useConfigurationsSystem,
   useLoadAllAvailableUnits,
+  useSystem,
 } from "@/presentation";
 import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -31,6 +32,7 @@ function LayoutPage({ children }) {
   const router = useRouter();
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
+  const { unit } = useSystem()
   const { user, roleUser } = useAuthAdmin();
 
   const {logo_url} = useConfigurationsSystem()
@@ -43,12 +45,12 @@ function LayoutPage({ children }) {
       value: companie.id,
     })),
     activeWorkspace: avaiableUnits?.data?.find(
-      (companie) => companie?.id === user?.unit?.id
+      (companie) => companie?.id === unit?.id
     )?.id,
     onChangeWorkSpace: async (value: any) => {
       if (
         value.workspace !==
-        avaiableUnits?.data?.find((companie) => companie?.id === user?.unit?.id)
+        avaiableUnits?.data?.find((companie) => companie?.id === unit?.id)
           ?.id
       ) {
         await container

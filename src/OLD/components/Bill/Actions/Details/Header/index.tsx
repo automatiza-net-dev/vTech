@@ -9,7 +9,7 @@ import { Container } from "./styles";
 
 import moment from "moment";
 
-import { useConfigurationsSystem } from "@/presentation";
+import { useConfigurationsSystem, useSystem } from "@/presentation";
 import { FormHandler, Select, useAuthAdmin } from "infinity-forge";
 import { statusBillText } from "../../../utils/status-formater";
 
@@ -27,7 +27,10 @@ export default function Header({
   const { colaborators } = useColaborators();
   const { tutors } = useTutor(false, false);
   const { user } = useAuthAdmin();
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+
+  const { unit } = useSystem()
+
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
 

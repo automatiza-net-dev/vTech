@@ -10,7 +10,7 @@ export const columns: Column<Entrie>[] = [
     hasAsc: false,
     // Component: {
     //   props: {},
-    //   allProps: true,
+    //   
     //   Element: (props) => (
     //     <button type="button" onClick={() => window.alert(props.id)}>
     //       {props.id}

@@ -1,12 +1,10 @@
 import { useRef } from "react";
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { useAuthAdmin } from "infinity-forge";
-
-import { User } from "@/domain";
+import { useReactToPrint } from "react-to-print";
+import { useConfigurationsSystem } from "@/presentation/context";
 
 import * as S from "./styles";
-import { useConfigurationsSystem } from "@/presentation/context";
 
 export function Print({
   children,

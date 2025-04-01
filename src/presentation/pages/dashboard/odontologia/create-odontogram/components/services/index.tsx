@@ -1,10 +1,16 @@
+import { useState } from "react";
+
 import { useFormikContext } from "formik";
 import { ItemDepartament, useDepartamentItems } from "../../hooks";
 import { Cart } from "@/presentation/pages/dashboard/financial-services";
 
 import * as S from "./styles";
 
+import { InputControl } from "infinity-forge/dist/ui/components/form/input-control/styles";
+
 export function Services() {
+  const [query, setQuery] = useState("");
+
   const { data } = useDepartamentItems();
 
   const { setFieldValue, values } = useFormikContext<{
@@ -17,45 +23,71 @@ export function Services() {
     return <></>;
   }
 
+  const services =
+    data?.[0]?.products?.filter((item) =>
+      item?.description?.toLowerCase()?.includes(query?.toLowerCase())
+    ) || [];
+
   return (
     <S.Services>
-      <div className="services-container">
-        {data?.[0]?.products?.map((service) => (
+      <InputControl $inputIconSize={20}>
+        <input
+          type="text"
+          onChange={(ev) => setQuery(ev.target.value)}
+          placeholder="Buscar..."
+        />
+      </InputControl>
+
+      {Array.isArray(services) && services.length === 0 && (
+        <p className="font-14-regular">Nenhum serviço encontrado</p>
+      )}
+
+      <div className="services-list">
+        {services?.map((service) => (
           <button
             key={service.description}
             type="button"
             className="service-button font-14-regular"
+            disabled={values?.departamentItems?.length === 0}
             onClick={() => {
               let newOrcamento = values?.cart || [];
 
               values.departamentItems.forEach((item) => {
-                if (
-                  !newOrcamento.some((o) => {
-                    return (
-                      o?.variations?.[0]?.departmentItemId !== item.id && o?.variations?.[0]?.productVariationId === service.id
-                    );
-                  })
-                ) {
+                const itemHasBeenAdded = !!values?.cart.find((itemCart) => {
+                  const cartVariationId =
+                    itemCart.variations?.[0].productVariationId;
+                  const cartDepartamentId =
+                    itemCart.variations?.[0].departmentItemId;
+
+                  return (
+                    cartVariationId === service.product_variation_id &&
+                    cartDepartamentId === item.id
+                  );
+                });
+
+                if (!itemHasBeenAdded) {
                   newOrcamento.push({
-                    id: service.id ||  0,
+                    id: service.id || 0,
                     observation: "",
                     courtesy: false,
-                    variations: [{
-                      id: String(Math.random()),
-                      quantity: 1,
-                      maximum_discount_percentage: 0,
-                      saleValue: service.price || 0,
-                      total: service.price || 0,
-                      unitaryValue: service.price || 0,
-                      discountValue: 0,
-                      productVariationId: service.product_variation_id || 0,
-                      courtesy: false,
-                      departmentItemId: item.id,
-                      departamentDescription: item.description,
-                      departmentId: Number(values.departament || "0"),
-                      description: service?.description,
-                    }]
-                  })
+                    variations: [
+                      {
+                        id: String(Math.random()),
+                        quantity: 1,
+                        maximum_discount_percentage: 0,
+                        saleValue: service.price || 0,
+                        total: service.price || 0,
+                        unitaryValue: service.price || 0,
+                        discountValue: 0,
+                        productVariationId: service.product_variation_id || 0,
+                        courtesy: false,
+                        departmentItemId: item.id,
+                        departamentDescription: item.description,
+                        departmentId: Number(values.departament || "0"),
+                        description: service?.description,
+                      },
+                    ],
+                  });
                 }
               });
 

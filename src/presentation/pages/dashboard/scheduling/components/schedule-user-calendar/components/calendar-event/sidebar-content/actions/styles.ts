@@ -19,6 +19,10 @@ export const Actions = styled.div`
       }
     }
 
+    p {
+      margin-bottom: 0;
+    }
+
     > span + span {
       margin-top: 4px;
     }

@@ -14,7 +14,7 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useMe } from "@/presentation/hooks";
-import { useLoadPatient, useLoadAllScheduleStatuses, useConfigurationsSystem } from "@/presentation";
+import { useLoadPatient, useLoadAllScheduleStatuses, useConfigurationsSystem, ImageUploadS3 } from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -388,8 +388,8 @@ export default function LaunchExam({
 
               return item?.attachment ? (
                 <div style={{ marginTop: "10px" }}>
-                  <img
-                    src={process.env.NEXT_PUBLIC_API + item.attachment}
+                  <ImageUploadS3
+                    src={item.attachment}
                     width={150}
                     className="uk-margin-small-right"
                   />
@@ -398,7 +398,7 @@ export default function LaunchExam({
                     style={{ marginRight: "20px" }}
                     target="_blank"
                     className="uk-link"
-                    href={process.env.NEXT_PUBLIC_API + item.attachment}
+                    href={item.attachment}
                   >
                     {item?.filename}
                   </a>

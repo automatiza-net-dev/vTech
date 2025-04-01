@@ -6,6 +6,7 @@ import { Modal } from "./modal";
 
 import * as S from "./styles";
 import { useConfigurationsSystem } from "../configurations";
+import { useSystem } from "@/presentation/hooks";
 
 type Notification = {
   "id": number;
@@ -19,11 +20,12 @@ type Notification = {
 export function NotificationsModal() {
   const [open, setOpen] = useState(false);
 
+  const context = useSystem?.()
   const { user } = useAuthAdmin()
   const {logo_url} = useConfigurationsSystem()
 
   const { data, isFetching, mutate } = useQuery({
-    queryKey: [user?.unit?.id, "notifications"],
+    queryKey: [context?.unit?.id, "notifications"],
     queryFn: async () => {
       const response = await api({ url: "Notifications/list-notifications", method: "get" })
 

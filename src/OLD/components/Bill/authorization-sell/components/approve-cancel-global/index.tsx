@@ -14,6 +14,7 @@ import { Bill } from "@/domain";
 
 import * as S from "./styles";
 import { useFormikContext } from "formik";
+import { useSystem } from "@/presentation";
 
 export function ApproveCancelGlobal({
   cancelled,
@@ -22,19 +23,19 @@ export function ApproveCancelGlobal({
 }) {
   const { values, setFieldValue } = useFormikContext<{ cancelled?: string }>();
 
-  const { user } = useAuthAdmin();
+  const { unit } = useSystem();
 
   const { data, isFetching } = useQuery({
-    queryKey: ["search-deposits", user?.unit?.id],
+    queryKey: ["search-deposits", unit?.id],
     queryFn: async () => {
       const response = await api({
         url: "deposits/search-deposits",
         method: "get",
-        body: { unitId: user?.unit?.id, status: "Ativo", type: "Venda" },
+        body: { unitId: unit?.id, status: "Ativo", type: "Venda" },
       });
       return response as any[];
     },
-    enabled: cancelled === "A" && !!user?.unit?.id,
+    enabled: cancelled === "A" && !!unit?.id,
   });
 
   return (
@@ -81,7 +82,7 @@ export function ApproveCancelGlobal({
 
         {cancelled === "A" &&
           values?.cancelled === "true" &&
-          user?.unit?.configs?.businessUnits?.controls_deposit === true && (
+          unit?.configs?.businessUnits?.controls_deposit === true && (
             <Select
               label="Depósito estoque - devolução cancelamento"
               name="depositId"

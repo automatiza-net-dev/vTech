@@ -12,7 +12,7 @@ export default function AddBillItem({ bill }: { bill: Bill }) {
       <Modal
         onClose={() => setOpen(false)}
         open={open}
-        styles={{ maxWidth: "1500px" }}
+        styles={{maxWidth: "90%",  }}
       >
         <AddSale setModal={setOpen} billId={bill?.id} type="edit" />
       </Modal>

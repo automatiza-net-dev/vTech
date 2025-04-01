@@ -26,8 +26,6 @@ export const tableListCollaboratorsConfig: Column<UserController>[] = [
     Component: {
       Element: ActionsListUserController,
       props: {},
-      allProps: true,
-      defaultProps: {}
     }
   }
 ];

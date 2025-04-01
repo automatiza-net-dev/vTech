@@ -24,6 +24,7 @@ import moment from "moment";
 import { sortItems } from "@/OLD/utils/sortItems";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+import { useSystem } from "@/presentation";
 
 function PaymentsPanel({
   payments,
@@ -50,8 +51,10 @@ function PaymentsPanel({
   const finishReceiptPermission = useUserHasPermission("ENT07");
   const updatePaymentsPermission = useUserHasPermission("ENT05");
   const removePaymentsPermission = useUserHasPermission("ENT06");
+
+  const {unit} = useSystem()
   const generatesFinancesOnReceiptsFinish =
-    me?.user?.unit?.unitConfig?.generates_finances_on_receipts_finish;
+    unit?.configs?.receipts?.generates_finances_on_receipts_finish;
 
   sortItems(paymentMethods, "description");
 

@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { api, useQuery } from "infinity-forge";
+import { api, Tooltip, useQuery } from "infinity-forge";
 
 export type Departament = {
   systemId: string;
@@ -10,42 +10,55 @@ export type Departament = {
   description: string;
 };
 
-import * as S from "./styles"
+import * as S from "./styles";
 import { ItemDepartament } from "../../hooks";
+import { useEffect } from "react";
 
 export function Departaments() {
-  const { setFieldValue } = useFormikContext<{
-      departamentItems: ItemDepartament[];
-    }>();
+  const { values, setFieldValue } = useFormikContext<{
+    departament?: number;
+    departamentItems: ItemDepartament[];
+  }>();
 
   const { data } = useQuery({
     queryKey: "departaments",
     queryFn: async () => {
-      return api<Departament[]>({
+      const response = await api<Departament[]>({
         url: "departments/resume",
         method: "get",
         body: { type: "sistema" },
       });
+
+      return response
     },
   });
 
+  useEffect(() => {
+    if(!values.departament) {
+      setFieldValue("departament", data?.[0]?.departmentId);
+      setFieldValue("departamentItems", []);
+    }
+  }, [])
+
   return (
     <S.Departaments>
-      {data?.map((dept) => (
-        <button
-          key={dept.departmentId}
-          type="button"
-          className="button-select-departament"
-          onClick={() => {
-            setFieldValue("departament", dept.departmentId);
-            setFieldValue("departamentItems", []);
-          }}
-        >
-          <img src={dept?.image} />
+      <div className="list">
+        {data?.map((dept) => (
+          <button
+            key={dept.departmentId}
+            type="button"
+            className={"button-select-departament " + ((String(values?.departament) === String(dept.departmentId)) ? "active" : "")}
+            onClick={() => {
+              setFieldValue("departament", dept.departmentId);
+              setFieldValue("departamentItems", []);
+            }}
+          >
+            <img src={dept?.image} />
 
-          {dept.description}
-        </button>
-      ))}
+            {dept.description}
+          </button>
+        ))}
+      </div>
     </S.Departaments>
   );
 }

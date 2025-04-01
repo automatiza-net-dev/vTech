@@ -14,7 +14,6 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
     },
     id: "tag",
   },
@@ -27,7 +26,7 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
+      
     },
     id: "user",
   },
@@ -40,7 +39,7 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
+      
     },
     id: "opening_date",
   },
@@ -53,7 +52,7 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
+      
     },
     id: "closing_date",
   },
@@ -66,7 +65,7 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
+      
     },
     id: "cashier_balance",
   },
@@ -79,7 +78,7 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
+      
     },
     id: "checking_date",
   },
@@ -92,7 +91,7 @@ export const columns = [
         </Link>
       ),
       props: {},
-      allProps: true,
+      
     },
     id: "status",
   },
