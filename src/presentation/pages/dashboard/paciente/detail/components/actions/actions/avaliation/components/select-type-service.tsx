@@ -5,6 +5,7 @@ import { Select, useAuthAdmin } from "infinity-forge";
 import {
   useLoadPatient,
   useLoadAllScheduleServicesGroups,
+  useSystem,
 } from "@/presentation";
 import { RemoteSystem } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -21,7 +22,8 @@ export function SelectTypeService({
   const scheduleServiceId = values?.["scheduleServiceId"]?.[0];
 
   const patient = useLoadPatient();
-  const { user } = useAuthAdmin();
+
+  const { unit, user } = useSystem()
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups({});
 
@@ -37,10 +39,10 @@ export function SelectTypeService({
     const response = await container
       .get<RemoteSystem>(TypesAutomatiza.RemoteSystem)
       .replace({
-        businessUnitId: user?.unit?.id,
+        businessUnitId: unit?.id,
         dependentId: patient?.data?.id,
         tutorId: patient?.data?.tutor?.id,
-        userId: user?.user?.id,
+        userId: user?.id,
         base: resume,
       });
 

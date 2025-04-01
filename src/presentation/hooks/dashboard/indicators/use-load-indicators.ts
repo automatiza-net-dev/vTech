@@ -5,10 +5,11 @@ import { RemoteIndicators } from "@/data";
 import { container, dashboardTypes } from "@/container";
 import { useRouter } from "next/router";
 import { Indicator } from "@/domain";
+import { useSystem } from "../../users";
 
 export function useLoadIndicators(business_unit_id: string) {
 
-  const { user } = useAuthAdmin()
+  const { unit } = useSystem()
 
   const router = useRouter();
 
@@ -30,7 +31,7 @@ export function useLoadIndicators(business_unit_id: string) {
     }
   }
   const result = useQuery({
-    queryKey: ["loadIndicators", user?.unit?.id],
+    queryKey: ["loadIndicators", unit?.id],
     queryFn: fetcher,
     refetchOnWindowFocus: false,
   });

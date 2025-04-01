@@ -49,7 +49,7 @@ export function formatCart(cart: Cart[], initialCart: Cart[]): ProductCart[] {
                 (variation?.discountValue as string)?.replaceAll(",", ".") || 0
               )
             : Number(variation?.discountValue || 0),
-        departamentId: variation?.departmentId,
+        departmentId: variation?.departmentId,
         departmentItemId: variation?.departmentItemId,
         productVariationId: variation?.productVariationId,
         quantity: Number(variation?.quantity),

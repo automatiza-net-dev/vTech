@@ -43,6 +43,7 @@ import CreateTitle from "./Create";
 // Utils
 import * as XLSX from "xlsx/xlsx.mjs";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
+import { useSystem } from "@/presentation";
 
 export default function Titles({ type }: any) {
 
@@ -78,9 +79,10 @@ export default function Titles({ type }: any) {
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
   const { user } = useAuthAdmin();
 
+  const { unit } = useSystem()
   const { createToast } = useToast();
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
 
   const listTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}00`

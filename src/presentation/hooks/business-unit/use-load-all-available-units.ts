@@ -1,10 +1,11 @@
-import { useQuery, useAuthAdmin } from "infinity-forge";
+import { useQuery } from "infinity-forge";
 
 import { RemoteBusinessUnits } from "@/data";
 import { adminTypes, container } from "@/container";
+import { useSystem } from "../users";
 
 export function useLoadAllAvailableUnits() {
-  const { user } = useAuthAdmin();
+  const { unit } = useSystem();
 
   async function fetcher() {
     const response = await container
@@ -15,7 +16,7 @@ export function useLoadAllAvailableUnits() {
   }
 
   return useQuery({
-    queryKey: ["RemoteLoadAllAvailableUnits", user?.unit?.id],
+    queryKey: ["RemoteLoadAllAvailableUnits", unit?.id],
     queryFn: fetcher,
     enableCache: true
   });

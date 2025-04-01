@@ -27,8 +27,6 @@ import DosesModal from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesLis
 import { HospitalizationForm } from "./hospitalization";
 import { DischargeForm } from "./discharge";
 import { Icon } from "infinity-forge";
-import { CreateTutor } from "@/OLD/components/Tutor/Create";
-import { Pathologie } from "./pathologie";
 
 type ActionPatient = {
   active: boolean;

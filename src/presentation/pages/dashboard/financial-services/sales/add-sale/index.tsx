@@ -23,6 +23,7 @@ import {
   useLoadAllPatientTutor,
   useLoadAllDailyMovements,
   useConfigurationsSystem,
+  useSystem,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
@@ -64,9 +65,10 @@ export function AddSale({
   const { createToast } = useToast();
   const { user } = useAuthAdmin();
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
-  const hasSyncScheduleMovements =
-    user?.unit?.unitConfig?.syncScheduleMovements;
+  const { unit } = useSystem()
+
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
     (movement) => movement.status === "Aberto"

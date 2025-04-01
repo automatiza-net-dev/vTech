@@ -14,6 +14,7 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
 
 import moment from "moment";
+import { useSystem } from "@/presentation";
 
 export default function AddPaymentsScreen({
   id,
@@ -34,11 +35,11 @@ export default function AddPaymentsScreen({
   const { plans } = usePlans(plansFilters);
 
   const addPaymentsPermission = useUserHasPermission("ENT04");
-  const me = useAuthAdmin();
+  const { unit } = useSystem();
 
   const generatesFinancesOnReceiptsFinish =
-    me?.user?.unit?.unitConfig?.generates_finances_on_receipts_finish;
-
+    unit?.configs?.receipts?.generates_finances_on_receipts_finish;
+  
   useEffect(() => {
     setIds({ ids: [id] });
   }, [id]);

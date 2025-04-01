@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { api, LoaderCircle, useAuthAdmin, useToast } from "infinity-forge";
+import { api, LoaderCircle, useToast } from "infinity-forge";
+import { useSystem } from "@/presentation";
 
 export function GerarDocumentoVenda({
   bill,
@@ -15,12 +16,12 @@ export function GerarDocumentoVenda({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const {user} = useAuthAdmin();
+  const {unit} = useSystem();
   const { createToast } = useToast();
 
   return (
     <>
-      {user?.unit?.configs?.businessUnits?.generate_bill_documents && (
+      {unit?.configs?.businessUnits?.generate_bill_documents && (
         <button
           disabled={loading}
           type="button"

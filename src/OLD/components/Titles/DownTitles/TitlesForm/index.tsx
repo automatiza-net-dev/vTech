@@ -14,7 +14,7 @@ import { DatePicker, Input, Select } from "antd";
 const { Option } = Select;
 
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
-import { usePermission } from "@/presentation";
+import { usePermission, useSystem } from "@/presentation";
 
 function TitlesForm({
   plans,
@@ -29,7 +29,9 @@ function TitlesForm({
   const router = useRouter();
   const { user } = useAuthAdmin();
 
-  const hasInternalCode = user?.unit?.unitConfig?.internalCode;
+  const { unit } = useSystem()
+
+  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
 
   const editFieldsPermission = (title) =>
     usePermission(`${accessControlTitles(title)}02`);

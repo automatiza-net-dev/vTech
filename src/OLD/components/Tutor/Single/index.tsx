@@ -12,7 +12,12 @@ import { petsService } from "@/OLD/services/patient.service";
 import { Unlink } from "../unlink";
 import { AddPatient } from "./AddPatient";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
-import { FormCreateTutor, ImageUploadS3, useConfigurationsSystem, useVerifyPermissions } from "@/presentation";
+import {
+  FormCreateTutor,
+  ImageUploadS3,
+  useConfigurationsSystem,
+  useVerifyPermissions,
+} from "@/presentation";
 import PatientDetails from "@/presentation/pages/dashboard/paciente/patient-info/patient-info";
 
 import { convertDate } from "@/OLD/utils/convertDate";
@@ -35,7 +40,7 @@ export function Single({
   const router = useRouter();
   const hasPermission = useVerifyPermissions("PET04");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const columns = [
     {
@@ -69,7 +74,6 @@ export function Single({
     (data) => {
       setPatients(
         data.map((patient) => {
-       
           return {
             name: (
               <div
@@ -144,7 +148,7 @@ export function Single({
       .catch((err) => {
         setLoading(false);
 
-        createToast({ status: "error", message:  "Erro ao buscar tutor"})
+        createToast({ status: "error", message: "Erro ao buscar tutor" });
       });
   };
 
@@ -153,11 +157,7 @@ export function Single({
     handleGetSingleTutor(selectedId);
   }, [reload, selectedId]);
 
-  useEffect(() => {
-    tutor?.photo && setPhotoSrc(process.env.NEXT_PUBLIC_API + tutor?.photo);
-  }, [tutor]);
-
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem();
 
   return loading ? (
     <LoadingSkeleton />
@@ -183,16 +183,7 @@ export function Single({
                 top: -80,
               }}
             >
-              <img
-                className="uk-border-circle"
-                width="115px"
-                height="115px"
-                src={
-                  photoSrc
-                    ? photoSrc
-                    : "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
-                }
-              />
+              <ImageUploadS3 src={tutor?.photo} />
             </div>
             <div
               style={{
@@ -370,7 +361,7 @@ export function Single({
       <Modal
         open={patientDetailsOpen}
         onClose={() => setPatientDetailsOpen(false)}
-        styles={{ width: '1100px' }}
+        styles={{ width: "1100px" }}
         children={
           <PatientDetails
             selectedId={selectedPatientId}

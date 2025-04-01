@@ -205,7 +205,6 @@ export default function App({ Component, pageProps }) {
             primaryColor: configurations.primary_color,
           }}
         >
-          <NotificationsModal />
 
           <GlobalStyles host={configurations.name} />
 
@@ -217,6 +216,8 @@ export default function App({ Component, pageProps }) {
                     <Head>
                       <title>{configurations.name}</title>
                     </Head>
+
+          <NotificationsModal />
 
                     <GambiarraTemporaria setMenus={setMenus} />
 
