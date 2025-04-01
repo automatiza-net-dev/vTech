@@ -10,7 +10,7 @@ export const columns: Column<SubgroupsDetails>[] = [
     Component: {
       Element: (props) => <span>{props.description}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -21,7 +21,7 @@ export const columns: Column<SubgroupsDetails>[] = [
     Component: {
       Element: (props) => <span>{props.qtySales}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -32,7 +32,7 @@ export const columns: Column<SubgroupsDetails>[] = [
     Component: {
       Element: (props) => <span>{props?.totalSales?.toFixed(2)}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -43,7 +43,7 @@ export const columns: Column<SubgroupsDetails>[] = [
     Component: {
       Element: (props) => <span>{props?.percentage?.toFixed(2)}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

@@ -24,8 +24,6 @@ export function TableClients({ data, isLoading }) {
           Component: {
             Element: ButtonSetSchedulling,
             props: { agendamento: "agendamento" },
-            defaultProps: {},
-            allProps: true,
           },
         },
       ],

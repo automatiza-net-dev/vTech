@@ -16,7 +16,7 @@ export const columns = [
       Element: (props) =>
         moment(props?.startDate).add(3, "hours").format("DD/MM/YYYY"),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -27,7 +27,7 @@ export const columns = [
       Element: (props) =>
         moment(props?.endDate).add(3, "hours").format("DD/MM/YYYY"),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -37,7 +37,7 @@ export const columns = [
     Component: {
       Element: (props) => formatNumberToCurrency(props?.investmentValue),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -47,7 +47,7 @@ export const columns = [
     Component: {
       Element: (props) => (props?.active ? "Sim" : "Não"),
       props: {},
-      allProps: true,
+      
     },
   },
 ] as Column<Marketing>[];

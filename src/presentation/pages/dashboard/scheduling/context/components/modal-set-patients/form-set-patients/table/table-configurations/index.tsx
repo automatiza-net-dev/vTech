@@ -15,7 +15,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element: (props) => props?.name ?? "-",
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -25,7 +25,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element: (props) => props.tag ?? "-",
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -39,7 +39,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
         </>
       ),
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -49,7 +49,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element:  BirthDate,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -59,7 +59,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element: Race,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -69,7 +69,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element: (props) => <Tutors tutors={props?.tutors} id={props?.id} name={props?.name} />,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -79,7 +79,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
     Component: {
       Element: ButtonSetSchedulling,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

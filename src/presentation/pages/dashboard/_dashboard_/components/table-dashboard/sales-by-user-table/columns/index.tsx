@@ -10,7 +10,7 @@ export const columns: Column<SalesUser>[] = [
     Component: {
       Element: (props) => <span>{props.name}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -21,7 +21,7 @@ export const columns: Column<SalesUser>[] = [
     Component: {
       Element: (props) => <span>{props.total}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -32,7 +32,7 @@ export const columns: Column<SalesUser>[] = [
     Component: {
       Element: (props) => <span>{props.qty}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -43,7 +43,7 @@ export const columns: Column<SalesUser>[] = [
     Component: {
       Element: (props) => <span>{props.avg}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -54,7 +54,7 @@ export const columns: Column<SalesUser>[] = [
     Component: {
       Element: (props) => <span>{props.percentage}</span>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];

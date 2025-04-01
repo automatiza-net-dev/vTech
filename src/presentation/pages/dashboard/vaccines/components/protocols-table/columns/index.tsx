@@ -13,7 +13,7 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
       Component: {
         Element: (props) => <span>{props?.vaccine?.name}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -24,7 +24,7 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
       Component: {
         Element: (props) => <span>{props?.specie?.description || "-"}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -35,7 +35,7 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
       Component: {
         Element: (props) => <span>{props?.name}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -46,7 +46,7 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
       Component: {
         Element: (props) => <span>{props.expirationDays || "-"}</span>,
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -59,7 +59,7 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
           <span>{props?.vaccine?.active ? "Sim" : "false"}</span>
         ),
         props: {},
-        allProps: true,
+        
       },
     },
     {
@@ -72,7 +72,7 @@ export const columns = (title: string): Column<VaccineProtocol>[] => {
           <span>{moment(props?.created_at).format("DD/MM/YYYY")}</span>
         ),
         props: {},
-        allProps: true,
+        
       },
     },
   ];

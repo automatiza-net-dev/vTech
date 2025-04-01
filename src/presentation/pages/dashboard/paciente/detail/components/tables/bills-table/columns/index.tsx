@@ -9,7 +9,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -20,7 +20,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -31,7 +31,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -42,7 +42,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -53,7 +53,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -64,7 +64,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -75,7 +75,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
   {
@@ -86,7 +86,7 @@ export const columns = [
     Component: {
       Element: (props) => <div>...</div>,
       props: {},
-      allProps: true,
+      
     },
   },
 ];
