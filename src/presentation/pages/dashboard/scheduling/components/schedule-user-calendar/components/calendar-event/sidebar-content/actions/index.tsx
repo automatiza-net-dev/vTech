@@ -142,7 +142,7 @@ export function Actions({
                         </div>
                       )}
                     </>
-                  ) : item.text}
+                  ) :<span dangerouslySetInnerHTML={{ __html: item.text || "" }} />}
                 </span>
               </span>
             );

@@ -15,6 +15,7 @@ export type SystemUser = {
       }
       schedules: {
         syncScheduleMovements?: boolean;
+        show_finances_schedules?: boolean;
       }
     }
     unitConfig: {
