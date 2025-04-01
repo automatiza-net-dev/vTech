@@ -58,7 +58,8 @@ export function TutorsTable(props: Patient) {
         idTooltip="unlink"
         content="Desvincular Tutor/Pet"
         trigger={
-          <Unlink patientId={props.id} tutorId={p.id} customSubmit={mutate} />
+          <button type="button" className="action-button"><Unlink patientId={props.id} tutorId={p.id} customSubmit={mutate} /></button>
+          
         }
       />
     ));

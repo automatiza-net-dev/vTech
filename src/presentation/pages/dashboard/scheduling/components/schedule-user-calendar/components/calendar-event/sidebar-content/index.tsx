@@ -1,9 +1,9 @@
-import { Error, Icon } from "infinity-forge";
+import { api, Error, formatNumberToCurrency, Icon, useQuery } from "infinity-forge";
 
 import { Actions } from "./actions";
 import { UserInfos } from "./user-info";
 import { Event, ScheduleUser } from "@/domain";
-import { DateToDDMMYYYY } from "@/presentation";
+import { DateToDDMMYYYY, useSystem } from "@/presentation";
 
 import { SidebarTabs } from "./tabs";
 
@@ -51,6 +51,9 @@ export function SideBarContent({
         <div className="status">
           <span>{infos.status}</span>
         </div>
+
+        <PatientFinances event={event} />
+
         <UserInfos event={event} setOpen={setOpen} />
         <Actions
           event={event}
@@ -62,5 +65,40 @@ export function SideBarContent({
         <SidebarTabs event={event} />
       </S.SideBarContent>
     </Error>
+  );
+}
+
+function PatientFinances({ event }: { event: Event }) {
+  const { unit } = useSystem();
+
+  const clientId = event?.event?.holder?.id || event?.event?.patient?.id;
+  const hasFinancesShedules = unit?.configs.schedules?.show_finances_schedules;
+
+  const { data } = useQuery({
+    queryKey: ["PatientFinancess", clientId],
+    queryFn: async () => {
+      const response = await api({
+        url: `schedules/finances/${clientId}`,
+        method: "get",
+      });
+
+      return response as {
+        "Valores em Atraso": number;
+      }[];
+    },
+    enabled: hasFinancesShedules
+  });
+
+  if (!hasFinancesShedules || !data || data?.length === 0) {
+    return <></>;
+  }
+
+  return (
+    <div className="status" style={{ display: "flex", gap: 5 }}>
+      <h3 className="font-14-bold" style={{ marginBottom: 0, color: "red" }}>Valores em aberto</h3>
+      {data?.map((item, index) => {
+        return <span key={index} style={{ color: "red", fontWeight: "bold" }}>{formatNumberToCurrency(item["Valores em Atraso"])}</span>;
+      })}
+    </div>
   );
 }

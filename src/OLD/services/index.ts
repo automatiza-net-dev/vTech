@@ -13,6 +13,8 @@ const api = () => {
     },
   });
 
+  console.log(process.env.api)
+
   instance.interceptors.request.use(function (config: any) {
     const session = process.browser
       ? container.get<Storage>(TypesAutomatiza.storage).get("token")?.value

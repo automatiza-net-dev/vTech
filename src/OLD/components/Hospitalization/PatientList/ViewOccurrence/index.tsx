@@ -20,6 +20,7 @@ import { hospitalizationOccurences } from "@/OLD/services/hospitalizationsOcurre
 import moment from "moment";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useToast } from "infinity-forge";
+import { ImageUploadS3 } from "@/presentation";
 
 const ViewOccurrence = memo(function ViewOccurrence({
   visible,
@@ -156,10 +157,7 @@ const ViewOccurrence = memo(function ViewOccurrence({
         <br />
         {occurrenceData?.attachments?.length > 0 &&
           occurrenceData?.attachments.map((photo) => (
-            <img
-              src={`${process.env.NEXT_PUBLIC_API}${photo?.attachment}`}
-              width="200"
-            />
+            <ImageUploadS3 key={photo?.attachment} src={photo?.attachment} />
           ))}
       </div>
       <hr />

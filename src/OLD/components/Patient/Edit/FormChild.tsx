@@ -23,6 +23,7 @@ import dynamic from "next/dynamic";
 import { animalServices } from "@/OLD/services/animal.service";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+import { ImageUploadS3 } from "@/presentation";
 const ImgCrop = dynamic(() => import("antd-img-crop"), { ssr: false });
 
 export const FormChild = React.memo(function FormChild({
@@ -141,7 +142,7 @@ export const FormChild = React.memo(function FormChild({
                 method=""
               >
                 {data?.photo ? (
-                  <img src={`${process.env.NEXT_PUBLIC_API}${data?.photo}`} />
+                  <ImageUploadS3 src={data?.photo} />
                 ) : (
                   fileList.length === 0 && "+ Imagem"
                 )}

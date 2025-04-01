@@ -268,9 +268,9 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           )}
         </div>
 
-        {type === "Vet" && (
+        {/* {type === "Vet" && (
           <InputFile name="photos" isLocalFile multiple />
-        )}
+        )} */}
       </FormHandler>
 
       <Modal

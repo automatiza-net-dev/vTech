@@ -9,19 +9,15 @@ import Link from "next/link";
 import { convertDate } from "@/OLD/utils/convertDate";
 
 import { useSingleSupplier } from "@/OLD/hooks/useSuppliers";
+import { ImageUploadS3 } from "@/presentation";
 
 const Single = memo(function Single() {
   const [loading, setLoading] = useState(false);
-  const [photoSrc, setPhotoSrc] = useState(false);
+
   const router = useRouter();
   const id = router.query.id;
 
   const { supplier } = useSingleSupplier(id);
-
-  useEffect(() => {
-    supplier?.photo &&
-      setPhotoSrc(process.env.NEXT_PUBLIC_API + supplier?.photo);
-  }, [supplier]);
 
   return loading ? (
     <LoadingSkeleton />
@@ -52,14 +48,9 @@ const Single = memo(function Single() {
                   top: -80,
                 }}
               >
-                <img
-                  className="uk-border-circle"
-                  width="115px"
-                  height="115px"
+                <ImageUploadS3
                   src={
-                    photoSrc
-                      ? photoSrc
-                      : "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+                    supplier?.photo
                   }
                 />
               </div>

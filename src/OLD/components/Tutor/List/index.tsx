@@ -33,7 +33,7 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { FormCreatePatient, FormCreateTutor } from "@/presentation";
+import { FormCreatePatient, FormCreateTutor, useConfigurationsSystem } from "@/presentation";
 import { Icon, Modal, Button, useAuthAdmin, useToast } from "infinity-forge";
 
 export function List({
@@ -70,7 +70,7 @@ export function List({
 
   const { tutors: tutorsList, loading } = useTutor(filters, reload);
   const { patients } = usePatients(false, false, {}, vincPetVisible);
-  const { user } = useAuthAdmin();
+  const { type } = useConfigurationsSystem();
 
   const router = useRouter();
 
@@ -434,7 +434,7 @@ export function List({
     <Container>
       <Table
         columns={
-          user?.type === "Vet"
+          type === "Vet"
             ? petToVinc
               ? selectTutorColumns
               : columns

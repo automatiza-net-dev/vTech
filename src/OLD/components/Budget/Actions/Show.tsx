@@ -393,8 +393,8 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
                   </div>
                 </div>
                 <div className="uk-flex uk-flex-column uk-width-1-1">
-                  {unit?.unitConfig?.reviewer &&
-                    unit?.unitConfig?.reviewer !== "N" && (
+                  {unit?.configs?.businessUnits?.reviewer &&
+                    unit?.configs?.businessUnits?.reviewer !== "N" && (
                       <>
                         <div className="uk-flex">
                           <span className="uk-text-small uk-margin-right">

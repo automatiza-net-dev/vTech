@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { memo, useState, useEffect } from "react";
 
-import { useMe } from "@/presentation";
+import { useConfigurationsSystem, useMe } from "@/presentation";
 import { usePatients } from "@/OLD/hooks/usePatients";
 // import { useTutor } from "@/OLD/hooks/useTutor";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
@@ -23,12 +23,12 @@ import { MdOutlineClear } from "react-icons/md";
 function Filters({ filters, setFilters, setReload }) {
   const [values, setValues] = useState({});
 
-  const { user } = useAuthAdmin();
+    const {type} = useConfigurationsSystem()
 
   const { patients } = usePatients(
     false,
     false,
-    user?.type === "clinicas"
+    type === "clinicas"
   );
   const { colaborators } = useColaborators();
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -126,7 +126,7 @@ function Filters({ filters, setFilters, setReload }) {
       </div>
 
       <div className="uk-width-1-4 uk-margin-left">
-        {user?.type === "Vet" && (
+        {type === "Vet" && (
           <>
             <label>Paciente</label>
             <InputBox className="">
@@ -152,7 +152,7 @@ function Filters({ filters, setFilters, setReload }) {
             <Option value="contactDate">Data Contato</Option>
             <Option value="openingDate">Data Abertura</Option>
             <Option value="contact">Nome cliente</Option>
-            {user?.type === "Vet" && (
+            {type === "Vet" && (
               <Option value="client">Paciente</Option>
             )}
           </Select>

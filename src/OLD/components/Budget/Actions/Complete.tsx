@@ -6,16 +6,17 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { currencyFormatter } from "..";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-import { useCompleteBudget, useConfirmBudget } from "@/OLD/hooks/useBudgets";
+import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
-import { useLoadAllPatientTutor, useConfigurationsSystem } from "@/presentation/hooks";
+import { useLoadAllPatientTutor
+
+ } from "@/presentation/hooks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { BsCheckCircle } from "react-icons/bs";
 import { budgetService } from "@/OLD/services/budgets.service";
-import Negotiation from "@/OLD/components/Budget/Negotiation";
 import { Modal, Tooltip } from "infinity-forge";
 
-import { useDictionary } from "@/presentation";
+import { useConfigurationsSystem, useDictionary } from "@/presentation";
 import { useToast, LoaderCircle, Select, FormHandler } from "infinity-forge";
 import {
   financialServicesContainer,
@@ -93,6 +94,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
   );
 
   const {type} = useConfigurationsSystem()
+
 
   const [formData, setFormData] = React.useState({
     id: budget?.id,

@@ -12,7 +12,7 @@ import { petsService } from "@/OLD/services/patient.service";
 import { Unlink } from "../unlink";
 import { AddPatient } from "./AddPatient";
 import { LoadingSkeleton } from "@/OLD/components/mini-components";
-import { FormCreateTutor, useConfigurationsSystem, useVerifyPermissions } from "@/presentation";
+import { FormCreateTutor, ImageUploadS3, useConfigurationsSystem, useVerifyPermissions } from "@/presentation";
 import PatientDetails from "@/presentation/pages/dashboard/paciente/patient-info/patient-info";
 
 import { convertDate } from "@/OLD/utils/convertDate";
@@ -69,7 +69,7 @@ export function Single({
     (data) => {
       setPatients(
         data.map((patient) => {
-          const photoSrc = process.env.NEXT_PUBLIC_API + patient.photo;
+       
           return {
             name: (
               <div
@@ -89,11 +89,11 @@ export function Single({
                   }}
                 >
                   {patient.photo && (
-                    <img
+                    <ImageUploadS3
                       className="uk-border-circle uk-margin-right"
                       width="50px"
                       height="50px"
-                      src={photoSrc}
+                      src={patient.photo}
                     />
                   )}
                 </div>

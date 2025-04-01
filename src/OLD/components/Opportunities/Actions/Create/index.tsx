@@ -102,9 +102,7 @@ export default function Create({
     setReload((prv) => !prv);
   }, [patientListVisible]);
 
-  console.log(data)
 
-  //ClientId está errado e deve averiguar o campo patient_id e colocar no ClientId o patient_id
 
   return (
     <PageWrapper title="Nova oportunidade">
@@ -124,7 +122,7 @@ export default function Create({
           />
         )}
 
-        {user?.type === "Vet" && (
+        {type === "Vet" && (
           <Modal
             title={"Selecionar paciente"}
             width={1200}
@@ -144,7 +142,7 @@ export default function Create({
             />
           </Modal>
         )}
-        {user?.type !== "Vet" && (
+        {type !== "Vet" && (
           <Modal
             title={"Selecionar Cliente"}
             width={1200}
