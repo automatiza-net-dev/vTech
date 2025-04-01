@@ -12,18 +12,15 @@ export type SystemUser = {
         reviewer?: "N" | "S" | "O";
         generate_bill_documents?: boolean;
         internalCode?: boolean;
-      }
+        alter_prices?: boolean;
+        requires_client_document?: boolean;
+      };
       schedules: {
         syncScheduleMovements?: boolean;
         show_finances_schedules?: boolean;
-      }
-    }
-    unitConfig: {
-      interval: number;
-      alter_prices?: boolean;
-      requires_client_document?: boolean;
-      reviewer: "N" | "S" | "O"
-      allow_change_schedule_duration?: boolean;
+        interval?: number;
+        allow_change_schedule_duration?: boolean;
+      };
     };
     system: {
       id: number;

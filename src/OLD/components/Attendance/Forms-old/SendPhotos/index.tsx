@@ -295,7 +295,7 @@ export default function SendPhotos({
                 <a
                   className="uk-link"
                   target="_blank"
-                  href={process.env.NEXT_PUBLIC_API + item?.url}
+                  href={item?.url}
                 >
                   {item?.filename}
                 </a>

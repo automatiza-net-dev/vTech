@@ -316,7 +316,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
                   <a
                     target="_blank"
                     className="uk-link"
-                    href={`${process.env.NEXT_PUBLIC_API}${item?.url}`}
+                    href={`/${item?.url}`}
                     download={item?.filename}
                   >
                     {item?.filename}
