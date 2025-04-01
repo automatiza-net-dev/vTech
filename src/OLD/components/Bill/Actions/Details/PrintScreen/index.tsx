@@ -116,7 +116,13 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
                   textAlign: "left",
                 }}
               >
-                {item?.productVariation?.product?.description}
+                {item?.productVariation?.product?.description +
+                  (item?.departmentItems && item?.departmentItems.length > 0
+                    ? " - "
+                    : "") +
+                  item?.departmentItems?.map(
+                    (item) => item.department_item_description
+                  )}
               </td>
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                 {item?.quantity}
@@ -158,9 +164,11 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
 
       <hr />
 
-      <h4 className="uk-margin-top uk-text-center">
-        <strong>Pagamentos</strong>
-      </h4>
+      {blockArr?.length > 0 && (
+        <h4 className="uk-margin-top uk-text-center">
+          <strong>Pagamentos</strong>
+        </h4>
+      )}
 
       {blockArr?.length > 0 &&
         blockArr?.map((i) => {
@@ -189,9 +197,11 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
             </div>
           );
         })}
-      <h4 className="uk-margin-top uk-text-center">
-        <strong>Observações</strong>
-      </h4>
+      {bill?.additionalInformation && (
+        <h4 className="uk-margin-top uk-text-center">
+          <strong>Observações</strong>
+        </h4>
+      )}
       <section>{bill?.additionalInformation}</section>
     </S.PrintScreen>
   );

@@ -46,6 +46,7 @@ export type TreatmentExecutions = {
 
 export type Product = {
   id: string | number;
+  departmentItems?: {department_item_description?: string}[]
   department_id?: number;
   department_item_id?: number;
   department_item_description: string;

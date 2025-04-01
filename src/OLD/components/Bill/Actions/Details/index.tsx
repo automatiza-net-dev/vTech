@@ -360,10 +360,12 @@ export default function Details({ billId, setVisible }: any) {
         ?.map((item) => {
           if (item?.status === "INATIVA") return null;
 
+          console.log(item, "AA")
+
           return {
             quantity: item?.quantity,
             productCode: item?.productVariation?.product?.reference_code,
-            description: item?.productVariation?.product?.description,
+            description: item?.productVariation?.product?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description),
             unitPrice: currencyFormatter(item?.unitary_value),
             discount: currencyFormatter(item?.discount_value),
             total: currencyFormatter(item?.total_value),

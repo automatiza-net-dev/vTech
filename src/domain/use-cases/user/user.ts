@@ -16,6 +16,9 @@ export type SystemUser = {
         requires_client_document?: boolean;
         controls_deposit?: boolean;
       };
+      bills?: {
+        generate_treatment_opened_bill?: boolean;
+      }
       schedules: {
         syncScheduleMovements?: boolean;
         show_finances_schedules?: boolean;

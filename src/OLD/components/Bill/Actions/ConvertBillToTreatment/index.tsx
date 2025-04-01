@@ -1,21 +1,16 @@
-// @ts-nocheck
-import React, { memo, useState } from "react";
-import { useRouter } from "next/router";
-
 import { billService } from "@/OLD/services/bills.service";
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { Tooltip, useToast } from "infinity-forge";
+import { useSystem } from "@/presentation";
 
 export default function ConvertBillToTreatment({ bill, setReload }) {
-  const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
 
+  const { unit } = useSystem()
   const { createToast } = useToast();
 
   const convertBill = (bill) => {
-    setLoading(true);
 
     billService
       .convertBillToTreatment({
@@ -23,7 +18,6 @@ export default function ConvertBillToTreatment({ bill, setReload }) {
         sellerId: bill?.seller?.id,
       })
       .then((res) => {
-        setLoading(false);
         setReload && setReload((prv) => !prv);
 
         return createToast({
@@ -32,8 +26,6 @@ export default function ConvertBillToTreatment({ bill, setReload }) {
         });
       })
       .catch((err) => {
-        setLoading(false);
-
         createToast({
           status: "error",
           message:
@@ -41,6 +33,10 @@ export default function ConvertBillToTreatment({ bill, setReload }) {
         });
       });
   };
+
+  if(!unit?.configs?.bills?.generate_treatment_opened_bill) {
+    return <></>
+  }
 
   return (
     <Tooltip
