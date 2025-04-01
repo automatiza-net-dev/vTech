@@ -11,15 +11,17 @@ export function CreateOdontogram() {
   return (
     <S.CreateOdontogram>
       <div className="content">
-        <Services />
+      <Departaments />
 
         <div style={{ width: "100%" }}>
-          <Departaments />
           <DepartamentItems />
-        </div>
-      </div>
 
-      <ServicesSelected />
+          <ServicesSelected />
+        </div>
+
+        <Services />
+
+      </div>
     </S.CreateOdontogram>
   );
 }

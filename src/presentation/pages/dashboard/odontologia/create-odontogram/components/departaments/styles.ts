@@ -3,12 +3,14 @@ import styled from "styled-components";
 export const Departaments = styled("div")`
   display: flex;
   margin-bottom: 20px;
-  justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
 
   .list {
     display: flex;
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .button-select-departament {
@@ -27,31 +29,13 @@ export const Departaments = styled("div")`
       object-fit: contain;
     }
 
+    &.active {
+      border: 1px solid #5cc100;
+    }
+
     &:hover {
-      border: 1px solid ${(props) => props.theme.primaryColor};
+      border: 1px solid #5cc100;
     }
   }
 
-  .action {
-    display: flex; 
-    align-items: flex-end;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 10px 0px;
-    border: 1px solid transparent;
-    border-radius: 4px; 
-    background-color: white; 
-    cursor: pointer; 
-    transition: all 0.3s ease-in-out; 
-  }
-
-  .action:hover {
-    background-color: #f0f0f0; 
-  }
-
-  .action svg {
-    width: 35px; 
-    height: 35px;
-  }
 `;

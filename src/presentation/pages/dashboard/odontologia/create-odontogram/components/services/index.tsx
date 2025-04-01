@@ -41,24 +41,31 @@ export function Services() {
       {Array.isArray(services) && services.length === 0 && (
         <p className="font-14-regular">Nenhum serviço encontrado</p>
       )}
+
       <div className="services-list">
         {services?.map((service) => (
           <button
             key={service.description}
             type="button"
             className="service-button font-14-regular"
+            disabled={values?.departamentItems?.length === 0}
             onClick={() => {
               let newOrcamento = values?.cart || [];
 
               values.departamentItems.forEach((item) => {
-                if (
-                  !newOrcamento.some((o) => {
-                    return (
-                      o?.variations?.[0]?.departmentItemId !== item.id &&
-                      o?.variations?.[0]?.productVariationId === service.id
-                    );
-                  })
-                ) {
+                const itemHasBeenAdded = !!values?.cart.find((itemCart) => {
+                  const cartVariationId =
+                    itemCart.variations?.[0].productVariationId;
+                  const cartDepartamentId =
+                    itemCart.variations?.[0].departmentItemId;
+
+                  return (
+                    cartVariationId === service.product_variation_id &&
+                    cartDepartamentId === item.id
+                  );
+                });
+
+                if (!itemHasBeenAdded) {
                   newOrcamento.push({
                     id: service.id || 0,
                     observation: "",

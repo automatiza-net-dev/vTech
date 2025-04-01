@@ -32,6 +32,10 @@ export function ServicesSelected() {
     return { ...reducer, [groupName]: [...actualGroup, cartItem] };
   }, {});
 
+  if(!values?.cart || values.cart.length === 0) {
+    return <></>
+  }
+
   return (
     <S.ServicesSelected>
       <GroupCart agrouppedCart={agrouppedCart} cart={values?.cart} />
