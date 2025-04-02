@@ -215,6 +215,7 @@ export default function ExecutionForm({ data, reload, setReload }) {
                 </div>
                 <div className="uk-margin-small-right">
                   <AutoComplete
+                    dropdownStyle={{ zIndex: 1050 }}
                     disabled={!(execution?.id === selectedId)}
                     className="uk-width-1-1"
                     options={colaborators.map((colab) => ({

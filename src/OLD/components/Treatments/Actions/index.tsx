@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-import { Modal } from "infinity-forge";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
@@ -12,6 +11,7 @@ import { IoIosTimer } from "react-icons/io";
 import { GrHostMaintenance } from "react-icons/gr";
 
 import { Container } from "./styles";
+import { Modal } from "antd";
 
 function Actions({ treatment }) {
   const [treatmentsMaintenanceOpen, setTreatmentsMaintenanceOpen] =
@@ -44,9 +44,10 @@ function Actions({ treatment }) {
           />
       )}
       <Modal
-        styles={{ width: '1200px', padding: '10px' }}
-        open={treatmentsMaintenanceOpen}
-        onClose={() => {
+         width={"60%"}
+              visible={treatmentsMaintenanceOpen}
+              footer={null}
+        onCancel={() => {
           setTreatmentsMaintenanceOpen(false);
         }}
         children={

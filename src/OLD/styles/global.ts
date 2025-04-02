@@ -4,6 +4,11 @@ export const GlobalStyle = createGlobalStyle<any>`
  .conntent_form_infinity_forge {
     overflow: hidden !important;    max-height: unset !important;
 }
+
+.ant-select-dropdown {
+  z-index: 1050 !important;
+}
+
 label {
     font-size: 14px !important;
 }
