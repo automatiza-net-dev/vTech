@@ -629,6 +629,8 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
       </TabPane>
       <TabPane tab="Negociação" key="1">
         <div>
+          {(budgetPayments || budgetPayments.length === 0) && <p className="font-16-regular">Não existem pagamentos lançados</p>}
+          
           {budgetPayments?.length > 0 &&
             budgetPayments?.map((item) => (
               <Collapse className="uk-margin-small-top uk-width-1-1">
