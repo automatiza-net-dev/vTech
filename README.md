@@ -14,7 +14,7 @@ client=sancla
 clientName=Sanclá
 aa
 a
-#HMG-----------------------------
+#HMG-----------------------------a
 #LIFTONE - HMG
 # api=https://vetech-api.creativecode.dev.br/
 # NEXT_PUBLIC_API=https://vetech-api.creativecode.dev.br
