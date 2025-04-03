@@ -15,6 +15,7 @@ import { NegotiationCardProps } from "./interfaces";
 
 import * as S from "./styles";
 import { ItemsExecutions } from "./components/itens-executions";
+import ConvertBillToTreatment from "@/OLD/components/Bill/Actions/ConvertBillToTreatment";
 
 export function NegotiationCard(props: NegotiationCardProps) {
   const { confirmBill, queryClient, router, createToast } = useNegotiation();
@@ -68,9 +69,11 @@ export function NegotiationCard(props: NegotiationCardProps) {
           </FormHandler>
         )}
 
+        {bills?.[0]?.id && <ConvertBillToTreatment bill={bills?.[0] as any} CustomComponent={({ onClick }) => <button type="button" onClick={onClick}>Converter tratamento em venda</button>}/>}
+
         {!hasOpenedBudget && (!documents || documents.length === 0) && (
           <GerarDocumentoVenda
-            bill={bills[0]}
+            bill={bills?.[0]}
             client={confirmedBudget?.client}
             button={<Button type="button" text="Gerar Documentos Negociação" />}
             onSuccess={() => {
