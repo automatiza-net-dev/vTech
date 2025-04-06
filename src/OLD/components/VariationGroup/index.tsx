@@ -1,4 +1,4 @@
-import { AccessDenied, PermissionItem, useSystem } from "@/presentation";
+import { AccessDenied, PermissionItem, usePermission, useSystem } from "@/presentation";
 import { useQuery, PageWrapper, api, useTable, useToast } from "infinity-forge";
 import moment from "moment";
 
@@ -46,9 +46,9 @@ function Page() {
     },
   });
 
-  // const canEditGroupVariations = useUserHasPermission("GVA02");
-  // const canCreateGroupVariations = useUserHasPermission("GVA01");
-  // const canDeleteGroupVariations = useUserHasPermission("GVA03");
+  const canEditGroupVariations = usePermission("GVA02");
+  const canCreateGroupVariations = usePermission("GVA01");
+  const canDeleteGroupVariations = usePermission("GVA03");
 
   const { Table } = useTable<VariationGroup>({
     configs: {
@@ -86,7 +86,7 @@ function Page() {
         },
       ],
       actions: {
-        delete: {
+        delete: !canDeleteGroupVariations ? undefined : {
           confirmDelete: true,
           onDelete: async (item) => {
             await api({ url: `variation-groups/${item.id}`, method: "delete" });
@@ -99,7 +99,8 @@ function Page() {
             });
           },
         },
-        edit: {
+        edit: !canEditGroupVariations ? undefined : {
+        
           initialDataIsTableItem: true,
           button: {
             text: "Salvar",
@@ -168,7 +169,7 @@ function Page() {
           ],
           modal: { title: "Editar de grupos de variação" } as any,
         },
-        create: {
+        create: !canCreateGroupVariations ? undefined : {
           onSucess: async (data) => {
             await api({ url: "variation-groups", method: "post", body: data });
 
