@@ -36,7 +36,6 @@ function Page() {
     button: { text: "Salvar" },
     initialDataIsTableItem: true,
     modifyInitialData: (initialData) => {
-      console.log(initialData, '@')
       return {
         ...initialData,
         address: {
@@ -150,7 +149,9 @@ function Page() {
             }
           : undefined,
         edit: canEditClinic ? dynamicFormHandler : undefined,
-        delete: canDeleteClinic ? () => {} : undefined,
+        delete: {
+          onDelete: canDeleteClinic ? () => {} : undefined
+        },
         modalStyles: {
           maxWidth: "900px",
           width: "100%",

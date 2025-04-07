@@ -13,3 +13,4 @@ export * from "./_dashboard_";
 export * from "./collaborator";
 export * from "./hospitalization";
 export * from "./financial-services";
+export * from "./variations"
