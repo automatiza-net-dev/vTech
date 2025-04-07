@@ -79,7 +79,7 @@ function Maintenance({ treatmentId, close }) {
                   header={
                     <div className="uk-flex">
                       <div className="uk-margin-right">
-                        <strong>{item?.productVariation?.description}</strong>
+                        <strong>{item?.productVariation?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description)}</strong>
                       </div>
                     </div>
                   }
