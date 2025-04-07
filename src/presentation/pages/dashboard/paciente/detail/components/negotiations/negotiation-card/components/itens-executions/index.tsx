@@ -14,6 +14,8 @@ export function ItemsExecutions({ execution }) {
 
   const { status, execution_date, schedule_date, productivitItem } = execution;
 
+  console.log(execution)
+
   const executionDate = formatDate(execution_date, "Executado dia");
   const scheduleDate = formatDate(schedule_date, "Agendado para");
 
@@ -21,7 +23,13 @@ export function ItemsExecutions({ execution }) {
     <S.ItemsExecutions>
       <div>
         <span className="title font-14-regular">
-          {productivitItem?.description || "Sem descrição"}
+          {(productivitItem?.description || "Sem descrição") + +
+                  (execution?.departmentItems && execution?.departmentItems.length > 0
+                    ? " - " +
+                    execution?.departmentItems?.map(
+                        (item) => item.department_item_description
+                      )
+                    : "")}
         </span>
       </div>
       <div>

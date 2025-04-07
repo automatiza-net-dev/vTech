@@ -10,7 +10,22 @@ type VariationGroup = {
   economic_group_id: string;
   id: string;
   updated_at: string;
-  variations: any[];
+  variations: {
+    id: string;
+    economic_group_id: string;
+    description: string;
+    active: boolean;
+    created_at: string;
+    updated_at: string;
+    options: {
+      id: string;
+      variation_id: string;
+      description: string;
+      active: boolean;
+      created_at: string;
+      updated_at: string;
+    }[];
+  }[];
 };
 
 export function VariationsGroupPage() {
@@ -58,7 +73,7 @@ function Page() {
       tableData: data?.map((item) => ({
         ...item,
         variations: item.variations?.map((item) => item.id),
-      })),
+      })) as any,
     },
     columnsConfiguration: {
       columns: [
@@ -108,38 +123,19 @@ function Page() {
         edit: !canEditGroupVariations
           ? undefined
           : {
-            isStickyButtons: true,
+              isStickyButtons: true,
               initialDataIsTableItem: true,
               button: {
                 text: "Salvar",
               },
-              onSucess: async (formData, _, initialValue) => {
-                for (const v of formData.variations || []) {
-                  await api({
-                    url: "variation-groups/assign",
-                    method: "post",
-                    body: {
-                      group_variation_id: formData.id,
-                      variation_id: v,
-                    },
-                  });
-                }
-
-                for (const v of initialValue?.variations || []) {
-                  if (!formData?.variations?.includes(v)) {
-                    await api({
-                      url: `variation-groups/${formData?.id}/${v}`,
-                      method: "delete",
-                    });
-                  }
-                }
-
+              onSucess: async (formData, _) => {
                 await api({
                   url: `variation-groups/${formData.id}`,
                   method: "put",
                   body: {
                     active: formData?.active,
                     description: formData?.description,
+                    options: formData?.variations,
                   },
                 });
 
@@ -183,12 +179,15 @@ function Page() {
         create: !canCreateGroupVariations
           ? undefined
           : {
-            isStickyButtons: true,
+              isStickyButtons: true,
               onSucess: async (data) => {
                 await api({
                   url: "variation-groups",
                   method: "post",
-                  body: data,
+                  body: {
+                    description: data.description,
+                    options: data?.variations
+                  },
                 });
 
                 await mutate();
@@ -206,6 +205,18 @@ function Page() {
                     label: "Descrição",
                     InputComponent: "Input",
                     name: "description",
+                  },
+                ],
+                [
+                  {
+                    label: "Adicionar variação",
+                    InputComponent: "Select",
+                    name: "variations",
+                    isMultiple: true,
+                    options: variations?.data?.map((vari) => ({
+                      label: vari.description,
+                      value: vari.id,
+                    })),
                   },
                 ],
               ],

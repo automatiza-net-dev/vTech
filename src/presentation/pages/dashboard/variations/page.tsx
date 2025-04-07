@@ -36,7 +36,7 @@ type Variation = {
 function Page() {
   const { createToast } = useToast();
 
-  const { data, mutate, isFetching } = useQuery({
+  const { data, mutate, changeCache, isFetching } = useQuery({
     queryKey: "variations",
     queryFn: async () => {
       const response = await api({ method: "get", url: "variations" });
@@ -108,20 +108,21 @@ function Page() {
               button: {
                 text: "Salvar",
               },
-              onSucess: async (formData, _, initialValue) => {
-                await mutate();
-                
+              onSucess: async (formData, _) => {
+                await api({
+                  url: `variations/${formData.id}`,
+                  method: "put",
+                  body: {
+                    description: formData?.description,
+                    active: formData?.active,
+                    options: formData?.options?.map((item) => ({
+                      id: item?.id,
+                      description: item?.description,
+                    })),
+                  },
+                });
 
-                for (const v of formData.options || []) {
-                    await api({
-                      url: "variation-options",
-                      method: "post",
-                      body: {
-                        description: formData.description,
-                        variationId: formData.id,
-                      },
-                    });
-                  }
+                await mutate();
 
                 createToast({
                   status: "success",
@@ -150,6 +151,31 @@ function Page() {
                     name: "options",
                     inputPath: "options",
                     maxItemWidth: 450,
+                    onDeleteItem: async (item) => {
+                      const updated = data?.map((variation) => {
+                        const updatedOptions = variation.options.filter(
+                          (opt) => opt.id !== item.id
+                        );
+                        return {
+                          ...variation,
+                          options: updatedOptions,
+                        };
+                      });
+
+                      changeCache(updated);
+
+                      if(item.id) {
+                        await api({
+                          url: `variation-options/${item.id}`,
+                          method: "delete",
+                        });
+  
+                        createToast({
+                          message: "Opção removida com sucesso",
+                          status: "success",
+                        });
+                      }
+                    },
                     inputs: [
                       [
                         {
@@ -190,6 +216,25 @@ function Page() {
                     label: "Descrição",
                     InputComponent: "Input",
                     name: "description",
+                  },
+                ],
+                [
+                  {
+                    label: "Adicionar variação",
+                    InputComponent: "InputManager",
+                    name: "options",
+                    inputPath: "options",
+                    maxItemWidth: 450,
+                    inputs: [
+                      [
+                        {
+                          InputComponent: "Input",
+                          name: "id",
+                          style: { display: "none" },
+                        },
+                      ],
+                      [{ InputComponent: "Input", name: "description" }],
+                    ],
                   },
                 ],
               ],
