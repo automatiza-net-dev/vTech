@@ -3,6 +3,24 @@ import styled from "styled-components";
 export const ServicesSelected = styled("div")`
   width: 100%;
 
+  th {
+    max-width: 110px;
+
+    &:empty {
+      width: 10px !important;
+      padding: 0;
+    }
+  }
+
+  td {
+    max-width: 110px;
+
+    &:empty {
+      width: 10px !important;
+      padding: 0;
+    }
+  }
+
   table tbody tr td {
     thead {
       height: 40px;
@@ -96,6 +114,31 @@ export const ServicesSelected = styled("div")`
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+
+  @media only screen and (max-width: 1400px) {
+    th:empty,
+    td:empty {
+      width: 5px !important;
+    }
+
+    td,
+    th {
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+  }
+
+  @media only screen and (max-width: 1300px) {
+    th:empty,
+    td:empty {
+      width: 0px !important;
+    }
+
+    th,
+    td {
+      max-width: 100px;
     }
   }
 `;

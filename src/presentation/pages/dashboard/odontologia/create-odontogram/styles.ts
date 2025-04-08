@@ -86,13 +86,12 @@ export const CreateOdontogram = styled.div`
     }
 
     &:disabled {
-      opacity: 0.55; 
+      opacity: 0.55;
       background-color: #ccc;
       color: #0000006a;
       cursor: not-allowed;
     }
   }
-
 
   .orcamento-container {
     display: grid;
@@ -130,5 +129,11 @@ export const CreateOdontogram = styled.div`
 
   .button-container button:hover {
     background: #c82333;
+  }
+
+  @media only screen and (max-width: 1400px) {
+    .content {
+      gap: 15px;
+    }
   }
 `;

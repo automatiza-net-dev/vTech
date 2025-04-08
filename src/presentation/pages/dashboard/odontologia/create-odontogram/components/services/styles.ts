@@ -21,4 +21,9 @@ export const Services = styled("div")`
       margin-bottom: 15px;
     }
   }
+
+  @media only screen and (max-width: 1400px) {
+    min-width: 200px;
+    max-width: 200px;
+  }
 `;

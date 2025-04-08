@@ -38,4 +38,9 @@ export const Departaments = styled("div")`
     }
   }
 
+  @media only screen and (max-width: 1400px) {
+    .button-select-departament {
+      width: 100px;
+    }
+  }
 `;
