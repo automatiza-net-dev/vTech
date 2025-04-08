@@ -5,25 +5,25 @@ export const DepartamentItems = styled("div")`
   width: 100%;
 
   .action {
-    display: flex; 
+    display: flex;
     align-items: flex-end;
     justify-content: center;
     width: 44px;
     height: 44px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 10px 0px;
     border: 1px solid transparent;
-    border-radius: 4px; 
-    background-color: white; 
-    cursor: pointer; 
-    transition: all 0.3s ease-in-out; 
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
   }
 
   .action:hover {
-    background-color: #f0f0f0; 
+    background-color: #f0f0f0;
   }
 
   .action svg {
-    width: 35px; 
+    width: 35px;
     height: 35px;
   }
 
