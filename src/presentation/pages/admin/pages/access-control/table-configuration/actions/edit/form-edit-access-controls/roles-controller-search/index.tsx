@@ -6,14 +6,15 @@ export function RolesControllerSearch() {
 
   return (
     <S.RolesControllerSearch>
-      <Input name="rolesControllerSearch.name" label="Descrição" />
+      <Input name="name" label="Descrição" />
 
       <div className="switchs">
-        <InputSwitch name="rolesControllerSearch.active" label="Ativo" />
+        <InputSwitch   design="checkbox" name="active" label="Ativo" />
 
         <div className="second">
           <InputSwitch
-            name="rolesControllerSearch.externalAccess"
+          design="checkbox"
+            name="externalAccess"
             label="Acesso externo"
           />
         </div>

@@ -1,40 +1,40 @@
 import { useFormikContext } from "formik";
 import { Input, InputSwitch } from "infinity-forge";
 
-import { LoadRolePermissions } from "@/domain";
+import { LoadRolePermissions, LoadRolesControllerSearch } from "@/domain";
 
 import * as S from "./styles";
 
 export function Permissions() {
-  const { values } = useFormikContext<any>();
+  const { values } = useFormikContext<LoadRolesControllerSearch.Model>();
 
   return (
     <S.Permissions>
-      {values.data?.map((field: any, index) => {
+      {values.screens?.map((field, index) => {
         const fieldTyped = field as LoadRolePermissions.RolePermission;
 
         return (
-          <div key={field?.uid}>
+          <div key={field?.id}>
             <details>
               <summary>{fieldTyped?.name}</summary>
               <div style={{ display: "none" }}>
-                <Input name={`data.${index}.role`} value={fieldTyped?.id} />
+                <Input name={`screens.${index}.id`} value={fieldTyped?.id} />
               </div>
 
               <div className="permissions">
                 {fieldTyped?.permissions?.map((permission, indexPermission) => {
                   return (
-                    <div key={permission?.id + indexPermission}>
+                    <div key={String(permission?.id) + String(indexPermission)}>
                       <div style={{ display: "none" }}>
                         <Input
                           style={{ display: "none" }}
-                          name={`data.${index}.permissions.${indexPermission}.id`}
+                          name={`screens.${index}.permissions.${indexPermission}.id`}
                           value={permission?.id}
                         />
                       </div>
 
                       <InputSwitch
-                        name={`data.${index}.permissions.${indexPermission}.active`}
+                        name={`screens.${index}.permissions.${indexPermission}.active`}
                         label={permission?.description}
                       />
                     </div>
