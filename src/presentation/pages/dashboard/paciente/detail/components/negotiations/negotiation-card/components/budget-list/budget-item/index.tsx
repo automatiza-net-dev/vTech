@@ -178,24 +178,39 @@ export function BudgetItem({
           </div>
         )}
 
-        <h3 className="font-20-bold" style={{ marginTop: 20, marginBottom: 0 }}>
-          <div>
-            Previsão de pagamentos{" "}
-            <AddPaymentPreview budgetId={budget.id} budgetTag={budget.tag} onUpdatePayment={() => {
-              queryClient.invalidateQueries(["openNegotiations"])
-            }} />
-          </div>
-        </h3>
-
-        {budget.payments.map((item) => {
-          return (
-            <div key={item.id} className="payment font-16-regular">
-              {item?.paymentMethod?.description} -{" "}
-              {item?.tefAcquirer?.description} - {item?.tefFlag?.description} - {" "}
-              {formatNumberToCurrency(item.total_value || 0)} ({item.installments}x)
+        {budget?.payments && budget.payments.length > 0 && (
+          <h3
+            className="font-20-bold"
+            style={{ marginTop: 20, marginBottom: 0 }}
+          >
+            <div>
+              Previsão de pagamentos{" "}
+              
+              {hasOpenedBudget && (
+                <AddPaymentPreview
+                  budgetId={budget.id}
+                  budgetTag={budget.tag}
+                  onUpdatePayment={() => {
+                    queryClient.invalidateQueries(["openNegotiations"]);
+                  }}
+                />
+              )}
             </div>
-          );
-        })}
+          </h3>
+        )}
+
+        {budget.payments &&
+          budget.payments.length > 0 &&
+          budget?.payments?.map((item) => {
+            return (
+              <div key={item.id} className="payment font-16-regular">
+                {item?.paymentMethod?.description} -{" "}
+                {item?.tefAcquirer?.description} - {item?.tefFlag?.description}{" "}
+                - {formatNumberToCurrency(item.total_value || 0)} (
+                {item.installments}x)
+              </div>
+            );
+          })}
       </div>
     </>
   );
