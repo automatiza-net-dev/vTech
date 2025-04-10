@@ -161,6 +161,7 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           )}
         </>
       )}
+      
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
           <Tooltip

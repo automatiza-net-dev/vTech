@@ -277,6 +277,8 @@ export default function ConfirmacaoAgendamento() {
 
                 <div>
                   <h3 className="font-16-bold">Clínica</h3>
+
+                  <p className="font-14-regular">{data?.businessUnit?.identification}</p>
                 </div>
               </div>
 
@@ -333,9 +335,21 @@ export default function ConfirmacaoAgendamento() {
                 </div>
 
                 <div>
-                  <h3 className="font-16-bold">Profissional de saúde</h3>
+                  <h3 className="font-16-bold">Profissional</h3>
 
                   <p className="font-14-regular">{data?.user?.name}</p>
+                </div>
+              </div>
+
+              <div className="item">
+                <div className="icon">
+                 <Icon name="IconBox" color="#fff" />
+                </div>
+
+                <div>
+                  <h3 className="font-16-bold">Serviço</h3>
+
+                  <p className="font-14-regular">Lipospiração</p>
                 </div>
               </div>
 
@@ -399,7 +413,7 @@ export default function ConfirmacaoAgendamento() {
                   <h3 className="font-16-bold">Situação</h3>
 
                   <span className="font-14-bold">
-                    <Icon name="IconClockNotFilled" /> A confirmar
+                    <Icon name="IconClockNotFilled" /> {data?.status?.description}
                   </span>
                 </div>
               </div>

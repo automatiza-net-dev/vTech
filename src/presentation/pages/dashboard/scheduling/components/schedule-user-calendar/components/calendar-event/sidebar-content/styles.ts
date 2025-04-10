@@ -48,6 +48,20 @@ export const SideBarContent = styled.div`
   .status {
     text-align: center;
     font-size: 14px;
+
+    button {
+      color: #fff; 
+      width: 100%; 
+      height: 45px;
+      margin-top: 10px;
+      font-size: 12.5px;
+
+      svg {
+        fill: #fff;
+        height: 20px; 
+        width: auto;
+      }
+    }
   }
 
   .tab {

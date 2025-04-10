@@ -9,7 +9,9 @@ import { useDictionary, usePermission } from "@/presentation";
 export default function AddPaymentPreview({
   budgetId,
   budgetTag,
+  onUpdatePayment
 }: {
+  onUpdatePayment?: () => void;
   budgetId: string;
   budgetTag: string;
 }) {
@@ -43,7 +45,7 @@ export default function AddPaymentPreview({
         onClose={() => setVisible(false)}
       >
         <h2>{`Adicionar Item ao ${getWord("Orçamento")} - ${budgetTag}`}</h2>
-        <Negotiation budgetId={budgetId} />
+        <Negotiation budgetId={budgetId} onUpdatePayment={onUpdatePayment} />
       </Modal>
     </>
   );
