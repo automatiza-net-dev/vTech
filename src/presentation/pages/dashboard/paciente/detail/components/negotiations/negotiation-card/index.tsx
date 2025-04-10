@@ -69,7 +69,26 @@ export function NegotiationCard(props: NegotiationCardProps) {
           </FormHandler>
         )}
 
-        {bills?.[0]?.id && <ConvertBillToTreatment bill={bills?.[0] as any} CustomComponent={({ onClick }) => <button type="button" onClick={onClick}>Converter tratamento em venda</button>}/>}
+        {bills?.[0]?.id && (!treatments || treatments.length === 0 )&& (
+          <ConvertBillToTreatment
+            bill={bills?.[0] as any}
+            CustomComponent={({ onClick }) => (
+              <div style={{ marginRight: 20 }}>
+                <Button
+                  type="button"
+                  onClick={() => {
+                   onClick()
+                  
+                   queryClient.invalidateQueries({
+                    queryKey: ["openNegotiations", router?.query?.id as string],
+                  });
+                  }}
+                  text="Gerar tratamento"
+                />
+              </div>
+            )}
+          />
+        )}
 
         {!hasOpenedBudget && (!documents || documents.length === 0) && (
           <GerarDocumentoVenda

@@ -40,7 +40,7 @@ export default function ConvertBillToTreatment({ bill, setReload , CustomCompone
 
   const generate_treatment_opened_bill = unit?.configs?.bills?.generate_treatment_opened_bill
 
-  if((!generate_treatment_opened_bill && bill.status !== "BAIXADA") || (generate_treatment_opened_bill && bill.status !== "ABERTA" && bill.status !== "BAIXADA")) {
+  if(( !generate_treatment_opened_bill && bill.status !== "BAIXADA") || (generate_treatment_opened_bill && bill.status !== "ABERTA" && bill.status !== "BAIXADA")) {
     return <></>
   }
 
