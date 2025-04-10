@@ -63,12 +63,12 @@ export default function ConfirmacaoAgendamento() {
     enabled: !!router.query.scheduleId,
   });
 
-  const status =  data?.status?.type;
+  const status = data?.status?.type;
 
   async function cancelSchedule() {
     await api({
       url: "schedules/confirmation",
-      method: "put",
+      method: "post",
       body: {
         scheduleId: router.query.scheduleId,
         confirmationType: "AC",
@@ -82,7 +82,7 @@ export default function ConfirmacaoAgendamento() {
   async function confirmSchedule() {
     await api({
       url: "schedules/confirmation",
-      method: "put",
+      method: "post",
       body: {
         scheduleId: router.query.scheduleId,
         confirmationType: "CANC",
@@ -323,6 +323,20 @@ export default function ConfirmacaoAgendamento() {
                 </div>
               </div>
 
+              {type === "Vet" && (
+                <div className="item">
+                  <div className="icon">
+                    <Icon name="IconPet" color="#fff" />
+                  </div>
+
+                  <div>
+                    <h3 className="font-16-bold">Pet</h3>
+
+                    <p className="font-14-regular">{data?.patient?.name}</p>
+                  </div>
+                </div>
+              )}
+
               <div className="item">
                 <div className="icon">
                   <Icon name="IconCalendar" color="#fff" />
@@ -461,16 +475,16 @@ export default function ConfirmacaoAgendamento() {
                     onClick={() => {
                       const formatDate = (date: Date) =>
                         date.toISOString().replace(/-|:|\.\d\d\d/g, "");
-                      
+
                       const addHours = (date: Date, hours: number) => {
                         const copy = new Date(date);
                         copy.setHours(copy.getHours() + hours);
                         return copy;
                       };
-                      
+
                       const startDate = addHours(new Date(data.startHour), 3);
                       const endDate = addHours(new Date(data.endHour), 3);
-                      
+
                       const startFormatted = formatDate(startDate);
                       const endFormatted = formatDate(endDate);
 
