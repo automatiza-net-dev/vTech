@@ -1,16 +1,16 @@
 import { ScheduleStatus } from "@/domain";
-import { useConfigurationsSystem, useSystem } from "@/presentation";
+import { useConfigurationsSystem } from "@/presentation";
 import {
   HeadComponent,
   Icon,
   useQuery,
   LoaderCircle,
   api,
-  useToast,
 } from "infinity-forge";
 import moment from "moment";
 
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 import { styled } from "styled-components";
 
@@ -46,6 +46,8 @@ type ConfirmtionSchedule = {
 };
 
 export default function ConfirmacaoAgendamento() {
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const { logo_url, type } = useConfigurationsSystem();
@@ -66,34 +68,48 @@ export default function ConfirmacaoAgendamento() {
   const status = data?.status?.type;
 
   async function cancelSchedule() {
-    await api({
-      url: "schedules/confirmation",
-      method: "post",
-      body: {
-        scheduleId: router.query.scheduleId,
-        confirmationType: "AC",
-        observation: "",
-      },
-    });
+    try {
+      setLoading(true);
 
-    await mutate();
+      await api({
+        url: "schedules/confirmation",
+        method: "post",
+        body: {
+          scheduleId: router.query.scheduleId,
+          confirmationType: "CANC",
+          observation: "",
+        },
+      });
+
+      await mutate();
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function confirmSchedule() {
-    await api({
-      url: "schedules/confirmation",
-      method: "post",
-      body: {
-        scheduleId: router.query.scheduleId,
-        confirmationType: "CANC",
-        observation: "",
-      },
-    });
+    try {
+      setLoading(true);
 
-    await mutate();
+      await api({
+        url: "schedules/confirmation",
+        method: "post",
+        body: {
+          scheduleId: router.query.scheduleId,
+          confirmationType: "AC",
+          observation: "",
+        },
+      });
+
+      await mutate();
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   }
 
-  if (isFetching) {
+  if (isFetching || loading) {
     return (
       <div style={{ padding: 100, textAlign: "center" }}>
         <LoaderCircle size={50} color="#000" />
