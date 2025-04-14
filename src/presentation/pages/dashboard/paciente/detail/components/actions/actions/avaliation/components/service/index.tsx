@@ -170,7 +170,6 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
     <S.Service>
       <FormHandler
         isStickyButtons
-        debugMode
         schema={{
           protocol: yup.string().required("Campo requerido"),
           resume: yup.string().required("Campo requerido"),
@@ -294,7 +293,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         <AttendanceBudgets id={props.timeline_info?.attendance.id} />
       )}
       <div style={{ display: "none" }}>
-        <div ref={componentRef}>
+        <div ref={componentRef} style={{ padding: "0 20px" }}>
           <div className="uk-text-center uk-margin-top">
             <PrintHeader />
           </div>

@@ -18,15 +18,15 @@ export function PrintHeader() {
         <img src={logo_url} width="100" />
       </div>
       <div>
-        <p>{unit?.fantasy_name}</p>
-        <p>
+      <p style={{fontSize: 14 }}>{unit?.fantasy_name}</p>
+        <p style={{fontSize: 14 }}>
           {unit?.address}
           {unit?.complement ? `\n-\n${unit?.complement}` : ""}
         </p>
-        <p>
+        <p style={{fontSize: 14 }}>
           {unit?.district},&nbsp;{unit?.city},&nbsp;{unit?.state?.toUpperCase()}
         </p>
-        <p>
+        <p style={{fontSize: 14 }}>
           {unit?.phone && masks.phone(unit?.phone)}
         </p>
       </div>

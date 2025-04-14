@@ -91,10 +91,10 @@ export function PdfPatientAttendance(
         </div>
       )}
 
-      <div className="row">
-        <span className="font-14-regular">
+      <div className="row" style={{ width: "100%" }}>
+        <span className="font-14-regular" style={{ display: "flex", width: "100%" }}>
           <strong>Endereço:</strong>
-          <span>{data?.tutor?.address || "-"}</span>
+          <div>{data?.tutor?.address || "-"}</div>
         </span>
       </div>
 

@@ -7,7 +7,7 @@ export const PdfPatientAttendance = styled("div")`
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
 
     svg {
       width: auto;

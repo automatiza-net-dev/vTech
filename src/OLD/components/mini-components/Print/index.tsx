@@ -44,7 +44,7 @@ export default function Print({
         </button>
       )}
       <div style={{ display: "none" }}>
-        <PrintScreen ref={componentRef as any} className="uk-padding-small">
+        <PrintScreen ref={componentRef as any}>
           <div className="">
             <PrintHeader />
           </div>

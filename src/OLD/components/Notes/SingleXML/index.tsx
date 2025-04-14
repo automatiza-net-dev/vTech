@@ -156,6 +156,9 @@ function Single() {
       });
   }, [receipt[0]?.id]);
 
+  console.log("a", data?.createdAt)
+  console.log("b", fiscalData?.[0]?.authorization_date)
+
   return (
     <Container className="uk-padding">
       <h3 className="uk-margin-remove">Nota de entrada - Entrada via Xml</h3>
@@ -191,15 +194,16 @@ function Single() {
             <label>Serie</label>
             <Input disabled value={fiscalData[0]?.series} />
           </div>
-          <div>
+
+       {fiscalData?.[0]?.authorization_date && <div>
             <label>Data Emissão</label>
             <br />
             <DatePicker
               slotProps={{ textField: { variant: "standard" } }}
-              value={data?.createdAt}
+              value={ moment(fiscalData[0]?.authorization_date)}
               disabled
             />
-          </div>
+          </div> }
         </div>
       </section>
       <Tabs defaultActiveKey="1">
