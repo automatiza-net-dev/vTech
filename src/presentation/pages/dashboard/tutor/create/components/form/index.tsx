@@ -156,7 +156,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <Input name="tags" label="Tag / Observação" />
 
-                <Input name="tag" label="Código" disabled={!hasTag}  />
+              {tutorId &&  <Input name="tag" label="Código" disabled={!hasTag}  />}
 
                 {type !== "Vet" && (
                   <>

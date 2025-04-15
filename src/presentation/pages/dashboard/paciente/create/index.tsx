@@ -135,7 +135,7 @@ function Form({
 
               <InputBirthday patientId={patientId} required={isRegister} />
 
-              <Input name="tag" label="RG" disabled={!hasTAG} />
+             {data && <Input name="tag" label="RG" disabled={!hasTAG} />}
             </div>
 
             <div className="row">
