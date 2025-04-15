@@ -18,6 +18,8 @@ import {
   useLoadPatient,
   useConfigurationsSystem,
   useVerifyPermissions,
+  PermissionItem,
+  usePermission,
 } from "@/presentation";
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -47,25 +49,26 @@ function Form({
   const { data, refetch, isFetching } = useLoadPatient(patientId);
 
   const { createToast } = useToast();
+  const hasTAG = usePermission("PET05");
 
   const initialData = data
     ? {
-        ...data,
-        birthDate: moment(data?.birth_date).add(1, "days").toDate(),
-        death: String(data.death),
-        castrated: String(data.castrated),
-        holderId: data?.tutor?.id,
-        deathDate: data?.deathDate ? new Date(data?.deathDate) : null,
-        photo: [
-          {
-            id: 1,
-            fileType: ".png",
-            length: "0",
-            title: data.photo,
-            url: data.photo,
-          },
-        ] as FileSystemType[],
-      }
+      ...data,
+      birthDate: moment(data?.birth_date).add(1, "days").toDate(),
+      death: String(data.death),
+      castrated: String(data.castrated),
+      holderId: data?.tutor?.id,
+      deathDate: data?.deathDate ? new Date(data?.deathDate) : null,
+      photo: [
+        {
+          id: 1,
+          fileType: ".png",
+          length: "0",
+          title: data.photo,
+          url: data.photo,
+        },
+      ] as FileSystemType[],
+    }
     : { ...initialDataForm };
 
   if ((!data || isFetching) && patientId) {
@@ -81,8 +84,8 @@ function Form({
         : formData?.birthDate,
       photo:
         formData?.photo &&
-        Array.isArray(formData?.photo) &&
-        formData.photo.find((photo) => photo?.file)
+          Array.isArray(formData?.photo) &&
+          formData.photo.find((photo) => photo?.file)
           ? formData?.photo[0]?.file
           : undefined,
     };
@@ -93,7 +96,7 @@ function Form({
 
     const response = await container
       .get<RemotePatient>(TypesAutomatiza.RemotePatient)
-      [data ? "edit" : "create"](payload);
+    [data ? "edit" : "create"](payload);
 
     patientId && (await refetch());
 
@@ -131,6 +134,8 @@ function Form({
               <Input name="name" label="Nome*" />
 
               <InputBirthday patientId={patientId} required={isRegister} />
+
+              <Input name="tag" label="RG" disabled={!hasTAG} />
             </div>
 
             <div className="row">
@@ -218,7 +223,7 @@ export function FormCreatePatient({
 }: IFormCreatePatientProps) {
   const [open, setOpen] = useState(false);
 
-  const {type} = useConfigurationsSystem();
+  const { type } = useConfigurationsSystem();
 
   const canCreate = useVerifyPermissions(
     type === "Vet" ? "PET01" : "TUT01"
