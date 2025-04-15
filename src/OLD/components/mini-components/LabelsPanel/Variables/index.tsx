@@ -1,13 +1,6 @@
-// Core
-// @ts-nocheck
-import React, { memo } from "react";
 
-// Utils
-import { removeParagraph } from "@/OLD/utils/removeParagraph";
 
-import { quillObj } from "@/OLD/components/Editor";
-
-const Variables = memo(function ({ body, setBody, templates }) {
+export default function Variables({  handleInsert, templates }) {
   return (
     templates?.length > 0 &&
     templates.map((template) => (
@@ -16,22 +9,13 @@ const Variables = memo(function ({ body, setBody, templates }) {
           className="variable-item"
           onClick={() => {
             if (!template?.complex) {
-              quillObj.current.getEditor().insertText(
-                quillObj.current.getEditor().getSelection((prv) => prv),
-                template?.replacer
-              );
-            } else {
-              const toInsert = quillObj.current
-                .getEditor()
-                .clipboard.convert(body + `<ul>${template?.replacer}</ul>`);
 
-              quillObj.current.getEditor().setContents(toInsert);
+              handleInsert(template?.replacer)
+
+            } else {
+
+              handleInsert(`<ul>${template?.replacer}</ul>`)
             }
-            setTimeout(() => {
-              quillObj?.current
-                ?.getEditor()
-                ?.setSelection(body?.length + template?.replacer.length, 0);
-            }, 10);
           }}
         >
           {template?.replacer}
@@ -40,6 +24,4 @@ const Variables = memo(function ({ body, setBody, templates }) {
       </>
     ))
   );
-});
-
-export default Variables;
+}
