@@ -101,24 +101,27 @@ const columns = [
 ];
 
 const mapper = (data = [], total = 0, handleFn: any) => {
-  return data.map((item: any) => ({
-    quantity: item.quantity,
-    description: item?.productVariation?.product?.description,
-    status: (
-      <Checkbox
-        checked={item.status !== "NAO_CONFIRMADO__CANCELADO"}
-        onChange={() => handleFn(item)}
-      >
-        {budgetStatusFormatter(item.status, () => {})}
-      </Checkbox>
-    ),
-    unitary_value: item.unitary_value,
-    discount_value: item.discount_value,
-    total_value: item.total_value,
-    courtesy: item?.courtesy ? "Sim" : "Não",
-    max_discount: item?.max_discount ? "Sim" : "Não",
-    auth_data: <AuthorizationStatusProduct item={item} />,
-  }));
+  return data.map((item: any) => {
+
+    return ({
+      quantity: item.quantity,
+      description: item?.productVariation?.product?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description),
+      status: (
+        <Checkbox
+          checked={item.status !== "NAO_CONFIRMADO__CANCELADO"}
+          onChange={() => handleFn(item)}
+        >
+          {budgetStatusFormatter(item.status, () => {})}
+        </Checkbox>
+      ),
+      unitary_value: item.unitary_value,
+      discount_value: item.discount_value,
+      total_value: item.total_value,
+      courtesy: item?.courtesy ? "Sim" : "Não",
+      max_discount: item?.max_discount ? "Sim" : "Não",
+      auth_data: <AuthorizationStatusProduct item={item} />,
+    })
+  });
 };
 
 export default function ShowBudget({ budget, setReload }: any) {
@@ -629,6 +632,8 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
       </TabPane>
       <TabPane tab="Negociação" key="1">
         <div>
+          {(!budgetPayments || budgetPayments.length === 0) && <p className="font-16-regular">Não existem pagamentos lançados</p>}
+          
           {budgetPayments?.length > 0 &&
             budgetPayments?.map((item) => (
               <Collapse className="uk-margin-small-top uk-width-1-1">

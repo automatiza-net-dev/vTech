@@ -5,6 +5,14 @@ export type Payment = {
   id: string;
   cancelled?: "P" | "N" | "S" | null;
   block: number;
+  tefAcquirer: {
+    id: string;
+    description: string;
+  };
+  tefFlag: {
+    description: string;
+    id: string;
+  };
   expiration_date: Date;
   fee_type: "SEM_JUROS";
   fee_value: number;

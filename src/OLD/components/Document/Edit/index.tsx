@@ -69,7 +69,7 @@ function DocumentCreate() {
       documentServices
         .renderPdf(router.query.innerpage)
         .then((res) =>
-          setUrl(process.env.NEXT_PUBLIC_API + "/uploads/" + res?.data?.url)
+          setUrl("/uploads/" + res?.data?.url)
         );
     }
   }, [data, router]);

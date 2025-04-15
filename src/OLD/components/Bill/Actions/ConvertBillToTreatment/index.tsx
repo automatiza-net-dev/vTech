@@ -5,20 +5,20 @@ import { Tooltip, useToast } from "infinity-forge";
 import { useSystem } from "@/presentation";
 import { Bill } from "@/domain";
 
-export default function ConvertBillToTreatment({ bill, setReload }: { bill: Bill, setReload?: any }) {
+export default function ConvertBillToTreatment({ bill, setReload , CustomComponent}: { bill: Bill, setReload?: any, CustomComponent?: ({ onClick }) => React.ReactNode }) {
 
 
   const { unit } = useSystem()
   const { createToast } = useToast();
 
-  const convertBill = (bill) => {
+  const convertBill = () => {
 
     billService
       .convertBillToTreatment({
         billId: bill?.id,
         sellerId: bill?.seller?.id,
       })
-      .then((res) => {
+      .then(() => {
         setReload && setReload((prv) => !prv);
 
         return createToast({
@@ -26,7 +26,7 @@ export default function ConvertBillToTreatment({ bill, setReload }: { bill: Bill
           message: "Venda convertida com sucesso",
         });
       })
-      .catch((err) => {
+      .catch(() => {
         createToast({
           status: "error",
           message:
@@ -40,7 +40,7 @@ export default function ConvertBillToTreatment({ bill, setReload }: { bill: Bill
 
   const generate_treatment_opened_bill = unit?.configs?.bills?.generate_treatment_opened_bill
 
-  if((!generate_treatment_opened_bill && bill.status !== "BAIXADA") || (generate_treatment_opened_bill && bill.status !== "ABERTA" && bill.status !== "BAIXADA")) {
+  if(( !generate_treatment_opened_bill && bill.status !== "BAIXADA") || (generate_treatment_opened_bill && bill.status !== "ABERTA" && bill.status !== "BAIXADA")) {
     return <></>
   }
 
@@ -51,8 +51,8 @@ export default function ConvertBillToTreatment({ bill, setReload }: { bill: Bill
       position="top-right"
       content={"Converter Venda em Tratamento"}
       trigger={
-        <AiOutlineCheckCircle
-          onClick={() => convertBill(bill)}
+        CustomComponent ? <CustomComponent      onClick={() => convertBill()} /> :<AiOutlineCheckCircle
+          onClick={() => convertBill()}
           size={20}
           style={{ cursor: "pointer" }}
         />

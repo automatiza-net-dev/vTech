@@ -2,7 +2,7 @@ import { useFormikContext } from "formik";
 import { Select, Icon } from "infinity-forge";
 
 import { Unit } from "./unit";
-import {  useLoadAllBusinessUnitsSystem } from "@/presentation";
+import { useLoadAllBusinessUnitsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -38,6 +38,8 @@ export function InputAddUnit() {
     setFieldError("selectUnit", "");
   }
 
+  console.log({ data })
+
   return (
     <S.InputAddUnit>
       <div className="select-unit-container">
@@ -49,20 +51,20 @@ export function InputAddUnit() {
             onlyOneValue
             options={
               data?.map((item) => ({
-                label: item?.economicGroup?.company_name,
+                label: item?.economicGroup?.company_name + " - " + (item?.identification || "Sem identificação"),
                 value: item.id,
               })) || []
             }
           />
         )}
 
-<button
-              type="button"
-              onClick={addUnit}
-              className={!selectUnit ? "disabled" : ""}
-            >
-              <Icon name="IconPlusSharp" color="#000" />
-            </button>
+        <button
+          type="button"
+          onClick={addUnit}
+          className={!selectUnit ? "disabled" : ""}
+        >
+          <Icon name="IconPlusSharp" color="#000" />
+        </button>
       </div>
 
       {values?.units?.map((unit) => {

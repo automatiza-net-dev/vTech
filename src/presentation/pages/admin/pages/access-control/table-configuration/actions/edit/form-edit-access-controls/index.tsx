@@ -25,91 +25,75 @@ export function FormEditAccessControls({
   const refetch = useQueryClient((state) => state.refetch);
   const { data, isFetching } = useAccessControls({ id: controllerRole?.id });
 
-  const profileAccessIdList = data?.departaments.map((departament) => {
-    const profileIsActive = !!data?.rolesControllerSearch?.profiles?.find(
-      (item) => item?.id === departament?.idPerfil
-    );
-
-    return {
-      id: departament?.idPerfil,
-      value: profileIsActive,
-    };
-  }).map(item => String(item.id));
-
-  const initialData = {
-    profileAccessIdList,
-    data: data?.rolesPermissions,
-    rolesControllerSearch: data?.rolesControllerSearch,
-  };
-
   return (
-    <>
-      {modal && !isFetching && (
-        <Modal
-          onClose={() => setModal(false)}
-          open={modal}
-          styles={{ maxWidth: "900px", width: "100%" }}
-        >
-          <S.EditAccessControls>
-            <FormHandler
-              isStickyButtons
-              disableEnterKeySubmitForm
-              cleanFieldsOnSubmit={false}
-              button={{ text: "Salvar" }}
-              onSucess={async (data) => {
-                await container
-                  .get<RemoteControllerRole>(adminTypes.RemoteControllerRole)
-                  .update({
-                    ...data.rolesControllerSearch,
-                    profileAccessIdList: data?.profileAccessIdList?.map(item => Number(item)),
-                    externalAccess:
-                      !!data?.rolesControllerSearch?.externalAccess,
-                    id: controllerRole?.id,
-                    profiles: undefined
-                  });
-
-                await container
-                  .get<RemoteUpdateDepartaments>(
-                    adminTypes.RemoteUpdateDepartaments
-                  )
-                  .update({
-                    roleId: controllerRole?.id,
-                    profileAccessIdList: data?.profileAccessIdList?.map(item => Number(item)),
-                  });
-
-                await container
-                  .get<RemoteAccessControls>(adminTypes.RemoteAccessControls)
-                  .update({
-                    id: String(controllerRole?.id),
-                    roles: data?.data,
-                  });
-
-                await refetch("RemoteLoadAllControllerRoles");
-                await refetch(
-                  ["RemoteLoadAccessControls", controllerRole?.id].toString()
-                );
-
-                createToast({
-                  message: "Controle editado com sucesso!",
-                  status: "success",
+    <Modal
+      onClose={() => setModal(false)}
+      open={modal}
+      styles={{ maxWidth: "900px", width: "100%" }}
+    >
+      <S.EditAccessControls>
+        {isFetching ? (
+          <></>
+        ) : (
+          <FormHandler
+            isStickyButtons
+            disableEnterKeySubmitForm
+            cleanFieldsOnSubmit={false}
+            button={{ text: "Salvar" }}
+            onSucess={async (data) => {
+              await container
+                .get<RemoteControllerRole>(adminTypes.RemoteControllerRole)
+                .update({
+                  ...data.rolesControllerSearch,
+                  profileAccessIdList: data?.profileAccessIdList?.map((item) =>
+                    Number(item)
+                  ),
+                  externalAccess: !!data?.rolesControllerSearch?.externalAccess,
+                  id: controllerRole?.id,
+                  profiles: undefined,
                 });
-                setModal(false);
-              }}
-              initialData={initialData}
-            >
-              <div className="row">
-                <RolesControllerSearch />
 
-                {data?.departaments && (
-                  <Departaments departaments={data?.departaments} />
-                )}
-              </div>
+              await container
+                .get<RemoteUpdateDepartaments>(
+                  adminTypes.RemoteUpdateDepartaments
+                )
+                .update({
+                  roleId: controllerRole?.id,
+                  profileAccessIdList: data?.profileAccessIdList?.map((item) =>
+                    Number(item)
+                  ),
+                });
 
-              <Permissions />
-            </FormHandler>
-          </S.EditAccessControls>
-        </Modal>
-      )}
-    </>
+              await container
+                .get<RemoteAccessControls>(adminTypes.RemoteAccessControls)
+                .update({
+                  id: String(controllerRole?.id),
+                  roles: data?.data,
+                });
+
+              await refetch("RemoteLoadAllControllerRoles");
+              await refetch(
+                ["RemoteLoadAccessControls", controllerRole?.id].toString()
+              );
+
+              createToast({
+                message: "Controle editado com sucesso!",
+                status: "success",
+              });
+              setModal(false);
+            }}
+            initialData={data}
+          >
+            <div className="row">
+              <RolesControllerSearch />
+
+              <Departaments />
+            </div>
+
+            <Permissions />
+          </FormHandler>
+        )}
+      </S.EditAccessControls>
+    </Modal>
   );
 }

@@ -1,32 +1,26 @@
-import { Departament } from "@/domain";
-import { Select } from "infinity-forge";
+import { InputSwitch, Select } from "infinity-forge";
+import { LoadRolesControllerSearch } from "@/domain";
 
 import * as S from "./styles";
+import { useFormikContext } from "formik";
 
-export function Departaments({
-  departaments,
-}: {
-  departaments: Departament[];
-}) {
-  if (!departaments || departaments?.length === 0) {
-    return <></>;
-  }
-
+export function Departaments() {
+  const { values } = useFormikContext<LoadRolesControllerSearch.Model>();
   return (
     <S.Departaments>
       <h4>Departamentos</h4>
 
       <div className="list">
-        <Select
-          name={`profileAccessIdList`}
-          isMultiple
-          options={
-            departaments?.map((d) => ({
-              label: d.descricao,
-              value: d.idPerfil.toString(),
-            })) || []
-          }
-        />
+        {values?.profiles?.map((p, index) => {
+          return (
+            <InputSwitch
+              key={p.id}
+              design="checkbox"
+              name={`profiles[${index}].active`}
+              label={p.description}
+            />
+          );
+        })}
       </div>
     </S.Departaments>
   );

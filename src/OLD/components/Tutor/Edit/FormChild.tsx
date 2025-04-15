@@ -99,7 +99,7 @@ export function FormChild({
 
   useEffect(() => {
     data?.photo &&
-      fetch(process.env.NEXT_PUBLIC_API + data?.photo)
+      fetch(data?.photo)
         .then((res) => res.blob())
         .then((blob) => {
           const file = new File(

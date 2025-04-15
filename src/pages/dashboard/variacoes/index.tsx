@@ -1,10 +1,9 @@
-import Variations from "@/OLD/components/Variation";
-import { LayoutDashboard } from "@/presentation";
+import { LayoutDashboard, VariationsPage } from "@/presentation";
 
-export default function VariationsPage() {
+export default function VariationsPageNext() {
   return (
     <LayoutDashboard>
-      <Variations />
+      <VariationsPage />
     </LayoutDashboard>
   )
 }

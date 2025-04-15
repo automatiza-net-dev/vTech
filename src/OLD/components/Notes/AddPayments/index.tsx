@@ -29,6 +29,7 @@ const AddPayments = memo(function AddPayments({
   origin = "receipts",
   budgetId = false,
   accountPlanId,
+  onUpdatePayment
 }) {
   const [flags, setFlags] = useState(false);
   const [data, setData] = useState({});
@@ -104,6 +105,7 @@ const AddPayments = memo(function AddPayments({
 
       setLoading(false);
       setPaymentsReload((prv) => !prv);
+      onUpdatePayment && onUpdatePayment()
       queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
 
       return createToast({ status: "success", message: "Pagamento adicionado com sucesso!"  })
@@ -167,6 +169,8 @@ const AddPayments = memo(function AddPayments({
       setLoading(false);
       setReload((prv) => !prv);
       queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
+
+      onUpdatePayment && onUpdatePayment()
 
       return createToast({ status: "success", message:"Pagamento adicionado com sucesso!"  })
     } catch (error) {

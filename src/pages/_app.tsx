@@ -184,7 +184,7 @@ export default function App({ Component, pageProps }) {
             styles: { Button: ButtonInfinityForge },
             notification: {
               enable: true,
-              CustomComponent: (props) => (
+              CustomComponent: (props: any) => (
                 <Link href={props?.link}>
                   <div className="top">
                     <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>

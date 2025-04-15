@@ -1,9 +1,7 @@
-import { useQueryClient } from "react-query";
-
 import { useFormikContext } from "formik";
 
-import { LoadAllControllerRoles } from "@/domain";
-import { ButtonDelete, useLoadAllBusinessUnits } from "@/presentation";
+import { ButtonDelete, useLoadAllBusinessUnitsSystem } from "@/presentation";
+import { useRolesControllers } from "../../../../../../../../hooks/access-controls/use-roles-controllers";
 
 import { UnitProps } from "./interfaces";
 
@@ -12,21 +10,19 @@ import * as S from "./styles";
 export function Unit({ businessUnitId, remove }: UnitProps) {
   const { values } = useFormikContext<any>();
 
-  const roles = useQueryClient().getQueryData<LoadAllControllerRoles.Model>(
-    "RemoteLoadAllControllerRoles"
-  );
+  const roles = useRolesControllers()
 
-  const businessUnits = useLoadAllBusinessUnits();
+  const businessUnits = useLoadAllBusinessUnitsSystem();
 
   const roleId = values.roleId;
 
-  const roleItem = roles?.find((role) => {
+  const roleItem = roles?.data?.find((role) => {
     return String(role.id) === String(roleId);
   });
 
-  const companyName = businessUnits?.data?.find(
+  const unit = businessUnits?.data?.find(
     (u) => String(u.id) === businessUnitId
-  )?.company_name;
+  );
 
   return (
     <>
@@ -34,7 +30,7 @@ export function Unit({ businessUnitId, remove }: UnitProps) {
         <div className="unit-content">
           <div className="text">
             <p className="font-16-regular">
-              {companyName} _ {roleId ? roleItem?.name : "---------"}
+              {unit?.economicGroup?.company_name + " - " + (unit?.identification || "Sem identificação")}
             </p>
           </div>
 

@@ -13,9 +13,8 @@ export function SelectRole() {
     <>
       <Select
         name="roleId"
-        label="Role"
+        label="Controle de acesso"
         onlyOneValue
-        placeholder="Role"
         options={formatOptions || []}
         loading={isFetching}
       />
