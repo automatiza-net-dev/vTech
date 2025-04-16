@@ -18,7 +18,6 @@ import {
   useLoadPatient,
   useConfigurationsSystem,
   useVerifyPermissions,
-  PermissionItem,
   usePermission,
 } from "@/presentation";
 import { RemotePatient } from "@/data";
