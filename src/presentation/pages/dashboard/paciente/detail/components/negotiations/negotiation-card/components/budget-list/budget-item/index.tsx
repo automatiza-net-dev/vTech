@@ -78,16 +78,16 @@ export function BudgetItem({
 
           {budget?.items?.map((item) => (
             <>
-              <div key={item.id} className="content">
+              <div key={item.id} className="content_budget">
                 <div>
                   {item.quantity}x{" "}
-                  {item?.productVariation?.product.description +
+                  {(item?.productVariation?.product.description +
                     (item?.departmentItems && item?.departmentItems.length > 0
                       ? " - " +
                         item?.departmentItems?.map(
                           (item) => item.department_item_description
                         )
-                      : "")}
+                      : ""))}
                 </div>
 
                 <div>

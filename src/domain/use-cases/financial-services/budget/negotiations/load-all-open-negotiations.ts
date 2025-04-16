@@ -72,13 +72,7 @@ export type Negotiation = {
   created_at: Date;
   updated_at: Date;
   internal_observation: string | null;
-  bills: {
-    budget_id: Budget["id"];
-    created_at: Bill["created_at"];
-    document_status: Bill["document_status"];
-    id: Bill["id"];
-    tag: Bill["tag"];
-  }[];
+  bills: Bill[];
   documents: Document[];
   unit: {
     id: BusinessUnit["id"];

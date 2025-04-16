@@ -5,8 +5,6 @@ import { Tutor } from "@/domain";
 import { FormData } from "./interfaces";
 import { BudgetItem } from "./budget-item";
 
-import * as S from "./styles"
-
 export function BudgetsList({
   hasOpenedBudget,
   tutors,
@@ -17,7 +15,7 @@ export function BudgetsList({
   const { values } = useFormikContext<FormData>();
 
   return (
-    <S.BudgetList>
+    <div className="budget-list">
       {values.budgets.map((budget, index) => {
         return (
           <BudgetItem
@@ -28,6 +26,6 @@ export function BudgetsList({
           />
         );
       })}
-    </S.BudgetList>
+    </div>
   );
 }
