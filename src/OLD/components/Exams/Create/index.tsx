@@ -13,7 +13,7 @@ import { examService } from "@/OLD/services/exams.service";
 import { Input, Switch } from "antd";
 import { Container } from "./styles";
 import Editor from "@/OLD/components/Editor";
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, FormHandler, PageWrapper, TextEditor, useTextEditor, useToast } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -43,6 +43,9 @@ const CreateExam = memo(function CreateExam() {
         router.back();
       });
   }, [data, body]);
+
+  
+    const {handleEditorReady, handleInsert} = useTextEditor()
 
   return !canCreateExams || canCreateExams === "loading" ? (
     <AccessDenied loading={canCreateExams} />
@@ -76,7 +79,9 @@ const CreateExam = memo(function CreateExam() {
               </div>
               <div className="uk-margin-top">
                 <label>Descrição</label>
-                <Editor editorState={body} setEditorState={setBody} />
+                <FormHandler disableEnterKeySubmitForm  initialData={{ editor: body }} onChangeForm={{callbackResult: (result) => setBody(result.editor)}}>
+                                  <TextEditor name="editor" onEditorReady={handleEditorReady}  />
+                                </FormHandler>
               </div>
               <div className="uk-margin-top uk-flex uk-flex-around">
                 <div className="uk-flex uk-flex-column uk-flex-middle">
@@ -107,7 +112,7 @@ const CreateExam = memo(function CreateExam() {
               </footer>
             </form>
           </div>
-          <LabelsPanel body={body} setBody={setBody} />
+          <LabelsPanel handleInsert={handleInsert} />
         </div>
       </Container>
     </PageWrapper>

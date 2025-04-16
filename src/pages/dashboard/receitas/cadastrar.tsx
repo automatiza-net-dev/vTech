@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 
 import { useRouter } from "next/router";
 
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, FormHandler, PageWrapper, TextEditor, useTextEditor, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -55,6 +55,8 @@ export default function MedicalRecipeCreatePage() {
       .finally(() => setLoading(false));
   }, [loading, data, body]);
 
+    const { handleEditorReady, handleInsert } = useTextEditor()
+
   return (
     <LayoutDashboard>
       {!canCreateMedicalRecipe || canCreateMedicalRecipe === "loading" ? (
@@ -95,7 +97,9 @@ export default function MedicalRecipeCreatePage() {
                 </div>
                 <div className="uk-margin-small">
                   <label>Conteúdo</label>
-                  <Editor editorState={body} setEditorState={setBody} />
+                <FormHandler disableEnterKeySubmitForm  onChangeForm={{ callbackResult: (result) => setBody(result.editor) }}>
+                                <TextEditor name="editor" onEditorReady={handleEditorReady} />
+                              </FormHandler>
                 </div>
                 <div
                   style={{
@@ -112,7 +116,7 @@ export default function MedicalRecipeCreatePage() {
                   <Button onClick={() => router.back()} text="Voltar" />
                 </div>
               </div>
-              <LabelsPanel body={body} setBody={setBody} />
+              <LabelsPanel handleInsert={handleInsert} />
             </div>
           </div>
         </PageWrapper>

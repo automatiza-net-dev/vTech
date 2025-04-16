@@ -108,7 +108,6 @@ const DocumentCreate = React.memo(function DocumentCreate() {
 
   const {handleEditorReady, handleInsert} = useTextEditor()
 
-  console.log(handleEditorReady, handleInsert)
 
   return !canCreateDocument || canCreateDocument === "loading" ? (
     <AccessDenied loading={canCreateDocument} />
@@ -169,8 +168,8 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                   <div className="uk-margin-small">
                     <label>Conteúdo</label>
 
-                    <FormHandler disableEnterKeySubmitForm  initialData={{ editor: body }}>
-                      <TextEditor name="editor" onEditorReady={handleEditorReady} onChangeInput={(e) => setBody(e)} />
+                    <FormHandler disableEnterKeySubmitForm  initialData={{ editor: body }} onChangeForm={{callbackResult: (result) => setBody(result.editor)}}>
+                      <TextEditor name="editor" onEditorReady={handleEditorReady}  />
                     </FormHandler>
                   </div>
                 </div>
