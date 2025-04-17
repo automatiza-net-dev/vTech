@@ -3,12 +3,21 @@ import { Accordion, formatNumberToCurrency } from "infinity-forge";
 import { billStatusFormatter } from "@/OLD/components/Bill/utils/status-formater";
 
 import { NegotiationCardProps } from "../../interfaces";
+import { Fragment } from "react";
+import { PaymentHeader, TablePayments } from "@/OLD/components/Bill/authorization-sell/components";
 
 
 export function BillsList(props: NegotiationCardProps) {
 
     return <div className="budget-list">
         {props.bills?.map((bill) => {
+                const maxBlock =
+                bill?.payments?.reduce(
+                  (max, item) => (item?.block > max ? item.block : max),
+                  0
+                ) || 0;
+                const maxBlocks = Array.from({ length: maxBlock });
+
             return (
                 <div className="budgets-list" key={bill.id}>
                     <div>
@@ -74,18 +83,33 @@ export function BillsList(props: NegotiationCardProps) {
                         </h3>
                     )}
 
-                    {bill.payments &&
-                        bill.payments.length > 0 &&
-                        bill?.payments?.map((item) => {
-                            const title = `${item?.paymentMethod?.description} - ${item?.tefAcquirer?.description} - ${item?.tefFlag?.description} - ${formatNumberToCurrency(item.total_value || 0)} (${item.installments}x)`
-                            console.log(item, "item")
-                            return (
-                                <Accordion key={item.id} title={title}>
-
-                                   a
-                                </Accordion>
+                   {maxBlocks.map((_, index) => {
+                            const paymentsList =  bill.payments.filter(
+                              (payment) => payment.block === index + 1
                             );
-                        })}
+              
+                            if (!paymentsList || paymentsList.length === 0) {
+                              return <Fragment key={index + "block"} />;
+                            }
+              
+                            return (
+                              <Accordion
+                                key={
+                                  paymentsList.reduce(
+                                    (reducer, item) => reducer + item.id,
+                                    ""
+                                  ) || ""
+                                }
+                                Header={() => <PaymentHeader paymentsList={paymentsList} />}
+                              >
+                                <TablePayments
+                                  paymentsList={paymentsList}
+                                  isCancelled={false}
+                                  cancelledStatus={"P"}
+                                />
+                              </Accordion>
+                            );
+                          })}
                 </div>
             );
         })}
