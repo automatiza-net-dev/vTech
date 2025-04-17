@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { memo, useState, useCallback, useMemo, useEffect } from "react";
 
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
@@ -16,6 +15,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
 
 import { DeleteTwoTone } from "@ant-design/icons";
+import { FormHandler, Select } from "infinity-forge";
 
 const FormChild = memo(function FormChild({
   data,
@@ -26,12 +26,11 @@ const FormChild = memo(function FormChild({
   addItemSubmit = false,
   removeItemSubmit = false,
 }: any) {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<any>([]);
   const [productType, setProductType] = useState("");
 
-  const { suppliers } = useSuppliers();
+  const { suppliers } = useSuppliers({});
   const { products } = useReceiptProducts();
-  const { clinic } = useProfile();
 
   suppliers && sortItems(suppliers, "corporateName");
 
@@ -84,15 +83,9 @@ const FormChild = memo(function FormChild({
     ?.filter((product) => product?.unit?.type !== "SERVICE")
     ?.map((product) => {
       return {
-        ...product,
-        variation_id: product?.variation?.id,
-        value:
-          product?.type !== "kit"
-            ? `${product?.description} - Cod.: ${product?.referenceCode} - ${
-                product?.barcode ? product?.barcode : ""
-              }`
-            : product?.description,
-        key: product?.id,
+        label: `${product?.description} - Cod.: ${product?.referenceCode} - ${product?.barcode ? product?.barcode : ""
+          }`,
+        value: product?.id,
       };
     });
 
@@ -114,9 +107,8 @@ const FormChild = memo(function FormChild({
 
       return {
         key: item?.id,
-        product: `${item?.description} - Cod.: ${item?.referenceCode} - ${
-          item?.barcode ? item?.barcode : ""
-        }`,
+        product: `${item?.description} - Cod.: ${item?.referenceCode} - ${item?.barcode ? item?.barcode : ""
+          }`,
         quantity: elem.quantity,
         discount: currencyFormatter(elem.discountValue),
         value: currencyFormatter(elem.unitaryValue),
@@ -231,24 +223,11 @@ const FormChild = memo(function FormChild({
           <section>
             <div className="uk-width-1-1">
               <label>Produto</label>
-              <AutoComplete
-                className="uk-width-1-1"
-                options={productOptions}
-                filterOption={(val, opt) =>
-                  normalizeStr(opt?.description.toUpperCase()).includes(
-                    normalizeStr(val.toUpperCase())
-                  )
-                }
-                value={data?.productDescription}
-                onChange={(val) =>
-                  setData((prv) => ({ ...prv, productDescription: val }))
-                }
-                onSelect={(_, opt) => {
-                  setProductType(opt?.type);
 
-                  if (opt?.type === "kit") {
-                    return addKitItems(opt?.id);
-                  }
+              <FormHandler >
+                <Select name="produto" options={productOptions} onlyOneValue onChangeInput={(value) => {
+
+                  const opt = products?.find(item => item.id === value);
 
                   setItems((prv) => [
                     {
@@ -259,8 +238,10 @@ const FormChild = memo(function FormChild({
                       discountValue: currencyFormatter(0),
                     },
                   ]);
-                }}
-              />
+
+                }} />
+              </FormHandler>
+
             </div>
           </section>
           {items?.length > 0 &&
@@ -356,20 +337,20 @@ const FormChild = memo(function FormChild({
                 type !== "update"
                   ? submitKit()
                   : addItemSubmit(
-                      {
-                        ...items[0],
-                        costValue: convertIntlCurrency(items[0]?.costValue),
-                        receiptId: data?.receiptId,
-                        productVariationId: items[0]?.productVariationId,
-                        unitaryValue: convertIntlCurrency(
-                          items?.[0]?.unitaryValue
-                        ),
-                        discountValue: convertIntlCurrency(
-                          items[0]?.discountValue
-                        ),
-                      },
-                      setItems
-                    )
+                    {
+                      ...items[0],
+                      costValue: convertIntlCurrency(items[0]?.costValue),
+                      receiptId: data?.receiptId,
+                      productVariationId: items[0]?.productVariationId,
+                      unitaryValue: convertIntlCurrency(
+                        items?.[0]?.unitaryValue
+                      ),
+                      discountValue: convertIntlCurrency(
+                        items[0]?.discountValue
+                      ),
+                    },
+                    setItems
+                  )
               }
             >
               Adicionar

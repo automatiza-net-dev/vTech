@@ -99,10 +99,10 @@ export default function AddOrRemoveItem({ id, setReload, reload }) {
         >
           <h3 className="font-14-regular">
             <span>
-              Adicionar itens&nbsp;&nbsp;Entrada código: {receipt[0]?.tag}
-              &nbsp;&nbsp;Fornecedor: {receipt[0]?.supplier?.name}
+             <strong>Entrada código: {receipt[0]?.tag}</strong> 
             </span>
           </h3>
+
           <FormChild
             data={data}
             setData={setData}
