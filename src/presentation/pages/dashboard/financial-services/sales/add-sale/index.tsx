@@ -127,6 +127,7 @@ export function AddSale({
 
       const payload = {
         ...data,
+        billType: "V",
         billId: type === "edit" ? billId : null,
         originBillId: billId || null,
         cart: undefined,
