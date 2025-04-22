@@ -44,7 +44,7 @@ export type Bill = {
   additionalInformation: number;
   cancelled_at: Date | null;
   cancellation_observation: null | string;
-  status: "BAIXADA" | "ABERTA";
+  status: "BAIXADA" | "ABERTA" | "Venda em Aberto" | "Nao Aprovada";
   document_status: "Gerados" | null;
   created_at: Date;
   updated_at: Date;

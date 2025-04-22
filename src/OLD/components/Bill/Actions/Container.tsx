@@ -1,6 +1,5 @@
 import * as React from "react";
 import styled from "styled-components";
-import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 
 import { billService } from "@/OLD/services/bills.service";
@@ -14,7 +13,7 @@ import { DeleteTwoTone } from "@ant-design/icons";
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
 import Details from "./Details";
-import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
+
 import {
   Modal,
   PageWrapper,
@@ -23,10 +22,10 @@ import {
   useToast,
 } from "infinity-forge";
 
-import moment from "moment";
-import { MdMonetizationOn } from "react-icons/md";
+
 import { LaunchRelatedSale } from "./launch-related-sale";
 import { CancelAction } from "./cancel";
+import { AddBillPaymentModal } from "./add-bill-payment-modal";
 
 const Container = styled.div`
   display: flex;
@@ -38,15 +37,11 @@ const Container = styled.div`
 `;
 
 function BillActions({ bill, client, setReload, cashiers }: any) {
-  const [filters, setFilters] = React.useState({});
   const [selectedId, setSelectedId] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
-  const [paymentsVisible, setPaymentsVisible] = React.useState(false);
 
-  const router = useRouter();
   const queryClient = useQueryClient();
 
-  const addPaymentPermission = useUserHasPermission("VEN04");
   const finishBillPermission = useUserHasPermission("VEN06");
   const convertTreatmentPermission = useUserHasPermission("VEN07");
   const removeBillPermission = useUserHasPermission("VEN12");
@@ -62,8 +57,8 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           status: "success",
           message: "Venda finalizada com sucesso!",
         });
-        
-        console.log(_res, "@")
+
+        console.log(_res, "@");
 
         queryClient.invalidateQueries(["bills"]);
         setReload && setReload((prv) => !prv);
@@ -74,7 +69,7 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           "Houve um erro ao finalizar a venda, verifique se ainda há valores pendentes";
 
         createToast({ status: "error", message: errorMessage });
-      })
+      });
   }, [bill?.id, queryClient, setReload]);
 
   const reopenBillPayment = React.useCallback(() => {
@@ -125,14 +120,6 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
       });
   }, [bill?.id]);
 
-  React.useEffect(() => {
-    setFilters({
-      from: moment(new Date()).startOf("day"),
-      to: moment(new Date()).endOf("day"),
-      status: "ABERTO",
-    });
-  }, []);
-
   return (
     <Container className="uk-flex uk-flex-around uk-flex-middle">
       {(bill?.status === "ABERTA" ||
@@ -141,27 +128,10 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
         <>
           <AddBillItem bill={bill} />
 
-          {addPaymentPermission && (
-            <Tooltip
-              idTooltip="test"
-              enableHover
-              position="top-right"
-              content={"Lançar Pagamentos"}
-              trigger={
-                <MdMonetizationOn
-                  className="icon"
-                  size={20}
-                  onClick={() => {
-                    setSelectedId(bill?.id);
-                    setPaymentsVisible(true);
-                  }}
-                />
-              }
-            />
-          )}
+          <AddBillPaymentModal bill={bill} setReload={setReload} setSelectedId={setSelectedId} />
         </>
       )}
-      
+
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
           <Tooltip
@@ -248,24 +218,6 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
         <PageWrapper title="Detalhes da Venda">
           <Details billId={selectedId} setVisible={setDetailsVisible} />
         </PageWrapper>
-      </Modal>
-
-      <Modal
-        styles={{ maxWidth: 1500, width: "100%" }}
-        open={paymentsVisible}
-        onClose={() => {
-          setPaymentsVisible(false);
-          queryClient.invalidateQueries(["RemotePatient"]);
-        }}
-      >
-        <AddBillPayment
-          billId={bill?.id}
-          setReloadBill={setReload}
-          setVisible={(value) => {
-            setPaymentsVisible(value);
-            queryClient.invalidateQueries(["RemotePatient"]);
-          }}
-        />
       </Modal>
     </Container>
   );

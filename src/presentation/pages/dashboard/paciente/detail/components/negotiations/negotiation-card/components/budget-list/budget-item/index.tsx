@@ -18,6 +18,7 @@ import { AddBudgetNew } from "@/presentation";
 import { budgetStatusFormatter } from "@/OLD/components/Budget";
 import AddPaymentPreview from "@/OLD/components/Budget/Actions/add-payment-preview";
 
+
 export function BudgetItem({
   budget,
   tutors,
@@ -70,6 +71,7 @@ export function BudgetItem({
                   }
                 />
               )}
+
             </div>
 
             <div>Desconto</div>
@@ -103,23 +105,10 @@ export function BudgetItem({
               </div>
           ))}
 
-<div  className="content_budget" style={{ borderTop: "1px solid #0000006a", paddingTop: 5 }}>
-                <div>
-                  Total
-                </div>
 
-                <div>
-                {formatNumberToCurrency(budget.discount_value || 0)}
-                </div>
-
-                <div>
-                 {formatNumberToCurrency(budget.total_value)}
-                </div>
-              </div>
-
-          <div className="content">
-            <div></div>
+          <div className="content_budget">
             <div className="total">Total</div>
+            <div className="-bold">{formatNumberToCurrency(budget.discount_value || 0)}</div>
             <div className="-bold">
               {formatNumberToCurrency(budget.total_value)}
             </div>
