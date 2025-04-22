@@ -77,7 +77,6 @@ export function BudgetItem({
           </h3>
 
           {budget?.items?.map((item) => (
-            <>
               <div key={item.id} className="content_budget">
                 <div>
                   {item.quantity}x{" "}
@@ -102,8 +101,21 @@ export function BudgetItem({
                     : "-"}
                 </div>
               </div>
-            </>
           ))}
+
+<div  className="content_budget" style={{ borderTop: "1px solid #0000006a", paddingTop: 5 }}>
+                <div>
+                  Total
+                </div>
+
+                <div>
+                {formatNumberToCurrency(budget.discount_value || 0)}
+                </div>
+
+                <div>
+                 {formatNumberToCurrency(budget.total_value)}
+                </div>
+              </div>
 
           <div className="content">
             <div></div>

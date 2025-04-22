@@ -4,6 +4,7 @@ export type Budget = {
   id: string;
   tag: string;
   pending: boolean;
+  discount_value?: number;
   budget_date?: string;
   internalCode?: string;
   client_name?: string;
