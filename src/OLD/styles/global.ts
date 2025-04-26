@@ -13,6 +13,10 @@ label {
     font-size: 14px !important;
 }
 
+.ant-picker-dropdown {
+    z-index: 99999 !important; 
+}
+
 .ql-editor {
     min-height: 200px !important;
 }

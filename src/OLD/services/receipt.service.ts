@@ -13,7 +13,7 @@ const getReceiptsWithProduct = async () =>
 const getFiscalDocuments = async (params) =>
   await api.get("/fiscal-documents/business-unit/issued-nfe", { params });
 
-const createReceipt = async (data) => await api.post("/receipts/create", data);
+const createReceipt = async (data) => await api.post("/receipts/create", { ...data, receiptType: "E" });
 
 const addReceiptItem = async (data) =>
   await api.post("/receipts/create-item", data);
@@ -35,7 +35,7 @@ const createReceiptProduct = async (data) =>
   await api.post("/receipts/create-receipt-products", data);
 
 const updateReceiptPayment = async (data) =>
-  api.post("/receipts/update-payment", data);
+  api.post("/receipts/update-payment", { ...data, receiptType: "E" });
 
 const finishReceipt = async (data) =>
   await api.post("/receipts/finish-import", data);

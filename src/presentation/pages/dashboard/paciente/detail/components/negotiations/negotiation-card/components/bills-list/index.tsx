@@ -29,11 +29,12 @@ export function BillsList(props: NegotiationCardProps) {
             <div>
               <h3>
                 <div>
-                  Venda {bill.tag} ({billStatusFormatter(bill)}
-                  )
-                {(bill?.status === "ABERTA" ||
-        bill?.status === "Venda em Aberto" ||
-        bill?.status === "Nao Aprovada") &&  <AddBillItem bill={bill} />}
+                  Venda {bill.tag} ({billStatusFormatter(bill)})
+                  {(bill?.status === "ABERTA" ||
+                    bill?.status === "Venda em Aberto" ||
+                    bill?.status === "Nao Aprovada") && (
+                    <AddBillItem bill={bill} />
+                  )}
                 </div>
 
                 <div>Desconto</div>
@@ -82,12 +83,35 @@ export function BillsList(props: NegotiationCardProps) {
             </div>
 
             {bill?.payments && bill.payments.length > 0 && (
-              <h3
-                className="font-20-bold"
-                style={{ marginTop: 20, marginBottom: 10 }}
-              >
-                <div>Pagamentos <AddBillPaymentModal bill={bill} setReload={() =>   queryClient.invalidateQueries(["openNegotiations"])}/></div>
-              </h3>
+              <>
+                <h3
+                  className="font-20-bold"
+                  style={{ marginTop: 20, marginBottom: 10 }}
+                >
+                  <div>
+                    Pagamentos{" "}
+                    <AddBillPaymentModal
+                      bill={bill}
+                      setReload={() =>
+                        queryClient.invalidateQueries(["openNegotiations"])
+                      }
+                    />
+                  </div>
+                </h3>
+                
+                {!!(bill?.nonPaidValue && bill.nonPaidValue > 0) && (
+                  <div
+                    className="font-14-bold"
+                    style={{
+                      marginTop: "-5px",
+                      marginBottom: 5,
+                      width: "100%",
+                    }}
+                  >
+                    Em aberto: {formatNumberToCurrency(bill.nonPaidValue)}
+                  </div>
+                )}
+              </>
             )}
 
             {maxBlocks.map((_, index) => {

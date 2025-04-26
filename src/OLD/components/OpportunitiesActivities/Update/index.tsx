@@ -9,6 +9,7 @@ import FormChild from "../FormChild";
 import moment from "moment";
 import { Button, useToast } from "infinity-forge";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
+import { useProfile } from "@/OLD/hooks/useProfile";
 
 const Update = memo(function ({
   setReload,
@@ -28,9 +29,12 @@ const Update = memo(function ({
 
   const {createToast} = useToast()
 
+  const {user} = useProfile()
+
   useEffect(() => {
+    console.log(activity?.user?.name || activity?.openingUser?.name || user?.name, "@@")
     setData({
-      collabName: activity?.user?.name || activity?.openingUser?.name,
+      collabName: activity?.user?.name || activity?.openingUser?.name || user?.name,
       userId: activity?.user?.id || activity?.openingUser?.id,
       activityId: activity?.activity?.id,
       executionDate: moment(

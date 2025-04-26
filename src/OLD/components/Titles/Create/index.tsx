@@ -215,25 +215,26 @@ export default function Create({ type = "", setVisible, setReload }: any) {
             account: data?.account,
             tefFlagId: data?.tefFlagId,
             tefAcquirerId: paymentMethods
-                  .find(
-                    (payment) =>
-                      payment.id === installments?.[index]?.paymentMethodId
-                  )
-                  ?.flags?.find((item) => item?.flag?.id === data?.tefFlagId)?.acquirer?.id,
+              .find(
+                (payment) =>
+                  payment.id === installments?.[index]?.paymentMethodId
+              )
+              ?.flags?.find((item) => item?.flag?.id === data?.tefFlagId)
+              ?.acquirer?.id,
             accept: "NAO",
           } as any;
         })
       );
   }, [data, titleType]);
 
-  const [flags, setFlags] = useState([])
+  const [flags, setFlags] = useState([]);
 
-    useEffect(() => {
-      setFlags(
-        paymentMethods.find((method) => method?.id === data?.paymentMethodId)
-          ?.flags
-      );
-    }, [data, paymentMethods]);
+  useEffect(() => {
+    setFlags(
+      paymentMethods.find((method) => method?.id === data?.paymentMethodId)
+        ?.flags
+    );
+  }, [data, paymentMethods]);
 
   return (
     <>
@@ -285,12 +286,38 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                   />
                 </div>
                 <div className="uk-margin-small-right">
-                  <label> Data 1º parcela </label>
+                  <label> Data 1º parcelaa </label>
                   <DatePicker
                     className="uk-width-1-1"
+                    picker="date"
                     format="DD/MM/YYYY"
-                    onChange={(e) => setData({ ...data, expirationDate: e })}
-                    value={data?.expirationDate}
+                    value={
+                      data?.expirationDate
+                        ? moment(data.expirationDate, "YYYY-MM-DD")
+                        : null
+                    }
+                    onBlur={(ev) => {
+                      console.log();
+                      const value = ev?.target?.value;
+                      const year = value?.split("/")?.[2];
+                      const month = value?.split("/")?.[1];
+                      const day = value?.split("/")?.[0];
+
+                      setData({
+                        ...data,
+                        expirationDate: `${year}-${month}-${day}`,
+                      });
+                    }}
+                    onChange={(date) => {
+                      // Verifique se a data é válida antes de salvar no estado
+                      const formattedDate = date
+                        ? date.format("YYYY-MM-DD")
+                        : null;
+                      setData({
+                        ...data,
+                        expirationDate: formattedDate,
+                      });
+                    }}
                   />
                 </div>
                 <div className="uk-margin-right">
@@ -326,7 +353,10 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                   </Group>
                 </div>
               </div>
-              <div className="uk-margin-small-right uk-width-1-1" style={{ display: "flex", gap: 15 }}>
+              <div
+                className="uk-margin-small-right uk-width-1-1"
+                style={{ display: "flex", gap: 15 }}
+              >
                 <SelectInfinityForge
                   label="Nome Titular"
                   options={formatedTutors.map((item) => ({
@@ -342,7 +372,6 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     });
 
                     if (optionSelected?.accountPlan && type !== "receive") {
-            
                       setPlanSearch(optionSelected?.accountPlan?.description);
 
                       setData((prv) => ({
@@ -364,7 +393,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                   }}
                 />
 
-<div >
+                <div>
                   <label>Valor parcela</label>
                   <Input
                     required
@@ -379,7 +408,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     }
                   />
                 </div>
-                <div >
+                <div>
                   <label>Nº Parcelas</label>
                   <Input
                     type="number"
@@ -393,7 +422,6 @@ export default function Create({ type = "", setVisible, setReload }: any) {
               </div>
 
               <div className="uk-margin-top uk-flex">
-         
                 <div className="uk-margin-small-right uk-width-1-2">
                   <SelectInfinityForge
                     label="Forma Pagamento"
@@ -412,26 +440,30 @@ export default function Create({ type = "", setVisible, setReload }: any) {
 
                       setPaymentMethodSearch(optionSelected.description);
                       setData((prev) => {
-                        return ({ ...prev, tefFlagId: undefined, paymentMethodId: value })
+                        return {
+                          ...prev,
+                          tefFlagId: undefined,
+                          paymentMethodId: value,
+                        };
                       });
                     }}
                   />
                 </div>
 
                 <div className="uk-margin-small-right uk-width-1-2">
-               <SelectInfinityForge
-                           label="Bandeira"
-                           name="tefFlagId"
-                           onlyOneValue
-                           options={flags?.map((flag: any) => ({
-                             label: flag?.flag?.description,
-                             value: flag?.flag?.id,
-                           }))}
-                           value={data?.tefFlagId}
-                           onChangeInput={(value) => {
-                             setData({ ...data, tefFlagId: value });
-                           }}
-                         />
+                  <SelectInfinityForge
+                    label="Bandeira"
+                    name="tefFlagId"
+                    onlyOneValue
+                    options={flags?.map((flag: any) => ({
+                      label: flag?.flag?.description,
+                      value: flag?.flag?.id,
+                    }))}
+                    value={data?.tefFlagId}
+                    onChangeInput={(value) => {
+                      setData({ ...data, tefFlagId: value });
+                    }}
+                  />
                 </div>
 
                 <div className="uk-width-1-2">
@@ -449,15 +481,13 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                     name="plans_account"
                     onlyOneValue
                     onChangeInput={(value) => {
-          
                       const optionSelected = plansOptions.find(
                         (item) => item.id === value
                       );
 
-                      if(optionSelected?.description !== planSearch) {
-                        
-                        setData(prev => {
-                          return  ({ ...prev, accountPlanId: value })
+                      if (optionSelected?.description !== planSearch) {
+                        setData((prev) => {
+                          return { ...prev, accountPlanId: value };
                         });
 
                         setPlanSearch(optionSelected?.description);

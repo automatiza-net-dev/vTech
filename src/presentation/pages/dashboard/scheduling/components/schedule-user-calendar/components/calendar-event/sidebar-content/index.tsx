@@ -1,14 +1,12 @@
 import {
-  api,
-  Button,
-  copyToClipboard,
-  Error,
-  formatNumberToCurrency,
-  generateWhatsappUrl,
   Icon,
+  Error,
+  Button,
   Tooltip,
-  useQuery,
   useToast,
+  copyToClipboard,
+  generateWhatsappUrl,
+  formatNumberToCurrency,
 } from "infinity-forge";
 
 import { Actions } from "./actions";
@@ -17,7 +15,7 @@ import { Event, ScheduleUser } from "@/domain";
 import {
   DateToDDMMYYYY,
   useConfigurationsSystem,
-  useSystem,
+  useVerifyFinanceSchedule,
 } from "@/presentation";
 
 import { SidebarTabs } from "./tabs";
@@ -139,27 +137,11 @@ export function SideBarContent({
 }
 
 function PatientFinances({ event }: { event: Event }) {
-  const { unit } = useSystem();
-
-  const clientId = event?.event?.holder?.id || event?.event?.patient?.id;
-  const hasFinancesShedules = unit?.configs.schedules?.show_finances_schedules;
-
-  const { data } = useQuery({
-    queryKey: ["PatientFinancess", clientId],
-    queryFn: async () => {
-      const response = await api({
-        url: `schedules/finances/${clientId}`,
-        method: "get",
-      });
-
-      return response as {
-        "Valores em Atraso": number;
-      }[];
-    },
-    enabled: hasFinancesShedules,
+  const { financesExpired, disableFinanceSchedule } = useVerifyFinanceSchedule({
+    event,
   });
 
-  if (!hasFinancesShedules || !data || data?.length === 0) {
+  if (disableFinanceSchedule) {
     return <></>;
   }
 
@@ -168,13 +150,10 @@ function PatientFinances({ event }: { event: Event }) {
       <h3 className="font-14-bold" style={{ marginBottom: 0, color: "red" }}>
         Valores em aberto
       </h3>
-      {data?.map((item, index) => {
-        return (
-          <span key={index} style={{ color: "red", fontWeight: "bold" }}>
-            {formatNumberToCurrency(item["Valores em Atraso"])}
-          </span>
-        );
-      })}
+
+      <span style={{ color: "red", fontWeight: "bold" }}>
+        {formatNumberToCurrency(financesExpired)}
+      </span>
     </div>
   );
 }

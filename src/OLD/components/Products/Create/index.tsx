@@ -456,7 +456,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                         }
          
                         }
-                        options={taxationGroups.map(item => ({ label: item.name, value: item.id }))}
+                        options={taxationGroups?.map(item => ({ label: item.name, value: item.id }))}
                       />
                      
                     </Form.Item>

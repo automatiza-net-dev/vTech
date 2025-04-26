@@ -6,6 +6,7 @@ import { SideBar } from "infinity-forge";
 import { Event, ScheduleUser } from "@/domain";
 import { SideBarContent } from "./sidebar-content";
 import { ToolTipContent } from "./tooltip-content";
+import { useVerifyFinanceSchedule } from "../../../../utils";
 
 export function CalendarEvent({
   event,
@@ -34,6 +35,8 @@ export function CalendarEvent({
   const timeTextEnd = event.end.substring(11, 16);
 
   const fullTime = timeTextStart + " - " + timeTextEnd;
+
+  const {FinanceIcon} = useVerifyFinanceSchedule({ event })
 
   if (!event) {
     return;
@@ -142,9 +145,21 @@ export function CalendarEvent({
                 fontWeight: "700",
                 fontSize: "12px",
                 direction: "ltr",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 5
               }}
             >
-              {fullTime}
+              <div  style={{
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                gap: 5
+              }}>
+              <span>{fullTime}</span>
+              <FinanceIcon />
+              </div>
+
             </div>
           )}
         </div>

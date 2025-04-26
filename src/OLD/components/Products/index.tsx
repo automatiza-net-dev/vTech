@@ -163,7 +163,7 @@ function Products() {
                 setTaxationgroupSearch("");
                 setFilters(newObj);
               }}
-              options={taxationGroups.map((group) => ({
+              options={taxationGroups?.map((group) => ({
                 ...group,
                 value: group?.name,
               }))}

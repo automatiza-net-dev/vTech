@@ -12,6 +12,7 @@ const { TextArea } = Input;
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useToast } from "infinity-forge";
+import moment from "moment";
 
 const verifyFields = (data) => {
   if (!data?.userId) {
@@ -109,37 +110,52 @@ const FormChild = memo(function FormChild({
       <section className="uk-flex uk-flex-between uk-margin-small-top">
         <div className="uk-width-1-1 uk-margin-small-right">
           <label>Atividade</label>
+          
           <Select
-            disabled={!edit}
-            className="uk-width-1-1"
-            value={data?.activityId}
-            onChange={(val) => {
-              setData({
-                ...data,
-                activityId: val,
-                duration: actTypes?.find((item) => item?.id === val)?.duration,
-              });
-            }}
-          >
-            {actTypes?.length > 0 &&
-              actTypes.map((type) => (
-                <Option value={type?.id}>{type?.description}</Option>
-              ))}
-          </Select>
+  disabled={!edit}
+  className="uk-width-1-1"
+  value={data?.activityId}
+  showSearch
+  optionFilterProp="children"
+  onChange={(val) => {
+    setData({
+      ...data,
+      activityId: val,
+      duration: actTypes?.find((item) => item?.id === val)?.duration,
+    });
+  }}
+  filterOption={(input, option) =>
+    (option?.children as string)?.toLowerCase().includes(input.toLowerCase())
+  }
+>
+  {actTypes?.length > 0 &&
+    actTypes.map((type) => (
+      <Option key={type?.id} value={type?.id}>
+        {type?.description}
+      </Option>
+    ))}
+</Select>
         </div>
       </section>
       <section className="uk-flex uk-flex-between uk-margin-small-top">
         <div className="uk-width-1-2 uk-margin-small-right">
           <label>Data e hora</label>
           <DatePicker
-            slotProps={{ textField: { variant: "standard" } }}
-            disabled={!edit}
-            className="uk-width-1-1"
-            format="DD/MM/YYYY - HH:mm"
-            showTime
-            value={data?.executionDate}
-            onChange={(val) => setData({ ...data, executionDate: val })}
-          />
+  disabled={!edit}
+  className="uk-width-1-1"
+  format="DD/MM/YYYY - HH:mm"
+  picker="date"
+  showTime={{
+    defaultValue: data?.executionDate ? moment(data.executionDate) : moment().startOf('day'),
+  }}
+  value={data?.executionDate ? moment(data.executionDate) : null}
+  onChange={(val) => {
+    setData({
+      ...data,
+      executionDate: val,
+    });
+  }}
+/>
         </div>
         <div className="uk-width-1-3">
           <label>Duração (Min.)</label>

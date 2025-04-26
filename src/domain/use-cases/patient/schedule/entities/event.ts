@@ -5,6 +5,7 @@ export type Event = {
   start: string;
   type?: "working" | "unavailable" | "schedule";
   event: {
+    financesExpired?: number;
     attendances?: {
       id: number;
       scheduleService: {

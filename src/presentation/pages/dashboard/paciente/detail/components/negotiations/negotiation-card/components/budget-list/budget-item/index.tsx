@@ -18,7 +18,6 @@ import { AddBudgetNew } from "@/presentation";
 import { budgetStatusFormatter } from "@/OLD/components/Budget";
 import AddPaymentPreview from "@/OLD/components/Budget/Actions/add-payment-preview";
 
-
 export function BudgetItem({
   budget,
   tutors,
@@ -71,7 +70,6 @@ export function BudgetItem({
                   }
                 />
               )}
-
             </div>
 
             <div>Desconto</div>
@@ -79,36 +77,37 @@ export function BudgetItem({
           </h3>
 
           {budget?.items?.map((item) => (
-              <div key={item.id} className="content_budget">
-                <div>
-                  {item.quantity}x{" "}
-                  {(item?.productVariation?.product.description +
-                    (item?.departmentItems && item?.departmentItems.length > 0
-                      ? " - " +
-                        item?.departmentItems?.map(
-                          (item) => item.department_item_description
-                        )
-                      : ""))}
-                </div>
-
-                <div>
-                  {item.discount_value
-                    ? formatNumberToCurrency(item.discount_value)
-                    : "-"}
-                </div>
-
-                <div>
-                  {item.total_value
-                    ? formatNumberToCurrency(item.total_value)
-                    : "-"}
-                </div>
+            <div key={item.id} className="content_budget">
+              <div>
+                {item.quantity}x{" "}
+                {item?.productVariation?.product.description +
+                  (item?.departmentItems && item?.departmentItems.length > 0
+                    ? " - " +
+                      item?.departmentItems?.map(
+                        (item) => item.department_item_description
+                      )
+                    : "")}
               </div>
-          ))}
 
+              <div>
+                {item.discount_value
+                  ? formatNumberToCurrency(item.discount_value)
+                  : "-"}
+              </div>
+
+              <div>
+                {item.total_value
+                  ? formatNumberToCurrency(item.total_value)
+                  : "-"}
+              </div>
+            </div>
+          ))}
 
           <div className="content_budget">
             <div className="total">Total</div>
-            <div className="-bold">{formatNumberToCurrency(budget.discount_value || 0)}</div>
+            <div className="-bold">
+              {formatNumberToCurrency(budget.discount_value || 0)}
+            </div>
             <div className="-bold">
               {formatNumberToCurrency(budget.total_value)}
             </div>
@@ -184,17 +183,27 @@ export function BudgetItem({
             className="font-20-bold"
             style={{ marginTop: 20, marginBottom: 0 }}
           >
-            <div>
-              Previsão de pagamentos{" "}
-              
-              {hasOpenedBudget && (
-                <AddPaymentPreview
-                  budgetId={budget.id}
-                  budgetTag={budget.tag}
-                  onUpdatePayment={() => {
-                    queryClient.invalidateQueries(["openNegotiations"]);
-                  }}
-                />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span>
+                Previsão de pagamentos{" "}
+                {hasOpenedBudget && (
+                  <AddPaymentPreview
+                    budgetId={budget.id}
+                    budgetTag={budget.tag}
+                    onUpdatePayment={() => {
+                      queryClient.invalidateQueries(["openNegotiations"]);
+                    }}
+                  />
+                )}
+              </span>
+
+              {!!(budget?.nonPaidValue && budget.nonPaidValue > 0) && (
+                <div
+                  className="font-14-bold"
+                  style={{ marginTop: "-5px", marginBottom: 5, width: "100%" }}
+                >
+                  Em aberto: {formatNumberToCurrency(budget.nonPaidValue)}
+                </div>
               )}
             </div>
           </h3>

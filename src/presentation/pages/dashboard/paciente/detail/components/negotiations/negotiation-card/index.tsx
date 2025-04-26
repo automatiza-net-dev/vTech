@@ -75,6 +75,14 @@ export function NegotiationCard(props: NegotiationCardProps) {
             </FormHandler>
           )}
 
+
+        </Accordion>
+
+        <Accordion title="Vendas">
+          <div className="budgets">
+            <BillsList {...props} />
+          </div>
+
           {bills?.[0]?.id && (!treatments || treatments.length === 0) && (
             <ConvertBillToTreatment
               bill={bills?.[0] as any}
@@ -97,7 +105,7 @@ export function NegotiationCard(props: NegotiationCardProps) {
           )}
 
 
-          {!hasOpenedBudget && (!documents || documents.length === 0) && (
+          {bills?.[0]?.id &&  !hasOpenedBudget && (!documents || documents.length === 0) && (
             <GerarDocumentoVenda
               bill={bills?.[0]}
               client={confirmedBudget?.client}
@@ -114,12 +122,6 @@ export function NegotiationCard(props: NegotiationCardProps) {
               }}
             />
           )}
-        </Accordion>
-
-        <Accordion title="Vendas">
-          <div className="budgets">
-            <BillsList {...props} />
-          </div>
         </Accordion>
 
         <Accordion title="Documentos">

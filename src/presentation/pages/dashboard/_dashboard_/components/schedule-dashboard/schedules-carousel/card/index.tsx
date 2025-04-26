@@ -4,7 +4,7 @@ import { HighlightText, SideBar, NextImage, Error } from "infinity-forge";
 
 import { Event } from "@/domain";
 import { IconCalendar } from "./icon";
-import { SideBarContent, useConfigurationsSystem } from "@/presentation";
+import { SideBarContent, useConfigurationsSystem, useVerifyFinanceSchedule } from "@/presentation";
 
 import * as S from "./styles";
 
@@ -19,6 +19,8 @@ export function ScheduleCard(props: Event) {
   const fullTime = timeTextStart + " - " + timeTextEnd;
 
   const isLongDescription = serviceType?.description.length > 200;
+
+  const {FinanceIcon} = useVerifyFinanceSchedule({ event: props })
 
   return (
     <Error name="ScheduleCard">
@@ -107,6 +109,8 @@ export function ScheduleCard(props: Event) {
         )}
 
         <div className="time_box">
+          <FinanceIcon />
+          
           {props.date && (
             <span className="date">
               <IconCalendar />
