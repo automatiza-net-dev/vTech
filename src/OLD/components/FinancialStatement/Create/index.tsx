@@ -250,23 +250,37 @@ export const Create = memo(function Create({ type }) {
             </div>
             <div className="uk-margin-small-right">
   <label>Data 1ª parcelaa</label>
-  <DatePicker
-    required
-    className="uk-width-1-1"
-    picker="date"
-    format="DD/MM/YYYY"
-    value={data?.expirationDate ? moment(data.expirationDate, "YYYY-MM-DD") : null}
-    onBlur={(ev) => {
-      console.log(ev, "??")
-    }}
-    onChange={(date) => {
- console.log(date, "??")
-      setData({
-        ...data,
-        expirationDate: date ? date.format("YYYY-MM-DD") : null
-      });
-    }}
-  />
+   <DatePicker
+                    className="uk-width-1-1"
+                    picker="date"
+                    format="DD/MM/YYYY"
+                    value={
+                      data?.expirationDate
+                        ? moment(data.expirationDate, "YYYY-MM-DD")
+                        : null
+                    }
+                    onBlur={(ev) => {
+                      console.log();
+                      const value = ev?.target?.value;
+                      const year = value?.split("/")?.[2];
+                      const month = value?.split("/")?.[1];
+                      const day = value?.split("/")?.[0];
+
+                      setData({
+                        ...data,
+                        expirationDate: `${year}-${month}-${day}`,
+                      });
+                    }}
+                    onChange={(date) => {
+                      const formattedDate = date
+                        ? date.format("YYYY-MM-DD")
+                        : null;
+                      setData({
+                        ...data,
+                        expirationDate: formattedDate,
+                      });
+                    }}
+                  />
 </div>
             <div className="uk-margin-right">
               <label>Documento</label>

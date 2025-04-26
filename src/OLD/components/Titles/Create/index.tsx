@@ -309,7 +309,6 @@ export default function Create({ type = "", setVisible, setReload }: any) {
                       });
                     }}
                     onChange={(date) => {
-                      // Verifique se a data é válida antes de salvar no estado
                       const formattedDate = date
                         ? date.format("YYYY-MM-DD")
                         : null;
