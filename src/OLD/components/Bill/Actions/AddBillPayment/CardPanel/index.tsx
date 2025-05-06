@@ -79,11 +79,15 @@ const CardPanel = memo(function DebitPanel({
                 }}
                 className={`uk-margin-remove uk-width-1-2 uk-box-shadow-small card-box uk-padding-small uk-text-center ${
                   formData?.flagId === flag?.flag?.id &&
-                  formData?.paymentMethodId === flag?.paymentMethodId &&
+                  formData?.paymentMethodId === flag?.paymentMethodId && formData?.acquirerId === flag?.acquirer?.id &&
                   "flag-selected"
                 }`}
               >
                 {flag?.flag?.description}
+                {flag?.acquirer?.description && <>
+                  <br />
+                  {`(${flag?.acquirer?.description})`}
+                </>}
                 <div>
                   <span className="uk-text-muted text-small" key={i}>
                     Até {flag?.max_installments}x
