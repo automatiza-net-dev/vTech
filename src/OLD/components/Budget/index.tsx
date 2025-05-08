@@ -137,7 +137,7 @@ function Budgets() {
   const { unit } = useSystem()
   const { type } = useConfigurationsSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
   const { getWord } = useDictionary();
 
   const columns =

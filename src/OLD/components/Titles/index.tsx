@@ -82,7 +82,7 @@ export default function Titles({ type }: any) {
   const { unit } = useSystem()
   const { createToast } = useToast();
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   const listTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}00`

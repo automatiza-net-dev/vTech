@@ -31,7 +31,7 @@ function TitlesForm({
 
   const { unit } = useSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   const editFieldsPermission = (title) =>
     usePermission(`${accessControlTitles(title)}02`);

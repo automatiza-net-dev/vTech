@@ -11,7 +11,7 @@ export type SystemUser = {
       businessUnits: {
         reviewer?: "N" | "S" | "O";
         generate_bill_documents?: boolean;
-        internalCode?: boolean;
+        internal_code?: boolean;
         alter_prices?: boolean;
         requires_client_document?: boolean;
         controls_deposit?: boolean;

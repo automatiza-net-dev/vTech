@@ -58,7 +58,7 @@ export function AddBudgetNew({
 
   const userIsReviewer = unit?.configs?.businessUnits?.reviewer !== "N";
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
   const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(

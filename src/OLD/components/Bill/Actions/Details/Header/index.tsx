@@ -30,7 +30,7 @@ export default function Header({
 
   const { unit } = useSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
 

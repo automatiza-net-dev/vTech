@@ -67,7 +67,7 @@ export function AddSale({
 
   const { unit } = useSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
   const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(

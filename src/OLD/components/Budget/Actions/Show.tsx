@@ -239,7 +239,7 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
     });
   }, [budget]);
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
   const imprimirCompleto = useReactToPrint({ contentRef: componentRef });
 
   return (

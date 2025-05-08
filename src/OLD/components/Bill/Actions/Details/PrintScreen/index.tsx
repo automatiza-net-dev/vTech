@@ -19,7 +19,7 @@ export default function PrintScreen({ bill }: { bill: Bill }) {
   });
 
   const { unit } = useSystem();
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   return (
     <S.PrintScreen>

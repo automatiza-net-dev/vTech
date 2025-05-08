@@ -93,7 +93,7 @@ export default function Bills() {
 
   const { unit } = useSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   return (
     <PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
