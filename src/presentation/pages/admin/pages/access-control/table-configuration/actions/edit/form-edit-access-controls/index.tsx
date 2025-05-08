@@ -17,7 +17,7 @@ import { IFormEditAccessControlsProps } from "./interfaces";
 import * as S from "./styles";
 
 export function FormEditAccessControls({
-  modal,
+ 
   setModal,
   controllerRole,
 }: IFormEditAccessControlsProps) {
@@ -26,11 +26,6 @@ export function FormEditAccessControls({
   const { data, isFetching } = useAccessControls({ id: controllerRole?.id });
 
   return (
-    <Modal
-      onClose={() => setModal(false)}
-      open={modal}
-      styles={{ maxWidth: "900px", width: "100%" }}
-    >
       <S.EditAccessControls>
         {isFetching ? (
           <></>
@@ -41,35 +36,14 @@ export function FormEditAccessControls({
             cleanFieldsOnSubmit={false}
             button={{ text: "Salvar" }}
             onSucess={async (data) => {
+
               await container
                 .get<RemoteControllerRole>(adminTypes.RemoteControllerRole)
                 .update({
-                  ...data.rolesControllerSearch,
-                  profileAccessIdList: data?.profileAccessIdList?.map((item) =>
-                    Number(item)
-                  ),
-                  externalAccess: !!data?.rolesControllerSearch?.externalAccess,
+                  ...data,
                   id: controllerRole?.id,
-                  profiles: undefined,
                 });
 
-              await container
-                .get<RemoteUpdateDepartaments>(
-                  adminTypes.RemoteUpdateDepartaments
-                )
-                .update({
-                  roleId: controllerRole?.id,
-                  profileAccessIdList: data?.profileAccessIdList?.map((item) =>
-                    Number(item)
-                  ),
-                });
-
-              await container
-                .get<RemoteAccessControls>(adminTypes.RemoteAccessControls)
-                .update({
-                  id: String(controllerRole?.id),
-                  roles: data?.data,
-                });
 
               await refetch("RemoteLoadAllControllerRoles");
               await refetch(
@@ -94,6 +68,6 @@ export function FormEditAccessControls({
           </FormHandler>
         )}
       </S.EditAccessControls>
-    </Modal>
+  
   );
 }

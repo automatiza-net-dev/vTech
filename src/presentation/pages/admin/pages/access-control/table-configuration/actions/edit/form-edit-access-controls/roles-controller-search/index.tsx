@@ -6,7 +6,7 @@ export function RolesControllerSearch() {
 
   return (
     <S.RolesControllerSearch>
-      <Input name="name" label="Descrição" />
+      <Input name="name" label="Descrição" onChangeMode="blur"/>
 
       <div className="switchs">
         <InputSwitch   design="checkbox" name="active" label="Ativo" />

@@ -13,7 +13,7 @@ export class RemoteAccessControls implements domain.LoadAccessControls, domain.U
 
   async load(params: domain.LoadAccessControls.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make("roles/metadata/" + params.id),
+      url: this.makeApiURL.make(params?.id ? ("roles/metadata/" + params.id) : "roles/schematics"),
       method: "get",
     });
 

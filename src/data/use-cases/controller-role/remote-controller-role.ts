@@ -18,7 +18,7 @@ export class RemoteControllerRole
   private getUrl(path: string) {
     const base = this.makeApiURL.make("");
     const hasAdmin = base.includes("admin");
-    return this.makeApiURL.make(hasAdmin ? `roles/controller/${path}` : `roles/${path}`);
+    return this.makeApiURL.make(hasAdmin ? `roles/controller/${path}` : path ? `roles/${path}` : "roles");
   }
 
   async loadAll() {
@@ -41,8 +41,8 @@ export class RemoteControllerRole
 
   async update(params: domain.UpdateControllerRole.Params) {
     const response = await this.httpClient.request({
-      url: this.getUrl(String(params.id)),
-      method: "put",
+      url: this.getUrl(params.id ? String(params.id) : ""),
+      method: params.id ? "put" : "post",
       body: params,
     });
 

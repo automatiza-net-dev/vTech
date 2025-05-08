@@ -1,18 +1,19 @@
-import { Table } from "infinity-forge";
+import { Button, Table } from "infinity-forge";
 
 import { useRolesControllers } from "@/presentation";
 
 import { tableConfiguration } from "./table-configuration";
 
 import * as S from "./styles";
+import { Edit } from "./table-configuration/actions/edit";
 
 export function AccessControlsPage() {
   const { data, isFetching } = useRolesControllers();
 
   return (
     <S.ListUser>
-      <h2>Controles de acesso</h2>
 
+      <Edit  />
       <Table
         configs={{
           tableData: data || [],

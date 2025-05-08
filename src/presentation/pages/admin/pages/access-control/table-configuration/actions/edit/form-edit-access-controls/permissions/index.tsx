@@ -6,7 +6,7 @@ import { LoadRolePermissions, LoadRolesControllerSearch } from "@/domain";
 import * as S from "./styles";
 
 export function Permissions() {
-  const { values } = useFormikContext<LoadRolesControllerSearch.Model>();
+  const { values , setFieldValue} = useFormikContext<LoadRolesControllerSearch.Model>();
 
   return (
     <S.Permissions>
@@ -36,6 +36,7 @@ export function Permissions() {
                       <InputSwitch
                         name={`screens.${index}.permissions.${indexPermission}.active`}
                         label={permission?.description}
+                        onChangeInput={(value) => setFieldValue(`screens.${index}.permissions.${indexPermission}.status`, value)}
                       />
                     </div>
                   );
