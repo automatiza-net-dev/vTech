@@ -17,6 +17,7 @@ import {
   useLoadTutor,
   useConfigurationsSystem,
   useSystem,
+  usePermission,
 } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
@@ -38,6 +39,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
   const { unit } = useSystem();
   const { createToast } = useToast();
+  const hasTag = usePermission("TUT04");
   const { type } = useConfigurationsSystem();
   const { data, isFetching, mutate } = useLoadTutor(tutorId);
 
@@ -153,6 +155,8 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
               <div className="row">
                 <Input name="tags" label="Tag / Observação" />
+
+              {tutorId &&  <Input name="tag" label="Código" disabled={!hasTag}  />}
 
                 {type !== "Vet" && (
                   <>
