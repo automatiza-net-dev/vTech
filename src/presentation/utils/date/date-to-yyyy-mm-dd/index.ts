@@ -11,3 +11,15 @@ export function DateToYYYYMMDD(date: Date) {
 
   return formattedDate;
 }
+
+
+export function DateToYYYYMMDDSchedule(date: Date) {
+  if (!date || !(date instanceof Date)) {
+    return null;
+  }
+
+  const formattedDate = moment(date?.toISOString())
+    .format("YYYY-MM-DD");
+
+  return formattedDate;
+}

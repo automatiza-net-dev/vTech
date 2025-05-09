@@ -8,6 +8,7 @@ import {
   DateToYYYYMMDD,
   useLoadAllSchedulesUser,
   SchedulingContextProvider,
+  DateToYYYYMMDDSchedule,
 } from "@/presentation";
 
 import {
@@ -30,7 +31,7 @@ function Scheduling() {
     (state) => state.listCancelledEvents
   );
 
-  const dateFormatted = DateToYYYYMMDD(selectedDate || new Date()) || "";
+  const dateFormatted = DateToYYYYMMDDSchedule(selectedDate || new Date()) || "";
 
   const { data, isFetching } = useLoadAllSchedulesUser({
     to: dateFormatted,
