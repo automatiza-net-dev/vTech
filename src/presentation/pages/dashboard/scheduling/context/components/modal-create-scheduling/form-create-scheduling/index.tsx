@@ -6,7 +6,11 @@ import {
   InputDatePicker,
 } from "infinity-forge";
 
-import { useScheduling, useConfigurationsSystem, useSystem } from "@/presentation";
+import {
+  useScheduling,
+  useConfigurationsSystem,
+  useSystem,
+} from "@/presentation";
 
 import {
   SelectServices,
@@ -16,15 +20,42 @@ import {
 import { useSubmitSchedule } from "./handleSubmit";
 
 import * as S from "./styles";
+import { ScheduleAuthorization } from "./components/schedule-authorization";
+import { useScheduleAuthorization } from "./components/schedule-authorization/hook";
+
+import * as yup from "yup";
 
 export function FormCreateScheduling() {
-  const {unit} = useSystem()
-  const {type} = useConfigurationsSystem();
+  const { unit } = useSystem();
+  const { type } = useConfigurationsSystem();
 
   const { submit, scheduleUsers } = useSubmitSchedule();
   const createSchedulingArgs = useScheduling(
     (state) => state.createSchedulingArgs
   );
+
+  const patientId =
+    type !== "Vet"
+      ? [
+          createSchedulingArgs?.event?.event?.patient?.id ||
+            createSchedulingArgs?.id,
+        ]
+      : type === "Vet"
+      ? createSchedulingArgs?.id
+        ? [createSchedulingArgs?.id]
+        : []
+      : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
+      ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
+      : [];
+
+  const holderId =
+    type === "Vet"
+      ? createSchedulingArgs?.event?.event?.holder?.id
+        ? [createSchedulingArgs.event.event.holder.id]
+        : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
+        ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.id]
+        : []
+      : undefined;
 
   const initialData = {
     userId: createSchedulingArgs?.scheduleUser?.id
@@ -34,14 +65,7 @@ export function FormCreateScheduling() {
     scheduleServiceTypeId: createSchedulingArgs?.event?.event?.serviceType
       ? [createSchedulingArgs.event.event.serviceType.id]
       : [],
-    holderId:
-      type === "Vet"
-        ? createSchedulingArgs?.event?.event?.holder?.id
-          ? [createSchedulingArgs.event.event.holder.id]
-          : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
-          ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.id]
-          : []
-        : undefined,
+    holderId,
     holderName:
       type === "Vet"
         ? createSchedulingArgs?.event?.event?.holder?.name
@@ -56,19 +80,7 @@ export function FormCreateScheduling() {
       hour12: false,
     }),
     date: createSchedulingArgs?.date,
-    patientId:
-      type !== "Vet"
-        ? [
-            createSchedulingArgs?.event?.event?.patient?.id ||
-              createSchedulingArgs?.id,
-          ]
-        : type === "Vet"
-        ? createSchedulingArgs?.id
-          ? [createSchedulingArgs?.id]
-          : []
-        : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
-        ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
-        : [],
+    patientId,
     patientName:
       type !== "Vet"
         ? [
@@ -87,6 +99,15 @@ export function FormCreateScheduling() {
     executions: [],
   };
 
+  const { data, temFinancasEmAberto } = useScheduleAuthorization({
+    patientId:
+      createSchedulingArgs?.type !== "create"
+        ? ""
+        : type === "Vet"
+        ? holderId
+        : patientId,
+  });
+
   const users = scheduleUsers?.map((user) => ({
     label: user.name,
     value: user.id,
@@ -101,6 +122,25 @@ export function FormCreateScheduling() {
         initialData={initialData}
         cleanFieldsOnSubmit={false}
         disableEnterKeySubmitForm
+        schema={
+          temFinancasEmAberto
+            ? {
+                userEmail: yup.string().required("Campo requerido"),
+                userPwd: yup.string().required("Campo requerido"),
+              }
+            : {}
+        }
+        customAction={
+          temFinancasEmAberto
+            ? {
+                Component: () => (
+                  <ScheduleAuthorization
+                    value={data?.["Valores em Atraso"] || 0}
+                  />
+                ),
+              }
+            : undefined
+        }
       >
         <div className="top">
           <h2 className="font-18-bold">
@@ -128,7 +168,9 @@ export function FormCreateScheduling() {
             <Input
               type="number"
               name="duration"
-              readOnly={!unit?.configs?.schedules?.allow_change_schedule_duration}
+              readOnly={
+                !unit?.configs?.schedules?.allow_change_schedule_duration
+              }
               label="Duração consulta (minutos)"
             />
           </div>

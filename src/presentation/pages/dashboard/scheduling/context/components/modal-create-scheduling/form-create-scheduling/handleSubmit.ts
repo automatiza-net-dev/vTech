@@ -92,6 +92,8 @@ export function useSubmitSchedule() {
     }
 
     const payload = {
+      userEmail: data?.userEmail,
+      userPwd: data?.userPwd,
       executions: data?.executions,
       endHour: meridianEndHour,
       startHour: meridianStartHour,

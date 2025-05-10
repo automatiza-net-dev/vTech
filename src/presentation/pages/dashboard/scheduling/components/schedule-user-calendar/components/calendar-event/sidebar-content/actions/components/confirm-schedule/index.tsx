@@ -10,6 +10,7 @@ import { PermissionItem, useLoadAllScheduleStatuses } from "@/presentation";
 import { ActionSchedule } from "../../interface";
 
 import * as S from "./styles";
+import { useModalAuthorization } from "../modal-authorization";
 
 export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
   const [showForm, setShowForm] = useState(false);
@@ -17,11 +18,12 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  async function handleSuccess(data) {
+  const { ModalAuthorization, executeVerification } = useModalAuthorization({ event })
+
+  async function handleSucess(data) {
     const statusNotConfirmedId = scheduleStatuses.data?.find(
       (status) => status.type === "AN"
     )?.id;
-
     const statusId =
       scheduleStatuses.data?.find((status) => status.type === "AC")?.id || "";
 
@@ -31,23 +33,18 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
       scheduleId: event.event.id,
       statusId: statusNotConfirmedId || "",
     };
-
     try {
       await container
         .get<RemoteSchedule>(patientTypes.RemoteSchedule)
         .confirm(payload);
-
       await container
         .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
         .change({
           scheduleId: event.event.id,
           statusId,
         });
-
       onExecuteAction && onExecuteAction();
-
       createToast({ message: "Agendamento confirmado!", status: "success" });
-
       setShowForm(false);
     } catch (e: any) {
       if (e?.error?.message) {
@@ -59,6 +56,8 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
   return (
     <PermissionItem hash="AGE05">
       <S.ConfirmSchedule>
+        {ModalAuthorization}
+
         <button
           className="reset-button"
           type="button"
@@ -72,7 +71,7 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
         {showForm && (
           <FormHandler
             button={{ text: "Confirmar" }}
-            onSucess={handleSuccess}
+            onSucess={async (formData) => executeVerification({ formData, handleSucess })}
             initialData={{ contactDate: moment().format("YYYY-MM-DDTHH:mm") }}
           >
             <Input type="datetime-local" name="contactDate" />

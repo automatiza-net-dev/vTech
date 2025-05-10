@@ -2,14 +2,14 @@ import { Event } from "@/domain";
 import { useSystem } from "@/presentation";
 import { formatNumberToCurrency, Tooltip } from "infinity-forge";
 
-export function useVerifyFinanceSchedule({ event }: { event: Event }) {
+export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   const { unit } = useSystem();
 
   const financesExpired = event?.event?.financesExpired || 0;
-  const hasFinancesShedules = unit?.configs.schedules?.show_finances_schedules;
+  const configsHasShowFinancesSchedules = unit?.configs.schedules?.show_finances_schedules;
 
   const disableFinanceSchedule =
-    !hasFinancesShedules || !financesExpired || financesExpired === 0;
+    !configsHasShowFinancesSchedules || !financesExpired || financesExpired === 0;
 
   function FinanceIcon() {
     if (disableFinanceSchedule) {
@@ -49,5 +49,5 @@ export function useVerifyFinanceSchedule({ event }: { event: Event }) {
     );
   }
 
-  return { disableFinanceSchedule, FinanceIcon, financesExpired };
+  return { configsHasShowFinancesSchedules, disableFinanceSchedule, FinanceIcon, financesExpired };
 }
