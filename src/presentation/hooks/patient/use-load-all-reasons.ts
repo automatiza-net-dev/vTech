@@ -1,7 +1,6 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { LoadAllReasons } from "@/domain";
-import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
 
 export function useLoadAllReasons(type: LoadAllReasons.Params["type"]) {
@@ -16,6 +15,6 @@ export function useLoadAllReasons(type: LoadAllReasons.Params["type"]) {
   return useQuery({
     queryKey: ["RemoteLoadAllReasons", type],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }
