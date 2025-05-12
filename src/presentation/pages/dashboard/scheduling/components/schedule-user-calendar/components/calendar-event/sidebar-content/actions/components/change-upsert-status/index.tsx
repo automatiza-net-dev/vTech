@@ -62,6 +62,8 @@ export function ChangeUpsertStatusAction({
 
         {showForm && (
           <FormHandler
+            cleanFieldsOnSubmit={false}
+            disableEnterKeySubmitForm
             button={{ text: "Alterar Status" }}
             onSucess={async (formData) => {
               const reason = data?.find(
