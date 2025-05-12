@@ -9,6 +9,16 @@ export const GlobalStyle = createGlobalStyle<any>`
   z-index: 1050 !important;
 }
 
+.arrows {
+    button:last-child {
+
+        svg {
+fill: #707070 !important;
+        width: 10.5px !important;
+        }
+    }
+}
+
 label {
     font-size: 14px !important;
 }
