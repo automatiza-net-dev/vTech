@@ -35,7 +35,7 @@
         "name": "next"
       }
     ],
-    "allowJs": true
+    "allowJs": false
   },
   "include": [
     "src"
@@ -44,6 +44,7 @@
     "node_modules",
     "dist",
     "build",
-    ".next"
+    ".next",
+    "./src/OLD"
   ]
 }
