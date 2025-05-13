@@ -9,6 +9,18 @@ export const GlobalStyle = createGlobalStyle<any>`
   z-index: 1050 !important;
 }
 
+.table_infinity_forge {
+    .top-actions {
+        .right {
+            width: 130px !important;
+        }
+        form > div {
+            border: 0;
+            padding: 0;
+        }
+    }
+}
+
 .arrows {
     button:last-child {
 

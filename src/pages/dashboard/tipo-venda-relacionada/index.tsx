@@ -4,6 +4,7 @@ import {
   useTable,
   useToast,
   BadRequestError,
+  useFiltersTable,
 } from "infinity-forge";
 
 import {
@@ -34,10 +35,27 @@ function Page() {
 
   const economicGroupId = unit?.economicGroup?.id;
 
+  const { filtersObject } = useFiltersTable();
+
   const { data, isFetching, mutate } = useQuery({
-    queryKey: ["bill-related-types"],
+    queryKey: ["bill-related-types", JSON.stringify(filtersObject)],
     queryFn: async () => {
-      const response = await api({ url: "bill-related-types", method: "get" });
+      console.log(filtersObject, "@@")
+      const active =
+       filtersObject?.active 
+          ? filtersObject?.active === "true"
+            ? true
+            : false
+          : undefined;
+
+      const response = await api({
+        url: "bill-related-types",
+        method: "get",
+        body: {
+          description: filtersObject?.description,
+          active,
+        },
+      });
 
       return response as { id: string; description: string; active: boolean }[];
     },
@@ -159,6 +177,26 @@ function Page() {
       tableData: data || [],
       errorMessage: "Não há tipo de venda relacionada cadastrada",
       isLoading: isFetching,
+      customFilters: [
+        {
+          InputComponent: "Input",
+          name: "description",
+          placeholder: "Digite a descrição",
+          type: "text",
+          onChangeMode: "blur"
+        },
+        {
+          InputComponent: "Select",
+          name: "active",
+          onlyOneValue: true,
+          placeholder: "Seleciona o Status",
+          options: [
+            { label: "Todos", value: "" },
+            { label: "Ativo", value: "true" },
+            { label: "Inativo", value: "false" },
+          ],
+        },
+      ],
     },
   });
 
