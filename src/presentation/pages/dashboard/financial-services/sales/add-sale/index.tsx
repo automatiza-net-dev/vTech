@@ -261,7 +261,7 @@ export function AddSale({
           
           <Input label="Observação" name="additionalInformation" />
 
-          {hasRelatedBills && bill?.data?.origin_bill_id && (
+          {hasRelatedBills && billId && (
             <Select
               name="billRelatedTypeId"
               label="Tipo Venda Relacionada"
