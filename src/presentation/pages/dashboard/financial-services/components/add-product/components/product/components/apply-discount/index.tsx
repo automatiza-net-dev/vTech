@@ -33,7 +33,7 @@ export function ApplyDiscount() {
           />
         </div>
 
-        <button
+        <Button
           type="button"
           onClick={() => {
             const cart = values?.cart ?? [];
@@ -105,9 +105,9 @@ export function ApplyDiscount() {
               setFieldValue("cart", updatedCart);
             }
           }}
-        >
-          Aplicar
-        </button>
+          text="Aplicar"
+        />
+       
       </div>
     </S.ApplyDiscount>
   );

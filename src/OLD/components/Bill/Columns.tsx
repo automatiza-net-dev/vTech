@@ -13,7 +13,7 @@ export const Columns = (hasInternalCode) => [
     title: "Código Interno",
     dataIndex: "internalCode",
     key: "internalCode",
-  }: {},
+  }: undefined,
   {
     title: "Cliente",
     dataIndex: "client",
@@ -39,7 +39,13 @@ export const Columns = (hasInternalCode) => [
     dataIndex: "missingValue",
     key: "missingValue",
   },
+   
   {
+    title: "Tipo Venda Relacionada",
+    dataIndex: "billRelatedTypeDescription",
+    key: "billRelatedTypeDescription",
+  },
+   {
     title: "Status",
     dataIndex: "status",
     key: "status",
@@ -54,7 +60,7 @@ export const Columns = (hasInternalCode) => [
     dataIndex: "actions",
     key: "actions",
   },
-];
+].filter(Boolean);
 
 export const LiftColumns =  (hasInternalCode) => [
   {

@@ -9,6 +9,8 @@ import moment from "moment";
 
 import { MdOutlineClear } from "react-icons/md";
 
+import {useQuery, api} from "infinity-forge"
+
 import { Input as AntInput, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -46,6 +48,7 @@ export default function Bills() {
     data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
 
     return data.map((bill) => {
+      console.log(bill, "@@@@@")
       return {
         id: bill?.id,
         internalCode: bill?.internalCode,
@@ -56,8 +59,9 @@ export default function Bills() {
         patient: bill.patient?.name ?? "-",
         user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
         total: currencyFormatter(bill?.total_value),
-        status: billStatusFormatter(bill, setReload, visible2, setVisible2),
+        status: billStatusFormatter(bill, setReload, visible2, setVisible2) || "-",
         missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
+        billRelatedTypeDescription: bill?.bill_related_type?.description,
         docActions: (
           <ModalListagemDocumentosVenda
             bill={bill}
@@ -94,6 +98,23 @@ export default function Bills() {
   const { unit } = useSystem()
 
   const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
+
+    const billRelatedTypes = useQuery({
+      queryKey: ["bill-related-types"],
+      queryFn: async () => {
+        const active = true;
+  
+        const response = await api({
+          url: "bill-related-types",
+          method: "get",
+          body: {
+            active: true,
+          },
+        });
+  
+        return response as { id: string; description: string; active: boolean }[];
+      },
+    });
 
   return (
     <PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
@@ -211,6 +232,27 @@ export default function Bills() {
                   />
                 </Input>
               )}
+
+                <Input style={{ width: "100%" }}>
+                <Label>Tipo Venda <br/> Relacionada</Label>
+                <Select
+                  allowClear
+                  defaultValue={""}
+                  className="uk-width-1-1"
+                  value={filters.billRelatedTypeId}
+                  onChange={(e) => {
+                    if (e === "all") {
+                      const newObj = { ...filters };
+                      delete newObj?.billRelatedTypeId;
+                      return setFilters(newObj);
+                    }
+                    setFilters({ ...filters, billRelatedTypeId: e });
+                  }}
+                >
+                  <Select.Option value="">Todos</Select.Option>
+                  {billRelatedTypes?.data?.map(item =>(<Select.Option value={item?.id} key={item.id}>{item?.description}</Select.Option>))}
+                </Select>
+              </Input>
 
               <Input style={{ width: "100%" }}>
                 <Label>Pendências</Label>

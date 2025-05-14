@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 export const ApplyDiscount = styled("div")`
 display: flex;
-align-items: flex-start;
+align-items: center;
 justify-content: flex-start;
 width: 100%;
 padding: 10px;
@@ -24,7 +24,7 @@ padding: 10px;
     .list-radios {
         display: flex;
         gap: 30px;
-        align-items: flex-start;
+        align-items: center;
         width: 300px;
 
         label {
@@ -32,6 +32,7 @@ padding: 10px;
             display: flex !important;
             gap: 5px;
             font-size: 12px;
+            margin-bottom: 0;
         }
 
         input {
@@ -43,6 +44,6 @@ padding: 10px;
 
     .row {
         width: 100%;
-        align-items: flex-start;
+        align-items: center;
     }
 `

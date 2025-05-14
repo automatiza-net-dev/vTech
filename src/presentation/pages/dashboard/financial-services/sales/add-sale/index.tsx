@@ -8,6 +8,9 @@ import {
   LoaderCircle,
   useAuthAdmin,
   BadRequestError,
+  Select,
+  useQuery,
+  api,
 } from "infinity-forge";
 
 import {
@@ -54,7 +57,24 @@ export function AddSale({
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
 
-  const configurationsSystem = useConfigurationsSystem()
+  const configurationsSystem = useConfigurationsSystem();
+
+  const { data } = useQuery({
+    queryKey: ["bill-related-types"],
+    queryFn: async () => {
+      const active = true;
+
+      const response = await api({
+        url: "bill-related-types",
+        method: "get",
+        body: {
+          active: true,
+        },
+      });
+
+      return response as { id: string; description: string; active: boolean }[];
+    },
+  });
 
   const internalCode = bill?.data?.internalCode;
 
@@ -65,10 +85,11 @@ export function AddSale({
   const { createToast } = useToast();
   const { user } = useAuthAdmin();
 
-  const { unit } = useSystem()
+  const { unit } = useSystem();
 
   const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
-  const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
+  const hasSyncScheduleMovements =
+    unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
     (movement) => movement.status === "Aberto"
@@ -111,6 +132,7 @@ export function AddSale({
     clientId,
     internalCode,
     patientId,
+    billRelatedTypeId: bill?.data?.billRelatedType?.id,
     patientName: patient?.data?.name || bill?.data?.patient?.name,
     clientName:
       bill?.data?.client?.name ||
@@ -176,14 +198,13 @@ export function AddSale({
         return;
       }
 
-      throw err
+      throw err;
     }
   }
 
   return (
     <S.AddSale>
       <FormHandler
-      debugMode
         isStickyButtons
         disableEnterKeySubmitForm
         button={{ text: "SALVAR" }}
@@ -211,7 +232,7 @@ export function AddSale({
             </>
           )}
 
-          {configurationsSystem.type === "Vet"  && (
+          {configurationsSystem.type === "Vet" && (
             <SelectClient
               name="financialResponsibleId"
               label="Responsável financeiro"
@@ -233,6 +254,16 @@ export function AddSale({
             <SelectSchedule />
           )}
           <Input label="Observação" name="additionalInformation" />
+
+          <Select
+            name="billRelatedTypeId"
+            label="Tipo Venda Relacionada"
+            onlyOneValue
+            options={data?.map((item) => ({
+              label: item.description,
+              value: item?.id,
+            }))}
+          />
         </div>
 
         <AddProduct />
@@ -256,5 +287,3 @@ export function AddSale({
     </S.AddSale>
   );
 }
-
-

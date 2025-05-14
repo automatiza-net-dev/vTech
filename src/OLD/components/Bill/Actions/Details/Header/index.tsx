@@ -28,19 +28,16 @@ export default function Header({
   const { tutors } = useTutor(false, false);
   const { user } = useAuthAdmin();
 
-  const { unit } = useSystem()
+  const { unit } = useSystem();
 
   const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem();
 
   return (
     <Container className="uk-margin-top">
-      <div style={{ marginTop: -40, textAlign: "right" }}>
-        <p className="font-16-regular">Status Venda: {bill?.status}</p>
-      </div>
       <section className="uk-flex uk-flex-center">
         <div className="uk-margin-small-right">
           <label>Data de venda</label>
@@ -60,6 +57,92 @@ export default function Header({
             <Input disabled value={bill?.internalCode} />
           </div>
         )}
+
+        <div className="uk-margin-small-right">
+          <label>Tipo Venda Relacionada</label>
+          <Input disabled value={bill?.billRelatedType?.description} />
+        </div>
+
+        <div className="uk-margin-small-right">
+          <label>Total Venda</label>
+          <Input disabled value={bill?.total_value} />
+        </div>
+
+        <div className="uk-margin-small-right">
+          <label>Status Venda</label>
+          <Input disabled value={bill?.status} />
+        </div>
+      </section>
+
+      <section className="uk-flex uk-flex-center">
+        <div className="uk-margin-small-right">
+          <label>Nome Cliente</label>
+          <Input disabled value={bill?.client?.name} />
+        </div>
+        {type === "Vet" && (
+          <div className="uk-margin-small-right">
+            <label>Nome paciente</label>
+            <Input disabled value={bill?.patient?.name} />
+          </div>
+        )}
+
+        <div className="uk-width-1-2">
+          <label className="uk-margin-right">Resp. financeiro</label>
+          {!changeFields?.finResponsible ? (
+            <label
+              className="uk-link"
+              onClick={() =>
+                setChangeFields((prv) => ({ ...prv, finResponsible: true }))
+              }
+            >
+              Alterar
+            </label>
+          ) : (
+            <>
+              <span
+                className="uk-link uk-margin-right"
+                onClick={submitUpdateFinResponsible}
+              >
+                Salvar
+              </span>
+              <span
+                className="uk-link"
+                onClick={() => {
+                  setChangeFields((prv) => ({ ...prv, finResponsible: false }));
+                }}
+              >
+                Cancelar
+              </span>
+            </>
+          )}
+
+          {finResponsible?.name && (
+            <FormHandler disableEnterKeySubmitForm>
+              <Select
+                disabled={!changeFields?.finResponsible}
+                controlledInitialValue={{
+                  value: tutors?.find((c) => c?.name === finResponsible?.name)
+                    ?.id,
+                }}
+                onlyOneValue
+                name="respfinanceiro"
+                options={
+                  tutors?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  })) || []
+                }
+                onChangeInput={(value) => {
+                  const tutor = tutors?.find((c) => c?.id === value);
+
+                  if (tutor && tutor?.name !== finResponsible?.name) {
+                    setFinResponsible({ name: tutor?.name, id: tutor?.id });
+                  }
+                }}
+              />
+            </FormHandler>
+          )}
+        </div>
 
         <div className="uk-margin-small-right uk-width-1-2">
           <label className="uk-margin-right">Vendedor</label>
@@ -120,74 +203,6 @@ export default function Header({
                       id: collaborator?.id,
                       name: collaborator?.name,
                     });
-                  }
-                }}
-              />
-            </FormHandler>
-          )}
-        </div>
-
-        <div className="uk-margin-small-right">
-          <label>Nome Cliente</label>
-          <Input disabled value={bill?.client?.name} />
-        </div>
-        {type === "Vet" && (
-          <div className="uk-margin-small-right">
-            <label>Nome paciente</label>
-            <Input disabled value={bill?.patient?.name} />
-          </div>
-        )}
-        <div className="uk-width-1-2">
-          <label className="uk-margin-right">Resp. financeiro</label>
-          {!changeFields?.finResponsible ? (
-            <label
-              className="uk-link"
-              onClick={() =>
-                setChangeFields((prv) => ({ ...prv, finResponsible: true }))
-              }
-            >
-              Alterar
-            </label>
-          ) : (
-            <>
-              <span
-                className="uk-link uk-margin-right"
-                onClick={submitUpdateFinResponsible}
-              >
-                Salvar
-              </span>
-              <span
-                className="uk-link"
-                onClick={() => {
-                  setChangeFields((prv) => ({ ...prv, finResponsible: false }));
-                }}
-              >
-                Cancelar
-              </span>
-            </>
-          )}
-
-          {finResponsible?.name && (
-            <FormHandler disableEnterKeySubmitForm>
-              <Select
-                disabled={!changeFields?.finResponsible}
-                controlledInitialValue={{
-                  value: tutors?.find((c) => c?.name === finResponsible?.name)
-                    ?.id,
-                }}
-                onlyOneValue
-                name="respfinanceiro"
-                options={
-                  tutors?.map((item) => ({
-                    label: item.name,
-                    value: item.id,
-                  })) || []
-                }
-                onChangeInput={(value) => {
-                  const tutor = tutors?.find((c) => c?.id === value);
-
-                  if (tutor && tutor?.name !== finResponsible?.name) {
-                    setFinResponsible({ name: tutor?.name, id: tutor?.id });
                   }
                 }}
               />
