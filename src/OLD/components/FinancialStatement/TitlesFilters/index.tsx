@@ -125,8 +125,8 @@ export default function TitlesFilters({
     },
   });
 
-  const {unit} = useSystem()
-  
+  const { unit } = useSystem();
+
   const checkingAccounts = useQuery({
     queryKey: ["chekingAccounts"],
     queryFn: async () => {
@@ -153,7 +153,7 @@ export default function TitlesFilters({
           width: "100%",
           gap: 20,
           marginBottom: 20,
-          marginTop: -50
+          marginTop: -50,
         }}
       >
         {createTitlePermission && (
@@ -185,6 +185,8 @@ export default function TitlesFilters({
             callbackResult: (formValues) => {
               setFilters((prev) => ({
                 ...prev,
+                fromAcceptDate: formValues?.fromAcceptDate,
+                toAcceptDate: formValues?.toAcceptDate,
                 order: formValues.order,
                 unit: formValues.unit,
                 groupBorderos: formValues.groupBorderos,
@@ -292,8 +294,8 @@ export default function TitlesFilters({
               }))}
               onChangeInput={(value) => {
                 setFilters((prv) => {
-                  console.log("ue", prv)
-                  return ({ ...prv, tefFlagId: value })
+                  console.log("ue", prv);
+                  return { ...prv, tefFlagId: value };
                 });
               }}
             />
@@ -310,8 +312,8 @@ export default function TitlesFilters({
               }))}
               onChangeInput={(value) => {
                 setFilters((prv) => {
-                  console.log(prv,"????")
-                  return ({ ...prv, checkingAccountId: value })
+                  console.log(prv, "????");
+                  return { ...prv, checkingAccountId: value };
                 });
               }}
             />
@@ -341,8 +343,9 @@ export default function TitlesFilters({
                 label="Tipo título"
                 onlyOneValue
                 name="type"
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Crédito", value: "CREDITO" },
                   { label: "Débito", value: "DEBITO" },
                 ]}
@@ -351,9 +354,10 @@ export default function TitlesFilters({
               <Select
                 name="status"
                 label="Situação"
+                placeholder="Todos"
                 onlyOneValue
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Aberto", value: "ABERTO" },
                   { label: "Baixado", value: "BAIXADO" },
                 ]}
@@ -363,8 +367,9 @@ export default function TitlesFilters({
             <div className="row">
               <Select
                 onlyOneValue
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Sim", value: "SIM" },
                   { label: "Não", value: "NAO" },
                 ]}
@@ -374,8 +379,9 @@ export default function TitlesFilters({
 
               <Select
                 onlyOneValue
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Sim", value: "true" },
                   { label: "Não", value: "false" },
                 ]}

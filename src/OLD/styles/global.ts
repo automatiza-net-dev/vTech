@@ -22,6 +22,14 @@ export const GlobalStyle = createGlobalStyle<any>`
 }
 
 .arrows {
+  button:first-child {
+
+        svg {
+fill: #707070 !important;
+        width: 11px !important;
+        }
+    }
+
     button:last-child {
 
         svg {

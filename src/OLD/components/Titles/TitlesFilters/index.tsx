@@ -11,7 +11,6 @@ import {
   Select,
   useQuery,
   FormHandler,
-  useAuthAdmin,
   InputDateRange,
   InputDatePicker,
 } from "infinity-forge";
@@ -153,7 +152,7 @@ export default function TitlesFilters({
           width: "100%",
           gap: 20,
           marginBottom: 20,
-          marginTop: -50
+          marginTop: -50,
         }}
       >
         {createTitlePermission && (
@@ -203,14 +202,16 @@ export default function TitlesFilters({
                 toExpiration: formValues.toExpiration,
                 fromPayment: formValues.fromPayment,
                 toPayment: formValues.toPayment,
+                fromAcceptDate: formValues.fromAcceptDate,
+                toAcceptDate: formValues.toAcceptDate,
                 competence: formValues.competence,
+                
               }));
             },
           }}
         >
           <div className="box">
             <InputDateRange
-              id="Date"
               isClearable
               enableFilter
               placeholder="DD/MM/YYYY"
@@ -219,7 +220,6 @@ export default function TitlesFilters({
             />
 
             <InputDateRange
-              id="Date"
               isClearable
               enableFilter
               placeholder="DD/MM/YYYY"
@@ -228,7 +228,6 @@ export default function TitlesFilters({
             />
 
             <InputDateRange
-              id="Date"
               isClearable
               enableFilter
               placeholder="DD/MM/YYYY"
@@ -239,12 +238,11 @@ export default function TitlesFilters({
 
           <div className="box">
             <InputDateRange
-              id="DateAccept"
               isClearable
               enableFilter
               placeholder="DD/MM/YYYY"
               label="Data aceite"
-              names={["fromAcceptDate ", "toAcceptDate"]}
+              names={["fromAcceptDate", "toAcceptDate"]}
             />
 
             <div className="row">
@@ -260,8 +258,11 @@ export default function TitlesFilters({
             </div>
 
             <div className="box">
-              <Input label="Documento" name="document" />
-              <Input label="Nota Fiscal" name="fiscalNote" />
+              {unit?.configs?.businessUnits?.internal_code && (
+                <Input label="Código Interno" name="internalCode" />
+              )}
+
+              <Input label="Historico" name="historic" />
             </div>
           </div>
 
@@ -271,6 +272,37 @@ export default function TitlesFilters({
               label="Nome do Titular"
               name="client"
               options={clientOptions}
+              isClearable
+            />
+
+            <Select
+              label="Conta corrente"
+              name="contaCorrente"
+              onlyOneValue
+              options={checkingAccounts?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              }))}
+              onChangeInput={(value) => {
+                setFilters((prv) => {
+                  console.log(prv, "????");
+                  return { ...prv, checkingAccountId: value };
+                });
+              }}
+            />
+
+            <div className="row">
+              <Input label="Documento" name="document" />
+              <Input label="Nota Fiscal" name="fiscalNote" />
+            </div>
+          </div>
+
+          <div className="box">
+            <Select
+              onlyOneValue
+              label="Plano Contas"
+              name="plan"
+              options={planOptions}
               isClearable
             />
 
@@ -292,46 +324,10 @@ export default function TitlesFilters({
               }))}
               onChangeInput={(value) => {
                 setFilters((prv) => {
-                  console.log("ue", prv)
-                  return ({ ...prv, tefFlagId: value })
+                  console.log("ue", prv);
+                  return { ...prv, tefFlagId: value };
                 });
               }}
-            />
-          </div>
-
-          <div className="box">
-            <Select
-              label="Conta corrente"
-              name="contaCorrente"
-              onlyOneValue
-              options={checkingAccounts?.data?.map((item) => ({
-                label: item?.description,
-                value: item.id,
-              }))}
-              onChangeInput={(value) => {
-                setFilters((prv) => {
-                  console.log(prv,"????")
-                  return ({ ...prv, checkingAccountId: value })
-                });
-              }}
-            />
-
-            <Select
-              onlyOneValue
-              label="Plano Contas"
-              name="plan"
-              options={planOptions}
-              isClearable
-            />
-
-            <Select
-              onlyOneValue
-              options={[
-                { label: "Sim", value: "sim" },
-                { label: "Não", value: "false" },
-              ]}
-              name="groupBorderos"
-              label="Agrupa títulos borderô"
             />
           </div>
 
@@ -393,19 +389,31 @@ export default function TitlesFilters({
       isClearable
     /> */}
 
-            <Select
-              label="Ordenar por"
-              name="order"
-              onlyOneValue
-              isClearable
-              options={[
-                { label: "Data Vencimento", value: "expiration_date" },
-                { label: "Data Emissão", value: "issue_date" },
-                { label: "Data Competência", value: "competence_date" },
-                { label: "Data Pagamento", value: "payment_date" },
-                { label: "Documento / Parcela", value: "doc" },
-              ]}
-            />
+            <div className="row">
+              <Select
+                onlyOneValue
+                options={[
+                  { label: "Sim", value: "sim" },
+                  { label: "Não", value: "false" },
+                ]}
+                name="groupBorderos"
+                label="Agrupa títulos borderô"
+              />
+
+              <Select
+                label="Ordenar por"
+                name="order"
+                onlyOneValue
+                isClearable
+                options={[
+                  { label: "Data Vencimento", value: "expiration_date" },
+                  { label: "Data Emissão", value: "issue_date" },
+                  { label: "Data Competência", value: "competence_date" },
+                  { label: "Data Pagamento", value: "payment_date" },
+                  { label: "Documento / Parcela", value: "doc" },
+                ]}
+              />
+            </div>
           </div>
         </FormHandler>
       </Container>

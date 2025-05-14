@@ -338,7 +338,7 @@ export const useFinancesBalance = (filters) => {
 
   useEffect(() => {
     fetchData();
-  }, [filters]);
+  }, [filters?.checkingAccountId]);
 
   return {
     balance,

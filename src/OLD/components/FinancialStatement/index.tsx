@@ -58,10 +58,10 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
     order: "expiration_date",
     status: "ABERTO",
     noSearch: true,
-    type: "all",
+    type: "",
     groupBorderos: "sim",
-    accept: "all",
-    reconciled: "all",
+    accept: "",
+    reconciled: "",
   });
 
   const [reload, setReload] = useState(false);

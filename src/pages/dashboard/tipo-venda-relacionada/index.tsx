@@ -40,7 +40,6 @@ function Page() {
   const { data, isFetching, mutate } = useQuery({
     queryKey: ["bill-related-types", JSON.stringify(filtersObject)],
     queryFn: async () => {
-      console.log(filtersObject, "@@")
       const active =
        filtersObject?.active 
           ? filtersObject?.active === "true"
