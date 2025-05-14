@@ -96,6 +96,7 @@ export const useReducedFinances = (filters, reload) => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
+    //AQUI que está a merda
     if (filters?.noSearch) {
       return;
     }
@@ -129,6 +130,15 @@ export const useReducedFinances = (filters, reload) => {
         competence: moment(filters?.competence)?.format("MM/YYYY"),
       };
     }
+
+    if (keys.includes("fromAcceptDate")) {
+      newObj = {
+        ...newObj,
+        fromIssue: moment(filters?.fromAcceptDate).format("YYYY/MM/DD"),
+        toIssue: moment(filters.toAcceptDate).format("YYYY/MM/DD"),
+      };
+    }
+
 
     if (keys.includes("fromIssue")) {
       newObj = {
