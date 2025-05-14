@@ -18,7 +18,7 @@ export function DateToYYYYMMDDSchedule(date: Date) {
     return null;
   }
 
-  const formattedDate = moment(date?.toISOString())
+  const formattedDate = moment(date)
     .format("YYYY-MM-DD");
 
   return formattedDate;
