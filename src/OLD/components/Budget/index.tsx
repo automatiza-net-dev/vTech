@@ -60,7 +60,7 @@ export const budgetStatusFormatter = (budget, setReload) => {
   }
 
   const statusStyles = {
-    ABERTO: <span style={{ color: "red" }}>Aberta</span>,
+    ABERTO: <span style={{ color: "red" }}>Aberto</span>,
     EXTORNADA: "Extornada",
     CONFIRMADO: "Confirmado",
     NAO_CONFIRMADO__CANCELADO: "Não confirmado - cancelado",

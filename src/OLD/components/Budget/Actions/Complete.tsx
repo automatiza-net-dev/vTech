@@ -114,10 +114,11 @@ export default function CompleteBudget({ budget, setReload = false }) {
 
   const confirmBudgetPermission = useUserHasPermission("ORC03");
   const router = useRouter();
-  const validBudget =
-    budget.status === "ABERTO" ||
+
+  
+  const validBudget = budget.status === "ABERTO" ||
     budget.status === `Orçamento em aberto` ||
-    budget.status === "Nao Aprovada";
+    budget.status === "Nao Aprovada"; //Carlos
 
   const notificationStructure = (bill) => (
     <section>
