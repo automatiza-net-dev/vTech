@@ -205,7 +205,8 @@ export default function TitlesFilters({
                 fromAcceptDate: formValues.fromAcceptDate,
                 toAcceptDate: formValues.toAcceptDate,
                 competence: formValues.competence,
-                
+                internalCode: formValues?.internalCode,
+                historic: formValues?.historic
               }));
             },
           }}
