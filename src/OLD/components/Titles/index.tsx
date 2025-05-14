@@ -50,11 +50,13 @@ export default function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     type: !type ? "all" : type === "receive" ? "CREDITO" : "DEBITO",
     order: "expiration_date",
-    status: "ABERTO",
+    status: "",
     noSearch: true,
     groupBorderos: "sim",
-    accept: "all",
-    reconciled: "all",
+    accept: "",
+    reconciled: "",
+     fromExpiration: new Date(),
+    toExpiration: new Date(),
   });
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);

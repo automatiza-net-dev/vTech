@@ -182,8 +182,8 @@ export default function TitlesFilters({
           initialData={filters}
           onChangeForm={{
             callbackResult: (formValues) => {
-              setFilters((prev) => ({
-                ...prev,
+              setFilters({
+                type: formValues?.type,
                 order: formValues.order,
                 unit: formValues.unit,
                 groupBorderos: formValues.groupBorderos,
@@ -191,6 +191,7 @@ export default function TitlesFilters({
                 status: formValues.status,
                 plan: formValues.plan,
                 accept: formValues.accept,
+                checkingAccountId: formValues?.checkingAccountId,
                 paymentMethod: formValues.paymentMethod,
                 nsu: formValues.nsu,
                 client: formValues.client,
@@ -206,8 +207,9 @@ export default function TitlesFilters({
                 toAcceptDate: formValues.toAcceptDate,
                 competence: formValues.competence,
                 internalCode: formValues?.internalCode,
-                historic: formValues?.historic
-              }));
+                historic: formValues?.historic,
+                tefFlagId: formValues?.tefFlagId,
+              });
             },
           }}
         >
@@ -278,18 +280,13 @@ export default function TitlesFilters({
 
             <Select
               label="Conta corrente"
-              name="contaCorrente"
+              name="checkingAccountId"
               onlyOneValue
+              isClearable
               options={checkingAccounts?.data?.map((item) => ({
                 label: item?.description,
                 value: item.id,
               }))}
-              onChangeInput={(value) => {
-                setFilters((prv) => {
-                  console.log(prv, "????");
-                  return { ...prv, checkingAccountId: value };
-                });
-              }}
             />
 
             <div className="row">
@@ -317,18 +314,13 @@ export default function TitlesFilters({
 
             <Select
               label="Bandeira Tef."
-              name="flagDescription"
+              name="tefFlagId"
               onlyOneValue
+              isClearable
               options={tfeFlags?.data?.map((item) => ({
                 label: item?.description,
                 value: item.id,
               }))}
-              onChangeInput={(value) => {
-                setFilters((prv) => {
-                  console.log("ue", prv);
-                  return { ...prv, tefFlagId: value };
-                });
-              }}
             />
           </div>
 
@@ -338,20 +330,22 @@ export default function TitlesFilters({
                 label="Tipo título"
                 onlyOneValue
                 disabled
+                isClearable
+                placeholder="Todos"
                 name="type"
                 options={[
-                  { label: "Todos", value: "all" },
                   { label: "Crédito", value: "CREDITO" },
                   { label: "Débito", value: "DEBITO" },
                 ]}
               />
 
               <Select
+                isClearable
                 name="status"
                 label="Situação"
                 onlyOneValue
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
                   { label: "Aberto", value: "ABERTO" },
                   { label: "Baixado", value: "BAIXADO" },
                 ]}
@@ -360,9 +354,10 @@ export default function TitlesFilters({
 
             <div className="row">
               <Select
+                isClearable
                 onlyOneValue
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
                   { label: "Sim", value: "SIM" },
                   { label: "Não", value: "NAO" },
                 ]}
@@ -372,8 +367,9 @@ export default function TitlesFilters({
 
               <Select
                 onlyOneValue
+                isClearable
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
                   { label: "Sim", value: "true" },
                   { label: "Não", value: "false" },
                 ]}
@@ -382,20 +378,13 @@ export default function TitlesFilters({
               />
             </div>
 
-            {/* <Select
-      label="Filial"
-      name="unit"
-      options={clinicOptions}
-      onlyOneValue
-      isClearable
-    /> */}
-
             <div className="row">
               <Select
                 onlyOneValue
+                isClearable
                 options={[
                   { label: "Sim", value: "sim" },
-                  { label: "Não", value: "false" },
+                  { label: "Não", value: "nao" },
                 ]}
                 name="groupBorderos"
                 label="Agrupa títulos borderô"

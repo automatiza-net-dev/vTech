@@ -56,7 +56,7 @@ export function AddBillPaymentModal({
               className="icon"
               size={20}
               onClick={() => {
-                setSelectedId(bill?.id);
+                setSelectedId?.(bill?.id);
                 setPaymentsVisible(true);
               }}
             />

@@ -117,7 +117,7 @@ export function AddBudgetNew({
       patient?.data?.name,
     cart: budgetDetail?.data?.items || [],
     sellerId: budgetDetail?.data?.seller?.id || user?.id,
-    reviewerId: budgetDetail?.data?.reviewer?.id,
+    reviewerId: budgetDetail?.data?.reviewer?.id || user?.id,
     observation: budgetDetail?.data?.observation,
     internalObservation: budgetDetail?.data?.internalObservation,
   };

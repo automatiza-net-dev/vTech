@@ -56,7 +56,9 @@ import * as XLSX from "xlsx/xlsx.mjs";
 const FinancialSteatment = memo(function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     order: "expiration_date",
-    status: "ABERTO",
+    status: "",
+    fromExpiration: new Date(),
+    toExpiration: new Date(),
     noSearch: true,
     type: "",
     groupBorderos: "sim",

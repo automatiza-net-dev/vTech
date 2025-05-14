@@ -178,13 +178,12 @@ export function BudgetItem({
           </div>
         )}
 
-        {budget?.payments && budget.payments.length > 0 && (
           <h3
             className="font-20-bold"
             style={{ marginTop: 20, marginBottom: 0 }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span>
+              <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 10 }}>
                 Previsão de pagamentos{" "}
                 {hasOpenedBudget && (
                   <AddPaymentPreview
@@ -207,7 +206,6 @@ export function BudgetItem({
               )}
             </div>
           </h3>
-        )}
 
         {budget.payments &&
           budget.payments.length > 0 &&
