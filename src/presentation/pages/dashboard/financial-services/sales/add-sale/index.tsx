@@ -54,10 +54,12 @@ export function AddSale({
   const [stockProductsOpen, setStockProductsOpen] = useState(false);
 
   const patient = useLoadPatient();
+
   const bill = useLoadBill({ id: billId });
   const dailyMovements = useLoadAllDailyMovements();
-
   const configurationsSystem = useConfigurationsSystem();
+
+  console.log(bill, "BIIIIL")
 
   const { data } = useQuery({
     queryKey: ["bill-related-types"],
@@ -88,6 +90,8 @@ export function AddSale({
   const { unit } = useSystem();
 
   const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
+  const hasRelatedBills = unit?.configs?.bills?.related_bills;
+
   const hasSyncScheduleMovements =
     unit?.configs?.schedules?.syncScheduleMovements;
 
@@ -250,20 +254,24 @@ export function AddSale({
 
         <div className="row">
           <SelectSeller />
-          {process?.env?.client === "sancla" && hasSyncScheduleMovements && (
+
+          {configurationsSystem?.type === "Vet" && hasSyncScheduleMovements && (
             <SelectSchedule />
           )}
+          
           <Input label="Observação" name="additionalInformation" />
 
-          <Select
-            name="billRelatedTypeId"
-            label="Tipo Venda Relacionada"
-            onlyOneValue
-            options={data?.map((item) => ({
-              label: item.description,
-              value: item?.id,
-            }))}
-          />
+          {hasRelatedBills && bill?.data?.origin_bill_id && (
+            <Select
+              name="billRelatedTypeId"
+              label="Tipo Venda Relacionada"
+              onlyOneValue
+              options={data?.map((item) => ({
+                label: item.description,
+                value: item?.id,
+              }))}
+            />
+          )}
         </div>
 
         <AddProduct />

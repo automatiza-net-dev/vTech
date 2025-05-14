@@ -18,6 +18,7 @@ export type SystemUser = {
       };
       bills?: {
         generate_treatment_opened_bill?: boolean;
+        related_bills?: boolean;
       }
       schedules: {
         syncScheduleMovements?: boolean;

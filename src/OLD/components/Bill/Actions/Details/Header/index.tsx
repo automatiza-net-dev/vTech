@@ -1,5 +1,7 @@
 import React from "react";
 
+import { FormHandler, Select } from "infinity-forge";
+
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -10,7 +12,6 @@ import { Container } from "./styles";
 import moment from "moment";
 
 import { useConfigurationsSystem, useSystem } from "@/presentation";
-import { FormHandler, Select, useAuthAdmin } from "infinity-forge";
 import { statusBillText } from "../../../utils/status-formater";
 
 export default function Header({
@@ -26,11 +27,11 @@ export default function Header({
 }: any) {
   const { colaborators } = useColaborators();
   const { tutors } = useTutor(false, false);
-  const { user } = useAuthAdmin();
 
   const { unit } = useSystem();
 
   const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
+  const hasRelatedBills = unit?.configs?.bills?.related_bills;
 
   const changeSellerPermission = useUserHasPermission("VEN14");
 
@@ -58,10 +59,12 @@ export default function Header({
           </div>
         )}
 
-        <div className="uk-margin-small-right">
-          <label>Tipo Venda Relacionada</label>
-          <Input disabled value={bill?.billRelatedType?.description} />
-        </div>
+        {hasRelatedBills && (
+          <div className="uk-margin-small-right">
+            <label>Tipo Venda Relacionada</label>
+            <Input disabled value={bill?.billRelatedType?.description} />
+          </div>
+        )}
 
         <div className="uk-margin-small-right">
           <label>Total Venda</label>
