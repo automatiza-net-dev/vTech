@@ -4,10 +4,8 @@ import { useQueryClient } from "react-query";
 import { Error, LoaderCircle } from "infinity-forge";
 
 import { useLoadBudget } from "./hook";
-import { authorizationFormater } from "./utils/formater";
 import { AuthorizationPaymentForm } from "@/presentation";
-
-import { AUTH_COLUMNS } from "./columns";
+import { TableItems } from "../../Bill/authorization-sell/components";
 
 import * as S from "./styles";
 
@@ -28,22 +26,6 @@ export function AuthorizationBudget({
   if (!data) {
     return <></>;
   }
-
-  const tableDataSource =
-    data?.items?.map((item: any) => ({
-      quantity: item?.quantity,
-      description: item?.productVariation?.product?.description,
-      productCode: item?.productVariation?.product?.reference_code,
-      singleRegistragionPrice: item?.sale_value,
-      singleSellingPrice: item?.unitary_value,
-      grantedDiscount: item?.discount_value,
-      maxDiscount:
-        item?.productVariation?.businessUnitProducts[0]
-          ?.maximum_discount_percentage,
-      courtesy: item?.courtesy ? "Sim" : "Não",
-      totalItem: item?.total_value,
-      authorization: authorizationFormater(item),
-    })) || [];
 
   return (
     <Error name="AuthorizationSell">
@@ -73,7 +55,9 @@ export function AuthorizationBudget({
           </div>
         </div>
 
-        <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
+        {/* <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} /> */}
+
+        <TableItems {...data as any} isBudget={true} />
 
         <AuthorizationPaymentForm
           auth={"ORC11"}

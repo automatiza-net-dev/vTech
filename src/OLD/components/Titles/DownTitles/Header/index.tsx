@@ -178,6 +178,11 @@ const Header = memo(function ({
                 })
               );
             }}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
             value={options?.newPaymentMethodId}
           >
             {paymentMethods?.length > 0 &&
@@ -217,6 +222,11 @@ const Header = memo(function ({
                 })
               );
             }}
+                 showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
             value={options?.newCheckingAccountId}
           >
             {checkingAccounts?.length > 0 &&
@@ -256,6 +266,11 @@ const Header = memo(function ({
                 })
               );
             }}
+                 showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
             value={options?.newPlanId}
           >
             {plans?.length > 0 &&
