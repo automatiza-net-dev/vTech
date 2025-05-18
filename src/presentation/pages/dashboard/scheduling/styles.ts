@@ -29,7 +29,7 @@ export const Scheduling = styled("div")`
   .top-name {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background: #6e6e6e;
     border-radius: 5px 5px 0px 0px;
     overflow: hidden;

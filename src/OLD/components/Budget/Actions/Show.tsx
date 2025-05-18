@@ -1,15 +1,12 @@
 import {
-  Tabs,
   Checkbox,
   Table,
   AutoComplete,
   Collapse,
-  Popconfirm,
 } from "antd";
 
-import { Modal, Tooltip } from "infinity-forge";
+import { formatNumberToCurrency, Modal, Tooltip } from "infinity-forge";
 
-const { TabPane } = Tabs;
 import * as React from "react";
 import { budgetStatusFormatter, currencyFormatter, dateFormatter } from "..";
 import {
@@ -17,32 +14,31 @@ import {
   useUpdateBudgetItem,
   useUpdateSellerAndReviewer,
 } from "@/OLD/hooks/useBudgets";
-import { useQueryClient } from "react-query";
+
 import {
-  useLoadPaymentsPreview,
+
   useConfigurationsSystem,
   useSystem,
 } from "@/presentation";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
-import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
 const { Panel } = Collapse;
 
 import PrintScreen from "../PrintScreen";
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import  { useReactToPrint } from "react-to-print";
 
 import { CgDetailsMore } from "react-icons/cg";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { useAuthAdmin, Button, Icon, useToast } from "infinity-forge";
-import { SystemUser } from "@/domain";
+import { useAuthAdmin, Button } from "infinity-forge";
+import { Budget } from "@/domain";
 
 import moment from "moment";
 import { AuthorizationStatusProduct } from "@/presentation";
 import { useDictionary } from "@/presentation";
 
 import * as S from "./styles";
-import { CheckIcon, CloseIcon } from "../../Bill/Actions/Details/icons";
 
 const columns = [
   {
@@ -102,10 +98,14 @@ const columns = [
 
 const mapper = (data = [], total = 0, handleFn: any) => {
   return data.map((item: any) => {
-
-    return ({
+    return {
       quantity: item.quantity,
-      description: item?.productVariation?.product?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description),
+      description:
+        item?.productVariation?.product?.description +
+        (item?.departmentItems && item?.departmentItems.length > 0
+          ? " - "
+          : "") +
+        item?.departmentItems?.map((item) => item.department_item_description),
       status: (
         <Checkbox
           checked={item.status !== "NAO_CONFIRMADO__CANCELADO"}
@@ -120,11 +120,17 @@ const mapper = (data = [], total = 0, handleFn: any) => {
       courtesy: item?.courtesy ? "Sim" : "Não",
       max_discount: item?.max_discount ? "Sim" : "Não",
       auth_data: <AuthorizationStatusProduct item={item} />,
-    })
+    };
   });
 };
 
-export default function ShowBudget({ budget, setReload }: any) {
+export default function ShowBudget({
+  budget,
+  setReload,
+}: {
+  budget?: Budget;
+  setReload: any;
+}) {
   const [visible, setVisible] = React.useState(false);
 
   const { getWord } = useDictionary();
@@ -161,9 +167,16 @@ export default function ShowBudget({ budget, setReload }: any) {
   );
 }
 
-function ModalBudgetShow({ budget, setVisible, setReload }) {
+function ModalBudgetShow({
+  budget,
+  setVisible,
+  setReload,
+}: {
+  budget?: Budget;
+  setVisible: any;
+  setReload: any;
+}) {
   const [payload, setPayload] = React.useState<any>({});
-  const [activeTab, setActiveTab] = React.useState("0");
   const [printDetails, setPrintDetails] = React.useState({
     hookEnable: false,
     origin: "show",
@@ -173,20 +186,16 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
     reviewer: false,
   });
 
-  const { data, refetch } = useCompleteBudget(budget.id, true);
+  const { data, refetch } = useCompleteBudget(budget?.id || "", true);
   const { mutate } = useUpdateBudgetItem();
   const { mutate: mutateSellerAndReviewer } = useUpdateSellerAndReviewer(
     budget?.id
   );
   const { user } = useAuthAdmin();
-  const { data: budgetPayments } = useLoadPaymentsPreview({
-    budgetId: budget.id,
-    fetch: true,
-  });
 
   const { colaborators } = useColaborators();
 
-  const componentRef = React.useRef();
+  const componentRef = React.useRef(null);
 
   const { unit } = useSystem();
   const { type } = useConfigurationsSystem();
@@ -243,416 +252,360 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
   const imprimirCompleto = useReactToPrint({ contentRef: componentRef });
 
   return (
-    <Tabs
-      defaultActiveKey="1"
-      activeKey={activeTab}
-      onChange={(key) => setActiveTab(key)}
-    >
-      <TabPane tab={"Detalhes"} key={0}>
-        <div>
-          <div
-            className="uk-flex uk-flex-between"
-            style={{ paddingBottom: "1rem" }}
-          >
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small font-14-regular">
-                Data de Criação
-              </span>
-              <span className="uk-text-default">
-                {dateFormatter(data?.budget_date)}
-              </span>
-            </div>
-
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small font-14-regular">
-                Data Validade
-              </span>
-              <span className="uk-text-default">
-                {moment(data?.expiration_date).format("DD/MM/YYYY")}
-              </span>
-            </div>
-
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small font-14-regular">
-                Finalizado em
-              </span>
-              <span className="uk-text-default">
-                {data?.finished_at ? dateFormatter(data?.finished_at) : "-"}
-              </span>
-            </div>
-
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small font-14-regular">Status</span>
-              <span className="uk-text-default">
-                {budgetStatusFormatter(data, () => {})}
-              </span>
-            </div>
-
-            {hasInternalCode && (
-              <div className="uk-flex uk-flex-column uk-width-1-1">
-                <span className="uk-text-small font-14-regular">
-                  Código interno
-                </span>
-                <span className="uk-text-default">{data?.internalCode}</span>
-              </div>
-            )}
+    <div>
+      <div>
+        <div
+          className="uk-flex uk-flex-between"
+          style={{ paddingBottom: "1rem" }}
+        >
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small font-14-regular">
+              Data de Criação
+            </span>
+            <span className="uk-text-default">
+              {dateFormatter(data?.budget_date)}
+            </span>
           </div>
-          <hr className="uk-margin-remove" />
-          <div
-            className="uk-flex uk-flex-between uk-margin-small-top"
-            style={{ paddingBottom: "1rem" }}
-          >
+
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small font-14-regular">Data Validade</span>
+            <span className="uk-text-default">
+              {moment(data?.expiration_date).format("DD/MM/YYYY")}
+            </span>
+          </div>
+
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small font-14-regular">Finalizado em</span>
+            <span className="uk-text-default">
+              {data?.finished_at ? dateFormatter(data?.finished_at) : "-"}
+            </span>
+          </div>
+
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small font-14-regular">Status</span>
+            <span className="uk-text-default">
+              {budgetStatusFormatter(data, () => {})}
+            </span>
+          </div>
+
+          {hasInternalCode && (
             <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small">Cliente</span>
+              <span className="uk-text-small font-14-regular">
+                Código interno
+              </span>
+              <span className="uk-text-default">{data?.internalCode}</span>
+            </div>
+          )}
+        </div>
+        <hr className="uk-margin-remove" />
+        <div
+          className="uk-flex uk-flex-between uk-margin-small-top"
+          style={{ paddingBottom: "1rem" }}
+        >
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small">Cliente</span>
+            <span className="uk-text-default">
+              {data?.client?.name || data?.client_name}
+            </span>
+          </div>
+
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small">CPF/CNPJ</span>
+            <span className="uk-text-default">
+              {data?.client?.tutor?.document}
+            </span>
+          </div>
+
+          {type === "Vet" && (
+            <div className="uk-flex uk-flex-column uk-width-1-1">
+              <span className="uk-text-small">Paciente</span>
               <span className="uk-text-default">
-                {data?.client?.name || data?.client_name}
+                {data?.patient?.name ?? ""}
               </span>
             </div>
+          )}
 
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small">CPF/CNPJ</span>
-              <span className="uk-text-default">
-                {data?.client?.tutor?.document}
-              </span>
-            </div>
-
-            {type === "Vet" && (
+          {type === "Vet" && (
+            <>
               <div className="uk-flex uk-flex-column uk-width-1-1">
-                <span className="uk-text-small">Paciente</span>
-                <span className="uk-text-default">
-                  {data?.patient?.name ?? ""}
-                </span>
-              </div>
-            )}
-
-            {type === "Vet" && (
-              <>
-                <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <div className="uk-flex">
-                    <span className="uk-text-small uk-margin-right">
-                      Vendedor
+                <div className="uk-flex">
+                  <span className="uk-text-small uk-margin-right">
+                    Vendedor
+                  </span>
+                  {!editFields?.seller ? (
+                    <span
+                      className="uk-link"
+                      onClick={() =>
+                        setEditFields((prv) => ({ ...prv, seller: true }))
+                      }
+                    >
+                      Alterar
                     </span>
-                    {!editFields?.seller ? (
+                  ) : (
+                    <div>
+                      <span
+                        className="uk-link uk-margin-right"
+                        onClick={() => submitReviewerAndSeller()}
+                      >
+                        Salvar
+                      </span>
                       <span
                         className="uk-link"
-                        onClick={() =>
-                          setEditFields((prv) => ({ ...prv, seller: true }))
-                        }
+                        onClick={() => {
+                          setEditFields((prv) => ({
+                            ...prv,
+                            seller: false,
+                          }));
+                          setPayload((prv) => ({
+                            ...prv,
+                            sellerId: budget?.seller?.id,
+                            sellerName: budget?.seller?.name,
+                          }));
+                        }}
                       >
-                        Alterar
+                        Cancelar
                       </span>
-                    ) : (
-                      <div>
-                        <span
-                          className="uk-link uk-margin-right"
-                          onClick={() => submitReviewerAndSeller()}
-                        >
-                          Salvar
-                        </span>
-                        <span
-                          className="uk-link"
-                          onClick={() => {
-                            setEditFields((prv) => ({
-                              ...prv,
-                              seller: false,
-                            }));
-                            setPayload((prv) => ({
-                              ...prv,
-                              sellerId: budget?.seller?.id,
-                              sellerName: budget?.seller?.name,
-                            }));
-                          }}
-                        >
-                          Cancelar
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="uk-width-1-2">
-                    <AutoComplete
-                      disabled={!editFields?.seller}
-                      className="uk-width-1-1"
-                      value={payload?.sellerName}
-                      options={colaborators?.map((collab: any) => ({
-                        ...collab,
-                        value: collab?.name,
-                      }))}
-                      onChange={(val) =>
-                        setPayload((prv) => ({ ...prv, sellerName: val }))
-                      }
-                      onSelect={(_, opt) =>
-                        setPayload((prv) => ({
-                          ...prv,
-                          sellerId: opt?.id,
-                          sellerName: opt?.value,
-                        }))
-                      }
-                      filterOption={(val, opt) =>
-                        normalizeStr(opt?.value.toUpperCase()).includes(
-                          normalizeStr(val?.toUpperCase())
-                        )
-                      }
-                    />
-                  </div>
+                    </div>
+                  )}
                 </div>
-                <div className="uk-flex uk-flex-column uk-width-1-1">
-                  {unit?.configs?.businessUnits?.reviewer &&
-                    unit?.configs?.businessUnits?.reviewer !== "N" && (
-                      <>
-                        <div className="uk-flex">
-                          <span className="uk-text-small uk-margin-right">
-                            Avaliador
-                          </span>
-                          {!editFields?.reviewer ? (
-                            <span
-                              className="uk-link"
-                              onClick={() =>
-                                setEditFields((prv) => ({
-                                  ...prv,
-                                  reviewer: true,
-                                }))
-                              }
-                            >
-                              Alterar
-                            </span>
-                          ) : (
-                            <div>
-                              <span
-                                className="uk-link uk-margin-right"
-                                onClick={() => submitReviewerAndSeller()}
-                              >
-                                Salvar
-                              </span>
-                              <span
-                                className="uk-link"
-                                onClick={() => {
-                                  setEditFields((prv) => ({
-                                    ...prv,
-                                    reviewer: false,
-                                  }));
-                                  setPayload((prv) => ({
-                                    ...prv,
-                                    reviewerName: budget?.reviewer?.name,
-                                    reviewerId: budget?.reviewer?.id,
-                                  }));
-                                }}
-                              >
-                                Cancelar
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="uk-width-1-2">
-                          <AutoComplete
-                            disabled={!editFields?.reviewer}
-                            className="uk-width-1-1"
-                            value={payload?.reviewerName}
-                            options={colaborators?.map((collab: any) => ({
-                              ...collab,
-                              value: collab?.name,
-                            }))}
-                            onChange={(val) =>
-                              setPayload((prv) => ({
-                                ...prv,
-                                reviewerName: val,
-                              }))
-                            }
-                            onSelect={(_, opt) =>
-                              setPayload((prv) => ({
-                                ...prv,
-                                reviewerId: opt?.id,
-                                reviewerName: opt?.value,
-                              }))
-                            }
-                            filterOption={(val, opt) =>
-                              normalizeStr(opt?.value.toUpperCase()).includes(
-                                normalizeStr(val?.toUpperCase())
-                              )
-                            }
-                          />
-                        </div>
-                      </>
-                    )}
-                </div>
-              </>
-            )}
-          </div>
-          <hr className="uk-margin-remove" />
-          <div
-            className="uk-flex uk-flex-between uk-margin-small-top"
-            style={{ paddingBottom: "1rem" }}
-          >
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small">Observação</span>
-              <span className="uk-text-default">
-                {data?.observation ?? "-"}
-              </span>
-            </div>
-            <div className="uk-flex uk-flex-column uk-width-1-1">
-              <span className="uk-text-small">Observação Interna</span>
-              <span className="uk-text-default">
-                {data?.internal_observation ?? "-"}
-              </span>
-            </div>
-          </div>
-          {Boolean(data?.cancelationReason) && (
-            <>
-              <hr />
-
-              <div
-                className="uk-flex uk-flex-between"
-                style={{ paddingBottom: "1rem" }}
-              >
-                <div className="uk-flex uk-flex-column uk-width-1-1">
-                  <span className="uk-text-small">Motivo</span>
-                  <span className="uk-text-default">
-                    {data?.cancelationReason.reason}
-                  </span>
-                </div>
-                {data?.status === "NAO_CONFIRMADO__CANCELADO" && (
-                  <div className="uk-flex uk-flex-column uk-width-1-1">
-                    <span className="uk-text-small">
-                      Observação cancelamento
-                    </span>
-                    <span className="uk-text-default">
-                      {data?.canceled_observation}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-          <hr className="uk-margin-remove" />
-          <div className="uk-flex uk-flex-column uk-width-1-1">
-            <span className="uk-text-small">Produtos</span>
-            <Table
-              columns={columns}
-              dataSource={mapper(data?.items, data?.total_value, handleFn)}
-              pagination={false}
-              scroll={{ y: 1000 }}
-            />
-            <div
-              className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small uk-flex-around"
-              style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-            >
-              <div className="uk-width-1-6">
-                <strong>Totais:</strong>
-              </div>
-              <div className="uk-width-1-6">
-                {data?.items.reduce(
-                  (acc, current) =>
-                    current?.status !== "NAO_CONFIRMADO__CANCELADO"
-                      ? acc + current.quantity
-                      : acc,
-                  0
-                )}
-              </div>
-              <div className="uk-width-1-6">
-                {currencyFormatter(
-                  data?.items.reduce(
-                    (acc, current) =>
-                      current?.status !== "NAO_CONFIRMADO__CANCELADO"
-                        ? acc + current.total_value + current?.discount_value
-                        : acc,
-                    0
-                  )
-                )}
-              </div>
-              <div className="uk-width-1-6">
-                {currencyFormatter(
-                  data?.items.reduce(
-                    (acc, current) =>
-                      current?.status !== "NAO_CONFIRMADO__CANCELADO"
-                        ? acc + current.discount_value
-                        : acc,
-                    0
-                  )
-                )}
-              </div>
-              <div className="uk-width-1-6">
-                {currencyFormatter(
-                  data?.items.reduce(
-                    (acc, current) =>
-                      current?.status !== "NAO_CONFIRMADO__CANCELADO"
-                        ? acc + current.total_value
-                        : acc,
-                    0
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-          <hr />
-          <footer className="uk-flex uk-flex-right uk-margin-top">
-            <div
-              className="uk-width-1-1 uk-flex uk-flex-right"
-              style={{ gap: "1rem" }}
-            >
-              <div style={{ display: "none" }}>
-                <div ref={componentRef as any}>
-                  <PrintScreen
-                    budgetData={data as any}
-                    printDetails={printDetails}
+                <div className="uk-width-1-2">
+                  <AutoComplete
+                    disabled={!editFields?.seller}
+                    className="uk-width-1-1"
+                    value={payload?.sellerName}
+                    options={colaborators?.map((collab: any) => ({
+                      ...collab,
+                      value: collab?.name,
+                    }))}
+                    onChange={(val) =>
+                      setPayload((prv) => ({ ...prv, sellerName: val }))
+                    }
+                    onSelect={(_, opt) =>
+                      setPayload((prv) => ({
+                        ...prv,
+                        sellerId: opt?.id,
+                        sellerName: opt?.value,
+                      }))
+                    }
+                    filterOption={(val, opt) =>
+                      normalizeStr(opt?.value.toUpperCase()).includes(
+                        normalizeStr(val?.toUpperCase())
+                      )
+                    }
                   />
                 </div>
               </div>
+              <div className="uk-flex uk-flex-column uk-width-1-1">
+                {unit?.configs?.businessUnits?.reviewer &&
+                  unit?.configs?.businessUnits?.reviewer !== "N" && (
+                    <>
+                      <div className="uk-flex">
+                        <span className="uk-text-small uk-margin-right">
+                          Avaliador
+                        </span>
+                        {!editFields?.reviewer ? (
+                          <span
+                            className="uk-link"
+                            onClick={() =>
+                              setEditFields((prv) => ({
+                                ...prv,
+                                reviewer: true,
+                              }))
+                            }
+                          >
+                            Alterar
+                          </span>
+                        ) : (
+                          <div>
+                            <span
+                              className="uk-link uk-margin-right"
+                              onClick={() => submitReviewerAndSeller()}
+                            >
+                              Salvar
+                            </span>
+                            <span
+                              className="uk-link"
+                              onClick={() => {
+                                setEditFields((prv) => ({
+                                  ...prv,
+                                  reviewer: false,
+                                }));
+                                setPayload((prv) => ({
+                                  ...prv,
+                                  reviewerName: budget?.reviewer?.name,
+                                  reviewerId: budget?.reviewer?.id,
+                                }));
+                              }}
+                            >
+                              Cancelar
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
-              <Button
-                onClick={() => imprimirCompleto()}
-                text="Impressão Completa"
-                onMouseOver={() =>
-                  setPrintDetails((prv) => ({
-                    ...prv,
-                    complete: true,
-                  }))
-                }
-              />
-
-              <Button
-                onClick={() => imprimirCompleto()}
-                text="Impressão Simplificada"
-                onMouseOver={() =>
-                  setPrintDetails((prv) => ({
-                    ...prv,
-                    complete: false,
-                  }))
-                }
-              />
-
-              <Button
-                text="Voltar"
-                onClick={() => {
-                  setVisible((prevState) => !prevState);
-                }}
-              />
-            </div>
-          </footer>
+                      <div className="uk-width-1-2">
+                        <AutoComplete
+                          disabled={!editFields?.reviewer}
+                          className="uk-width-1-1"
+                          value={payload?.reviewerName}
+                          options={colaborators?.map((collab: any) => ({
+                            ...collab,
+                            value: collab?.name,
+                          }))}
+                          onChange={(val) =>
+                            setPayload((prv) => ({
+                              ...prv,
+                              reviewerName: val,
+                            }))
+                          }
+                          onSelect={(_, opt) =>
+                            setPayload((prv) => ({
+                              ...prv,
+                              reviewerId: opt?.id,
+                              reviewerName: opt?.value,
+                            }))
+                          }
+                          filterOption={(val, opt) =>
+                            normalizeStr(opt?.value.toUpperCase()).includes(
+                              normalizeStr(val?.toUpperCase())
+                            )
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
+              </div>
+            </>
+          )}
         </div>
-      </TabPane>
-      <TabPane tab="Negociação" key="1">
+        <hr className="uk-margin-remove" />
+        <div
+          className="uk-flex uk-flex-between uk-margin-small-top"
+          style={{ paddingBottom: "1rem" }}
+        >
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small">Observação</span>
+            <span className="uk-text-default">{data?.observation ?? "-"}</span>
+          </div>
+          <div className="uk-flex uk-flex-column uk-width-1-1">
+            <span className="uk-text-small">Observação Interna</span>
+            <span className="uk-text-default">
+              {data?.internal_observation ?? "-"}
+            </span>
+          </div>
+        </div>
+        {Boolean(data?.cancelationReason) && (
+          <>
+            <hr />
+
+            <div
+              className="uk-flex uk-flex-between"
+              style={{ paddingBottom: "1rem" }}
+            >
+              <div className="uk-flex uk-flex-column uk-width-1-1">
+                <span className="uk-text-small">Motivo</span>
+                <span className="uk-text-default">
+                  {data?.cancelationReason.reason}
+                </span>
+              </div>
+              {data?.status === "NAO_CONFIRMADO__CANCELADO" && (
+                <div className="uk-flex uk-flex-column uk-width-1-1">
+                  <span className="uk-text-small">Observação cancelamento</span>
+                  <span className="uk-text-default">
+                    {data?.canceled_observation}
+                  </span>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        <hr className="uk-margin-remove" />
+        <div className="uk-flex uk-flex-column uk-width-1-1">
+          <span className="uk-text-small">Produtos</span>
+          <Table
+            columns={columns}
+            dataSource={mapper(data?.items, data?.total_value, handleFn)}
+            pagination={false}
+            scroll={{ y: 1000 }}
+          />
+          <div
+            className="uk-margin-top uk-flex uk-margin-small-left uk-padding-small uk-flex-around"
+            style={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+          >
+            <div className="uk-width-1-6">
+              <strong>Totais:</strong>
+            </div>
+            <div className="uk-width-1-6">
+              {data?.items.reduce(
+                (acc, current) =>
+                  current?.status !== "NAO_CONFIRMADO__CANCELADO"
+                    ? acc + current.quantity
+                    : acc,
+                0
+              )}
+            </div>
+            <div className="uk-width-1-6">
+              {currencyFormatter(
+                data?.items.reduce(
+                  (acc, current) =>
+                    current?.status !== "NAO_CONFIRMADO__CANCELADO"
+                      ? acc + current.total_value + current?.discount_value
+                      : acc,
+                  0
+                )
+              )}
+            </div>
+            <div className="uk-width-1-6">
+              {currencyFormatter(
+                data?.items.reduce(
+                  (acc, current) =>
+                    current?.status !== "NAO_CONFIRMADO__CANCELADO"
+                      ? acc + current.discount_value
+                      : acc,
+                  0
+                )
+              )}
+            </div>
+            <div className="uk-width-1-6">
+              {currencyFormatter(
+                data?.items.reduce(
+                  (acc, current) =>
+                    current?.status !== "NAO_CONFIRMADO__CANCELADO"
+                      ? acc + current.total_value
+                      : acc,
+                  0
+                )
+              )}
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
         <div>
-          {(!budgetPayments || budgetPayments.length === 0) && <p className="font-16-regular">Não existem pagamentos lançados</p>}
-          
-          {budgetPayments?.length > 0 &&
-            budgetPayments?.map((item) => (
+          {(!data?.payments || data?.payments?.length === 0) && (
+            <p className="font-16-regular">Não existem pagamentos lançados</p>
+          )}
+
+          {data?.payments &&
+            data?.payments?.length > 0 &&
+            data?.payments?.map((item) => (
               <Collapse className="uk-margin-small-top uk-width-1-1">
                 <Panel
                   key={"a"}
-                  header={`${item?.descricao_forma_pagamento} - ${
-                    item?.descricao_adquirente_tef
-                      ? item?.descricao_adquirente_tef + " - "
-                      : ""
-                  }  ${
-                    item?.descricao_bandeira_tef
-                      ? item?.descricao_bandeira_tef + " - "
-                      : ""
-                  } ${currencyFormatter(item?.valor_total)} (${
-                    item?.qtd_parcelas_bloco_pgto
-                  }x)`}
+                  header={
+                    <div key={item.id} className="payment font-16-regular">
+                      {item?.paymentMethod?.description} -{" "}
+                      {item?.tefAcquirer?.description} -{" "}
+                      {item?.tefFlag?.description} -{" "}
+                      {formatNumberToCurrency(item.total_value || 0)} (
+                      {item.installments}x)
+                    </div>
+                  }
                 >
                   <S.Status>
-                    {item?.status === "Excluido" && (
+                    {/* Ver com o carlão */}
+                    {/* {item?.status === "Excluido" && (
                       <>
                         <div className="ball" style={{ background: "red" }} />
 
@@ -674,13 +627,59 @@ function ModalBudgetShow({ budget, setVisible, setReload }) {
                           "DD/MM/YYYY"
                         )}`}</span>
                       </>
-                    )}
+                    )} */}
                   </S.Status>
                 </Panel>
               </Collapse>
             ))}
         </div>
-      </TabPane>
-    </Tabs>
+
+        <hr />
+        <footer className="uk-flex uk-flex-right uk-margin-top">
+          <div
+            className="uk-width-1-1 uk-flex uk-flex-right"
+            style={{ gap: "1rem" }}
+          >
+            <div style={{ display: "none" }}>
+              <div ref={componentRef as any}>
+                <PrintScreen
+                  budgetData={data as any}
+                  printDetails={printDetails}
+                />
+              </div>
+            </div>
+
+            <Button
+              onClick={() => imprimirCompleto()}
+              text="Impressão Completa"
+              onMouseOver={() =>
+                setPrintDetails((prv) => ({
+                  ...prv,
+                  complete: true,
+                }))
+              }
+            />
+
+            <Button
+              onClick={() => imprimirCompleto()}
+              text="Impressão Simplificada"
+              onMouseOver={() =>
+                setPrintDetails((prv) => ({
+                  ...prv,
+                  complete: false,
+                }))
+              }
+            />
+
+            <Button
+              text="Voltar"
+              onClick={() => {
+                setVisible((prevState) => !prevState);
+              }}
+            />
+          </div>
+        </footer>
+      </div>
+    </div>
   );
 }

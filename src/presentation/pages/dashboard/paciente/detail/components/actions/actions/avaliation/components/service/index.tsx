@@ -55,8 +55,8 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   const handlePrint = useReactToPrint({ contentRef: componentRef });
 
-  const {type} = useConfigurationsSystem();
   const { user } = useAuthAdmin();
+  const { type } = useConfigurationsSystem();
 
   const timeLine = attendance || props;
   const patientId = router.query.id as string;
@@ -180,12 +180,10 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           {
             action: async (data) => {
               await handleSubmit(data, () => {
-                queryClient.invalidateQueries(["LastUpdates"])
+                queryClient.invalidateQueries(["LastUpdates"]);
               });
 
-  
-                handlePrint();
-            
+              handlePrint();
             },
             props: () => ({
               text: "IMPRIMIR",
@@ -267,9 +265,13 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           )}
         </div>
 
-        {/* {type === "Vet" && (
-          <InputFile name="photos" isLocalFile multiple />
-        )} */}
+        <InputFile
+          label="Arquivos"
+          name="photos"
+          isLocalFile
+          multiple
+          isAccumalativeFile
+        />
       </FormHandler>
 
       <Modal

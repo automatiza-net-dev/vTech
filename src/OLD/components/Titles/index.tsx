@@ -55,8 +55,6 @@ export default function Titles({ type }: any) {
     groupBorderos: "sim",
     accept: "",
     reconciled: "",
-     fromExpiration: new Date(),
-    toExpiration: new Date(),
   });
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
@@ -167,7 +165,7 @@ export default function Titles({ type }: any) {
         parc: `${finance?.installment} / ${finance?.qty_installments}`,
         fiscalNote: finance?.fiscal_note || "-",
         accept: finance.accept,
-        client: finance?.client || "-",
+        client: finance?.client || finance?.historic || "-",
         issueDate: finance?.issue_date
           ? moment(finance?.issue_date).format("DD/MM/YYYY")
           : "Não informado",

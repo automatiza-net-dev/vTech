@@ -241,7 +241,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
               : finance?.qty_installments,
           fiscalNote: finance?.fiscal_note || "-",
           accept: finance.accept,
-          client: finance?.client,
+          client: finance?.client || finance?.historic || "-",
           issueDate: finance?.issue_date
             ? moment(finance?.issue_date).format("DD/MM/YYYY")
             : "-",

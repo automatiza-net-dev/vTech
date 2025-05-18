@@ -58,7 +58,7 @@ function BorderoDetails({
     setFormattedTitles(
       finances?.map((finance) => ({
         doc: finance?.document,
-        client: finance.client,
+        client: finance?.client || finance?.historic || "-",
         installments: finance?.installment,
         flag: finance?.tef_flag || "-",
         originalValue: currencyFormatter(finance?.total_value),
