@@ -264,14 +264,15 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
             />
           )}
         </div>
-
-        <InputFile
-          label="Arquivos"
-          name="photos"
-          isLocalFile
-          multiple
-          isAccumalativeFile
-        />
+        {type !== "Vet" && (
+          <InputFile
+            label="Arquivos"
+            name="photos"
+            isLocalFile
+            multiple
+            isAccumalativeFile
+          />
+        )}
       </FormHandler>
 
       <Modal

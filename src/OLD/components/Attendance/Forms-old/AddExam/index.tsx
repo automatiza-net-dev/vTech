@@ -30,6 +30,7 @@ import { MdDownload } from "react-icons/md";
 
 import FormChild from "./FormChild";
 import { useQueryClient } from "react-query";
+import { FileUploader } from "../Notes";
 
 export default function LaunchExam({
   modal,
@@ -372,51 +373,8 @@ export default function LaunchExam({
         <div>
           {fileList?.length > 0 &&
             fileList.map((item, i) => {
-              item?.attachment &&
-                timelineService
-                  .getArquivesDownload(
-                    item?.attachment.replace("/uploads/", "")
-                  )
-                  .then((res) => {
-                    const elem = document?.querySelector(
-                      `#custom-download-${i}`
-                    );
-                    if (elem) {
-                      elem.href = window.URL.createObjectURL(res.data);
-                    }
-                  });
-
               return item?.attachment ? (
-                <div style={{ marginTop: "10px" }}>
-                  <ImageUploadS3
-                    src={item.attachment}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
-
-                  <a
-                    style={{ marginRight: "20px" }}
-                    target="_blank"
-                    className="uk-link"
-                    href={item.attachment}
-                  >
-                    {item?.filename}
-                  </a>
-
-                  <FaRegTrashAlt
-                    onClick={() => {
-                      removeAttachment(item?.id);
-                    }}
-                    size={20}
-                    color="red"
-                    style={{ cursor: "pointer", marginRight: "20px" }}
-                  />
-
-                  <a download={`${item?.filename}`} id={`custom-download-${i}`}>
-                    <MdDownload size={20} />
-                  </a>
-                  <hr />
-                </div>
+               <FileUploader {...item} key={i} />
               ) : (
                 <div style={{ marginTop: "10px" }}>
                   <img

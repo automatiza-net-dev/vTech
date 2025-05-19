@@ -7,7 +7,7 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useProfile } from "@/OLD/hooks/useProfile";
-import { ImageUploadS3, useLoadPatient } from "@/presentation";
+import { ImageUploadS3, useLoadPatient, useUploadS3 } from "@/presentation";
 
 // Components
 import { Popconfirm } from "antd";
@@ -30,7 +30,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const [fileList, setFileList] = useState([]);
   const [photosOpen, setPhotosOpen] = useState(false);
 
-  const {user} = useAuthAdmin()
+  const { user } = useAuthAdmin();
 
   const patient = useLoadPatient();
   const { createToast } = useToast();
@@ -87,8 +87,6 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     fileList.forEach((item) => {
       formData.append("medias[]", item.originFileObj);
     });
-
-
 
     timelineService
       .insertObservations(formData)
@@ -285,63 +283,8 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         >
           {fileList?.length > 0 &&
             fileList.map((item, idx) => {
-              item?.url &&
-                timelineService
-                  .getArquivesDownload(item?.url.replace("/uploads/", ""))
-                  .then((res) => {
-                    const elem = document?.querySelector(
-                      `#custom-download-${idx}`
-                    );
-                    if (elem) {
-                      elem.href = window.URL.createObjectURL(res.data);
-                    }
-                  });
-
-              const extension = item?.url?.split(".")?.[1];
-
               return item?.url ? (
-                <div
-                  className="uk-flex uk-flex-between"
-                  style={{ marginTop: "10px" }}
-                >
-                  {extension !== "pdf" ? (
-                    <ImageUploadS3
-                      src={item?.url}
-                    />
-                  ) : (
-                    <div style={{ width: "70px" }}>
-                      <Icon color="#000" name="IconClip" />
-                    </div>
-                  )}
-                  <a
-                    target="_blank"
-                    className="uk-link"
-                    href={`/${item?.url}`}
-                    download={item?.filename}
-                  >
-                    {item?.filename}
-                  </a>
-                  <Popconfirm
-                    title="Deseja realmete remover este anexo?"
-                    okText="Sim"
-                    onConfirm={() => removeMedia(idx)}
-                    cancelText="Não"
-                    placement="left"
-                  >
-                    <FaRegTrashAlt
-                      size={15}
-                      color="red"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => removeMedia(idx)}
-                    />
-                    <a
-                      download={`${item?.filename}`}
-                      id={`custom-download-${idx}`}
-                    >
-                      <MdDownload size={30} />
-                    </a>
-                  </Popconfirm>
-                </div>
+                <FileUploader key={item?.url} {...item} />
               ) : (
                 <div className="uk-flex uk-flex-between uk-flex-middle">
                   <img
@@ -382,3 +325,34 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
 }
 
 export default Notes;
+
+export function FileUploader(props) {
+  const { s3 } = useUploadS3({ src: props?.url });
+
+  return (
+    <div className="uk-flex uk-flex-between" style={{ marginTop: "10px" }}>
+      <ImageUploadS3 src={s3?.view} />
+
+      <a href={s3?.view} target="_blank">{props?.filename}</a>
+
+      <Popconfirm
+        title="Deseja realmete remover este anexo?"
+        okText="Sim"
+        onConfirm={() => removeMedia(idx)}
+        cancelText="Não"
+        placement="left"
+      >
+        <FaRegTrashAlt
+          size={15}
+          color="red"
+          style={{ cursor: "pointer" }}
+          onClick={() => removeMedia(idx)}
+        />
+      </Popconfirm>
+
+      <a href={s3?.download} download target="_blank">
+        <MdDownload size={30} />
+      </a>
+    </div>
+  );
+}

@@ -21,10 +21,11 @@ export class RemoteControllerRole
     return this.makeApiURL.make(hasAdmin ? `roles/controller/${path}` : path ? `roles/${path}` : "roles");
   }
 
-  async loadAll() {
+  async loadAll(props?: any) {
     const response = await this.httpClient.request({
       url: this.getUrl(""),
       method: "get",
+      body: props
     });
 
     return response as domain.LoadAllControllerRoles.Model;

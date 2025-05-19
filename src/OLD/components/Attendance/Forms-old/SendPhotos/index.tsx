@@ -19,6 +19,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
+import { FileUploader } from "../Notes";
 
 export default function SendPhotos({
   modal,
@@ -276,40 +277,10 @@ export default function SendPhotos({
       >
         <div>
           {fileList?.map((item, idx) => {
-            item?.url &&
-              item.status !== "pending" &&
-              timelineService
-                .getArquivesDownload(item?.url.replace("/uploads/", ""))
-                .then((res) => {
-                  const elem = document?.querySelector(
-                    `#custom-download-${idx}`
-                  );
-                  elem.href = window.URL.createObjectURL(res.data);
-                })
-                .catch((err) => console.log(err, "<"));
+
 
             return item.status !== "pending" ? (
-              <p className="uk-margin-remove uk-flex uk-flex-between uk-flex-middle uk-margin-small-top">
-                <ImageUploadS3 src={item?.url} />
-              
-                <a
-                  className="uk-link"
-                  target="_blank"
-                  href={item?.url}
-                >
-                  {item?.filename}
-                </a>
-
-                <FaRegTrashAlt
-                  onClick={() => removePhoto(idx)}
-                  size={20}
-                  color="red"
-                  style={{ cursor: "pointer" }}
-                />
-                <a download={`${item?.filename}`} id={`custom-download-${idx}`}>
-                  <MdDownload size={25} />
-                </a>
-              </p>
+                   <FileUploader {...item} key={idx} />
             ) : (
               <p className="uk-margin-remove uk-flex uk-flex-between uk-flex-middle uk-margin-small-top">
                 <img
