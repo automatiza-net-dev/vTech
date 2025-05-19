@@ -16,7 +16,7 @@ export function FormCreateTutor({
   trigger,
   onSuccess,
 }: {
-  trigger?: JSX.Element;
+  trigger?: any;
   isModal: boolean;
 } & ICreateTutorFormProps) {
   const [open, setOpen] = useState(false);

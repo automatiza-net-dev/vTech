@@ -190,7 +190,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                 number: { label: "Número*" },
                 complemento: { label: "Complemento" },
                 ibge: { label: "Cód*", readOnly: true },
-              },
+              }  as any,
               {
                 bairro: { label: "Bairro*" },
                 uf: { label: "Estado*", readOnly: true },

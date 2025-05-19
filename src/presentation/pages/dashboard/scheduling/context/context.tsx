@@ -21,7 +21,7 @@ function SchedulingContextProvider({
   children,
   ...props
 }: ScheduleProviderProps) {
-  const storeRef = useRef<ScheduleStoreType>();
+  const storeRef = useRef<ScheduleStoreType>(null);
 
   if (!storeRef.current) {
     storeRef.current = scheduleStore(props);

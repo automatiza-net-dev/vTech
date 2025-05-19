@@ -1,11 +1,9 @@
 import { useRef } from "react";
 
 import { Button, Empty } from "antd";
-import * as XLSX from "xlsx/xlsx.mjs";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 import { PrintHeader } from "@/presentation";
-import { useProfile } from "@/OLD/hooks/useProfile";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Container } from "./styles";
@@ -16,22 +14,8 @@ const PrintTable = function PrintTable({
   setFilters,
   setReload,
 }: any) {
-  const { clinic } = useProfile();
 
   const componentRef = useRef<any>(null);
-
-  const handleExport = () => {
-    const formatted = reports?.map((item) => ({
-      unidade_de_negocios: item?.unit?.identification,
-    }));
-
-    let wb = XLSX.utils.book_new(),
-      ws = XLSX.utils.json_to_sheet(formatted);
-
-    XLSX.utils.book_append_sheet(wb, ws, "Pág " + "1");
-
-    XLSX.writeFile(wb, "orcamentos" + ".xlsx");
-  };
 
   const print = useReactToPrint({
     contentRef: componentRef,

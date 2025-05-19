@@ -11,7 +11,7 @@ import { Container, RowBox } from "./styles";
 import { reportsService } from "@/OLD/services/reports.service";
 
 function PrintTable({ schedules, filters, setReload, setFilters }) {
-  const componentRef = useRef();
+  const componentRef = useRef<any>(null);
 
   const { type } = useConfigurationsSystem();
 

@@ -32,9 +32,9 @@ type ActionPatient = {
   active: boolean;
   label: string;
   value: TimelineType | TimeLineEvent;
-  Icon: JSX.Element;
-  Component: (props) => JSX.Element;
-  SingleComponent: (props) => JSX.Element;
+  Icon: any;
+  Component: (props) => any;
+  SingleComponent: (props) => any;
 };
 
 export function useActionsPatient(): {

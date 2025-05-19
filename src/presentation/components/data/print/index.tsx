@@ -13,7 +13,7 @@ export function Print({
 }: {
   onBeforePrint?: () => void;
   children?: React.ReactNode;
-  PdfContent: JSX.Element;
+  PdfContent: any;
 }) {
   const { user } = useAuthAdmin();
 
