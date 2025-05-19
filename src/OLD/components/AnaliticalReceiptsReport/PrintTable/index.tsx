@@ -18,7 +18,7 @@ const PrintTable = function PrintTable({
 }: any) {
   const { clinic } = useProfile();
 
-  const componentRef = useRef();
+  const componentRef = useRef<any>(null);
 
   const handleExport = () => {
     const formatted = reports?.map((item) => ({
