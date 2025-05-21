@@ -3,7 +3,7 @@ import { useAuthAdmin } from "infinity-forge";
 import { callApiOneTime, useConfigurationsSystem } from "@/presentation";
 import { RemoteConfiguration } from "@/data";
 import { dictionaryStore } from "./store";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { container, TypesAutomatiza } from "@/container";
 
 export function useDictionary() {

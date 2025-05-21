@@ -2,7 +2,7 @@
 import React, { memo } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { Popconfirm } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { useToast } from "infinity-forge";
 

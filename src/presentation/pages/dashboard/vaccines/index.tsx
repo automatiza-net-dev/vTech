@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { useLoadAllVaccinesProtocols } from "@/presentation";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 
 import { ProtocolsTable } from "./components/protocols-table";
 

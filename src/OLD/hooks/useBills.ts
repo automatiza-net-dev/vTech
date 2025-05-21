@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import { useMutation, useQueries, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "infinity-forge";
 import api from "@/OLD/services";
 import { billService } from "@/OLD/services/bills.service";
 import moment from "moment";

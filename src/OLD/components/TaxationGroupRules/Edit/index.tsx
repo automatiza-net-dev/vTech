@@ -9,7 +9,7 @@ import { taxationGroupsService } from "@/OLD/services/taxation-group.service";
 
 // Components
 import { Button, Input, InputNumber, Modal, Select } from "antd";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 import { ICMS_CST_NAO_SIMPLES, ICMS_CST_SIMPLES } from "../data/icms_cst";
 import { IPI_CST_ENTRADA, IPI_CST_SAIDA } from "../data/ipi_cst";
 import {

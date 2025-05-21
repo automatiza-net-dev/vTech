@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 
 import { billService } from "@/OLD/services/bills.service";
 

@@ -7,7 +7,7 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
 import { Button, Input, Modal, Select, Switch } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 const { TextArea } = Input;
 const { Option } = Select;
 

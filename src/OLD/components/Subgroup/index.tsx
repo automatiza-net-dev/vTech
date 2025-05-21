@@ -15,7 +15,7 @@ import { EditTwoTone } from "@ant-design/icons";
 // Components
 import { Select, Table } from "antd";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import columns from "./Columns";
 import CreateSubgroup from "./Create";
 import DeleteSubgroup from "./Delete";

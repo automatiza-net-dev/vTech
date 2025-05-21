@@ -7,7 +7,7 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
 import { Button, Input, Select } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 
   import { Modal } from "infinity-forge"
 

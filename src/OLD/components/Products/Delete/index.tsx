@@ -10,7 +10,7 @@ import { productService } from "@/OLD/services/product.service";
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
-import { useMutation } from "react-query";
+import { useMutation } from "infinity-forge";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";

@@ -3,7 +3,7 @@ import { Popconfirm } from "antd";
 import React, { memo, useCallback } from "react";
 import { userService } from "@/OLD/services/user.service";
 import { DeleteTwoTone } from "@ant-design/icons";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 import { useToast } from "infinity-forge";
 
 export function Delete({ id, onDelete, reload, setReload }) {

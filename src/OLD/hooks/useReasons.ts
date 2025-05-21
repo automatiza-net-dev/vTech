@@ -1,5 +1,5 @@
 import { reasonService } from "@/OLD/services/reason.service";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 export const useGetAllReasons = ({ enabled, params }) => {
   return useQuery(["reasons", params], () => reasonService.getReasons(params), {

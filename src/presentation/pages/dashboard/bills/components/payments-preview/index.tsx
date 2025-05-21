@@ -2,7 +2,7 @@ import { Bill } from "@/domain";
 import { RemoteBudget } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 import { useLoadPaymentsPreview } from "@/presentation/hooks";
 
 import { Accordion, Button, useToast } from "infinity-forge";

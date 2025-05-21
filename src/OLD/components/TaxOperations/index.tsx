@@ -15,7 +15,7 @@ import { EditTwoTone } from "@ant-design/icons";
 // Components
 import { Table } from "antd";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import columns from "./Columns";

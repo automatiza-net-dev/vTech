@@ -24,7 +24,7 @@ import { AutoComplete, Select, Table, Modal } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "infinity-forge";
 import columns from "./Columns";
 import DeleteProduct from "./Delete";
 import EditProduct from "./Edit";

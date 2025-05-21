@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Core
 import { useCallback, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 
 // Services
 import api from "@/OLD/services";

@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Core
 import React, { useState, memo, useEffect, useCallback } from "react";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 
 // Services
 import { RemoteBills } from "@/data";

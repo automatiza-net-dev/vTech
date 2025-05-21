@@ -10,7 +10,7 @@ import { taxationGroupRulesService } from "@/OLD/services/taxation-group-rules.s
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 
 const DeleteTaxationGroupRule = memo(function DeleteTaxationGroupRule({
   close,

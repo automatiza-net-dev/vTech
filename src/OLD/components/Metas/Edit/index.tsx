@@ -7,7 +7,7 @@ import {
   Button as ButtonA,
 } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { EditTwoTone } from "@ant-design/icons";
 import { metasService } from "@/OLD/services/metas.service";
 import { Switch } from "antd";

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 import { Col, Row, Checkbox } from "antd";
-import { useQuery, useQueryClient, useMutation } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "infinity-forge";
 import { Button, useToast } from "infinity-forge";
 
 import { userService } from "@/OLD/services/user.service";

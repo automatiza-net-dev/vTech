@@ -2,7 +2,7 @@
 import React, { memo, useEffect } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { Popconfirm } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";

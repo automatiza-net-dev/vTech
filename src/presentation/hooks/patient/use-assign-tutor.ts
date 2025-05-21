@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "infinity-forge";
 
 import { RemoteTutor } from "@/data";
 import { AssignTutor } from "@/domain";

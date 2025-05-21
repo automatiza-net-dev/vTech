@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { depositService } from "@/OLD/services/deposit.service";
 
 import moment from "moment";

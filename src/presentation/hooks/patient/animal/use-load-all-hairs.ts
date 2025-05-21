@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemotePatientAnimal } from "@/data";
 import { callApiOneTime } from "@/presentation";

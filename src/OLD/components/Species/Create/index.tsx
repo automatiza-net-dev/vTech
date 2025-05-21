@@ -3,7 +3,7 @@ import { Form, Input, Modal } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { memo, useCallback, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
 
 export const Create = ({ visible, setVisible, reload, setReload, button }) => {

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { LoadOpportunitiesReport } from "@/domain";
 import { RemoteCRM } from "@/data";

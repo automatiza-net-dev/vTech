@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { BadRequestError, useAuthAdmin } from "infinity-forge";
 
 import { RemoteIndicators } from "@/data";

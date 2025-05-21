@@ -15,7 +15,7 @@ import Masks from "@/OLD/utils/masks";
 
 // Components
 import { Button, Form, Input, InputNumber, Modal, Select, Switch } from "antd";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";

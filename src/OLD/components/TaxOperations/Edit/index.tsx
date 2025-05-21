@@ -7,7 +7,7 @@ import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 // Components
 import { Button, Input, Modal, Select } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 const { TextArea } = Input;
 const { Option } = Select;
 

@@ -20,7 +20,7 @@ import {
   Switch,
 } from "antd";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { Container } from "../styles";
 import { Button, Icon, PageWrapper, useToast } from "infinity-forge";

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { budgetService } from "@/OLD/services/budgets.service";
 
   import { useQuery as useQueryInfinityForge } from "infinity-forge"

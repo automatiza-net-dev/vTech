@@ -5,7 +5,7 @@ import { DeleteTwoTone } from "@ant-design/icons";
 
 import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useToast } from "infinity-forge";
 

@@ -7,7 +7,7 @@ import { productService } from "@/OLD/services/product.service";
 
 // Components
 import { Button, InputNumber, Modal, Select } from "antd";
-import { useMutation } from "react-query";
+import { useMutation } from "infinity-forge";
 import { useToast } from "infinity-forge";
 
 const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
