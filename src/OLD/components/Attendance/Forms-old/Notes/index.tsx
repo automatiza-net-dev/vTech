@@ -91,7 +91,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       .insertObservations(formData)
       .then(async (_res) => {
 
-        await refetch(["LastUpdates", router.query.id].toString())
+        await refetch(["LastUpdates", router.query.id])
 
         setLoading(false);
         setModal(false);
@@ -131,7 +131,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     timelineService
       .updateObservation(updateData?._id, formData)
       .then(async (_res) => {
-      await refetch(["LastUpdates", router.query.id].toString())
+      await refetch(["LastUpdates", router.query.id])
         return createToast({
           status: "success",
           message: "Observação atualizada com sucesso!",
@@ -159,7 +159,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         .removeObservationMedia(updateData?._id, idx)
         .then(async (_res) => {
           setLoading(false);
-        await refetch(["LastUpdates", router.query.id].toString())
+        await refetch(["LastUpdates", router.query.id])
           return createToast({
             message: "Anexo removido com sucesso!",
             status: "success",
@@ -182,7 +182,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       .removeComplete(id)
       .then(async (_res) => {
         setLoading(false);
-    await refetch(["LastUpdates", router.query.id].toString())
+    await refetch(["LastUpdates", router.query.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

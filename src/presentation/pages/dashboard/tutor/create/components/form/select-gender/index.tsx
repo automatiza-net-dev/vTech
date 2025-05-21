@@ -3,7 +3,7 @@ import { api, Select, useQuery } from "infinity-forge";
 export function SelectGender({ isRegister }) {
     
   const {data, isFetching} = useQuery({
-    queryKey: "genders",
+    queryKey: ["genders"],
     queryFn: async () => {
       const response = await api<string[]>({
         method: "get",

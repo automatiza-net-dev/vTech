@@ -19,7 +19,7 @@ export function useLoadDreReport() {
   return useQuery({
     queryKey: ["DreReport"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true,
     enabled: false,
   });
 }

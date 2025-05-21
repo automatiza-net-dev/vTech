@@ -18,15 +18,14 @@ const DeleteTaxationGroupRule = memo(function DeleteTaxationGroupRule({
 }) {
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation(
-    (id) => taxationGroupRulesService.deleteTaxationGroupRule(id),
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(["taxation-group-rules"]);
-        close();
-      },
-    }
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["DeleteTaxationGroupRule"],
+    queryFn: (id) => taxationGroupRulesService.deleteTaxationGroupRule(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["taxation-group-rules"]);
+      close();
+    },
+  });
 
   const remove = useCallback(() => {
     mutate(id);

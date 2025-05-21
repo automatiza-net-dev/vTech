@@ -19,6 +19,6 @@ export function useLoadBudget({ id }) {
   return useQuery({
     queryKey: ["RemoteLoadBudget", id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

@@ -15,8 +15,8 @@ import "moment/locale/pt-br";
 
 export function Create(props?: {
   userId: string;
-    onSucess?: () => void;
-  Component: ({onClick}) => React.ReactNode;
+  onSucess?: () => void;
+  Component: ({ onClick }) => React.ReactNode;
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [frequency, setFrequency] = useState<any>([]);
@@ -25,7 +25,7 @@ export function Create(props?: {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const userId = props?.userId || router.query.id
+  const userId = props?.userId || router.query.id;
 
   const {
     handleSubmit,
@@ -37,48 +37,47 @@ export function Create(props?: {
     userId,
   });
 
-  const { mutate } = useMutation(
-    (data: any) => calendarService.createAbsence({ ...data, ...payload }),
-    {
-      onError: (error: any) => {
-        error?.response?.data?.errors?.forEach((err) =>
-          createToast({ message: err?.message, status: "error" })
-        );
-      },
-      onSuccess: () => {
-        createToast({
-          message: "Sucesso ao cadastrar indisponibilidade",
-          status: "success",
-        });
-        props?.onSucess?.()
-        setIsVisible(false);
-        queryClient.invalidateQueries("getAbsences");
-        setPayload({
-          userId,
-        });
-      },
-    }
-  );
-
-  const onSubmit = useCallback(
-    () => {
-      if (frequency.includes("terça")) {
-        const index = frequency.indexOf("terça");
-        frequency[index] = "terca";
-      }
-
-      if (frequency.length === 0) {
-        createToast({ message: "Marque pelo menos um dia", status: "error" });
-      } else {
-        mutate({ ...payload, frequency });
-      }
+  const { mutate } = useMutation({
+    queryKey: ["createSeila"],
+    queryFn: (data: any) =>
+      calendarService.createAbsence({ ...data, ...payload }),
+    onError: (error: any) => {
+      error?.response?.data?.errors?.forEach((err) =>
+        createToast({ message: err?.message, status: "error" })
+      );
     },
-    [payload, frequency]
-  );
+    onSuccess: () => {
+      createToast({
+        message: "Sucesso ao cadastrar indisponibilidade",
+        status: "success",
+      });
+      props?.onSucess?.();
+      setIsVisible(false);
+      queryClient.invalidateQueries("getAbsences");
+      setPayload({
+        userId,
+      });
+    },
+  });
+
+  const onSubmit = useCallback(() => {
+    if (frequency.includes("terça")) {
+      const index = frequency.indexOf("terça");
+      frequency[index] = "terca";
+    }
+
+    if (frequency.length === 0) {
+      createToast({ message: "Marque pelo menos um dia", status: "error" });
+    } else {
+      mutate({ ...payload, frequency });
+    }
+  }, [payload, frequency]);
 
   return (
     <div>
-      {props?.Component && <props.Component  onClick={() => setIsVisible(true)} />}
+      {props?.Component && (
+        <props.Component onClick={() => setIsVisible(true)} />
+      )}
 
       {!props?.Component && (
         <Button
@@ -224,7 +223,7 @@ export function Create(props?: {
 export function BlockUserButton(props: {
   userId: string;
   onSucess?: () => void;
-  Component: ({onClick}) => React.ReactNode;
+  Component: ({ onClick }) => React.ReactNode;
 }) {
   return <Create {...props} />;
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useColaborator } from "@/OLD/hooks/useColaborators";
 import { memo, useEffect } from "react";
-import { useMutation, useQuery } from "infinity-forge";
+import {  useQuery } from "infinity-forge";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { columns } from "./columns";
 import { Create } from "./Create";
@@ -28,7 +28,6 @@ export const Absence = ({ edit }) => {
   const { data, loading } = useQuery({
     queryKey: ["getAbsences", params],
     queryFn: () => calendarService.getAbsences(params),
-    refetchOnWindowFocus: false,
     onError: () => {
       createToast({
         message: "Erro ao buscar ausencias e indisponibilidades",

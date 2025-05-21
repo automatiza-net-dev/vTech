@@ -52,7 +52,7 @@ export function ButtonSetSchedulling(props) {
                   patient: data.patientId,
                 });
 
-                refetch(queryKeyLoadSchedulePatients.toString());
+                refetch(queryKeyLoadSchedulePatients);
 
                 createToast({
                   message: "Vinculado com sucesso",

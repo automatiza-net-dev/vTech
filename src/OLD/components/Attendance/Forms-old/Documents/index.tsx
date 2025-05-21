@@ -137,7 +137,7 @@ export default function Documents({
         message: ".",
       })
       .then((_res) => {
-        refetch(["LastUpdates", patient.data?.id].toString());
+        refetch(["LastUpdates", patient.data?.id]);
         setLoading(false);
         setModal(false);
         setData({});
@@ -169,7 +169,7 @@ export default function Documents({
           realizedAt: moment(new Date()),
         })
         .then((_res) => {
-          refetch(["LastUpdates", router.query.id].toString());
+          refetch(["LastUpdates", router.query.id]);
           setSelectedUpdate && setSelectedUpdate(false);
           if (!visible) {
             setLoading(false);
@@ -197,7 +197,7 @@ export default function Documents({
       .then((_res) => {
         setLoading(false);
 
-         refetch(["LastUpdates", patient.data?.id].toString());
+         refetch(["LastUpdates", patient.data?.id]);
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

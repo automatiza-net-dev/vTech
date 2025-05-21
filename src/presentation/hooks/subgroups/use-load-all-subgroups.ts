@@ -18,6 +18,6 @@ export function useLoadSubgroups(params: LoadSubgroups.Params) {
   return useQuery({
     queryKey: ["RemoteLoadSubgroupDetails", JSON.stringify(params)],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

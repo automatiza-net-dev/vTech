@@ -11,25 +11,24 @@ export const Delete = memo(function Delete({ id }) {
 
   const { createToast } = useToast();
 
-  const { mutate, loading } = useMutation(
-    (id) => calendarService.deleteAbsence(id),
-    {
-      onSuccess: () => {
-        createToast({
-          message: "Indisponibilidade deletada",
-          status: "success",
-        });
+  const { mutate, loading } = useMutation({
+    queryKey: ["DeleteRandom"],
+    queryFn: (id) => calendarService.deleteAbsence(id),
+    onSuccess: () => {
+      createToast({
+        message: "Indisponibilidade deletada",
+        status: "success",
+      });
 
-        queryClient.invalidateQueries("getAbsences");
-      },
-      onError: () => {
-        createToast({
-          message: "Erro ao deletar indisponibiliade",
-          status: "error",
-        });
-      },
-    }
-  );
+      queryClient.invalidateQueries("getAbsences");
+    },
+    onError: () => {
+      createToast({
+        message: "Erro ao deletar indisponibiliade",
+        status: "error",
+      });
+    },
+  });
 
   return (
     <div>

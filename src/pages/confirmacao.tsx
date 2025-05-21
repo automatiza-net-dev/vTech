@@ -53,7 +53,7 @@ export default function ConfirmacaoAgendamento() {
   const { logo_url, type } = useConfigurationsSystem();
 
   const { data, isFetching, mutate } = useQuery({
-    queryKey: "agenda",
+    queryKey: ["agenda"],
     queryFn: async () => {
       const response = await api({
         url: `schedules/confirmation/${router.query.scheduleId}`,

@@ -17,6 +17,6 @@ export function useLoadAllPathologies() {
   return useQuery({
     queryKey: ["LoadAllPathologies"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

@@ -12,8 +12,8 @@ export function useLoadAllBusinessUsers() {
   }
 
   return useQuery({
-    queryKey: "useLoadAllBusinessUsers",
+    queryKey: ["useLoadAllBusinessUsers"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true,
   });
 }

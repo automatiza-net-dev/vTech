@@ -12,5 +12,5 @@ export function useAssignTutor() {
     return response;
   }
 
-  return useMutation("RemoteAssignTutor", fetcher);
+  return useMutation({ queryKey: ["RemoteAssignTutor"], queryFn: fetcher });
 }

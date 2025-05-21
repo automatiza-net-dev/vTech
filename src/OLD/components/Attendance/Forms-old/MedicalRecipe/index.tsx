@@ -132,7 +132,7 @@ function AddMedicalRecipe({
         setBody("");
         setRecipeId(false);
         setRecipeSearch("");
-       refetch(["LastUpdates", patient.data?.id].toString())
+       refetch(["LastUpdates", patient.data?.id])
        
         return createToast({
           message: "Receita salva com sucesso!",
@@ -159,7 +159,7 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
-          refetch(["LastUpdates", patient.data?.id].toString())
+          refetch(["LastUpdates", patient.data?.id])
         return createToast({
           message: "Receita atualizada com sucesso!",
           status: "success",
@@ -188,7 +188,7 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
-         refetch(["LastUpdates", patient.data?.id].toString())
+         refetch(["LastUpdates", patient.data?.id])
         setLoading(false);
         setModal && setModal(false);
         return createToast({
@@ -212,7 +212,7 @@ function AddMedicalRecipe({
       .then((_res) => {
         setLoading(false);
 
-       refetch(["LastUpdates", patient.data?.id].toString())
+       refetch(["LastUpdates", patient.data?.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

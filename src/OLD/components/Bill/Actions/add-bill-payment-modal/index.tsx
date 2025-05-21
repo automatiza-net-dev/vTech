@@ -33,7 +33,7 @@ export function AddBillPaymentModal({
         open={paymentsVisible}
         onClose={() => {
           setPaymentsVisible(false);
-          refetch(["RemotePatient"].toString(), { mode: "include" });
+          refetch(["RemotePatient"], { mode: "include" });
         }}
       >
         <AddBillPayment
@@ -41,7 +41,7 @@ export function AddBillPaymentModal({
           setReloadBill={setReload}
           setVisible={(value) => {
             setPaymentsVisible(value);
-            refetch(["RemotePatient"].toString(), { mode: "include" });
+            refetch(["RemotePatient"], { mode: "include" });
           }}
         />
       </Modal>

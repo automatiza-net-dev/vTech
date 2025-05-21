@@ -1,9 +1,4 @@
-import {
-  Checkbox,
-  Table,
-  AutoComplete,
-  Collapse,
-} from "antd";
+import { Checkbox, Table, AutoComplete, Collapse } from "antd";
 
 import { formatNumberToCurrency, Modal, Tooltip } from "infinity-forge";
 
@@ -15,18 +10,14 @@ import {
   useUpdateSellerAndReviewer,
 } from "@/OLD/hooks/useBudgets";
 
-import {
-
-  useConfigurationsSystem,
-  useSystem,
-} from "@/presentation";
+import { useConfigurationsSystem, useSystem } from "@/presentation";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 
 const { Panel } = Collapse;
 
 import PrintScreen from "../PrintScreen";
 
-import  { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 import { CgDetailsMore } from "react-icons/cg";
 
@@ -200,41 +191,30 @@ function ModalBudgetShow({
   const { unit } = useSystem();
   const { type } = useConfigurationsSystem();
 
-  const handleFn = (item: any) => {
-    mutate(
-      {
-        id: item.id,
-        quantity: item.quantity,
-        unitaryValue: item.unitary_value,
-        discountValue: item.discount_value,
-        status:
-          item.status === "ABERTO" ? "NAO_CONFIRMADO__CANCELADO" : "ABERTO",
-      } as any,
-      {
-        onSuccess: () => {
-          refetch();
-          setReload && setReload((prv) => !prv);
-        },
-      }
-    );
+  const handleFn = async (item: any) => {
+    await mutate({
+      id: item.id,
+      quantity: item.quantity,
+      unitaryValue: item.unitary_value,
+      discountValue: item.discount_value,
+      status: item.status === "ABERTO" ? "NAO_CONFIRMADO__CANCELADO" : "ABERTO",
+    } as any);
+
+    refetch();
+    setReload && setReload((prv) => !prv);
   };
 
-  const submitReviewerAndSeller = () => {
+  const submitReviewerAndSeller = async () => {
     let newObj = { ...payload } as any;
 
     if (!payload?.sellerId) {
       newObj.sellerId = user?.id;
     }
-    mutateSellerAndReviewer(
-      { ...newObj },
-      {
-        onSuccess: () => {
-          refetch();
-          setReload && setReload((prv) => !prv);
-          setEditFields({} as any);
-        },
-      }
-    );
+   await mutateSellerAndReviewer(newObj);
+
+    refetch();
+    setReload && setReload((prv) => !prv);
+    setEditFields({} as any);
   };
 
   React.useEffect(() => {

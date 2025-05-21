@@ -44,9 +44,6 @@ const SalesReport = memo(function SalesReport() {
       setCanSearch(false);
     },
     enabled: canSearch,
-    // refetchOnMount: true,
-    // refetchOnWindowFocus: false,
-    // refetchOnReconnect: false
   });
 
   const listBillReportPermission = useUserHasPermission("REL03");

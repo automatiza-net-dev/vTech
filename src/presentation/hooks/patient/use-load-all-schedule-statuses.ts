@@ -14,8 +14,8 @@ export function useLoadAllScheduleStatuses() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllScheduleStatuses",
+    queryKey: ["RemoteLoadAllScheduleStatuses"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

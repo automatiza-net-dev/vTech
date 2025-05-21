@@ -74,15 +74,14 @@ export function WorkingDay({ edit }) {
       });
   }, [data, router]);
 
-  const { loadingWorkingDays: isMutating, mutate } = useMutation(
-    (_data) => userService.createWorkingDay(_data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("workingDay");
-        setReload(!reload);
-      },
-    }
-  );
+  const { loadingWorkingDays: isMutating, mutate } = useMutation({
+    queryKey: ["WorkingDayMutation"],
+    queryFn: (_data) => userService.createWorkingDay(_data),
+    onSuccess: () => {
+      queryClient.invalidateQueries("workingDay");
+      setReload(!reload);
+    },
+  });
 
   const defaultData = {
     userId: userId,

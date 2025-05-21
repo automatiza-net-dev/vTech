@@ -170,7 +170,7 @@ export function AddBudgetNew({
         } com sucesso`,
       });
 
-      patientId && refetch(["LastUpdates", patientId].toString())
+      patientId && refetch(["LastUpdates", patientId])
     
       setModal && setModal(false);
     } catch (err) {

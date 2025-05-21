@@ -1,29 +1,30 @@
-import { useTable, useGetQueryArgumentsTable } from 'infinity-forge'
+import { useQuery, useTable } from "infinity-forge";
 
-import { EntrieReport } from '@/domain'
-import { TypesAutomatiza, container } from '@/container'
+import { EntrieReport } from "@/domain";
+import { RemoteReportsEntries } from "@/data";
+import { TypesAutomatiza, container } from "@/container";
 
-import { columns } from './table'
+import { columns } from "./table";
 
-import * as S from './styles'
+import * as S from "./styles";
 
 export function EntriesReportsPageComponent() {
+  const { data } = useQuery({
+    queryKey: ["RemoteReportsEntries"],
+    queryFn: async () => {
+      const response = await container
+        .get<RemoteReportsEntries>(TypesAutomatiza.RemoteReportsEntries)
+        .loadAll({});
 
-  const query = useGetQueryArgumentsTable({
-    container,
-    Types: TypesAutomatiza,
-    queryKey: {
-      remoteName: 'RemoteReportsEntries' as keyof typeof TypesAutomatiza
+      return response;
     },
-    dynamicFiltersFromApi: false,
-    requireUser: false,
-  })
+  });
 
   const { Table } = useTable<EntrieReport, keyof typeof TypesAutomatiza>({
-    query,
     configs: {
-      errorMessage: 'Nenhuma reporte de entrada encontrada.',
+      errorMessage: "Nenhuma reporte de entrada encontrada.",
       disableOrdenationTable: false,
+      tableData: data?.items || [],
     },
     columnsConfiguration: {
       columns,
@@ -31,11 +32,11 @@ export function EntriesReportsPageComponent() {
         detail: (tableItem) => `/entrada/` + tableItem.id,
       },
     },
-  })
+  });
 
   return (
     <S.EntriesPageComponent>
-      <div className='table-container'>{Table}</div>
+      <div className="table-container">{Table}</div>
     </S.EntriesPageComponent>
-  )
+  );
 }

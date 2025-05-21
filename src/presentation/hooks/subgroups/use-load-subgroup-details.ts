@@ -32,7 +32,7 @@ export function useLoadSubgroupDetails(params: LoadSubgroupDetails.Params) {
       userID,
     ],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true,
     enabled: !!userID,
   });
 }

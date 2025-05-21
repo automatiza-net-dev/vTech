@@ -11,7 +11,7 @@ export function useScheduleAuthorization({ patientId }) {
  const { configsHasShowFinancesSchedules } = useVerifyFinanceSchedule({});
 
   const { data } = useQuery({
-    queryKey: "ScheduleFinances" + patientId,
+    queryKey: ["ScheduleFinances", patientId],
     queryFn: async () => {
       const response = await api({
         url: `schedules/finances/${patientId}`,

@@ -21,6 +21,5 @@ export function useLoadFinancesResume() {
   return useQuery({
     queryKey: ["loadFinancesResume"],
     queryFn: fetcher,
-    refetchOnWindowFocus: false
   });
 }

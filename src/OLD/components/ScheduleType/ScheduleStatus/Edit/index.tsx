@@ -20,20 +20,19 @@ export const Edit = memo(({ status }) => {
   const queryClient = useQueryClient();
   const { createToast } = useToast();
 
-  const { mutate, loading } = useMutation(
-    (payload) => scheduleTypeServices.editStatus(status.id, payload),
-    {
-      onError: () => {
-        createToast({ message: "Erro ao editar status", status: "error" });
-      },
-      onSuccess: () => {
-        createToast({ message: "Status editado", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["Editfsfs"],
+    queryFn: (payload) => scheduleTypeServices.editStatus(status.id, payload),
+    onError: () => {
+      createToast({ message: "Erro ao editar status", status: "error" });
+    },
+    onSuccess: () => {
+      createToast({ message: "Status editado", status: "success" });
 
-        setIsVisible(false);
-        queryClient.invalidateQueries("getAllStatus");
-      },
-    }
-  );
+      setIsVisible(false);
+      queryClient.invalidateQueries("getAllStatus");
+    },
+  });
 
   return (
     <div>

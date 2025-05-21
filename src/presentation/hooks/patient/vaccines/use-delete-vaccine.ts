@@ -18,8 +18,8 @@ export function useDeleteVaccine(params: DeleteVaccine.Params) {
   }
 
   return useMutation({
-    mutationKey: "RemoteDeleteVaccine",
-    mutationFn: fetcher,
+    queryKey: ["RemoteDeleteVaccine"],
+    queryFn: fetcher,
     onSuccess: () => {
       queryClient.invalidateQueries("RemoteDeleteVacine");
 
@@ -28,7 +28,7 @@ export function useDeleteVaccine(params: DeleteVaccine.Params) {
         status: "success",
       });
     },
-    onError: (err: { message: string }) => {
+    onError: (err) => {
       if (err instanceof BadRequestError) {
         createToast({ message: err.error.message, status: "success" });
       }

@@ -37,7 +37,7 @@ function Page() {
   const { createToast } = useToast();
 
   const { data, mutate, changeCache, isFetching } = useQuery({
-    queryKey: "variations",
+    queryKey: ["variations"],
     queryFn: async () => {
       const response = await api({ method: "get", url: "variations" });
 

@@ -15,14 +15,7 @@ import {
 } from "./Columns";
 
 import { DeleteTwoTone } from "@ant-design/icons";
-import {
-  Checkbox,
-  Input,
-  Popconfirm,
-  Skeleton,
-  Table,
-  Typography,
-} from "antd";
+import { Checkbox, Input, Popconfirm, Skeleton, Table, Typography } from "antd";
 
 import Header from "./Header";
 import PrintScreen from "./PrintScreen";
@@ -122,54 +115,49 @@ export default function Details({ billId, setVisible }: any) {
       .toUpperCase();
   }, [hasProducts, hasServices]);
 
-  const getFiscalDocumentsQuery = useQuery(
-    ["fiscalDocuments", tokens],
-    () =>
+  const getFiscalDocumentsQuery = useQuery({
+    queryKey: ["fiscalDocuments", tokens],
+    queryFn: () =>
       fiscalDocumentService.getAllUnitFiscalDocuments({
         document: tokens,
         movement: "SAIDA,AMBOS",
       }),
-    {
-      enabled: !!tokens && (hasProducts || hasServices) && openModal,
-      onSuccess: (data) => {
-        const _hasProduct = data?.find(
-          (item) => item?.document_type === "PRODUTOS"
-        );
+    enabled: !!tokens && (hasProducts || hasServices) && openModal,
+    onSuccess: (data) => {
+      const _hasProduct = data?.find(
+        (item) => item?.document_type === "PRODUTOS"
+      );
 
-        if (_hasProduct) {
-          setAuthorizeData({
-            ...authorizeData,
-            unitFiscalDocumentId: _hasProduct.id,
-          });
-        }
-      },
-    }
-  );
+      if (_hasProduct) {
+        setAuthorizeData({
+          ...authorizeData,
+          unitFiscalDocumentId: _hasProduct.id,
+        });
+      }
+    },
+  });
 
-  const getIssuedNfseQuery = useQuery(
-    ["fiscalDocuments", "nfse", data?.id],
-    () =>
+  const getIssuedNfseQuery = useQuery({
+    queryKey: ["fiscalDocuments", "nfse", data?.id],
+    queryFn: () =>
       fiscalDocumentService.getIssuedNfse({
         bill: data?.id,
       }),
-    {
-      enabled: !!data,
-    }
-  );
+    enabled: !!data,
+  });
 
-  const getIssuedNfeQuery = useQuery(
-    ["fiscalDocuments", "nfe", data?.id],
-    () =>
+  const getIssuedNfeQuery = useQuery({
+    queryKey: ["fiscalDocuments", "nfe", data?.id],
+    queryFn: () =>
       fiscalDocumentService.getIssuedNfe({
         bill: data?.id,
+        enabled: !!data,
       }),
-    {
-      enabled: !!data,
-    }
-  );
+  });
 
-  const authorizeNfse = useMutation(
-    () => {
+  const authorizeNfse = useMutation({
+    queryKey: ["authorizeNfse"],
+    queryFn: () => {
       const findServiceDocument = getFiscalDocumentsQuery?.data?.find(
         (item) => item?.document_type === "SERVICOS"
       );
@@ -193,61 +181,58 @@ export default function Details({ billId, setVisible }: any) {
         unitFiscalDocumentId: selected,
       });
     },
-    {
-      onSuccess: () => {
-        setLoading(false);
-        createToast({ message: "Nota emitida com sucesso", status: "success" });
+    onSuccess: () => {
+      setLoading(false);
+      createToast({ message: "Nota emitida com sucesso", status: "success" });
 
-        setOpenModal(false);
-        queryClient.invalidateQueries(["bills"]);
-        queryClient.invalidateQueries(["fiscalDocuments"]);
-      },
-      onError: (err: any) => {
-        setLoading(false);
-        createToast({
-          message: err?.response?.data?.[0]?.message ?? "Erro na emissão",
-          status: "error",
-        });
-      },
-    }
-  );
+      setOpenModal(false);
+      queryClient.invalidateQueries(["bills"]);
+      queryClient.invalidateQueries(["fiscalDocuments"]);
+    },
+    onError: (err: any) => {
+      setLoading(false);
+      createToast({
+        message: err?.response?.data?.[0]?.message ?? "Erro na emissão",
+        status: "error",
+      });
+    },
+  });
 
-  const updateNfseMutation = useMutation(
-    async (_id) => {
+  const updateNfseMutation = useMutation({
+    queryKey: ["updateNfseMutation"],
+    queryFn: async (_id) => {
       await fiscalDocumentService.updateIssuedNfse({
         id: _id,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfseQuery.refetch();
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfseQuery.refetch();
+    },
+  });
 
-  const cancelNfseMutation = useMutation(
-    async (data) => {
+  const cancelNfseMutation = useMutation({
+    queryKey: ["cancelNfseMutation"],
+    queryFn: async (data) => {
       await fiscalDocumentService.cancelIssuedNfse({
         data,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfseQuery.refetch();
-        setOpenCancelNfse(false);
-        setCancelNfseData({});
-      },
-      onError: (err: any) => {
-        createToast({
-          message: err?.response?.data?.message || "Erro na emissão",
-          status: "error",
-        });
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfseQuery.refetch();
+      setOpenCancelNfse(false);
+      setCancelNfseData({});
+    },
+    onError: (err: any) => {
+      createToast({
+        message: err?.response?.data?.message || "Erro na emissão",
+        status: "error",
+      });
+    },
+  });
 
-  const authorizeNfeMutation = useMutation(
-    async () => {
+  const authorizeNfeMutation = useMutation({
+    queryKey: ["authorizeNfeMutation"],
+    queryFn: async () => {
       const productDocs = getFiscalDocumentsQuery?.data?.filter(
         (item) => item?.document_type === "PRODUTOS"
       );
@@ -264,78 +249,73 @@ export default function Details({ billId, setVisible }: any) {
       );
       await Promise.all(tasks);
     },
-    {
-      onSuccess: () => {
-        setLoading(false);
-        setOpenModal(false);
-        queryClient.invalidateQueries(["bills"]);
-        queryClient.invalidateQueries(["fiscalDocuments"]);
-      },
-      onError: (err: any) => {
-        setLoading(false);
+    onSuccess: () => {
+      setLoading(false);
+      setOpenModal(false);
+      queryClient.invalidateQueries(["bills"]);
+      queryClient.invalidateQueries(["fiscalDocuments"]);
+    },
+    onError: (err: any) => {
+      setLoading(false);
 
-        createToast({
-          message: err?.response?.data?.message || "Erro na emissão",
-          status: "error",
-        });
-      },
-    }
-  );
+      createToast({
+        message: err?.response?.data?.message || "Erro na emissão",
+        status: "error",
+      });
+    },
+  });
 
-  const updateNfeMutation = useMutation(
-    async (_id) => {
+  const updateNfeMutation = useMutation({
+    queryKey: ["updateNfeMutation"],
+    queryFn: async (_id) => {
       await fiscalDocumentService.updateIssuedNfe({
         id: _id,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfeQuery.refetch();
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfeQuery.refetch();
+    },
+  });
 
-  const cancelNfeMutation = useMutation(
-    async (data) => {
+  const cancelNfeMutation = useMutation({
+    queryKey: ["cancelNfeMutation"],
+    queryFn: async (data) => {
       await fiscalDocumentService.cancelIssuedNfe({
         data,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfeQuery.refetch();
-        setOpenCancelNfe(false);
-        setCancelNfeData({});
-      },
-      onError: (err: any) => {
-        createToast({
-          message: err?.response?.data?.message ?? "Erro na emissão",
-          status: "error",
-        });
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfeQuery.refetch();
+      setOpenCancelNfe(false);
+      setCancelNfeData({});
+    },
+    onError: (err: any) => {
+      createToast({
+        message: err?.response?.data?.message ?? "Erro na emissão",
+        status: "error",
+      });
+    },
+  });
 
-  const disableNfeMutation = useMutation(
-    async (data) => {
+  const disableNfeMutation = useMutation({
+    queryKey: ["disableNfeMutation"],
+    queryFn: async (data) => {
       await fiscalDocumentService.disableIssuedNfe({
         data,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfeQuery.refetch();
-        setOpenDisableNfe(false);
-        setDisableNfeData({});
-      },
-      onError: (err: any) => {
-        createToast({
-          message: err?.response?.data?.message?.split(":")?.[1],
-          status: "error",
-        });
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfeQuery.refetch();
+      setOpenDisableNfe(false);
+      setDisableNfeData({});
+    },
+    onError: (err: any) => {
+      createToast({
+        message: err?.response?.data?.message?.split(":")?.[1],
+        status: "error",
+      });
+    },
+  });
 
   function FormatProductCanceled({ text, item }: { text: string; item: any }) {
     if (!item) {
@@ -360,12 +340,19 @@ export default function Details({ billId, setVisible }: any) {
         ?.map((item) => {
           if (item?.status === "INATIVA") return null;
 
-          console.log(item, "AA")
+          console.log(item, "AA");
 
           return {
             quantity: item?.quantity,
             productCode: item?.productVariation?.product?.reference_code,
-            description: item?.productVariation?.product?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description),
+            description:
+              item?.productVariation?.product?.description +
+              (item?.departmentItems && item?.departmentItems.length > 0
+                ? " - "
+                : "") +
+              item?.departmentItems?.map(
+                (item) => item.department_item_description
+              ),
             unitPrice: currencyFormatter(item?.unitary_value),
             discount: currencyFormatter(item?.discount_value),
             total: currencyFormatter(item?.total_value),
@@ -1120,10 +1107,7 @@ export default function Details({ billId, setVisible }: any) {
         </form>
       </Modal>
 
-      <Modal
-        open={nfeErrorsVisible}
-        onClose={() => setNfeErrorsVisible(false)}
-      >
+      <Modal open={nfeErrorsVisible} onClose={() => setNfeErrorsVisible(false)}>
         <div className="uk-flex uk-flex-between">
           <div className="uk-width-1-5">Código</div>
           <div className="uk-width-4-5">Erro</div>

@@ -10,9 +10,7 @@ const DailyCashierCard = () => {
     queryKey: ["card", "cashiers", "open"],
     queryFn: () =>
       financesService.getResumeOpenCashiers().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+ enableCache: true
   });
 
   return (

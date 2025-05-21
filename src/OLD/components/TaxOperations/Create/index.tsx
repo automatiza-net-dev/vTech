@@ -24,34 +24,33 @@ const CreateTaxOperation = memo(function CreateTaxOperation({ visible, hide }) {
     accountingResult: false,
   });
 
-  const { mutate } = useMutation(
-    (newData) => taxOperationService.storeTaxOperation(newData),
-    {
-      onSuccess: () => {
-        createToast({
-          message: "Operação cadastrado com sucesso!",
-          status: "success",
-        });
+  const { mutate } = useMutation({
+    queryKey: ["CreateTaxOperationMutation"],
+    queryFn: (newData) => taxOperationService.storeTaxOperation(newData),
+    onSuccess: () => {
+      createToast({
+        message: "Operação cadastrado com sucesso!",
+        status: "success",
+      });
 
-        queryClient.invalidateQueries(["tax-operations"]);
-        setData({
-          code: "",
-          description: "",
-          movementType: null,
-          movementCategory: null,
-          generatesFinancial: false,
-          accountingResult: false,
-        });
-        hide();
-      },
-      onError: (error) => {
-        createToast({
-          message: err.response.data.errors[0].message,
-          status: "error",
-        });
-      },
-    }
-  );
+      queryClient.invalidateQueries(["tax-operations"]);
+      setData({
+        code: "",
+        description: "",
+        movementType: null,
+        movementCategory: null,
+        generatesFinancial: false,
+        accountingResult: false,
+      });
+      hide();
+    },
+    onError: (error) => {
+      createToast({
+        message: err.response.data.errors[0].message,
+        status: "error",
+      });
+    },
+  });
 
   const submitExam = useCallback(() => {
     mutate(data);

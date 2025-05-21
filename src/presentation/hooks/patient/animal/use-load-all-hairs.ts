@@ -17,6 +17,6 @@ export function useLoadAllHairs() {
   return useQuery({
     queryKey: ["useLoadAllHairs"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

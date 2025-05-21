@@ -27,23 +27,21 @@ function Page() {
 
   const ipsQuery = useQuery({
     queryKey: ["ip-access"],
-    queryFn: async () =>
-      await api.get("/ip-access/search", {}).then(({ data }) => data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    queryFn: async () =>  await api.get("/ip-access/search", {}).then(({ data }) => data),
+    enableCache: true,
   });
 
-  const createIpMutation = useMutation(
-    async (data) => await api.post("/ip-access/store", data),
-    {
-      onSuccess: () => {
-        ipsQuery.refetch();
-        setFormData({ ipAddress: "" });
-        setOpenCreate(false);
-      },
-    }
-  );
+  const createIpMutation = useMutation({
+    queryKey: ["mutation_ip"],
+    queryFn: async (data) => {
+      await api.post("/ip-access/store", data);
+    },
+    onSuccess: () => {
+      ipsQuery.refetch();
+      setFormData({ ipAddress: "" });
+      setOpenCreate(false);
+    },
+  });
 
   return (
     <LayoutDashboard>

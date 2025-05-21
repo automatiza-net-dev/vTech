@@ -35,5 +35,5 @@ export function useLoadAllPatientTutorKEY(
 
   const filters = patientFilters || contextPatientFilters;
 
-  return "RemoteLoadAllPatientTutor" + (filters ? JSON.stringify(filters) : "");
+  return ["RemoteLoadAllPatientTutor", (filters ? JSON.stringify(filters) : "")];
 }

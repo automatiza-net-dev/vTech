@@ -54,7 +54,7 @@ export function Pathologie({
                   : "updatePathologieInTimeLine"
               ](payload);
 
-            await refetch("LastUpdates", { mode: "include" });
+            await refetch(["LastUpdates"], { mode: "include" });
 
             createToast({
               message: "Patologia registrada com sucesso!",

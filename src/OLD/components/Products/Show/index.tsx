@@ -94,35 +94,20 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
   sortItems(units, "name");
   const { createToast } = useToast();
 
-  {
-    /*const { data, error, refetch } = useQuery(
-    ["products", query["subpage"]],
-    () => productService.showProduct(query["subpage"]),
-    {
-      enabled: isReady && !!query["subpage"] && query["subpage"] !== "novo",
-      refetchOnMount: true
-    }
-  ); */
-  }
+  const { data, error, refetch } = useQuery({
+    queryKey: ["products", id],
+    queryFn: () => productService.showProduct(id),
+  });
 
-  const { data, error, refetch } = useQuery(
-    ["products", id],
-    () => productService.showProduct(id),
-    {
-      refetchOnMount: true,
-    }
-  );
-
-  const { mutate, isLoading } = useMutation(
-    ({ id, data }) => {
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["ShowProduct"],
+    queryFn: ({ id, data }) => {
       return productVariationsService.updateProductVariation(id, data);
     },
-    {
-      onSuccess: () => {
-        refetch();
-      },
-    }
-  );
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const handleChangeStatus = (data) => {
     mutate({

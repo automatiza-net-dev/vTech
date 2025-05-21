@@ -12,8 +12,8 @@ export function useLoadProfessionalsSchedule() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadProfessionalsSchedule",
+    queryKey: ["RemoteLoadProfessionalsSchedule"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

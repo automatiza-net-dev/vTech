@@ -45,9 +45,9 @@ export function FormEditAccessControls({
                 });
 
 
-              await refetch("RemoteLoadAllControllerRoles");
+              await refetch(["RemoteLoadAllControllerRoles"]);
               await refetch(
-                ["RemoteLoadAccessControls", controllerRole?.id].toString()
+                ["RemoteLoadAccessControls", controllerRole?.id]
               );
 
               createToast({

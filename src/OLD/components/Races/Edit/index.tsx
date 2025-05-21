@@ -26,22 +26,21 @@ export const Edit = memo(({ item, reload, setReload }) => {
 
   const { species, loadingSpecies } = useSpecies("ALL");
 
-  const { mutate, loading } = useMutation(
-    (data) => animalServices.editRace(item.id, data),
-    {
-      onSuccess: () => {
-        createToast({ message: "Espécie editada!", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["EditAAA"],
+    queryFn: (data) => animalServices.editRace(item.id, data),
+    onSuccess: () => {
+      createToast({ message: "Espécie editada!", status: "success" });
 
-        setIsVisible(false);
-        setPayload(null);
-        setReload(!reload);
-        queryClient.invalidateQueries("getSpecies");
-      },
-      onError: () => {
-        createToast({ message: "Erro ao editar espécie!", status: "error" });
-      },
-    }
-  );
+      setIsVisible(false);
+      setPayload(null);
+      setReload(!reload);
+      queryClient.invalidateQueries("getSpecies");
+    },
+    onError: () => {
+      createToast({ message: "Erro ao editar espécie!", status: "error" });
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     mutate(payload);

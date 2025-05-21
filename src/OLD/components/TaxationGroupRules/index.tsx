@@ -37,25 +37,15 @@ const TaxationGroupRules = memo(function TaxationGroupRules() {
   const canEditTaxationGroup = useUserHasPermission("GIP02");
   const canDeleteTaxationGroup = useUserHasPermission("GIP03");
 
-  const { data } = useQuery(
-    ["taxation-group-rules", filters],
-    () => taxationGroupRulesService.listTaxationGroupRules(filters),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-    }
-  );
+  const { data } = useQuery({
+    queryKey: ["taxation-group-rules", filters],
+    queryFn: () => taxationGroupRulesService.listTaxationGroupRules(filters),
+  });
 
-  const { data: units } = useQuery(
-    ["units"],
-    () => clinicService.getClinicsByUser(),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-    }
-  );
+  const { data: units } = useQuery({
+    queryKey: ["units"],
+    queryFn: () => clinicService.getClinicsByUser(),
+  });
 
   return !listTaxationGroupPermission ||
     listTaxationGroupPermission === "loading" ? (
@@ -76,7 +66,6 @@ const TaxationGroupRules = memo(function TaxationGroupRules() {
                   setFilters({ ...filters, name: e.target.value })
                 }
               />
-             
             </Input>
 
             <Select

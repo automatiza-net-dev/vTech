@@ -18,6 +18,6 @@ export function useLoadAllSpecies(props: LoadAllSpecies.Params) {
   return useQuery({
     queryKey: ["LoadAllSpecies", props],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

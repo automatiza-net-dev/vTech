@@ -23,24 +23,23 @@ export const Create = ({
   const { species, loadingSpecies } = useSpecies("ALL", reload);
   const { createToast } = useToast();
 
-  const { mutate, loading } = useMutation(
-    (data) => animalServices.createRace(data),
-    {
-      onSuccess: () => {
-        createToast({ message: "Raça criada!", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["CreateAAA"],
+    queryFn: (data) => animalServices.createRace(data),
+    onSuccess: () => {
+      createToast({ message: "Raça criada!", status: "success" });
 
-        setVisible(false);
-        setPayload(null);
-        queryClient.invalidateQueries("getRaces");
-        if (fetchRaces) {
-          fetchRaces();
-        }
-      },
-      onError: (error) => {
-        createToast({ message: "Erro ao criar Raça!", status: "error" });
-      },
-    }
-  );
+      setVisible(false);
+      setPayload(null);
+      queryClient.invalidateQueries("getRaces");
+      if (fetchRaces) {
+        fetchRaces();
+      }
+    },
+    onError: (error) => {
+      createToast({ message: "Erro ao criar Raça!", status: "error" });
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     mutate(payload);

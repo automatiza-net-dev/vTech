@@ -10,9 +10,7 @@ const TitlesToPayToday = () => {
     queryKey: ["card", "expenses-expiring-today"],
     queryFn: () =>
       financesService.getExpiringExpenses().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
   const totalValue = useMemo(() => {
     if (!data) {

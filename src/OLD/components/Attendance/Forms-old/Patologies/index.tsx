@@ -79,7 +79,7 @@ function Patologies({
       })
       .then(async (_res) => {
 
-        await refetch(["LastUpdates", router.query.id].toString())
+        await refetch(["LastUpdates", router.query.id])
 
         createToast({
           message: "Patologia salva com sucesso!",
@@ -112,7 +112,7 @@ function Patologies({
         defaultProtocol,
       })
       .then(async (_res) => {
-        await refetch(["LastUpdates", router.query.id].toString())
+        await refetch(["LastUpdates", router.query.id])
         return createToast({
           message: "Patologia atualizada com sucesso!",
           status: "success",
@@ -136,7 +136,7 @@ function Patologies({
       .removeComplete(id)
       .then(async (_res) => {
         setLoading(false);
-     await refetch(["LastUpdates", router.query.id].toString())
+     await refetch(["LastUpdates", router.query.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

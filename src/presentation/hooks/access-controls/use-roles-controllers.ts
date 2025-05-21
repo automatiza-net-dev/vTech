@@ -9,7 +9,7 @@ export function useRolesControllers(props?: { filters: any }) {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllControllerRoles" + JSON.stringify(props?.filters),
+    queryKey: ["RemoteLoadAllControllerRoles", JSON.stringify(props?.filters)],
     queryFn: fetcher,
     enableCache: true
   });

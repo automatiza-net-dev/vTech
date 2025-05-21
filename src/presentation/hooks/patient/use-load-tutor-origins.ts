@@ -14,8 +14,8 @@ export function useLoadTutorOrigins() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadTutorOrigins",
+    queryKey: ["RemoteLoadTutorOrigins"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

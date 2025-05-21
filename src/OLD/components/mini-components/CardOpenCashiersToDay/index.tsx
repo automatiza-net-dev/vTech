@@ -10,9 +10,7 @@ const CardOpenCashiersToDay = () => {
     queryKey: ["card", "cashiers", "today"],
     queryFn: () =>
       financesService.getTodaysCashierResume().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+  enableCache: true
   });
 
   return (

@@ -46,11 +46,10 @@ export function Weight(props: DropdownComponentProps) {
                 technicianId: user.user.id,
               });
 
-            await refetch(["RemotePatient", patientId].toString(), {
+            await refetch(["RemotePatient", patientId], {
               mode: "exact",
             });
-
-            await refetch(["LastUpdates", patientId].toString(), {
+            await refetch(["LastUpdates", patientId], {
               mode: "exact",
             });
 

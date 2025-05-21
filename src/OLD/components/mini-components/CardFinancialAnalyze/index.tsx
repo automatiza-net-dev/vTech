@@ -22,9 +22,7 @@ const CardFinancialAnalyze = () => {
   const { data } = useQuery({
     queryKey: ["card", "overall-resume"],
     queryFn: () => financesService.getOverallResume().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
   const memoMap = useMemo(() => {
     if (!data)

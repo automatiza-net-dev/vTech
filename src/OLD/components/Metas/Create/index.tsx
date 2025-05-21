@@ -28,7 +28,9 @@ export const Create = ({ canCreate }) => {
     });
   }, [canCreate]);
 
-  const { mutate, loading } = useMutation((data) => metasService.create(data), {
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["CreateRandomb"],
+    queryFn: (data) => metasService.create(data),
     onSuccess: () => {
       setVisible(false);
       setPayload({});
@@ -68,7 +70,7 @@ export const Create = ({ canCreate }) => {
         </div>
       )}
       <Modal
-        loading={loading}
+        loading={isLoading}
         title="Criar meta"
         visible={visible}
         footer={null}
@@ -101,7 +103,11 @@ export const Create = ({ canCreate }) => {
           <hr />
           <div className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
             <Button type="primary" htmlType="submit" text="Criar" />
-            <Button text="Cancelar" type="button" onClick={() => setVisible(false)} />
+            <Button
+              text="Cancelar"
+              type="button"
+              onClick={() => setVisible(false)}
+            />
           </div>
         </Form>
       </Modal>

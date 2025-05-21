@@ -88,7 +88,7 @@ export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
                 },
               });
 
-              await refetch("LastUpdates", { mode: "include" });
+              await refetch(["LastUpdates"], { mode: "include" });
 
               createToast({
                 message: "Video/Foto criada com sucesso!",

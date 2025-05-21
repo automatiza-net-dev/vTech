@@ -9,9 +9,7 @@ export const useDeposits = (origin, params) => {
     queryKey: ["deposits", origin, params],
     queryFn: () =>
       depositService.searchDeposits(params).then(({ data }) => data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+   enableCache: true
   });
 };
 
@@ -42,8 +40,6 @@ export const useDepositMovements = (params, reload) => {
         .searchDepositMovements(newObj)
         .then(({ data }) => data);
     },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
 };

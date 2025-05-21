@@ -67,30 +67,36 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
   const [view, setView] = useState("1");
   const [parsedSubgroups, setParsedSubgroups] = useState([]);
 
-  const { data: variationGroupsData } = useQuery(["variation-groups"], () =>
-    variationGroupService.listVariationGroups()
-  );
+  const { data: variationGroupsData } = useQuery({
+    queryKey: ["variation-groups"],
+    queryFn: () => variationGroupService.listVariationGroups(),
+  });
 
-  useQuery(["subgroups"], () => subgroupsService.listSubgroups(), {
+  useQuery({
+    queryKey: ["subgroups"],
+    queryFn: () => subgroupsService.listSubgroups(),
     onSuccess: (data) => {
       sortItems(data, "description");
       setParsedSubgroups(data);
     },
   });
-  const { data: taxationGroups } = useQuery(["taxation-groups"], async () => {
-    return taxationGroupsService.listTaxationGroups();
+  const { data: taxationGroups } = useQuery({
+    queryKey: ["taxation-groups"],
+    queryFn: async () => {
+      return taxationGroupsService.listTaxationGroups();
+    },
   });
   const { createToast } = useToast();
 
-  const { data: unitsData } = useQuery(
-    [
+  const { data: unitsData } = useQuery({
+    queryKey: [
       "units",
       {
         type: "PRODUCT",
       },
     ],
-    () => unitsService.listUnits("PRODUCT")
-  );
+    queryFn: () => unitsService.listUnits("PRODUCT"),
+  });
 
   const verifyFields = (fields) => {
     if (fields.includes("subgroupId")) {
@@ -122,21 +128,20 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
     }
   };
 
-  const { mutate, isLoading } = useMutation(
-    (formData) => productService.createProduct(formData),
-    {
-      onSuccess: async () => {
-        setVisible(false);
-        return createToast({
-          message: "Produto cadastrado com sucesso!",
-          status: "success",
-        });
-      },
-      onError: (err) => {
-        verifyFields(err.response.data.errors.map((msg) => msg.field));
-      },
-    }
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["CreateProduct"],
+    queryFn: (formData) => productService.createProduct(formData),
+    onSuccess: async () => {
+      setVisible(false);
+      return createToast({
+        message: "Produto cadastrado com sucesso!",
+        status: "success",
+      });
+    },
+    onError: (err) => {
+      verifyFields(err.response.data.errors.map((msg) => msg.field));
+    },
+  });
 
   const submit = useCallback(() => {
     const correctDiscount = data.price.maximumDiscountValue
@@ -444,7 +449,6 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                         flexDirection: "column",
                       }}
                     >
-
                       <label>* Grupo de imposto</label>
                       <Select
                         className="uk-width-1-1"
@@ -452,13 +456,16 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                         value={String(data?.taxationGroupId)}
                         onChange={(value) => {
                           console.log(value);
-                          setData((prev) => ({ ...prev, taxationGroupId: String(value) }))
-                        }
-         
-                        }
-                        options={taxationGroups?.map(item => ({ label: item.name, value: item.id }))}
+                          setData((prev) => ({
+                            ...prev,
+                            taxationGroupId: String(value),
+                          }));
+                        }}
+                        options={taxationGroups?.map((item) => ({
+                          label: item.name,
+                          value: item.id,
+                        }))}
                       />
-                     
                     </Form.Item>
                   </div>
 
@@ -590,7 +597,10 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                       <Input.TextArea
                         value={data?.features}
                         onChange={(e) =>
-                          setData((prev) => ({ ...prev, features: e.target.value }))
+                          setData((prev) => ({
+                            ...prev,
+                            features: e.target.value,
+                          }))
                         }
                       />
                     </Form.Item>
@@ -636,106 +646,115 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                     <Button onClick={addVariation} text="Adicionar variação" />
                   </div>
 
-                      <div className="list">
-                      {data?.variations.map((item, index) => (
-                    <div
-                      key={`variation-div-${index}`}
-                      className={"uk-margin-top"}
-                    >
-                      <div className="uk-flex uk-flex-inline" style={{ justifyContent: "space-between", width: "100%" }}>
-                        <h5 className="uk-padding-small uk-padding-remove-vertical uk-padding-remove-left">
-                          Variação {index + 1}
-                        </h5>
-                        <button 
-                        style={{ border: 0, background: "transparent", border: 0 }}
-                          onClick={() => removeVariation(item.ref)}
-                          disabled={data.variations.length === 1}
-                          className="remove"
+                  <div className="list">
+                    {data?.variations.map((item, index) => (
+                      <div
+                        key={`variation-div-${index}`}
+                        className={"uk-margin-top"}
+                      >
+                        <div
+                          className="uk-flex uk-flex-inline"
+                          style={{
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
                         >
-                          <Icon name="IconDelete" color="red" />
+                          <h5 className="uk-padding-small uk-padding-remove-vertical uk-padding-remove-left">
+                            Variação {index + 1}
+                          </h5>
+                          <button
+                            style={{
+                              border: 0,
+                              background: "transparent",
+                              border: 0,
+                            }}
+                            onClick={() => removeVariation(item.ref)}
+                            disabled={data.variations.length === 1}
+                            className="remove"
+                          >
+                            <Icon name="IconDelete" color="red" />
                           </button>
-                      </div>
+                        </div>
 
-                      <div className="uk-margin-top">
-                        <div className="uk-flex uk-flex-between">
-                          <div className="uk-width-1-1">
-                            <Form.Item
-                              labelAlign="left"
-                              style={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                              }}
-                            >
-                              <label>Código de Barras</label>
-                              <Input
-                                maxLength={15}
-                                value={item.barcode}
-                                onChange={(e) => {
-                                  const variations = data.variations;
-                                  variations[index].barcode = e.target.value;
-                                  setData({ ...data, variations });
+                        <div className="uk-margin-top">
+                          <div className="uk-flex uk-flex-between">
+                            <div className="uk-width-1-1">
+                              <Form.Item
+                                labelAlign="left"
+                                style={{
+                                  width: "100%",
+                                  display: "flex",
+                                  flexDirection: "column",
                                 }}
-                              />
-                            </Form.Item>
+                              >
+                                <label>Código de Barras</label>
+                                <Input
+                                  maxLength={15}
+                                  value={item.barcode}
+                                  onChange={(e) => {
+                                    const variations = data.variations;
+                                    variations[index].barcode = e.target.value;
+                                    setData({ ...data, variations });
+                                  }}
+                                />
+                              </Form.Item>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {data?.variationGroup && (
-                        <div className="uk-margin-top">
-                          <div className="">
-                            {variationGroupsData
-                              ?.find((g) => g.id === data.variationGroup)
-                              .variations.map((variation, vIndex) => (
-                                <div
-                                  key={`variation-${variation.id}`}
-                                  className="uk-width-1-1 uk-padding uk-padding-remove-vertical uk-padding-remove-left"
-                                >
-                                  <Form.Item
-                                    label={variation.description}
-                                    required
-                                    labelAlign="left"
-                                    style={{
-                                      width: "100%",
-                                      display: "flex",
-                                      flexDirection: "column",
-                                    }}
+                        {data?.variationGroup && (
+                          <div className="uk-margin-top">
+                            <div className="">
+                              {variationGroupsData
+                                ?.find((g) => g.id === data.variationGroup)
+                                .variations.map((variation, vIndex) => (
+                                  <div
+                                    key={`variation-${variation.id}`}
+                                    className="uk-width-1-1 uk-padding uk-padding-remove-vertical uk-padding-remove-left"
                                   >
-                                    <Select
-                                      className="uk-width-1-1"
+                                    <Form.Item
+                                      label={variation.description}
                                       required
-                                      onChange={(value) => {
-                                        const variations = data.variations;
-
-                                        variations[index]["variation_options"][
-                                          vIndex
-                                        ] = value;
-
-                                        setData({ ...data, variations });
+                                      labelAlign="left"
+                                      style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        flexDirection: "column",
                                       }}
                                     >
-                                      {variation.options.map((option) => (
-                                        <Select.Option
-                                          key={`variation-option-${option.id}`}
-                                          value={option.id}
-                                        >
-                                          {option.description}
-                                        </Select.Option>
-                                      ))}
-                                    </Select>
-                                  </Form.Item>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      )}
+                                      <Select
+                                        className="uk-width-1-1"
+                                        required
+                                        onChange={(value) => {
+                                          const variations = data.variations;
 
-                      <hr />
-                    </div>
-                  ))}
+                                          variations[index][
+                                            "variation_options"
+                                          ][vIndex] = value;
+
+                                          setData({ ...data, variations });
+                                        }}
+                                      >
+                                        {variation.options.map((option) => (
+                                          <Select.Option
+                                            key={`variation-option-${option.id}`}
+                                            value={option.id}
+                                          >
+                                            {option.description}
+                                          </Select.Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <hr />
                       </div>
-               
+                    ))}
+                  </div>
                 </CSS>
               </>
             )}

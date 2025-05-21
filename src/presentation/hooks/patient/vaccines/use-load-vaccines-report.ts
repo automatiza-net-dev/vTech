@@ -17,6 +17,6 @@ export function useLoadVaccinesReport(params: LoadVaccinesReport.Params) {
   return useQuery({
     queryKey: ["LoadAllVaccinesReport"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

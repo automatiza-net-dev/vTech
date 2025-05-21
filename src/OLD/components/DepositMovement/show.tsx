@@ -44,15 +44,13 @@ export const ShowDepositMovement = () => {
       depositService
         .getDepositMovements({ ids: [router.query.innerpage] })
         .then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true,
     enabled: router.isReady,
   });
 
   const isDisabled = showDepositMovementQuery.isLoading;
 
-  const imprimir = useReactToPrint({ contentRef: componentRef })
+  const imprimir = useReactToPrint({ contentRef: componentRef });
 
   return (
     <section>
@@ -161,9 +159,7 @@ export const ShowDepositMovement = () => {
       <footer
         style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
       >
-       
-
-<Button text="Imprimir" onClick={() => imprimir()}/>
+        <Button text="Imprimir" onClick={() => imprimir()} />
 
         <Button onClick={() => router.back()} text="Voltar" />
       </footer>

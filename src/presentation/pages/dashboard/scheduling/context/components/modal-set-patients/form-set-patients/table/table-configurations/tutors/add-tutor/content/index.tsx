@@ -40,7 +40,7 @@ export function AddTutorContent({ id, setModal, origin }) {
       patient: id,
     });
 
-    await refetch(queryKeyLoadSchedulePatients.toString());
+    await refetch(queryKeyLoadSchedulePatients);
 
     await refetch(queryKeyLoadAllPatientTutor);
 

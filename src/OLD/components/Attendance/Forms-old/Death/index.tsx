@@ -8,8 +8,8 @@ import { Select, FormHandler, useToast, Button } from "infinity-forge";
 
 import moment from "moment";
 import { useLoadPatient } from "@/presentation";
-import { petsService } from "@/OLD/services/patient.service";
 import { useMutation, useQuery, useQueryClient } from "infinity-forge";
+import { petsService } from "@/OLD/services/patient.service";
 
 function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any) {
   const [body, setBody] = useState("");
@@ -19,7 +19,9 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any)
   const { createToast } = useToast();
 
   const patient = useLoadPatient();
+
   const refetch = useQueryClient((st) => st.refetch);
+
   const vetsQuery = useQuery({
     queryKey: ["allVets"],
     queryFn: () =>
@@ -36,13 +38,13 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any)
   const deathMutation = useMutation({
     queryKey: ["deathMutation"],
     queryFn: async (payload) => {
-     const response = await petsService.deathPatient(payload, patient?.data?.id)
+      const response = await petsService.deathPatient(payload, patient?.data?.id)
       
      return response
     },
     onSuccess: async () => {
-      await refetch(["RemotePatient", patient.data.id].toString());
-      await refetch(["LastUpdates", patient.data.id].toString());
+      await refetch(["RemotePatient", patient.data.id]);
+      await refetch(["LastUpdates", patient.data.id]);
 
       close();
     },

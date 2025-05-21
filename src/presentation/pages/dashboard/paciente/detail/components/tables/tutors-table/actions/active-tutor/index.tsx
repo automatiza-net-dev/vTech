@@ -40,8 +40,8 @@ export function ActiveTutor(props: Tutor) {
 
     createToast({ message: "Tutor vinculado com sucesso!", status: "success" });
 
-    await refetch(["RemotePatient", patientId].toString());
-    await refetch(["LastUpdates", patientId].toString());
+    await refetch(["RemotePatient", patientId]);
+    await refetch(["LastUpdates", patientId]);
 
     setLoading(false);
   }

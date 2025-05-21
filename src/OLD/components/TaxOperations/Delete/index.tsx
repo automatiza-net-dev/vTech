@@ -22,9 +22,10 @@ const DeleteTaxOperation = memo(function DeleteTaxOperation({ close, id }) {
   const permissions = permissionControl("operacoesFiscais");
   const { createToast } = useToast();
 
-  const { mutate, isLoading } = useMutation((id) =>
-    taxOperationService.deleteTaxOperations(id)
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["DeleteTaxOperationMuration"],
+    queryFn: (id) => taxOperationService.deleteTaxOperations(id),
+  });
 
   const remove = useCallback(() => {
     if (!permissions?.OPF3) {

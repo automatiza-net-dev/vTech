@@ -94,8 +94,8 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
         setModal(false);
         setData({});
         setApplications([]);
-        await refetch(["LastUpdates", patient.data?.id].toString());
-        await refetch("LoadAllVaccines", { mode: "include" });
+        await refetch(["LastUpdates", patient.data?.id]);
+        await refetch(["LoadAllVaccines"], { mode: "include" });
 
         if (
           router?.query?.scheduleId &&

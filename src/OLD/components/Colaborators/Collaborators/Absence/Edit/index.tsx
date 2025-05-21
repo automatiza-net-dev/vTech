@@ -31,7 +31,7 @@ export const Edit = ({ item }) => {
   const { Option } = Select;
   const [payload, setPayload] = useState({});
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const schema = yup
     .object({
@@ -65,8 +65,9 @@ export const Edit = ({ item }) => {
     );
   });
 
-  const { mutate, loading } = useMutation(
-    (data) => {
+  const { mutate, loading } = useMutation({
+    queryKey: ["EditRandoma"],
+    queryFn: (data) => {
       let newObj = {
         ...data,
         ...payload,
@@ -93,18 +94,22 @@ export const Edit = ({ item }) => {
       }
       calendarService.editAbsence(item.id, newObj);
     },
-    {
-      onError: () => {
-        createToast({ status: "error", message: "Erro ao editar indisponibilidade" })
-      },
-      onSuccess: () => {
-        createToast({ status: "success", message: "Sucesso ao editar indisponibilidade" })
-      
-        setIsVisible(false);
-        queryClient.invalidateQueries("getAbsences");
-      },
-    }
-  );
+    onError: () => {
+      createToast({
+        status: "error",
+        message: "Erro ao editar indisponibilidade",
+      });
+    },
+    onSuccess: () => {
+      createToast({
+        status: "success",
+        message: "Sucesso ao editar indisponibilidade",
+      });
+
+      setIsVisible(false);
+      queryClient.invalidateQueries("getAbsences");
+    },
+  });
 
   const onSubmit = useCallback(
     (data) => {

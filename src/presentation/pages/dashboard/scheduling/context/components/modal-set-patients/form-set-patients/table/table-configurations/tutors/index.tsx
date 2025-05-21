@@ -37,7 +37,7 @@ export function Tutors({
                 ) : !name ? (
                   <FormCreatePatient
                     onSuccess={() => 
-                      refetch(["RemotePatient"].toString(), { mode: "include" })
+                      refetch(["RemotePatient"], { mode: "include" })
                     }
                     trigger={<span>{tutor?.name}</span>}
                     patientId={tutor.id}

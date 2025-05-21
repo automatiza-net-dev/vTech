@@ -17,6 +17,6 @@ export function useLoadAllPatientVaccines(patient: Patient) {
   return useQuery({
     queryKey: ["LoadAllPatientVaccines", patient.id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

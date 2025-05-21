@@ -31,18 +31,10 @@ const Subgroups = memo(function Subgroups() {
   const [selectedSubgroup, setSelectedSubgroup] = useState(null);
   const { createToast } = useToast();
 
-  const { data, isLoading } = useQuery(
-    ["subgroups", filters],
-    () => subgroupsService.listSubgroups(filters),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-    },
-    {
-      enabled: true,
-    }
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ["subgroups", filters],
+    queryFn: () => subgroupsService.listSubgroups(filters),
+  });
 
   const listSubgroupsPermission = useUserHasPermission("SBG00");
   const canCreateSubGroup = useUserHasPermission("SBG01");
@@ -64,13 +56,15 @@ const Subgroups = memo(function Subgroups() {
               }
             />
           </Input>
-         {canCreateSubGroup && <div className="uk-margin-small-top">
-            <Button
-              onClick={() => setVisible(true)}
-              text="Cadastro"
-              type="button"
-            />
-          </div>}
+          {canCreateSubGroup && (
+            <div className="uk-margin-small-top">
+              <Button
+                onClick={() => setVisible(true)}
+                text="Cadastro"
+                type="button"
+              />
+            </div>
+          )}
         </div>
         <hr />
         <Table

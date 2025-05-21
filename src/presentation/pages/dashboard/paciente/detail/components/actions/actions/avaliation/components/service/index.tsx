@@ -101,8 +101,8 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       setAttendance(attendanceResponse);
 
       if (scheduleDate) {
-        refetch("RemoteLoadAllSchedulesUser" + scheduleDate + "true");
-        refetch("RemoteLoadAllSchedulesUser" + scheduleDate + "false");
+        refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "true"]);
+       refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "false"]);
       }
 
       createToast({
@@ -175,7 +175,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           {
             action: async (data) => {
               await handleSubmit(data, async () => {
-                await refetch(["LastUpdates"].toString(), { mode: "include" });
+                await refetch(["LastUpdates"], { mode: "include" });
               });
 
               handlePrint();
@@ -198,7 +198,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
                 status: "success",
               });
 
-              await refetch(["LastUpdates", patientId].toString(), {
+              await refetch(["LastUpdates", patientId], {
                 mode: "exact",
               });
 
@@ -223,7 +223,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
               await handleSubmit(data, async () => {
                 props?.setModal && props.setModal(false);
 
-                await refetch(["LastUpdates"].toString(), { mode: "include" });
+                await refetch(["LastUpdates"], { mode: "include" });
               });
             },
             props: () => ({ text: "SALVAR" }),
@@ -278,7 +278,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         onClose={async () => {
           setModal(false);
 
-          await refetch(["LastUpdates"].toString(), { mode: "include" });
+          await refetch(["LastUpdates"], { mode: "include" });
         }}
       >
         <AddBudgetNew

@@ -12,7 +12,7 @@ export function BlockUser({ scheduleUser }: { scheduleUser: ScheduleUser }) {
       <BlockUserButton
         userId={scheduleUser.id}
         onSucess={() => {
-          refetch("RemoteLoadAllSchedulesUser", { mode: "include" });
+          refetch(["RemoteLoadAllSchedulesUser"], { mode: "include" });
         }}
         Component={({ onClick }) => (
           <Tooltip

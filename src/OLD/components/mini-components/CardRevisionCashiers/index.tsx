@@ -9,9 +9,7 @@ const DailyCashierRevisaoCard = () => {
     queryKey: ["card", "cashiers", "revised"],
     queryFn: () =>
       financesService.getResumeRevisedCashiers().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
 
   return (

@@ -43,7 +43,7 @@ export function EndAttendanceButton() {
     attendanceService
       .closeAttendance(selectedAttendance)
       .then(async (_res) => {
-        await refetch(["RemotePatient", patient.data.id].toString());
+        await refetch(["RemotePatient", patient.data.id]);
 
         createToast({
           status: "error",

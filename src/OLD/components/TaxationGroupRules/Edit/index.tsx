@@ -29,84 +29,77 @@ const UpdateTaxationGroupRule = memo(function UpdateTaxationGroupRule({
 
   const [data, setData] = useState(null);
 
-  const { data: ruleData } = useQuery(
-    ["taxation-group-rule", initialData?.id],
-    () => taxationGroupRulesService.showTaxationGroupRule(initialData.id),
-    {
-      enabled: visible,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: false,
-      onSuccess: (_data) => {
-        setData({
-          companyType: _data.company_type,
-          movementType: _data.movement_type,
-          movementCategory: _data.movement_category,
-          fromUf: _data.from_uf,
-          toUf: _data.to_uf,
-          icmsCst: _data.icms_cst,
-          icmsPerc: _data.icms_perc,
-          icmsPercRedAliquota: _data.icms_perc_red_aliquota,
-          icmsPercRedBaseCalculo: _data.icms_perc_red_base_calculo,
-          ivaIcmsSt: _data.iva_icms_st,
-          fcpPerc: _data.fcp_perc,
-          taxBenefitCode: _data.tax_benefit_code,
-          ipiCst: _data.ipi_cst,
-          ipiPerc: _data.ipi_perc,
-          pisCst: _data.pis_cst,
-          pisPerc: _data.pis_perc,
-          cofinsCst: _data.cofins_cst,
-          cofinsPerc: _data.cofins_perc,
-          icmsPercRedBaseCalculoST: _data.icms_perc_red_base_calculo_st,
-          icmsPercDiferimento: _data.icms_perc_diferimento,
-          taxationGroupId: _data.taxationGroup.id,
-          taxationGroupName: _data.taxationGroup.name,
-          taxOperationId: _data.taxOperation.id,
-          active: _data.active,
-        });
-      },
-    }
-  );
+  const { data: ruleData } = useQuery({
+    queryKey: ["taxation-group-rule", initialData?.id],
+    queryFn: () =>
+      taxationGroupRulesService.showTaxationGroupRule(initialData.id),
+    enabled: visible,
+    enableCache: true,
+    onSuccess: (_data) => {
+      setData({
+        companyType: _data.company_type,
+        movementType: _data.movement_type,
+        movementCategory: _data.movement_category,
+        fromUf: _data.from_uf,
+        toUf: _data.to_uf,
+        icmsCst: _data.icms_cst,
+        icmsPerc: _data.icms_perc,
+        icmsPercRedAliquota: _data.icms_perc_red_aliquota,
+        icmsPercRedBaseCalculo: _data.icms_perc_red_base_calculo,
+        ivaIcmsSt: _data.iva_icms_st,
+        fcpPerc: _data.fcp_perc,
+        taxBenefitCode: _data.tax_benefit_code,
+        ipiCst: _data.ipi_cst,
+        ipiPerc: _data.ipi_perc,
+        pisCst: _data.pis_cst,
+        pisPerc: _data.pis_perc,
+        cofinsCst: _data.cofins_cst,
+        cofinsPerc: _data.cofins_perc,
+        icmsPercRedBaseCalculoST: _data.icms_perc_red_base_calculo_st,
+        icmsPercDiferimento: _data.icms_perc_diferimento,
+        taxationGroupId: _data.taxationGroup.id,
+        taxationGroupName: _data.taxationGroup.name,
+        taxOperationId: _data.taxOperation.id,
+        active: _data.active,
+      });
+    },
+  });
 
-  const { data: taxOperations } = useQuery(
-    ["tax-operations"],
-    () => taxOperationService.listTaxOperations({}),
-    {
-      enabled: visible,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-      onSuccess: (reqData) => {
-        if (reqData.length === 1) {
-          setData((prev) => ({
-            ...prev,
-            taxOperationId: reqData[0].id,
-          }));
-        }
-      },
-    }
-  );
+  const { data: taxOperations } = useQuery({
+    queryKey: ["tax-operations"],
+    queryFn: async () => taxOperationService.listTaxOperations({}),
+    onSuccess: (reqData) => {
+      if (reqData.length === 1) {
+        setData((prev) => ({
+          ...prev,
+          taxOperationId: reqData[0].id,
+        }));
+      }
+    },
+    enabled: visible,
+  });
 
-  const { mutate, isLoading } = useMutation(
-    (newData) =>
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["UpdateMutaitonasjas"],
+    queryFn: (newData) =>
       taxationGroupRulesService.updateTaxationGroupRule(
         initialData.id,
         newData
       ),
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(["taxation-group-rules"]);
-        hide();
-      },
-    }
-  );
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["taxation-group-rules"]);
+      hide();
+    },
+  });
 
-  const { mutateAsync: updateTaxationGroup } = useMutation((newData) =>
-    taxationGroupsService.updateTaxationGroup(
-      ruleData.taxationGroup.id,
-      newData
-    )
-  );
+  const { mutateAsync: updateTaxationGroup } = useMutation({
+    queryKey: ["Muraruarura"],
+    queryFn: (newData) =>
+      taxationGroupsService.updateTaxationGroup(
+        ruleData.taxationGroup.id,
+        newData
+      ),
+  });
 
   const submit = useCallback(async () => {
     if (data.taxationGroupName !== ruleData.taxationGroup.name) {

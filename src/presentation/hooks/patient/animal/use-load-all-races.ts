@@ -18,6 +18,6 @@ export function useLoadAllRaces(props: LoadAllRaces.Params) {
   return useQuery({
     queryKey: ["LoadAllRaces", props],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

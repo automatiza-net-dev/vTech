@@ -19,6 +19,6 @@ export function useLoadOpportunitiesReport(
   return useQuery({
     queryKey: ["opportunitiesReport", params],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

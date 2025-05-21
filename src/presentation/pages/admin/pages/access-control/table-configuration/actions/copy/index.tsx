@@ -16,7 +16,7 @@ export function Copy(props: ControllerRole) {
           .get<RemoteAccessControls>(adminTypes.RemoteAccessControls)
           .copy({ roleId: String(props.id) });
 
-        await refetch("RemoteLoadAllControllerRoles");
+        await refetch(["RemoteLoadAllControllerRoles"]);
 
         createToast({
           message: "Role duplicada com sucesso!",

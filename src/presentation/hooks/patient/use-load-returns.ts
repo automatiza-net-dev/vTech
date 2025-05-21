@@ -13,7 +13,7 @@ export function useLoadReturnablesSchedulePatient(patientId: string) {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadReturnablesSchedulePatient" + patientId,
+    queryKey: ["RemoteLoadReturnablesSchedulePatient", patientId],
     queryFn: fetcher,
     enabled: !!(patientId)
   });

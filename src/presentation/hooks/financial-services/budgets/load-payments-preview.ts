@@ -23,6 +23,5 @@ export function useLoadPaymentsPreview(
   return useQuery({
     queryKey: ["paymentsPreview", params],
     queryFn: fetcher,
-    refetchOnWindowFocus: false,
   });
 }

@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 
 import { Form, Input, Modal, Select, Upload } from "antd";
 import { useRouter } from "next/router";
-import {  useMutation } from "infinity-forge";
+import { useMutation } from "infinity-forge";
 import { petsService } from "@/OLD/services/patient.service";
 import dynamic from "next/dynamic";
 import { useToast } from "infinity-forge";
@@ -16,22 +16,20 @@ export const NewPatient = memo(({ isVisible, close }) => {
   const [photo, setPhoto] = useState();
   const [fileList, setFileList] = useState([]);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
-  const { loading, mutate } = useMutation(
-    (payload) => petsService.createPatient(payload),
-    {
-      onSuccess: () => {
+  const { loading, mutate } = useMutation({
+    queryKey: ["NewPatient"],
+    queryFn: (payload) => petsService.createPatient(payload),
+    onSuccess: () => {
+      createToast({ status: "success", message: "Novo paciente cadastrado" });
 
-        createToast({ status: "success", message: "Novo paciente cadastrado" })
-
-        close();
-      },
-      onError: () => {
-        createToast({ status: "error", message: "Erro ao cadastrar paciente" })
-      },
-    }
-  );
+      close();
+    },
+    onError: () => {
+      createToast({ status: "error", message: "Erro ao cadastrar paciente" });
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     document.getElementById("create-patient-submit").click();

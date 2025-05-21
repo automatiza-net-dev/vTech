@@ -17,7 +17,7 @@ export function useLoadBeds() {
   return useQuery({
     queryKey: ["RemoteLoadBeds"],
     queryFn: fetcher,
-    ...callApiOneTime
+    enableCache: true
   });
 }
 

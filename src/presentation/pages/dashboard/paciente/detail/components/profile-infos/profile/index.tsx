@@ -57,7 +57,7 @@ export function Profile(props: Patient) {
         <div>
           {name && (
             <FormCreatePatient
-              onSuccess={async () =>  await refetch(["RemotePatient"].toString(), { mode: "include" })}
+              onSuccess={async () =>  await refetch(["RemotePatient"], { mode: "include" })}
               trigger={
                 <h1 className="font-20-regular">
                   <span>{name}</span>

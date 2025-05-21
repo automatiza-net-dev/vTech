@@ -1,14 +1,12 @@
-// @ts-nocheck
 import { useEffect, useState } from "react";
-import { useMutation, useQueries, useQuery } from "infinity-forge";
-import api from "@/OLD/services";
+import { useMutation, useQuery } from "infinity-forge";
 import { billService } from "@/OLD/services/bills.service";
 import moment from "moment";
 
 export const useGetAllBills = (params, reload) => {
-  return useQuery(
-    ["bills", reload],
-    async () => {
+  return useQuery({
+    queryKey: ["bills", reload],
+    queryFn: async () => {
       let newObj = { ...params };
       const keys = Object.keys(params);
       if (newObj?.tag) {
@@ -29,59 +27,64 @@ export const useGetAllBills = (params, reload) => {
 
       return data ?? [];
     },
-    { refetchOnWindowFocus: false }
+  }
   );
 };
 
 export const useGetBillProducts = (visible) => {
-  return useQuery(
-    ["bills", "products"],
-    async () => {
+  return useQuery({
+    queryKey: ["bills", "products"],
+    queryFn: async () => {
       const data = await billService.getBillProducts();
 
       return data ?? [];
     },
-    {
-      enabled: visible,
-    }
+    enabled: visible,
+  }
   );
 };
 
 export const useCreateBill = () => {
-  return useMutation(async (formData) => {
-    const data = await billService.createBill(formData);
+  return useMutation({
+    queryKey: ["useCreateBill"], queryFn: async (formData) => {
+      const data = await billService.createBill(formData);
 
-    return data;
+      return data;
+    }
   });
 };
 
 export const useCreateBillItem = () => {
-  return useMutation(async (formData) => {
-    const data = await billService.createBillItem(formData);
+  return useMutation({
+    queryKey: ["useCreateBillItem"], queryFn: async (formData) => {
+      const data = await billService.createBillItem(formData);
 
-    return data;
+      return data;
+    }
   });
 };
 
-export const useCreateBillPayment = () => {
-  return useMutation(async (formData) => {
-    const data = await billService.createBillPayment(formData);
 
-    return data;
+export const useCreateBillPayment = () => {
+  return useMutation({
+    queryKey: ["useCreateBillPayment"], queryFn: async (formData) => {
+      const data = await billService.createBillPayment(formData);
+
+      return data;
+    }
   });
 };
 
 export const useShowBill = (id, enabled) => {
-  return useQuery(
-    ["bills", id],
-    async () => {
+  return useQuery({
+    queryKey: ["bills", id],
+    queryFn: async () => {
       const response = await billService.getSingleBill(id);
 
       return response;
     },
-    {
-      enabled: enabled && !!id,
-    }
+    enabled: enabled && !!id
+  }
   );
 };
 

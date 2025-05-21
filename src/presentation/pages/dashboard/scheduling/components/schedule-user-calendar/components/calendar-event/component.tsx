@@ -19,7 +19,7 @@ export function CalendarEvent({
   viewCalendar: "day" | "week";
   scheduleUser: ScheduleUser;
   showNameScheduleUser?: boolean;
-  refetchKeyWeekCalendar?: string;
+  refetchKeyWeekCalendar?: any;
 }) {
   const [open, setOpen] = useState(false);
 

@@ -225,7 +225,7 @@ export default function LaunchExam({
           }
         })
         .finally(() => {
-          refetch("LastUpdates", { mode: "include" });
+          refetch(["LastUpdates"], { mode: "include" });
 
           if (!error) {
             modal && setModal && setModal(false);
@@ -274,7 +274,7 @@ export default function LaunchExam({
           });
         })
         .finally(() => {
-          refetch("LastUpdates", { mode: "include" });
+          refetch(["LastUpdates"], { mode: "include" });
 
           if (!visible) {
             setSelectedExam({});
@@ -299,7 +299,7 @@ export default function LaunchExam({
         )
         .then((_res) => {
           setLoading(false);
-          refetch("LastUpdates", { mode: "include" });
+          refetch(["LastUpdates"], { mode: "include" });
           return createToast({ message: "Anexo removido!", status: "success" });
         })
         .catch((err) => {
@@ -319,7 +319,7 @@ export default function LaunchExam({
       .removeComplete(examPatientData?._id)
       .then((_res) => {
         setLoading(false);
-        refetch("LastUpdates", { mode: "include" });
+        refetch(["LastUpdates"], { mode: "include" });
         return createToast({
           message: "Registro removido com sucesso!",
           status: "error",

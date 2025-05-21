@@ -101,7 +101,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                     isModal
                     tutorId={patient.tutor.id}
                     onSuccess={async () =>
-                     await refetch(["RemotePatient"].toString(), { mode: "include" })
+                     await refetch(["RemotePatient"], { mode: "include" })
                     }
                     trigger={
                       <span

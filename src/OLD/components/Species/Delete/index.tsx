@@ -13,20 +13,19 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
   const { createToast } = useToast();
   const permissions = permissionControl("especies");
 
-  const { mutate, loading } = useMutation(
-    (id) => animalServices.deleteSpecie(id),
-    {
-      onSuccess: () => {
-        createToast({ message: "Espécie deletada", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["Deletea"],
+    queryFn: (id) => animalServices.deleteSpecie(id),
+    onSuccess: () => {
+      createToast({ message: "Espécie deletada", status: "success" });
 
-        setReload(!reload);
-        queryClient.invalidateQueries("getSpecies");
-      },
-      onError: () => {
-        createToast({ message: "Erro ao deletar espécie", status: "error" });
-      },
-    }
-  );
+      setReload(!reload);
+      queryClient.invalidateQueries("getSpecies");
+    },
+    onError: () => {
+      createToast({ message: "Erro ao deletar espécie", status: "error" });
+    },
+  });
 
   return (
     <div>

@@ -48,14 +48,13 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
     }));
   }, [initialData]);
 
-  const { isLoading, mutate } = useMutation(
-    (newData) => productService.updateBusinessUnitProduct(id, newData),
-    {
-      onSuccess: () => {
-        handleClose();
-      },
-    }
-  );
+  const { isLoading, mutate } = useMutation({
+    queryKey: ["UpdateBUsinessUnitProduct"],
+    queryFn: (newData) => productService.updateBusinessUnitProduct(id, newData),
+    onSuccess: () => {
+      handleClose();
+    },
+  });
 
   const submit = useCallback(() => {
     mutate(data);

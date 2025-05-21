@@ -17,16 +17,11 @@ const CreateProductVariation = function CreateProductVariation({
 }) {
   const [data, setData] = useState({});
 
-  const { data: variationGroupsData } = useQuery(
-    ["variation-groups"],
-    () => variationGroupService.listVariationGroups(),
-    {
-      enabled: !!initialData.variationGroupId,
-      refetchInterval: 1000 * 60,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    }
-  );
+  const { data: variationGroupsData } = useQuery({
+    queryKey: ["variation-groups"],
+    queryFn: () => variationGroupService.listVariationGroups(),
+    enabled: !!initialData.variationGroupId,
+  });
 
   const handleClose = () => {
     setData(() => ({
@@ -50,14 +45,14 @@ const CreateProductVariation = function CreateProductVariation({
     }));
   }, [initialData]);
 
-  const { isLoading, mutate } = useMutation(
-    (newData) => productVariationsService.createProductVariation(newData),
-    {
-      onSuccess: () => {
-        handleClose();
-      },
-    }
-  );
+  const { isLoading, mutate } = useMutation({
+    queryKey: ["CreateProductVariation"],
+    queryFn: (newData) =>
+      productVariationsService.createProductVariation(newData),
+    onSuccess: () => {
+      handleClose();
+    },
+  });
 
   const submit = useCallback(() => {
     const options = data.options.filter(Boolean);

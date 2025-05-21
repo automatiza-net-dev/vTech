@@ -30,56 +30,48 @@ function CreateTaxationGroupRule({ visible, hide }) {
 
   const states = useLoadAllStates();
 
-  const { data: taxOperations } = useQuery(
-    ["tax-operations"],
-    () => taxOperationService.listTaxOperations({}),
-    {
-      enabled: visible,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-      onSuccess: (reqData) => {
-        if (reqData.length === 1) {
-          setData((prev) => ({
-            ...prev,
-            taxOperationId: reqData[0].id,
-          }));
-        }
-      },
-    }
-  );
-  const { data: units } = useQuery(
-    ["units"],
-    () => clinicService.getClinicsByUser(),
-    {
-      enabled: visible,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-    }
-  );
+  const { data: taxOperations } = useQuery({
+    queryKey: ["tax-operations"],
+    queryFn: () => taxOperationService.listTaxOperations({}),
+    enabled: visible,
+    onSuccess: (reqData) => {
+      if (reqData.length === 1) {
+        setData((prev) => ({
+          ...prev,
+          taxOperationId: reqData[0].id,
+        }));
+      }
+    },
+  });
 
-  const { mutateAsync, isLoading } = useMutation(
-    (newData) => taxationGroupRulesService.storeTaxationGroupRule(newData),
-    {
-      onSuccess: async () => {
-        createToast({
-          message: "Grupo cadastrado com sucesso!",
-          status: "success",
-        });
-        await queryClient.invalidateQueries(["taxation-group-rules"]);
-        // setData({})
-        // hide()
-      },
-      onError: (error) => {
-        console.error(error);
-      },
-    }
-  );
-  const { mutateAsync: createGroup, error: createGroupError } = useMutation(
-    (newData) => taxationGroupsService.storeTaxationGroup(newData),
-    {}
-  );
+  const { data: units } = useQuery({
+    queryKey: ["units"],
+    queryFn: async () => clinicService.getClinicsByUser(),
+    enabled: visible,
+  });
+
+  const { mutateAsync, isLoading } = useMutation({
+    queryKey: ["CreateTaxaGrouPRuleMutaiton"],
+    queryFn: (newData) =>
+      taxationGroupRulesService.storeTaxationGroupRule(newData),
+    onSuccess: async () => {
+      createToast({
+        message: "Grupo cadastrado com sucesso!",
+        status: "success",
+      });
+      await queryClient.invalidateQueries(["taxation-group-rules"]);
+      // setData({})
+      // hide()
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const { mutateAsync: createGroup, error: createGroupError } = useMutation({
+    queryKey: ["randommutation11"],
+    queryFn: (newData) => taxationGroupsService.storeTaxationGroup(newData),
+  });
 
   useEffect(() => {
     if (!data?.companyType || !data?.icmsCst) {

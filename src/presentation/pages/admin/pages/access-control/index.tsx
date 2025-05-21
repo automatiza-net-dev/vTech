@@ -24,7 +24,6 @@ export function AccessControlsPage() {
           customFilters: [{ InputComponent: "Input", label: "Nome", name: "name", onChangeMode: "blur" }]
         }}
         columnsConfiguration={{ columns: tableConfiguration }}
-        isFetching={isFetching}
       />
     </S.ListUser>
   );

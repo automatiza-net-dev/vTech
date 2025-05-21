@@ -35,7 +35,7 @@ export function SideBarContent({
   timeText: string;
   viewCalendar: "day" | "week";
   scheduleUser: ScheduleUser;
-  refetchKeyWeekCalendar?: string;
+  refetchKeyWeekCalendar?: any;
 }) {
   const date = DateToDDMMYYYY(event?.start || event?.event?.start_hour);
 

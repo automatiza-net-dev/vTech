@@ -15,13 +15,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile.ts";
 
 import { Button, useToast } from "infinity-forge";
 import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
-import {
-  Input,
-  Table,
-  Popconfirm,
-  Modal,
-  Typography,
-} from "antd";
+import { Input, Table, Popconfirm, Modal, Typography } from "antd";
 const { TextArea } = Input;
 
 import { DeleteTwoTone } from "@ant-design/icons";
@@ -63,7 +57,7 @@ export function Details({ receiptId, setVisible }: any) {
   const cancelFNPermission = useUserHasPermission("VEN09");
   const disableFNPermission = useUserHasPermission("VEN10");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const queryClient = useQueryClient();
 
@@ -73,11 +67,16 @@ export function Details({ receiptId, setVisible }: any) {
       .then((_res) => {
         setReload((prv) => !prv);
 
-        return createToast({ status: "success", message: "Item removido com sucesso" })
+        return createToast({
+          status: "success",
+          message: "Item removido com sucesso",
+        });
       })
       .catch((err) => {
-
-        return createToast({ status: "error", message: "Houve um erro ao remover o item"})
+        return createToast({
+          status: "error",
+          message: "Houve um erro ao remover o item",
+        });
       });
   };
 
@@ -113,78 +112,76 @@ export function Details({ receiptId, setVisible }: any) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-                  <MdOutlineCancel
-                    opacity={validToCancel ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToCancel) return;
-
-                      setOpenCancelNfe(true);
-                      setCancelNfeData({
-                        issuedDocumentId: doc.id,
-                        reason: "",
-                      });
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-              )}
-              {disableFNPermission && (
-                  <FiRefreshCw
-                    opacity={validToDisable ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToDisable) return;
-
-                      setOpenDisableNfe(true);
-                      setDisableNfeData({
-                        issuedDocumentId: doc.id,
-                        reason: "",
-                      });
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
-              )}
-          
-                <MdOutlineSyncDisabled
-                  opacity={validToUpdate ? 1 : 0.5}
+                <MdOutlineCancel
+                  opacity={validToCancel ? 1 : 0.5}
                   onClick={() => {
-                    if (!validToUpdate) return;
+                    if (!validToCancel) return;
 
-                    updateNfeMutation.mutate(doc.id);
+                    setOpenCancelNfe(true);
+                    setCancelNfeData({
+                      issuedDocumentId: doc.id,
+                      reason: "",
+                    });
                   }}
                   size={25}
                   className="icon"
                   cursor={"pointer"}
                 />
-          
-              {doc?.corrections.length > 0 ? (
-              
-                  <TbAlertTriangle
-                    size={20}
-                    color="var(--red)"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setNfeErrorsVisible(true);
-                      return setNfeErrors(doc?.corrections);
-                    }}
-                  />
-               
-              ) : (
-                  <RiPrinterCloudLine
-                    opacity={validToPrint ? 1 : 0.5}
-                    onClick={() => {
-                      if (!validToPrint) {
-                        return;
-                      }
+              )}
+              {disableFNPermission && (
+                <FiRefreshCw
+                  opacity={validToDisable ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToDisable) return;
 
-                      window.open(doc.authorization_pdf_path, "_blank");
-                    }}
-                    size={25}
-                    className="icon"
-                    cursor={"pointer"}
-                  />
+                    setOpenDisableNfe(true);
+                    setDisableNfeData({
+                      issuedDocumentId: doc.id,
+                      reason: "",
+                    });
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
+              )}
+
+              <MdOutlineSyncDisabled
+                opacity={validToUpdate ? 1 : 0.5}
+                onClick={() => {
+                  if (!validToUpdate) return;
+
+                  updateNfeMutation.mutate(doc.id);
+                }}
+                size={25}
+                className="icon"
+                cursor={"pointer"}
+              />
+
+              {doc?.corrections.length > 0 ? (
+                <TbAlertTriangle
+                  size={20}
+                  color="var(--red)"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setNfeErrorsVisible(true);
+                    return setNfeErrors(doc?.corrections);
+                  }}
+                />
+              ) : (
+                <RiPrinterCloudLine
+                  opacity={validToPrint ? 1 : 0.5}
+                  onClick={() => {
+                    if (!validToPrint) {
+                      return;
+                    }
+
+                    window.open(doc.authorization_pdf_path, "_blank");
+                  }}
+                  size={25}
+                  className="icon"
+                  cursor={"pointer"}
+                />
               )}
             </div>
           ),
@@ -214,51 +211,49 @@ export function Details({ receiptId, setVisible }: any) {
     );
   };
 
-  const updateNfeMutation = useMutation(
-    async (_id) => {
+  const updateNfeMutation = useMutation({
+    queryKey: ["updateNfeMutation"],
+    queryFn: async (_id) => {
       await fiscalDocumentService.updateIssuedNfe({
         id: _id,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfeQuery.refetch();
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfeQuery.refetch();
+    },
+  });
 
-  const cancelNfseMutation = useMutation(
-    async (data) => {
+  const cancelNfseMutation = useMutation({
+    queryKey: ["cancelNfseMutation"],
+    queryFn: async (data) => {
       await fiscalDocumentService.cancelIssuedNfse({
         data,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfseQuery.refetch();
-        setOpenCancelNfse(false);
-        setCancelNfseData({});
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfseQuery.refetch();
+      setOpenCancelNfse(false);
+      setCancelNfseData({});
+    },
+  });
 
-  const cancelNfeMutation = useMutation(
-    async (data) => {
+  const cancelNfeMutation = useMutation({
+    queryKey: ["cancelNfeMutation"],
+    queryFn: async (data) => {
       await fiscalDocumentService.cancelIssuedNfe({
         data,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfeQuery.refetch();
-        setOpenCancelNfe(false);
-        setCancelNfeData({});
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfeQuery.refetch();
+      setOpenCancelNfe(false);
+      setCancelNfeData({});
+    },
+  });
 
-  const authorizeNfse = useMutation(
-    () => {
+  const authorizeNfse = useMutation({
+    queryKey: ["authorizeNfse"],
+    queryFn: () => {
       const findServiceDocument = getFiscalDocumentsQuery?.data?.find(
         (item) => item?.document_type === "SERVICOS"
       );
@@ -282,36 +277,36 @@ export function Details({ receiptId, setVisible }: any) {
         unitFiscalDocumentId: selected,
       });
     },
-    {
-      onSuccess: () => {
-        setLoading(false);
-       
-       createToast({ status: "success", message: "Nota emitida com sucesso" })
-        setOpenModal(false);
-        queryClient.invalidateQueries(["bills"]);
-      },
-      onError: (err) => {
-        setLoading(false);
-               
-       createToast({ status: "error", message: err.message ?? "Erro na emissão" })
-      },
-    }
-  );
+    onSuccess: () => {
+      setLoading(false);
 
-  const disableNfeMutation = useMutation(
-    async (data) => {
+      createToast({ status: "success", message: "Nota emitida com sucesso" });
+      setOpenModal(false);
+      queryClient.invalidateQueries(["bills"]);
+    },
+    onError: (err) => {
+      setLoading(false);
+
+      createToast({
+        status: "error",
+        message: err.message ?? "Erro na emissão",
+      });
+    },
+  });
+
+  const disableNfeMutation = useMutation({
+    queryKey: ["disableNfeMutation"],
+    queryFn: async (data) => {
       await fiscalDocumentService.disableIssuedNfe({
         data,
       });
     },
-    {
-      onSuccess: () => {
-        getIssuedNfeQuery.refetch();
-        setOpenDisableNfe(false);
-        setDisableNfeData({});
-      },
-    }
-  );
+    onSuccess: () => {
+      getIssuedNfeQuery.refetch();
+      setOpenDisableNfe(false);
+      setDisableNfeData({});
+    },
+  });
 
   useEffect(() => {
     setIds({ ids: [receiptId] });
@@ -514,8 +509,10 @@ export function Details({ receiptId, setVisible }: any) {
             e.preventDefault();
 
             if (!cancelNfeData?.reason) {
-            
-              return  createToast({ status: "error", message:"Informe o motivo do cancelamento" })
+              return createToast({
+                status: "error",
+                message: "Informe o motivo do cancelamento",
+              });
             }
 
             cancelNfeMutation.mutate(cancelNfeData);
@@ -561,7 +558,10 @@ export function Details({ receiptId, setVisible }: any) {
           onSubmit={(e) => {
             e.preventDefault();
             if (!disableNfeData?.reason) {
-              return createToast({ status: "error", message:"Informe o motivo da inutilização" })
+              return createToast({
+                status: "error",
+                message: "Informe o motivo da inutilização",
+              });
             }
 
             disableNfeMutation.mutate(disableNfeData);

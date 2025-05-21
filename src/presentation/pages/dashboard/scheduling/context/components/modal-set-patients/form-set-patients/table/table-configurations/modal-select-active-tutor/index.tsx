@@ -47,7 +47,7 @@ export function ModalSelectActiveTutor({
         status: "success",
       });
 
-      refetch(queryKeyLoadSchedulesPatients.toString())
+      refetch(queryKeyLoadSchedulesPatients)
 
     } catch (err) {
       console.log(err);

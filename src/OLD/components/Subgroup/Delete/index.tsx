@@ -20,9 +20,10 @@ const DeleteSubgroup = memo(function DeleteSubgroup({ close, id }) {
   const queryClient = useQueryClient();
   const { createToast } = useToast();
 
-  const { mutate, isLoading } = useMutation((id) =>
-    subgroupsService.deleteSubgroup(id)
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["DeleteSoubegroupMutaiton"],
+    queryFn: (id) => subgroupsService.deleteSubgroup(id),
+  });
 
   const removeExam = useCallback(() => {
     if (!permissions?.SBG3) {
