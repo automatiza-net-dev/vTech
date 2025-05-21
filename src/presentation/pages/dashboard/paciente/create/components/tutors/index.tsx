@@ -31,8 +31,6 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
     return { label: `${tutor.name} // ${tutor.cellphone}`, value: tutor.id };
    });
 
-   console.log(options)
-
   const holders = values["holders"] || [];
 
   const { createToast } = useToast();
