@@ -14,7 +14,7 @@ import { Button, useToast } from "infinity-forge";
 import { Modal, Select, Button as AntButton } from "antd";
 
 import moment from "moment";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 
 export function EndAttendanceButton() {
   const [showSelectAttendances, setShowSelectAttendances] = useState(false);
@@ -32,7 +32,7 @@ export function EndAttendanceButton() {
   const { attendances } = useAttendances(patient?.data?.id, reload);
   const { schedule } = useSchedule(scheduleId, reload);
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
 
   const attendancesToClose = attendances.filter(
     (attendance) => !attendance?.end_date
@@ -43,9 +43,7 @@ export function EndAttendanceButton() {
     attendanceService
       .closeAttendance(selectedAttendance)
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["RemotePatient", patient.data.id],
-        });
+        await refetch(["RemotePatient", patient.data.id]);
 
         createToast({
           status: "error",

@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Core
 import { useCallback, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 
 // Services
 import api from "@/OLD/services";
@@ -17,16 +17,11 @@ const CreateBusinessUnitProduct = function CreateBusinessUnitProduct({
 }) {
   const [data, setData] = useState({});
 
-  const { data: businessUnits } = useQuery(
-    ["business-units"],
-    () => api.get(`/business-units/user`).then((res) => res.data),
-    {
-      enabled: Object.keys(initialData).length > 0,
-      refetchInterval: 1000 * 60,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    }
-  );
+  const { data: businessUnits } = useQuery({
+    queryKey: ["business-units"],
+    queryFn: api.get(`/business-units/user`).then((res) => res.data),
+    enabled: Object.keys(initialData).length > 0,
+  });
 
   const handleClose = () => {
     setData(() => ({
@@ -46,14 +41,14 @@ const CreateBusinessUnitProduct = function CreateBusinessUnitProduct({
     }));
   }, [initialData]);
 
-  const { isLoading, mutate } = useMutation(
-    (newData) => businessUnitsService.createBusinessUnitProduct(newData),
-    {
-      onSuccess: () => {
-        handleClose();
-      },
-    }
-  );
+  const { isLoading, mutate } = useMutation({
+    queryKey: ["CreateBusinessUnitProduct"],
+    queryFn: (newData) =>
+      businessUnitsService.createBusinessUnitProduct(newData),
+    onSuccess: () => {
+      handleClose();
+    },
+  });
 
   const submit = useCallback(() => {
     mutate(data);

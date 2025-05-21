@@ -11,13 +11,11 @@ import {
   InfinityForgeProviders,
   useAuthAdmin,
   useQuery,
-  queryStore,
 } from "infinity-forge";
 
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import GlobalStyles from "@/OLD/styles/global";
@@ -45,9 +43,6 @@ import "infinity-forge/dist/infinity-forge.css";
 import Link from "next/link";
 import { PermissionsProvider } from "@/presentation/context/permissions";
 
-const queryClient = new QueryClient();
-
-const queryStoreClient = queryStore();
 
 export default function App({ Component, pageProps }) {
   const [menus, setMenus] = useState<any>(null);
@@ -62,10 +57,8 @@ export default function App({ Component, pageProps }) {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
-          queryClient={queryStoreClient}
           atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
@@ -74,8 +67,6 @@ export default function App({ Component, pageProps }) {
               user: {
                 signInConfig: { Component: SignIn },
                 onSignOut: (user: any) => {
-                  queryClient.clear();
-                  queryClient.removeQueries();
 
                   router.push("/");
 
@@ -90,8 +81,6 @@ export default function App({ Component, pageProps }) {
                   Component: SignInAdmin,
                 },
                 onSignOut: () => {
-                  queryClient.clear();
-                  queryClient.removeQueries();
 
                   router.push("/");
                 },
@@ -184,7 +173,7 @@ export default function App({ Component, pageProps }) {
             styles: { Button: ButtonInfinityForge },
             notification: {
               enable: true,
-              CustomComponent: (props) => (
+              CustomComponent: (props: any) => (
                 <Link href={props?.link}>
                   <div className="top">
                     <h3>{props?.title}</h3> <span>{props?.createdAtText}</span>
@@ -217,7 +206,7 @@ export default function App({ Component, pageProps }) {
                       <title>{configurations.name}</title>
                     </Head>
 
-          <NotificationsModal />
+                   <NotificationsModal />
 
                     <GambiarraTemporaria setMenus={setMenus} />
 
@@ -229,7 +218,6 @@ export default function App({ Component, pageProps }) {
           </SchedulingContextProvider>
         </InfinityForgeProviders>
       </ConfigurationsSystemProvider>
-    </QueryClientProvider>
   );
 }
 

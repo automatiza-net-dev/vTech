@@ -16,10 +16,10 @@ export const Container = styled.section`
   }
 `;
 
-export function AccessDenied({ loading }: any) {
+export function AccessDenied(props?: any) {
   const router = useRouter();
 
-  return loading === "loading" ? (
+  return props?.loading === "loading" ? (
     <Container className="uk-flex uk-flex-center uk-flex-middle">
       <LoaderCircle size={30} color="#444" />
     </Container>

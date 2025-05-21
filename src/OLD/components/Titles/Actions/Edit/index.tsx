@@ -49,7 +49,7 @@ const Edit = memo(function Edit({
   );
   const { unit } = useSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   useEffect(() => {
     setFlags(

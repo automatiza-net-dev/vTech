@@ -27,6 +27,7 @@ export function useLoadSchedulesPatients({
   return useQuery({
     queryKey,
     queryFn: fetcher,
+    enableCache: true,
     enabled: enabled,
   });
 }

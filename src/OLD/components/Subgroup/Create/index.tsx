@@ -7,47 +7,42 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
 import { Button, Input, Select } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 
-  import { Modal } from "infinity-forge"
+import { Modal } from "infinity-forge";
 
 const { TextArea } = Input;
 
-export default function CreateSubgroup({
-  visible,
-  hide,
-  subgroups = [],
-}) {
+export default function CreateSubgroup({ visible, hide, subgroups = [] }) {
   const queryClient = useQueryClient();
 
   const [data, setData] = useState({ description: "", parent: null });
 
-  const { mutate, isLoading } = useMutation(
-    (newData) => subgroupsService.storeSubgroup(newData),
-    {
-      onSuccess: () => {
-        createToast({
-          message: "Exame cadastrado com sucesso!",
-          status: "success",
-        });
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["CreateSubgroupmutation"],
+    queryFn: (newData) => subgroupsService.storeSubgroup(newData),
+    onSuccess: () => {
+      createToast({
+        message: "Exame cadastrado com sucesso!",
+        status: "success",
+      });
 
-        queryClient.invalidateQueries(["subgroups"]);
-        setData({ description: "", parent: null });
-      },
-      onError: (error) => {
-        createToast({
-          message: err.response.data.errors[0].message,
-          status: "error",
-        });
-      },
-    }
-  );
+      queryClient.invalidateQueries(["subgroups"]);
+      setData({ description: "", parent: null });
+    },
+    onError: (error) => {
+      createToast({
+        message: err.response.data.errors[0].message,
+        status: "error",
+      });
+    },
+  });
 
   const submitExam = useCallback(() => {
     mutate(data);
   }, [data]);
 
-  console.log(visible)
+  console.log(visible);
 
   return (
     <Modal open={visible} onClose={() => hide()}>
@@ -56,8 +51,7 @@ export default function CreateSubgroup({
           e.preventDefault();
           submitExam();
 
-        hide();
-
+          hide();
         }}
       >
         <div className="uk-margin-top">
@@ -107,4 +101,3 @@ export default function CreateSubgroup({
     </Modal>
   );
 }
-

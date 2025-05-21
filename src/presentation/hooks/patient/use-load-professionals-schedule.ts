@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
@@ -12,8 +12,8 @@ export function useLoadProfessionalsSchedule() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadProfessionalsSchedule",
+    queryKey: ["RemoteLoadProfessionalsSchedule"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

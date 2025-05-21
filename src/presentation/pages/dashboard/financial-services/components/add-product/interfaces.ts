@@ -32,7 +32,7 @@ export type Cart = {
   courtesy: boolean;
   toSubmit?: boolean;
   hasCourtesy?: boolean;
-  authData?: JSX.Element;
+  authData?: any;
   approved?: Product["approved"];
   approvalDate?: Product["approvalDate"];
   max_discount?: Product["max_discount"];

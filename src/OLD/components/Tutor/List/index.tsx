@@ -259,7 +259,7 @@ export function List({
     if (tutorsList?.length > 0) {
       setData(
         tutorsList.map((tutor, i) => {
-          const photoSrc = process.env.NEXT_PUBLIC_API + tutor.photo;
+          const photoSrc =  tutor.photo;
           return {
             name: (
               <div

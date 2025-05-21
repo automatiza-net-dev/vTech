@@ -1,13 +1,12 @@
 import { useRouter } from "next/router";
 
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { useAuthAdmin } from "infinity-forge";
 
 import { User } from "@/domain";
 import { Storage } from "@/infra";
 import { RemoteBusinessUnits } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { InfraTypes, adminTypes, container } from "@/container";
 
 export default function ValidaTerceiros() {
@@ -21,15 +20,11 @@ export default function ValidaTerceiros() {
       try {
         const token = router.query.token as string;
 
-        const response = await axios.get<User>(
-          process.env.api + "auth/me",
-          {
-            headers: { Authorization: "Bearer " + token },
-          }
-        );
+        const response = await axios.get<User>(process.env.api + "auth/me", {
+          headers: { Authorization: "Bearer " + token },
+        });
 
         if (response.data.user.type === "user") {
-
           container
             .get<Storage>(InfraTypes.storage)
             .set("token", { value: token });
@@ -52,7 +47,6 @@ export default function ValidaTerceiros() {
 
           router.push("/dashboard");
         } else {
-
           container
             .get<Storage>(InfraTypes.storage)
             .set("token", { value: token });
@@ -70,7 +64,7 @@ export default function ValidaTerceiros() {
         router.push("/");
       }
     },
-    ...callApiOneTime,
+    enableCache: true,
     enabled: !(router.query.isReady && !!router.query.token),
   });
 

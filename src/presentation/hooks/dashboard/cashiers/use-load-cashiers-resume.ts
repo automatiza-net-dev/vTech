@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { BadRequestError } from "infinity-forge";
 
 import { RemoteCashiersResume } from "@/data";
@@ -20,6 +20,5 @@ export function useLoadCashiersResume() {
   return useQuery({
     queryKey: ["loadCashiersResume"],
     queryFn: fetcher,
-    refetchOnWindowFocus: false
   });
 }

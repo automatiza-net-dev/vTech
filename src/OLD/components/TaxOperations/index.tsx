@@ -15,7 +15,7 @@ import { EditTwoTone } from "@ant-design/icons";
 // Components
 import { Table } from "antd";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import columns from "./Columns";
@@ -36,15 +36,10 @@ const TaxOperations = memo(function TaxOperations() {
   const canEditTaxOperationService = useUserHasPermission("OPF02");
   const canDeleteTaxOperationService = useUserHasPermission("OPF03");
 
-  const { data } = useQuery(
-    ["tax-operations"],
-    () => taxOperationService.listTaxOperations({}),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchInterval: 1000 * 60,
-    }
-  );
+  const { data } = useQuery({
+    queryKey: ["tax-operations"],
+    queryFn: async () => taxOperationService.listTaxOperations({}),
+  });
 
   const editPermission = useUserHasPermission("OPF2");
 

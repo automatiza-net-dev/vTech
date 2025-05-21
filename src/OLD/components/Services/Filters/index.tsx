@@ -67,7 +67,7 @@ const Filters = memo(function Filters({ filters, setFilters }) {
             setFilters(newObj);
           }}
           className="uk-width-1-1"
-          options={taxationGroups.map((group) => ({
+          options={taxationGroups?.map((group) => ({
             ...group,
             value: group?.name,
           }))}

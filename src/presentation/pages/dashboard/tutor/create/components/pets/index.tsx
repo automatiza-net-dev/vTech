@@ -34,6 +34,7 @@ export function Pets({
   const { values, setFieldValue } = useFormikContext<Tutor>();
   const { data, isLoading, mutate } = useLoadSchedulesPatients({
     patientFilters,
+    enabled: !!modalAddPet
   });
 
   const options = data?.map((patient) => {
@@ -41,7 +42,7 @@ export function Pets({
       label: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
       value: patient.id,
     };
-  });
+  }).filter(item => item.value !== "-");
 
   const [petId] = useField("petId");
   const pets = values["patients"] || [];

@@ -1,12 +1,12 @@
 import { MarketingCampaingsReports } from "@/domain";
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useReactToPrint } from "react-to-print";
 
 export function usePrint({
   componentRef,
 }: {
-  componentRef: RefObject<HTMLDivElement>;
+  componentRef: any;
 }) {
   const [campaingsReports, setCampaingsReports] = useState<
     MarketingCampaingsReports[]

@@ -4,9 +4,6 @@ import api from "@/OLD/services";
 const getCompleteHospitalizationsTimeline = async (id) =>
   await api.get(`/hospitalizations/patient-timeline/${id}`);
 
-const getArquivesDownload = async (key) =>
-  await api.post(`/assets/download`, { key }, { responseType: "blob" });
-
 const insertWeight = async (data) => await api.post("/n-timeline/weight", data);
 
 const insertDocument = async (data) =>
@@ -113,5 +110,4 @@ export const timelineService = {
   removeObservationMedia,
   getCompleteHospitalizationsTimeline,
   removeComplete,
-  getArquivesDownload,
 };

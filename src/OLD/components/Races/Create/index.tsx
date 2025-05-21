@@ -3,7 +3,7 @@ import { Form, Input, Modal, Select } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { memo, useCallback, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
 import { Create as CreateSpecie } from "@/OLD/components/Species/Create";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -23,24 +23,23 @@ export const Create = ({
   const { species, loadingSpecies } = useSpecies("ALL", reload);
   const { createToast } = useToast();
 
-  const { mutate, loading } = useMutation(
-    (data) => animalServices.createRace(data),
-    {
-      onSuccess: () => {
-        createToast({ message: "Raça criada!", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["CreateAAA"],
+    queryFn: (data) => animalServices.createRace(data),
+    onSuccess: () => {
+      createToast({ message: "Raça criada!", status: "success" });
 
-        setVisible(false);
-        setPayload(null);
-        queryClient.invalidateQueries("getRaces");
-        if (fetchRaces) {
-          fetchRaces();
-        }
-      },
-      onError: (error) => {
-        createToast({ message: "Erro ao criar Raça!", status: "error" });
-      },
-    }
-  );
+      setVisible(false);
+      setPayload(null);
+      queryClient.invalidateQueries("getRaces");
+      if (fetchRaces) {
+        fetchRaces();
+      }
+    },
+    onError: (error) => {
+      createToast({ message: "Erro ao criar Raça!", status: "error" });
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     mutate(payload);

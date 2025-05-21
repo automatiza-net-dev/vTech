@@ -3,8 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useToast } from "infinity-forge";
-import { useQueryClient } from "react-query";
+import { useToast, useQueryClient } from "infinity-forge";
 
 import { RemoteChangeStatus } from "@/data";
 import { container, patientTypes } from "@/container";
@@ -43,20 +42,20 @@ function AddMedicalRecipe({
 
   const {type} = useConfigurationsSystem()
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
 
   const replaceText = (str, setState) => {
+
     setLoading(true);
     textReplaceService
       .replaceText({
         base: str,
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
-        tutorId:
-        type === "Vet"
+        tutorId:  type === "Vet"
             ? patient?.data?.tutor?.id
             : patient?.data?.id,
-        dependentId: patient?.data?.id,
+        dependentId: type === "Vet" ? patient?.data?.id : undefined,
       })
       .then((res) => setState(res.data.result))
       .finally(() => setLoading(false));
@@ -133,9 +132,8 @@ function AddMedicalRecipe({
         setBody("");
         setRecipeId(false);
         setRecipeSearch("");
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data?.id],
-        });
+       refetch(["LastUpdates", patient.data?.id])
+       
         return createToast({
           message: "Receita salva com sucesso!",
           status: "success",
@@ -161,9 +159,7 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data?.id],
-        });
+          refetch(["LastUpdates", patient.data?.id])
         return createToast({
           message: "Receita atualizada com sucesso!",
           status: "success",
@@ -192,9 +188,7 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data?.id],
-        });
+         refetch(["LastUpdates", patient.data?.id])
         setLoading(false);
         setModal && setModal(false);
         return createToast({
@@ -218,9 +212,7 @@ function AddMedicalRecipe({
       .then((_res) => {
         setLoading(false);
 
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data?.id],
-        });
+       refetch(["LastUpdates", patient.data?.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

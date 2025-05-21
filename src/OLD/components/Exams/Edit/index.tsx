@@ -15,7 +15,7 @@ import { groupsService } from "@/OLD/services/groups.service";
 import { Input, Switch, Select } from "antd";
 import Editor from "@/OLD/components/Editor";
 import { Container } from "./styles";
-import { Button, useToast } from "infinity-forge";
+import { Button, FormHandler, TextEditor, useTextEditor, useToast } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
@@ -30,7 +30,7 @@ const UpdateExam = memo(function UpdateExam() {
 
   const canEditExams = useUserHasPermission("EXA02");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast()
 
   const getAllSubgroups = useCallback(() => {
     setLoading(true);
@@ -65,20 +65,22 @@ const UpdateExam = memo(function UpdateExam() {
         ownLaboratory: data?.own_laboratory,
       })
       .then((_res) => {
-       
 
-       return createToast({ status: "success", message: "Exame atualizado com sucesso!" })
+
+        return createToast({ status: "success", message: "Exame atualizado com sucesso!" })
       })
       .catch((err) => {
         setLoading(false);
 
-       return createToast({ status: "error", message: err.response.data.errors[0].message })
+        return createToast({ status: "error", message: err.response.data.errors[0].message })
       })
       .finally(() => {
         setLoading(false);
         router.back();
       });
   }, [data, body]);
+
+  const { handleEditorReady, handleInsert } = useTextEditor()
 
   return !canEditExams || canEditExams === "loading" ? (
     <AccessDenied loading={canEditExams} />
@@ -110,7 +112,9 @@ const UpdateExam = memo(function UpdateExam() {
             </div>
             <div className="uk-margin-top">
               <label>Descrição</label>
-              <Editor editorState={body} setEditorState={setBody} />
+              {exam?.description && <FormHandler disableEnterKeySubmitForm initialData={{ editor: exam?.description }} onChangeForm={{ callbackResult: (result) => setBody(result.editor) }}>
+                <TextEditor name="editor" onEditorReady={handleEditorReady} />
+              </FormHandler>}
             </div>
             <div className="uk-margin-top uk-flex uk-flex-around">
               <div className="uk-flex uk-flex-column uk-flex-middle">
@@ -137,7 +141,7 @@ const UpdateExam = memo(function UpdateExam() {
             </footer>
           </form>
         </div>
-        <LabelsPanel body={body} setBody={setBody} />
+        <LabelsPanel handleInsert={handleInsert} />
       </div>
     </Container>
   );

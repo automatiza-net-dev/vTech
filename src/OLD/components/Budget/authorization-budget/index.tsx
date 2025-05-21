@@ -1,15 +1,17 @@
 import moment from "moment";
-import { Table } from "antd";
-import { useQueryClient } from "react-query";
-import { Error, LoaderCircle } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
+import { Accordion, Error, LoaderCircle } from "infinity-forge";
 
 import { useLoadBudget } from "./hook";
-import { authorizationFormater } from "./utils/formater";
 import { AuthorizationPaymentForm } from "@/presentation";
-
-import { AUTH_COLUMNS } from "./columns";
+import {
+  PaymentHeader,
+  TableItems,
+  TablePayments,
+} from "../../Bill/authorization-sell/components";
 
 import * as S from "./styles";
+import { Fragment } from "react";
 
 export function AuthorizationBudget({
   budgetId,
@@ -29,21 +31,12 @@ export function AuthorizationBudget({
     return <></>;
   }
 
-  const tableDataSource =
-    data?.items?.map((item: any) => ({
-      quantity: item?.quantity,
-      description: item?.productVariation?.product?.description,
-      productCode: item?.productVariation?.product?.reference_code,
-      singleRegistragionPrice: item?.sale_value,
-      singleSellingPrice: item?.unitary_value,
-      grantedDiscount: item?.discount_value,
-      maxDiscount:
-        item?.productVariation?.businessUnitProducts[0]
-          ?.maximum_discount_percentage,
-      courtesy: item?.courtesy ? "Sim" : "Não",
-      totalItem: item?.total_value,
-      authorization: authorizationFormater(item),
-    })) || [];
+  const maxBlock =
+    data?.payments?.reduce(
+      (max, item) => (item?.block > max ? item.block : max),
+      0
+    ) || 0;
+  const maxBlocks = Array.from({ length: maxBlock });
 
   return (
     <Error name="AuthorizationSell">
@@ -73,7 +66,35 @@ export function AuthorizationBudget({
           </div>
         </div>
 
-        <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} />
+        {/* <Table columns={AUTH_COLUMNS} dataSource={tableDataSource} /> */}
+
+        <TableItems {...(data as any)} isBudget={true} />
+
+        {maxBlocks.map((_, index) => {
+          const paymentsList = data.payments.filter(
+            (payment) => payment.block === index + 1
+          );
+
+          if (!paymentsList || paymentsList.length === 0) {
+            return <Fragment key={index + "block"} />;
+          }
+
+          return (
+            <Accordion
+              key={
+                paymentsList.reduce((reducer, item) => reducer + item.id, "") ||
+                ""
+              }
+              Header={() => <PaymentHeader paymentsList={paymentsList} />}
+            >
+              <TablePayments
+                paymentsList={paymentsList}
+                isCancelled={false}
+                cancelledStatus={"A"}
+              />
+            </Accordion>
+          );
+        })}
 
         <AuthorizationPaymentForm
           auth={"ORC11"}

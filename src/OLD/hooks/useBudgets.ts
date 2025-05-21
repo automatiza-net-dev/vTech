@@ -1,8 +1,5 @@
-// @ts-nocheck
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { budgetService } from "@/OLD/services/budgets.service";
-
-  import { useQuery as useQueryInfinityForge } from "infinity-forge"
 
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -63,58 +60,81 @@ export const useFindPartialBudgets = (params, reload) => {
 };
 
 export const useCancelBudget = (id) => {
-  return useMutation((budget) => budgetService.cancelBudget(id, budget));
+    return useMutation({
+    queryKey: ["useCancelBudget"],
+    queryFn: (budget) => budgetService.cancelBudget(id, budget)
+  }
+  );
 };
 
 export const useFindCompleteBudgets = (params) => {
-  return useQuery(["budgets", "complete", params], () =>
-    budgetService.getCompleteBudgets(params)
+  return useQuery({
+    queryKey: ["budgets", "complete", params], queryFn: () =>
+      budgetService.getCompleteBudgets(params)
+  }
   );
 };
 
 export const useCreateBudget = () => {
-  return useMutation((budget) => budgetService.createBudget(budget));
+  return useMutation({
+    queryKey: ["useCreateBudget"],
+    queryFn: (budget) => budgetService.createBudget(budget)
+  }
+  );
 };
 
 export const useConfirmBudget = (id) => {
-  return useMutation((budget) => budgetService.confirmBudget(id, budget));
+  return useMutation({
+    queryKey: ["useConfirmBudget"],
+    queryFn: (budget) => budgetService.confirmBudget(id, budget)
+  }
+  );
 };
 
 export const useCompleteBudget = (id, enabled = false) => {
-  return useQuery(
-    ["budgets", "show", id],
-    () => {
+  return useQuery({
+    queryKey: ["budgets", "show", id], enabled, queryFn: () => {
       if (!id) {
         return {};
       }
       return budgetService.getCompleteBudget(id) as any;
-    },
-    {
-      enabled,
     }
+  }
   );
 };
 
 export const useCreateBudgetItem = () => {
-  return useMutation((data) => budgetService.createBudgetItem(data));
+  return useMutation({
+    queryKey: ["useCreateBudgetItem"],
+    queryFn: (data) =>
+      budgetService.createBudgetItem(data)
+  }
+  );
 };
 
 export const useUpdateBudgetItem = () => {
-  return useMutation((data) => budgetService.updateBudgetItem(data));
+  return useMutation({
+    queryKey: ["useUpdateBudgetItem"],
+    queryFn: (data) =>
+      budgetService.updateBudgetItem(data)
+  }
+  );
 };
 
 export const useUpdateSellerAndReviewer = (id) => {
-  return useMutation((data) =>
-    budgetService.updateBudgetSellerAndReviewer(id, data)
+  return useMutation({
+    queryKey: ["useUpdateSellerAndReviewrMutation"],
+    queryFn: (data) =>
+      budgetService.updateBudgetSellerAndReviewer(id, data)
+  }
   );
 };
 
 export const useBudgetProducts = (enabled = false) => {
-  return useQuery(
-    ["budgets", "products"],
-    () => budgetService.getBudgetProducts(),
-    {
-      enabled,
-    }
+  return useQuery({
+    queryKey: ["budgets", "products"],
+    queryFn: async () => budgetService.getBudgetProducts({}),
+    enabled
+  }
   );
 };

@@ -2,7 +2,7 @@
 import moment from "moment";
 
 import { Container } from "./styles";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { financesService } from "@/OLD/services/finances.service";
 
 const CardOpenCashiersToDay = () => {
@@ -10,9 +10,7 @@ const CardOpenCashiersToDay = () => {
     queryKey: ["card", "cashiers", "today"],
     queryFn: () =>
       financesService.getTodaysCashierResume().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+  enableCache: true
   });
 
   return (

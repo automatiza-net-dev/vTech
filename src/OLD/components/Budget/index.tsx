@@ -60,7 +60,7 @@ export const budgetStatusFormatter = (budget, setReload) => {
   }
 
   const statusStyles = {
-    ABERTO: <span style={{ color: "red" }}>Aberta</span>,
+    ABERTO: <span style={{ color: "red" }}>Aberto</span>,
     EXTORNADA: "Extornada",
     CONFIRMADO: "Confirmado",
     NAO_CONFIRMADO__CANCELADO: "Não confirmado - cancelado",
@@ -137,7 +137,7 @@ function Budgets() {
   const { unit } = useSystem()
   const { type } = useConfigurationsSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
   const { getWord } = useDictionary();
 
   const columns =

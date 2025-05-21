@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteVaccine } from "@/data";
 import { LoadAllVaccines } from "@/domain";
@@ -17,6 +17,6 @@ export function useLoadAllVaccines(params: LoadAllVaccines.Params) {
   return useQuery({
     queryKey: ["LoadAllVaccines", params],
     queryFn: fetcher,
-    ...callApiOneTime,
+   enableCache: true
   });
 }

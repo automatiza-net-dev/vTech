@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Core
 import React, { useState, memo, useEffect, useCallback } from "react";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 
 // Services
 import { RemoteBills } from "@/data";
@@ -162,11 +162,10 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
       createToast({ status: "error", message: "Há valores pendentes" });
       return;
     }
-    queryClient.invalidateQueries(["bills"]);
-    queryClient.invalidateQueries(["bills", false]);
-    queryClient.invalidateQueries(["bills", true]);
+    queryClient.refetch(["bills", true], { mode: "include" });
+
     setReloadBill & setReloadBill(s => !s)
-    queryClient.invalidateQueries(["paymentsPreview"]);
+    queryClient.invalidateQueries(["paymentsPreview"], { mode: "include" });
 
     closePayment();
 
@@ -241,9 +240,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
 
     mutate(paylaod, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["bills"]);
-        queryClient.invalidateQueries(["bills", false]);
-        queryClient.invalidateQueries(["bills", true]);
+    queryClient.refetch(["bills", true], { mode: "include" });
         setReloadBill & setReloadBill(s => !s)
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
@@ -288,10 +285,9 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
             message: "Não existe caixa diário aberto",
           });
         }
-        queryClient.invalidateQueries(["bills"]);
+      
         setReloadBill & setReloadBill(s => !s)
-        queryClient.invalidateQueries(["bills", false]);
-        queryClient.invalidateQueries(["bills", true]);
+       queryClient.refetch(["bills", true], { mode: "include" });
       },
     });
   }, [formData, billId]);

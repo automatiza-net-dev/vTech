@@ -1,18 +1,14 @@
-// Core
-// @ts-nocheck
 import React, { memo } from "react";
 
-// Hooks
 import { useTextReplace } from "@/OLD/hooks/useTextReplace";
 
-// Components
 import { Container } from "./styles";
 import { Collapse } from "antd";
 const { Panel } = Collapse;
 import Variables from "./Variables";
 import { useConfigurationsSystem } from "@/presentation";
 
-const LabelsPanel = memo(function ({ body, setBody }: any) {
+const LabelsPanel = memo(function ({  handleInsert }: any) {
   const { templates } = useTextReplace();
 
   const {type} = useConfigurationsSystem()
@@ -22,69 +18,65 @@ const LabelsPanel = memo(function ({ body, setBody }: any) {
       <h5 className="uk-heading-line">Variáveis:</h5>
       <Collapse>
         {type === "Vet" && (
-          <Panel header="Dependente (Pet)">
+          <Panel header="Dependente (Pet)" key={""}>
             <Variables
-              body={body}
-              setBody={setBody}
+              handleInsert={handleInsert}
               templates={templates?.filter(
                 (template) => template?.origin === "PATIENT"
               )}
             />
           </Panel>
         )}
-        <Panel header={type === "Vet" ? "Tutor" : "Cliente"}>
+        <Panel key={""}  header={type === "Vet" ? "Tutor" : "Cliente"}>
           <Variables
-            body={body}
-            setBody={setBody}
+          handleInsert={handleInsert}
             templates={templates?.filter(
               (template) => template?.origin === "TUTOR"
             )}
           />
         </Panel>
-        <Panel header="Clinica">
+        <Panel key={""} header="Clinica">
           <Variables
-            body={body}
-            setBody={setBody}
+          handleInsert={handleInsert}
             templates={templates?.filter(
               (template) => template?.origin === "BUSINESS"
             )}
           />
         </Panel>
-        <Panel
+        <Panel key={""}
           header={
             type === "Vet" ? "Veterinário" : "Profissional"
           }
         >
           <Variables
-            body={body}
-            setBody={setBody}
+          handleInsert={handleInsert}
             templates={templates?.filter(
               (template) => template?.origin === "USER"
             )}
           />
         </Panel>
-        <Panel header="Agendamento">
+        <Panel key={""} header="Agendamento">
           <Variables
-            body={body}
-            setBody={setBody}
+      handleInsert={handleInsert}
+            
             templates={templates?.filter(
               (template) => template?.origin === "SCHEDULE"
             )}
           />
         </Panel>
-        <Panel header="Contratos">
+        <Panel key={""} header="Contratos">
           <Variables
-            body={body}
-            setBody={setBody}
+          handleInsert={handleInsert}
+            
             templates={templates?.filter(
               (template) => template?.origin === "CONTRACTS"
             )}
           />
         </Panel>
-        <Panel header="Items venda">
+        <Panel key={""} header="Items venda">
           <Variables
-            body={body}
-            setBody={setBody}
+          handleInsert={handleInsert}
+            
             templates={templates?.filter(
               (template) => template?.origin === "BILL_ITEMS"
             )}

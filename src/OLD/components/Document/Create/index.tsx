@@ -1,31 +1,25 @@
-// @ts-nocheck
 import { Radio, Upload } from "antd";
-import Editor from "@/OLD/components/Editor";
 import { useRouter } from "next/router";
 import React, { useState, useCallback } from "react";
 import { documentServices } from "@/OLD/services/document.service";
 
-// Hooks
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-// Components
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, PageWrapper, useToast, useTextEditor, TextEditor, FormHandler } from "infinity-forge";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 const { Group } = Radio;
 
-// Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
 
-// Icons
 import { DeleteTwoTone } from "@ant-design/icons";
 
 const DocumentCreate = React.memo(function DocumentCreate() {
   const router = useRouter();
-  const [data, setData] = useState({ type: "text" });
-  const [body, setBody] = useState();
+  const [data, setData] = useState<any>({ type: "text" });
+  const [body, setBody] = useState<any>();
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(false);
+  const [file, setFile] = useState<any>(false);
 
   const canCreateDocument = useUserHasPermission("DOC01");
 
@@ -112,6 +106,9 @@ const DocumentCreate = React.memo(function DocumentCreate() {
     }
   }, [loading, data, body, file]);
 
+  const {handleEditorReady, handleInsert} = useTextEditor()
+
+
   return !canCreateDocument || canCreateDocument === "loading" ? (
     <AccessDenied loading={canCreateDocument} />
   ) : (
@@ -156,7 +153,7 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                   <div className="uk-margin-small">
                     <label>Descrição</label>
                     <textarea
-                      type="text"
+                      
                       className="uk-textarea"
                       placeholder="Descrição do documento"
                       value={data?.description}
@@ -170,10 +167,13 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                   </div>
                   <div className="uk-margin-small">
                     <label>Conteúdo</label>
-                    <Editor editorState={body} setEditorState={setBody} />
+
+                    <FormHandler disableEnterKeySubmitForm  initialData={{ editor: body }} onChangeForm={{callbackResult: (result) => setBody(result.editor)}}>
+                      <TextEditor name="editor" onEditorReady={handleEditorReady}  />
+                    </FormHandler>
                   </div>
                 </div>
-                <LabelsPanel body={body} setBody={setBody} />
+                <LabelsPanel  handleInsert={handleInsert}/>
               </div>
             )}
             {data?.type === "import" && (
@@ -181,7 +181,6 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                 <div className="uk-margin-small">
                   <label>Descrição</label>
                   <textarea
-                    type="text"
                     className="uk-textarea"
                     placeholder="Descrição do documento"
                     value={data?.description}
@@ -198,7 +197,6 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                     multiple={false}
                     beforeUpload={beforeUpload}
                     showUploadList={false}
-                    type=".doc, docx"
                     onChange={(info) => {
                       setFile(info.file);
                     }}

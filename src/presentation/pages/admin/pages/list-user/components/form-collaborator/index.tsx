@@ -36,7 +36,7 @@ export function FormUserController({
         .create(data);
     }
 
-    refetch("RemoteLoadUserControllers");
+    refetch(["RemoteLoadUserControllers"]);
 
     createToast({
       message: `Colaborador ${id ? "atualizado" : "cadastrado"} com sucesso!`,

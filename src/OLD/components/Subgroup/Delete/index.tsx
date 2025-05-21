@@ -10,7 +10,7 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -20,9 +20,10 @@ const DeleteSubgroup = memo(function DeleteSubgroup({ close, id }) {
   const queryClient = useQueryClient();
   const { createToast } = useToast();
 
-  const { mutate, isLoading } = useMutation((id) =>
-    subgroupsService.deleteSubgroup(id)
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["DeleteSoubegroupMutaiton"],
+    queryFn: (id) => subgroupsService.deleteSubgroup(id),
+  });
 
   const removeExam = useCallback(() => {
     if (!permissions?.SBG3) {

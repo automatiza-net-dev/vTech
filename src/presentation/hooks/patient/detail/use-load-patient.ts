@@ -1,9 +1,9 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
+
 import { useRouter } from "next/router";
 
 import { Patient } from "@/domain";
 import { RemotePatient } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
 
 export function useLoadPatient(patientId?: Patient["id"]) {
@@ -21,7 +21,7 @@ export function useLoadPatient(patientId?: Patient["id"]) {
   return useQuery({
     queryKey: ["RemotePatient", ID],
     queryFn: fetcher,
-    ...callApiOneTime,
+     enableCache: true,
     enabled: !!(ID && router.isReady),
   });
 }

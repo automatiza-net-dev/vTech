@@ -26,7 +26,7 @@ export function useLoadAllSchedulesUser({
   }
 
   return useQuery({
-    queryKey: "RemoteLoadAllSchedulesUser" + to + lista_cancelados,
+    queryKey: ["RemoteLoadAllSchedulesUser", to, lista_cancelados],
     queryFn: fetcher,
     enabled,
   });
@@ -49,11 +49,11 @@ export function useLoadAllSchedulesUserWeek(
   }
 
   const refetchKeyWeekCalendar =
-    "RemoteLoadAllSchedulesUserWeek" +
-    to +
-    from +
-    users?.map((u) => u) +
-    lista_cancelados;
+    ["RemoteLoadAllSchedulesUserWeek",
+    to,
+    from,
+    users?.map((u) => u),
+    lista_cancelados];
 
   const query = useQuery({
     queryKey: refetchKeyWeekCalendar,

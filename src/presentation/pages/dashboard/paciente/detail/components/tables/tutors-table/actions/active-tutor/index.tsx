@@ -1,10 +1,14 @@
 import { useState } from "react";
 
-import { useQueryClient } from "react-query";
-import { LoaderCircle, useToast, Tooltip } from "infinity-forge";
+import {
+  useQueryClient,
+  LoaderCircle,
+  useToast,
+  Tooltip,
+} from "infinity-forge";
 
+import { Tutor } from "@/domain";
 import { useLoadPatient, useSetMainTutor } from "@/presentation";
-import { Patient, Tutor } from "@/domain";
 
 import * as S from "./styles";
 
@@ -15,7 +19,7 @@ export function ActiveTutor(props: Tutor) {
   const { createToast } = useToast();
   const setMainTutor = useSetMainTutor();
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((st) => st.refetch);
 
   const patientId = patient.data?.id;
   const isTutorActive = patient?.data?.tutor?.id === props.id;
@@ -36,18 +40,8 @@ export function ActiveTutor(props: Tutor) {
 
     createToast({ message: "Tutor vinculado com sucesso!", status: "success" });
 
-    queryClient.setQueryData(["RemotePatient", patientId], (state) => {
-      const queryData = state as Patient;
-
-      return {
-        ...queryData,
-        tutor: props,
-      } as Patient;
-    });
-
-    await queryClient.invalidateQueries({
-      queryKey: ["LastUpdates", patientId],
-    });
+    await refetch(["RemotePatient", patientId]);
+    await refetch(["LastUpdates", patientId]);
 
     setLoading(false);
   }

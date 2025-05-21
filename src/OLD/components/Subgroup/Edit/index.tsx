@@ -7,7 +7,7 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
 import { Button, Input, Modal, Select, Switch } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -37,15 +37,15 @@ const UpdateSubgroup = memo(function UpdateSubgroup({
     });
   }, [subgroupInfo]);
 
-  const { mutate, isLoading } = useMutation(
-    (newData) => subgroupsService.updateSubgroup(subgroupInfo.id, newData),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["subgroups"]);
-        hide();
-      },
-    }
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["UpdateSubgroup"],
+    queryFn: (newData) =>
+      subgroupsService.updateSubgroup(subgroupInfo.id, newData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["subgroups"]);
+      hide();
+    },
+  });
 
   const submit = useCallback(() => {
     if (!permissions?.SBG2) {

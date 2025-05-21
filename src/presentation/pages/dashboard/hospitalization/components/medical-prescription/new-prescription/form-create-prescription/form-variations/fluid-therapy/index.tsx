@@ -1,11 +1,9 @@
-import { useFormikContext } from "formik";
 import { api, Input, InputCurrency, Select, useQuery } from "infinity-forge";
 
 export function FluidTherapy() {
-  const { values } = useFormikContext<any>();
 
   const fluidVelocities = useQuery({
-    queryKey: "FLUID_VELOCITY",
+    queryKey:["FLUID_VELOCITY"],
     queryFn: async () => {
       const response = await api({
         url: "units",

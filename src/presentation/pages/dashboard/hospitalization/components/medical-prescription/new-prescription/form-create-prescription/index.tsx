@@ -58,7 +58,7 @@ export function FormCreatePrescription({
             body: payload,
           });
 
-          await refetch(["medicalPrescription", hospitalizationId].toString());
+          await refetch(["medicalPrescription", hospitalizationId]);
 
           onCreate && onCreate(data);
         }}

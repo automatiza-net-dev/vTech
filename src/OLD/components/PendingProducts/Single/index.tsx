@@ -200,7 +200,7 @@ export function SinglePendingProducts({
                       <label>Grupo tributação</label>
                       <AutoComplete
                         className="uk-width-1-1"
-                        options={taxationGroups.map((group) => ({
+                        options={taxationGroups?.map((group) => ({
                           ...group,
                           value: group?.name,
                         }))}

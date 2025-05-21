@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 
 import { Container } from "./styles";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { financesService } from "@/OLD/services/finances.service";
 
 const TitlesToReceiveToday = () => {
@@ -10,9 +10,7 @@ const TitlesToReceiveToday = () => {
     queryKey: ["card", "payments-expiring-today"],
     queryFn: () =>
       financesService.getExpiringPayments().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
 
   const totalValue = useMemo(() => {

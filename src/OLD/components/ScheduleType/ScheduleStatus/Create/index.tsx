@@ -2,7 +2,7 @@
 import { Form, Input, Modal } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { memo, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 
 export const Create = memo(() => {
@@ -13,21 +13,20 @@ export const Create = memo(() => {
   const canCreateScheduleStatus = useUserHasPermission("AST01");
   const { createToast } = useToast();
 
-  const { mutate, loading } = useMutation(
-    (payload) => scheduleTypeServices.createStatus(payload),
-    {
-      onError: () => {
-        createToast({ message: "Erro ao cadastrar status", status: "error" });
-      },
-      onSuccess: () => {
-        createToast({ message: "Status cadastrado", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["Creathgdgu"],
+    queryFn: (payload) => scheduleTypeServices.createStatus(payload),
+    onError: () => {
+      createToast({ message: "Erro ao cadastrar status", status: "error" });
+    },
+    onSuccess: () => {
+      createToast({ message: "Status cadastrado", status: "success" });
 
-        setPayload(null);
-        setIsVisible(false);
-        queryClient.invalidateQueries("getAllStatus");
-      },
-    }
-  );
+      setPayload(null);
+      setIsVisible(false);
+      queryClient.invalidateQueries("getAllStatus");
+    },
+  });
 
   return (
     <div>

@@ -20,7 +20,7 @@ export function useLoadGoal(period: LoadGoal.Params["period"]) {
   }
 
   return useQuery({
-    queryKey: "LoadGoal" + period,
+    queryKey: ["LoadGoal", period],
     queryFn: fetcher,
     enabled: !!period,
   });

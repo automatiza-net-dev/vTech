@@ -7,13 +7,13 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useProfile } from "@/OLD/hooks/useProfile";
-import { ImageUploadS3, useLoadPatient } from "@/presentation";
+import { ImageUploadS3, useLoadPatient, useUploadS3 } from "@/presentation";
 
 // Components
 import { Popconfirm } from "antd";
 import FormChild from "./FormChild";
 import { Container } from "./styles";
-import { Modal, Button, useToast, Icon, useAuthAdmin } from "infinity-forge";
+import { Modal, Button, useToast, Icon, useAuthAdmin, useQueryClient } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -21,7 +21,6 @@ import { MdDownload } from "react-icons/md";
 
 // utils
 import moment from "moment";
-import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
 
 function Notes({ modal, setModal, updateData = false, flex = false }: any) {
@@ -30,12 +29,12 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const [fileList, setFileList] = useState([]);
   const [photosOpen, setPhotosOpen] = useState(false);
 
-  const {user} = useAuthAdmin()
+  const { user } = useAuthAdmin();
 
   const patient = useLoadPatient();
   const { createToast } = useToast();
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
   const router = useRouter();
 
   const beforeUpload = useCallback((file) => {
@@ -88,14 +87,12 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       formData.append("medias[]", item.originFileObj);
     });
 
-
-
     timelineService
       .insertObservations(formData)
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+
+        await refetch(["LastUpdates", router.query.id])
+
         setLoading(false);
         setModal(false);
         setFileList([]);
@@ -134,9 +131,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     timelineService
       .updateObservation(updateData?._id, formData)
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+      await refetch(["LastUpdates", router.query.id])
         return createToast({
           status: "success",
           message: "Observação atualizada com sucesso!",
@@ -164,9 +159,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         .removeObservationMedia(updateData?._id, idx)
         .then(async (_res) => {
           setLoading(false);
-          await queryClient.invalidateQueries({
-            queryKey: ["LastUpdates", router.query.id],
-          });
+        await refetch(["LastUpdates", router.query.id])
           return createToast({
             message: "Anexo removido com sucesso!",
             status: "success",
@@ -189,9 +182,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       .removeComplete(id)
       .then(async (_res) => {
         setLoading(false);
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+    await refetch(["LastUpdates", router.query.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",
@@ -285,63 +276,8 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         >
           {fileList?.length > 0 &&
             fileList.map((item, idx) => {
-              item?.url &&
-                timelineService
-                  .getArquivesDownload(item?.url.replace("/uploads/", ""))
-                  .then((res) => {
-                    const elem = document?.querySelector(
-                      `#custom-download-${idx}`
-                    );
-                    if (elem) {
-                      elem.href = window.URL.createObjectURL(res.data);
-                    }
-                  });
-
-              const extension = item?.url?.split(".")?.[1];
-
               return item?.url ? (
-                <div
-                  className="uk-flex uk-flex-between"
-                  style={{ marginTop: "10px" }}
-                >
-                  {extension !== "pdf" ? (
-                    <ImageUploadS3
-                      src={item?.url}
-                    />
-                  ) : (
-                    <div style={{ width: "70px" }}>
-                      <Icon color="#000" name="IconClip" />
-                    </div>
-                  )}
-                  <a
-                    target="_blank"
-                    className="uk-link"
-                    href={`/${item?.url}`}
-                    download={item?.filename}
-                  >
-                    {item?.filename}
-                  </a>
-                  <Popconfirm
-                    title="Deseja realmete remover este anexo?"
-                    okText="Sim"
-                    onConfirm={() => removeMedia(idx)}
-                    cancelText="Não"
-                    placement="left"
-                  >
-                    <FaRegTrashAlt
-                      size={15}
-                      color="red"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => removeMedia(idx)}
-                    />
-                    <a
-                      download={`${item?.filename}`}
-                      id={`custom-download-${idx}`}
-                    >
-                      <MdDownload size={30} />
-                    </a>
-                  </Popconfirm>
-                </div>
+                <FileUploader key={item?.url} {...item} />
               ) : (
                 <div className="uk-flex uk-flex-between uk-flex-middle">
                   <img
@@ -382,3 +318,34 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
 }
 
 export default Notes;
+
+export function FileUploader(props) {
+  const { s3 } = useUploadS3({ src: props?.url });
+
+  return (
+    <div className="uk-flex uk-flex-between" style={{ marginTop: "10px" }}>
+      <ImageUploadS3 src={s3?.view} />
+
+      <a href={s3?.view} target="_blank">{props?.filename}</a>
+
+      <Popconfirm
+        title="Deseja realmete remover este anexo?"
+        okText="Sim"
+        onConfirm={() => removeMedia(idx)}
+        cancelText="Não"
+        placement="left"
+      >
+        <FaRegTrashAlt
+          size={15}
+          color="red"
+          style={{ cursor: "pointer" }}
+          onClick={() => removeMedia(idx)}
+        />
+      </Popconfirm>
+
+      <a href={s3?.download} download target="_blank">
+        <MdDownload size={30} />
+      </a>
+    </div>
+  );
+}

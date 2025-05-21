@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
-import { Tutor } from "@/domain";
 import { RemoteBudget } from "@/data";
 import { container, financialServicesTypes } from "@/container";
 
@@ -20,7 +19,6 @@ export function useLoadOpenNegotiations() {
   return useQuery({
     queryKey: ["openNegotiations", id],
     queryFn: fetcher,
-    refetchOnWindowFocus: false,
-    enabled: !!id,
+    enabled: !!(id && router.isReady),
   });
 }

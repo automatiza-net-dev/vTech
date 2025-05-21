@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { useAuthAdmin } from "infinity-forge";
 
 import { RemoteSubgroups } from "@/data";
@@ -32,7 +32,7 @@ export function useLoadSubgroupDetails(params: LoadSubgroupDetails.Params) {
       userID,
     ],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true,
     enabled: !!userID,
   });
 }

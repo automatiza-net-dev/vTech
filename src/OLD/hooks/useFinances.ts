@@ -99,6 +99,7 @@ export const useReducedFinances = (filters, reload) => {
     if (filters?.noSearch) {
       return;
     }
+    console.log({filters})
 
     if (!filters?.fromIssue) {
       delete filters?.fromIssue;
@@ -126,33 +127,42 @@ export const useReducedFinances = (filters, reload) => {
     if (keys.includes("competence")) {
       newObj = {
         ...newObj,
-        competence: moment(filters?.competence)?.format("MM/YYYY"),
+        competence:filters?.competence ? moment(filters?.competence)?.format("MM/YYYY") : undefined,
+      };
+    }
+
+    if (keys.includes("fromAcceptDate")) {
+      newObj = {
+        ...newObj,
+        fromAcceptDate: filters?.fromAcceptDate ? moment(filters?.fromAcceptDate).format("YYYY/MM/DD") : undefined,
+        toAcceptDate: filters.toAcceptDate ? moment(filters.toAcceptDate).format("YYYY/MM/DD") : undefined,
       };
     }
 
     if (keys.includes("fromIssue")) {
       newObj = {
         ...newObj,
-        fromIssue: moment(filters?.fromIssue).format("YYYY/MM/DD"),
-        toIssue: moment(filters.toIssue).format("YYYY/MM/DD"),
+        fromIssue: filters?.fromIssue ?  moment(filters?.fromIssue).format("YYYY/MM/DD") : undefined,
+        toIssue: filters?.toIssue ?  moment(filters.toIssue).format("YYYY/MM/DD") : undefined,
       };
     }
 
     if (keys.includes("toExpiration")) {
       newObj = {
         ...newObj,
-        fromExpiration: moment(filters?.fromExpiration).format("YYYY/MM/DD"),
-        toExpiration: moment(filters.toExpiration).format("YYYY/MM/DD"),
+        fromExpiration:filters?.fromExpiration ? moment(filters?.fromExpiration).format("YYYY/MM/DD") : undefined,
+        toExpiration: filters.toExpiration ? moment(filters.toExpiration).format("YYYY/MM/DD") : undefined,
       };
     }
 
     if (keys.includes("fromPayment")) {
       newObj = {
         ...newObj,
-        fromPayment: moment(filters?.fromPayment).format("YYYY/MM/DD"),
-        toPayment: moment(filters?.toPayment).format("YYYY/MM/DD"),
+        fromPayment: filters?.fromPayment ? moment(filters?.fromPayment).format("YYYY/MM/DD") : undefined,
+        toPayment: filters?.toPayment ? moment(filters?.toPayment).format("YYYY/MM/DD") : undefined,
       };
     }
+
     financesService
       .getReducedFinances({
         ...newObj,
@@ -338,7 +348,7 @@ export const useFinancesBalance = (filters) => {
 
   useEffect(() => {
     fetchData();
-  }, [filters]);
+  }, [filters?.checkingAccountId]);
 
   return {
     balance,

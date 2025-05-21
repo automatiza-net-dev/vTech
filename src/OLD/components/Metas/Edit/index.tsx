@@ -1,13 +1,7 @@
 // @ts-nocheck
-import {
-  Form,
-  Input,
-  Modal,
-  Select,
-  Button as ButtonA,
-} from "antd";
+import { Form, Input, Modal, Select, Button as ButtonA } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { EditTwoTone } from "@ant-design/icons";
 import { metasService } from "@/OLD/services/metas.service";
 import { Switch } from "antd";
@@ -19,7 +13,7 @@ export const Edit = memo(({ item, canUpdate }) => {
   const { Option } = Select;
   const [payload, setPayload] = useState({});
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   useEffect(() => {
     if (!isVisible) {
@@ -33,20 +27,19 @@ export const Edit = memo(({ item, canUpdate }) => {
     });
   }, [item, isVisible]);
 
-  const { mutate, loading } = useMutation(
-    (data) => metasService.updateMeta(item.id, data),
-    {
-      onSuccess: () => {
-        createToast({ status: "success", message:"Sucesso"  })
-     
-        setIsVisible(false);
-        queryClient.invalidateQueries("metas");
-      },
-      onError: () => {
-        createToast({ status: "error", message:"Erro ao editar meta!" })
-      },
-    }
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["Edit"],
+    queryFn: (data) => metasService.updateMeta(item.id, data),
+    onSuccess: () => {
+      createToast({ status: "success", message: "Sucesso" });
+
+      setIsVisible(false);
+      queryClient.invalidateQueries("metas");
+    },
+    onError: () => {
+      createToast({ status: "error", message: "Erro ao editar meta!" });
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     mutate(payload);
@@ -63,11 +56,11 @@ export const Edit = memo(({ item, canUpdate }) => {
   return (
     <div>
       {canUpdate && (
-          <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
       )}
 
       <Modal
-        loading={loading}
+        loading={isLoading}
         title="Editar espécie"
         visible={isVisible}
         onCancel={() => {

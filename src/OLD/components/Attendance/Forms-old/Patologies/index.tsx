@@ -9,10 +9,9 @@ import { timelineService } from "@/OLD/services/timeline.service";
 import { useLoadPatient } from "@/presentation/hooks";
 
 import { useProfile } from "@/OLD/hooks/useProfile";
-import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
 
-import { useToast } from "infinity-forge";
+import { useToast, useQueryClient } from "infinity-forge";
 
 function Patologies({
   modal,
@@ -29,7 +28,7 @@ function Patologies({
 
   const patient = useLoadPatient();
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
   const router = useRouter();
 
   const getAllPathologies = useCallback(() => {
@@ -79,9 +78,9 @@ function Patologies({
         defaultProtocol,
       })
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+
+        await refetch(["LastUpdates", router.query.id])
+
         createToast({
           message: "Patologia salva com sucesso!",
           status: "success",
@@ -113,9 +112,7 @@ function Patologies({
         defaultProtocol,
       })
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+        await refetch(["LastUpdates", router.query.id])
         return createToast({
           message: "Patologia atualizada com sucesso!",
           status: "success",
@@ -139,9 +136,7 @@ function Patologies({
       .removeComplete(id)
       .then(async (_res) => {
         setLoading(false);
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+     await refetch(["LastUpdates", router.query.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

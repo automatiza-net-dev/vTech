@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { textReplaceService } from "@/OLD/services/textReplace.service";
 
 export const useTextReplace = () => {
-  const [templates, setTemplates] = useState([]);
+  const [templates, setTemplates] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

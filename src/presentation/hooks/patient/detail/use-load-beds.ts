@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import {  RemotePatient } from "@/data";
 import { callApiOneTime } from "@/presentation";
@@ -17,7 +17,7 @@ export function useLoadBeds() {
   return useQuery({
     queryKey: ["RemoteLoadBeds"],
     queryFn: fetcher,
-    ...callApiOneTime
+    enableCache: true
   });
 }
 

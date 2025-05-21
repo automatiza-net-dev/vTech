@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { BadRequestError } from "infinity-forge";
 
 import { RemoteFinancesResume } from "@/data";
@@ -21,6 +21,5 @@ export function useLoadFinancesResume() {
   return useQuery({
     queryKey: ["loadFinancesResume"],
     queryFn: fetcher,
-    refetchOnWindowFocus: false
   });
 }

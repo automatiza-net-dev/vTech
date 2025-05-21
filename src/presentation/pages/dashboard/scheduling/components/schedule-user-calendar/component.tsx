@@ -9,6 +9,7 @@ import { calendarConfigurations } from "./calendar-configurations";
 import { IScheduleUserCalendarProps } from "./interfaces";
 
 import * as S from "./styles";
+import { BlockUser } from "./components/block-user";
 
 export function ScheduleUserCalendar({
   scheduleUser,
@@ -63,7 +64,11 @@ export function ScheduleUserCalendar({
       }
     >
       <div className="top-name">
+       <BlockUser scheduleUser={scheduleUser} />
+
         <h3>{scheduleUser?.name}</h3>
+
+        <div />
       </div>
 
       <FullCalendar

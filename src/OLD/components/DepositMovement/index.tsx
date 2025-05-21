@@ -6,7 +6,7 @@ import { InputBox } from "./styles";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { useMemo, useState, useEffect, useRef } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
@@ -143,20 +143,11 @@ function Page() {
   });
   const depositMovementsQuery = useDepositMovements(searchParams, reload);
 
-  const usersQuery = useQuery({
-    queryKey: ["deposit-movement-users"],
-    queryFn: () => userService.getUsers().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
 
   const productsQuery = useQuery({
     queryKey: ["deposit-movement-products"],
     queryFn: () => productService.listProducts().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true,
     enabled: openCreate,
   });
 
@@ -180,12 +171,10 @@ function Page() {
     });
   }, [productsQuery.data, addProductData.partial]);
 
-  const createDepositMovementMutation = useMutation(
-    (data) => depositService.createDepositMovement(data),
-    {
-      onSuccess: () => {
-        // setCreatedRole(res.data);
-        // setShowRowId(res.data.id);
+  const createDepositMovementMutation = useMutation({
+    queryKey: ["createDepositMovementMutation"],
+    queryFn: (data) => depositService.createDepositMovement(data),
+        onSuccess: () => {
         setCreateMovementData(initialCreateState);
         setOpenCreate(false);
         depositMovementsQuery.refetch();
@@ -198,7 +187,7 @@ function Page() {
             : "Erro ao criar",
         });
       },
-    }
+  }
   );
 
   const handleAddProduct = () => {

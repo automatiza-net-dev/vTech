@@ -5,10 +5,10 @@ import {
   TextEditor,
   FormHandler,
   useToast,
-  useAuthAdmin
+  useAuthAdmin,
+  useQueryClient,
 } from "infinity-forge";
 import moment from "moment";
-import { useQueryClient } from "react-query";
 
 import { RemotePatientAnimal } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -28,7 +28,7 @@ export function Pathologie({
   const { createToast } = useToast();
   const { data, isFetching } = useLoadAllPathologies();
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((st) => st.refetch);
 
   return (
     <Error name="Pathologie">
@@ -46,7 +46,7 @@ export function Pathologie({
               technicianId: me.user.id,
             };
 
-         await container
+            await container
               .get<RemotePatientAnimal>(TypesAutomatiza.RemotePatientAnimal)
               [
                 !timeline_info
@@ -54,9 +54,7 @@ export function Pathologie({
                   : "updatePathologieInTimeLine"
               ](payload);
 
-            queryClient.invalidateQueries({
-              queryKey: ["LastUpdates", patient.data?.id],
-            });
+            await refetch(["LastUpdates"], { mode: "include" });
 
             createToast({
               message: "Patologia registrada com sucesso!",

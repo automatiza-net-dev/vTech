@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteTutor } from "@/data";
 import { callApiOneTime } from "@/presentation";
@@ -14,8 +14,8 @@ export function useLoadTutorOrigins() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadTutorOrigins",
+    queryKey: ["RemoteLoadTutorOrigins"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

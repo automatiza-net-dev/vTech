@@ -2,7 +2,7 @@
 import { memo, useCallback, useState } from "react";
 import { AutoComplete, Form, Modal } from "antd";
 import { NewPatient } from "./NewPatient";
-import { useQuery, useQueryClient, useMutation } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "infinity-forge";
 import { petsService } from "@/OLD/services/patient.service";
 import { useRouter } from "next/router";
 import { Container } from "./styles";
@@ -19,31 +19,36 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
 
   const router = useRouter();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
-  const { data, loading } = useQuery("getPatients", petsService.getPatients, {
+  const { data, loading } = useQuery({
+    queryKey: "getPatients",
+    queryFn: petsService.getPatients,
     onError: (error) => {
-      createToast({ status: "error", message: "Erro ao buscar pacientes"  })
+      createToast({ status: "error", message: "Erro ao buscar pacientes" });
     },
-    staleTime: 20000,
-    refetchInterval: 25000,
   });
 
-  const { isLoading: isMutating, mutate } = useMutation(
-    (payload) => petsService.assignPatientToTutor(payload),
-    {
-      onError: (error) => {
-        createToast({ status: "error", message: "Não foi possível realizar o vinculo"  })
-      },
-      onSuccess: () => {
-        setReload((prv) => !prv);
+  const { isLoading: isMutating, mutate } = useMutation({
+    queryKey: ["addPatient"],
+    queryFn: (payload) => petsService.assignPatientToTutor(payload),
+    onError: (error) => {
+      createToast({
+        status: "error",
+        message: "Não foi possível realizar o vinculo",
+      });
+    },
+    onSuccess: () => {
+      setReload((prv) => !prv);
 
-        createToast({ status: "success", message:"Vinculo de paciente e tutor realizado" })
+      createToast({
+        status: "success",
+        message: "Vinculo de paciente e tutor realizado",
+      });
 
-        setIsVisible(false);
-      },
-    }
-  );
+      setIsVisible(false);
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     document.getElementById("vinculate-subimit").click();
@@ -89,7 +94,9 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
               {data?.map((patient, key) => {
                 return (
                   <Option key={key} value={patient.name}>
-                     {patient?.name} - RG:{patient?.tag} - Raça:{patient?.race?.specie?.description} {'>'} {patient?.race?.description}`,
+                    {patient?.name} - RG:{patient?.tag} - Raça:
+                    {patient?.race?.specie?.description} {">"}{" "}
+                    {patient?.race?.description}`,
                   </Option>
                 );
               })}

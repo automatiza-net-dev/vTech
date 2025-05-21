@@ -1,35 +1,50 @@
 {
-  "type": "commonjs",
   "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "baseUrl": "./src",
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "*"
+      ]
     },
-    "types": ["reflect-metadata", "node"],
+    "types": [
+      "reflect-metadata",
+      "node"
+    ],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "allowJs": true,
+    "emitDecoratorMetadata": false,
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "disableReferencedProjectLoad": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "allowJs": false
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-"exclude": ["node_modules", "dist", "build", ".next"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "./src/OLD"
+  ]
 }

@@ -83,7 +83,7 @@ function FormChild({
                   .renderPdf(optionSelected?.id)
                   .then((res) =>
                     setPdfUrl(
-                      process.env.NEXT_PUBLIC_API + "/uploads/" + res?.data?.url
+                     res?.data?.url
                     )
                   );
               }

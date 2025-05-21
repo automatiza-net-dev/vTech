@@ -8,7 +8,7 @@ import { TableChart } from "../table-chart";
 import * as S from "./styles";
 
 export function PieChart({ configs, legend, title }: DashboardChart) {
-  const chartRef = useRef<any>();
+  const chartRef = useRef<any>(null);
 
   useEffect(() => {
     const chart = echarts.init(chartRef.current, "westeros");

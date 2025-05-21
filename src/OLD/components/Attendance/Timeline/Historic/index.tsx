@@ -3,7 +3,7 @@ import { Card, Col, Divider, Row, Skeleton } from "antd";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import moment from "moment";
 import "moment/locale/pt-br";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { calendarService } from "@/OLD/services/calendar.service";
 
 import * as S from "./styles";
@@ -16,9 +16,7 @@ export function PatientHistoric({ id }) {
     queryFn: () =>
       calendarService.getPatientHistoric(id).then((res) => res.data),
     enabled: !!id,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
 
   if (historicQuery.isLoading) {

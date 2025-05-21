@@ -305,11 +305,12 @@ function BaseForm({
   return (
     <Modal
       open={visible}
-      styles={{ padding: "10px" }}
+      styles={{ maxWidth: "600px", padding: "10px" }}
       onClose={() => setVisible(false)}
       children={
         <S.BaseForm>
           <FormHandler
+          initialData={{executedAt: new Date()}}
             onChangeForm={{ callbackResult: (payload) => setData(payload) }}
             customAction={{
               Component: () => (

@@ -14,7 +14,12 @@ import { timelineService } from "@/OLD/services/timeline.service";
 
 // Hooks
 import { useMe } from "@/presentation/hooks";
-import { useLoadPatient, useLoadAllScheduleStatuses, useConfigurationsSystem, ImageUploadS3 } from "@/presentation";
+import {
+  useLoadPatient,
+  useLoadAllScheduleStatuses,
+  useConfigurationsSystem,
+  ImageUploadS3,
+} from "@/presentation";
 
 // Utils
 import moment from "moment";
@@ -22,14 +27,14 @@ import "moment/locale/pt-br";
 
 // Components
 import { Button, Popconfirm } from "antd";
-import { Modal, useToast } from "infinity-forge";
+import { Modal, useToast, useQueryClient } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 
 import FormChild from "./FormChild";
-import { useQueryClient } from "react-query";
+import { FileUploader } from "../Notes";
 
 export default function LaunchExam({
   modal,
@@ -58,7 +63,7 @@ export default function LaunchExam({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem();
 
   const replaceText = (str, setState) => {
     setLoading(true);
@@ -67,8 +72,7 @@ export default function LaunchExam({
         base: str,
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
-        tutorId:
-        type === "Vet" ? patient.data?.tutor?.id : patient.data?.id,
+        tutorId: type === "Vet" ? patient.data?.tutor?.id : patient.data?.id,
         dependentId: patient.data?.id,
       })
       .then((res) => setState(res.data.result))
@@ -163,7 +167,7 @@ export default function LaunchExam({
     [fileList]
   );
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((st) => st.refetch);
 
   const submitExamLauching = useCallback(
     (visible = false) => {
@@ -181,7 +185,7 @@ export default function LaunchExam({
           solicitorId: userInfo?.data?.id,
           status: report,
         })
-        .then((res) => {
+        .then(async (res) => {
           fileList.length > 0
             ? submitArquives(res?.data?.id)
             : createToast({
@@ -198,12 +202,13 @@ export default function LaunchExam({
               scheduleStatuses.data?.find((status) => status.type === "ATEND")
                 ?.id || "";
 
-            container
+           await container
               .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
               .change({
                 scheduleId: router.query.scheduleId as string,
                 statusId,
               });
+
 
             reloadSchedule && reloadSchedule();
           }
@@ -220,9 +225,7 @@ export default function LaunchExam({
           }
         })
         .finally(() => {
-          queryClient.invalidateQueries({
-            queryKey: ["LastUpdates", router.query.id],
-          });
+          refetch(["LastUpdates"], { mode: "include" });
 
           if (!error) {
             modal && setModal && setModal(false);
@@ -271,9 +274,7 @@ export default function LaunchExam({
           });
         })
         .finally(() => {
-          queryClient.invalidateQueries({
-            queryKey: ["LastUpdates", router.query.id],
-          });
+          refetch(["LastUpdates"], { mode: "include" });
 
           if (!visible) {
             setSelectedExam({});
@@ -298,9 +299,7 @@ export default function LaunchExam({
         )
         .then((_res) => {
           setLoading(false);
-          queryClient.invalidateQueries({
-            queryKey: ["LastUpdates", router.query.id],
-          });
+          refetch(["LastUpdates"], { mode: "include" });
           return createToast({ message: "Anexo removido!", status: "success" });
         })
         .catch((err) => {
@@ -320,9 +319,7 @@ export default function LaunchExam({
       .removeComplete(examPatientData?._id)
       .then((_res) => {
         setLoading(false);
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+        refetch(["LastUpdates"], { mode: "include" });
         return createToast({
           message: "Registro removido com sucesso!",
           status: "error",
@@ -372,51 +369,8 @@ export default function LaunchExam({
         <div>
           {fileList?.length > 0 &&
             fileList.map((item, i) => {
-              item?.attachment &&
-                timelineService
-                  .getArquivesDownload(
-                    item?.attachment.replace("/uploads/", "")
-                  )
-                  .then((res) => {
-                    const elem = document?.querySelector(
-                      `#custom-download-${i}`
-                    );
-                    if (elem) {
-                      elem.href = window.URL.createObjectURL(res.data);
-                    }
-                  });
-
               return item?.attachment ? (
-                <div style={{ marginTop: "10px" }}>
-                  <ImageUploadS3
-                    src={item.attachment}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
-
-                  <a
-                    style={{ marginRight: "20px" }}
-                    target="_blank"
-                    className="uk-link"
-                    href={item.attachment}
-                  >
-                    {item?.filename}
-                  </a>
-
-                  <FaRegTrashAlt
-                    onClick={() => {
-                      removeAttachment(item?.id);
-                    }}
-                    size={20}
-                    color="red"
-                    style={{ cursor: "pointer", marginRight: "20px" }}
-                  />
-
-                  <a download={`${item?.filename}`} id={`custom-download-${i}`}>
-                    <MdDownload size={20} />
-                  </a>
-                  <hr />
-                </div>
+                <FileUploader {...item} url={item?.attachment} key={i} />
               ) : (
                 <div style={{ marginTop: "10px" }}>
                   <img

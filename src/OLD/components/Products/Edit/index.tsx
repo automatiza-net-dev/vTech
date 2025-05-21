@@ -15,7 +15,7 @@ import Masks from "@/OLD/utils/masks";
 
 // Components
 import { Button, Form, Input, InputNumber, Modal, Select, Switch } from "antd";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 
 // Utils
 import { sortItems } from "@/OLD/utils/sortItems";
@@ -34,35 +34,30 @@ const UpdateProduct = memo(function UpdateProduct({
 
   const { product: productInfo } = useSingleProduct(selectedProduct?.id, false);
 
-  const { data: subgroupsData } = useQuery(
-    ["subgroups"],
-    () => subgroupsService.listSubgroups(),
-    {
-      enabled: visible,
-    }
-  );
-  const { data: taxationGroups } = useQuery(
-    ["taxation-groups"],
-    async () => {
+  const { data: subgroupsData } = useQuery({
+    queryKey: ["subgroups"],
+    queryFn: () => subgroupsService.listSubgroups(),
+    enabled: visible,
+  });
+
+  const { data: taxationGroups } = useQuery({
+    queryKey: ["taxation-groups"],
+    queryFn: async () => {
       return taxationGroupsService.listTaxationGroups();
     },
-    {
-      enabled: visible,
-    }
-  );
+    enabled: visible,
+  });
 
-  const { data: unitsData } = useQuery(
-    [
+  const { data: unitsData } = useQuery({
+    queryKey: [
       "units",
       {
         type: "PRODUCT",
       },
     ],
-    () => unitsService.listUnits("PRODUCT"),
-    {
-      enabled: visible,
-    }
-  );
+    queryFn: () => unitsService.listUnits("PRODUCT"),
+    enabled: visible,
+  });
 
   sortItems(unitsData?.data, "name");
   sortItems(subgroupsData, "description");
@@ -106,22 +101,21 @@ const UpdateProduct = memo(function UpdateProduct({
     }
   };
 
-  const { isLoading, mutate, error } = useMutation(
-    (formData) => productService.updateProduct(productInfo.id, formData),
-    {
-      onSuccess: () => {
-        return createToast({
-          message: "Produto atualizado com sucesso!",
-          status: "warning",
-        });
+  const { isLoading, mutate, error } = useMutation({
+    queryKey: ["UpdateProduct"],
+    queryFn: (formData) =>
+      productService.updateProduct(productInfo.id, formData),
+    onSuccess: () => {
+      return createToast({
+        message: "Produto atualizado com sucesso!",
+        status: "warning",
+      });
 
-        close();
-      },
-      onError: (err) => {
-        verifyFields(err.response.data.errors.map((msg) => msg.field));
-      },
-    }
-  );
+    },
+    onError: (err) => {
+      verifyFields(err.response.data.errors.map((msg) => msg.field));
+    },
+  });
 
   const submit = useCallback(() => {
     mutate({

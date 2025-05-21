@@ -68,7 +68,7 @@ export function Prescription(
                   method: "put",
                 });
 
-                await refetch(["medicalPrescription", props.prescriptionId].toString())
+                await refetch(["medicalPrescription", props.prescriptionId])
               }}
               button={{
                 Element: () => <Button text="INTERROMPER" type="button" />,

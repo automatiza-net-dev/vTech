@@ -1,0 +1,53 @@
+import { Event } from "@/domain";
+import { useSystem } from "@/presentation";
+import { formatNumberToCurrency, Tooltip } from "infinity-forge";
+
+export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
+  const { unit } = useSystem();
+
+  const financesExpired = event?.event?.financesExpired || 0;
+  const configsHasShowFinancesSchedules = unit?.configs.schedules?.show_finances_schedules;
+
+  const disableFinanceSchedule =
+    !configsHasShowFinancesSchedules || !financesExpired || financesExpired === 0;
+
+  function FinanceIcon() {
+    if (disableFinanceSchedule) {
+      return <></>;
+    }
+
+    return (
+      <Tooltip
+        idTooltip="finance_schedule"
+        position="top-center"
+         enableHover
+        content={formatNumberToCurrency(financesExpired)}
+        trigger={
+          <button
+            style={{
+              border: 0,
+              padding: 0,
+              display: "flex",
+              alignItems: "flex-start",
+            }}
+          >
+            <svg
+              stroke="#ff000"
+              fill="#ff0000"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              height="20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"></path>
+            </svg>
+          </button>
+        }
+      />
+    );
+  }
+
+  return { configsHasShowFinancesSchedules, disableFinanceSchedule, FinanceIcon, financesExpired };
+}

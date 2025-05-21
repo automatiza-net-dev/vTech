@@ -53,19 +53,19 @@ export function Actions({
   const description = event?.event?.serviceStatus?.description;
 
   async function onExecuteAction(params?: any) {
-    await refetch("RemoteSchedules");
+    await refetch(["RemoteSchedules"]);
 
     params?.scheduleId &&
-      (await refetch("RemoteLoadSchedules" + params.scheduleId));
+      (await refetch(["RemoteLoadSchedules", params.scheduleId]));
 
     if (viewCalendar !== "day") {
-      await refetch(refetchKeyWeekCalendar || "-");
+      await refetch([refetchKeyWeekCalendar || "-"]);
     } else {
-      await refetch(
-        "RemoteLoadAllSchedulesUser" +
-          DateToYYYYMMDD(selectedDate || new Date()) +
-          listCancelledEvents
-      );
+      await refetch([
+        "RemoteLoadAllSchedulesUser",
+        DateToYYYYMMDD(selectedDate || new Date()),
+        listCancelledEvents,
+      ]);
     }
   }
 
@@ -93,8 +93,8 @@ export function Actions({
           {Object.keys(infos).map((key) => {
             const item = infos[key];
 
-            if(!item.text) {
-              return <></>
+            if (!item.text) {
+              return <></>;
             }
 
             return (
@@ -142,7 +142,11 @@ export function Actions({
                         </div>
                       )}
                     </>
-                  ) :<span dangerouslySetInnerHTML={{ __html: item.text || "" }} />}
+                  ) : (
+                    <span
+                      dangerouslySetInnerHTML={{ __html: item.text || "" }}
+                    />
+                  )}
                 </span>
               </span>
             );
@@ -162,7 +166,11 @@ export function Actions({
               <p>
                 <strong>Observação: </strong>
 
-                <span dangerouslySetInnerHTML={{ __html: event?.event?.observation || "" }}></span>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: event?.event?.observation || "",
+                  }}
+                ></span>
               </p>
             )}
           </div>

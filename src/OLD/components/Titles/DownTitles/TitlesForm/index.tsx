@@ -31,7 +31,7 @@ function TitlesForm({
 
   const { unit } = useSystem()
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   const editFieldsPermission = (title) =>
     usePermission(`${accessControlTitles(title)}02`);
@@ -221,6 +221,11 @@ function TitlesForm({
                       disabled={allowPaymentMethodEdit()}
                       value={title?.paymentMethodId}
                       className="uk-width-1-1"
+                           showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
                       onChange={(val) => {
                         const newArr = [...data];
 
@@ -250,6 +255,11 @@ function TitlesForm({
                       disabled={
                         !allowPaymentMethodEdit() ? !(flags?.length > 0) : true
                       }
+                           showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
                       onChange={(val) => {
                         const newArr = [...data];
 
@@ -293,6 +303,11 @@ function TitlesForm({
                     <label>Plano de contas</label>
                     <br />
                     <Select
+                         showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
                       className="uk-width-1-1"
                       value={title?.planId}
                       disabled={!editFieldsPermission}
@@ -391,6 +406,11 @@ function TitlesForm({
                     <label>Conta Corrente</label>
                     <br />
                     <Select
+                         showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toLowerCase().includes(input.toLowerCase())
+            }
                       className="uk-width-1-1"
                       value={title?.checkingAccountId}
                       onChange={(val) => {

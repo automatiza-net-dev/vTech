@@ -24,7 +24,7 @@ import {
 } from "@/OLD/hooks/useBills";
 import * as React from "react";
 import { GrAddCircle } from "react-icons/gr";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 
 import { DeleteTwoTone } from "@ant-design/icons";
 

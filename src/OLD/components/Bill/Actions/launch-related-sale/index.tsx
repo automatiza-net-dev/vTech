@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { Modal, Tooltip } from "infinity-forge";
 
-import { AddSale } from "@/presentation";
+import { Bill } from "@/domain";
+import { AddSale, useSystem } from "@/presentation";
 
 import * as S from "./styles";
-import { Bill } from "@/domain";
 
 export function LaunchRelatedSale({ id, origin_bill_id }: Bill) {
   const [modal, setModal] = useState(false);
 
+    const { unit } = useSystem();
+  
+    const hasRelatedBills = unit?.configs?.bills?.related_bills;
+
   return (
     <S.LaunchRelatedSale>
-      {!origin_bill_id && (
+      {!origin_bill_id && hasRelatedBills && (
         <Tooltip
           enableHover
           idTooltip="LaunchRelatedSale"

@@ -24,7 +24,7 @@ import { AutoComplete, Select, Table, Modal } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "infinity-forge";
 import columns from "./Columns";
 import DeleteProduct from "./Delete";
 import EditProduct from "./Edit";
@@ -75,19 +75,16 @@ function Products() {
   const [editProductVisible, setEditProductVisible] = useState(false);
 
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery(
-    ["products", filters, reload],
-    () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["products", filters, reload],
+    queryFn: () => {
       if (filters?.noSearch) {
         return [];
       }
       return productService.listProducts(filters).then((res) => res.data);
     },
-    {
-      enabled: true,
-      refetchOnWindowFocus: false,
-    }
-  );
+    enabled: true,
+  });
   const { subgroups } = useSubgroups();
   const { taxationGroups } = useTaxationGroups();
 
@@ -163,7 +160,7 @@ function Products() {
                 setTaxationgroupSearch("");
                 setFilters(newObj);
               }}
-              options={taxationGroups.map((group) => ({
+              options={taxationGroups?.map((group) => ({
                 ...group,
                 value: group?.name,
               }))}
@@ -234,20 +231,20 @@ function Products() {
                     ...d,
                     actions: (
                       <div className="uk-flex uk-flex-around">
-                          <CheckOutlined
-                            size={15}
-                            onClick={() => {
-                              setSelectedId(d?.id);
-                              setDetailsVisible(true);
-                            }}
-                          />
-                          <VscTasklist
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              setSelectedProduct(d);
-                              setProductivityVisible(true);
-                            }}
-                          />
+                        <CheckOutlined
+                          size={15}
+                          onClick={() => {
+                            setSelectedId(d?.id);
+                            setDetailsVisible(true);
+                          }}
+                        />
+                        <VscTasklist
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setSelectedProduct(d);
+                            setProductivityVisible(true);
+                          }}
+                        />
                         {/*canEditProduct && (
                         <EditTwoTone
                           size={15}

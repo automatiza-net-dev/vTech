@@ -1,90 +1,91 @@
-// @ts-nocheck
-import { Form, Modal, Select, Checkbox, DatePicker, Space } from "antd";
-import { useToast, Button } from "infinity-forge";
+import { useCallback, useState } from "react";
+
 import { useRouter } from "next/router";
-import { memo, useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
-import { calendarService } from "@/OLD/services/calendar.service";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { days } from "./weekdays";
+
 import moment from "moment";
+import { useForm } from "react-hook-form";
+import { useToast, Button } from "infinity-forge";
+import { useMutation, useQueryClient } from "infinity-forge";
+import { Form, Modal, Checkbox, DatePicker, Space } from "antd";
+
+import { days } from "./weekdays";
+import { calendarService } from "@/OLD/services/calendar.service";
+
 import "moment/locale/pt-br";
 
-export const Create = memo(() => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const [frequency, setFrequency] = useState([]);
+export function Create(props?: {
+  userId: string;
+  onSucess?: () => void;
+  Component: ({ onClick }) => React.ReactNode;
+}) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [frequency, setFrequency] = useState<any>([]);
   const [allChecked, setAllChecked] = useState(false);
 
-  const schema = yup
-    .object({
-      // startHour: yup.string().required("Compo obrigatório!"),
-      // endHour: yup.string().required("Compo obrigatório!"),
-      // startDate: yup.string().required("Compo obrigatório!"),
-      // endDate: yup.string().required("Compo obrigatório!"),
-    })
-    .required();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const userId = props?.userId || router.query.id;
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  } = useForm();
 
-  const [isVisible, setIsVisible] = useState(false);
-  const { Option } = Select;
   const { createToast } = useToast();
-  const [payload, setPayload] = useState({
-    userId: router.query.id,
+  const [payload, setPayload] = useState<any>({
+    userId,
   });
-  const { mutate, loading } = useMutation(
-    (data) => calendarService.createAbsence({ ...data, ...payload }),
-    {
-      onError: (error) => {
-        error?.response?.data?.errors?.forEach((err) =>
-          createToast({ message: err?.message, status: "error" })
-        );
-      },
-      onSuccess: () => {
-        createToast({
-          message: "Sucesso ao cadastrar indisponibilidade",
-          status: "success",
-        });
-        setIsVisible(false);
-        queryClient.invalidateQueries("getAbsences");
-        setPayload({
-          userId: router.query.id,
-        });
-      },
-    }
-  );
 
-  const onSubmit = useCallback(
-    (data) => {
-      if (frequency.includes("terça")) {
-        const index = frequency.indexOf("terça");
-        frequency[index] = "terca";
-      }
-
-      if (frequency.length === 0) {
-        createToast({ message: "Marque pelo menos um dia", status: "error" });
-      } else {
-        mutate({ ...payload, frequency });
-      }
+  const { mutate } = useMutation({
+    queryKey: ["createSeila"],
+    queryFn: (data: any) =>
+      calendarService.createAbsence({ ...data, ...payload }),
+    onError: (error: any) => {
+      error?.response?.data?.errors?.forEach((err) =>
+        createToast({ message: err?.message, status: "error" })
+      );
     },
-    [payload, frequency]
-  );
+    onSuccess: () => {
+      createToast({
+        message: "Sucesso ao cadastrar indisponibilidade",
+        status: "success",
+      });
+      props?.onSucess?.();
+      setIsVisible(false);
+      queryClient.invalidateQueries("getAbsences");
+      setPayload({
+        userId,
+      });
+    },
+  });
+
+  const onSubmit = useCallback(() => {
+    if (frequency.includes("terça")) {
+      const index = frequency.indexOf("terça");
+      frequency[index] = "terca";
+    }
+
+    if (frequency.length === 0) {
+      createToast({ message: "Marque pelo menos um dia", status: "error" });
+    } else {
+      mutate({ ...payload, frequency });
+    }
+  }, [payload, frequency]);
 
   return (
     <div>
-      <Button
-        text="Adicionar bloqueio de agenda"
-        onClick={() => setIsVisible(true)}
-      />
+      {props?.Component && (
+        <props.Component onClick={() => setIsVisible(true)} />
+      )}
+
+      {!props?.Component && (
+        <Button
+          text="Adicionar bloqueio de agenda"
+          onClick={() => setIsVisible(true)}
+        />
+      )}
+
       {isVisible && (
         <Modal
           visible={isVisible}
@@ -92,14 +93,13 @@ export const Create = memo(() => {
           onCancel={() => {
             setIsVisible(false);
             setPayload({
-              userId: router.query.id,
+              userId,
               endHour: null,
               startHour: null,
             });
           }}
-          onOk={() => document.getElementById("create").click()}
+          onOk={() => document.getElementById("create")?.click()}
           width={"50%"}
-          loading={loading}
         >
           <Form layout="vertical" onSubmitCapture={handleSubmit(onSubmit)}>
             <Form.Item label="Título">
@@ -198,8 +198,8 @@ export const Create = memo(() => {
                 onChange={(e) => {
                   if (e.target.checked) {
                     setAllChecked(true);
-                    let newArr = [];
-                    days.map((item) => {
+                    let newArr: any = [];
+                    days.map((item: any) => {
                       newArr.push(item.label);
                     });
                     setFrequency(newArr);
@@ -218,4 +218,12 @@ export const Create = memo(() => {
       )}
     </div>
   );
-});
+}
+
+export function BlockUserButton(props: {
+  userId: string;
+  onSucess?: () => void;
+  Component: ({ onClick }) => React.ReactNode;
+}) {
+  return <Create {...props} />;
+}

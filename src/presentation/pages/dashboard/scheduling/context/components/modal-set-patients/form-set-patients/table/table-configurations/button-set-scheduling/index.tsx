@@ -24,7 +24,7 @@ export function ButtonSetSchedulling(props) {
   const { createToast } = useToast();
 
   const mainTutor =
-    props.tutors.length > 0 &&
+    props.tutors && props.tutors.length > 0 &&
     (props.tutors.find((tutor) => tutor.isMain) as Tutor);
 
   const avulseTutor = props.tutors?.[0];
@@ -52,7 +52,7 @@ export function ButtonSetSchedulling(props) {
                   patient: data.patientId,
                 });
 
-                refetch(queryKeyLoadSchedulePatients.toString());
+                refetch(queryKeyLoadSchedulePatients);
 
                 createToast({
                   message: "Vinculado com sucesso",

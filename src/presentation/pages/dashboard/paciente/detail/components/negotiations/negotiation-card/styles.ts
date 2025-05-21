@@ -11,6 +11,12 @@ export const NegotiationCard = styled("div")`
     justify-content: space-around;
   }
 
+  .budgets-list {
+        border: 1px solid #000;
+        padding: 20px 15px 10px;
+        margin-top: 10px;
+    }
+
   .budgets {
     padding-left: 15px;
     margin-bottom: 15px;
@@ -21,7 +27,7 @@ export const NegotiationCard = styled("div")`
         width: 100%;
       }
 
-      .content + .content {
+      .content_budget + .content_budget {
         margin-top: 10px;
       }
 
@@ -57,7 +63,7 @@ export const NegotiationCard = styled("div")`
     }
 
     h3,
-    .content {
+    .content_budget {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr;
       font-size: 15px;

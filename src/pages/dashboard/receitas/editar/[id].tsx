@@ -4,9 +4,9 @@ import React, { useState, useCallback, useEffect } from "react";
 
 import { useRouter } from "next/router";
 
-import {  Spin } from "antd";
+import { Spin } from "antd";
 
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { Button, FormHandler, PageWrapper, TextEditor, useTextEditor, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -15,8 +15,10 @@ import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 
 export default function MedicalRecipeEditPage() {
   const [data, setData] = useState<{
+    id?: string;
     title?: string;
     description?: string;
+    template?: string;
     active?: boolean;
   }>({});
   const [body, setBody] = useState<string>("");
@@ -25,7 +27,7 @@ export default function MedicalRecipeEditPage() {
 
   const router = useRouter();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast()
 
   const canEditMedicalRecipe = useUserHasPermission("REC02");
 
@@ -36,6 +38,7 @@ export default function MedicalRecipeEditPage() {
       .then((res) => {
         setData({
           description: res.data.description,
+          template: res.data.template,
           title: res.data.title,
           active: res.data.active,
         });
@@ -50,13 +53,13 @@ export default function MedicalRecipeEditPage() {
   useEffect(() => fetchData(), [fetchData]);
   const submitData = useCallback(() => {
     if (!(data && data.title && data.title.length > 0)) {
-      return  createToast({ status: "error", message: "Insira um titulo", })
+      return createToast({ status: "error", message: "Insira um titulo", })
     }
     if (!(data && data.description && data.description.length > 0)) {
       return createToast({ status: "error", message: "Insira uma descrição", })
     }
     if (!(body && body.length > 0)) {
-      return  createToast({ status: "error", message: "Insira o corpo do documento", })
+      return createToast({ status: "error", message: "Insira o corpo do documento", })
     }
     if (loading) return;
     setLoading(true);
@@ -80,6 +83,10 @@ export default function MedicalRecipeEditPage() {
       })
       .finally(() => setLoading(false));
   }, [loading, data, body, router]);
+
+  const { handleEditorReady, handleInsert } = useTextEditor()
+
+  console.log(data)
 
   return (
     <LayoutDashboard>
@@ -142,7 +149,9 @@ export default function MedicalRecipeEditPage() {
                   </div>
                   <div className="uk-margin-small">
                     <label>Conteúdo</label>
-                    <Editor editorState={body} setEditorState={setBody} />
+                    {data?.template && <FormHandler initialData={{ editor: data?.template }} disableEnterKeySubmitForm onChangeForm={{ callbackResult: (result) => setBody(result.editor) }}>
+                      <TextEditor name="editor" onEditorReady={handleEditorReady} />
+                    </FormHandler>}
                   </div>
                   <div
                     style={{
@@ -159,7 +168,7 @@ export default function MedicalRecipeEditPage() {
                     />
                   </div>
                 </div>
-                <LabelsPanel body={body} setBody={setBody} />
+                <LabelsPanel handleInsert={handleInsert} />
               </div>
             )}
           </div>

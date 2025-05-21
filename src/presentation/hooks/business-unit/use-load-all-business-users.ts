@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteBusinessUnits } from "@/data";
 import { callApiOneTime } from "@/presentation";
@@ -12,8 +12,8 @@ export function useLoadAllBusinessUsers() {
   }
 
   return useQuery({
-    queryKey: "useLoadAllBusinessUsers",
+    queryKey: ["useLoadAllBusinessUsers"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true,
   });
 }

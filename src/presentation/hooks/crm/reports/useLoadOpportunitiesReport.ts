@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { LoadOpportunitiesReport } from "@/domain";
 import { RemoteCRM } from "@/data";
@@ -19,6 +19,6 @@ export function useLoadOpportunitiesReport(
   return useQuery({
     queryKey: ["opportunitiesReport", params],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

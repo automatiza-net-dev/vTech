@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { BadRequestError, useAuthAdmin } from "infinity-forge";
 
 import { RemoteIndicators } from "@/data";
@@ -33,7 +33,6 @@ export function useLoadIndicators(business_unit_id: string) {
   const result = useQuery({
     queryKey: ["loadIndicators", unit?.id],
     queryFn: fetcher,
-    refetchOnWindowFocus: false,
   });
 
   return {

@@ -5,6 +5,10 @@ export const FormCreateScheduling = styled("div")`
   min-width: 700px;
   padding: 10px;
 
+ .form-button.sticky {
+    align-items: flex-end;
+}
+
   .top {
     display: flex;
     align-items: center;

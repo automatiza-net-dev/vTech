@@ -9,7 +9,27 @@ export const GlobalStyle = createGlobalStyle<any>`
   z-index: 1050 !important;
 }
 
+.table_infinity_forge {
+    .top-actions {
+        .right {
+            width: 130px !important;
+        }
+        form > div {
+            border: 0;
+            padding: 0;
+        }
+    }
+}
+
 .arrows {
+  button:first-child {
+
+        svg {
+fill: #707070 !important;
+        width: 11px !important;
+        }
+    }
+
     button:last-child {
 
         svg {
@@ -21,6 +41,10 @@ fill: #707070 !important;
 
 label {
     font-size: 14px !important;
+}
+
+.ant-picker-dropdown {
+    z-index: 99999 !important; 
 }
 
 .ql-editor {

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { LoadPaymentsPreview } from "@/domain";
 import { RemoteBudget } from "@/data";
@@ -23,6 +23,5 @@ export function useLoadPaymentsPreview(
   return useQuery({
     queryKey: ["paymentsPreview", params],
     queryFn: fetcher,
-    refetchOnWindowFocus: false,
   });
 }

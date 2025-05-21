@@ -3,7 +3,7 @@ import { Button, Checkbox, DatePicker, Input, Table } from "antd";
 import moment from "moment";
 import * as React from "react";
 import { useRouter } from "next/router";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 import { currencyFormatter } from "..";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
@@ -86,7 +86,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
   const [internalObservation, setInternalObservation] =
     React.useState("Sem observações");
 
-  const tutors = useLoadAllPatientTutor({});
+  const tutors = useLoadAllPatientTutor({enabled: !!visible});
   const { createToast } = useToast();
   const { data, isLoading: loadingBudget } = useCompleteBudget(
     budget.id,
@@ -114,10 +114,11 @@ export default function CompleteBudget({ budget, setReload = false }) {
 
   const confirmBudgetPermission = useUserHasPermission("ORC03");
   const router = useRouter();
-  const validBudget =
-    budget.status === "ABERTO" ||
+
+  
+  const validBudget = budget.status === "ABERTO" ||
     budget.status === `Orçamento em aberto` ||
-    budget.status === "Nao Aprovada";
+    budget.status === "Nao Aprovada"; //Carlos
 
   const notificationStructure = (bill) => (
     <section>
@@ -254,7 +255,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
     if (data?.items) {
       return data.items.map((item) => ({
         key: item.id,
-        product: item?.productVariation?.product?.description,
+        product: item?.productVariation?.product?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description),
         quantity: item.quantity,
         value: currencyFormatter(item.unitary_value.toString()),
         total: currencyFormatter(item.total_value.toString()),
@@ -313,7 +314,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
 
       <Modal
         open={visible}
-        styles={{ maxWidth: 1300, padding: "15px 0 " }}
+        styles={{ maxWidth: 1300 }}
         onClose={() => setVisible((prevState) => !prevState)}
       >
         <h2

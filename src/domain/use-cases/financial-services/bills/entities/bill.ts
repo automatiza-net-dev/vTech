@@ -13,6 +13,11 @@ export type BillItem = Product & {};
 export type Bill = {
   id: string;
   bill_date: Date;
+  billRelatedType?: {
+    id: number;
+    description: string;
+  }
+  nonPaidValue?: number;
   cancelled?: "P" | "A" | "F" | "S" | "N" | null;
   product_value: number;
   internalCode: string;
@@ -44,7 +49,7 @@ export type Bill = {
   additionalInformation: number;
   cancelled_at: Date | null;
   cancellation_observation: null | string;
-  status: "BAIXADA" | "ABERTA";
+  status: "BAIXADA" | "ABERTA" | "Venda em Aberto" | "Nao Aprovada";
   document_status: "Gerados" | null;
   created_at: Date;
   updated_at: Date;

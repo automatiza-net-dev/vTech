@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteSubgroups } from "@/data";
 import { callApiOneTime } from "@/presentation";
@@ -18,6 +18,6 @@ export function useLoadSubgroups(params: LoadSubgroups.Params) {
   return useQuery({
     queryKey: ["RemoteLoadSubgroupDetails", JSON.stringify(params)],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

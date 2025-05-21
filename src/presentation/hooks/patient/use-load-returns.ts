@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { container, patientTypes } from "@/container";
 import { RemoteLoadReturnablesSchedulePatient } from "@/data";
@@ -13,7 +13,7 @@ export function useLoadReturnablesSchedulePatient(patientId: string) {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadReturnablesSchedulePatient" + patientId,
+    queryKey: ["RemoteLoadReturnablesSchedulePatient", patientId],
     queryFn: fetcher,
     enabled: !!(patientId)
   });

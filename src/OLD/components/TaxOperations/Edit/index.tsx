@@ -7,7 +7,7 @@ import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 // Components
 import { Button, Input, Modal, Select } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -41,16 +41,15 @@ const UpdateTaxOperation = memo(function UpdateTaxOperation({
     });
   }, [initialData]);
 
-  const { mutate } = useMutation(
-    (newData) =>
+  const { mutate } = useMutation({
+    queryKey: ["UpdateTaxOperationMutaton"],
+    queryFn: (newData) =>
       taxOperationService.updateTaxOperations(initialData.id, newData),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["tax-operations"]);
-        hide();
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries(["tax-operations"]);
+      hide();
+    },
+  });
 
   const submit = useCallback(() => {
     mutate(data);

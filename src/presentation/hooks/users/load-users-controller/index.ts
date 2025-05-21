@@ -12,7 +12,7 @@ export function useLoadUsersController() {
   }
 
   return useQuery({
-    queryKey: "RemoteLoadUserControllers",
+    queryKey: ["RemoteLoadUserControllers"],
     queryFn: fetcher,
     enableCache: true
   });

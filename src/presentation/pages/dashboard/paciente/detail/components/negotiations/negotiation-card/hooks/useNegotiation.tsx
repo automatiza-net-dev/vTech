@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 import { useToast } from "infinity-forge";
 
 import { RemoteBudget } from "@/data";

@@ -65,7 +65,7 @@ export function useSubmitSchedule() {
   }
 
   const { createToast } = useToast();
-  const {type} = useConfigurationsSystem();
+  const { type } = useConfigurationsSystem();
 
   const ignoreBlocking = useVerifyPermissions("AGE12");
   const overbookingPermission = useVerifyPermissions("AGE11");
@@ -92,6 +92,8 @@ export function useSubmitSchedule() {
     }
 
     const payload = {
+      userEmail: data?.userEmail,
+      userPwd: data?.userPwd,
       executions: data?.executions,
       endHour: meridianEndHour,
       startHour: meridianStartHour,
@@ -155,7 +157,7 @@ export function useSubmitSchedule() {
             .get<RemoteCRM>(CrmTypes.RemoteCRM)
             .loadAll({
               client: payload.patientId,
-              contact: type === "Vet" ? payload.holderId: payload.patientId,
+              contact: type === "Vet" ? payload.holderId : payload.patientId,
             });
 
           if (
@@ -177,14 +179,14 @@ export function useSubmitSchedule() {
         setModalPatients(null);
         setCreateSchedulingArgs(null);
 
-          if (selectedDate && DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) {
-            refetch(
-              "RemoteLoadAllSchedulesUser" + DateToYYYYMMDD(selectedDate),
-              {
-                mode: "include",
-              }
-            );
-          }
+        if (selectedDate && DateToYYYYMMDD(selectedDate) === DateToYYYYMMDD(data.date)) {
+          refetch(
+            ["RemoteLoadAllSchedulesUser", DateToYYYYMMDD(selectedDate)],
+            {
+              mode: "include",
+            }
+          );
+        }
 
         return;
       }

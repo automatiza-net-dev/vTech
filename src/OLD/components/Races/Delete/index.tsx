@@ -2,7 +2,7 @@
 import React, { memo, useEffect } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { Popconfirm } from "antd";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -17,20 +17,19 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
 
   const { createToast } = useToast();
 
-  const { mutate, loading } = useMutation(
-    (id) => animalServices.deleteRace(id),
-    {
-      onSuccess: () => {
-        createToast({ message: "Raça deletada", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["DeleteAb"],
+    queryFn: (id) => animalServices.deleteRace(id),
+    onSuccess: () => {
+      createToast({ message: "Raça deletada", status: "success" });
 
-        setReload(!reload);
-        queryClient.invalidateQueries("getRaces");
-      },
-      onError: () => {
-        createToast({ message: "Erro ao deletar Raça", status: "error" });
-      },
-    }
-  );
+      setReload(!reload);
+      queryClient.invalidateQueries("getRaces");
+    },
+    onError: () => {
+      createToast({ message: "Erro ao deletar Raça", status: "error" });
+    },
+  });
 
   return (
     <div>

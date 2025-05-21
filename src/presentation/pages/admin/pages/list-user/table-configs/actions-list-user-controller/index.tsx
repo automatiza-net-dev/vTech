@@ -36,7 +36,7 @@ export function ActionsListUserController(props) {
               .get<RemoteUserController>(adminTypes.RemoteUserController)
               .delete({ id: props.id });
 
-            refetch("RemoteLoadUserControllers");
+            refetch(["RemoteLoadUserControllers"]);
 
             createToast({
               message: "Colaborador excluido com sucesso",

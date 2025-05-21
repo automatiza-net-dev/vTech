@@ -4,11 +4,12 @@ import { Bill, Product, TreatmentExecutions } from "@/domain";
 import { authorizationFormater } from "../../utils";
 
 import { Cancel } from "./cancel";
-import { ApproveCancel } from "./approve-cancel";
 import { usePermission } from "@/presentation";
 import moment from "moment";
 
-export function TableItems(props: Bill & { isCancelled?: boolean }) {
+export function TableItems(
+  props: Bill & { isCancelled?: boolean; isBudget?: boolean }
+) {
   const hasPermissionToCancelItems = usePermission("VEN19");
 
   const { Table } = useTable<Product>({
@@ -29,7 +30,8 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
             Component: {
               Element: (props) => (
                 <p className="font-16-regular">
-                  {props?.data_agendamento && moment(props.data_agendamento).format("DD/MM/YYYY HH:mm")}
+                  {props?.data_agendamento &&
+                    moment(props.data_agendamento).format("DD/MM/YYYY HH:mm")}
                 </p>
               ),
             },
@@ -40,7 +42,8 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
             Component: {
               Element: (props) => (
                 <p className="font-16-regular">
-                  {props?.data_execucao && moment(props.data_execucao).format("DD/MM/YYYY HH:mm")}
+                  {props?.data_execucao &&
+                    moment(props.data_execucao).format("DD/MM/YYYY HH:mm")}
                 </p>
               ),
             },
@@ -130,6 +133,35 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           },
         },
         {
+          id: "unitary_value",
+          enabled: !props.isCancelled,
+          label: "Desconto Padrão",
+          width: 140,
+          Component: {
+            Element: (item) => {
+              const product = item as Product;
+
+              const unitaryValue = Number(product?.unitary_value || 0);
+              const quantity = Number(product?.quantity || 1);
+              const total = unitaryValue * quantity;
+
+              const discountPercentage = Number(
+                product?.productVariation?.businessUnitProducts?.[0]
+                  ?.maximum_discount_percentage || 0
+              );
+
+              const discountAmount = total * (discountPercentage / 100);
+
+              return (
+                <p className="font-14-regular">
+                  {formatNumberToCurrency(discountAmount)} ({discountPercentage}
+                  %)
+                </p>
+              );
+            },
+          },
+        },
+        {
           id: "total_value",
           label: "Total",
           Component: {
@@ -192,6 +224,7 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
           id: "custom2" as any,
           label: "Cancelamento",
           enabled:
+            !props?.isBudget &&
             props.isCancelled &&
             !!props.cancelled &&
             hasPermissionToCancelItems,
@@ -205,15 +238,20 @@ export function TableItems(props: Bill & { isCancelled?: boolean }) {
                 return (
                   <div className="font-14-bold">
                     {item.cancelled === "S" ? "Aprovado" : "Não aprovado"}{" "}
-                    <br /> <div dangerouslySetInnerHTML={{ __html: item?.reviewCancelNotes || "Sem obs" }} /> 
+                    <br />{" "}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: item?.reviewCancelNotes || "Sem obs",
+                      }}
+                    />
                   </div>
                 );
               }
 
-              return <div className="font-14-bold">
-                Cancelamento solicitado
-            </div>
-            //  return <ApproveCancel {...item} />;
+              return (
+                <div className="font-14-bold">Cancelamento solicitado</div>
+              );
+              //  return <ApproveCancel {...item} />;
             },
           },
         },

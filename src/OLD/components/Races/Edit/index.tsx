@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Form, Input, Modal, Select, Button as ButtonA } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
 import { EditTwoTone } from "@ant-design/icons";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
@@ -26,22 +26,21 @@ export const Edit = memo(({ item, reload, setReload }) => {
 
   const { species, loadingSpecies } = useSpecies("ALL");
 
-  const { mutate, loading } = useMutation(
-    (data) => animalServices.editRace(item.id, data),
-    {
-      onSuccess: () => {
-        createToast({ message: "Espécie editada!", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["EditAAA"],
+    queryFn: (data) => animalServices.editRace(item.id, data),
+    onSuccess: () => {
+      createToast({ message: "Espécie editada!", status: "success" });
 
-        setIsVisible(false);
-        setPayload(null);
-        setReload(!reload);
-        queryClient.invalidateQueries("getSpecies");
-      },
-      onError: () => {
-        createToast({ message: "Erro ao editar espécie!", status: "error" });
-      },
-    }
-  );
+      setIsVisible(false);
+      setPayload(null);
+      setReload(!reload);
+      queryClient.invalidateQueries("getSpecies");
+    },
+    onError: () => {
+      createToast({ message: "Erro ao editar espécie!", status: "error" });
+    },
+  });
 
   const handleSubmit = useCallback(() => {
     mutate(payload);

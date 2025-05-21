@@ -94,7 +94,7 @@ export default function PrintScreen({ printDetails, budgetData }: any) {
                 item?.status === "ABERTO" && (
                   <tr>
                     <td>{item?.productVariation?.product?.reference_code}</td>
-                    <td>{item?.productVariation?.product?.description}</td>
+                    <td>{item?.productVariation?.product?.description + (item?.departmentItems && item?.departmentItems.length > 0 ?  " - " : "") + item?.departmentItems?.map(item => item.department_item_description)}</td>
                     <td>{item?.quantity}</td>
                     <td>
                       {!item?.courtesy

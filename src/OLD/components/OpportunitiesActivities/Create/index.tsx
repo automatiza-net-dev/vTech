@@ -9,7 +9,7 @@ import FormChild from "../FormChild";
 import { Modal } from "antd";
 
 import moment from "moment";
-import { useToast } from "infinity-forge";
+import { useAuthAdmin, useToast } from "infinity-forge";
 
 const Create = memo(function Create({
   visible,
@@ -23,12 +23,12 @@ const Create = memo(function Create({
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const { user } = useProfile();
+  const { user } = useAuthAdmin();
 
   const { createToast} = useToast()
 
   useEffect(() => {
-    setData({ ...data, collabName: user?.name, userId: user?.id });
+    setData({ ...data, collabName: user?.user?.name, userId: user?.id });
   }, [user]);
 
   const submitActivity = useCallback(() => {

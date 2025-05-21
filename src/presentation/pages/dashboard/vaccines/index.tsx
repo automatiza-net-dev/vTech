@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { useLoadAllVaccinesProtocols } from "@/presentation";
-import { useQueryClient } from "react-query";
 
 import { ProtocolsTable } from "./components/protocols-table";
 
@@ -16,7 +15,6 @@ import * as S from "./styles";
 export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
   const [params, setParams] = useState({ fetch: false });
 
-  const queryClient = useQueryClient();
   const vaccinesProtocols = useLoadAllVaccinesProtocols(params);
 
   const protocolsTableProps = {
@@ -25,9 +23,6 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
     type: props?.type === "vaccine" ? "Vacina" : "Vermifugo",
   };
 
-  useEffect(() => {
-    queryClient.removeQueries();
-  }, []);
 
   return (
     <LayoutDashboard>

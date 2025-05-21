@@ -10,6 +10,7 @@ import {
 import { ActionSchedule } from "../../interface";
 
 import * as S from "./styles";
+import { useModalAuthorization } from "../modal-authorization";
 
 export function InformCustomerArrival({
   event,
@@ -17,6 +18,8 @@ export function InformCustomerArrival({
 }: ActionSchedule) {
   const { createToast} = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
+
+    const { ModalAuthorization, executeVerification } = useModalAuthorization({ event })
 
   async function handleClick() {
     const statusId = scheduleStatuses.data?.find(
@@ -38,7 +41,11 @@ export function InformCustomerArrival({
   return (
     <PermissionItem hash="AGE06">
       <S.InformCustomerArrival>
-        <button type="button" onClick={handleClick}>
+        {ModalAuthorization}
+
+        <button type="button" onClick={() => {
+          executeVerification({ formData: {}, handleSucess: handleClick })
+        }}>
           <Icon name="IconUser" />
           Informar chegada do cliente
         </button>

@@ -14,7 +14,7 @@ export function useLoadSchedules() {
   }
 
   return useQuery({
-    queryKey: "RemoteSchedules",
+    queryKey: ["RemoteSchedules"],
     queryFn: fetcher,
     enableCache: true
   });

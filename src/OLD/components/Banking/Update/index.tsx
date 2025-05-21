@@ -160,12 +160,17 @@ const Update = memo(function Update({
                   })
                 }
                 filterOption={(inputValue, option) => {
-                  if (
-                    option?.name?.includes(inputValue) ||
-                    option?.tutor?.document?.includes(inputValue)
-                  ) {
-                    return option;
-                  }
+                  const normalize = (str) =>
+                    str
+                      ?.normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .toLowerCase();
+
+                  const input = normalize(inputValue);
+                  const name = normalize(option?.name || "");
+                  const document = normalize(option?.tutor?.document || "");
+
+                  return name.includes(input) || document.includes(input);
                 }}
               />
             </div>

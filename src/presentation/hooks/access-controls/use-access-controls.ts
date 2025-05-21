@@ -11,6 +11,6 @@ export function useAccessControls({ id }) {
   return useQuery({
     queryKey: ["RemoteLoadAccessControls", id],
     queryFn: fetcher,
-    enableCache: true
+    enableCache: true,
   });
 }

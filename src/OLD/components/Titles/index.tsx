@@ -50,11 +50,11 @@ export default function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     type: !type ? "all" : type === "receive" ? "CREDITO" : "DEBITO",
     order: "expiration_date",
-    status: "ABERTO",
+    status: "",
     noSearch: true,
     groupBorderos: "sim",
-    accept: "all",
-    reconciled: "all",
+    accept: "",
+    reconciled: "",
   });
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
@@ -82,7 +82,7 @@ export default function Titles({ type }: any) {
   const { unit } = useSystem()
   const { createToast } = useToast();
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
 
   const listTitlesPermission = useUserHasPermission(
     `${accessControlTitles(type)}00`
@@ -165,7 +165,7 @@ export default function Titles({ type }: any) {
         parc: `${finance?.installment} / ${finance?.qty_installments}`,
         fiscalNote: finance?.fiscal_note || "-",
         accept: finance.accept,
-        client: finance?.client || "-",
+        client: finance?.client || finance?.historic || "-",
         issueDate: finance?.issue_date
           ? moment(finance?.issue_date).format("DD/MM/YYYY")
           : "Não informado",

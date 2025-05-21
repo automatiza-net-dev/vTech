@@ -10,7 +10,7 @@ import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -22,9 +22,10 @@ const DeleteTaxOperation = memo(function DeleteTaxOperation({ close, id }) {
   const permissions = permissionControl("operacoesFiscais");
   const { createToast } = useToast();
 
-  const { mutate, isLoading } = useMutation((id) =>
-    taxOperationService.deleteTaxOperations(id)
-  );
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["DeleteTaxOperationMuration"],
+    queryFn: (id) => taxOperationService.deleteTaxOperations(id),
+  });
 
   const remove = useCallback(() => {
     if (!permissions?.OPF3) {

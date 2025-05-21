@@ -16,7 +16,7 @@ export function Delete(props: ControllerRole) {
           id: String(props.id),
         });
 
-        await refetch("RemoteLoadAllControllerRoles");
+        await refetch(["RemoteLoadAllControllerRoles"]);
 
         createToast({ message: "Controle excluido com sucesso!", status: "success"})
     }} />

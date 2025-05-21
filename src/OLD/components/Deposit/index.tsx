@@ -17,7 +17,7 @@ import { InputBox } from "./styles";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { memo, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
@@ -64,10 +64,9 @@ const columns = [
 ];
 
 export const Deposits = memo(() => {
+  const { unit } = useSystem();
 
-  const {unit} = useSystem()
-
-  const clinicId = unit?.id
+  const clinicId = unit?.id;
 
   const [searchParams, setSearchParams] = useState({
     unitId: clinicId,
@@ -93,54 +92,52 @@ export const Deposits = memo(() => {
     type: "Venda",
   });
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const depositsQuery = useQuery({
     queryKey: ["deposits", searchParams],
     queryFn: () => {
-
       return depositService
-        .searchDeposits({...searchParams, unitId: clinicId })
+        .searchDeposits({ ...searchParams, unitId: clinicId })
         .then(({ data }) => data);
     },
-    enabled: !!clinicId
+    enabled: !!clinicId,
   });
 
-  const createDepositMutation = useMutation(
-    (data) => depositService.createDeposit(data),
-    {
-      onSuccess: (res) => {
-        // setCreatedRole(res.data);
-        // setShowRowId(res.data.id);
-        setOpenCreate(false);
-        depositsQuery.refetch();
-        setCreateDepositData({ description: "", type: "Venda" });
-      },
-      onError: (err) => {
-
-        createToast({ status: "error", message: err.response.data.message
+  const createDepositMutation = useMutation({
+    queryKey: ["createDepositMutation"],
+    queryFn: (data) => depositService.createDeposit(data),
+    onSuccess: (res) => {
+      setOpenCreate(false);
+      depositsQuery.refetch();
+      setCreateDepositData({ description: "", type: "Venda" });
+    },
+    onError: (err) => {
+      createToast({
+        status: "error",
+        message: err.response.data.message
           ? err.response.data.message.split(":").at(1)
-          : "Erro ao criar" })
-       
-      },
-    }
-  );
+          : "Erro ao criar",
+      });
+    },
+  });
 
-  const updateDepositMutation = useMutation(
-    (data) => depositService.updateDeposit(data.id, data),
-    {
-      onSuccess: () => {
-        setOpenUpdate(false);
-        depositsQuery.refetch();
-      },
-      onError: (err) => {
-
-        createToast({ status: "error", message: err.response.data.message
+  const updateDepositMutation = useMutation({
+    queryKey: ["updateDepositMutation"],
+    queryFn: (data) => depositService.updateDeposit(data.id, data),
+    onSuccess: () => {
+      setOpenUpdate(false);
+      depositsQuery.refetch();
+    },
+    onError: (err) => {
+      createToast({
+        status: "error",
+        message: err.response.data.message
           ? err.response.data.message.split(":").at(1)
-          : "Erro ao atualizar" })
-      },
-    }
-  );
+          : "Erro ao atualizar",
+      });
+    },
+  });
 
   const isDisabled = updateDepositMutation.isLoading;
 
@@ -265,14 +262,17 @@ export const Deposits = memo(() => {
                         </div>
                       </Link>
                       {canRemoveDeposit && (
-                          <Popconfirm
-                            onConfirm={() =>
-                              createToast({ status: "warning", message: "Verificar método" })
-                            }
-                            title="Deseja remover este depósito?"
-                          >
-                            <DeleteTwoTone twoToneColor={"red"} />
-                          </Popconfirm>
+                        <Popconfirm
+                          onConfirm={() =>
+                            createToast({
+                              status: "warning",
+                              message: "Verificar método",
+                            })
+                          }
+                          title="Deseja remover este depósito?"
+                        >
+                          <DeleteTwoTone twoToneColor={"red"} />
+                        </Popconfirm>
                       )}
 
                       <button

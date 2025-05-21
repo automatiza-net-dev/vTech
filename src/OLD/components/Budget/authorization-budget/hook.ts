@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import {
   financialServicesTypes,
@@ -19,6 +19,6 @@ export function useLoadBudget({ id }) {
   return useQuery({
     queryKey: ["RemoteLoadBudget", id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

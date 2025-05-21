@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "infinity-forge";
 
 import { RemoteTutor } from "@/data";
 import { AssignTutor } from "@/domain";
@@ -12,5 +12,5 @@ export function useAssignTutor() {
     return response;
   }
 
-  return useMutation("RemoteAssignTutor", fetcher);
+  return useMutation({ queryKey: ["RemoteAssignTutor"], queryFn: fetcher });
 }

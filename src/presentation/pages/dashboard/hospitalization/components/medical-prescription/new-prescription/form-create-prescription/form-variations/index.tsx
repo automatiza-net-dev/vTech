@@ -11,7 +11,7 @@ export function FormVariations() {
   const type = values.type;
 
   const medicaments = useQuery({
-    queryKey: "medicaments",
+    queryKey: ["medicaments"],
     queryFn: async () => {
       const response = await api({
         url: "units",
@@ -25,7 +25,7 @@ export function FormVariations() {
   });
 
   const drugsAdministrations = useQuery({
-    queryKey: "drugsAdministrations",
+    queryKey: ["drugsAdministrations"],
     queryFn: async () => {
       const response = await api({
         url: "drug-administrations",

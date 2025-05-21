@@ -16,11 +16,10 @@ import { useLoadPatient } from "@/presentation/hooks";
 
 // Components
 import FormChild from "./FormChild";
-import { useToast } from "infinity-forge";
+import { useToast, useQueryClient } from "infinity-forge";
 
 // utils
 import moment from "moment";
-import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
 import { useConfigurationsSystem } from "@/presentation";
 
@@ -44,9 +43,9 @@ export default function Documents({
 
   const router = useRouter();
   const patient = useLoadPatient();
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((st) => st.refetch);
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem();
 
   async function registerPrint() {
     try {
@@ -73,10 +72,7 @@ export default function Documents({
         base: str,
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
-        tutorId:
-        type === "Vet"
-            ? patient?.data?.tutor?.id
-            : patient?.data?.id,
+        tutorId: type === "Vet" ? patient?.data?.tutor?.id : patient?.data?.id,
         dependentId: patient?.data?.id,
         documentId: id,
         tag: patient?.data?.id,
@@ -141,9 +137,7 @@ export default function Documents({
         message: ".",
       })
       .then((_res) => {
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+        refetch(["LastUpdates", patient.data?.id]);
         setLoading(false);
         setModal(false);
         setData({});
@@ -175,9 +169,7 @@ export default function Documents({
           realizedAt: moment(new Date()),
         })
         .then((_res) => {
-          queryClient.invalidateQueries({
-            queryKey: ["LastUpdates", router.query.id],
-          });
+          refetch(["LastUpdates", router.query.id]);
           setSelectedUpdate && setSelectedUpdate(false);
           if (!visible) {
             setLoading(false);
@@ -205,9 +197,7 @@ export default function Documents({
       .then((_res) => {
         setLoading(false);
 
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+         refetch(["LastUpdates", patient.data?.id]);
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",

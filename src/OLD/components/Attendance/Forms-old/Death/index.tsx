@@ -1,31 +1,27 @@
-// @ts-nocheck
-// Core
 import { useState, useEffect } from "react";
 
-// Services
 import { clinicService } from "@/OLD/services/clinic.service";
 
-// Components
 import Editor from "@/OLD/components/Editor";
 import { DateTimeField } from "@mui/x-date-pickers";
 import { Select, FormHandler, useToast, Button } from "infinity-forge";
-import FormFooter from "@/OLD/components/mini-components/CustomFormFooter";
 
-// Utils
 import moment from "moment";
 import { useLoadPatient } from "@/presentation";
+import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 import { petsService } from "@/OLD/services/patient.service";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 
-function DeathForm({ modal = false, setModal = () => ({}), timeline_info }) {
+function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any) {
   const [body, setBody] = useState("");
-  const [data, setData] = useState({});
-  const [selectedVet, setSelectedVet] = useState({ user: null });
+  const [data, setData] = useState<any>({});
+  const [selectedVet, setSelectedVet] = useState<any>({ user: null });
 
   const { createToast } = useToast();
 
   const patient = useLoadPatient();
-  const queryClient = useQueryClient();
+
+  const refetch = useQueryClient((st) => st.refetch);
+
   const vetsQuery = useQuery({
     queryKey: ["allVets"],
     queryFn: () =>
@@ -39,27 +35,27 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }) {
       ),
   });
 
-  const deathMutation = useMutation(
-    (payload) => petsService.deathPatient(payload, patient?.data?.id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["RemotePatient", patient.data.id],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data.id],
-        });
+  const deathMutation = useMutation({
+    queryKey: ["deathMutation"],
+    queryFn: async (payload) => {
+      const response = await petsService.deathPatient(payload, patient?.data?.id)
+      
+     return response
+    },
+    onSuccess: async () => {
+      await refetch(["RemotePatient", patient.data.id]);
+      await refetch(["LastUpdates", patient.data.id]);
 
-        close();
-      },
-      onError: (e) => {
-        createToast({
-          message: "houve um erro ao salvar o óbito",
-          status: "error",
-        });
-      },
-    }
-  );
+      close();
+    },
+    onError: async (e) => {
+      createToast({
+        message: "houve um erro ao salvar o óbito",
+        status: "error",
+      });
+    },
+  });
+
 
   const handleSubmittion = () => {
     if (!data?.selectedVetId) {

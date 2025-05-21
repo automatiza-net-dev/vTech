@@ -5,7 +5,7 @@ import { DeleteTwoTone } from "@ant-design/icons";
 
 import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "infinity-forge";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useToast } from "infinity-forge";
 
@@ -14,19 +14,18 @@ export const Delete = memo(function Delete({ id }) {
   const { createToast } = useToast();
   const canDeleteScheduleStatus = useUserHasPermission("AST03");
 
-  const { mutate, loading } = useMutation(
-    (id) => scheduleTypeServices.deleteStatus(id),
-    {
-      onSuccess: () => {
-        createToast({ message: "Status deletado", status: "success" });
+  const { mutate, loading } = useMutation({
+    queryKey: ["DeleteHHHUHU"],
+    queryFn: (id) => scheduleTypeServices.deleteStatus(id),
+    onSuccess: () => {
+      createToast({ message: "Status deletado", status: "success" });
 
-        queryClient.invalidateQueries("getAllStatus");
-      },
-      onError: () => {
-        createToast({ message: "Erro ao deletar status", status: "error" });
-      },
-    }
-  );
+      queryClient.invalidateQueries("getAllStatus");
+    },
+    onError: () => {
+      createToast({ message: "Erro ao deletar status", status: "error" });
+    },
+  });
 
   return (
     <div>

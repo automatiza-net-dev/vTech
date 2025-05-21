@@ -18,7 +18,7 @@ export function ModalSelectActiveTutor({
   modal,
   setModal,
   id,
-  tutors,
+  tutors = [],
 }: {
   id: string;
   tutors: Tutor[];
@@ -47,7 +47,7 @@ export function ModalSelectActiveTutor({
         status: "success",
       });
 
-      refetch(queryKeyLoadSchedulesPatients.toString())
+      refetch(queryKeyLoadSchedulesPatients)
 
     } catch (err) {
       console.log(err);

@@ -7,7 +7,7 @@ import { Vaccine } from "@/domain";
 export function usePrint({
   componentRef,
 }: {
-  componentRef: RefObject<HTMLDivElement>;
+  componentRef: any
 }) {
   const [vaccinesReport, setVaccinesReport] = useState<Vaccine[]>([]);
 

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 import { Col, Row, Checkbox } from "antd";
-import { useQuery, useQueryClient, useMutation } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "infinity-forge";
 import { Button, useToast } from "infinity-forge";
 
 import { userService } from "@/OLD/services/user.service";
@@ -74,15 +74,14 @@ export function WorkingDay({ edit }) {
       });
   }, [data, router]);
 
-  const { loadingWorkingDays: isMutating, mutate } = useMutation(
-    (_data) => userService.createWorkingDay(_data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("workingDay");
-        setReload(!reload);
-      },
-    }
-  );
+  const { loadingWorkingDays: isMutating, mutate } = useMutation({
+    queryKey: ["WorkingDayMutation"],
+    queryFn: (_data) => userService.createWorkingDay(_data),
+    onSuccess: () => {
+      queryClient.invalidateQueries("workingDay");
+      setReload(!reload);
+    },
+  });
 
   const defaultData = {
     userId: userId,

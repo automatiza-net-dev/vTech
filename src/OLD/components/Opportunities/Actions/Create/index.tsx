@@ -41,13 +41,14 @@ export default function Create({
   const {type} = useConfigurationsSystem()
 
   async function createOpportunity() {
+
     const newObj = {
       ...data,
       castrated: data?.castrated ? JSON.parse(data?.castrated) : "false",
       businessUnitId: clinic?.id,
       contactDate: moment(data?.contactDate).toISOString(),
       value: convertIntlCurrency(data?.value),
-      clientId: type === "Vet" ?  data?.patient_id : undefined
+      clientId: type === "Vet" ?  data?.patient_id || data?.clientId : undefined
     };
 
     if (newObj.clientId === "-") {

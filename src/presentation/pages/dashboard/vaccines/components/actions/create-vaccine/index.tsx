@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "infinity-forge";
 import { useLoadAllVaccinesProtocols } from "@/presentation";
 
 import { RemoteVaccine } from "@/data";

@@ -1,9 +1,22 @@
-import { api, Error, formatNumberToCurrency, Icon, useQuery } from "infinity-forge";
+import {
+  Icon,
+  Error,
+  Button,
+  Tooltip,
+  useToast,
+  copyToClipboard,
+  generateWhatsappUrl,
+  formatNumberToCurrency,
+} from "infinity-forge";
 
 import { Actions } from "./actions";
 import { UserInfos } from "./user-info";
 import { Event, ScheduleUser } from "@/domain";
-import { DateToDDMMYYYY, useSystem } from "@/presentation";
+import {
+  DateToDDMMYYYY,
+  useConfigurationsSystem,
+  useVerifyFinanceSchedule,
+} from "@/presentation";
 
 import { SidebarTabs } from "./tabs";
 
@@ -22,7 +35,7 @@ export function SideBarContent({
   timeText: string;
   viewCalendar: "day" | "week";
   scheduleUser: ScheduleUser;
-  refetchKeyWeekCalendar?: string;
+  refetchKeyWeekCalendar?: any;
 }) {
   const date = DateToDDMMYYYY(event?.start || event?.event?.start_hour);
 
@@ -32,6 +45,10 @@ export function SideBarContent({
   };
 
   const isCancelled = infos.status === "Atendimento cancelado";
+
+  const { createToast } = useToast();
+
+  const { type } = useConfigurationsSystem();
 
   return (
     <Error name="DrawerContent">
@@ -50,6 +67,57 @@ export function SideBarContent({
 
         <div className="status">
           <span>{infos.status}</span>
+
+          <div style={{ display: "flex", gap: "15px" }}>
+            <Button
+              type="button"
+              text="Copiar link de confirmação da agenda"
+              onClick={() => {
+                copyToClipboard(
+                  new URL(window.location.origin).origin +
+                    `/confirmacao?scheduleId=${event?.event?.id}`
+                );
+                createToast({
+                  status: "success",
+                  message:
+                    "Link de confirmação copiado para sua área de trânsferencia",
+                });
+              }}
+            />
+
+            <Tooltip
+              idTooltip="whatsapp"
+              content={"Enviar link para whatsapp web"}
+              position="top-right"
+              enableHover
+              trigger={
+                <Button
+                  type="button"
+                  text=""
+                  svg="IconWhats"
+                  onClick={() => {
+                    const userPhone =
+                      type === "Vet"
+                        ? event?.event?.holder?.tutor?.cellphone
+                        : event?.event?.patient?.cellphone;
+
+                    const scheduleId = event?.event?.id;
+                    const urlForConfirmation = `${window.location.origin}/confirmacao?scheduleId=${scheduleId}`;
+
+                    const message = `Olá! Aqui está o link para confirmar sua agenda: ${urlForConfirmation}`;
+
+                    window.open(
+                      generateWhatsappUrl({
+                        phoneNumber: userPhone || "",
+                        message,
+                      }),
+                      "_blank"
+                    );
+                  }}
+                />
+              }
+            />
+          </div>
         </div>
 
         <PatientFinances event={event} />
@@ -69,36 +137,23 @@ export function SideBarContent({
 }
 
 function PatientFinances({ event }: { event: Event }) {
-  const { unit } = useSystem();
-
-  const clientId = event?.event?.holder?.id || event?.event?.patient?.id;
-  const hasFinancesShedules = unit?.configs.schedules?.show_finances_schedules;
-
-  const { data } = useQuery({
-    queryKey: ["PatientFinancess", clientId],
-    queryFn: async () => {
-      const response = await api({
-        url: `schedules/finances/${clientId}`,
-        method: "get",
-      });
-
-      return response as {
-        "Valores em Atraso": number;
-      }[];
-    },
-    enabled: hasFinancesShedules
+  const { financesExpired, disableFinanceSchedule } = useVerifyFinanceSchedule({
+    event,
   });
 
-  if (!hasFinancesShedules || !data || data?.length === 0) {
+  if (disableFinanceSchedule) {
     return <></>;
   }
 
   return (
     <div className="status" style={{ display: "flex", gap: 5 }}>
-      <h3 className="font-14-bold" style={{ marginBottom: 0, color: "red" }}>Valores em aberto</h3>
-      {data?.map((item, index) => {
-        return <span key={index} style={{ color: "red", fontWeight: "bold" }}>{formatNumberToCurrency(item["Valores em Atraso"])}</span>;
-      })}
+      <h3 className="font-14-bold" style={{ marginBottom: 0, color: "red" }}>
+        Valores Vencidos
+      </h3>
+
+      <span style={{ color: "red", fontWeight: "bold" }}>
+        {formatNumberToCurrency(financesExpired)}
+      </span>
     </div>
   );
 }

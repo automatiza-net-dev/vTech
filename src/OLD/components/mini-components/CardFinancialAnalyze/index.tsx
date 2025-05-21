@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Container } from "./styles";
 
 import moment from "moment";
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { financesService } from "@/OLD/services/finances.service";
 
 const keyMap = {
@@ -22,9 +22,7 @@ const CardFinancialAnalyze = () => {
   const { data } = useQuery({
     queryKey: ["card", "overall-resume"],
     queryFn: () => financesService.getOverallResume().then((res) => res.data),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enableCache: true
   });
   const memoMap = useMemo(() => {
     if (!data)

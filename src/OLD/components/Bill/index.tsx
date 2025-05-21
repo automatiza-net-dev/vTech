@@ -9,6 +9,8 @@ import moment from "moment";
 
 import { MdOutlineClear } from "react-icons/md";
 
+import { useQuery, api } from "infinity-forge";
+
 import { Input as AntInput, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -20,7 +22,12 @@ import { useGetAllBills } from "../../../OLD/hooks/useBills";
 import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 
-import { AddSale, PermissionItem, useConfigurationsSystem, useSystem } from "@/presentation";
+import {
+  AddSale,
+  PermissionItem,
+  useConfigurationsSystem,
+  useSystem,
+} from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";
 
@@ -46,6 +53,7 @@ export default function Bills() {
     data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
 
     return data.map((bill) => {
+      console.log(bill, "@@@@@");
       return {
         id: bill?.id,
         internalCode: bill?.internalCode,
@@ -56,8 +64,10 @@ export default function Bills() {
         patient: bill.patient?.name ?? "-",
         user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
         total: currencyFormatter(bill?.total_value),
-        status: billStatusFormatter(bill, setReload, visible2, setVisible2),
+        status:
+          billStatusFormatter(bill, setReload, visible2, setVisible2) || "-",
         missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
+        billRelatedTypeDescription: bill?.bill_related_type?.description,
         docActions: (
           <ModalListagemDocumentosVenda
             bill={bill}
@@ -65,7 +75,12 @@ export default function Bills() {
           />
         ),
         actions: (
-          <BillActions bill={bill} cashiers={cashiers} client={bill?.client} setReload={setReload} />
+          <BillActions
+            bill={bill}
+            cashiers={cashiers}
+            client={bill?.client}
+            setReload={setReload}
+          />
         ),
       };
     });
@@ -91,9 +106,29 @@ export default function Bills() {
     }
   }, [router.query]);
 
-  const { unit } = useSystem()
+  const { unit } = useSystem();
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasRelatedBills = unit?.configs?.bills?.related_bills;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
+  const hasGenerateBillDocuments =
+    unit?.configs?.businessUnits?.generate_bill_documents;
+
+  const billRelatedTypes = useQuery({
+    queryKey: ["bill-related-types"],
+    queryFn: async () => {
+      const active = true;
+
+      const response = await api({
+        url: "bill-related-types",
+        method: "get",
+        body: {
+          active: true,
+        },
+      });
+
+      return response as { id: string; description: string; active: boolean }[];
+    },
+  });
 
   return (
     <PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
@@ -212,6 +247,34 @@ export default function Bills() {
                 </Input>
               )}
 
+              {hasRelatedBills && (
+                <Input style={{ width: "100%" }}>
+                  <Label>
+                    Tipo Venda <br /> Relacionada
+                  </Label>
+                  <Select
+                    allowClear
+                    defaultValue={""}
+                    className="uk-width-1-1"
+                    value={filters.billRelatedTypeId}
+                    onChange={(e) => {
+                      if (e === "all") {
+                        const newObj = { ...filters };
+                        delete newObj?.billRelatedTypeId;
+                        return setFilters(newObj);
+                      }
+                      setFilters({ ...filters, billRelatedTypeId: e });
+                    }}
+                  >
+                    <Select.Option value="">Todos</Select.Option>
+                    {billRelatedTypes?.data?.map((item) => (
+                      <Select.Option value={item?.id} key={item.id}>
+                        {item?.description}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Input>
+              )}
               <Input style={{ width: "100%" }}>
                 <Label>Pendências</Label>
                 <Select
@@ -268,11 +331,12 @@ export default function Bills() {
           <hr />
           <div className="uk-margin-top">
             <Table
-              columns={
-                type === "Vet"
-                  ? Columns(hasInternalCode)
-                  : LiftColumns(hasInternalCode)
-              }
+              columns={Columns({
+                hasInternalCode,
+                hasRelatedBills,
+                isVet: type === "Vet",
+                hasGenerateBillDocuments,
+              })}
               dataSource={mapper(data, cashiers)}
               footer={() => (
                 <section className="uk-flex uk-flex-center">

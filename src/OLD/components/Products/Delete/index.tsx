@@ -10,7 +10,7 @@ import { productService } from "@/OLD/services/product.service";
 
 // Icons
 import { DeleteTwoTone } from "@ant-design/icons";
-import { useMutation } from "react-query";
+import { useMutation } from "infinity-forge";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -20,19 +20,18 @@ const DeleteProduct = memo(function DeleteProduct({ id, hide }) {
   const permissions = permissionControl("produtos");
   const { createToast } = useToast();
 
-  const { mutate, isLoading } = useMutation(
-    () => productService.removeProduct(id),
-    {
-      onSuccess: () => {
-        createToast({
-          message: "Produto removido com sucesso",
-          status: "success",
-        });
+  const { mutate, isLoading } = useMutation({
+    queryKey: ["DeleteProduct"],
+    queryFn: () => productService.removeProduct(id),
+    onSuccess: () => {
+      createToast({
+        message: "Produto removido com sucesso",
+        status: "success",
+      });
 
-        hide();
-      },
-    }
-  );
+      hide();
+    },
+  });
 
   const remove = useCallback(() => {
     if (!permissions?.PRD3) {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 
 export const useReceiptProducts = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

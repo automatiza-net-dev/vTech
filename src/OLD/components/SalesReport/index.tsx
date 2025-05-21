@@ -6,7 +6,7 @@ import Filters from "./Filters";
 import PrintTable from "./PrintTable";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { reportsService } from "@/OLD/services/reports.service";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";
@@ -44,9 +44,6 @@ const SalesReport = memo(function SalesReport() {
       setCanSearch(false);
     },
     enabled: canSearch,
-    // refetchOnMount: true,
-    // refetchOnWindowFocus: false,
-    // refetchOnReconnect: false
   });
 
   const listBillReportPermission = useUserHasPermission("REL03");

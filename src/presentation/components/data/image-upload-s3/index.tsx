@@ -4,12 +4,13 @@ import { api, NextImage } from "infinity-forge";
 
 import * as S from "./styles";
 
-export function ImageUploadS3({ src }: { src: string }) {
-  const [newSrc, setNewSrc] = useState("");
+export function useUploadS3({ src }) {
+  const [s3, setS3 ] = useState<{download: string, view: string}>({ download: "", view: "" });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!src.includes(".s3.")) {
+    if(src) {
+  if (!src?.includes(".s3.")) {
       (async () => {
         setLoading(true);
 
@@ -19,16 +20,25 @@ export function ImageUploadS3({ src }: { src: string }) {
           body: { key: src },
         });
 
-        setNewSrc(response?.link);
+        setS3(response);
 
         setLoading(false);
       })();
+    } else {
+      setS3(src)
+      setLoading(false);
     }
-  }, []);
+    }
+  }, [src]);
 
+  return { s3, loading };
+}
+
+export function ImageUploadS3({ src }: { src?: string }) {
+  const { loading, s3 } = useUploadS3({ src });
   return (
     <S.ImageUploadS3>
-      <NextImage forceLoading={loading} src={newSrc || src} />
+      <NextImage forceLoading={loading} src={s3.view || src} />
     </S.ImageUploadS3>
   );
 }

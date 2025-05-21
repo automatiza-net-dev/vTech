@@ -2,7 +2,6 @@ import { Error } from "infinity-forge";
 import * as S from "./styles";
 import moment from "moment";
 
-// Função para formatar datas e horários
 const formatDate = (date: string | null, prefix: string) => {
   return date
     ? `${prefix} ${moment(date).format("DD/MM/YYYY [às] HH:mm")}`
@@ -21,7 +20,13 @@ export function ItemsExecutions({ execution }) {
     <S.ItemsExecutions>
       <div>
         <span className="title font-14-regular">
-          {productivitItem?.description || "Sem descrição"}
+          {(productivitItem?.description || "Sem descrição") + 
+                  (execution?.departmentItems && execution?.departmentItems.length > 0
+                    ? " - " +
+                    execution?.departmentItems?.map(
+                        (item) => item.department_item_description
+                      )
+                    : "")}
         </span>
       </div>
       <div>

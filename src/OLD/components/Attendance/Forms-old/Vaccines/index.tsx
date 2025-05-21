@@ -12,8 +12,13 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 import { Input, DatePicker } from "antd";
-import { useQueryClient } from "react-query";
-import { Select, FormHandler, Button, useToast } from "infinity-forge";
+import {
+  Select,
+  FormHandler,
+  Button,
+  useToast,
+  useQueryClient,
+} from "infinity-forge";
 import { Container } from "./styles";
 
 function Vaccines({ modal, setModal, value, reloadSchedule }) {
@@ -30,7 +35,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
   const eventId = router.query.scheduleId;
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((st) => st.refetch);
 
   const getProtocols = useCallback(() => {
     setLoading(true);
@@ -84,17 +89,13 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
         scheduleId: eventId,
         applications: applicationsData,
       })
-      .then((_res) => {
+      .then(async (_res) => {
         setLoading(false);
         setModal(false);
         setData({});
         setApplications([]);
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patient.data?.id],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["LoadAllVaccines", patient.data?.id],
-        });
+        await refetch(["LastUpdates", patient.data?.id]);
+        await refetch(["LoadAllVaccines"], { mode: "include" });
 
         if (
           router?.query?.scheduleId &&

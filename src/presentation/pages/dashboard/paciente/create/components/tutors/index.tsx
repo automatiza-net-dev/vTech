@@ -19,7 +19,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
   const [modalAddTutor, setModalAddTutor] = useState(false);
-  const { data, mutate } = useLoadAllPatientTutor({ enabled: modalAddTutor });
+   const { data, mutate } = useLoadAllPatientTutor({ enabled: modalAddTutor, modal, patientFilters: { name: "" } });
 
   const { values, setFieldValue } = useFormikContext<{
     holders: { id: string; main: boolean }[];
@@ -27,9 +27,9 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
 
   const [tutorField] = useField("holderId");
 
-  const options = data?.map((tutor) => {
+ const options = data?.map((tutor) => {
     return { label: `${tutor.name} // ${tutor.cellphone}`, value: tutor.id };
-  });
+   });
 
   const holders = values["holders"] || [];
 
@@ -55,7 +55,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
             <div key={holder.id} className="tutor-item">
               <p className="font-16-bold">
                 {data?.find((tutor) => tutor.id === holder.id)?.name}
-              </p>
+              </p> 
 
               <InputSwitch
                 name={`holders[${index}].main`}
@@ -97,14 +97,14 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
         >
           <S.ModalAddTutor>
             <h3 className="font-20-bold">Adicionar tutor</h3>
-            <Select
+         <Select
               name="holderId"
               label="Tutor"
               menuPlacement="top"
               placeholder="Selecionar tutor"
               options={options || []}
               onlyOneValue
-            />
+            />  
 
             {error && (
               <span className="font-14" style={{ color: "red" }}>

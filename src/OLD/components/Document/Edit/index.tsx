@@ -7,7 +7,7 @@ import { documentServices } from "@/OLD/services/document.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Components
-import { Button, useToast } from "infinity-forge";
+import { Button, FormHandler, TextEditor, useTextEditor, useToast } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import { Spin, Upload } from "antd";
 import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
@@ -69,7 +69,7 @@ function DocumentCreate() {
       documentServices
         .renderPdf(router.query.innerpage)
         .then((res) =>
-          setUrl(process.env.NEXT_PUBLIC_API + "/uploads/" + res?.data?.url)
+          setUrl("/uploads/" + res?.data?.url)
         );
     }
   }, [data, router]);
@@ -173,6 +173,8 @@ function DocumentCreate() {
         });
     }
   }, [loading, data, body, router, file, newFile]);
+  
+    const {handleEditorReady, handleInsert} = useTextEditor()
 
   return !canEditDocument || canEditDocument === "loading" ? (
     <AccessDenied loading={canEditDocument} />
@@ -267,7 +269,9 @@ function DocumentCreate() {
               <>
                 <div className="uk-margin-small">
                   <label>Conteúdo</label>
-                  <Editor editorState={body} setEditorState={setBody} />
+                  <FormHandler disableEnterKeySubmitForm  initialData={{ editor: body }} onChangeForm={{callbackResult: (result) => setBody(result.editor)}}>
+                                       <TextEditor name="editor" onEditorReady={handleEditorReady}  />
+                                     </FormHandler>
                 </div>
               </>
             )}
@@ -284,7 +288,7 @@ function DocumentCreate() {
             </div>
           </div>
           {data?.type !== "pdf" && (
-            <LabelsPanel body={body} setBody={setBody} />
+            <LabelsPanel handleInsert={handleInsert} />
           )}
         </div>
       )}

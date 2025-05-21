@@ -6,16 +6,26 @@ import { makeApiURL } from "@/container/infra/make-api-url";
 import * as domain from "@/domain";
 
 @injectable()
-export class RemoteControllerRole implements domain.DeleteControllerRole, domain.LoadAllControllerRoles, domain.UpdateControllerRole {
+export class RemoteControllerRole
+  implements domain.DeleteControllerRole, domain.LoadAllControllerRoles, domain.UpdateControllerRole
+{
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeAdminHttp)
     private readonly httpClient: domain.HttpClient<any>
   ) {}
-  async loadAll() {
+
+  private getUrl(path: string) {
+    const base = this.makeApiURL.make("");
+    const hasAdmin = base.includes("admin");
+    return this.makeApiURL.make(hasAdmin ? `roles/controller/${path}` : path ? `roles/${path}` : "roles");
+  }
+
+  async loadAll(props?: any) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make("roles/controller"),
+      url: this.getUrl(""),
       method: "get",
+      body: props
     });
 
     return response as domain.LoadAllControllerRoles.Model;
@@ -23,7 +33,7 @@ export class RemoteControllerRole implements domain.DeleteControllerRole, domain
 
   async delete(params: domain.DeleteControllerRole.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make("roles/controller/" + params.id),
+      url: this.getUrl(params.id),
       method: "delete",
     });
 
@@ -32,8 +42,8 @@ export class RemoteControllerRole implements domain.DeleteControllerRole, domain
 
   async update(params: domain.UpdateControllerRole.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make("roles/controller/" + params.id),
-      method: "put",
+      url: this.getUrl(params.id ? String(params.id) : ""),
+      method: params.id ? "put" : "post",
       body: params,
     });
 

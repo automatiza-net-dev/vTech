@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 import { callApiOneTime } from "@/presentation";
 
 import { RemotePatientAnimal } from "@/data";
@@ -17,6 +17,6 @@ export function useLoadAllPathologies() {
   return useQuery({
     queryKey: ["LoadAllPathologies"],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

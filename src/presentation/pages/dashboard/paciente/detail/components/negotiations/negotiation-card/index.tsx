@@ -1,4 +1,6 @@
 import {
+  Accordion,
+  Accordions,
   Button,
   FormHandler,
   LoaderCircle,
@@ -15,6 +17,8 @@ import { NegotiationCardProps } from "./interfaces";
 
 import * as S from "./styles";
 import { ItemsExecutions } from "./components/itens-executions";
+import ConvertBillToTreatment from "@/OLD/components/Bill/Actions/ConvertBillToTreatment";
+import { BillsList } from "./components/bills-list";
 
 export function NegotiationCard(props: NegotiationCardProps) {
   const { confirmBill, queryClient, router, createToast } = useNegotiation();
@@ -41,94 +45,132 @@ export function NegotiationCard(props: NegotiationCardProps) {
         negotiation={props}
         onClick={() => props.setNegotiation(props)}
       >
-        {isFetching ? (
-          <LoaderCircle size={30} color="#444" />
-        ) : (
-          <FormHandler
-            debugMode
-            disableEnterKeySubmitForm
-            cleanFieldsOnSubmit={false}
-            schema={negotiationSchema}
-            initialData={{
-              budgets: budgets.map((budget) => {
-                return { ...budget, checked: false };
-              }),
-            }}
-            onSucess={confirmBill}
-            button={
-              hasOpenedBudget ? { text: "Confirmar orçamento" } : undefined
-            }
-          >
-            <div className="budgets">
-              <BudgetsList
-                hasOpenedBudget={hasOpenedBudget}
-                tutors={props?.tutors}
-              />
-            </div>
-          </FormHandler>
-        )}
+        <div style={{ height: 10 }} />
 
-        {!hasOpenedBudget && (!documents || documents.length === 0) && (
-          <GerarDocumentoVenda
-            bill={bills[0]}
-            client={confirmedBudget?.client}
-            button={<Button type="button" text="Gerar Documentos Negociação" />}
-            onSuccess={() => {
-              queryClient.invalidateQueries({
-                queryKey: ["openNegotiations", router?.query?.id as string],
-              });
+        <Accordion title="Orçamentos" >
+          {isFetching ? (
+            <LoaderCircle size={30} color="#444" />
+          ) : (
+            <FormHandler
+              debugMode
+              disableEnterKeySubmitForm
+              cleanFieldsOnSubmit={false}
+              schema={negotiationSchema}
+              initialData={{
+                budgets: budgets.map((budget) => {
+                  return { ...budget, checked: false };
+                }),
+              }}
+              onSucess={confirmBill}
+              button={
+                hasOpenedBudget ? { text: "Confirmar orçamento" } : undefined
+              }
+            >
+              <div className="budgets">
+                <BudgetsList
+                  hasOpenedBudget={hasOpenedBudget}
+                  tutors={props?.tutors}
+                />
+              </div>
+            </FormHandler>
+          )}
 
-              createToast({
-                message: "Documentos gerados com sucesso",
-                status: "success",
-              });
-            }}
-          />
-        )}
 
-        <div className="list">
-          <div className="head">
-            <h3>Documentos</h3>
-            <h3>Gerado por</h3>
-            <h3 className="dados">Dados impressão</h3>
+        </Accordion>
+
+        <Accordion title="Vendas">
+          <div className="budgets">
+            <BillsList {...props} />
           </div>
 
-          <div className="body">
-            {documents &&
-              documents.length > 0 &&
-              documents.map((document) => (
-                <Document key={document.id} {...document} />
-              ))}
-          </div>
-        </div>
+          {bills?.[0]?.id && (!treatments || treatments.length === 0) && (
+            <ConvertBillToTreatment
+              bill={bills?.[0] as any}
+              CustomComponent={({ onClick }) => (
+                <div style={{ marginRight: 20 }}>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      onClick()
 
-        {treatments && treatments.length > 0 && (
+                      queryClient.invalidateQueries({
+                        queryKey: ["openNegotiations", router?.query?.id as string],
+                      });
+                    }}
+                    text="Gerar tratamento"
+                  />
+                </div>
+              )}
+            />
+          )}
+
+
+          {bills?.[0]?.id &&  !hasOpenedBudget && (!documents || documents.length === 0) && (
+            <GerarDocumentoVenda
+              bill={bills?.[0]}
+              client={confirmedBudget?.client}
+              button={<Button type="button" text="Gerar Documentos Negociação" />}
+              onSuccess={() => {
+                queryClient.invalidateQueries({
+                  queryKey: ["openNegotiations", router?.query?.id as string],
+                });
+
+                createToast({
+                  message: "Documentos gerados com sucesso",
+                  status: "success",
+                });
+              }}
+            />
+          )}
+        </Accordion>
+
+        <Accordion title="Documentos">
           <div className="list">
             <div className="head">
-              <h3>Itens e Execuções</h3>
-              <h3>Dados Agendamento</h3>
-              <h3>Dados Execução</h3>
+              <h3>Documentos</h3>
+              <h3>Gerado por</h3>
+              <h3 className="dados">Dados impressão</h3>
             </div>
+
             <div className="body">
-              {treatments.map((treatment) =>
-                treatment?.items.map((item, i) => (
-                  <div
-                    className="executions-box"
-                    key={item?.description + treatment?.id + i}
-                  >
-                    <h3>{item?.description}</h3>
-                    {item?.executions?.map((execution) => (
-                      <ItemsExecutions
-                        execution={execution}
-                        key={"treatment-card" + execution?.schedule_id}
-                      />
-                    ))}
-                  </div>
-                ))
-              )}
+              {documents &&
+                documents.length > 0 &&
+                documents.map((document) => (
+                  <Document key={document.id} {...document} />
+                ))}
             </div>
           </div>
-        )}
+        </Accordion>
+
+        <Accordion title="Itens de tratamento">
+          {treatments && treatments.length > 0 && (
+            <div className="list">
+              <div className="head">
+                <h3>Itens e Execuções</h3>
+                <h3>Dados Agendamento</h3>
+                <h3>Dados Execução</h3>
+              </div>
+              <div className="body">
+                {treatments.map((treatment) =>
+                  treatment?.items.map((item, i) => (
+                    <div
+                      className="executions-box"
+                      key={item?.description + treatment?.id + i}
+                    >
+                      <h3>{item?.description}</h3>
+                      {item?.executions?.map((execution) => (
+                        <ItemsExecutions
+                          execution={execution}
+                          key={"treatment-card" + execution?.schedule_id}
+                        />
+                      ))}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </Accordion>
       </NegotiationInfos>
     </S.NegotiationCard>
   );

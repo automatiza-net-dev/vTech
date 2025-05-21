@@ -88,3 +88,4 @@ export function authorizationFormater(billItem, type = "product") {
 
   return null;
 }
+

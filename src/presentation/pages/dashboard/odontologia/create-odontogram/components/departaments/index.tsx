@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { api, Tooltip, useQuery } from "infinity-forge";
+import { api, useQuery } from "infinity-forge";
 
 export type Departament = {
   systemId: string;
@@ -21,7 +21,7 @@ export function Departaments() {
   }>();
 
   const { data } = useQuery({
-    queryKey: "departaments",
+    queryKey: ["departaments"],
     queryFn: async () => {
       const response = await api<Departament[]>({
         url: "departments/resume",

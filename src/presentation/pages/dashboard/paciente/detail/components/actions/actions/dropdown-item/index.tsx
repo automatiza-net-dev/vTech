@@ -16,7 +16,7 @@ export type DropdownItemActionProps = {
   Icon: any;
   label: string;
   customModalStyles?: {};
-  Component?: (props: DropdownComponentProps) => JSX.Element;
+  Component?: (props: DropdownComponentProps) => any;
   value?: string;
   reloadSchedule?: any;
 };

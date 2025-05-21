@@ -69,7 +69,7 @@ export const ScheduleCard = styled("button")`
     }
 
     .avatar {
-      width: 50px;
+      min-width: 50px;
       height: 50px;
       overflow: hidden;
       border-radius: 100%;

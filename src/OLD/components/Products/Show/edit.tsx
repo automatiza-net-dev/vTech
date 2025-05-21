@@ -7,7 +7,7 @@ import { productService } from "@/OLD/services/product.service";
 
 // Components
 import { Button, InputNumber, Modal, Select } from "antd";
-import { useMutation } from "react-query";
+import { useMutation } from "infinity-forge";
 import { useToast } from "infinity-forge";
 
 const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
@@ -48,14 +48,13 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
     }));
   }, [initialData]);
 
-  const { isLoading, mutate } = useMutation(
-    (newData) => productService.updateBusinessUnitProduct(id, newData),
-    {
-      onSuccess: () => {
-        handleClose();
-      },
-    }
-  );
+  const { isLoading, mutate } = useMutation({
+    queryKey: ["UpdateBUsinessUnitProduct"],
+    queryFn: (newData) => productService.updateBusinessUnitProduct(id, newData),
+    onSuccess: () => {
+      handleClose();
+    },
+  });
 
   const submit = useCallback(() => {
     mutate(data);

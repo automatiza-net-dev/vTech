@@ -1,5 +1,4 @@
-import { Error } from "infinity-forge";
-import { useQueryClient } from "react-query";
+import { Error, useQueryClient } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 import { FormCreatePatient } from "@/presentation/pages/dashboard/paciente";
@@ -18,7 +17,7 @@ export function Tutors({
   id: string;
   name: string;
 }) {
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
 
   return (
     <Error name="birthDate">
@@ -27,7 +26,7 @@ export function Tutors({
           <div className="actions">
             <AddTutor id={id} tutors={tutors} />
 
-            {tutors.length > 1 && <SelectActiveTutor tutors={tutors} id={id} />}
+            {tutors && tutors.length > 1 && <SelectActiveTutor tutors={tutors} id={id} />}
           </div>
 
           <div className="list">
@@ -37,8 +36,8 @@ export function Tutors({
                   <strong>{tutor?.name}</strong>
                 ) : !name ? (
                   <FormCreatePatient
-                    onSuccess={() =>
-                      queryClient.invalidateQueries(["RemotePatient"])
+                    onSuccess={() => 
+                      refetch(["RemotePatient"], { mode: "include" })
                     }
                     trigger={<span>{tutor?.name}</span>}
                     patientId={tutor.id}

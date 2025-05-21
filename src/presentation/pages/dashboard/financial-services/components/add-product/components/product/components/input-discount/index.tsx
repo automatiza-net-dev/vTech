@@ -1,10 +1,11 @@
 import { InputCurrency } from "infinity-forge";
-import { useFormikContext } from "formik";
+import { getIn, useFormikContext } from "formik";
 
 import { transformStringToNumber } from "@/presentation/utils";
 
 import { Cart } from "../../../../interfaces";
 import { handleInputChangeCart } from "../../component";
+import { useEffect, useMemo } from "react";
 
 export function InputDiscount({
   pathName,
@@ -20,6 +21,42 @@ export function InputDiscount({
 
   const maxDiscount =
     Number(variation.quantity) * Number(variation.unitaryValue);
+
+  const getValue = getIn(values, pathName + ".discountValue");
+
+  const isExeded = useMemo(() => {
+    return (
+      !variation.courtesy &&
+      variation?.discountValue &&
+      transformStringToNumber(variation?.discountValue) > 0 &&
+      transformStringToNumber(getValue as any) >=
+        (variation.maximum_discount_percentage / 100) * variation.saleValue
+    );
+  }, [getValue]);
+
+  useEffect(() => {
+    if (isExeded) {
+      handleInputChangeCart({
+        cart,
+        setFieldValue,
+        indexVariation,
+        pathName,
+        indexProduct,
+        fieldName: "exceedDiscount",
+        value: true,
+      });
+    } else {
+      handleInputChangeCart({
+        cart,
+        setFieldValue,
+        indexVariation,
+        pathName,
+        indexProduct,
+        fieldName: "exceedDiscount",
+        value: false,
+      });
+    }
+  }, [isExeded]);
 
   return (
     <InputCurrency

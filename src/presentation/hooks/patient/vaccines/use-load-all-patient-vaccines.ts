@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemotePatient } from "@/data";
 import { Patient } from "@/domain";
@@ -17,6 +17,6 @@ export function useLoadAllPatientVaccines(patient: Patient) {
   return useQuery({
     queryKey: ["LoadAllPatientVaccines", patient.id],
     queryFn: fetcher,
-    ...callApiOneTime,
+    enableCache: true
   });
 }

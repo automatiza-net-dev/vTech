@@ -4,7 +4,7 @@ export type IFormCreatePatientProps = {
   origin?: "Cadastro" | "Crm" | "Agenda";
   isModal: boolean;
   onSuccess?: (data: any) => void;
-  trigger?: JSX.Element;
+  trigger?: any;
   patientId?: Patient["id"];
   buttonText?: string;
   initialDataForm?: {

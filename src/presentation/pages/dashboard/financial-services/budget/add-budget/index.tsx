@@ -6,9 +6,9 @@ import {
   InputDatePicker,
   BadRequestError,
   useAuthAdmin,
+  useQueryClient,
 } from "infinity-forge";
 import moment from "moment";
-import { useQueryClient } from "react-query";
 
 import {
   AddProduct,
@@ -50,7 +50,7 @@ export function AddBudgetNew({
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
   const { user } = useAuthAdmin();
   const { type } = useConfigurationsSystem();
 
@@ -58,7 +58,7 @@ export function AddBudgetNew({
 
   const userIsReviewer = unit?.configs?.businessUnits?.reviewer !== "N";
 
-  const hasInternalCode = unit?.configs?.businessUnits?.internalCode;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
   const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
@@ -117,7 +117,7 @@ export function AddBudgetNew({
       patient?.data?.name,
     cart: budgetDetail?.data?.items || [],
     sellerId: budgetDetail?.data?.seller?.id || user?.id,
-    reviewerId: budgetDetail?.data?.reviewer?.id,
+    reviewerId: budgetDetail?.data?.reviewer?.id || user?.id,
     observation: budgetDetail?.data?.observation,
     internalObservation: budgetDetail?.data?.internalObservation,
   };
@@ -170,10 +170,8 @@ export function AddBudgetNew({
         } com sucesso`,
       });
 
-      patientId &&
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patientId],
-        });
+      patientId && refetch(["LastUpdates", patientId])
+    
       setModal && setModal(false);
     } catch (err) {
       if (

@@ -56,12 +56,14 @@ import * as XLSX from "xlsx/xlsx.mjs";
 const FinancialSteatment = memo(function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     order: "expiration_date",
-    status: "ABERTO",
+    status: "",
+    fromExpiration: new Date(),
+    toExpiration: new Date(),
     noSearch: true,
-    type: "all",
+    type: "",
     groupBorderos: "sim",
-    accept: "all",
-    reconciled: "all",
+    accept: "",
+    reconciled: "",
   });
 
   const [reload, setReload] = useState(false);
@@ -239,7 +241,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
               : finance?.qty_installments,
           fiscalNote: finance?.fiscal_note || "-",
           accept: finance.accept,
-          client: finance?.client,
+          client: finance?.client || finance?.historic || "-",
           issueDate: finance?.issue_date
             ? moment(finance?.issue_date).format("DD/MM/YYYY")
             : "-",

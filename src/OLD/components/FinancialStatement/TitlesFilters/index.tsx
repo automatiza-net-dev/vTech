@@ -125,8 +125,8 @@ export default function TitlesFilters({
     },
   });
 
-  const {unit} = useSystem()
-  
+  const { unit } = useSystem();
+
   const checkingAccounts = useQuery({
     queryKey: ["chekingAccounts"],
     queryFn: async () => {
@@ -153,7 +153,7 @@ export default function TitlesFilters({
           width: "100%",
           gap: 20,
           marginBottom: 20,
-          marginTop: -50
+          marginTop: -50,
         }}
       >
         {createTitlePermission && (
@@ -183,14 +183,16 @@ export default function TitlesFilters({
           initialData={filters}
           onChangeForm={{
             callbackResult: (formValues) => {
-              setFilters((prev) => ({
-                ...prev,
+              setFilters({
+                fromAcceptDate: formValues?.fromAcceptDate,
+                toAcceptDate: formValues?.toAcceptDate,
                 order: formValues.order,
                 unit: formValues.unit,
                 groupBorderos: formValues.groupBorderos,
                 reconciled: formValues.reconciled,
                 status: formValues.status,
                 plan: formValues.plan,
+                tefFlagId: formValues?.tefFlagId,
                 accept: formValues.accept,
                 paymentMethod: formValues.paymentMethod,
                 nsu: formValues.nsu,
@@ -204,7 +206,10 @@ export default function TitlesFilters({
                 fromPayment: formValues.fromPayment,
                 toPayment: formValues.toPayment,
                 competence: formValues.competence,
-              }));
+                type: formValues?.type,
+                internalCode: formValues?.internalCode,
+                historic: formValues?.historic,
+              });
             },
           }}
         >
@@ -259,9 +264,12 @@ export default function TitlesFilters({
               <Input label="Nº Comprovante / NSU" name="nsu" />
             </div>
 
-            <div className="box">
-              <Input label="Documento" name="document" />
-              <Input label="Nota Fiscal" name="fiscalNote" />
+            <div className="row">
+              {unit?.configs?.businessUnits?.internal_code && (
+                <Input label="Código Interno" name="internalCode" />
+              )}
+
+              <Input label="Historico" name="historic" />
             </div>
           </div>
 
@@ -275,47 +283,28 @@ export default function TitlesFilters({
             />
 
             <Select
-              onlyOneValue
-              label="Forma de pagamento"
-              name="paymentMethod"
-              options={paymentMethodOptions}
-              isClearable
-            />
-
-            <Select
-              label="Bandeira Tef."
-              name="flagDescription"
-              onlyOneValue
-              options={tfeFlags?.data?.map((item) => ({
-                label: item?.description,
-                value: item.id,
-              }))}
-              onChangeInput={(value) => {
-                setFilters((prv) => {
-                  console.log("ue", prv)
-                  return ({ ...prv, tefFlagId: value })
-                });
-              }}
-            />
-          </div>
-
-          <div className="box">
-            <Select
               label="Conta corrente"
               name="contaCorrente"
               onlyOneValue
+              isClearable
               options={checkingAccounts?.data?.map((item) => ({
                 label: item?.description,
                 value: item.id,
               }))}
               onChangeInput={(value) => {
                 setFilters((prv) => {
-                  console.log(prv,"????")
-                  return ({ ...prv, checkingAccountId: value })
+                  return { ...prv, checkingAccountId: value };
                 });
               }}
             />
 
+            <div className="row">
+              <Input label="Documento" name="document" />
+              <Input label="Nota Fiscal" name="fiscalNote" />
+            </div>
+          </div>
+
+          <div className="box">
             <Select
               onlyOneValue
               label="Plano Contas"
@@ -326,12 +315,21 @@ export default function TitlesFilters({
 
             <Select
               onlyOneValue
-              options={[
-                { label: "Sim", value: "sim" },
-                { label: "Não", value: "false" },
-              ]}
-              name="groupBorderos"
-              label="Agrupa títulos borderô"
+              label="Forma de pagamento"
+              name="paymentMethod"
+              options={paymentMethodOptions}
+              isClearable
+            />
+
+            <Select
+              label="Bandeira Tef."
+              name="tefFlagId"
+              onlyOneValue
+              isClearable
+              options={tfeFlags?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              }))}
             />
           </div>
 
@@ -341,8 +339,10 @@ export default function TitlesFilters({
                 label="Tipo título"
                 onlyOneValue
                 name="type"
+                isClearable
+                placeholder="Todos"
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Crédito", value: "CREDITO" },
                   { label: "Débito", value: "DEBITO" },
                 ]}
@@ -351,9 +351,11 @@ export default function TitlesFilters({
               <Select
                 name="status"
                 label="Situação"
+                placeholder="Todos"
+                isClearable
                 onlyOneValue
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Aberto", value: "ABERTO" },
                   { label: "Baixado", value: "BAIXADO" },
                 ]}
@@ -363,8 +365,10 @@ export default function TitlesFilters({
             <div className="row">
               <Select
                 onlyOneValue
+                placeholder="Todos"
+                isClearable
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Sim", value: "SIM" },
                   { label: "Não", value: "NAO" },
                 ]}
@@ -374,8 +378,10 @@ export default function TitlesFilters({
 
               <Select
                 onlyOneValue
+                placeholder="Todos"
+                isClearable
                 options={[
-                  { label: "Todos", value: "all" },
+                  { label: "Todos", value: "" },
                   { label: "Sim", value: "true" },
                   { label: "Não", value: "false" },
                 ]}
@@ -384,27 +390,32 @@ export default function TitlesFilters({
               />
             </div>
 
-            {/* <Select
-      label="Filial"
-      name="unit"
-      options={clinicOptions}
-      onlyOneValue
-      isClearable
-    /> */}
+            <div className="row">
+              <Select
+                onlyOneValue
+                options={[
+                  { label: "Sim", value: "sim" },
+                  { label: "Não", value: "nao" },
+                ]}
+                name="groupBorderos"
+                label="Agrupa títulos borderô"
+                isClearable
+              />
 
-            <Select
-              label="Ordenar por"
-              name="order"
-              onlyOneValue
-              isClearable
-              options={[
-                { label: "Data Vencimento", value: "expiration_date" },
-                { label: "Data Emissão", value: "issue_date" },
-                { label: "Data Competência", value: "competence_date" },
-                { label: "Data Pagamento", value: "payment_date" },
-                { label: "Documento / Parcela", value: "doc" },
-              ]}
-            />
+              <Select
+                label="Ordenar por"
+                name="order"
+                onlyOneValue
+                isClearable
+                options={[
+                  { label: "Data Vencimento", value: "expiration_date" },
+                  { label: "Data Emissão", value: "issue_date" },
+                  { label: "Data Competência", value: "competence_date" },
+                  { label: "Data Pagamento", value: "payment_date" },
+                  { label: "Documento / Parcela", value: "doc" },
+                ]}
+              />
+            </div>
           </div>
         </FormHandler>
       </Container>

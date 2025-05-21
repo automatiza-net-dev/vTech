@@ -27,10 +27,10 @@ const FormChild = memo(function ({
 }: any) {
   const opportunityMovements = useQuery({
     queryKey:
-      "search_from_clients" +
-      formData?.op?.id +
-      formData?.op?.contact?.id +
-      formData?.op?.client?.id,
+      ["search_from_clients",
+      formData?.op?.id,
+      formData?.op?.contact?.id,
+      formData?.op?.client?.id],
     queryFn: async () => {
       const response = await api({
         url: "opportunity-movements/search-from-clients",
