@@ -167,7 +167,7 @@ export function AddSale({
 
       await DeleteCartItems(initialValues.cart, data.cart, true);
 
- await queryClient.refetch(["bills", true], { mode: "include" });
+        await queryClient.refetch(["bills", true], { mode: "include" });
 
       listCreated && listCreated(response.id);
 

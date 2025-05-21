@@ -5,7 +5,7 @@ import { LoadAllPatientTutor } from "@/domain";
 import { container, patientTypes } from "@/container";
 import { useScheduling } from "@/presentation/pages";
 
-export function useLoadAllPatientTutor(props: {
+export function useLoadAllPatientTutor(props?: {
   modal?: boolean,
   enabled?: boolean;
   patientFilters?: LoadAllPatientTutor.Params | null;
