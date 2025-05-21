@@ -34,6 +34,7 @@ export function Pets({
   const { values, setFieldValue } = useFormikContext<Tutor>();
   const { data, isLoading, mutate } = useLoadSchedulesPatients({
     patientFilters,
+    enabled: !!modalAddPet
   });
 
   const options = data?.map((patient) => {

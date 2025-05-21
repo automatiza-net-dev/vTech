@@ -6,10 +6,9 @@ import {
   TabContentProps,
 } from "infinity-forge";
 
-import { useQuery } from "react-query";
+import { useQuery } from "infinity-forge";
 
 import { RemotePatient } from "@/data";
-import { callApiOneTime } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 import { Patient, TimeLine, TimelineType, TimeLineEvent } from "@/domain";
 
@@ -37,7 +36,6 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
       return response;
     },
-    ...callApiOneTime,
   });
 
   const listTimeLine = data?.filter((item) => {

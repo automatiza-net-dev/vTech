@@ -6,10 +6,9 @@ import {
   useToast,
   FormHandler,
   useAuthAdmin,
+  useQueryClient,
 } from "infinity-forge";
-import { useQueryClient } from "react-query";
 
-import { User } from "@/domain";
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 import { DropdownComponentProps } from "../dropdown-item";
@@ -21,8 +20,7 @@ export function Weight(props: DropdownComponentProps) {
 
   const { user } = useAuthAdmin();
   const { createToast } = useToast();
-  const queryClient = useQueryClient();
-
+  const refetch = useQueryClient((st) => st.refetch);
 
   const patientId = router.query.id as string;
 
@@ -48,12 +46,12 @@ export function Weight(props: DropdownComponentProps) {
                 technicianId: user.user.id,
               });
 
-            await queryClient.invalidateQueries({
-              queryKey: ["RemotePatient", patientId],
+            await refetch(["RemotePatient", patientId].toString(), {
+              mode: "exact",
             });
 
-            await queryClient.invalidateQueries({
-              queryKey: ["LastUpdates", patientId],
+            await refetch(["LastUpdates", patientId].toString(), {
+              mode: "exact",
             });
 
             createToast({

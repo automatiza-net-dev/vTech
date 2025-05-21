@@ -13,14 +13,14 @@ import * as S from "./styles";
 export function Negotiations() {
   const [negotiation, setNegotiation] = useState<Negotiation | null>(null);
 
-  const { data, isFetching } = useLoadOpenNegotiations();
+ const { data, isFetching } = useLoadOpenNegotiations();
 
-  const tutors = useLoadAllPatientTutor();
+  // const tutors = useLoadAllPatientTutor();
 
   return (
     <S.Negotiations>
       <div className="list">
-        {data &&
+        {/* {data &&
           data.map((item) => (
             <NegotiationCard
               tutors={tutors?.data}
@@ -30,7 +30,7 @@ export function Negotiations() {
               setNegotiation={setNegotiation}
               {...item}
             />
-          ))}
+          ))} */}
       </div>
     </S.Negotiations>
   );

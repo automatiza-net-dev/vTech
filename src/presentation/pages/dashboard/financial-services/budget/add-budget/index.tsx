@@ -6,9 +6,9 @@ import {
   InputDatePicker,
   BadRequestError,
   useAuthAdmin,
+  useQueryClient,
 } from "infinity-forge";
 import moment from "moment";
-import { useQueryClient } from "react-query";
 
 import {
   AddProduct,
@@ -50,7 +50,7 @@ export function AddBudgetNew({
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
   const { user } = useAuthAdmin();
   const { type } = useConfigurationsSystem();
 
@@ -170,10 +170,8 @@ export function AddBudgetNew({
         } com sucesso`,
       });
 
-      patientId &&
-        queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", patientId],
-        });
+      patientId && refetch(["LastUpdates", patientId].toString())
+    
       setModal && setModal(false);
     } catch (err) {
       if (

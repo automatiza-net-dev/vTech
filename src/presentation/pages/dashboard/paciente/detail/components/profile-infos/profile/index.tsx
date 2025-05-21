@@ -1,13 +1,13 @@
-import { Error, HighlightText, Icon } from "infinity-forge";
+import { useState } from "react";
 
-import { useQueryClient } from "react-query";
+import { Error, HighlightText, Icon, useQueryClient } from "infinity-forge";
+
 
 import { Patient } from "@/domain";
 import { FormCreatePatient } from "../../../../create";
+import { useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
-import { useState } from "react";
-import { useConfigurationsSystem } from "@/presentation";
 
 export function ProfileImage({ src }: { src: string | null }) {
   const [imgError, setImgError] = useState(false);
@@ -45,7 +45,7 @@ export function Profile(props: Patient) {
   } = props;
 
   const { type } = useConfigurationsSystem();
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
 
   return (
     <Error name="Profile">
@@ -57,7 +57,7 @@ export function Profile(props: Patient) {
         <div>
           {name && (
             <FormCreatePatient
-              onSuccess={() => queryClient.invalidateQueries(["RemotePatient"])}
+              onSuccess={async () =>  await refetch(["RemotePatient"].toString(), { mode: "include" })}
               trigger={
                 <h1 className="font-20-regular">
                   <span>{name}</span>

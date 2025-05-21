@@ -1,10 +1,11 @@
-import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
-import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { Modal, Tooltip } from "infinity-forge";
 import React from "react";
 
-import { useQueryClient } from "react-query";
+import { Modal, Tooltip, useQueryClient } from "infinity-forge";
+
 import { MdMonetizationOn } from "react-icons/md";
+import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";
+import { useUserHasPermission } from "@/OLD/hooks/useProfile";
+
 import { Bill } from "@/domain";
 
 export function AddBillPaymentModal({
@@ -18,11 +19,11 @@ export function AddBillPaymentModal({
 }) {
   const [paymentsVisible, setPaymentsVisible] = React.useState(false);
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient((st) => st.refetch);
   const addPaymentPermission = useUserHasPermission("VEN04");
 
-  if(!addPaymentPermission) {
-    return <></>
+  if (!addPaymentPermission) {
+    return <></>;
   }
 
   return (
@@ -32,7 +33,7 @@ export function AddBillPaymentModal({
         open={paymentsVisible}
         onClose={() => {
           setPaymentsVisible(false);
-          queryClient.invalidateQueries(["RemotePatient"]);
+          refetch(["RemotePatient"].toString(), { mode: "include" });
         }}
       >
         <AddBillPayment
@@ -40,7 +41,7 @@ export function AddBillPaymentModal({
           setReloadBill={setReload}
           setVisible={(value) => {
             setPaymentsVisible(value);
-            queryClient.invalidateQueries(["RemotePatient"]);
+            refetch(["RemotePatient"].toString(), { mode: "include" });
           }}
         />
       </Modal>

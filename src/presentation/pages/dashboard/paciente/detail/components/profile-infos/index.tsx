@@ -1,7 +1,5 @@
 import moment from "moment";
-import { DetailCard, Error, IDetailCard } from "infinity-forge";
-
-import { useQueryClient } from "react-query";
+import { useQueryClient, DetailCard, Error, IDetailCard } from "infinity-forge";
 
 import { Patient } from "@/domain";
 import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
@@ -15,7 +13,7 @@ export type DetailCard = {
 } & IDetailCard;
 
 export function ProfileInfos({ patient }: { patient: Patient }) {
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
 
   const {type} = useConfigurationsSystem()
 
@@ -102,8 +100,8 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                   <FormCreateTutor
                     isModal
                     tutorId={patient.tutor.id}
-                    onSuccess={() =>
-                      queryClient.invalidateQueries(["RemotePatient"])
+                    onSuccess={async () =>
+                     await refetch(["RemotePatient"].toString(), { mode: "include" })
                     }
                     trigger={
                       <span

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { useRouter } from "next/router";
 import {
   Error,
@@ -7,14 +9,19 @@ import {
   Textarea,
   InputFile,
   useAuthAdmin,
+  api,
+  FileSystemType,
+  useQueryClient,
 } from "infinity-forge";
 
-import { User } from "@/domain";
 import { DropdownComponentProps } from "../dropdown-item";
 
 import * as S from "./styles";
 
-export function VideoPhoto({ setModal }: DropdownComponentProps) {
+export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
+  const [loading, setLoading] = useState(false);
+  const [photos, setPhotos] = useState<FileSystemType[] | null>(null);
+
   const { createToast } = useToast();
 
   const router = useRouter();
@@ -22,45 +29,85 @@ export function VideoPhoto({ setModal }: DropdownComponentProps) {
 
   const patientId = router.query.id as string;
 
+  const refetch = useQueryClient((st) => st.refetch);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if(!rest.timeline_info) {
+          return;
+        }
+
+        setLoading(true);
+
+        let photos = rest.timeline_info?.photos || [];
+        let newPhotos: any[] = [];
+
+        for (const photo of photos) {
+          const response = await api({
+            url: "s3/generate-link",
+            method: "post",
+            body: { key: photo.url },
+          });
+
+          newPhotos.push({ ...photo, url: response.view });
+        }
+
+        setPhotos(newPhotos);
+      } catch {
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   return (
     <Error name="VideoPhoto">
       <S.VideoPhoto>
-        <FormHandler
-          button={{ text: "Salvar" }}
-          onSucess={async (data) => {
-            const payload = {
-              ...data,
-              tag: patientId,
-              technicianId: userId,
-            };
+        {!loading && (
+          <FormHandler
+            button={{ text: "Salvar" }}
+            initialData={{ ...(rest?.timeline_info || {}), photos }}
+            onSucess={async (data) => {
+              const payload = {
+                title: data.title,
+                observation: data.observation,
+                photos: (data?.photos as FileSystemType[])?.map(
+                  (item) => item.file
+                ),
+                tag: patientId,
+                technicianId: userId,
+              };
 
-            // await container
-            //   .get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
-            //   .open({
-            //     ...data,
-            //     patientId: router.query.id,
-            //     scheduleServiceId: data.scheduleServiceId
-            //       ? data.scheduleServiceId[0]
-            //       : "",
-            //   });
+              await api({
+                url: "n-timeline/photos",
+                method: "post",
+                body: payload,
+                headers: {
+                  "Content-Type": "multipart/form-data; boundary=something",
+                },
+              });
 
-            createToast({
-              message: "Video/Foto criada com sucesso!",
-              status: "success",
-            });
+              await refetch("LastUpdates", { mode: "include" });
 
-            setModal && setModal(false);
-          }}
-          disableEnterKeySubmitForm
-        >
-          <div className="row">
-            <Input name="title" placeholder="Título" />
-          </div>
+              createToast({
+                message: "Video/Foto criada com sucesso!",
+                status: "success",
+              });
 
-          <Textarea name="observation" placeholder="Observações" />
+              setModal && setModal(false);
+            }}
+            cleanFieldsOnSubmit={false}
+            isStickyButtons
+            disableEnterKeySubmitForm
+          >
+            <Input name="title" label="Titulo" />
 
-          <InputFile name="photos" />
-        </FormHandler>
+            <Textarea name="observation" label="Observações" />
+
+            <InputFile name="photos" isAccumalativeFile multiple isLocalFile />
+          </FormHandler>
+        )}
       </S.VideoPhoto>
     </Error>
   );

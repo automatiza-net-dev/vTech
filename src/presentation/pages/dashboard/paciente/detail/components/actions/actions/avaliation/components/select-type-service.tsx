@@ -6,6 +6,7 @@ import {
   useLoadPatient,
   useLoadAllScheduleServicesGroups,
   useSystem,
+  useConfigurationsSystem,
 } from "@/presentation";
 import { RemoteSystem } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -24,6 +25,7 @@ export function SelectTypeService({
   const patient = useLoadPatient();
 
   const { unit, user } = useSystem()
+  const {type} = useConfigurationsSystem()
 
   const { data, isFetching } = useLoadAllScheduleServicesGroups({});
 
@@ -40,8 +42,8 @@ export function SelectTypeService({
       .get<RemoteSystem>(TypesAutomatiza.RemoteSystem)
       .replace({
         businessUnitId: unit?.id,
-        dependentId: patient?.data?.id,
-        tutorId: patient?.data?.tutor?.id,
+        dependentId: type === "Vet" ?  patient?.data?.id : undefined,
+        tutorId: type === "Vet" ? patient?.data?.tutor?.id : patient?.data?.id,
         userId: user?.id,
         base: resume,
       });

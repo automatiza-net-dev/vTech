@@ -20,13 +20,14 @@ import DeathReport from "@/OLD/components/Attendance/Forms-old/Death";
 import Observations from "@/OLD/components/Attendance/Forms-old/Notes";
 import Documents from "@/OLD/components/Attendance/Forms-old/Documents";
 import AddWeight from "@/OLD/components/Attendance/Forms-old/AddWeight";
-import SendPhotos from "@/OLD/components/Attendance/Forms-old/SendPhotos";
+
 import Pathologies from "@/OLD/components/Attendance/Forms-old/Patologies";
 import MedicalRecipes from "@/OLD/components/Attendance/Forms-old/MedicalRecipe";
 import DosesModal from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesList/DosesModal";
 import { HospitalizationForm } from "./hospitalization";
 import { DischargeForm } from "./discharge";
 import { Icon } from "infinity-forge";
+import { VideoPhoto } from "./video-photo";
 
 type ActionPatient = {
   active: boolean;
@@ -151,10 +152,8 @@ export function useActionsPatient(): {
           <path d="M20 2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-9 12V6l7 4z"></path>
         </svg>
       ),
-      Component: SendPhotos,
-      SingleComponent: (props) => (
-        <SendPhotos modal={false} updateData={props} />
-      ),
+      Component: VideoPhoto,
+      SingleComponent: VideoPhoto,
     },
     {
       active: !patient.data?.death && type === "Vet",

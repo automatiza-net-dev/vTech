@@ -86,7 +86,7 @@ export default function CompleteBudget({ budget, setReload = false }) {
   const [internalObservation, setInternalObservation] =
     React.useState("Sem observações");
 
-  const tutors = useLoadAllPatientTutor({});
+  const tutors = useLoadAllPatientTutor({enabled: !!visible});
   const { createToast } = useToast();
   const { data, isLoading: loadingBudget } = useCompleteBudget(
     budget.id,

@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { Tab, TabItem } from "infinity-forge";
 
 import {
@@ -11,7 +9,6 @@ import {
   ActionsPatient,
 } from "./components";
 import { useLoadPatient, useConfigurationsSystem, VaccinesPanel } from "@/presentation";
-import { useQueryClient } from "react-query";
 
 import { PatientHistoric } from "@/OLD/components/Attendance/Timeline/Historic";
 import { BillAndBudget } from "@/OLD/components/Attendance/Timeline/BillAndBudget";
@@ -22,14 +19,8 @@ import * as S from "./styles";
 export function PacientePage() {
   const { data, isLoading } = useLoadPatient();
 
-  const queryClient = useQueryClient();
-
   const {type} = useConfigurationsSystem()
   
-
-  useEffect(() => {
-    queryClient.invalidateQueries(["RemotePatient"]);
-  }, []);
 
   if (isLoading || !data) {
     return <>Carregando...</>;
@@ -82,7 +73,7 @@ export function PacientePage() {
     },
     {
       title: "Negociações",
-      content: () => <Negotiations />,
+      content: Negotiations,
       key: "negotiations",
       active: type !== "Vet",
     },
@@ -98,3 +89,4 @@ export function PacientePage() {
     </S.Paciente>
   );
 }
+

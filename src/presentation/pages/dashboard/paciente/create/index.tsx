@@ -45,7 +45,7 @@ function Form({
 }: Partial<IFormCreatePatientProps> & {
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data, refetch, isFetching } = useLoadPatient(patientId);
+  const { data, mutate, isFetching } = useLoadPatient(patientId);
 
   const { createToast } = useToast();
   const hasTAG = usePermission("PET05");
@@ -97,7 +97,7 @@ function Form({
       .get<RemotePatient>(TypesAutomatiza.RemotePatient)
     [data ? "edit" : "create"](payload);
 
-    patientId && (await refetch());
+    patientId && (await mutate());
 
     onSuccess && (await onSuccess(response));
 

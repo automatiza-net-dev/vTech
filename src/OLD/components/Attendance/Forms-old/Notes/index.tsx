@@ -13,7 +13,7 @@ import { ImageUploadS3, useLoadPatient, useUploadS3 } from "@/presentation";
 import { Popconfirm } from "antd";
 import FormChild from "./FormChild";
 import { Container } from "./styles";
-import { Modal, Button, useToast, Icon, useAuthAdmin } from "infinity-forge";
+import { Modal, Button, useToast, Icon, useAuthAdmin, useQueryClient } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -21,7 +21,6 @@ import { MdDownload } from "react-icons/md";
 
 // utils
 import moment from "moment";
-import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
 
 function Notes({ modal, setModal, updateData = false, flex = false }: any) {
@@ -35,7 +34,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const patient = useLoadPatient();
   const { createToast } = useToast();
 
-  const queryClient = useQueryClient();
+  const refetch = useQueryClient(st => st.refetch);
   const router = useRouter();
 
   const beforeUpload = useCallback((file) => {
@@ -91,9 +90,9 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     timelineService
       .insertObservations(formData)
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+
+        await refetch(["LastUpdates", router.query.id].toString())
+
         setLoading(false);
         setModal(false);
         setFileList([]);
@@ -132,9 +131,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     timelineService
       .updateObservation(updateData?._id, formData)
       .then(async (_res) => {
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+      await refetch(["LastUpdates", router.query.id].toString())
         return createToast({
           status: "success",
           message: "Observação atualizada com sucesso!",
@@ -162,9 +159,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         .removeObservationMedia(updateData?._id, idx)
         .then(async (_res) => {
           setLoading(false);
-          await queryClient.invalidateQueries({
-            queryKey: ["LastUpdates", router.query.id],
-          });
+        await refetch(["LastUpdates", router.query.id].toString())
           return createToast({
             message: "Anexo removido com sucesso!",
             status: "success",
@@ -187,9 +182,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       .removeComplete(id)
       .then(async (_res) => {
         setLoading(false);
-        await queryClient.invalidateQueries({
-          queryKey: ["LastUpdates", router.query.id],
-        });
+    await refetch(["LastUpdates", router.query.id].toString())
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",
