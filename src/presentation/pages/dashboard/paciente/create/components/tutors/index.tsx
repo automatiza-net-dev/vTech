@@ -99,14 +99,14 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
         >
           <S.ModalAddTutor>
             <h3 className="font-20-bold">Adicionar tutor</h3>
-            {/* <Select
+         <Select
               name="holderId"
               label="Tutor"
               menuPlacement="top"
               placeholder="Selecionar tutor"
               options={options || []}
               onlyOneValue
-            />  */}
+            />  
 
             {error && (
               <span className="font-14" style={{ color: "red" }}>
