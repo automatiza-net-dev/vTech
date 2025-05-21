@@ -26,7 +26,7 @@ export function Tutors({
           <div className="actions">
             <AddTutor id={id} tutors={tutors} />
 
-            {tutors.length > 1 && <SelectActiveTutor tutors={tutors} id={id} />}
+            {tutors && tutors.length > 1 && <SelectActiveTutor tutors={tutors} id={id} />}
           </div>
 
           <div className="list">

@@ -11,6 +11,7 @@ import {
   Select,
   useQuery,
   api,
+  useQueryClient,
 } from "infinity-forge";
 
 import {
@@ -59,13 +60,11 @@ export function AddSale({
   const dailyMovements = useLoadAllDailyMovements();
   const configurationsSystem = useConfigurationsSystem();
 
-  console.log(bill, "BIIIIL")
+  const queryClient = useQueryClient()
 
   const { data } = useQuery({
     queryKey: ["bill-related-types"],
     queryFn: async () => {
-      const active = true;
-
       const response = await api({
         url: "bill-related-types",
         method: "get",
@@ -167,6 +166,8 @@ export function AddSale({
         [type === "edit" ? "update" : "create"](payload);
 
       await DeleteCartItems(initialValues.cart, data.cart, true);
+
+ await queryClient.refetch(["bills", true], { mode: "include" });
 
       listCreated && listCreated(response.id);
 

@@ -42,7 +42,7 @@ export function Pets({
       label: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
       value: patient.id,
     };
-  });
+  }).filter(item => item.value !== "-");
 
   const [petId] = useField("petId");
   const pets = values["patients"] || [];

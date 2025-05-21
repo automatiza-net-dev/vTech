@@ -18,7 +18,7 @@ export function ModalSelectActiveTutor({
   modal,
   setModal,
   id,
-  tutors,
+  tutors = [],
 }: {
   id: string;
   tutors: Tutor[];

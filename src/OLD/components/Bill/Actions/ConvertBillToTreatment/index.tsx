@@ -1,7 +1,7 @@
 import { billService } from "@/OLD/services/bills.service";
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { Tooltip, useToast } from "infinity-forge";
+import { Tooltip, useQueryClient, useToast } from "infinity-forge";
 import { useSystem } from "@/presentation";
 import { Bill } from "@/domain";
 
@@ -10,6 +10,8 @@ export default function ConvertBillToTreatment({ bill, setReload , CustomCompone
 
   const { unit } = useSystem()
   const { createToast } = useToast();
+
+  const queryClient = useQueryClient()
 
   const convertBill = () => {
 
@@ -20,6 +22,8 @@ export default function ConvertBillToTreatment({ bill, setReload , CustomCompone
       })
       .then(() => {
         setReload && setReload((prv) => !prv);
+
+          queryClient.refetch(["bills", true], { mode: "include" });
 
         return createToast({
           status: "success",

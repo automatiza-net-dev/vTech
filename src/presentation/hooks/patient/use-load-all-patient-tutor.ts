@@ -5,35 +5,35 @@ import { LoadAllPatientTutor } from "@/domain";
 import { container, patientTypes } from "@/container";
 import { useScheduling } from "@/presentation/pages";
 
-export function useLoadAllPatientTutor({
-  enabled = true,
-  patientFilters = null,
-}: {
+export function useLoadAllPatientTutor(props: {
+  modal?: boolean,
   enabled?: boolean;
   patientFilters?: LoadAllPatientTutor.Params | null;
-} = {}) {
+} ) {
   async function fetcher() {
     const response = await container
       .get<RemoteTutor>(patientTypes.RemoteTutor)
-      .loadAll(patientFilters || {});
+      .loadAll(props?.patientFilters || {});
     return response;
   }
 
-  const queryKey = useLoadAllPatientTutorKEY(patientFilters);
+  const queryKey = useLoadAllPatientTutorKEY(props?.patientFilters, props?.modal);
 
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enabled: enabled,
+    enabled: typeof props?.enabled !== "undefined" ? props.enabled : true, 
+    enableCache: true
   });
 }
 
 export function useLoadAllPatientTutorKEY(
-  patientFilters?: LoadAllPatientTutor.Params | null
+  patientFilters?: LoadAllPatientTutor.Params | null,
+  modal?: boolean
 ) {
   const contextPatientFilters = useScheduling((state) => state.patientsFilters);
 
   const filters = patientFilters || contextPatientFilters;
 
-  return ["RemoteLoadAllPatientTutor", (filters ? JSON.stringify(filters) : "")];
+  return ["RemoteLoadAllPatientTutor", (filters ? JSON.stringify(filters) : ""), modal];
 }
