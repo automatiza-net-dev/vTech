@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 
@@ -52,7 +51,7 @@ export default function Details({ billId, setVisible }: any) {
   const [openDisableNfe, setOpenDisableNfe] = useState<any>(false);
   const [disableNfeData, setDisableNfeData] = useState<any>({});
 
-  const [documentsToIssue, setDocumentsToIssue] = useState<any>([]);
+  const [documentsToIssue, setDocumentsToIssue] = useState<string[]>([]);
   const [nfeErrorsVisible, setNfeErrorsVisible] = useState<any>(false);
   const [reload, setReload] = useState<any>(false);
 
@@ -148,10 +147,10 @@ export default function Details({ billId, setVisible }: any) {
 
   const getIssuedNfeQuery = useQuery({
     queryKey: ["fiscalDocuments", "nfe", data?.id],
+    enabled: !!data,
     queryFn: () =>
       fiscalDocumentService.getIssuedNfe({
         bill: data?.id,
-        enabled: !!data,
       }),
   });
 
@@ -233,9 +232,12 @@ export default function Details({ billId, setVisible }: any) {
   const authorizeNfeMutation = useMutation({
     queryKey: ["authorizeNfeMutation"],
     queryFn: async () => {
+      //Aqui
       const productDocs = getFiscalDocumentsQuery?.data?.filter(
         (item) => item?.document_type === "PRODUTOS"
       );
+
+      console.log(getFiscalDocumentsQuery);
       const productSelected = productDocs.filter((item) =>
         documentsToIssue.includes(item.id)
       );
@@ -363,7 +365,10 @@ export default function Details({ billId, setVisible }: any) {
             cancelled: (
               <div className="font-16-regular" style={{ textAlign: "right" }}>
                 {item?.cancelled === "P" ? (
-                  <FormatProductCanceled text={"Revisão pendente"} />
+                  <FormatProductCanceled
+                    text={"Revisão pendente"}
+                    item={undefined}
+                  />
                 ) : item.cancelled === "S" ? (
                   <FormatProductCanceled text={"Aprovado por"} item={item} />
                 ) : item.cancelled === "N" ? (
@@ -406,7 +411,7 @@ export default function Details({ billId, setVisible }: any) {
   };
 
   const productIssuedDocuments = useMemo(() => {
-    const result = [];
+    const result: any[] = [];
 
     if (getIssuedNfeQuery.data) {
       getIssuedNfeQuery.data.forEach((item) => {
@@ -531,9 +536,7 @@ export default function Details({ billId, setVisible }: any) {
   }, [getIssuedNfeQuery?.data, cancelFNPermission]);
 
   const serviceIssuedDocuments = useMemo(() => {
-    const result = [];
-
-    console.log(getIssuedNfseQuery.data);
+    const result: any[] = [];
 
     if (getIssuedNfseQuery?.data) {
       getIssuedNfseQuery.data.forEach((item) => {
@@ -643,26 +646,26 @@ export default function Details({ billId, setVisible }: any) {
     }
   }, [data, changeFields]);
 
-  const componentRef = useRef();
+  const componentRef = useRef(null);
 
   const hasProductToIssue = useMemo(() => {
     if (documentsToIssue.length === 0) {
       return false;
     }
 
-    const findProductDocument = getFiscalDocumentsQuery?.data?.find(
+    const findProductDocument = getFiscalDocumentsQuery?.data?.filter(
       (item) => item?.document_type === "PRODUTOS"
     );
 
-    if (!findProductDocument) {
+    if (findProductDocument && findProductDocument.length === 0) {
       return false;
     }
 
-    const selected = documentsToIssue?.find(
-      (item) => item === findProductDocument?.id
+    const allSelected = documentsToIssue?.every((itemId) =>
+      getFiscalDocumentsQuery?.data?.some((doc) => doc.id === itemId)
     );
 
-    return !!selected;
+    return !!allSelected;
   }, [documentsToIssue, getFiscalDocumentsQuery]);
 
   const removeBillItem = (id) => {
@@ -710,21 +713,21 @@ export default function Details({ billId, setVisible }: any) {
         });
       })
       .catch((err) => {
-        if (!message) {
+        if (!err?.message) {
           return createToast({
             status: "error",
             message: "Houve um erro interno, tente novamente mais tarde",
           });
         }
 
-        if (message?.includes("E_NOT_OPEN")) {
+        if (err?.message?.includes("E_NOT_OPEN")) {
           return createToast({
             status: "warning",
             message: "Nota não está aberta, não é possível alterar o vendedor",
           });
         }
 
-        if (message?.includes("E_ERR")) {
+        if (err?.message?.includes("E_ERR")) {
           return createToast({
             status: "warning",
             message: err?.response?.data?.message?.split(":")[1],
@@ -788,7 +791,9 @@ export default function Details({ billId, setVisible }: any) {
           blockArr?.map((i) => (
             <ProductsPanel
               key={i}
-              payments={data?.payments?.filter((item) => item?.block === i + 1)}
+              payments={
+                data?.payments?.filter((item) => item?.block === i + 1) as any
+              }
               remove={false}
               bill={data}
             />
@@ -845,7 +850,7 @@ export default function Details({ billId, setVisible }: any) {
       >
         <Button
           onClick={() => setVisible(false)}
-          classCallback="uk-margin-right"
+          className="uk-margin-right"
           text="Voltar"
         />
 
@@ -872,6 +877,25 @@ export default function Details({ billId, setVisible }: any) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+
+            const selectedProductDocuments =
+              getFiscalDocumentsQuery?.data?.filter(
+                (item) =>
+                  item?.document_type === "PRODUTOS" &&
+                  documentsToIssue?.includes(item.id)
+              );
+
+            if (
+              selectedProductDocuments &&
+              selectedProductDocuments.length > 1
+            ) {
+              createToast({
+                status: "warning",
+                message: "Só é possível enviar uma nota de Produto por vez",
+              });
+              return;
+            }
+
             if (hasServices) {
               authorizeNfse.mutate();
             }
@@ -934,10 +958,9 @@ export default function Details({ billId, setVisible }: any) {
                 }}
               >
                 <Typography.Text>{item?.description}</Typography.Text>
-                <Image
+                <img
+                  style={{ width: 100, height: 100 }}
                   src={`/icons/${item.fiscalDocument.image_name}`}
-                  width={100}
-                  height={100}
                 />
               </div>
             </div>
@@ -1006,7 +1029,7 @@ export default function Details({ billId, setVisible }: any) {
               text="Cancelar"
             />
 
-            <Button type="primary" type="submit" text="Concluir" />
+            <Button type="submit" text="Concluir" />
           </div>
         </form>
       </Modal>
