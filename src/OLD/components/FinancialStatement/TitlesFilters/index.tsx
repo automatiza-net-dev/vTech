@@ -188,6 +188,7 @@ export default function TitlesFilters({
                 toAcceptDate: formValues?.toAcceptDate,
                 order: formValues.order,
                 unit: formValues.unit,
+                checkingAccountId: formValues?.checkingAccountId,
                 groupBorderos: formValues.groupBorderos,
                 reconciled: formValues.reconciled,
                 status: formValues.status,
@@ -284,7 +285,7 @@ export default function TitlesFilters({
 
             <Select
               label="Conta corrente"
-              name="contaCorrente"
+              name="checkingAccountId"
               onlyOneValue
               isClearable
               options={checkingAccounts?.data?.map((item) => ({
