@@ -18,7 +18,7 @@ import { paymentsColumns } from "./columns";
 
 import * as S from "./styles";
 
-const ProductsPanel = memo(function ProductsPanel({
+function ProductsPanel({
   payments,
   remove,
   reload,
@@ -26,7 +26,7 @@ const ProductsPanel = memo(function ProductsPanel({
   billId,
   bill,
   client,
-}) {
+}: any) {
   const componentRef = useRef();
   const SinglecomponentRef = useRef();
   const { user } = useAuthAdmin();
@@ -273,6 +273,6 @@ const ProductsPanel = memo(function ProductsPanel({
       </Collapse>
     )
   );
-});
+}
 
 export default ProductsPanel;
