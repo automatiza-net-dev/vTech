@@ -236,7 +236,7 @@ export function PatientList({
         }}
       />
       <Modal
-        styles={{ width: 500, padding: "20px 0" }}
+        styles={{ width: "800px", padding: "20px" }}
         open={activeTutorOpen}
         onClose={() => setActiveTutorOpen(false)}
       >

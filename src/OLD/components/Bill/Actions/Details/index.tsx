@@ -653,20 +653,19 @@ export default function Details({ billId, setVisible }: any) {
       return false;
     }
 
-    const findProductDocument = getFiscalDocumentsQuery?.data?.find(
+    const findProductDocument = getFiscalDocumentsQuery?.data?.filter(
       (item) => item?.document_type === "PRODUTOS"
     );
 
-    if (!findProductDocument) {
+    if (findProductDocument && findProductDocument.length === 0) {
       return false;
     }
 
-    const selected = documentsToIssue?.find((item) =>
-      getFiscalDocumentsQuery?.data?.find((i) => i.id === item)
+    const allSelected = documentsToIssue?.every((itemId) =>
+      getFiscalDocumentsQuery?.data?.some((doc) => doc.id === itemId)
     );
 
-
-    return !!selected;
+    return !!allSelected;
   }, [documentsToIssue, getFiscalDocumentsQuery]);
 
   const removeBillItem = (id) => {
@@ -879,11 +878,27 @@ export default function Details({ billId, setVisible }: any) {
           onSubmit={(e) => {
             e.preventDefault();
 
+            const selectedProductDocuments =
+              getFiscalDocumentsQuery?.data?.filter(
+                (item) =>
+                  item?.document_type === "PRODUTOS" &&
+                  documentsToIssue?.includes(item.id)
+              );
+
+            if (
+              selectedProductDocuments &&
+              selectedProductDocuments.length > 1
+            ) {
+              createToast({
+                status: "warning",
+                message: "Só é possível enviar uma nota de Produto por vez",
+              });
+              return;
+            }
+
             if (hasServices) {
               authorizeNfse.mutate();
             }
-
-            console.log(hasProductToIssue, "@@")
 
             if (hasProductToIssue) {
               authorizeNfeMutation.mutate();
@@ -960,7 +975,6 @@ export default function Details({ billId, setVisible }: any) {
             }}
           >
             <Button onClick={() => setOpenModal(false)} text="Cancelar" />
-
 
             <Button
               type="submit"

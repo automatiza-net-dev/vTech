@@ -54,7 +54,7 @@ const ActiveTutorsForm = memo(function ({
             <div
               key={i}
               onClick={() => setSelectedTutor(tutor)}
-              className="uk-margin-small-top tutor-box"
+              className="uk-margin-small-top tutor-box font-18-bold"
             >
               {tutor.name}
             </div>
