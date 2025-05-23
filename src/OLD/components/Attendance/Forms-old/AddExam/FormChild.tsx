@@ -228,7 +228,7 @@ export default function FormChild({
                   onClick={() => setPhotosOpen(true)}
                   text={
                     <>
-                      <BsPaperclip size={15} /> Visualizar Arquivos anexados{" "}
+                      <BsPaperclip size={15} /> Visualizar Arquivos anexados
                     </>
                   }
                 />

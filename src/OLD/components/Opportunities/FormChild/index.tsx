@@ -633,12 +633,15 @@ export default function FormChild({
                 justifyContent: "flex-end",
               }}
             >
-              <Button type="submit" text="Salvar" />
-
+            
               <Button
+              type="button"
                 text="Cancelar"
-                onClick={() => () => router.push("/crm/kanban")}
+                onClick={() => router.push("/crm/kanban")}
               />
+
+                <Button type="submit" text="Salvar" />
+
             </footer>
           ) : (
             <>
@@ -654,6 +657,7 @@ export default function FormChild({
                 <Button type="submit" text="Salvar" />
 
                 <Button
+                type="button"
                     onClick={() => () => router.push("/crm/kanban")}
                   text="Cancelar"
                 />

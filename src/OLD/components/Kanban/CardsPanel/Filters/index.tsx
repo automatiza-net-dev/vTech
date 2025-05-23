@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { memo, useState, useEffect } from "react";
 
 import { useConfigurationsSystem, useMe } from "@/presentation";
 import { usePatients } from "@/OLD/hooks/usePatients";
-// import { useTutor } from "@/OLD/hooks/useTutor";
+
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -21,7 +20,7 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { MdOutlineClear } from "react-icons/md";
 
 function Filters({ filters, setFilters, setReload }) {
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState<any>({});
 
     const {type} = useConfigurationsSystem()
 
@@ -34,6 +33,8 @@ function Filters({ filters, setFilters, setReload }) {
   const { businessUnits } = useBusinessUnitsByUser(false);
 
   const viewAllOpportunitiesPermission = useUserHasPermission("CRM09");
+
+  const {user} = useAuthAdmin()
 
   useEffect(() => {
     if (!viewAllOpportunitiesPermission) {
@@ -66,7 +67,6 @@ function Filters({ filters, setFilters, setReload }) {
         <label>Dt Interação:&nbsp;</label>
         <InputBox className="uk-width-1-1 uk-margin-small-top">
           <DatePicker
-            style={{ fontSize: "14px" }}
             className="custom-datepicker"
             key="dateFrom"
             format={"DD/MM/YYYY"}
@@ -120,7 +120,7 @@ function Filters({ filters, setFilters, setReload }) {
                 <li>Compareceram na Data dentro no Periodo Selecionado;</li>
               </>
             }
-            trigger={<Icon name="IconInfo" style={{ cursor: "pointer" }} />}
+            trigger={<Icon name="IconInfo"  />}
           />
         </InputBox>
       </div>
@@ -226,6 +226,7 @@ function Filters({ filters, setFilters, setReload }) {
             }}
           />
           <Tooltip
+          idTooltip="asasa"
             trigger={<Icon name="IconInfo" />}
             content={
               <>
@@ -322,18 +323,15 @@ function Filters({ filters, setFilters, setReload }) {
           />
           <Tooltip
             trigger={<Icon name="IconInfo" />}
-            content={
-              <>
-                Esta consulta retorna as oportunidades que tiveram o contato{" "}
-                <br />
-                realizado pelo cliente dentro do Periodo Selecionado. Esta é a{" "}
-                <br />
-                data que é selecionada no momento de cadastrar a oportunidade no{" "}
-                <br />
-                Crm
-              </>
-            }
-          />
+            content={<>
+              Esta consulta retorna as oportunidades que tiveram o contato{" "}
+              <br />
+              realizado pelo cliente dentro do Periodo Selecionado. Esta é a{" "}
+              <br />
+              data que é selecionada no momento de cadastrar a oportunidade no{" "}
+              <br />
+              Crm
+            </>} idTooltip={"asasas"}          />
         </InputBox>
       </div>
       <div className="uk-width-1-4">

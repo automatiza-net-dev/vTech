@@ -1,19 +1,20 @@
-// @ts-nocheck
-// Core
 import React, { useState, useCallback, useEffect } from "react";
 
-//Services
 import { timelineService } from "@/OLD/services/timeline.service";
 
-// Hooks
-import { useProfile } from "@/OLD/hooks/useProfile";
 import { ImageUploadS3, useLoadPatient, useUploadS3 } from "@/presentation";
 
-// Components
 import { Popconfirm } from "antd";
 import FormChild from "./FormChild";
 import { Container } from "./styles";
-import { Modal, Button, useToast, Icon, useAuthAdmin, useQueryClient } from "infinity-forge";
+import {
+  Modal,
+  Button,
+  useToast,
+  useAuthAdmin,
+  useQueryClient,
+  LoaderCircle,
+} from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -22,10 +23,11 @@ import { MdDownload } from "react-icons/md";
 // utils
 import moment from "moment";
 import { useRouter } from "next/router";
+import { FileIcon, isImage } from "../AddExam";
 
 function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState<any>({});
   const [fileList, setFileList] = useState([]);
   const [photosOpen, setPhotosOpen] = useState(false);
 
@@ -34,7 +36,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const patient = useLoadPatient();
   const { createToast } = useToast();
 
-  const refetch = useQueryClient(st => st.refetch);
+  const refetch = useQueryClient((st) => st.refetch);
   const router = useRouter();
 
   const beforeUpload = useCallback((file) => {
@@ -42,7 +44,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     if (isJpgOrPng) {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        return useToast({
+        return createToast({
           status: "error",
           message: "Você só pode upar imagens até 2MB!",
         });
@@ -83,15 +85,14 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     formData.append("resume", data?.resume);
     formData.append("createdAt", moment(data?.date).toISOString());
 
-    fileList.forEach((item) => {
+    fileList.forEach((item: any) => {
       formData.append("medias[]", item.originFileObj);
     });
 
     timelineService
       .insertObservations(formData)
       .then(async (_res) => {
-
-        await refetch(["LastUpdates", router.query.id])
+        await refetch(["LastUpdates", router.query.id]);
 
         setLoading(false);
         setModal(false);
@@ -121,17 +122,17 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
     formData.append("createdAt", moment(data?.date).toISOString());
     formData.append("resume", data?.resume);
 
-    const newArquives = fileList.filter((item) => !item?.url);
+    const newArquives = fileList.filter((item: any) => !item?.url);
 
     newArquives.length > 0 &&
-      newArquives.forEach((item) => {
+      newArquives.forEach((item: any) => {
         formData.append("medias[]", item.originFileObj);
       });
 
     timelineService
       .updateObservation(updateData?._id, formData)
       .then(async (_res) => {
-      await refetch(["LastUpdates", router.query.id])
+        await refetch(["LastUpdates", router.query.id]);
         return createToast({
           status: "success",
           message: "Observação atualizada com sucesso!",
@@ -159,7 +160,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         .removeObservationMedia(updateData?._id, idx)
         .then(async (_res) => {
           setLoading(false);
-        await refetch(["LastUpdates", router.query.id])
+          await refetch(["LastUpdates", router.query.id]);
           return createToast({
             message: "Anexo removido com sucesso!",
             status: "success",
@@ -182,7 +183,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       .removeComplete(id)
       .then(async (_res) => {
         setLoading(false);
-    await refetch(["LastUpdates", router.query.id])
+        await refetch(["LastUpdates", router.query.id]);
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",
@@ -216,19 +217,25 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
       <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
         <div>
           {fileList?.length > 0 &&
-            fileList.map((item) => {
+            fileList.map((item: any) => {
               return (
                 <p className="uk-margin-remove uk-margin-small-top uk-flex uk-flex-between uk-flex-middle">
-                  <img
-                    src={window.URL.createObjectURL(item.originFileObj)}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
+                  {isImage(item.originFileObj) ? (
+                    <img
+                      src={window.URL.createObjectURL(item.originFileObj)}
+                      width={150}
+                      className="uk-margin-small-right"
+                    />
+                  ) : (
+                    <div className="uk-margin-small-right">
+                      <FileIcon url={item.originFileObj} size={50} />
+                    </div>
+                  )}
                   <p className="uk-marign-remove">{item?.name}</p>
                   <FaRegTrashAlt
                     onClick={() =>
                       setFileList(
-                        fileList.filter((file) => item.uid !== file.uid)
+                        fileList.filter((file: any) => item.uid !== file.uid)
                       )
                     }
                     size={15}
@@ -275,22 +282,28 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
           styles={{ minWidth: "500px", padding: "20px" }}
         >
           {fileList?.length > 0 &&
-            fileList.map((item, idx) => {
+            fileList.map((item: any, idx) => {
               return item?.url ? (
-                <FileUploader key={item?.url} {...item} />
+                <FileUploader key={item?.url} idx={idx} removeMedia={removeMedia} remo {...item} />
               ) : (
                 <div className="uk-flex uk-flex-between uk-flex-middle">
-                  <img
-                    src={window.URL.createObjectURL(item.originFileObj)}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
+                  {isImage(item.originFileObj) ? (
+                    <img
+                      src={window.URL.createObjectURL(item.originFileObj)}
+                      width={150}
+                      className="uk-margin-small-right"
+                    />
+                  ) : (
+                    <div className="uk-margin-small-right">
+                      <FileIcon url={item.originFileObj} size={50} />
+                    </div>
+                  )}
                   {item?.originFileObj?.name}{" "}
                   <span className="uk-text-muted">(Envio pendente)</span>
                   <FaRegTrashAlt
                     onClick={() =>
                       setFileList(
-                        fileList.filter((file) => item.uid !== file.uid)
+                        fileList.filter((file: any) => item.uid !== file.uid)
                       )
                     }
                     size={15}
@@ -320,18 +333,32 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
 export default Notes;
 
 export function FileUploader(props) {
-  const { s3 } = useUploadS3({ src: props?.url });
+  const { s3, loading } = useUploadS3({ src: props?.url });
+
+  const image = isImage(s3?.view);
+
+  console.log("isImage", image, s3?.view)
 
   return (
     <div className="uk-flex uk-flex-between" style={{ marginTop: "10px" }}>
-      <ImageUploadS3 src={s3?.view} />
+      {loading ? (
+        <LoaderCircle size={20} color="#000" />
+      ) : image ? (
+        <ImageUploadS3 src={s3?.view} />
+      ) : (
+        <div className="uk-margin-small-right">
+          <FileIcon url={s3?.view} size={50} />
+        </div>
+      )}
 
-      <a href={s3?.view} target="_blank">{props?.filename}</a>
+      <a href={s3?.view} target="_blank" style={{ width: "60%" }}>
+        {props?.filename}
+      </a>
 
       <Popconfirm
         title="Deseja realmete remover este anexo?"
         okText="Sim"
-        onConfirm={() => removeMedia(idx)}
+        onConfirm={() => props.removeMedia(props.idx)}
         cancelText="Não"
         placement="left"
       >
@@ -339,11 +366,16 @@ export function FileUploader(props) {
           size={15}
           color="red"
           style={{ cursor: "pointer" }}
-          onClick={() => removeMedia(idx)}
+          onClick={() => props.removeMedia(props.idx)}
         />
       </Popconfirm>
 
-      <a href={s3?.download} download target="_blank">
+      <a
+        href={s3?.download}
+        download
+        target="_blank"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <MdDownload size={30} />
       </a>
     </div>

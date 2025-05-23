@@ -1,24 +1,19 @@
-//@ts-nocheck
-// Core
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import { RemoteChangeStatus } from "@/data";
 import { container, patientTypes } from "@/container";
 
-// Services
 import { examService } from "@/OLD/services/exams.service";
 import { patientExamsService } from "@/OLD/services/patientExam.service";
 import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
-// Hooks
 import { useMe } from "@/presentation/hooks";
 import {
   useLoadPatient,
   useLoadAllScheduleStatuses,
   useConfigurationsSystem,
-  ImageUploadS3,
 } from "@/presentation";
 
 // Utils
@@ -26,7 +21,7 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Components
-import { Button, Popconfirm } from "antd";
+import { Button } from "antd";
 import { Modal, useToast, useQueryClient } from "infinity-forge";
 
 // Icons
@@ -44,10 +39,10 @@ export default function LaunchExam({
   reloadSchedule,
 }: any) {
   const [photosOpen, setPhotosOpen] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [allExams, setAllExams] = useState([]);
-  const [selectedExam, setSelectedExam] = useState({});
+  const [selectedExam, setSelectedExam] = useState<any>({});
   const [report, setReport] = useState("");
   const [request, setRequest] = useState("");
   const [fileList, setFileList] = useState([]);
@@ -83,7 +78,7 @@ export default function LaunchExam({
   const getAllExams = useCallback(() => {
     setLoading(true);
     examService
-      .listExams({ active: true })
+      .listExams({ active: true } as any)
       .then((res) => {
         setLoading(false);
         setAllExams(res.data);
@@ -148,7 +143,7 @@ export default function LaunchExam({
       formData.append("patientId", patient.data?.id);
       formData.append("realizedAt", moment(new Date()).format("YYYY-MM-DD"));
 
-      fileList.forEach((item) => {
+      fileList.forEach((item: any) => {
         formData.append("attachments[]", item.originFileObj);
       });
 
@@ -202,13 +197,12 @@ export default function LaunchExam({
               scheduleStatuses.data?.find((status) => status.type === "ATEND")
                 ?.id || "";
 
-           await container
+            await container
               .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
               .change({
                 scheduleId: router.query.scheduleId as string,
                 statusId,
               });
-
 
             reloadSchedule && reloadSchedule();
           }
@@ -368,22 +362,28 @@ export default function LaunchExam({
       >
         <div>
           {fileList?.length > 0 &&
-            fileList.map((item, i) => {
+            fileList.map((item: any, i) => {
               return item?.attachment ? (
                 <FileUploader {...item} url={item?.attachment} key={i} />
               ) : (
                 <div style={{ marginTop: "10px" }}>
-                  <img
-                    src={window.URL.createObjectURL(item.originFileObj)}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
+                    {isImage(window.URL.createObjectURL(item.originFileObj)) ? (
+                    <img
+                      src={window.URL.createObjectURL(item.originFileObj)}
+                      width={150}
+                      className="uk-margin-small-right"
+                    />
+                  ) : (
+                    <div className="uk-margin-small-right">
+                      <FileIcon url={window.URL.createObjectURL(item.originFileObj)} size={50} />
+                    </div>
+                  )}
                   <span>{item?.originFileObj?.name}</span>
                   <span className="uk-text-muted">(Envio pendente)</span>
                   <FaRegTrashAlt
                     onClick={() =>
                       setFileList(
-                        fileList.filter((file) => item.uid !== file.uid)
+                        fileList.filter((file: any) => item.uid !== file.uid)
                       )
                     }
                     size={20}
@@ -440,19 +440,27 @@ export default function LaunchExam({
       <Modal open={photosOpen} onClose={() => setPhotosOpen(false)}>
         <div>
           {fileList?.length > 0 &&
-            fileList.map((item) => {
+            fileList.map((item: any) => {
               return (
                 <p className="uk-margin-remove uk-margin-small-top uk-flex uk-flex-between uk-flex-middle">
-                  <img
-                    src={window.URL.createObjectURL(item.originFileObj)}
-                    width={150}
-                    className="uk-margin-small-right"
-                  />
+                  {isImage(window.URL.createObjectURL(item?.originFileObj)) ? (
+                    <img
+                      src={window.URL.createObjectURL(item.originFileObj)}
+                      width={150}
+                      className="uk-margin-small-right"
+                    />
+                  ) : (
+                    <div className="uk-margin-small-right">
+                      <FileIcon url={window.URL.createObjectURL(item.originFileObj)} size={50} />
+                    </div>
+                  )}
+
                   <p className="uk-marign-remove">{item?.name}</p>
+
                   <FaRegTrashAlt
                     onClick={() =>
                       setFileList(
-                        fileList.filter((file) => item.uid !== file.uid)
+                        fileList.filter((file: any) => item.uid !== file.uid)
                       )
                     }
                     size={30}
@@ -460,6 +468,7 @@ export default function LaunchExam({
                     color="red"
                     style={{ cursor: "pointer" }}
                   />
+
                   <a
                     className=""
                     href={window.URL.createObjectURL(item.originFileObj)}
@@ -475,3 +484,37 @@ export default function LaunchExam({
     </>
   );
 }
+
+export interface FileIconProps {
+  url: string;
+  size?: number;
+}
+
+export const isImage = (fileName: string) => {
+  const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+
+  const fileNameAcess = typeof fileName === "string" ? fileName : typeof fileName === "object" ? (fileName as any)?.type : "";
+
+  return imageExtensions.some(ext => fileNameAcess?.toLowerCase()?.includes(ext));
+};
+
+export const FileIcon: React.FC<FileIconProps> = ({ url, size = 24 }) => {
+
+  const commonProps = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+  };
+
+  return  <svg {...commonProps}>
+      <path
+        d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"
+        fill="#95A5A6"
+      />
+      <text x="6" y="18" fontSize="9" fill="white" fontFamily="Arial">
+        FILE
+      </text>
+    </svg>
+};

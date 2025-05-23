@@ -13,7 +13,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { bankingService } from "@/OLD/services/banking.service";
 
 import { Container } from "./styles";
-import { Button, PageWrapper, useToast } from "infinity-forge";
+import { api, Button, FormHandler, PageWrapper, useQuery, useToast } from "infinity-forge";
 import { Input, DatePicker, Radio, Select, AutoComplete } from "antd";
 const { Group } = Radio;
 const { Option } = Select;
@@ -143,6 +143,16 @@ const Create = memo(function FormChild({}) {
     tutors?.length > 0 && formatTutors();
   }, [tutors]);
 
+  const patientSuppliers = useQuery({
+    queryKey: ["patient-suppliers"],
+    queryFn: async () => {
+      const response = await api({ url: "patient-suppliers", method: "get" });
+      return response;
+    },
+  });
+
+  console.log(patientSuppliers?.data?.[0], "@@", formatedTutors)
+
   return (
     <PageWrapper title="Movimentação bancária">
       <Container>
@@ -158,33 +168,40 @@ const Create = memo(function FormChild({}) {
             <div className="uk-flex">
               <div className="uk-margin-small-right uk-width-1-1">
                 <label>CPF/CNPJ ou nome do Titular</label>
-                <AutoComplete
-                  required
-                  options={formatedTutors}
-                  className="uk-width-1-1"
-                  value={data?.userName}
-                  onChange={(e) => setData({ ...data, userName: e })}
-                  onSelect={(inputValue, option) =>
-                    setData({
-                      ...data,
-                      userName: inputValue,
-                      clientId: option?.id,
-                    })
-                  }
-                 filterOption={(inputValue, option) => {
-                  const normalize = (str) =>
-                    str
-                      ?.normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                      .toLowerCase();
+             
+                {patientSuppliers?.data && (
+                  <AutoComplete
+                    required
+                    options={
+                      patientSuppliers?.data
+                        ? [...patientSuppliers?.data?.map(item => ({ ...item, value: item?.name })), ...formatedTutors]
+                        : formatedTutors
+                    }
+                    className="uk-width-1-1"
+                    value={data?.userName}
+                    onChange={(e) => setData({ ...data, userName: e })}
+                    onSelect={(inputValue, option) =>
+                      setData({
+                        ...data,
+                        userName: inputValue,
+                        clientId: option?.id,
+                      })
+                    }
+                    filterOption={(inputValue, option) => {
+                      const normalize = (str) =>
+                        str
+                          ?.normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "")
+                          .toLowerCase();
 
-                  const input = normalize(inputValue);
-                  const name = normalize(option?.name || "");
-                  const document = normalize(option?.tutor?.document || "");
+                      const input = normalize(inputValue);
+                      const name = normalize(option?.name || "");
+                      const document = normalize(option?.tutor?.document || option?.document || "");
 
-                  return name.includes(input) || document.includes(input);
-                }}
-                />
+                      return name.includes(input) || document.includes(input);
+                    }}
+                  />
+                )}
               </div>
               <div className="uk-margin-right">
                 <label>Data emissão</label>

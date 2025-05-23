@@ -29,7 +29,7 @@ function FormChild({
   print,
   patient,
   remove,
-}) {
+}: any) {
   return (
     <FormHandler isStickyButtons>
       <div>
