@@ -295,7 +295,7 @@ export const useGroupedFinances = (filters, reload) => {
 };
 
 export const usePaymentGroup = (filters, reload) => {
-  const [finances, setFinances] = useState([]);
+  const [finances, setFinances] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

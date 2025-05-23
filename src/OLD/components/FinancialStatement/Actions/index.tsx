@@ -34,13 +34,13 @@ const { TextArea } = Input;
 import Edit from "@/OLD/components/Titles/Actions/Edit";
 import { useToast } from "infinity-forge";
 
-const Actions = memo(function Actions({
+function Actions({
   financeId,
   reload,
   setReload,
   type,
   completeFinance,
-}) {
+}: any) {
   const [loading, setLoading] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [data, setData] = useState({
@@ -278,6 +278,6 @@ const Actions = memo(function Actions({
       )}
     </Container>
   );
-});
+}
 
 export default Actions;
