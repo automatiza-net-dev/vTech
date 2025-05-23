@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { memo, useState, useEffect } from "react";
 
 import { useConfigurationsSystem, useMe } from "@/presentation";
 import { usePatients } from "@/OLD/hooks/usePatients";
-// import { useTutor } from "@/OLD/hooks/useTutor";
+
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";

@@ -196,7 +196,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
                     ).format("YYYY-MM-DD"),
                     paymentMethodId: finance?.payment_method_id,
                     tefFlagId: finance?.tef_flag_id,
-                    tefAcquirerId: finance?.tef_acquirente_id || false,
+                    tefAcquirerId: finance?.tef_adquirente_id || false,
                     paymentDate: finance?.payment_date
                       ? moment(
                           finance?.payment_date,
@@ -220,13 +220,12 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
                       type: finance?.type,
                     });
                     setEdit(false);
-                    return setUpdateOpen(true); // `/dashboard/${router?.query?.page}/detalhes/${finance?.id}`
+                    return setUpdateOpen(true); 
                   }
                   if (finance?.source === "BORDERO") {
                     setSelectedBorderoId(finance?.id);
                     setBorderoDetailsVisible(true);
                     setEdit(false);
-                    // `/dashboard/${router?.query?.page}/detalhes-bordero/${finance?.id}`
                   }
                 }}
                 className="uk-link"
