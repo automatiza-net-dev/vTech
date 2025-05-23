@@ -2,7 +2,7 @@ import { clinicService } from "@/OLD/services/clinic.service";
 import { userService } from "@/OLD/services/user.service";
 import { useEffect, useState } from "react";
 
-export const useBusinessUnitsByUser = (filters = false, reload)=> {
+export const useBusinessUnitsByUser = (filters = false, reload?: any)=> {
   const [businessUnits, setBusinessUnits] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
