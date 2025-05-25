@@ -125,6 +125,18 @@ export default function TitlesFilters({
     },
   });
 
+    const tfeAquires = useQuery({
+    queryKey: ["tfeAquires"],
+    queryFn: async () => {
+      const response = await api({
+        method: "get",
+        url: `payment-methods/tef-acquirers`,
+      });
+
+      return response
+    },
+  });
+
   const { unit } = useSystem();
 
   const checkingAccounts = useQuery({
@@ -184,6 +196,7 @@ export default function TitlesFilters({
           onChangeForm={{
             callbackResult: (formValues) => {
               setFilters({
+                tefAcquirerId: formValues?.tefAcquirerId,
                 fromAcceptDate: formValues?.fromAcceptDate,
                 toAcceptDate: formValues?.toAcceptDate,
                 order: formValues.order,
@@ -202,8 +215,10 @@ export default function TitlesFilters({
                 fiscalNote: formValues.fiscalNote,
                 fromIssue: formValues.fromIssue,
                 toIssue: formValues.toIssue,
-                fromExpiration: formValues.fromExpiration,
-                toExpiration: formValues.toExpiration,
+                // fromExpiration: formValues.fromExpiration,
+                // toExpiration: formValues.toExpiration,
+                iterationDateFrom: formValues.iterationDateFrom,
+                iterationDateTo: formValues.iterationDateTo,
                 fromPayment: formValues.fromPayment,
                 toPayment: formValues.toPayment,
                 competence: formValues.competence,
@@ -224,26 +239,33 @@ export default function TitlesFilters({
               names={["fromIssue", "toIssue"]}
             />
 
-            <InputDateRange
+            {/* <InputDateRange
               id="Date"
               isClearable
               enableFilter
               placeholder="DD/MM/YYYY"
               label="Data Vencimento"
               names={["fromExpiration", "toExpiration"]}
-            />
+            /> */}
 
             <InputDateRange
               id="Date"
               isClearable
               enableFilter
               placeholder="DD/MM/YYYY"
+              label="Data Vencimento/Pagamento"
+              names={["iterationDateFrom", "iterationDateTo"]}
+            />
+
+            {/* <InputDateRange
+              id="Date"
+              isClearable
+              enableFilter
+              placeholder="DD/MM/YYYY"
               label="Data Pagamento"
               names={["fromPayment", "toPayment"]}
-            />
-          </div>
+            /> */}
 
-          <div className="box">
             <InputDateRange
               id="DateAccept"
               isClearable
@@ -252,7 +274,9 @@ export default function TitlesFilters({
               label="Data aceite"
               names={["fromAcceptDate ", "toAcceptDate"]}
             />
+          </div>
 
+          <div className="box">
             <div className="row">
               <InputDatePicker
                 id="Date"
@@ -263,6 +287,11 @@ export default function TitlesFilters({
               />
 
               <Input label="Nº Comprovante / NSU" name="nsu" />
+            </div>
+
+            <div className="row">
+              <Input label="Documento" name="document" />
+              <Input label="Nota Fiscal" name="fiscalNote" />
             </div>
 
             <div className="row">
@@ -299,13 +328,6 @@ export default function TitlesFilters({
               }}
             />
 
-            <div className="row">
-              <Input label="Documento" name="document" />
-              <Input label="Nota Fiscal" name="fiscalNote" />
-            </div>
-          </div>
-
-          <div className="box">
             <Select
               onlyOneValue
               label="Plano Contas"
@@ -313,7 +335,9 @@ export default function TitlesFilters({
               options={planOptions}
               isClearable
             />
+          </div>
 
+          <div className="box">
             <Select
               onlyOneValue
               label="Forma de pagamento"
@@ -331,6 +355,17 @@ export default function TitlesFilters({
                 label: item?.description,
                 value: item.id,
               }))}
+            />
+
+              <Select
+              label="Adquirente Tef."
+              name="tefAcquirerId"
+              onlyOneValue
+              isClearable
+              options={tfeAquires?.data?.map((item) => ({
+                label: item?.description,
+                value: item.id,
+              })) || []}
             />
           </div>
 
