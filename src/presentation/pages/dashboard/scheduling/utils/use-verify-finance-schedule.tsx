@@ -6,7 +6,7 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   const { unit } = useSystem();
 
   const financesExpired = event?.event?.financesExpired || 0;
-  const configsHasShowFinancesSchedules = unit?.configs.schedules?.show_finances_schedules;
+  const configsHasShowFinancesSchedules = unit?.configs?.schedules?.show_finances_schedules;
 
   const disableFinanceSchedule =
     !configsHasShowFinancesSchedules || !financesExpired || financesExpired === 0;
