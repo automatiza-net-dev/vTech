@@ -1,7 +1,9 @@
 import api from "@/OLD/services";
 
+import {api as apiInfinity} from "infinity-forge"
+
 const getAllBills = async (params) => {
-  const { data } = await api.get(`/bills`, { params });
+  const { data } = await apiInfinity({ method: "get", url: "bills",  body: params });
 
   return data;
 };
