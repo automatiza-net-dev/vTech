@@ -9,16 +9,15 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import moment from "moment";
 
-function FormChild({ data, setData, visible, setVisible, submit }: any) {
+function FormChild({ data, setData, setVisible, submit }: any) {
   const { checkingAccounts } = useCheckingAccounts();
 
   sortItems(checkingAccounts, "description");
   const initialAccountDescription = useMemo(() => {
     return (
-      checkingAccounts?.find((acc: any) => acc.id === data?.checkingAccountId)
-        ?.description ?? ""
+   typeof data?.accountDescription !== "undefined" ? data?.accountDescription : checkingAccounts?.find((acc: any) => acc.id === data?.checkingAccountId)?.description 
     );
-  }, [checkingAccounts, data?.checkingAccountId]);
+  }, [checkingAccounts, data?.checkingAccountId, data?.accountDescription]);
 
   const initialPaymentDate = useMemo(() => {
     return moment(data.paymentDate);

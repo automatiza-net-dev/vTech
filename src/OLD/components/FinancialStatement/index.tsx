@@ -57,8 +57,8 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   const [filters, setFilters] = useState({
     order: "expiration_date",
     status: "",
-    fromExpiration: new Date(),
-    toExpiration: new Date(),
+    iterationDateFrom: new Date(),
+    iterationDateTo: new Date(),
     noSearch: true,
     type: "",
     groupBorderos: "sim",
