@@ -57,7 +57,6 @@ export default function App({ Component, pageProps }) {
     return <></>;
   }
 
-  console.log({menus})
 
   return (
       <ConfigurationsSystemProvider configurations={configurations}>
