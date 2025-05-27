@@ -6,7 +6,7 @@ import { servicesService } from "@/OLD/services/services.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { EditTwoTone, DeleteTwoTone, CheckOutlined } from "@ant-design/icons";
+import { FiEdit2, FiTrash2, FiCheck } from "react-icons/fi";
 import { VscTasklist } from "react-icons/vsc";
 
 import { Popconfirm, Modal } from "antd";
@@ -116,7 +116,7 @@ const Actions = memo(function Actions({ service, setReload }) {
 
   return (
     <section className="uk-flex uk-flex-around">
-      <CheckOutlined
+      <FiEdit2
         onClick={() => {
           setServiceId(service?.id);
           setDetailsVisible(true);
@@ -124,6 +124,7 @@ const Actions = memo(function Actions({ service, setReload }) {
             /* router.push(`/dashboard/servico/${service?.id}`); */
           }
         }}
+        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
       />
       <VscTasklist
         onClick={() => {
@@ -132,7 +133,7 @@ const Actions = memo(function Actions({ service, setReload }) {
         }}
       />
 
-      {/*canEditService && <EditTwoTone onClick={() => setUpdateVisible(true)} />*/}
+      {/*canEditService && <FiEdit2 onClick={() => setUpdateVisible(true)} />*/}
       <Popconfirm
         title="Deseja remover esse serviço?"
         onConfirm={removeService}
@@ -140,7 +141,12 @@ const Actions = memo(function Actions({ service, setReload }) {
         cancelText="Não"
         placement="left"
       >
-        {canDeleteService && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteService && (
+          <FiTrash2
+            className="uk-link"
+            style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+          />
+        )}
       </Popconfirm>
       <Modal
         width={800}

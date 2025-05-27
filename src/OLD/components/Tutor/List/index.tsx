@@ -11,7 +11,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { usePatients } from "@/OLD/hooks/usePatients";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 import { GiConfirmed } from "react-icons/gi";
 
@@ -390,10 +390,11 @@ export function List({
             diabetes: tutor?.diabetes ? "Sim" : "Não",
             actions: (
               <div className="uk-flex uk-flex-around">
-                <FormCreateTutor
-                  tutorId={tutor.id}
-                  isModal
-                  trigger={<Icon name="IconEdit" color="#000" />}
+                <FiEdit2
+                  onClick={() => {
+                    router.push(`/dashboard/tutor/${tutor.id}`);
+                  }}
+                  style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                 />
 
                 {canDeleteTutor && (

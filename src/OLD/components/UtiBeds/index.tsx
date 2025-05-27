@@ -10,7 +10,7 @@ import moment from "moment";
 import Columns from "./Columns";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 // Components
 import { Input, Container } from "./styles";
@@ -67,12 +67,12 @@ export function UtiBeds() {
               actions: (
                 <div className="uk-flex uk-flex-around">
                   {canEditUtiBeds && (
-                    <EditTwoTone
-                      size={15}
+                    <FiEdit2
                       onClick={() => {
                         setUpdateData(item);
                         setCreateVisible(true);
                       }}
+                      style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                     />
                   )}
                   {canDeleteUtiBeds && (
