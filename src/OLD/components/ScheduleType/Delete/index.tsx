@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from "react";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -50,7 +50,12 @@ export const Delete = React.memo(function Delete({
         cancelText="Não"
         placement="left"
       >
-        {canDeleteScheduleService && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteScheduleService && (
+          <FiTrash2
+            className="uk-margin-small-left"
+            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+          />
+        )}
       </Popconfirm>
     </div>
   );

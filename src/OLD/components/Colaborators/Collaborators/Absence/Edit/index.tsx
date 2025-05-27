@@ -16,7 +16,7 @@ import { calendarService } from "@/OLD/services/calendar.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { days } from "../Create/weekdays";
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 import moment from "moment";
 import { useToast } from "infinity-forge";
 
@@ -139,7 +139,10 @@ export const Edit = ({ item }) => {
 
   return (
     <div>
-      <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+      <FiEdit2 
+        style={{ cursor: 'pointer', fontSize: '1.2rem' }} 
+        onClick={() => setIsVisible(true)}
+      />
 
       <Modal
         visible={isVisible}

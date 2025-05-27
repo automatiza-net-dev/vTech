@@ -3,7 +3,7 @@ import { Form, Input, Modal } from "antd";
 import { memo, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 import { useToast } from "infinity-forge";
 
 export const Edit = memo(({ item, reload, setReload }) => {
@@ -38,7 +38,12 @@ export const Edit = memo(({ item, reload, setReload }) => {
 
   return (
     <div>
-      <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+      <FiEdit2
+        onClick={() => {
+          setIsVisible(true);
+        }}
+        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+      />
       <Modal
         loading={loading}
         title="Editar espécie"

@@ -4,7 +4,7 @@
 import React, { memo, useState, useEffect, useCallback } from "react";
 
 // Icons
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 // Service
 import { paymentMethodsService } from "@/OLD/services/paymentMethods.service";
@@ -110,9 +110,9 @@ const Actions = memo(function Actions({ method, reload, setReload }) {
   return (
     <Container className="uk-flex uk-flex-around">
       {canEditPaymentMethods && (
-        <EditTwoTone
-          className="action-icon"
+        <FiEdit2
           onClick={() => setUpdateVisible(true)}
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
         />
       )}
       <Popconfirm
@@ -123,7 +123,10 @@ const Actions = memo(function Actions({ method, reload, setReload }) {
         onConfirm={removePaymentMethod}
       >
         {canDeletePaymentMethods && (
-          <DeleteTwoTone className="action-icon" twoToneColor="red" />
+          <FiTrash2
+            className="uk-margin-small-left"
+            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+          />
         )}
       </Popconfirm>
       {updateVisible && (

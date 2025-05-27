@@ -14,7 +14,7 @@ import { suppliersColumns } from "./Columns";
 
 import { Button, PageWrapper } from "infinity-forge";
 
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import masks from "@/OLD/utils/masks";
@@ -65,9 +65,12 @@ const Suppliers = memo(function Suppliers() {
           actions: (
             <section>
               {canEditSuppliers && (
-                <Link href={`/dashboard/fornecedores/editar/${item.id}`}>
-                  <EditTwoTone />
-                </Link>
+                <FiEdit2
+                  onClick={() => {
+                    router.push(`/dashboard/fornecedores/editar/${item.id}`);
+                  }}
+                  style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                />
               )}
             </section>
           ),

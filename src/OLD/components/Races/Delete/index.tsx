@@ -1,9 +1,9 @@
 // @ts-nocheck
 import React, { memo, useEffect } from "react";
-import { DeleteTwoTone } from "@ant-design/icons";
 import { Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
+import { FiTrash2 } from "react-icons/fi";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -45,7 +45,12 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         placement="left"
         loading={loading}
       >
-        {canDeleteRace && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteRace && (
+          <FiTrash2
+            className="uk-margin-small-left"
+            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+          />
+        )}
       </Popconfirm>
     </div>
   );

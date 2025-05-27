@@ -11,7 +11,7 @@ import EditInvite from "./Update";
 import { Input } from "./styles";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 export const Invites = React.memo(function Invites() {
@@ -69,7 +69,8 @@ export const Invites = React.memo(function Invites() {
                     style={{ gap: 14 }}
                   >
                     {canEditInvite && (
-                      <EditTwoTone
+                      <FiEdit2
+                        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                         onClick={() => {
                           setSelectedId(invite.id);
                           setEditVisible(true);

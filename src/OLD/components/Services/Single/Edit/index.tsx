@@ -3,7 +3,7 @@ import React, { memo, useState, useEffect, useCallback } from "react";
 
 import { productService } from "@/OLD/services/product.service";
 
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 import { Modal } from "antd";
 import FormChild from "./FormChild";
@@ -71,7 +71,10 @@ const Edit = memo(function Edit({ unitVariation, setReload }) {
 
   return (
     <div>
-      <EditTwoTone onClick={() => setUpdateVisible(true)} />
+      <FiEdit2
+        onClick={() => setUpdateVisible(true)}
+        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+      />
       <Modal
         title="Atualizar informações do serviço"
         visible={updateVisible}

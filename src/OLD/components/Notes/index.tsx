@@ -20,10 +20,9 @@ import moment from "moment";
 import { receiptsColumns } from "./columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-import { DeleteTwoTone } from "@ant-design/icons";
 import { CgDetailsMore } from "react-icons/cg";
 import { MdOutlineChecklist } from "react-icons/md";
-import { FiLock, FiUnlock } from "react-icons/fi";
+import { FiLock, FiUnlock, FiTrash2 } from "react-icons/fi";
 import { MdMonetizationOn } from "react-icons/md";
 import AddPaymentsScreen from "./AddPayments/AddPaymentsScreen";
 
@@ -141,7 +140,7 @@ export function Notes() {
                 
                     }}
                   >
-                    <DeleteTwoTone twoToneColor={"red"} />
+                    <FiTrash2 style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }} />
                   </Popconfirm>
                 )}
               </div>
@@ -347,8 +346,8 @@ export function Notes() {
               <div className="uk-margin-small-top">
                 <span className="uk-link">{xml?.name}</span>
 
-                <DeleteTwoTone
-                  twoToneColor={"red"}
+                <FiTrash2
+                  style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
                   onClick={() => setXml(false)}
                 />
               </div>

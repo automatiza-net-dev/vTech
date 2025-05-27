@@ -9,7 +9,7 @@ import { Popconfirm } from "antd";
 import { taxationGroupRulesService } from "@/OLD/services/taxation-group-rules.service";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { useMutation, useQueryClient } from "infinity-forge";
 
 const DeleteTaxationGroupRule = memo(function DeleteTaxationGroupRule({
@@ -39,7 +39,10 @@ const DeleteTaxationGroupRule = memo(function DeleteTaxationGroupRule({
       cancelText="Cancelar"
       disabled={isLoading}
     >
-      <DeleteTwoTone twoToneColor="red" />
+      <FiTrash2
+        className="uk-link"
+        style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+      />
     </Popconfirm>
   );
 });

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { memo } from "react";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { Popconfirm } from "antd";
 import { useMutation, useQueryClient } from "infinity-forge";
 import { calendarService } from "@/OLD/services/calendar.service";
@@ -40,7 +40,7 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-        <DeleteTwoTone twoToneColor="red" />
+        <FiTrash2 style={{ color: 'red', fontSize: '1.2rem', cursor: 'pointer' }} />
       </Popconfirm>
     </div>
   );

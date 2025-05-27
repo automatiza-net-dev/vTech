@@ -5,7 +5,7 @@ import moment from "moment";
 
 export const useGetAllBills = (params, reload) => {
   return useQuery({
-    queryKey: ["bills", reload],
+    queryKey: ["bills", reload, params],
     queryFn: async () => {
       let newObj = { ...params };
       const keys = Object.keys(params);

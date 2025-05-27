@@ -14,7 +14,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import moment from "moment";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { FormHandler, Select } from "infinity-forge";
 
 const FormChild = memo(function FormChild({
@@ -128,7 +128,7 @@ const FormChild = memo(function FormChild({
             cancelText="Não"
             placement="left"
           >
-            <DeleteTwoTone twoToneColor={"red"} />
+            <FiTrash2 style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }} />
           </Popconfirm>
         ),
       };

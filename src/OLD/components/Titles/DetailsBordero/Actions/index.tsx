@@ -9,9 +9,7 @@ import { usePlans } from "@/OLD/hooks/usePlans";
 import { Modal, Popconfirm } from "antd";
 import Edit from "@/OLD/components/Titles/Actions/Edit";
 
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-
-import { AiOutlineEye } from "react-icons/ai";
+import { FiTrash2, FiEdit2, FiEye } from "react-icons/fi";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
@@ -135,12 +133,12 @@ const Actions = memo(function Actions({
   return (
     <div className="uk-flex uk-flex-around">
       {finance?.status !== "Baixado" && borderoStatus !== "Baixado" && (
-        <EditTwoTone
-          className="custom-icon"
+        <FiEdit2
           onClick={() => {
             setEdit(true);
             setVisible(true);
           }}
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
         />
       )}
 
@@ -149,12 +147,15 @@ const Actions = memo(function Actions({
           onConfirm={removeItemsBordero}
         >
           {finance?.status !== "Baixado" && borderoStatus !== "Baixado" && (
-            <DeleteTwoTone twoToneColor={"red"} className="custom-icon" />
+            <FiTrash2
+              className="uk-margin-small-left"
+              style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+            />
           )}
         </Popconfirm>
   
 
-        <AiOutlineEye
+        <FiEye
           className="custom-icon"
           onClick={() => {
             setEdit(false);

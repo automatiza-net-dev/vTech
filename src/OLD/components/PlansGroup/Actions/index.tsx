@@ -6,7 +6,7 @@ import { plansGroupService } from "@/OLD/services/plansGroup.service";
 import FormChild from "../FormChild";
 import { PermissionItem, useToast } from "infinity-forge";
 import { Modal, Popconfirm } from "antd";
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
@@ -93,7 +93,7 @@ const Actions = memo(function ({ reload, setReload, group }) {
   return (
     <section className="uk-flex uk-flex-around uk-flex-middle">
       {canEditPlansGroup && (
-        <EditTwoTone
+        <FiEdit2
           onClick={() =>
             !canEditPlansGroup
               ? createToast({
@@ -102,6 +102,7 @@ const Actions = memo(function ({ reload, setReload, group }) {
                 })
               : setUpdateVisible(true)
           }
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
         />
       )}
       <Popconfirm
@@ -115,7 +116,10 @@ const Actions = memo(function ({ reload, setReload, group }) {
             : removePlansGroup();
         }}
       >
-        {canDeletePlansGroup && <DeleteTwoTone twoToneColor="red" />}
+        {canDeletePlansGroup && <FiTrash2
+          className="uk-margin-small-left"
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+        />}
       </Popconfirm>
       <Modal
         title="Atualizar informações de Grupo de planos de contas"

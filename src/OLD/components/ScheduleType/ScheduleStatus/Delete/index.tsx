@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { memo, useCallback } from "react";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
@@ -41,7 +41,12 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-        {canDeleteScheduleStatus && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteScheduleStatus && (
+          <FiTrash2
+            className="uk-margin-small-left"
+            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+          />
+        )}
       </Popconfirm>
     </div>
   );

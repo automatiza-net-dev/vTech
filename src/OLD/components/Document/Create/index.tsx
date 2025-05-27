@@ -12,7 +12,7 @@ const { Group } = Radio;
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 const DocumentCreate = React.memo(function DocumentCreate() {
   const router = useRouter();
@@ -208,8 +208,8 @@ const DocumentCreate = React.memo(function DocumentCreate() {
                     Arquivo:{" "}
                     <span className="uk-link">{file?.originFileObj?.name}</span>
                     &nbsp;
-                    <DeleteTwoTone
-                      twoToneColor="red"
+                    <FiTrash2
+                      style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
                       onClick={() => setFile(false)}
                     />
                   </div>

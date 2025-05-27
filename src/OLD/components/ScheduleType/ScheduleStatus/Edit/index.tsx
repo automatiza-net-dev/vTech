@@ -3,7 +3,7 @@ import { Form, Input, Modal } from "antd";
 import { memo, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useToast } from "infinity-forge";
@@ -37,7 +37,10 @@ export const Edit = memo(({ status }) => {
   return (
     <div>
       {canEditScheduleStatus && (
-        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+        <FiEdit2
+          onClick={() => setIsVisible(true)}
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+        />
       )}
 
       <Modal

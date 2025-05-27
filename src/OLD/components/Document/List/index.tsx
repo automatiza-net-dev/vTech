@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 // Icons
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 // Hooks
 import { useDocuments } from "@/OLD/hooks/useDocs";
@@ -120,10 +120,11 @@ function DocumentList() {
               render: (record) => (
                 <div className="uk-flex uk-flex-around">
                   {canEditDocument && (
-                    <EditTwoTone
+                    <FiEdit2
                       onClick={() => {
                         router.push(`/dashboard/documento/${record.id}`);
                       }}
+                      style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                     />
                   )}
                   <Popconfirm
@@ -134,7 +135,10 @@ function DocumentList() {
                     placement="left"
                   >
                     {canDeleteDocument && (
-                      <DeleteTwoTone className="uk-link" twoToneColor={"red"} />
+                      <FiTrash2 
+                        className="uk-link" 
+                        style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+                      />
                     )}
                   </Popconfirm>
                 </div>

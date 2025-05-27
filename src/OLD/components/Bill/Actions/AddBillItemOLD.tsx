@@ -26,7 +26,7 @@ import * as React from "react";
 import { GrAddCircle } from "react-icons/gr";
 import { useQueryClient } from "infinity-forge";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 import { convertIntlCurrency } from "../../../../OLD/utils/convertIntl";
 import Masks from "../../../../OLD/utils/masks";
@@ -195,7 +195,10 @@ function AddBillItem({ bill }: any) {
               title="Deseja remover este item?"
               onConfirm={() => removeBillItem(item?.id)}
             >
-              <DeleteTwoTone twoToneColor="red" />
+              <FiTrash2 
+                style={{ color: 'red', fontSize: '1.2rem', cursor: 'pointer' }} 
+                onClick={() => removeBillItem(item?.id)} 
+              />
             </Popconfirm>
           ),
           courtesy: (

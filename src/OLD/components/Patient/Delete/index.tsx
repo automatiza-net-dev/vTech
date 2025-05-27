@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from "react";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 import {  Popconfirm } from "antd";
 import { petsService } from "@/OLD/services/patient.service";
@@ -35,7 +35,9 @@ export const Delete = React.memo(function Delete({ id, setRefreshList }) {
         cancelText="Não"
         placement="left"
       >
-          <DeleteTwoTone twoToneColor="red" />
+          <FiTrash2 
+            style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+          />
       </Popconfirm>
     </div>
   );

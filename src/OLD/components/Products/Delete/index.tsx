@@ -9,7 +9,7 @@ import { Popconfirm } from "antd";
 import { productService } from "@/OLD/services/product.service";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { useMutation } from "infinity-forge";
 
 // Utils
@@ -48,7 +48,10 @@ const DeleteProduct = memo(function DeleteProduct({ id, hide }) {
       cancelText="Cancelar"
       disabled={isLoading}
     >
-      <DeleteTwoTone twoToneColor="red" />
+      <FiTrash2
+        className="uk-margin-small-left"
+        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+      />
     </Popconfirm>
   );
 });

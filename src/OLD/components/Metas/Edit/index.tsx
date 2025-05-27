@@ -2,7 +2,7 @@
 import { Form, Input, Modal, Select, Button as ButtonA } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "infinity-forge";
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 import { metasService } from "@/OLD/services/metas.service";
 import { Switch } from "antd";
 import { useToast } from "infinity-forge";
@@ -56,7 +56,10 @@ export const Edit = memo(({ item, canUpdate }) => {
   return (
     <div>
       {canUpdate && (
-        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+        <FiEdit2 
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }} 
+          onClick={() => setIsVisible(true)}
+        />
       )}
 
       <Modal

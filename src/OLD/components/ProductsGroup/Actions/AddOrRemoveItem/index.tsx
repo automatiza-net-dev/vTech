@@ -10,7 +10,7 @@ import { Table, AutoComplete, Input, Modal, Switch, Popconfirm } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { Container } from "./styles";
 
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 import { actionsColumns } from "@/OLD/components/ProductsGroup/Columns";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
@@ -92,7 +92,7 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
         discountValue: currencyFormatter(item?.product?.discount_price),
         actions: (
           <div className="uk-flex uk-flex-around">
-            <EditTwoTone
+            <FiEdit2
               onClick={() => {
                 setData({
                   itemId: item?.id,
@@ -108,6 +108,7 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
                 });
                 setUpdateVisible(true);
               }}
+              style={{ cursor: 'pointer', fontSize: '1.2rem' }}
             />
             <Popconfirm
               title="Deseja realmete excluir esse item?"
@@ -116,7 +117,10 @@ const AddOrRemoveItem = memo(function AddOrRemoveItem({
               cancelText="Não"
               placement="left"
             >
-              <DeleteTwoTone twoToneColor={"red"} />
+              <FiTrash2
+                className="uk-margin-small-left"
+                style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+              />
             </Popconfirm>
           </div>
         ),

@@ -13,8 +13,7 @@ import {
   serviceFiscalDocumentsColumns,
 } from "./Columns";
 
-import { DeleteTwoTone } from "@ant-design/icons";
-import { Checkbox, Input, Popconfirm, Skeleton, Table, Typography } from "antd";
+import { Checkbox, Input, Popconfirm, Skeleton, Table, Typography, Tooltip } from "antd";
 
 import Header from "./Header";
 import PrintScreen from "./PrintScreen";
@@ -33,6 +32,8 @@ import { Icon, Button, useToast, api, Modal } from "infinity-forge";
 import { CheckIcon, CloseIcon } from "./icons";
 import { AuthorizationStatusProduct } from "@/presentation";
 import { AxiosError } from "axios";
+import { CgDetailsMore } from "react-icons/cg";
+import { FiTrash2 } from "react-icons/fi";
 
 export default function Details({ billId, setVisible }: any) {
   const [formatedProducts, setFormatedProducts] = useState<any>([]);
@@ -384,7 +385,9 @@ export default function Details({ billId, setVisible }: any) {
                   title="Deseja remover este item?"
                   onConfirm={() => removeBillItem(item?.id)}
                 >
-                  <DeleteTwoTone twoToneColor="red" />
+                  <Tooltip title="Remover" placement="topRight">
+                    <FiTrash2 style={{ color: 'red', fontSize: '1.2rem', cursor: 'pointer' }} />
+                  </Tooltip>
                 </Popconfirm>
               ),
           };

@@ -16,9 +16,9 @@ import { Collapse, Table, Input, Select, Popconfirm } from "antd";
 const { Panel } = Collapse;
 const { Option } = Select;
 
-import { EditTwoTone } from "@ant-design/icons";
 import { IoIosCheckmark } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
+import { FiEdit2 } from "react-icons/fi";
 
 import moment from "moment";
 import { sortItems } from "@/OLD/utils/sortItems";

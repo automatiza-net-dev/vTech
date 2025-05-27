@@ -12,7 +12,7 @@ import { Button, PageWrapper, useToast } from "infinity-forge";
 import Filters from "./Filters";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 import { productsGroupColumns } from "./Columns";
 import { currencyFormatter } from "@/OLD/components/Budget";
@@ -68,10 +68,11 @@ const ProductsGroup = memo(function ProductsGroup() {
         actions: (
           <div className="uk-flex uk-flex-around">
             {canEditKit ? (
-              <EditTwoTone
+              <FiEdit2
                 onClick={() =>
                   router.push(`/dashboard/kits/editar/${product?.id}`)
                 }
+                style={{ cursor: 'pointer', fontSize: '1.2rem' }}
               />
             ) : null}
             {canDeleteKit ? (
@@ -82,7 +83,10 @@ const ProductsGroup = memo(function ProductsGroup() {
                 cancelText="Não"
                 placement="left"
               >
-                <DeleteTwoTone twoToneColor={"red"} />
+                <FiTrash2
+                  className="uk-margin-small-left"
+                  style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                />
               </Popconfirm>
             ) : null}
           </div>

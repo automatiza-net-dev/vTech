@@ -11,8 +11,10 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { useCheckingAccounts } from "@/OLD/hooks/useCheckingAccounts";
 
 // Components
-import { Input, Select, DatePicker, Button, AutoComplete } from "antd";
+import { Input, Select, DatePicker, Button, AutoComplete, Popconfirm } from "antd";
 const { Option } = Select;
+
+import { FiTrash2 } from "react-icons/fi";
 
 const Edit = memo(function Edit({
   data,

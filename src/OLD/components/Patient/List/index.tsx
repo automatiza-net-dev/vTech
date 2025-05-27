@@ -15,9 +15,6 @@ import { Button } from "infinity-forge";
 import PatientDetails from "../../../../presentation/pages/dashboard/paciente/patient-info/patient-info";
 import { Edit } from "../Edit";
 
-// Icons
-import { EditTwoTone } from "@ant-design/icons";
-
 // Utils
 import TutorVincForm from "./TutorVincForm";
 import { FormCreatePatient, SchedulingContextProvider } from "@/presentation";

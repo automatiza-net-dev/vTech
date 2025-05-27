@@ -2,7 +2,7 @@
 import { Popconfirm } from "antd";
 import React, { memo, useCallback } from "react";
 import { userService } from "@/OLD/services/user.service";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { useQueryClient } from "infinity-forge";
 import { useToast } from "infinity-forge";
 
@@ -41,7 +41,7 @@ export function Delete({ id, onDelete, reload, setReload }) {
         cancelText="Não"
         placement="left"
       >
-          <DeleteTwoTone twoToneColor="red" />
+          <FiTrash2 style={{ color: 'red', fontSize: '1.2rem', cursor: 'pointer' }} />
       </Popconfirm>
     </div>
   );

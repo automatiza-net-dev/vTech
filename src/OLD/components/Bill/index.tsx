@@ -39,12 +39,15 @@ export default function Bills() {
   const [filters, setFilters] = React.useState({
     fromBill: moment(),
     toBill: moment(),
-    noSearch: true,
+    noSearch: false,
   });
   const [reload, setReload] = React.useState(false);
 
   const { type } = useConfigurationsSystem();
-  const { data } = useGetAllBills(filters, reload);
+  const { data, ...rest } = useGetAllBills(filters, reload);
+
+  console.log("@DATA", data, rest)
+
   const { cashiers } = useDailyCasher(false, filters);
 
   const router = useRouter();

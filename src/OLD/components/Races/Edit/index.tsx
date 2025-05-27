@@ -3,7 +3,7 @@ import { Form, Input, Modal, Select, Button as ButtonA } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useToast } from "infinity-forge";
@@ -52,7 +52,13 @@ export const Edit = memo(({ item, reload, setReload }) => {
   return (
     <div>
       {canEditRace && (
-        <EditTwoTone onClick={() => setIsVisible(true)}>Editar</EditTwoTone>
+        <FiEdit2
+          onClick={() => {
+            setPayload(item);
+            setIsVisible(true);
+          }}
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+        />
       )}
 
       <Modal
