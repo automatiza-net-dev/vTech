@@ -8,7 +8,7 @@ export const useProfile = (type = false, reload = false) => {
       const res = await userService.getUser();
       return res?.data;
     },
-    enableCache: true,
+    
   });
 
   return {

@@ -21,7 +21,7 @@ export function useDeleteVaccine(params: DeleteVaccine.Params) {
     queryKey: ["RemoteDeleteVaccine"],
     queryFn: fetcher,
     onSuccess: () => {
-      queryClient.invalidateQueries("RemoteDeleteVacine");
+      queryClient.invalidateQueries(["RemoteDeleteVacine"]);
 
       createToast({
         message: "Vacina removida com sucesso!",

@@ -18,6 +18,6 @@ export function useLoadAllStates() {
   return useQuery({
     queryKey: ["LoadAllStates"],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

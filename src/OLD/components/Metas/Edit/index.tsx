@@ -34,7 +34,7 @@ export const Edit = memo(({ item, canUpdate }) => {
       createToast({ status: "success", message: "Sucesso" });
 
       setIsVisible(false);
-      queryClient.invalidateQueries("metas");
+      queryClient.invalidateQueries(["metas"]);
     },
     onError: () => {
       createToast({ status: "error", message: "Erro ao editar meta!" });

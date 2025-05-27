@@ -20,7 +20,7 @@ export const Delete = memo(function Delete({ id }) {
         status: "success",
       });
 
-      queryClient.invalidateQueries("getAbsences");
+      queryClient.invalidateQueries(["getAbsences"]);
     },
     onError: () => {
       createToast({

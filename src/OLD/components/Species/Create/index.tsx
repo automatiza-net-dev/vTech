@@ -21,7 +21,7 @@ export const Create = ({ visible, setVisible, reload, setReload, button }) => {
       setPayload(null);
       setVisible(false);
       setReload(!reload);
-      queryClient.invalidateQueries("getSpecies");
+      queryClient.invalidateQueries(["getSpecies"]);
     },
     onError: () => {
       createToast({ message: "Erro ao criar espécie!", status: "error" });

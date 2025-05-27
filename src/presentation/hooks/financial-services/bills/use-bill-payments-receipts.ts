@@ -23,7 +23,7 @@ export function useBillPaymentsReceipts(
 
       return response;
     },
-    enableCache: true,
+    
     onError: (err) => {
       if (err instanceof BadRequestError) {
         createToast({ message: err.error.message, status: "error" });

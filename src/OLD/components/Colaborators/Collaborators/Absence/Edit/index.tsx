@@ -107,7 +107,7 @@ export const Edit = ({ item }) => {
       });
 
       setIsVisible(false);
-      queryClient.invalidateQueries("getAbsences");
+      queryClient.invalidateQueries(["getAbsences"]);
     },
   });
 

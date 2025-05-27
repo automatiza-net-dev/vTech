@@ -147,7 +147,7 @@ function Page() {
   const productsQuery = useQuery({
     queryKey: ["deposit-movement-products"],
     queryFn: () => productService.listProducts().then((res) => res.data),
-    enableCache: true,
+    
     enabled: openCreate,
   });
 

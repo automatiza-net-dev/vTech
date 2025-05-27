@@ -24,7 +24,7 @@ export const Create = memo(() => {
 
       setPayload(null);
       setIsVisible(false);
-      queryClient.invalidateQueries("getAllStatus");
+      queryClient.invalidateQueries(["getAllStatus"]);
     },
   });
 

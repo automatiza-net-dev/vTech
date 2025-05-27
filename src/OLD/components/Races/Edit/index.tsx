@@ -35,7 +35,7 @@ export const Edit = memo(({ item, reload, setReload }) => {
       setIsVisible(false);
       setPayload(null);
       setReload(!reload);
-      queryClient.invalidateQueries("getSpecies");
+      queryClient.invalidateQueries(["getSpecies"]);
     },
     onError: () => {
       createToast({ message: "Erro ao editar espécie!", status: "error" });

@@ -16,6 +16,6 @@ export function useLoadCampaings(params: LoadCampaings.Params) {
   return useQuery({
     queryKey: ["LoadAllMarketing", params?.clientOriginId],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

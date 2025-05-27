@@ -31,7 +31,7 @@ export const Create = ({
 
       setVisible(false);
       setPayload(null);
-      queryClient.invalidateQueries("getRaces");
+      queryClient.invalidateQueries(["getRaces"]);
       if (fetchRaces) {
         fetchRaces();
       }

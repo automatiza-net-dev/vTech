@@ -18,6 +18,6 @@ export function useLoadTutor(tutorId?: Tutor["id"]) {
       return response;
     },
     enabled: !!tutorId,
-    enableCache: true,
+    
   });
 }

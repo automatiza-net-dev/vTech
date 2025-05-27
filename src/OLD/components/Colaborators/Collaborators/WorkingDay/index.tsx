@@ -78,7 +78,7 @@ export function WorkingDay({ edit }) {
     queryKey: ["WorkingDayMutation"],
     queryFn: (_data) => userService.createWorkingDay(_data),
     onSuccess: () => {
-      queryClient.invalidateQueries("workingDay");
+      queryClient.invalidateQueries(["workingDay"]);
       setReload(!reload);
     },
   });
@@ -152,7 +152,7 @@ export function WorkingDay({ edit }) {
               onClick={() => {
                 if (rowEditing) {
                   handleEdit();
-                  rowEditing && queryClient.invalidateQueries("workingDay");
+                  rowEditing && queryClient.invalidateQueries(["workingDay"]);
                 } else {
                   setRowEditing((prv) => !prv);
                   rowEditing && setReload(!reload);

@@ -20,6 +20,6 @@ export function useLoadAllScheduleServicesGroups(
   return useQuery({
     queryKey: ["RemoteLoadAllScheduleServicesGroups", params],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { memo } from "react";
+import React from "react";
 
 import { useTaxationGroups } from "@/OLD/hooks/useTaxationGroups";
 
@@ -7,7 +6,7 @@ import { Input, Select, Form } from "antd";
 const { TextArea } = Input;
 const { Option } = Select;
 
-const DataInf = memo(function DataInf({ data, setData }) {
+export default function DataInf({ data, setData }) {
   const { taxationGroups } = useTaxationGroups();
 
   return (
@@ -26,7 +25,6 @@ const DataInf = memo(function DataInf({ data, setData }) {
           <Form.Item>
             <label>* Grupo de imposto</label>
             <Select
-              required
               value={data?.taxationGroupId}
               onChange={(val) => setData({ ...data, taxationGroupId: val })}
               className="uk-width-1-1"
@@ -55,6 +53,5 @@ const DataInf = memo(function DataInf({ data, setData }) {
       </div>
     </section>
   );
-});
+}
 
-export default DataInf;

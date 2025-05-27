@@ -31,7 +31,7 @@ export function NotificationsModal() {
 
       return response as Notification[]
     },
-    enableCache: true,
+    
     enabled: !!user,
   });
 

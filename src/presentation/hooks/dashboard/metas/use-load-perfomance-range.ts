@@ -16,7 +16,7 @@ export function useLoadPerfomanceRange(id: Range["metaId"]) {
   return useQuery({
     queryKey: ["LoadPerfomanceRange", id],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: !!id,
   });
 }

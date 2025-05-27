@@ -24,7 +24,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
       createToast({ message: "Raça deletada", status: "success" });
 
       setReload(!reload);
-      queryClient.invalidateQueries("getRaces");
+      queryClient.invalidateQueries(["getRaces"]);
     },
     onError: () => {
       createToast({ message: "Erro ao deletar Raça", status: "error" });

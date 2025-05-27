@@ -18,6 +18,6 @@ export function useLoadCampaingsReports() {
   return useQuery({
     queryKey: ["LoadAllMarketing", JSON.stringify(query || {})],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

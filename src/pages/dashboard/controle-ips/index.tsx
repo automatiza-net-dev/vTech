@@ -28,7 +28,7 @@ function Page() {
   const ipsQuery = useQuery({
     queryKey: ["ip-access"],
     queryFn: async () =>  await api.get("/ip-access/search", {}).then(({ data }) => data),
-    enableCache: true,
+    
   });
 
   const createIpMutation = useMutation({

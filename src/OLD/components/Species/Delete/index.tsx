@@ -20,7 +20,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
       createToast({ message: "Espécie deletada", status: "success" });
 
       setReload(!reload);
-      queryClient.invalidateQueries("getSpecies");
+      queryClient.invalidateQueries(["getSpecies"]);
     },
     onError: () => {
       createToast({ message: "Erro ao deletar espécie", status: "error" });

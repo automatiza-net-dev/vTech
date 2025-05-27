@@ -7,7 +7,7 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { Input, Select, Form } from "antd";
 const { Option } = Select;
 
-const PriceForm = memo(function PriceForm({ data, setData }) {
+function PriceForm({ data, setData }) {
   return (
     <section>
       <div className="uk-flex">
@@ -23,14 +23,12 @@ const PriceForm = memo(function PriceForm({ data, setData }) {
           >
             <Input
               value={data?.costPrice}
-              onChange={(e) =>
+              onChange={(e) => {
                 setData({
                   ...data,
-                  costPrice: currencyFormatter(
-                    convertIntlCurrency(e.target.value)
-                  ),
-                })
-              }
+                  costPrice: e.target.value,
+                });
+              }}
             />
           </Form.Item>
         </div>
@@ -171,6 +169,6 @@ const PriceForm = memo(function PriceForm({ data, setData }) {
       </div>
     </section>
   );
-});
+}
 
 export default PriceForm;

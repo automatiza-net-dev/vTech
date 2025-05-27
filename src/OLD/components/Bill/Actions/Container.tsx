@@ -1,6 +1,5 @@
 import * as React from "react";
 import styled from "styled-components";
-import { useQueryClient } from "infinity-forge";
 
 import { billService } from "@/OLD/services/bills.service";
 
@@ -20,6 +19,7 @@ import {
   Popconfirm,
   Tooltip,
   useToast,
+  useQueryClient,
 } from "infinity-forge";
 
 

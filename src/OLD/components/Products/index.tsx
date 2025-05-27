@@ -258,7 +258,7 @@ function Products() {
                           <DeleteProduct
                             id={d.id}
                             hide={() => {
-                              queryClient.invalidateQueries("products");
+                              queryClient.invalidateQueries(["products"]);
                             }}
                           />
                         )}

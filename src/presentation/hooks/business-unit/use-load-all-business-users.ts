@@ -14,6 +14,6 @@ export function useLoadAllBusinessUsers() {
   return useQuery({
     queryKey: ["useLoadAllBusinessUsers"],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

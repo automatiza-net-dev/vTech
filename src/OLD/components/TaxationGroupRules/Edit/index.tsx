@@ -34,7 +34,7 @@ const UpdateTaxationGroupRule = memo(function UpdateTaxationGroupRule({
     queryFn: () =>
       taxationGroupRulesService.showTaxationGroupRule(initialData.id),
     enabled: visible,
-    enableCache: true,
+    
     onSuccess: (_data) => {
       setData({
         companyType: _data.company_type,

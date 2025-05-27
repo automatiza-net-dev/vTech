@@ -13,7 +13,7 @@ export function FluidTherapy() {
 
       return response;
     },
-    enableCache: true,
+    
   });
 
   return (

@@ -18,6 +18,6 @@ export function useLoadBusinessUnits() {
     queryKey: ["RemoteLoadBusinessUnits", id],
     queryFn: fetcher,
     enabled: !!id,
-    enableCache: true,
+    
   });
 }

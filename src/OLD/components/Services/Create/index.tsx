@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, {  useCallback, useMemo, useState } from "react";
 
 import { servicesService } from "@/OLD/services/services.service";
 
@@ -12,12 +11,10 @@ import DataForm from "./Data";
 import PriceForm from "./Price";
 
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-
-const Create = memo(function ({ setVisible }) {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
-  const [price, setPrice] = useState({});
-  const [type, setType] = useState("data");
+const { Option } = Select;
+export default  function Create({ setVisible }) {
+  const [data, setData] = useState<any>({});
+  const [price, setPrice] = useState<any>({});
 
   const { subgroups } = useSubgroups();
   const { createToast } = useToast();
@@ -37,7 +34,7 @@ const Create = memo(function ({ setVisible }) {
   };
 
   const submitService = useCallback(() => {
-    setLoading(true);
+
     let error = false;
     servicesService
       .createService({
@@ -61,8 +58,7 @@ const Create = memo(function ({ setVisible }) {
       )
       .catch((err) => {
         error = true;
-        setLoading(false);
-        const message = verifyFields(
+        const message: any = verifyFields(
           err.response.data.errors.map((msg) => msg?.field)
         );
         createToast({ message, status: "warning" });
@@ -74,7 +70,7 @@ const Create = memo(function ({ setVisible }) {
 
   const memoized = useMemo(() => {
     return    <Tab
-    onChangeTab={(tab) => setType(tab.key)}
+    mapAllTabs
     tabs={[
       {
         title: "Dados cadastrais",
@@ -135,7 +131,6 @@ const Create = memo(function ({ setVisible }) {
                 <Form.Item>
                   <label>* Subgrupo</label>
                   <Select
-                    required
                     value={data.subgroupId}
                     className="uk-width-1-1"
                     placeholder="Selecione"
@@ -196,6 +191,5 @@ const Create = memo(function ({ setVisible }) {
       </Container>
     </PageWrapper>
   );
-});
+}
 
-export default Create;

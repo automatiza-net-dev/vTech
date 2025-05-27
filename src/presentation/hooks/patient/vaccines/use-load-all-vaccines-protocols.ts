@@ -26,7 +26,7 @@ export function useLoadAllVaccinesProtocols(
   return useQuery({
     queryKey: ["LoadAllVaccineProtocols", params],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: params?.fetch ?? false,
   });
 }

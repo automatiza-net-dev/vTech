@@ -92,10 +92,10 @@ export const useConfirmBudget = (id) => {
 };
 
 export const useCompleteBudget = (id, enabled = false) => {
-  return useQuery({
+  return useQuery<any>({
     queryKey: ["budgets", "show", id], enabled, queryFn: () => {
       if (!id) {
-        return {};
+        return {} as any;
       }
       return budgetService.getCompleteBudget(id) as any;
     }

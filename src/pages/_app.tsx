@@ -11,6 +11,7 @@ import {
   InfinityForgeProviders,
   useAuthAdmin,
   useQuery,
+  QueryClient
 } from "infinity-forge";
 
 import { ConfigProvider } from "antd";
@@ -42,7 +43,7 @@ import "@/OLD/styles/uikit.css";
 import "infinity-forge/dist/infinity-forge.css";
 import Link from "next/link";
 import { PermissionsProvider } from "@/presentation/context/permissions";
-
+export const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
   const [menus, setMenus] = useState<any>(null);
@@ -56,9 +57,12 @@ export default function App({ Component, pageProps }) {
     return <></>;
   }
 
+  console.log({menus})
+
   return (
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
+          queryClient={queryClient}
           atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
@@ -231,7 +235,7 @@ function GambiarraTemporaria({ setMenus }) {
         .get<RemoteMenu>(TypesAutomatiza.RemoteMenuAutomatiza)
         .loadAll({});
     },
-    enableCache: true,
+    enabled: !!roleUser,
     onSuccess: (data) => {
       setMenus(data);
     },

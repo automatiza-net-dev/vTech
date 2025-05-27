@@ -106,7 +106,7 @@ export function RowTime({
         <Col span={2}>
           <Delete
             id={item.id}
-            onDelete={() => queryClient.invalidateQueries("workingDay")}
+            onDelete={() => queryClient.invalidateQueries(["workingDay"])}
             reload={reload}
             setReload={setReload}
           />

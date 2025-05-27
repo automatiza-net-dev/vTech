@@ -23,7 +23,7 @@ export function useLoadSchedulesMock({
   return useQuery({
     queryKey: ["RemoteSchedulesMock", id],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: enabled,
   });
 }

@@ -44,7 +44,7 @@ export const ShowDepositMovement = () => {
       depositService
         .getDepositMovements({ ids: [router.query.innerpage] })
         .then((res) => res.data),
-    enableCache: true,
+    
     enabled: router.isReady,
   });
 

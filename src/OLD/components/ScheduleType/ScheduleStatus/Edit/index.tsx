@@ -30,7 +30,7 @@ export const Edit = memo(({ status }) => {
       createToast({ message: "Status editado", status: "success" });
 
       setIsVisible(false);
-      queryClient.invalidateQueries("getAllStatus");
+      queryClient.invalidateQueries(["getAllStatus"]);
     },
   });
 

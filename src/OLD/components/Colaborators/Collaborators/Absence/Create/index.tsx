@@ -53,7 +53,7 @@ export function Create(props?: {
       });
       props?.onSucess?.();
       setIsVisible(false);
-      queryClient.invalidateQueries("getAbsences");
+      queryClient.invalidateQueries(["getAbsences"]);
       setPayload({
         userId,
       });

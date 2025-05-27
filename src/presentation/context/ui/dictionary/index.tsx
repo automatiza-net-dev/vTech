@@ -53,7 +53,7 @@ export function DictionaryQueryProvider({ children }) {
       }
     },
     enabled: !!user,
-    enableCache: true,
+    
   });
 
   const dictionary = dictionaryStore((state) => state.dictionary);

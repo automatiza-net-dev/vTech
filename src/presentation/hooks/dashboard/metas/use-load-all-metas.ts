@@ -20,6 +20,6 @@ export function useLoadAllMetas() {
   return useQuery({
     queryKey: ["LoadAllMetas"],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

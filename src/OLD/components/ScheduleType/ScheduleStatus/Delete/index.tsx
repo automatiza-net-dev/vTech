@@ -20,7 +20,7 @@ export const Delete = memo(function Delete({ id }) {
     onSuccess: () => {
       createToast({ message: "Status deletado", status: "success" });
 
-      queryClient.invalidateQueries("getAllStatus");
+      queryClient.invalidateQueries(["getAllStatus"]);
     },
     onError: () => {
       createToast({ message: "Erro ao deletar status", status: "error" });

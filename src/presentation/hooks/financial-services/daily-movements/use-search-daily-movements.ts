@@ -7,7 +7,7 @@ import { TypesAutomatiza, container } from "@/container";
 export function useSearchDailyMovements(params: SearchDailyMovements.Params) {
   return useQuery({
     enabled: !!params,
-    enableCache: true,
+    
     queryKey: ["useSearchDailyMovements", JSON.stringify(params)],
     queryFn: async () => {
       const response = await container

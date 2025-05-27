@@ -8,10 +8,10 @@ import {
 } from "infinity-forge";
 
 import {
+  useSystem,
   DictionaryQueryProvider,
   useConfigurationsSystem,
   useLoadAllAvailableUnits,
-  useSystem,
 } from "@/presentation";
 import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -33,7 +33,7 @@ function LayoutPage({ children }) {
   const avaiableUnits = useLoadAllAvailableUnits?.();
 
   const { unit } = useSystem()
-  const { user, roleUser } = useAuthAdmin();
+  const { roleUser } = useAuthAdmin();
 
   const {logo_url} = useConfigurationsSystem()
 

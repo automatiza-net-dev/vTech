@@ -34,7 +34,7 @@ export const Create = ({ canCreate }) => {
     onSuccess: () => {
       setVisible(false);
       setPayload({});
-      queryClient.invalidateQueries("metas");
+      queryClient.invalidateQueries(["metas"]);
       return createToast({
         message: "Meta criada com sucesso",
         status: "success",

@@ -35,6 +35,6 @@ export function useDepartamentItems() {
       return response as DepartmentItem[];
     },
     enabled: !!values.departament,
-    enableCache: true,
+    
   });
 }

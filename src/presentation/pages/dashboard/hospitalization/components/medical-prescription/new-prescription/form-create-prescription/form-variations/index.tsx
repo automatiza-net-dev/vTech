@@ -21,7 +21,7 @@ export function FormVariations() {
 
       return response;
     },
-    enableCache: true,
+    
   });
 
   const drugsAdministrations = useQuery({
@@ -34,7 +34,7 @@ export function FormVariations() {
 
       return response;
     },
-    enableCache: true,
+    
   });
 
   useEffect(() => {

@@ -20,7 +20,7 @@ export function useLoadAllDreGroups() {
   return useQuery({
     queryKey: ["DreGroups", JSON.stringify(query || {})],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: router.isReady,
   });
 }

@@ -64,7 +64,7 @@ export default function ValidaTerceiros() {
         router.push("/");
       }
     },
-    enableCache: true,
+    
     enabled: !(router.query.isReady && !!router.query.token),
   });
 
