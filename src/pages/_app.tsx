@@ -195,7 +195,7 @@ export default function App({ Component, pageProps }) {
             yellow: "#e1b400",
             secondaryColor: "red",
             darkColor: "#2B2B2B",
-            primaryColor: configurations.primary_color,
+            primaryColor: configurations?.primary_color || "#000",
           }}
         >
 
