@@ -1,6 +1,6 @@
 import moment from "moment";
-import { InputRadio, FormHandler, api } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { FormHandler, api, InputRadio } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import { schema } from "./schema";
 import { Frequency } from "./frequency";
@@ -32,7 +32,13 @@ export function FormCreatePrescription({
           frequencyQuantity: previousPrescription?.frequencyQuantity,
           frequencyQuantityUnit: previousPrescription?.frequencyQuantityUnit,
         }}
-        decimalFields={['frequencyInterval', "frequencyQuantity", "dose", "volume", "fluidSpeed"]}
+        decimalFields={[
+          "frequencyInterval",
+          "frequencyQuantity",
+          "dose",
+          "volume",
+          "fluidSpeed",
+        ]}
         onSucess={async (data) => {
           const combinedExecutionStart = moment(data.executionStart)
             .set({
@@ -48,9 +54,7 @@ export function FormCreatePrescription({
             prescribedAt: moment().toISOString(),
             hospitalizationId,
             executionStart: combinedExecutionStart,
-            volume: data.volume
-              ? String(data.volume)
-              : undefined,
+            volume: data.volume ? String(data.volume) : undefined,
           };
 
           await api({
@@ -66,23 +70,35 @@ export function FormCreatePrescription({
         schema={schema}
       >
         <div className="row">
-          <InputRadio
-            name="type"
-            options={[
-              { label: "Procedimento", value: "PROCEDURE" },
-              { label: "Medicamento", value: "MEDICATION" },
-              { label: "Fluidoterapia", value: "FLUID_THERAPY" },
-            ]}
-          />
+          <div style={{ width: "100%" }}>
+            <h3 className="font-16-bold">Prescrição médica</h3>
 
-          <InputRadio
-            name="frequency"
-            options={[
-              { label: "Recorrente", value: "RECURRENT" },
-              { label: "Apenas uma vez", value: "ONCE" },
-              { label: "Quando necessário", value: "WHEN_NEEDED" },
-            ]}
-          />
+            <InputRadio
+              name="type"
+              options={[
+                { label: "Procedimento", value: "PROCEDURE", readOnly: false },
+                { label: "Medicamento", value: "MEDICATION", readOnly: false },
+                {
+                  label: "Fluidoterapia",
+                  value: "FLUID_THERAPY",
+                  readOnly: false,
+                },
+              ]}
+            />
+          </div>
+
+          <div style={{ width: "100%" }}>
+            <h3 className="font-16-bold">Frêquencia</h3>
+            <InputRadio
+              name="frequency"
+              readOnly
+              options={[
+                { label: "Recorrente", value: "RECURRENT" },
+                { label: "Apenas uma vez", value: "ONCE" },
+                { label: "Quando necessário", value: "WHEN_NEEDED" },
+              ]}
+            />
+          </div>
         </div>
 
         <Frequency />

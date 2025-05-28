@@ -1,195 +1,193 @@
-import React, {  useCallback, useMemo, useState } from "react";
-
-import { servicesService } from "@/OLD/services/services.service";
+import React from "react";
 
 import { useSubgroups } from "@/OLD/hooks/useSubgroup";
 
-import { Container } from "./styles";
-import { Input, Select, Form, Switch } from "antd";
-import { Button, PageWrapper, Tab, useToast } from "infinity-forge";
-import DataForm from "./Data";
-import PriceForm from "./Price";
+import {
+  FormHandler,
+  Tab,
+  useToast,
+  Input,
+  Select,
+  InputSwitch,
+  api,
+  schema,
+  Textarea,
+  InputCurrency,
+} from "infinity-forge";
 
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-const { Option } = Select;
-export default  function Create({ setVisible }) {
-  const [data, setData] = useState<any>({});
-  const [price, setPrice] = useState<any>({});
+import { useTaxationGroups } from "@/OLD/hooks/useTaxationGroups";
 
+export default function Create({ setVisible }) {
   const { subgroups } = useSubgroups();
   const { createToast } = useToast();
+  const { taxationGroups } = useTaxationGroups();
 
-  const verifyFields = (fields) => {
-    if (fields?.includes("subgroupId")) {
-      return "Informe o subgrupo";
-    }
+  return (
+    <FormHandler
+      isStickyButtons
+      schema={{
+        taxationGroupId: schema.required(),
+        subgroupId: schema.required(),
+        price: schema.required(),
+        serviceType: schema.required(),
+        description: schema.required(),
+      }}
+      onSucess={async (formData) => {
+        await api({
+          url: "services",
+          method: "post",
+          body: {
+            ...formData,
+            price: {
+              ...formData,
+              price: formData.price
+                ? convertIntlCurrency(formData.price)
+                : null,
+              maximumDiscountValue: formData?.maximumDiscountValue
+                ? convertIntlCurrency(formData?.maximumDiscountValue)
+                : null,
+              costPrice: formData?.costPrice
+                ? convertIntlCurrency(formData?.costPrice)
+                : null,
+            },
+          },
+        });
 
-    if (fields?.includes("taxationGroupId")) {
-      return "Informe o grupo de imposto";
-    }
-
-    if (fields?.includes("price.price")) {
-      return "Informe o Valor";
-    }
-  };
-
-  const submitService = useCallback(() => {
-
-    let error = false;
-    servicesService
-      .createService({
-        ...data,
-        price: {
-          ...price,
-          price: price.price ? convertIntlCurrency(price.price) : null,
-          maximumDiscountValue: price?.maximumDiscountValue
-            ? convertIntlCurrency(price?.maximumDiscountValue)
-            : null,
-          costPrice: price?.costPrice
-            ? convertIntlCurrency(price?.costPrice)
-            : null,
-        },
-      })
-      .then((_res) =>
         createToast({
           message: "Serviço cadastrado com sucesso!",
           status: "success",
-        })
-      )
-      .catch((err) => {
-        error = true;
-        const message: any = verifyFields(
-          err.response.data.errors.map((msg) => msg?.field)
-        );
-        createToast({ message, status: "warning" });
-      })
-      .finally(() => {
-        !error && setVisible(false);
-      });
-  }, [data, price]);
+        });
 
-  const memoized = useMemo(() => {
-    return    <Tab
-    mapAllTabs
-    tabs={[
-      {
-        title: "Dados cadastrais",
-        key: "data",
-        content: () => {
-          return <DataForm data={data} setData={setData} />;
-        },
-      },
-      {
-        key: "price",
-        title: "Preço",
-        content: () => {
-          return <PriceForm data={price} setData={setPrice} />;
-        },
-      },
-    ]}
-  />
-  }, [])
+        setVisible(false);
+      }}
+      disableEnterKeySubmitForm
+      cleanFieldsOnSubmit={false}
+      button={{ text: "Salvar" }}
+    >
+      <section className="form-container uk-padding">
+        <div className="uk-flex" style={{ gap: 20 }}>
+          <div className="uk-width-1-1">
+            <Input name="description" label="* Descrição" />
+          </div>
 
-  return (
-    <PageWrapper title="Cadastro de serviços">
-      <Container>
-        <hr />
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            submitService();
-          }}
-        >
-          <section className="form-container uk-padding">
-            <div className="uk-flex" style={{ gap: 20 }}>
-              <div className="uk-width-1-1">
-                <Form.Item>
-                  <label>* Descrição</label>
-                  <Input
-                    required
-                    value={data?.description}
-                    onChange={(e) =>
-                      setData(prev => ({ ...prev, description: e.target.value }))
-                    }
-                  />
-                </Form.Item>
-              </div>
+          <div className="uk-width-1-1">
+            <Input name="referenceCode" label="Código de referência" />
+          </div>
 
-              <div className="uk-width-1-1">
-                <Form.Item>
-                  <label>Código de referência</label>
-                  <Input
-                    value={data?.referenceCode}
-                    onChange={(e) =>
-                      setData(prev => ({ ...prev, referenceCode: e.target.value }))
-                    }
-                  />
-                </Form.Item>
-              </div>
+          <div className="uk-width-1-1">
+            <Select
+              label="* Subgrupo"
+              name="subgroupId"
+              onlyOneValue
+              options={
+                subgroups?.map((item) => ({
+                  label: item?.description,
+                  value: item?.id,
+                })) || []
+              }
+            />
+          </div>
 
-              <div className="uk-width-1-1">
-                <Form.Item>
-                  <label>* Subgrupo</label>
-                  <Select
-                    value={data.subgroupId}
-                    className="uk-width-1-1"
-                    placeholder="Selecione"
-                    onChange={(val) => setData((prev) => ({ ...prev, subgroupId: val }))}
-                  >
-                    {subgroups.length > 0 &&
-                      subgroups.map((subgroup) => (
-                        <Option value={subgroup?.id}>
-                          {subgroup?.description}
-                        </Option>
-                      ))}
-                  </Select>
-                </Form.Item>
-              </div>
+          <div className="uk-width-1-1">
+            <Select
+              label="* Tipo Serviço"
+              name="serviceType"
+              onlyOneValue
+              options={[
+                { label: "Serviço", value: "service" },
+                { label: "Exame", value: "exam" },
+              ]}
+            />
+          </div>
+        </div>
 
-              <div className="uk-width-1-1">
-                <Form.Item>
-                  <label>* Tipo Serviço</label>
-                  <Select
-                    className="uk-width-1-1"
-                    placeholder="Selecione"
-                    onChange={(val) => setData((prev) => ({ ...prev, serviceType: val }))}
-                  >
-                    <Option value="service">Serviço</Option>
-                    <Option value="exam">Exame</Option>
-                  </Select>
-                </Form.Item>
-              </div>
+        <div className="uk-width-1-1">
+          <InputSwitch name="courtesy" label="Cortesia" />
+        </div>
 
-              <div className="uk-width-1-1">
-                <Form.Item>
-                  <label>Cortesia</label>
-                  <br />
-                  <Switch
-                    checked={data?.courtesy}
-                    onChange={(val) => {
-                      setData((prv) => ({
-                        ...prv,
-                        courtesy: val,
-                      }));
-                    }}
-                  />
-                </Form.Item>
-              </div>
-            </div>
+        <Tab
+          mapAllTabs
+          tabs={[
+            {
+              title: "Dados cadastrais",
+              key: "data",
+              content: () => {
+                return (
+                  <section>
+                    <div className="row">
+                      <Select
+                        label="* Grupo de imposto"
+                        name="taxationGroupId"
+                        onlyOneValue
+                        options={
+                          taxationGroups?.map((item) => ({
+                            label: item?.name,
+                            value: item?.id,
+                          })) || []
+                        }
+                      />
 
-         {memoized}
-          </section>
-          <hr />
-          <footer
-            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
-          >
-            <Button text="Voltar" onClick={() => setVisible(false)} />
+                      <Input name="serviceCode" label="Código de Serviço" />
+                    </div>
 
-            <Button type="submit" text="Salvar" />
-          </footer>
-        </form>
-      </Container>
-    </PageWrapper>
+                    <div>
+                      <Textarea name="features" label="Características" />
+                    </div>
+                  </section>
+                );
+              },
+            },
+            {
+              key: "price",
+              title: "Preço",
+              content: () => {
+                return (
+                  <section>
+                    <div className="row">
+                      <InputCurrency name="costPrice" label="Preço de custo" />
+
+                      <Input label="Margem de lucro" name="profitMargin" />
+
+                      <InputCurrency label="* Preço de venda" name="price" />
+
+                      <InputCurrency
+                        name="maximumDiscountPercentage"
+                        label="Desconto Máximo (%)"
+                        prefix=" "
+                      />
+
+                      <InputCurrency
+                        name="maximumDiscountValue"
+                        label="Desconto Máximo (R$)"
+                        prefix=" "
+                      />
+                    </div>
+
+                    <div className="row">
+                      <Select
+                        label="Tipo de meta"
+                        name="metaType"
+                        onlyOneValue
+                        options={[
+                          { label: "Valor", value: "v" },
+                          { label: "Quantidade", value: "q" },
+                        ]}
+                      />
+
+                      <Input label="Comissão" name="commission" />
+
+                      <Input label="Meta de Venda" name="meta" />
+
+                      <Input label="Comissão Meta" name="commissionMeta" />
+                    </div>
+                  </section>
+                );
+              },
+            },
+          ]}
+        />
+      </section>
+    </FormHandler>
   );
 }
-

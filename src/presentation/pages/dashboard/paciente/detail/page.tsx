@@ -20,7 +20,6 @@ export function PacientePage() {
   const { data, isLoading } = useLoadPatient();
 
   const {type} = useConfigurationsSystem()
-  
 
   if (isLoading || !data) {
     return <>Carregando...</>;
@@ -29,7 +28,7 @@ export function PacientePage() {
   const tabs: TabItem[] & { active: boolean }[] = [
     {
       title: "Últimas Atualizações",
-      content: (props) => <LastUpdates {...data} {...props} />,
+      content: LastUpdates,
       key: "ultimas_atualizacoes",
       active: true,
     },
@@ -85,7 +84,7 @@ export function PacientePage() {
       
       <ActionsPatient />
       
-      <Tab tabs={tabs} />
+      <Tab tabs={tabs} /> 
     </S.Paciente>
   );
 }

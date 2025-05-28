@@ -8,15 +8,15 @@ import {
 
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { Patient, TimeLine, TimelineType, TimeLineEvent } from "@/domain";
-import { useQuery } from "@/presentation";
+import { useLoadPatient, useQuery } from "@/presentation";
+import { TimeLine, TimelineType, TimeLineEvent } from "@/domain";
 
 import { CardTimeLine } from "./card-time-line";
 import { useActionsPatient } from "../actions/actions/options";
 
 import * as S from "./styles";
 
-export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
+export function LastUpdates({ changeTab }: TabContentProps) {
   const [timeLineType, setTimeLineType] = useState<
     TimelineType[] & TimeLineEvent[]
   >([]);
@@ -25,17 +25,17 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
   );
 
   const actionsPatient = useActionsPatient();
-
+  const patient = useLoadPatient();
   const { data, isFetching } = useQuery({
-    queryKey: ["LastUpdates", id],
+    queryKey: ["LastUpdates", patient.data?.id],
     queryFn: async () => {
       const response = await container
         .get<RemotePatient>(TypesAutomatiza.RemotePatient)
-        .loadLastUpdates({ id });
+        .loadLastUpdates({ id: patient.data?.id });
 
       return response;
     },
-    enableCache: true
+    enabled: !!patient.data?.id,
   });
 
   const listTimeLine = data?.filter((item) => {
@@ -125,7 +125,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
             )}
           </div>
         </>
-      )} 
+      )}
     </S.LastUpdates>
   );
 }
