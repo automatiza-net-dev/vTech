@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Form, Input, Modal, Select, Button as ButtonA } from "antd";
 import { memo, useCallback, useState, useEffect } from "react";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { FiEdit2 } from "react-icons/fi";
 import { metasService } from "@/OLD/services/metas.service";

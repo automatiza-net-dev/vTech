@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
 import moment from "moment";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { useRouter } from "next/router";
 
 export function useDailyCashier() {

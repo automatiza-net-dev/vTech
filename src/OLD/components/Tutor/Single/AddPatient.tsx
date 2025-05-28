@@ -2,7 +2,7 @@
 import { memo, useCallback, useState } from "react";
 import { AutoComplete, Form, Modal } from "antd";
 import { NewPatient } from "./NewPatient";
-import { useQuery, useMutation } from "infinity-forge";
+import { useQuery, useMutation } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { petsService } from "@/OLD/services/patient.service";
 import { useRouter } from "next/router";

@@ -10,7 +10,7 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Icons
 import { FiTrash2 } from "react-icons/fi";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 
 // Utils

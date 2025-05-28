@@ -8,7 +8,7 @@ import { Select, FormHandler, useToast, Button } from "infinity-forge";
 
 import moment from "moment";
 import { useLoadPatient } from "@/presentation";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { petsService } from "@/OLD/services/patient.service";
 

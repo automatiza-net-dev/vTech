@@ -3,7 +3,7 @@ import { useState } from "react";
 import moment from "moment";
 import "moment/locale/pt-br";
 import styled from "styled-components";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { Form, Input, Modal, Skeleton, Table } from "antd";
 
 import api from "@/OLD/services";

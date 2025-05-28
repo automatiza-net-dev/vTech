@@ -3,7 +3,7 @@ import { Form, Input, Modal, Select } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { useSpecies } from "@/OLD/hooks/useSpecies";
 import { memo, useCallback, useState } from "react";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { animalServices } from "@/OLD/services/animal.service";
 import { Create as CreateSpecie } from "@/OLD/components/Species/Create";

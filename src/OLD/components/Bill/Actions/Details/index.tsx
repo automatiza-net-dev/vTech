@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 
 import { billService } from "@/OLD/services/bills.service";

@@ -9,7 +9,7 @@ import moment from "moment";
 
 import { MdOutlineClear } from "react-icons/md";
 
-import { useQuery, api } from "infinity-forge";
+import {  api } from "infinity-forge";
 
 import { Input as AntInput, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
@@ -27,6 +27,7 @@ import {
   PermissionItem,
   useConfigurationsSystem,
   useSystem,
+  useQuery,
 } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";

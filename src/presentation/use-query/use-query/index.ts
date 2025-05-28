@@ -84,9 +84,6 @@ export function useQuery<T>({
     },
     enabled,
     refetchInterval,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     ...cache,
     ...rest
   });

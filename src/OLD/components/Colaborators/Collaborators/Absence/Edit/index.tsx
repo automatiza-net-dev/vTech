@@ -11,7 +11,7 @@ import {
 import { useRouter } from "next/router";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { yupResolver } from "@hookform/resolvers/yup";

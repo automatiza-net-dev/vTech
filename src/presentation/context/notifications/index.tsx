@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { api, Button, useAuthAdmin, useQuery } from "infinity-forge";
+import { api, Button, useAuthAdmin } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { Modal } from "./modal";
 

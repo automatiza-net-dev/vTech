@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useColaborator } from "@/OLD/hooks/useColaborators";
 import { memo, useEffect } from "react";
-import {  useQuery } from "infinity-forge";
+import { useToast } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { columns } from "./columns";
 import { Create } from "./Create";
@@ -15,7 +16,7 @@ import moment from "moment";
 
 // Components
 import { Container } from "./styles";
-import { Button, Select, FormHandler, useToast } from "infinity-forge";
+import { Button, Select, FormHandler } from "infinity-forge";
 
 export const Absence = ({ edit }) => {
   const router = useRouter();

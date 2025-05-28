@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { LoadPaymentsPreview } from "@/domain";
 import { RemoteBudget } from "@/data";

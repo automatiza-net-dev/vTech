@@ -3,7 +3,7 @@ import { Table } from "antd";
 import { memo, useMemo } from "react";
 import { columns } from "./columns";
 import { Create } from "./Create";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { metasService } from "@/OLD/services/metas.service";
 import { Edit } from "./Edit";
 import { Delete } from "./Delete";

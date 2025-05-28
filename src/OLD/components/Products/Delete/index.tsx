@@ -10,7 +10,7 @@ import { productService } from "@/OLD/services/product.service";
 
 // Icons
 import { FiTrash2 } from "react-icons/fi";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";

@@ -6,7 +6,7 @@ import Filters from "./Filters";
 import PrintTable from "./PrintTable";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { reportsService } from "@/OLD/services/reports.service";
 import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";

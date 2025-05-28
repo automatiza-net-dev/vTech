@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import axios from "axios";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { useAuthAdmin } from "infinity-forge";
 
 import { User } from "@/domain";

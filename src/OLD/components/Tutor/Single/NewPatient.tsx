@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 
 import { Form, Input, Modal, Select, Upload } from "antd";
 import { useRouter } from "next/router";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 import { petsService } from "@/OLD/services/patient.service";
 import dynamic from "next/dynamic";
 import { useToast } from "infinity-forge";

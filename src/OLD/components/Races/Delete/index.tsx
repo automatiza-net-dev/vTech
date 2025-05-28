@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { memo, useEffect } from "react";
 import { Popconfirm } from "antd";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { animalServices } from "@/OLD/services/animal.service";
 import { FiTrash2 } from "react-icons/fi";

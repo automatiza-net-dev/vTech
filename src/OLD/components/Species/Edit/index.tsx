@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Form, Input, Modal } from "antd";
 import { memo, useCallback, useState } from "react";
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 import { useQueryClient } from "@/presentation/use-query";
 import { animalServices } from "@/OLD/services/animal.service";
 import { FiEdit2 } from "react-icons/fi";

@@ -4,12 +4,12 @@ import {
   LoaderCircle,
   Select,
   TabContentProps,
-  useQuery,
 } from "infinity-forge";
 
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 import { Patient, TimeLine, TimelineType, TimeLineEvent } from "@/domain";
+import { useQuery } from "@/presentation";
 
 import { CardTimeLine } from "./card-time-line";
 import { useActionsPatient } from "../actions/actions/options";
@@ -26,6 +26,8 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
   const actionsPatient = useActionsPatient();
 
+  console.log( ["LastUpdates", id])
+
   const { data, isFetching } = useQuery({
     queryKey: ["LastUpdates", id],
     queryFn: async () => {
@@ -35,7 +37,6 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
       return response;
     },
-    enabled: !!id,
   });
 
   const listTimeLine = data?.filter((item) => {
