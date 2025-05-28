@@ -12,7 +12,7 @@ export function Avaliation(props: DropdownComponentProps) {
   const id = router.query?.scheduleId as string | undefined;
   const [scheduleId, setScheduleId] = useState(id);
 
-  const { data, mutate } = useLoadSchedulesMock({ enabled: !id });
+  const { data, mutate } = useLoadSchedulesMock({ enabled: !!id });
 
   if (!scheduleId && props.modal && data?.length > 0) {
     return <AvailableSchedules data={data} setMockScheduleId={setScheduleId} />;

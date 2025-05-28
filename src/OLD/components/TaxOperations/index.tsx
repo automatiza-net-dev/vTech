@@ -10,12 +10,12 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 // Components
 import { Table } from "antd";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import columns from "./Columns";
@@ -83,8 +83,7 @@ const TaxOperations = memo(function TaxOperations() {
             actions: (
               <div className="uk-flex uk-flex-around">
                 {canEditTaxOperationService && (
-                  <EditTwoTone
-                    size={15}
+                  <FiEdit2
                     onClick={() => {
                       !editPermission
                         ? createToast({
@@ -93,6 +92,7 @@ const TaxOperations = memo(function TaxOperations() {
                           })
                         : setSelectedTax(item);
                     }}
+                    style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                   />
                 )}
                 {canDeleteTaxOperationService && (

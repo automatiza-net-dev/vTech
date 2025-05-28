@@ -12,7 +12,7 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 // Components
 import { Container, Input } from "./styles";
@@ -57,11 +57,12 @@ const Exams = memo(function Exams() {
               actions: (
                 <div className="uk-flex uk-flex-around">
                   {canEditExams && (
-                    <EditTwoTone
+                    <FiEdit2
                       size={15}
                       onClick={() => {
                         router.push(`/dashboard/exames/editar/${item?.id}`);
                       }}
+                      style={{ cursor: 'pointer' }}
                     />
                   )}
                   {canDeleteExams && (

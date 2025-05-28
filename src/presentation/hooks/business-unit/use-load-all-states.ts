@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query"
 
 import { RemoteBusinessUnits } from "@/data";
 import { adminTypes, container } from "@/container";
@@ -18,6 +18,6 @@ export function useLoadAllStates() {
   return useQuery({
     queryKey: ["LoadAllStates"],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

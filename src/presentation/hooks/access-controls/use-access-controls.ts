@@ -1,7 +1,7 @@
 
 import { RemoteAccessControls } from "@/data";
 import { adminTypes, container } from "@/container";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 export function useAccessControls({ id }) {
   async function fetcher() {
@@ -11,6 +11,6 @@ export function useAccessControls({ id }) {
   return useQuery({
     queryKey: ["RemoteLoadAccessControls", id],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

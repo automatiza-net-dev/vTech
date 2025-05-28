@@ -22,7 +22,7 @@ function Page() {
   const user = useMe();
   const { createToast } = useToast();
 
-  const { data, mutate, isFetching } = useQuery({
+  const { data, refetch, isFetching } = useQuery({
     queryKey: ["load_users"],
     queryFn: async () => {
       const response = await container.get<RemoteBusinessUnits>(TypesAutomatiza.RemoteBusinessUnits).loadAll( )
@@ -72,7 +72,7 @@ function Page() {
         },
       });
 
-      await mutate()
+      await refetch()
 
       createToast({
         status: "success",

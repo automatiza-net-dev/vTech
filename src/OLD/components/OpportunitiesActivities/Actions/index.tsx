@@ -8,7 +8,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import UpdateActivity from "../Update";
 import {  Popconfirm } from "antd";
 
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { AiOutlineEye } from "react-icons/ai";
 import { BsArrowCounterclockwise } from "react-icons/bs";
 import { useToast } from "infinity-forge";
@@ -57,11 +57,12 @@ const Actions = memo(function Actions({
           {!activity?.balance && (
             <>
               {editActivityPermission && (
-                  <EditTwoTone
+                  <FiEdit2
                     onClick={() => {
                       setEditVisible(true);
                       setEdit(true);
                     }}
+                    style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                   />
               )}
               {removeActivityPermission && (
@@ -71,7 +72,9 @@ const Actions = memo(function Actions({
                       removeActivity();
                     }}
                   >
-                    <DeleteTwoTone twoToneColor="red" />
+                    <FiTrash2 
+                      style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+                    />
                   </Popconfirm>
               )}
             </>

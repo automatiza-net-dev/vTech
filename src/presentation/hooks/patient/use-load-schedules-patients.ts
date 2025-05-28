@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { useScheduling } from "@/presentation";
 import { LoadSchedulesPatient } from "@/domain";
@@ -27,7 +27,7 @@ export function useLoadSchedulesPatients({
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: enabled,
   });
 }

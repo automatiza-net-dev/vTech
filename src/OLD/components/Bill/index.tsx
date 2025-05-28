@@ -9,7 +9,7 @@ import moment from "moment";
 
 import { MdOutlineClear } from "react-icons/md";
 
-import { useQuery, api } from "infinity-forge";
+import {  api } from "infinity-forge";
 
 import { Input as AntInput, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
@@ -27,6 +27,7 @@ import {
   PermissionItem,
   useConfigurationsSystem,
   useSystem,
+  useQuery,
 } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";
@@ -44,7 +45,8 @@ export default function Bills() {
   const [reload, setReload] = React.useState(false);
 
   const { type } = useConfigurationsSystem();
-  const { data } = useGetAllBills(filters, reload);
+  const { data, ...rest } = useGetAllBills(filters, reload);
+
   const { cashiers } = useDailyCasher(false, filters);
 
   const router = useRouter();
@@ -53,7 +55,6 @@ export default function Bills() {
     data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
 
     return data.map((bill) => {
-      console.log(bill, "@@@@@");
       return {
         id: bill?.id,
         internalCode: bill?.internalCode,

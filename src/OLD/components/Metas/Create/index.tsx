@@ -2,7 +2,8 @@
 import { Form, Input, Modal, Select } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { memo, useCallback, useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import { metasService } from "@/OLD/services/metas.service";
 
 export const Create = ({ canCreate }) => {
@@ -34,7 +35,7 @@ export const Create = ({ canCreate }) => {
     onSuccess: () => {
       setVisible(false);
       setPayload({});
-      queryClient.invalidateQueries("metas");
+      queryClient.invalidateQueries(["metas"]);
       return createToast({
         message: "Meta criada com sucesso",
         status: "success",

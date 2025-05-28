@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { userService } from "@/OLD/services/user.service";
 import { convertTime } from "@/OLD/utils/convertDate";
 import { Delete } from "./Delete";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import { TimePicker } from "@mui/x-date-pickers";
 
@@ -106,7 +106,7 @@ export function RowTime({
         <Col span={2}>
           <Delete
             id={item.id}
-            onDelete={() => queryClient.invalidateQueries("workingDay")}
+            onDelete={() => queryClient.invalidateQueries(["workingDay"])}
             reload={reload}
             setReload={setReload}
           />

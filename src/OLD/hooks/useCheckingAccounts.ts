@@ -9,7 +9,7 @@ export const useCheckingAccounts = (
   filters = false,
   unit = false
 ) => {
-  const [checkingAccounts, setCheckingACcounts] = useState([]);
+  const [checkingAccounts, setCheckingACcounts] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const { clinic } = useProfile();

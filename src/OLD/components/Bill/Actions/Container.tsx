@@ -1,14 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
-import { useQueryClient } from "infinity-forge";
 
 import { billService } from "@/OLD/services/bills.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 import { CgDetailsMore } from "react-icons/cg";
-import { FiLock, FiUnlock } from "react-icons/fi";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiLock, FiUnlock, FiTrash2 } from "react-icons/fi";
 
 import AddBillItem from "./AddBillItem";
 import ConvertBillToTreatment from "./ConvertBillToTreatment";
@@ -22,6 +20,7 @@ import {
   useToast,
 } from "infinity-forge";
 
+import { useQueryClient } from "@/presentation/use-query";
 
 import { LaunchRelatedSale } from "./launch-related-sale";
 import { CancelAction } from "./cancel";
@@ -202,7 +201,7 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
             enableHover
             position="top-right"
             content={"Excluir Venda"}
-            trigger={<DeleteTwoTone twoToneColor={"red"} className="icon" />}
+            trigger={<FiTrash2 className="icon" />}
           />
         </Popconfirm>
       )}

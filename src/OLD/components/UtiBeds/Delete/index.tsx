@@ -6,7 +6,7 @@ import React, { memo, useCallback } from "react";
 import { bedsService } from "@/OLD/services/beds.service";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 // Components
 import { Popconfirm } from "antd";
@@ -43,7 +43,10 @@ const RemoveBed = memo(function RemoveBed({ id, reload, setReload }) {
       cancelText="Não"
       placement="left"
     >
-      <DeleteTwoTone twoToneColor="red" />
+      <FiTrash2
+        className="uk-link"
+        style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+      />
     </Popconfirm>
   );
 });

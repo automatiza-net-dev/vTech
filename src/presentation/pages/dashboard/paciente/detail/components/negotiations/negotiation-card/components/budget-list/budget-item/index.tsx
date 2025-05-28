@@ -3,7 +3,7 @@ import { FormBudgetItem, FormData } from "../interfaces";
 import { useLoadAllReasons } from "@/presentation/hooks";
 import { useFormikContext } from "formik";
 import { useState } from "react";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import {
   Icon,

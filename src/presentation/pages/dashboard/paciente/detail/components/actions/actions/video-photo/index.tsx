@@ -11,12 +11,12 @@ import {
   useAuthAdmin,
   api,
   FileSystemType,
-  useQueryClient,
 } from "infinity-forge";
 
 import { DropdownComponentProps } from "../dropdown-item";
 
 import * as S from "./styles";
+import { useQueryClient } from "@/presentation/use-query";
 
 export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
   const [loading, setLoading] = useState(false);

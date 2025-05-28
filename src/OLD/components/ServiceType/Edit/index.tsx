@@ -9,7 +9,7 @@ import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 export const Edit = ({ icon, id, reload, setReload }) => {
   const { Option } = Select;
@@ -72,13 +72,13 @@ export const Edit = ({ icon, id, reload, setReload }) => {
   return (
     <div>
       {canEditTypeScheduleService && (
-        <EditTwoTone
+        <FiEdit2
           onClick={() =>
             permissions?.ATS2
               ? createToast({ message: "Ação não permitida", status: "error" })
               : setIsModalVisible(true)
           }
-          className="uk-margin-small-left"
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
         />
       )}
       <Modal

@@ -4,7 +4,7 @@ import { Tooltip } from "infinity-forge";
 
 import moment from "moment";
 import * as React from "react";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { useCancelBudget } from "@/OLD/hooks/useBudgets";
 import { useGetAllReasons } from "@/OLD/hooks/useReasons";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";

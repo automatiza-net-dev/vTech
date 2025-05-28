@@ -12,7 +12,7 @@ import FormChild from "./FormChild";
 import { FiLock, FiUnlock } from "react-icons/fi";
 import { IoMdDownload } from "react-icons/io";
 import { BsArrowCounterclockwise } from "react-icons/bs";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
@@ -207,7 +207,7 @@ function BorderoActions({
               onConfirm={removeBordero}
               title="Deseja remover este bordero?"
             >
-              <DeleteTwoTone twoToneColor="red" />
+              <FiTrash2 style={{ color: 'red', fontSize: 20, cursor: 'pointer' }} />
             </Popconfirm>
         ))}
 

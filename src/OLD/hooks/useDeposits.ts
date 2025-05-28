@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { depositService } from "@/OLD/services/deposit.service";
 
 import moment from "moment";

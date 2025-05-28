@@ -1,7 +1,6 @@
 import {
   useToast,
   ActionsTable,
-  FetcherParams,
   TableActionEdit,
   TableActionCreate,
 } from "infinity-forge";
@@ -14,7 +13,7 @@ import { container, TypesAutomatiza } from "@/container";
 export function useDreGroupsTableActions({
   mutate,
 }: {
-  mutate: (params?: FetcherParams) => void;
+  mutate: (params?: any) => void;
 }) {
   const hasPermissionCreate = useVerifyPermissions("AGR01");
   const hasPermissionUpdate = useVerifyPermissions("AGR02");

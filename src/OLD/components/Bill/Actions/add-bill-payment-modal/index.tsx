@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Modal, Tooltip, useQueryClient } from "infinity-forge";
+import { Modal, Tooltip } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import { MdMonetizationOn } from "react-icons/md";
 import AddBillPayment from "@/OLD/components/Bill/Actions/AddBillPayment";

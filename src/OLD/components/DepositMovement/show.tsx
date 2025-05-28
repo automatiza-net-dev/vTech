@@ -4,7 +4,7 @@ import PrintScreen from "./PrintScreen";
 import { Button, PageWrapper } from "infinity-forge";
 import "moment/locale/pt-br";
 import { memo, useRef } from "react";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { depositService } from "@/OLD/services/deposit.service";
 
 import { useRouter } from "next/router";
@@ -44,7 +44,7 @@ export const ShowDepositMovement = () => {
       depositService
         .getDepositMovements({ ids: [router.query.innerpage] })
         .then((res) => res.data),
-    enableCache: true,
+    
     enabled: router.isReady,
   });
 

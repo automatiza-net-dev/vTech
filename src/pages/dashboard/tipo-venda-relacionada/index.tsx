@@ -60,7 +60,7 @@ function Page() {
     },
   });
 
-  const { Table } = useTable({
+  const { Table } = useTable<{ id: string; description: string; active: boolean }>({
     columnsConfiguration: {
       columns: [
         { id: "description", label: "Descrição" },

@@ -6,7 +6,6 @@ import {
   InputDatePicker,
   BadRequestError,
   useAuthAdmin,
-  useQueryClient,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -33,6 +32,7 @@ import { DeleteCartItems } from "../../utils/delete-cart-items";
 import { IAddBudgetProps } from "./interfaces";
 
 import * as S from "./styles";
+import { useQueryClient } from "@/presentation/use-query"
 
 export function AddBudgetNew({
   setModal,

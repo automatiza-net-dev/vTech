@@ -18,14 +18,14 @@ import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 // Components
 import { Col, Input, Row, Switch, Table, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button, useToast } from "infinity-forge";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { Container } from "../styles";
 import CreateProductVariation from "./create-variation";
 import UpdateBusinessUnitProduct from "./edit";
@@ -68,7 +68,7 @@ const icmsDescription = [
   {
     value: "7",
     label:
-      "7 : Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX”",
+      "7 : Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX",
   },
   {
     value: "8",
@@ -573,11 +573,11 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
                             ...d,
                             actions: (
                               <div className="uk-flex uk-flex-around">
-                                <EditTwoTone
-                                  size={15}
+                                <FiEdit2
                                   onClick={() => {
                                     setSelectedPrice(d);
                                   }}
+                                  style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                                 />
                               </div>
                             ),

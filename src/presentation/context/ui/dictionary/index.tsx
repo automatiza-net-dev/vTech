@@ -3,7 +3,7 @@ import { useAuthAdmin } from "infinity-forge";
 import { callApiOneTime, useConfigurationsSystem } from "@/presentation";
 import { RemoteConfiguration } from "@/data";
 import { dictionaryStore } from "./store";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { container, TypesAutomatiza } from "@/container";
 
 export function useDictionary() {
@@ -53,7 +53,7 @@ export function DictionaryQueryProvider({ children }) {
       }
     },
     enabled: !!user,
-    enableCache: true,
+    
   });
 
   const dictionary = dictionaryStore((state) => state.dictionary);

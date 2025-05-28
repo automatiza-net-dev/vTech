@@ -3,7 +3,7 @@
 import React, { useEffect, useState, memo, useCallback } from "react";
 
 // Icons
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 // Services
 import { checkingAccountService } from "@/OLD/services/checkingAccount.service";
@@ -133,7 +133,7 @@ const Actions = memo(function Actions({ account, reload, setReload }) {
   return (
     <Container className="uk-flex uk-flex-around">
       {canEditAccountBank && (
-        <EditTwoTone className="icon" onClick={() => setUpdateVisible(true)} />
+        <FiEdit2 className="icon" onClick={() => setUpdateVisible(true)} />
       )}
       <Popconfirm
         placement="topLeft"
@@ -143,7 +143,7 @@ const Actions = memo(function Actions({ account, reload, setReload }) {
         cancelText="Cancelar"
       >
         {canDeleteAccountBank && (
-          <DeleteTwoTone twoToneColor="red" className="icon" />
+          <FiTrash2 className="icon" style={{ color: 'red' }} />
         )}
       </Popconfirm>
       <Modal

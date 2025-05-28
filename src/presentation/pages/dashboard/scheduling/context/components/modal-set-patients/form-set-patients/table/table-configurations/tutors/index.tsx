@@ -1,4 +1,5 @@
-import { Error, useQueryClient } from "infinity-forge";
+import { Error } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query"
 
 import { Tutor } from "@/domain";
 import { FormCreatePatient } from "@/presentation/pages/dashboard/paciente";

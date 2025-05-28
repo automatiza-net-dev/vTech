@@ -5,8 +5,8 @@ import { Container } from "./styles";
 import { Input, Button, Checkbox } from "antd";
 const { Option } = Select;
 
-import { DeleteTwoTone } from "@ant-design/icons";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { FiTrash2 } from "react-icons/fi";
 
 import { Select, FormHandler, useToast } from "infinity-forge";
 
@@ -158,9 +158,9 @@ const MultipleContacts = memo(function MultipleContacts({
                 />
               )}
            
-            <DeleteTwoTone
-              twoToneColor={"red"}
-              size={20}
+            <FiTrash2
+              className="uk-margin-small-left"
+              style={{ cursor: 'pointer', fontSize: '1.2rem' }}
               onClick={() => {
                 if (contacts?.length > 1) {
                   let arr = [...contacts];

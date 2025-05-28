@@ -1,4 +1,5 @@
-import { useTable, useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
+import { useTable } from "infinity-forge";
 
 import { Entrie } from "@/domain";
 import { RemoteEntries } from "@/data";

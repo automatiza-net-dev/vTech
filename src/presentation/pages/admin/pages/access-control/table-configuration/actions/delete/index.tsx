@@ -1,4 +1,5 @@
-import { useQueryClient, useToast } from "infinity-forge";
+import { useToast } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query"
 
 import { ControllerRole } from "@/domain";
 import { ButtonDelete } from "@/presentation";
@@ -16,7 +17,7 @@ export function Delete(props: ControllerRole) {
           id: String(props.id),
         });
 
-        await refetch(["RemoteLoadAllControllerRoles"]);
+        await refetch(["RemoteLoadAllControllerRoles"], { mode: "include" });
 
         createToast({ message: "Controle excluido com sucesso!", status: "success"})
     }} />

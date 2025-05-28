@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { memo, useCallback, useState } from "react";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import { billService } from "@/OLD/services/bills.service";
 

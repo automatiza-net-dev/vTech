@@ -9,8 +9,9 @@ import { Popconfirm } from "antd";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { FiTrash2 } from "react-icons/fi";
+import { useMutation } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -48,7 +49,10 @@ const DeleteSubgroup = memo(function DeleteSubgroup({ close, id }) {
       cancelText="Cancelar"
       disabled={isLoading}
     >
-      <DeleteTwoTone twoToneColor="red" />
+      <FiTrash2
+        className="uk-link"
+        style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+      />
     </Popconfirm>
   );
 });

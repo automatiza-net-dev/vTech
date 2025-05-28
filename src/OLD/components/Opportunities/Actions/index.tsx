@@ -16,7 +16,7 @@ import {  Popconfirm } from "antd";
 
 import { HiPencilAlt } from "react-icons/hi";
 import { AiOutlineEye } from "react-icons/ai";
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { BsXCircle } from "react-icons/bs";
 import { BsCheckCircle, BsArrowCounterclockwise } from "react-icons/bs";
 import { AxiosError } from "axios";
@@ -100,7 +100,10 @@ function Actions({
       {!opportunity?.balance && (
         <>
           {editOpportunityPermission && (
-            <EditTwoTone onClick={() => setUpdateVisible(true)} />
+            <FiEdit2 
+              onClick={() => setUpdateVisible(true)}
+              style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+            />
           )}
           {newActivityPermission && (
             <HiPencilAlt
@@ -158,7 +161,10 @@ function Actions({
           title="Deseja remover esta oportunidade?"
           onConfirm={() => removeOpportunity(opportunity?.id)}
         >
-          <DeleteTwoTone twoToneColor="red" />
+          <FiTrash2 
+            twoToneColor="red"
+            style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+          />
         </Popconfirm>
       )}
       {updateVisible && (

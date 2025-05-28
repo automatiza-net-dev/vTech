@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteDre } from "@/data";
 import { callApiOneTime } from "@/presentation";
@@ -19,7 +19,7 @@ export function useLoadDreReport() {
   return useQuery({
     queryKey: ["DreReport"],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: false,
   });
 }

@@ -4,7 +4,7 @@ import { LayoutDashboard } from "@/presentation";
 export default function CreateServicePage() {
   return (
     <LayoutDashboard>
-      <CreateService />
+      <CreateService setVisible={undefined} />
     </LayoutDashboard>
   );
 }

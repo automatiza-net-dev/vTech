@@ -1,11 +1,12 @@
 // @ts-nocheck
 import React, { memo, useCallback } from "react";
 
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useToast } from "infinity-forge";
 
@@ -20,7 +21,7 @@ export const Delete = memo(function Delete({ id }) {
     onSuccess: () => {
       createToast({ message: "Status deletado", status: "success" });
 
-      queryClient.invalidateQueries("getAllStatus");
+      queryClient.invalidateQueries(["getAllStatus"]);
     },
     onError: () => {
       createToast({ message: "Erro ao deletar status", status: "error" });
@@ -41,7 +42,12 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-        {canDeleteScheduleStatus && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteScheduleStatus && (
+          <FiTrash2
+            className="uk-margin-small-left"
+            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+          />
+        )}
       </Popconfirm>
     </div>
   );

@@ -16,7 +16,7 @@ import "moment/locale/pt-br";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Icons
-import { CheckOutlined, EditTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiCheck } from "react-icons/fi";
 import { VscTasklist } from "react-icons/vsc";
 
 // Components
@@ -24,7 +24,8 @@ import { AutoComplete, Select, Table, Modal } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useQuery, useQueryClient } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import columns from "./Columns";
 import DeleteProduct from "./Delete";
 import EditProduct from "./Edit";
@@ -231,8 +232,8 @@ function Products() {
                     ...d,
                     actions: (
                       <div className="uk-flex uk-flex-around">
-                        <CheckOutlined
-                          size={15}
+                        <FiCheck
+                          size={20}
                           onClick={() => {
                             setSelectedId(d?.id);
                             setDetailsVisible(true);
@@ -245,20 +246,19 @@ function Products() {
                             setProductivityVisible(true);
                           }}
                         />
-                        {/*canEditProduct && (
-                        <EditTwoTone
-                          size={15}
-                          onClick={() => {
-                            setSelectedProduct(d);
-                          }}
-                        />
-                        )*/}
-
+                        {canEditProduct && (
+                          <FiEdit2
+                            onClick={() => {
+                              push(`/dashboard/product/${d.id}`);
+                            }}
+                            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                          />
+                        )}
                         {canDeleteProduct && (
                           <DeleteProduct
                             id={d.id}
                             hide={() => {
-                              queryClient.invalidateQueries("products");
+                              queryClient.invalidateQueries(["products"]);
                             }}
                           />
                         )}

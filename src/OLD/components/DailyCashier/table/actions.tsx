@@ -8,7 +8,6 @@ import Actions from "@/OLD/components/DailyCashier/Actions";
 import moment from "moment";
 import {
   useToast,
-  FetcherParams,
   Modal,
   Button,
   useAuthAdmin,
@@ -50,7 +49,7 @@ function CustomAction() {
 export function useDailyCashierTableActions({
   mutate,
 }: {
-  mutate: (params?: FetcherParams) => void;
+  mutate: (params?: any) => void;
 }) {
   const createDailyCashierPermission = usePermission("CAI01");
 

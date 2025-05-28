@@ -6,11 +6,10 @@ import {
   TabContentProps,
 } from "infinity-forge";
 
-import { useQuery } from "infinity-forge";
-
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 import { Patient, TimeLine, TimelineType, TimeLineEvent } from "@/domain";
+import { useQuery } from "@/presentation";
 
 import { CardTimeLine } from "./card-time-line";
 import { useActionsPatient } from "../actions/actions/options";
@@ -36,6 +35,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
       return response;
     },
+    enableCache: true
   });
 
   const listTimeLine = data?.filter((item) => {
@@ -125,7 +125,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
             )}
           </div>
         </>
-      )}
+      )} 
     </S.LastUpdates>
   );
 }

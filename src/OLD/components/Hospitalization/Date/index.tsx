@@ -22,6 +22,17 @@ const Container = styled.div`
   .ant-picker-suffix {
     display: none;
   }
+  button {
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px !important;
+    
+    svg {
+      width: 20px;
+    }
+  }
 `;
 
 export default function Date({

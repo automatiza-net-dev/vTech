@@ -1,5 +1,5 @@
-// @ts-nocheck
-import { memo, useState, useEffect, useCallback } from "react";
+
+import {  useState, useEffect, useCallback } from "react";
 
 import { financesService } from "@/OLD/services/finances.service";
 
@@ -9,12 +9,11 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 
 import { Container } from "./styles";
 import { Button, useToast } from "infinity-forge";
-import { Input, Table, Modal, Popconfirm } from "antd";
+import { Input, Table, Modal } from "antd";
 import FinancesActions from "../Actions";
 import DownFormChild from "../Actions/FormChild";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { columns } from "./Columns";
 import moment from "moment";
 
@@ -27,9 +26,11 @@ function BorderoDetails({
   checkingAccountId,
 }: any) {
   const [loading, setLoading] = useState(false);
-  const [formattedTitles, setFormattedTitles] = useState([]);
+  const [formattedTitles, setFormattedTitles] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [downData, setDownData] = useState({});
+  const [downData, setDownData] = useState<any>({
+    paymentDate: moment()
+  });
   const [downVisible, setDownVisible] = useState(false);
 
   const router = useRouter();
@@ -43,7 +44,7 @@ function BorderoDetails({
     if (select) {
       setTitles(
         finances?.filter(
-          (finance, i) =>
+          (finance: any, i) =>
             i >= (currentPage - 1) * 10 &&
             currentPage < currentPage * 10 &&
             finance?.source === "FINANCE"
@@ -56,7 +57,7 @@ function BorderoDetails({
 
   const formatTitles = () => {
     setFormattedTitles(
-      finances?.map((finance) => ({
+      finances?.map((finance: any) => ({
         doc: finance?.document,
         client: finance?.client || finance?.historic || "-",
         installments: finance?.installment,
@@ -84,7 +85,7 @@ function BorderoDetails({
 
   useEffect(() => {
     finances.length > 0 && formatTitles();
-    setTitles(finances?.filter((title) => title?.status === "ABERTO"));
+    setTitles(finances?.filter((title: any) => title?.status === "ABERTO"));
   }, [finances]);
 
   useEffect(() => {
@@ -99,10 +100,12 @@ function BorderoDetails({
 
   const downSelectedTitles = useCallback(() => {
     setLoading(true);
+
     financesService
       .groupedDown({
         idList: titles?.map((title) => title?.id),
         tefAcquirerId: finances[0]?.tef_acquirer_id,
+        paymentDate: downData?.paymentDate,
         checkingAccountId: downData?.checkingAccountId,
       })
       .then((_res) => {
@@ -171,25 +174,59 @@ function BorderoDetails({
       });
   }, [finances, downData]);
 
+  console.log(finances[0], downData)
+
   return (
     <Container className="uk-padding-small">
       <h3 className="uk-margin-remove">
-        Agrupamento de títulos - {finances[0]?.payment_method} -{" "}
-        {finances[0]?.tef_flag ? `${finances[0]?.tef_flag} -` : ""}
-        {finances[0]?.expiration_date
-          ? `Venc.: ${moment(finances[0]?.expiration_date).format(
-              "DD/MM/YYYY"
-            )}`
-          : ""}
+        Agrupamento de títulos 
+     
       </h3>
+
       <header
         className="uk-flex uk-margin-small-top uk-width-2-3"
         style={{ gap: "5px" }}
       >
         <div>
+          <label>Forma de pagamento</label>
+          <Input disabled value={finances[0]?.payment_method} />
+        </div>
+        <div>
+          <label>Bandeira</label>
+          <Input
+            disabled
+            value={finances[0]?.tef_flag ? `${finances[0]?.tef_flag}` : ""}
+          />
+        </div>
+
+        <div>
+          <label>Adquirente</label>
+          <Input
+            disabled
+             value={finances[0]?.tef_adquirente}
+          />
+        </div>
+        <div>
+          <label>Data Vencimento</label>
+          <Input
+            disabled
+            value={finances[0]?.expiration_date
+          ? `Venc.: ${moment(finances[0]?.expiration_date).format(
+              "DD/MM/YYYY"
+            )}`
+          : ""}
+          />
+        </div>
+        <div>
           <label>Tipo títulos</label>
           <Input disabled value={finances[0]?.type} />
         </div>
+      </header>
+
+      <header
+        className="uk-flex uk-margin-small-top uk-width-2-3"
+        style={{ gap: "5px" }}
+      >
         <div>
           <label>Valor total títulos</label>
           <Input
@@ -240,16 +277,10 @@ function BorderoDetails({
           0 && (
           <>
             {titles?.length > 0 && (
-              <Popconfirm
-                title="Deseja baixar os títulos selecionados?"
-                onConfirm={() => {
-                  !checkingAccountId
-                    ? setDownVisible(true)
-                    : downSelectedTitles();
-                }}
-              >
-                <Button text="Baixar títulos" />
-              </Popconfirm>
+             
+                <Button text="Baixar títulos" onClick={() => {
+                  setDownVisible(true)
+                }} />
             )}
           </>
         )}
@@ -264,7 +295,7 @@ function BorderoDetails({
           text="Fechar"
         />
       </footer>
-      {downVisible && (
+
         <Modal
           title="Selecione a conta corrente para baixa"
           visible={downVisible}
@@ -279,7 +310,7 @@ function BorderoDetails({
             submit={downSelectedTitles}
           />
         </Modal>
-      )}
+  
     </Container>
   );
 }

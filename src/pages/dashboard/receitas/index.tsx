@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import styled from "styled-components";
 import { Table, Tag, Popconfirm } from "antd";
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 import { Button, PageWrapper, useToast } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
@@ -109,12 +109,13 @@ export default function MedicalRecipesListPage() {
                   render: (record) => (
                     <div className="uk-flex uk-flex-around">
                       {canEditMedicalRecipe && (
-                        <EditTwoTone
+                        <FiEdit2
                           onClick={() => {
                             router.push(
                               `/dashboard/receitas/editar/${record.id}`
                             );
                           }}
+                          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                         />
                       )}
                       <Popconfirm
@@ -125,9 +126,9 @@ export default function MedicalRecipesListPage() {
                         placement="left"
                       >
                         {canDeleteMedicalRecipe && (
-                          <DeleteTwoTone
+                          <FiTrash2
                             className="uk-link"
-                            twoToneColor={"red"}
+                            style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
                           />
                         )}
                       </Popconfirm>

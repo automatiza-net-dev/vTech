@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useEffect, useRef } from "react";
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import {
   Col,
   Form,
@@ -17,7 +16,7 @@ import { InputBox } from "./styles";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { memo, useState } from "react";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
@@ -28,6 +27,7 @@ import Link from "next/link";
 import { CgDetailsMore } from "react-icons/cg";
 import { MdLocalPrintshop } from "react-icons/md";
 import { useSystem } from "@/presentation";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 const columns = [
   {
@@ -234,7 +234,7 @@ export const Deposits = memo(() => {
                       style={{ gap: "1rem", alignItems: "center" }}
                     >
                       {canEditDeposit && (
-                        <EditTwoTone
+                        <FiEdit2
                           size={15}
                           onClick={() => {
                             setUpdateDepositData({
@@ -263,15 +263,12 @@ export const Deposits = memo(() => {
                       </Link>
                       {canRemoveDeposit && (
                         <Popconfirm
-                          onConfirm={() =>
-                            createToast({
-                              status: "warning",
-                              message: "Verificar método",
-                            })
-                          }
                           title="Deseja remover este depósito?"
+                          onConfirm={() => {
+                            // lógica de remoção
+                          }}
                         >
-                          <DeleteTwoTone twoToneColor={"red"} />
+                          <FiTrash2 style={{ color: 'red', fontSize: 20, cursor: 'pointer' }} />
                         </Popconfirm>
                       )}
 

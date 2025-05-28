@@ -6,12 +6,12 @@ import {
   useToast,
   FormHandler,
   useAuthAdmin,
-  useQueryClient,
 } from "infinity-forge";
 
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 import { DropdownComponentProps } from "../dropdown-item";
+import { useQueryClient } from "@/presentation/use-query";
 
 import * as S from "./styles";
 

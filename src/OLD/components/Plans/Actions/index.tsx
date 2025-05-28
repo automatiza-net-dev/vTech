@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useCallback, memo, useEffect } from "react";
 
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 import { useToast } from "infinity-forge";
 import { planService } from "@/OLD/services/plan.service";
@@ -112,7 +112,13 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
   return (
     <div className="uk-flex uk-flex-around">
       {canEditAccountPlans && (
-        <EditTwoTone onClick={() => setUpdateVisible(true)} />
+        <FiEdit2
+          onClick={() => {
+            setUpdateData(plan);
+            setUpdateVisible(true);
+          }}
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+        />
       )}
       <Popconfirm
         title="Deseja remover este plano?"
@@ -122,7 +128,10 @@ const Actions = memo(function Actions({ plansGroup, reload, setReload, plan }) {
             : removePlan()
         }
       >
-        {canDeleteAccountPlans && <DeleteTwoTone twoToneColor="red" />}
+        {canDeleteAccountPlans && <FiTrash2
+          className="uk-margin-small-left"
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+        />}
       </Popconfirm>
       <Modal
         title="Atualizar informações de plano de contas"

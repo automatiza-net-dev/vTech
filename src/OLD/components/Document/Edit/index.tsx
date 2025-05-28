@@ -14,7 +14,7 @@ import LabelsPanel from "@/OLD/components/mini-components/LabelsPanel";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -259,10 +259,7 @@ function DocumentCreate() {
                     </a>
                   </span>
                   &nbsp;
-                  <DeleteTwoTone
-                    twoToneColor="red"
-                    onClick={() => setFile(false)}
-                  />
+                  <FiTrash2 style={{ color: 'red', fontSize: 20, cursor: 'pointer' }} onClick={() => setFile(false)} />
                 </div>
               ))}
             {data?.type !== "pdf" && (

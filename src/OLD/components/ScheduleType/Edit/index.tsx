@@ -10,7 +10,7 @@ import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import Editor from "@/OLD/components/Editor";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 export const Edit = memo(({ reload, setReload, icon, id }) => {
   const { Option } = Select;
@@ -101,9 +101,9 @@ export const Edit = memo(({ reload, setReload, icon, id }) => {
   return (
     <div>
       {canEditScheduleService && (
-        <EditTwoTone
+        <FiEdit2
           onClick={() => setIsModalVisible(true)}
-          className="uk-margin-small-left"
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
         />
       )}
       <Modal

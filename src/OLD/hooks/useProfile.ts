@@ -1,4 +1,5 @@
-import { useQuery, useAuthAdmin } from "infinity-forge";
+import { useAuthAdmin } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { userService } from "@/OLD/services/user.service";
 
 export const useProfile = (type = false, reload = false) => {
@@ -8,7 +9,7 @@ export const useProfile = (type = false, reload = false) => {
       const res = await userService.getUser();
       return res?.data;
     },
-    enableCache: true,
+    
   });
 
   return {

@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteMarketing } from "@/data";
 import { LoadCampaings } from "@/domain";
@@ -16,6 +16,6 @@ export function useLoadCampaings(params: LoadCampaings.Params) {
   return useQuery({
     queryKey: ["LoadAllMarketing", params?.clientOriginId],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

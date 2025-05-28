@@ -11,12 +11,12 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 // Components
 import { Select, Table } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import columns from "./Columns";
@@ -170,11 +170,11 @@ const TaxationGroupRules = memo(function TaxationGroupRules() {
             actions: (
               <div className="uk-flex uk-flex-around">
                 {canEditTaxationGroup && (
-                  <EditTwoTone
-                    size={15}
+                  <FiEdit2
                     onClick={() => {
                       setSelectedRule({ id: item.id });
                     }}
+                    style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                   />
                 )}
                 {canDeleteTaxationGroup && (

@@ -1,4 +1,4 @@
-import { useMutation } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
 
 import { RemoteTutor } from "@/data";
 import { AssignTutor } from "@/domain";

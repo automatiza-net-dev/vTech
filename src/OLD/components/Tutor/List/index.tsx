@@ -1,39 +1,29 @@
-// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import Link from "next/link";
 import { petsService } from "@/OLD/services/patient.service";
 
-// Hooks
-import { useAuth } from "@/OLD/hooks/useAuth";
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { usePatients } from "@/OLD/hooks/usePatients";
 
-// Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
-import { GiConfirmed } from "react-icons/gi";
-
-// Components
 import { Delete } from "../Delete";
 import { Container } from "./styles";
-import {
-  Tag,
-  Table,
-  Dropdown,
-  Menu,
-  AutoComplete,
-} from "antd";
+import { Tag, Table, Dropdown, Menu, AutoComplete } from "antd";
 import { Single } from "../Single";
 import { Edit } from "../Edit";
 
-// Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { FormCreatePatient, FormCreateTutor, useConfigurationsSystem } from "@/presentation";
+import {
+  FormCreatePatient,
+  FormCreateTutor,
+  useConfigurationsSystem,
+} from "@/presentation";
 import { Icon, Modal, Button, useAuthAdmin, useToast } from "infinity-forge";
 
 export function List({
@@ -59,22 +49,22 @@ export function List({
   const canDeleteTutor = useUserHasPermission("TUT03");
   const canCreatePet = useUserHasPermission("PET01");
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [vincPetVisible, setVincPetVisible] = useState(false);
   const [createPetVisible, setCreatePetVisible] = useState(false);
-  const [selectedTutor, setSelectedTutor] = useState(false);
-  const [selectedPetToVinc, setSelectedPetToVinc] = useState(null);
+  const [selectedTutor, setSelectedTutor] = useState<any>(null);
+  const [selectedPetToVinc, setSelectedPetToVinc] = useState<any>(null);
 
-  const { tutors: tutorsList, loading } = useTutor(filters, reload);
-  const { patients } = usePatients(false, false, {}, vincPetVisible);
+  const { tutors: tutorsList } = useTutor(filters, reload);
+  const { patients } = usePatients(false, false, {} as any, vincPetVisible);
   const { type } = useConfigurationsSystem();
 
   const router = useRouter();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const columns = [
     {
@@ -231,8 +221,8 @@ export function List({
   const setActiveTutor = (tutorId) => {
     petsService
       .setMainTutor(patient?.id, tutorId)
-      .then((_res) => createToast({ status: "success", message: "Tutor ativo com sucesso!"  })
-
+      .then((_res) =>
+        createToast({ status: "success", message: "Tutor ativo com sucesso!" })
       )
       .finally(() => {
         setPatientReload((prv) => !prv);
@@ -248,9 +238,12 @@ export function List({
       .then((_res) => {
         vincPetVisible ? setVincPetVisible(false) : router.back();
         setSelectedPetToVinc({});
-        setTutor({});
+
         setPetToVinc(false);
-        return  createToast({ status: "success", message:"Paciente vinculado com sucesso!",  })
+        return createToast({
+          status: "success",
+          message: "Paciente vinculado com sucesso!",
+        });
       });
   };
 
@@ -258,8 +251,7 @@ export function List({
     sortItems(tutorsList, "name");
     if (tutorsList?.length > 0) {
       setData(
-        tutorsList.map((tutor, i) => {
-          const photoSrc =  tutor.photo;
+        tutorsList.map((tutor: any, i) => {
           return {
             name: (
               <div
@@ -268,31 +260,6 @@ export function List({
                   alignItems: "center",
                 }}
               >
-                {/*
-                    <div
-                      className="uk-margin-right"
-                      style={{
-                        borderRadius: "50%",
-                        background: "#ccc",
-                        width: "50px",
-                        height: "50px",
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="uk-border-circle uk-margin-right"
-                        id={`img-elem-${i}`}
-                        width="50px"
-                        height="50px"
-                        src={photoSrc}
-                        onError={() => {
-                          const element = document.querySelector(`#img-elem-${i}`);
-                          element.src =
-                            "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png";
-                        }}
-                      />
-                    </div>
-                    */}
                 <span
                   className="uk-link"
                   onClick={() => {
@@ -323,7 +290,6 @@ export function List({
                   <Dropdown
                     overlay={
                       <Menu
-                        trigger="click"
                         items={[
                           {
                             key: "1",
@@ -391,9 +357,14 @@ export function List({
             actions: (
               <div className="uk-flex uk-flex-around">
                 <FormCreateTutor
-                  tutorId={tutor.id}
                   isModal
-                  trigger={<Icon name="IconEdit" color="#000" />}
+                  origin="Cadastro"
+                  tutorId={tutor?.id}
+                  trigger={
+                    <FiEdit2
+                      style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                    />
+                  }
                 />
 
                 {canDeleteTutor && (
@@ -407,7 +378,7 @@ export function List({
                 text="Selecionar"
               />
             ),
-          };
+          } as any;
         })
       );
     } else {
@@ -425,7 +396,7 @@ export function List({
         setFilters((prv) => {
           return { ...prv, noSearch: false };
         });
-        setReload ? setReload((prv) => !prv) : setLocalReload((prv) => !prv);
+        setReload && setReload((s) => !s);
       }
     });
   }, []);
@@ -443,7 +414,6 @@ export function List({
             : liftColumns
         }
         dataSource={data}
-        loading={loading}
         locale={{
           emptyText:
             Object.keys(filters).length === 0 ? (
@@ -468,7 +438,6 @@ export function List({
             }
           }
           isModal={false}
-          origin="aa"
         />
       </Modal>
 
@@ -477,7 +446,6 @@ export function List({
           open={detailsVisible}
           onClose={() => setDetailsVisible(false)}
           styles={{ width: "1200px" }}
-          footer={null}
           children={
             <Single
               selectedId={selectedId}
@@ -491,10 +459,10 @@ export function List({
       )}
       {editVisible && (
         <Modal
-          styles={{ wdith: "1200px" }}
+          styles={{ width: "1200px" }}
           open={editVisible}
           onClose={() => setEditVisible(false)}
-          children={<Edit tutorId={selectedId} setVisible={setEditVisible} />}
+          children={<Edit tutorId={selectedId as any} setVisible={setEditVisible} />}
         />
       )}
 
@@ -509,7 +477,7 @@ export function List({
               <label>Selecionar pet</label>
               <AutoComplete
                 className="uk-width-1-1"
-                options={patients?.map((patient) => ({
+                options={patients?.map((patient: any) => ({
                   ...patient,
                   key: patient?.id,
                   value: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,

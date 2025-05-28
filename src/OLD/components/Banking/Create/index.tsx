@@ -13,7 +13,14 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { bankingService } from "@/OLD/services/banking.service";
 
 import { Container } from "./styles";
-import { api, Button, FormHandler, PageWrapper, useQuery, useToast } from "infinity-forge";
+import {
+  api,
+  Button,
+  FormHandler,
+  PageWrapper,
+  useQuery,
+  useToast,
+} from "infinity-forge";
 import { Input, DatePicker, Radio, Select, AutoComplete } from "antd";
 const { Group } = Radio;
 const { Option } = Select;
@@ -151,7 +158,11 @@ const Create = memo(function FormChild({}) {
     },
   });
 
-  console.log(patientSuppliers?.data?.[0], "@@", formatedTutors)
+  const normalize = (text: string) =>
+    text
+      ?.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
 
   return (
     <PageWrapper title="Movimentação bancária">
@@ -168,13 +179,19 @@ const Create = memo(function FormChild({}) {
             <div className="uk-flex">
               <div className="uk-margin-small-right uk-width-1-1">
                 <label>CPF/CNPJ ou nome do Titular</label>
-             
+
                 {patientSuppliers?.data && (
                   <AutoComplete
                     required
                     options={
                       patientSuppliers?.data
-                        ? [...patientSuppliers?.data?.map(item => ({ ...item, value: item?.name })), ...formatedTutors]
+                        ? [
+                            ...patientSuppliers?.data?.map((item) => ({
+                              ...item,
+                              value: item?.name,
+                            })),
+                            ...formatedTutors,
+                          ]
                         : formatedTutors
                     }
                     className="uk-width-1-1"
@@ -196,7 +213,9 @@ const Create = memo(function FormChild({}) {
 
                       const input = normalize(inputValue);
                       const name = normalize(option?.name || "");
-                      const document = normalize(option?.tutor?.document || option?.document || "");
+                      const document = normalize(
+                        option?.tutor?.document || option?.document || ""
+                      );
 
                       return name.includes(input) || document.includes(input);
                     }}
@@ -356,19 +375,27 @@ const Create = memo(function FormChild({}) {
                 <div className="uk-margin-right uk-width-1-4">
                   <label>Plano Contas</label>
                   <Select
-                    className="uk-width-1-1"
+                    showSearch
                     value={data?.accountPlanId}
+                    className="uk-width-1-1"
+                    placeholder="Selecione um plano"
                     onChange={(e) => setData({ ...data, accountPlanId: e })}
+                    optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const normalizedInput = normalize(input);
+                      const normalizedOption = normalize(
+                        option?.children?.toString() || ""
+                      );
+                      return normalizedOption.includes(normalizedInput);
+                    }}
                   >
-                    {plans?.length > 0 &&
-                      plans?.map(
-                        (plan, i) =>
-                          plan.type === data.type && (
-                            <Option key={"plans" + i} value={plan?.id}>
-                              {plan?.description}
-                            </Option>
-                          )
-                      )}
+                    {plans
+                      ?.filter((plan) => plan.type === data.type)
+                      ?.map((plan, i) => (
+                        <Option key={`plans${i}`} value={plan.id}>
+                          {plan.description}
+                        </Option>
+                      ))}
                   </Select>
                 </div>
               )}
@@ -378,9 +405,18 @@ const Create = memo(function FormChild({}) {
                   required
                   className="uk-width-1-1"
                   value={data?.paymentMethodId}
+                  showSearch
                   onChange={(e) => {
                     setData({ ...data, paymentMethodId: e });
                   }}
+                    optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const normalizedInput = normalize(input);
+                      const normalizedOption = normalize(
+                        option?.children?.toString() || ""
+                      );
+                      return normalizedOption.includes(normalizedInput);
+                    }}
                 >
                   {paymentMethods.length > 0 &&
                     paymentMethods.map((method, i) => (
@@ -396,9 +432,18 @@ const Create = memo(function FormChild({}) {
                   <div className="uk-margin-right uk-width-1-4">
                     <label>Plano Contas Origem</label>
                     <Select
+                    showSearch
                       className="uk-width-1-1"
                       value={data?.accountPlanId}
                       onChange={(e) => setData({ ...data, originId: e })}
+                        optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const normalizedInput = normalize(input);
+                      const normalizedOption = normalize(
+                        option?.children?.toString() || ""
+                      );
+                      return normalizedOption.includes(normalizedInput);
+                    }}
                     >
                       {plans?.length > 0 &&
                         plans?.map(
@@ -415,9 +460,18 @@ const Create = memo(function FormChild({}) {
                   <div className="uk-margin-right uk-width-1-4">
                     <label>Plano Contas Destino</label>
                     <Select
+                    showSearch
                       className="uk-width-1-1"
                       value={data?.accountPlanId}
                       onChange={(e) => setData({ ...data, destinyId: e })}
+                        optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const normalizedInput = normalize(input);
+                      const normalizedOption = normalize(
+                        option?.children?.toString() || ""
+                      );
+                      return normalizedOption.includes(normalizedInput);
+                    }}
                     >
                       {plans?.length > 0 &&
                         plans?.map(
@@ -443,9 +497,18 @@ const Create = memo(function FormChild({}) {
                     : "Conta Corrente"}
                 </label>
                 <Select
+                showSearch
                   className="uk-width-1-1"
                   value={data?.originAccount}
                   onChange={(e) => setData({ ...data, originAccount: e })}
+                    optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const normalizedInput = normalize(input);
+                      const normalizedOption = normalize(
+                        option?.children?.toString() || ""
+                      );
+                      return normalizedOption.includes(normalizedInput);
+                    }}
                 >
                   {checkingAccounts?.length > 0 &&
                     checkingAccounts?.map((account, i) => (
@@ -462,9 +525,18 @@ const Create = memo(function FormChild({}) {
                 <div className="uk-width-1-4">
                   <label>Conta corrente destino</label>
                   <Select
+                  showSearch
                     className="uk-width-1-1"
                     value={data?.destinyAccount}
                     onChange={(e) => setData({ ...data, destinyAccount: e })}
+                      optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const normalizedInput = normalize(input);
+                      const normalizedOption = normalize(
+                        option?.children?.toString() || ""
+                      );
+                      return normalizedOption.includes(normalizedInput);
+                    }}
                   >
                     {checkingAccounts?.length > 0 &&
                       checkingAccounts?.map((account, i) => (

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { billService } from "@/OLD/services/bills.service";
 import moment from "moment";
 
 export const useGetAllBills = (params, reload) => {
   return useQuery({
-    queryKey: ["bills", reload],
+    queryKey: ["bills", reload, params],
     queryFn: async () => {
       let newObj = { ...params };
       const keys = Object.keys(params);

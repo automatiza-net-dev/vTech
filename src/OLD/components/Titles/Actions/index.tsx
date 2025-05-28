@@ -6,7 +6,7 @@ import React, { memo, useState, useCallback, useEffect } from "react";
 import { financesService } from "@/OLD/services/finances.service";
 
 // Icons
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { BsArrowCounterclockwise } from "react-icons/bs";
 
 // utils
@@ -255,7 +255,10 @@ const Actions = memo(function Actions({
         )
       )}
       {completeFinance?.status !== "BAIXADO" && editTitlePermission && (
-        <EditTwoTone className="icon" onClick={() => setUpdateOpen(true)} />
+        <FiEdit2
+          onClick={() => setUpdateOpen(true)}
+          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+        />
       )}
       {completeFinance?.status !== "BAIXADO" && (
         <Popconfirm
@@ -265,7 +268,10 @@ const Actions = memo(function Actions({
           cancelText="Não"
         >
           {deleteTitlePermission && (
-            <DeleteTwoTone className="icon" twoToneColor="red" />
+            <FiTrash2
+              className="uk-link"
+              style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+            />
           )}
         </Popconfirm>
       )}

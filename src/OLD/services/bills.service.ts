@@ -1,9 +1,17 @@
 import api from "@/OLD/services";
 
+import { api as apiInfinity } from "infinity-forge"
+const normalize = (str?: string) =>
+  str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "") ?? undefined;
 const getAllBills = async (params) => {
-  const { data } = await api.get(`/bills`, { params });
+  const response = await apiInfinity({
+    method: "get", url: "bills", body: {
+      ...params, clientName: normalize(params?.clientName),
+      patientName: normalize(params?.patientName),
+    }
+  });
 
-  return data;
+  return response;
 };
 
 const getSingleBill = async (id) => {

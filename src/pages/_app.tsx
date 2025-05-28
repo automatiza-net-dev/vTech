@@ -10,8 +10,12 @@ import {
   BadRequestError,
   InfinityForgeProviders,
   useAuthAdmin,
-  useQuery,
+
 } from "infinity-forge";
+
+import {useQuery} from "@/presentation/use-query"
+
+import { QueryClient } from '@tanstack/react-query';
 
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
@@ -42,7 +46,13 @@ import "@/OLD/styles/uikit.css";
 import "infinity-forge/dist/infinity-forge.css";
 import Link from "next/link";
 import { PermissionsProvider } from "@/presentation/context/permissions";
+import { QueryClientProvider } from "@tanstack/react-query";
+ const queryClient = new QueryClient();
 
+import { QueryClient as QueryClientInfinity } from "infinity-query"
+import { QueryClientContextProvider } from "@/presentation/use-query/use-query/context";
+
+  const queryClientInfinity = new QueryClientInfinity()
 
 export default function App({ Component, pageProps }) {
   const [menus, setMenus] = useState<any>(null);
@@ -51,14 +61,15 @@ export default function App({ Component, pageProps }) {
 
   const { configurations } = useConfigurationsSystemConfigurations();
 
-
   if (!configurations) {
     return <></>;
   }
 
   return (
+    <QueryClientContextProvider queryClient={queryClient}>
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
+          queryClient={queryClientInfinity}
           atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
@@ -67,7 +78,6 @@ export default function App({ Component, pageProps }) {
               user: {
                 signInConfig: { Component: SignIn },
                 onSignOut: (user: any) => {
-
                   router.push("/");
 
                   if (user?.isThirdParty) {
@@ -81,7 +91,6 @@ export default function App({ Component, pageProps }) {
                   Component: SignInAdmin,
                 },
                 onSignOut: () => {
-
                   router.push("/");
                 },
               },
@@ -191,10 +200,9 @@ export default function App({ Component, pageProps }) {
             yellow: "#e1b400",
             secondaryColor: "red",
             darkColor: "#2B2B2B",
-            primaryColor: configurations.primary_color,
+            primaryColor: configurations?.primary_color || "#000",
           }}
         >
-
           <GlobalStyles host={configurations.name} />
 
           <SchedulingContextProvider>
@@ -206,7 +214,7 @@ export default function App({ Component, pageProps }) {
                       <title>{configurations.name}</title>
                     </Head>
 
-                   <NotificationsModal />
+                    <NotificationsModal />
 
                     <GambiarraTemporaria setMenus={setMenus} />
 
@@ -218,6 +226,7 @@ export default function App({ Component, pageProps }) {
           </SchedulingContextProvider>
         </InfinityForgeProviders>
       </ConfigurationsSystemProvider>
+    </QueryClientContextProvider>
   );
 }
 
@@ -231,7 +240,7 @@ function GambiarraTemporaria({ setMenus }) {
         .get<RemoteMenu>(TypesAutomatiza.RemoteMenuAutomatiza)
         .loadAll({});
     },
-    enableCache: true,
+    enabled: !!roleUser,
     onSuccess: (data) => {
       setMenus(data);
     },
@@ -241,7 +250,8 @@ function GambiarraTemporaria({ setMenus }) {
 }
 
 function useConfigurationsSystemConfigurations() {
-  const [configurations, setConfigurations] = useState<ConfigurationSystem | null>(null);
+  const [configurations, setConfigurations] =
+    useState<ConfigurationSystem | null>(null);
 
   const ref = useRef(0);
 
@@ -252,12 +262,10 @@ function useConfigurationsSystemConfigurations() {
         const systemUrl = new URL(window.location.origin).origin;
 
         setTimeout(async () => {
-          const response = await api(
-            {
-              url: `systems/identification?url=${systemUrl}`,
-              method: "post",
-            },
-          );
+          const response = await api({
+            url: `systems/identification?url=${systemUrl}`,
+            method: "post",
+          });
 
           setConfigurations(response);
         }, 1000);

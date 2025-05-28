@@ -2,7 +2,7 @@
 import moment from "moment";
 import { Container } from "./styles";
 import { financesService } from "@/OLD/services/finances.service";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 const DailyCashierRevisaoCard = () => {
   const { data } = useQuery({

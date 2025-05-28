@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useAuthAdmin, useQueryClient, useToast } from "infinity-forge";
+import { useAuthAdmin, useToast } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query"
 
 import { ButtonEdit, ButtonDelete } from "@/presentation";
 import { FormUserController } from "../../components";

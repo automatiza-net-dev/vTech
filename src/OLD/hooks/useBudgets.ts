@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
 import { budgetService } from "@/OLD/services/budgets.service";
 
 import moment from "moment";
@@ -92,10 +92,10 @@ export const useConfirmBudget = (id) => {
 };
 
 export const useCompleteBudget = (id, enabled = false) => {
-  return useQuery({
+  return useQuery<any>({
     queryKey: ["budgets", "show", id], enabled, queryFn: () => {
       if (!id) {
-        return {};
+        return {} as any;
       }
       return budgetService.getCompleteBudget(id) as any;
     }

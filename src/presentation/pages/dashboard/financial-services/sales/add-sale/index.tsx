@@ -11,7 +11,6 @@ import {
   Select,
   useQuery,
   api,
-  useQueryClient,
 } from "infinity-forge";
 
 import {
@@ -39,6 +38,7 @@ import {
 } from "../../budget/add-budget/components";
 
 import * as S from "./styles";
+import { useQueryClient } from "@/presentation/use-query"
 
 export function AddSale({
   type = "create",

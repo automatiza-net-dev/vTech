@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteTutor } from "@/data";
 import { LoadAllPatientTutor } from "@/domain";
@@ -22,8 +22,7 @@ export function useLoadAllPatientTutor(props?: {
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enabled: typeof props?.enabled !== "undefined" ? props.enabled : true, 
-    enableCache: true
+    enabled: typeof props?.enabled !== "undefined" ? props.enabled : true
   });
 }
 

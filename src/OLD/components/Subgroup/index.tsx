@@ -10,12 +10,12 @@ import moment from "moment";
 import "moment/locale/pt-br";
 
 // Icons
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 // Components
 import { Select, Table } from "antd";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import columns from "./Columns";
 import CreateSubgroup from "./Create";
 import DeleteSubgroup from "./Delete";
@@ -23,6 +23,7 @@ import EditSubgroup from "./Edit";
 import { Container, Input } from "./styles";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import AccessDenied from "@/OLD/components/AccessDenied";
+import { Popconfirm } from "antd";
 const { Option } = Select;
 
 const Subgroups = memo(function Subgroups() {
@@ -77,8 +78,7 @@ const Subgroups = memo(function Subgroups() {
             actions: (
               <div className="uk-flex uk-flex-around">
                 {canEditSubGroup && (
-                  <EditTwoTone
-                    size={15}
+                  <FiEdit2
                     onClick={() => {
                       if (!permissions?.SBG2) {
                         return createToast({
@@ -89,13 +89,23 @@ const Subgroups = memo(function Subgroups() {
 
                       setSelectedSubgroup(item);
                     }}
+                    style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                   />
                 )}
                 {canDeleteSubGroup && (
-                  <DeleteSubgroup
-                    id={item?.id}
-                    close={() => setSelectedSubgroup(null)}
-                  />
+                  <Popconfirm
+                    title="Deseja remover este subgrupo?"
+                    onConfirm={() =>
+                      !canDeleteSubGroup
+                        ? createToast({ message: "Ação não permitida", status: "error" })
+                        : setSelectedSubgroup(null)
+                    }
+                  >
+                    {canDeleteSubGroup && <FiTrash2
+                      className="uk-margin-small-left"
+                      style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                    />}
+                  </Popconfirm>
                 )}
               </div>
             ),

@@ -1,8 +1,9 @@
 // @ts-nocheck
 import React, { memo } from "react";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { Popconfirm } from "antd";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { useToast } from "infinity-forge";
 
@@ -20,7 +21,7 @@ export const Delete = memo(function Delete({ id }) {
         status: "success",
       });
 
-      queryClient.invalidateQueries("getAbsences");
+      queryClient.invalidateQueries(["getAbsences"]);
     },
     onError: () => {
       createToast({
@@ -40,7 +41,7 @@ export const Delete = memo(function Delete({ id }) {
         placement="left"
         loading={loading}
       >
-        <DeleteTwoTone twoToneColor="red" />
+        <FiTrash2 style={{ color: 'red', fontSize: '1.2rem', cursor: 'pointer' }} />
       </Popconfirm>
     </div>
   );

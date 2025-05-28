@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { BadRequestError, useToast } from "infinity-forge";
 
@@ -23,7 +23,7 @@ export function useBillPaymentsReceipts(
 
       return response;
     },
-    enableCache: true,
+    
     onError: (err) => {
       if (err instanceof BadRequestError) {
         createToast({ message: err.error.message, status: "error" });

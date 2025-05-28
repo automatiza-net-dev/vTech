@@ -1,7 +1,6 @@
 import {
   useToast,
   ActionsTable,
-  FetcherParams,
 } from "infinity-forge";
 
 import { IMeta } from "@/domain";
@@ -12,7 +11,7 @@ import { Custom } from "./custom";
 export function useTableMetasActions({
   mutate,
 }: {
-  mutate: (params?: FetcherParams) => void;
+  mutate: (params?: any) => void;
 }) {
   const { createToast } = useToast();
 

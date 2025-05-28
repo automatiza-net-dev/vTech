@@ -1,7 +1,7 @@
 import { AccessDenied, PermissionItem, usePermission } from "@/presentation";
-
+import { useQuery } from "@/presentation/use-query";
+import { PageWrapper, api, useTable, useToast } from "infinity-forge";
 import moment from "moment";
-import { useQuery, PageWrapper, api, useTable, useToast } from "infinity-forge";
 
 export function VariationsPage() {
   return (
@@ -49,7 +49,7 @@ function Page() {
   const canCreate = usePermission("VAR01");
   const canDelete = usePermission("VAR03");
 
-  const { Table } = useTable({
+  const { Table } = useTable<Variation>({
     configs: {
       errorMessage: "Nenhum variação cadastrada",
       isLoading: isFetching,

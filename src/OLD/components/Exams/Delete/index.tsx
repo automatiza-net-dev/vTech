@@ -9,7 +9,7 @@ import { Popconfirm } from "antd";
 import { examService } from "@/OLD/services/exams.service";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { useToast } from "infinity-forge";
 
 const DeleteExam = memo(function DeleteExam({ reload, setReload, id }) {
@@ -37,7 +37,7 @@ const DeleteExam = memo(function DeleteExam({ reload, setReload, id }) {
       okText="Sim"
       cancelText="Cancelar"
     >
-      <DeleteTwoTone twoToneColor="red" />
+      <FiTrash2 style={{ color: 'red', fontSize: 20, cursor: 'pointer' }} />
     </Popconfirm>
   );
 });

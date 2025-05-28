@@ -10,7 +10,7 @@ import { paymentMethodsService } from "@/OLD/services/paymentMethods.service";
 import { useTefAcquirers } from "@/OLD/hooks/useTefAquirers";
 
 // Icons
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 // Components
 import InstallmentsPanel from "./InstallmentsPanel";
@@ -83,7 +83,10 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
 
   return (
     <section className="uk-flex uk-flex-around">
-      <EditTwoTone onClick={() => setUpdateVisible(true)} />
+      <FiEdit2
+        onClick={() => setUpdateVisible(true)}
+        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+      />
       {updateVisible && (
         <Modal
           title="Atualizar bandeira"

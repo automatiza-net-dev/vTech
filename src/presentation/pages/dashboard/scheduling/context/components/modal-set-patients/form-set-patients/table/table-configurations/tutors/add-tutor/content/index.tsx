@@ -4,7 +4,6 @@ import {
   FormHandler,
   useToast,
   LoaderCircle,
-  useQueryClient,
 } from "infinity-forge";
 
 import {
@@ -15,6 +14,7 @@ import {
   useLoadAllPatientTutorKEY,
 } from "@/presentation";
 import { ButtonCreateTutor } from "../button-create-tutor";
+import { useQueryClient } from "@/presentation/use-query"
 
 export function AddTutorContent({ id, setModal, origin }) {
   const [initialHolder, setInitialHolder] = useState(null);

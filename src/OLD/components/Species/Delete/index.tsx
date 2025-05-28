@@ -1,8 +1,9 @@
 // @ts-nocheck
 import React, { memo } from "react";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { Popconfirm } from "antd";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";
@@ -20,7 +21,7 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
       createToast({ message: "Espécie deletada", status: "success" });
 
       setReload(!reload);
-      queryClient.invalidateQueries("getSpecies");
+      queryClient.invalidateQueries(["getSpecies"]);
     },
     onError: () => {
       createToast({ message: "Erro ao deletar espécie", status: "error" });
@@ -41,7 +42,10 @@ export const Delete = memo(function Delete({ id, reload, setReload }) {
         placement="left"
         loading={loading}
       >
-        <DeleteTwoTone twoToneColor="red" />
+        <FiTrash2
+          className="uk-link"
+          style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+        />
       </Popconfirm>
     </div>
   );

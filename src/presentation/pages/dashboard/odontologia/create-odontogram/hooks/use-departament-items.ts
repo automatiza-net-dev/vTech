@@ -1,4 +1,5 @@
-import { api, useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
+import { api } from "infinity-forge";
 
 import { Product } from "@/domain";
 
@@ -35,6 +36,6 @@ export function useDepartamentItems() {
       return response as DepartmentItem[];
     },
     enabled: !!values.departament,
-    enableCache: true,
+    
   });
 }

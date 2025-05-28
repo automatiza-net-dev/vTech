@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { taxationGroupsService } from "@/OLD/services/taxation-group.service";
 
 export const useTaxationGroups = (reload = false) => {
-  const [taxationGroups, setTaxationGroups] = useState([]);
+  const [taxationGroups, setTaxationGroups] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

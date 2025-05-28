@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 export const useSubgroups = (reload = false) => {
-  const [subgroups, setSubgroups] = useState([]);
+  const [subgroups, setSubgroups] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {

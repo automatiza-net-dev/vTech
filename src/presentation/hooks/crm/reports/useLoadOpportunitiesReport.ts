@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { LoadOpportunitiesReport } from "@/domain";
 import { RemoteCRM } from "@/data";

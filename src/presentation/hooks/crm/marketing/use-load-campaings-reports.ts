@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteMarketing } from "@/data";
 import { MarketingTypes, container } from "@/container";
@@ -18,6 +18,6 @@ export function useLoadCampaingsReports() {
   return useQuery({
     queryKey: ["LoadAllMarketing", JSON.stringify(query || {})],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

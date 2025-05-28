@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteMarketing } from "@/data";
 import { MarketingTypes, container } from "@/container";
@@ -31,7 +31,7 @@ export function useLoadMarketing(params: { allCampaigns: boolean }) {
       params?.allCampaigns ? "" : JSON.stringify(query || {}),
     ],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: router.isReady,
   });
 }

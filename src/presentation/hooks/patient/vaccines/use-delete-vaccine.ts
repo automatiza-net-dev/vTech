@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation, useQueryClient } from "@/presentation/use-query"
 
 import { BadRequestError, useToast } from "infinity-forge";
 
@@ -21,7 +21,7 @@ export function useDeleteVaccine(params: DeleteVaccine.Params) {
     queryKey: ["RemoteDeleteVaccine"],
     queryFn: fetcher,
     onSuccess: () => {
-      queryClient.invalidateQueries("RemoteDeleteVacine");
+      queryClient.invalidateQueries(["RemoteDeleteVacine"]);
 
       createToast({
         message: "Vacina removida com sucesso!",

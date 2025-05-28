@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { Accordion, Error, LoaderCircle } from "infinity-forge";
 
 import { useLoadBudget } from "./hook";

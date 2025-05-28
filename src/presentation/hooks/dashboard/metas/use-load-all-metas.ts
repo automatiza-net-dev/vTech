@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteMetas } from "@/data";
 import { container, metasTypes } from "@/container";
@@ -20,6 +20,6 @@ export function useLoadAllMetas() {
   return useQuery({
     queryKey: ["LoadAllMetas"],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }

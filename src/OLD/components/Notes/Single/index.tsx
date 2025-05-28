@@ -5,7 +5,8 @@ import { receiptService } from "@/OLD/services/receipt.service.ts";
 
 import { fiscalDocumentService } from "@/OLD/services/fiscal-document.service.ts";
 
-import { useMutation, useQuery, useQueryClient } from "infinity-forge";
+import { useMutation, useQuery } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import {
   useReceipt,
   useReceiptsFiscalDocuments,
@@ -18,8 +19,7 @@ import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
 import { Input, Table, Popconfirm, Modal, Typography } from "antd";
 const { TextArea } = Input;
 
-import { DeleteTwoTone } from "@ant-design/icons";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiTrash2, FiRefreshCw } from "react-icons/fi";
 import { MdOutlineCancel, MdOutlineSyncDisabled } from "react-icons/md";
 import { TbAlertTriangle } from "react-icons/tb";
 import { RiPrinterCloudLine } from "react-icons/ri";
@@ -204,7 +204,7 @@ export function Details({ receiptId, setVisible }: any) {
             title={`Deseja remover este item?`}
             onConfirm={() => removeReceiptItemSubmit(product?.id)}
           >
-            <DeleteTwoTone twoToneColor="red" />
+            <FiTrash2 style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }} />
           </Popconfirm>
         ),
       }))

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { RemoteDre } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -20,7 +20,7 @@ export function useLoadAllDreGroups() {
   return useQuery({
     queryKey: ["DreGroups", JSON.stringify(query || {})],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: router.isReady,
   });
 }

@@ -3,7 +3,8 @@ import { Form, Input, Modal } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { memo, useCallback, useState } from "react";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "@/presentation/use-query";
+import { useQueryClient } from "@/presentation/use-query";
 import { animalServices } from "@/OLD/services/animal.service";
 
 export const Create = ({ visible, setVisible, reload, setReload, button }) => {
@@ -21,7 +22,7 @@ export const Create = ({ visible, setVisible, reload, setReload, button }) => {
       setPayload(null);
       setVisible(false);
       setReload(!reload);
-      queryClient.invalidateQueries("getSpecies");
+      queryClient.invalidateQueries(["getSpecies"]);
     },
     onError: () => {
       createToast({ message: "Erro ao criar espécie!", status: "error" });

@@ -10,6 +10,7 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 import { useMe } from "@/presentation/hooks";
+import { useQueryClient } from "@/presentation/use-query";
 import {
   useLoadPatient,
   useLoadAllScheduleStatuses,
@@ -22,7 +23,7 @@ import "moment/locale/pt-br";
 
 // Components
 import { Button } from "antd";
-import { Modal, useToast, useQueryClient } from "infinity-forge";
+import { Modal, useToast } from "infinity-forge";
 
 // Icons
 import { FaRegTrashAlt } from "react-icons/fa";

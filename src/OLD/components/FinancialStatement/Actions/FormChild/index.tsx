@@ -1,24 +1,27 @@
-// @ts-nocheck
-import { memo, useState } from "react";
+import { useMemo } from "react";
 
 import { useCheckingAccounts } from "@/OLD/hooks/useCheckingAccounts";
 
-import { Input, AutoComplete, Button } from "antd";
+import { AutoComplete, Button } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
+import moment from "moment";
 
-const FormChild = memo(function FormChild({
-  data,
-  setData,
-  visible,
-  setVisible,
-  submit,
-}) {
+function FormChild({ data, setData, setVisible, submit }: any) {
   const { checkingAccounts } = useCheckingAccounts();
 
   sortItems(checkingAccounts, "description");
+  const initialAccountDescription = useMemo(() => {
+    return (
+   typeof data?.accountDescription !== "undefined" ? data?.accountDescription : checkingAccounts?.find((acc: any) => acc.id === data?.checkingAccountId)?.description 
+    );
+  }, [checkingAccounts, data?.checkingAccountId, data?.accountDescription]);
+
+  const initialPaymentDate = useMemo(() => {
+    return moment(data.paymentDate);
+  }, [data?.paymentDate]);
 
   return (
     <section>
@@ -26,29 +29,48 @@ const FormChild = memo(function FormChild({
         <label>Conta corrente</label>
         <AutoComplete
           className="uk-width-1-1"
-          options={checkingAccounts?.map((account) => ({
+          options={checkingAccounts?.map((account: any) => ({
             ...account,
             value: account?.description,
           }))}
-          value={data?.accountDescription}
+          value={data?.accountDescription || initialAccountDescription}
           onChange={(val) =>
             setData((prv) => ({ ...prv, accountDescription: val }))
           }
           onSelect={(_, opt) =>
             setData((prv) => ({
               ...prv,
-              accountDescription: opt?.value,
+              accountDescription: String(opt?.value),
               checkingAccountId: opt?.id,
             }))
           }
           filterOption={(val, opt) =>
-            normalizeStr(opt?.value.toUpperCase()).includes(
+            normalizeStr(String(opt?.value)?.toUpperCase()).includes(
               normalizeStr(val.toUpperCase())
             )
           }
         />
       </div>
+
+      <div style={{ marginTop: 10 }}>
+        <label>Data de Pagamento</label>
+
+        <div>
+          <DatePicker
+            format="DD/MM/YYYY"
+            value={initialPaymentDate}
+            onChange={(date) => {
+              setData((prev: any) => ({
+                ...prev,
+                paymentDate: date ? date.toISOString() : null,
+              }));
+            }}
+          />
+        </div>
+      </div>
+
       <hr />
+
       <footer className="uk-flex uk-flex-right">
         <Button
           type="primary"
@@ -68,6 +90,6 @@ const FormChild = memo(function FormChild({
       </footer>
     </section>
   );
-});
+}
 
 export default FormChild;

@@ -43,9 +43,15 @@ const getCompleteBudgets = async (params) => {
 
   return data ?? [];
 };
-
+  const normalize = (str?: string) =>
+    str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "") ?? undefined;
 const getPartialBudgets = async (params) => {
-  const { data } = await api.get(`/budgets/partial`, { params });
+  const normalizedParams = {
+    ...params,
+    clientName: normalize(params?.clientName),
+    patientName: normalize(params?.patientName),
+  };
+  const { data } = await api.get(`/budgets/partial`, { params: normalizedParams });
 
   return data ?? [];
 };

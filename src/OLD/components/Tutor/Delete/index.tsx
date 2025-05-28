@@ -9,10 +9,10 @@ import { Popconfirm } from "antd";
 import { petsService } from "@/OLD/services/patient.service";
 
 // Icons
-import { DeleteTwoTone } from "@ant-design/icons";
+import { FiTrash2 } from "react-icons/fi";
 import { useToast } from "infinity-forge";
 
-export const Delete = React.memo(function Delete({ id, reload, setReload }) {
+export function Delete({ id, reload, setReload }) {
   const [loading, setLoading] = useState(false);
 
   const { createToast } = useToast();
@@ -51,8 +51,11 @@ export const Delete = React.memo(function Delete({ id, reload, setReload }) {
         placement="left"
         loading={loading}
       >
-        <DeleteTwoTone twoToneColor="red" className="uk-margin-small-top" />
+        <FiTrash2
+          className="uk-link"
+          style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
+        />
       </Popconfirm>
     </div>
   );
-});
+}

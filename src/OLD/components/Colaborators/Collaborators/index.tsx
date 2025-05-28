@@ -10,7 +10,7 @@ import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
 
 import { Input } from "./styles";
 
-import { EditTwoTone } from "@ant-design/icons";
+import { FiEdit2 } from "react-icons/fi";
 
 import Masks from "@/OLD/utils/masks";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -86,7 +86,7 @@ function Colaborators() {
                       <Link
                         href={`/dashboard/colaboradores/editar-colaborador/${user.id}`}
                       >
-                        <EditTwoTone />
+                        <FiEdit2 style={{ cursor: 'pointer', fontSize: '1.2rem' }} />
                       </Link>
                     )}
 

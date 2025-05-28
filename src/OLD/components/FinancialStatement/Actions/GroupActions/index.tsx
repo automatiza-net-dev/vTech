@@ -5,7 +5,7 @@ import {  Popconfirm, Modal } from "antd";
 import DownFormChild from "../FormChild";
 import { financesService } from "@/OLD/services/finances.service";
 
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { BsArrowCounterclockwise } from "react-icons/bs";
 import { IoMdDownload } from "react-icons/io";
 

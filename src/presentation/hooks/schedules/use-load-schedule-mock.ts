@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 import { useRouter } from "next/router";
 
 import { RemoteSchedule } from "@/data";
@@ -23,7 +23,7 @@ export function useLoadSchedulesMock({
   return useQuery({
     queryKey: ["RemoteSchedulesMock", id],
     queryFn: fetcher,
-    enableCache: true,
+    
     enabled: enabled,
   });
 }

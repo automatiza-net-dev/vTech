@@ -6,3 +6,5 @@ export * from "./context";
 export * from "./interfaces";
 export * from "./components";
 export * from "./configurations";
+
+export * from ".//use-query"

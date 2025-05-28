@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 
 import { useFormikContext } from "formik";
-import { api, Input, InputCurrency, Select, Textarea, useQuery } from "infinity-forge";
+import { api, Input, InputCurrency, Select, Textarea } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { FluidTherapy } from "./fluid-therapy";
 
@@ -21,7 +22,7 @@ export function FormVariations() {
 
       return response;
     },
-    enableCache: true,
+    
   });
 
   const drugsAdministrations = useQuery({
@@ -34,7 +35,7 @@ export function FormVariations() {
 
       return response;
     },
-    enableCache: true,
+    
   });
 
   useEffect(() => {

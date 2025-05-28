@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import { container, patientTypes } from "@/container";
 import { LoadAllScheduleServicesGroups } from "@/domain";
@@ -20,6 +20,6 @@ export function useLoadAllScheduleServicesGroups(
   return useQuery({
     queryKey: ["RemoteLoadAllScheduleServicesGroups", params],
     queryFn: fetcher,
-    enableCache: true,
+    
   });
 }
