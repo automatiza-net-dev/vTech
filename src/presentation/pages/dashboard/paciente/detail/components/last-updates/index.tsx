@@ -26,8 +26,6 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
   const actionsPatient = useActionsPatient();
 
-  console.log( ["LastUpdates", id])
-
   const { data, isFetching } = useQuery({
     queryKey: ["LastUpdates", id],
     queryFn: async () => {
@@ -37,6 +35,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
       return response;
     },
+    enableCache: true
   });
 
   const listTimeLine = data?.filter((item) => {
@@ -126,7 +125,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
             )}
           </div>
         </>
-      )}
+      )} 
     </S.LastUpdates>
   );
 }

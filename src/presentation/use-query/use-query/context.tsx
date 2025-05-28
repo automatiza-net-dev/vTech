@@ -93,7 +93,7 @@ const QueryClientContext = createContext<QueryStoreType | null>(null);
 
 const queryClient = new QueryClient();
 
-function QueryClientContextProvider({ children }: React.PropsWithChildren<{}>) {
+function QueryClientContextProvider({ children }: React.PropsWithChildren<{queryClient: QueryClient}>) {
   const storeRef = useRef<QueryStoreType | null>(null);
   if (!storeRef.current) {
     storeRef.current = createQueryStore();

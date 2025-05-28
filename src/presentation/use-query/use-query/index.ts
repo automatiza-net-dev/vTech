@@ -1,3 +1,4 @@
+import { callApiOneTime } from "@/presentation/utils";
 import { QueryOptions as QueryOptionsInfinity, QueryState } from "./types";
 import * as tanstack from '@tanstack/react-query';
 
@@ -23,7 +24,7 @@ export function useQuery<T>({
   const queryClient = tanstack.useQueryClient();
 
   const cache = enableCache
-    ? { staleTime: Infinity, gcTime: Infinity }
+    ? callApiOneTime
     : {};
 
   function parseInterval(interval): number | false {
