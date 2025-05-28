@@ -1,5 +1,5 @@
 import moment from "moment";
-import { FormHandler, api } from "infinity-forge";
+import { FormHandler, api, InputRadio } from "infinity-forge";
 import { useQueryClient } from "@/presentation/use-query";
 
 import { schema } from "./schema";
@@ -7,7 +7,6 @@ import { Frequency } from "./frequency";
 import { FormVariations } from "./form-variations";
 
 import * as S from "./styles";
-import { InputRadio } from "./radio";
 
 export function FormCreatePrescription({
   hospitalizationId,
