@@ -8,8 +8,8 @@ import {
 
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { Patient, TimeLine, TimelineType, TimeLineEvent } from "@/domain";
 import { useLoadPatient, useQuery } from "@/presentation";
+import { TimeLine, TimelineType, TimeLineEvent } from "@/domain";
 
 import { CardTimeLine } from "./card-time-line";
 import { useActionsPatient } from "../actions/actions/options";
@@ -35,7 +35,7 @@ export function LastUpdates({ changeTab }: TabContentProps) {
 
       return response;
     },
-    enabled: !!patient.data?.id
+    enabled: !!patient.data?.id,
   });
 
   const listTimeLine = data?.filter((item) => {
@@ -125,7 +125,7 @@ export function LastUpdates({ changeTab }: TabContentProps) {
             )}
           </div>
         </>
-      )} 
+      )}
     </S.LastUpdates>
   );
 }
