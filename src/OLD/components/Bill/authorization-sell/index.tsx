@@ -10,7 +10,7 @@ import {
   InputPassword,
 } from "infinity-forge";
 import * as yup from "yup";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import {
   useLoadBill,

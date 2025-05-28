@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { Button, useQueryClient, useToast } from "infinity-forge";
+import { Button, useToast } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query"
 
 import {
   Pets,

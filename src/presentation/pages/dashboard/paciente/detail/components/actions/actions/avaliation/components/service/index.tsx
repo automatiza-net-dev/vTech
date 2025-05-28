@@ -12,10 +12,11 @@ import {
   useAuthAdmin,
   LoaderCircle,
   TextEditor,
-  useQueryClient,
 } from "infinity-forge";
 import moment from "moment";
 import { useReactToPrint } from "react-to-print";
+
+import { useQueryClient } from "@/presentation/use-query";
 
 import * as yup from "yup";
 
@@ -45,12 +46,13 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   const componentRef = useRef<HTMLDivElement>(null);
 
+  const queryClient = useQueryClient()
+
   const router = useRouter();
   const { createToast } = useToast();
   const { getWord } = useDictionary();
 
   const patient = useLoadPatient();
-  const refetch = useQueryClient((st) => st.refetch);
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
   const handlePrint = useReactToPrint({ contentRef: componentRef });
@@ -101,8 +103,8 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       setAttendance(attendanceResponse);
 
       if (scheduleDate) {
-        refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "true"]);
-       refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "false"]);
+        queryClient.refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "true"]);
+        queryClient.refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "false"]);
       }
 
       createToast({
@@ -175,7 +177,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
           {
             action: async (data) => {
               await handleSubmit(data, async () => {
-                await refetch(["LastUpdates"], { mode: "include" });
+                await queryClient.refetch(["LastUpdates"], { mode: "include" });
               });
 
               handlePrint();
@@ -198,7 +200,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
                 status: "success",
               });
 
-              await refetch(["LastUpdates", patientId], {
+              await queryClient.refetch(["LastUpdates", patientId], {
                 mode: "exact",
               });
 
@@ -223,7 +225,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
               await handleSubmit(data, async () => {
                 props?.setModal && props.setModal(false);
 
-                await refetch(["LastUpdates"], { mode: "include" });
+                await queryClient.refetch(["LastUpdates"], { mode: "include" });
               });
             },
             props: () => ({ text: "SALVAR" }),
@@ -278,7 +280,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         onClose={async () => {
           setModal(false);
 
-          await refetch(["LastUpdates"], { mode: "include" });
+          await queryClient.refetch(["LastUpdates"], { mode: "include" });
         }}
       >
         <AddBudgetNew

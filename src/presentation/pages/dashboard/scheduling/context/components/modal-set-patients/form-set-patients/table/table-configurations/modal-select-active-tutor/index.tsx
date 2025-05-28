@@ -6,11 +6,11 @@ import {
   useToast,
   InputRadio,
   FormHandler,
-  useQueryClient
 } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 import { useLoadSchedulesPatientsKEY, useSetMainTutor } from "@/presentation";
+import { useQueryClient } from "@/presentation/use-query"
 
 import * as S from "./styles";
 

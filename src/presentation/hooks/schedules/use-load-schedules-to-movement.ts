@@ -1,4 +1,4 @@
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 import * as domain from "@/domain";
 import { RemoteLoadSchedulesPatient } from "@/data";

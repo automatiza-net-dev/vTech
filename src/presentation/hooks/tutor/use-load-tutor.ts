@@ -1,7 +1,7 @@
 import { RemoteTutor } from "@/data";
 import { Tutor } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 export function useLoadTutor(tutorId?: Tutor["id"]) {
   return useQuery({

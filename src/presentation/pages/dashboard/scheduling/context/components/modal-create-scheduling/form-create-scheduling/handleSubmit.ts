@@ -1,5 +1,6 @@
 import moment from "moment";
-import { BadRequestError, useQueryClient, useToast } from "infinity-forge";
+import { BadRequestError, useToast } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query"
 
 import { RemoteCRM, RemoteSchedule } from "@/data";
 import { CrmTypes, container, patientTypes } from "@/container";

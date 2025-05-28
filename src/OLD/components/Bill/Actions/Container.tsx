@@ -18,9 +18,9 @@ import {
   Popconfirm,
   Tooltip,
   useToast,
-  useQueryClient,
 } from "infinity-forge";
 
+import { useQueryClient } from "@/presentation/use-query";
 
 import { LaunchRelatedSale } from "./launch-related-sale";
 import { CancelAction } from "./cancel";

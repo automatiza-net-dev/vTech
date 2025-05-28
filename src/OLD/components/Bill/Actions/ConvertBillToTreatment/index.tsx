@@ -1,9 +1,10 @@
 import { billService } from "@/OLD/services/bills.service";
 
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { Tooltip, useQueryClient, useToast } from "infinity-forge";
+import { Tooltip, useToast } from "infinity-forge";
 import { useSystem } from "@/presentation";
 import { Bill } from "@/domain";
+import { useQueryClient } from "@/presentation/use-query";
 
 export default function ConvertBillToTreatment({ bill, setReload , CustomComponent}: { bill: Bill, setReload?: any, CustomComponent?: ({ onClick }) => React.ReactNode }) {
 

@@ -5,7 +5,8 @@ import { receiptService } from "@/OLD/services/receipt.service.ts";
 
 import { fiscalDocumentService } from "@/OLD/services/fiscal-document.service.ts";
 
-import { useMutation, useQuery, useQueryClient } from "infinity-forge";
+import { useMutation, useQuery } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import {
   useReceipt,
   useReceiptsFiscalDocuments,

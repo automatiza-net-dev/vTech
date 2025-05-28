@@ -1,4 +1,5 @@
-import { useQuery, api, BadRequestError } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
+import { api, BadRequestError } from "infinity-forge";
 
 import { Dashboard, LoadDashboard } from "@/domain";
 import { RemoteCRM, RemoteDashboard } from "@/data";

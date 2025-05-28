@@ -1,7 +1,7 @@
 import { RemoteVaccine } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 import { VaccineProtocol } from "@/domain";
 

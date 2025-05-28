@@ -6,13 +6,12 @@ import {
   FormHandler,
   useToast,
   useAuthAdmin,
-  useQueryClient,
 } from "infinity-forge";
 import moment from "moment";
 
 import { RemotePatientAnimal } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
-import { useLoadAllPathologies, useLoadPatient } from "@/presentation";
+import { useLoadAllPathologies, useLoadPatient, useQueryClient } from "@/presentation";
 
 import * as Type from "../dropdown-item";
 

@@ -4,9 +4,8 @@ import {
   LoaderCircle,
   Select,
   TabContentProps,
+  useQuery,
 } from "infinity-forge";
-
-import { useQuery } from "infinity-forge";
 
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
@@ -36,6 +35,7 @@ export function LastUpdates({ id, changeTab }: Patient & TabContentProps) {
 
       return response;
     },
+    enabled: !!id,
   });
 
   const listTimeLine = data?.filter((item) => {

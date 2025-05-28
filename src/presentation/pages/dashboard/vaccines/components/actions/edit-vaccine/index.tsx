@@ -4,7 +4,7 @@ import { VaccineProtocol } from "@/domain";
 
 import { RemoteVaccine } from "@/data";
 
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { useLoadAllVaccinesProtocols } from "@/presentation";
 
 import { VaccineForm } from "../../vaccine-form";

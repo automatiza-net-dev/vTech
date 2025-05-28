@@ -1,7 +1,6 @@
-
 import { RemoteBusinessUnits } from "@/data";
 import { adminTypes, container } from "@/container";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 export function useLoadAllBusinessUnits() {
   async function fetcher() {

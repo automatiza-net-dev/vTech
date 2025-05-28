@@ -7,9 +7,6 @@ import {
 } from "react";
 
 import moment from "moment";
-import { QueryState } from "infinity-forge";
-
-import { Dashboard } from "@/domain";
 
 import { useLoadDashboard } from "./use-load-dashboard";
 
@@ -23,7 +20,7 @@ export type FiltersDashboard = {
 const dashboardContext = createContext<{
   type?: DashboardType;
   filters: FiltersDashboard | null;
-  dashboard?: Required<QueryState<Partial<Dashboard> | undefined>>;
+  dashboard?: any
   setFilters: Dispatch<SetStateAction<FiltersDashboard | null>>;
 }>({ filters: {}, setFilters: () => {} });
 

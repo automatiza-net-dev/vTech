@@ -1,8 +1,9 @@
 import moment from "moment";
-import { useQueryClient, DetailCard, Error, IDetailCard } from "infinity-forge";
-
+import {  DetailCard, Error, IDetailCard } from "infinity-forge";
+;
 import { Patient } from "@/domain";
 import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
+import { useQueryClient } from "@/presentation/use-query"
 
 import { Profile } from "./profile";
 

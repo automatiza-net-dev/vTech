@@ -1,7 +1,6 @@
 import {
   useToast,
   ActionsTable,
-  FetcherParams,
   TableActionEdit,
   TableActionCreate,
 } from "infinity-forge";
@@ -18,7 +17,7 @@ import { container, MarketingTypes } from "@/container";
 export function useTableMarketingActions({
   mutate,
 }: {
-  mutate: (params?: FetcherParams) => void;
+  mutate: (params?: any) => void;
 }) {
   const hasPermissionCreate = useVerifyPermissions("MKT01");
   const hasPermissionUpdate = useVerifyPermissions("MKT02");

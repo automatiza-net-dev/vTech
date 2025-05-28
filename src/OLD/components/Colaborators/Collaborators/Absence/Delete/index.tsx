@@ -2,7 +2,8 @@
 import React, { memo } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Popconfirm } from "antd";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { useToast } from "infinity-forge";
 

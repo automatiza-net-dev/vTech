@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import {
-  useQueryClient,
   LoaderCircle,
   useToast,
   Tooltip,
@@ -9,6 +8,7 @@ import {
 
 import { Tutor } from "@/domain";
 import { useLoadPatient, useSetMainTutor } from "@/presentation";
+import { useQueryClient } from "@/presentation/use-query"
 
 import * as S from "./styles";
 

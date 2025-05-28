@@ -2,7 +2,8 @@
 import { Form, Input, Modal } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { memo, useState } from "react";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 
 export const Create = memo(() => {

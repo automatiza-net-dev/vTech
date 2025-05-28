@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import { useForm } from "react-hook-form";
 import { useToast, Button } from "infinity-forge";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { Form, Modal, Checkbox, DatePicker, Space } from "antd";
 
 import { days } from "./weekdays";

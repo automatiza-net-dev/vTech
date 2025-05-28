@@ -2,7 +2,8 @@
 import { Form, Input, Modal, Select } from "antd";
 import { Button, useToast } from "infinity-forge";
 import { memo, useCallback, useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { metasService } from "@/OLD/services/metas.service";
 
 export const Create = ({ canCreate }) => {

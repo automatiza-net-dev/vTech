@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { RemoteBusinessUnits } from "@/data";
 import { adminTypes, container } from "@/container";
-import { useQuery } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query";
 
 export function useLoadBusinessUnits() {
   const router = useRouter();

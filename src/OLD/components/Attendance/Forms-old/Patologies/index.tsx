@@ -11,7 +11,8 @@ import { useLoadPatient } from "@/presentation/hooks";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useRouter } from "next/router";
 
-import { useToast, useQueryClient } from "infinity-forge";
+import { useToast } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 
 function Patologies({
   modal,

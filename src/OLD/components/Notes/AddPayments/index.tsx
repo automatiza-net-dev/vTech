@@ -4,7 +4,7 @@ import { memo, useEffect, useState, useCallback } from "react";
 import { receiptService } from "@/OLD/services/receipt.service";
 import { budgetService } from "@/OLD/services/budgets.service";
 
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { useLoadPaymentsPreview } from "@/presentation";
 import { useCompleteBudget } from "@/OLD/hooks/useBudgets";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";

@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 import moment from "moment";
-import { Error, useQueryClient } from "infinity-forge";
+import { Error } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query"
 
 import { useLoadSynchedTreatmentsItems } from "@/presentation";
 

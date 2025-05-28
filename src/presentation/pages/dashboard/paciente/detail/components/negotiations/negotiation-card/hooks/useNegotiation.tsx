@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useQueryClient } from "infinity-forge";
+import { useQueryClient } from "@/presentation/use-query";
 import { useToast } from "infinity-forge";
 
 import { RemoteBudget } from "@/data";
@@ -37,9 +37,7 @@ export function useNegotiation() {
 
     await Promise.all(promises);
 
-    queryClient.invalidateQueries({
-      queryKey: ["openNegotiations", router?.query?.id as string],
-    });
+    queryClient.invalidateQueries(["openNegotiations"]);
 
     createToast({
       message: "Negociação aprovada com sucesso",

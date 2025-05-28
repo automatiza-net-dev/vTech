@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "infinity-forge";
+import { useMutation, useQueryClient } from "@/presentation/use-query"
 
 import { BadRequestError, useToast } from "infinity-forge";
 
