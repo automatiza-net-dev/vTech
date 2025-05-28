@@ -22,8 +22,7 @@ export function useLoadAllPatientTutor(props?: {
   return useQuery({
     queryKey,
     queryFn: fetcher,
-    enabled: typeof props?.enabled !== "undefined" ? props.enabled : true, 
-    enableCache: true
+    enabled: typeof props?.enabled !== "undefined" ? props.enabled : true
   });
 }
 

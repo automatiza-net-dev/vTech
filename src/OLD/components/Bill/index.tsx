@@ -40,14 +40,12 @@ export default function Bills() {
   const [filters, setFilters] = React.useState({
     fromBill: moment(),
     toBill: moment(),
-    noSearch: false,
+    noSearch: true,
   });
   const [reload, setReload] = React.useState(false);
 
   const { type } = useConfigurationsSystem();
   const { data, ...rest } = useGetAllBills(filters, reload);
-
-  console.log("@DATA", data, rest)
 
   const { cashiers } = useDailyCasher(false, filters);
 
@@ -57,7 +55,6 @@ export default function Bills() {
     data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
 
     return data.map((bill) => {
-      console.log(bill, "@@@@@");
       return {
         id: bill?.id,
         internalCode: bill?.internalCode,

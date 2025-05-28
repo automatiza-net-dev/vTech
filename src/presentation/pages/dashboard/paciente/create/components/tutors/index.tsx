@@ -19,7 +19,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
   const [modalAddTutor, setModalAddTutor] = useState(false);
-   const { data, mutate } = useLoadAllPatientTutor({ enabled: modalAddTutor, modal, patientFilters: { name: "" } });
+   const { data, refetch } = useLoadAllPatientTutor({ enabled: modalAddTutor, modal, patientFilters: { name: "" } });
 
   const { values, setFieldValue } = useFormikContext<{
     holders: { id: string; main: boolean }[];
@@ -156,7 +156,7 @@ export function Tutors({ origin }: { origin: "Cadastro" | "Crm" | "Agenda" }) {
             origin={origin}
             isModal={false}
             onSuccess={async (data: Tutor) => {
-              await mutate();
+              await refetch();
 
               setTimeout(() => {
                 setFieldValue("holderId", data.id);

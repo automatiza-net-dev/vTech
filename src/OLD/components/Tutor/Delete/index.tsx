@@ -12,7 +12,7 @@ import { petsService } from "@/OLD/services/patient.service";
 import { FiTrash2 } from "react-icons/fi";
 import { useToast } from "infinity-forge";
 
-export const Delete = React.memo(function Delete({ id, reload, setReload }) {
+export function Delete({ id, reload, setReload }) {
   const [loading, setLoading] = useState(false);
 
   const { createToast } = useToast();
@@ -58,4 +58,4 @@ export const Delete = React.memo(function Delete({ id, reload, setReload }) {
       </Popconfirm>
     </div>
   );
-});
+}
