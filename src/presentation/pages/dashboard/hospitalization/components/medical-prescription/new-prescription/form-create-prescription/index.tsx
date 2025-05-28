@@ -91,7 +91,6 @@ export function FormCreatePrescription({
             <h3 className="font-16-bold">Frêquencia</h3>
             <InputRadio
               name="frequency"
-              readOnly
               options={[
                 { label: "Recorrente", value: "RECURRENT" },
                 { label: "Apenas uma vez", value: "ONCE" },
