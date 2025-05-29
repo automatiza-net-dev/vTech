@@ -1,122 +1,91 @@
-import React, { createContext, useContext, useRef } from "react";
-import {
-  QueryClient,
-  QueryClientProvider,
-  QueryOptions,
-} from "@tanstack/react-query";
-import { createStore, useStore } from "zustand";
+import { parseJSON } from "infinity-forge";
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  PropsWithChildren,
+} from "react";
+import { SWRConfig, useSWRConfig } from "swr";
 
-interface QueryStoreState {
-  queryClient: QueryClient | null;
-  setQueryClient: (qc: QueryClient) => void;
+interface QueryClientHelpers {
   refetch: (
-    key: QueryOptions["queryKey"],
+    key: string | any[],
     options?: { mode?: "exact" | "include" }
   ) => Promise<void>;
+  invalidateQueries: (key: string) => Promise<void>;
   clearCache: () => void;
-  mutate: (key: QueryOptions["queryKey"], data: any) => void;
-  invalidateQueries: (key: any) => void;
+  mutate: (key: string, data: any) => void;
 }
 
-const createQueryStore = () =>
-  createStore<QueryStoreState>((set, get) => ({
-    queryClient: null,
-    setQueryClient: (qc) => set({ queryClient: qc }),
-    refetch: async (key, options) => {
-      const qc = get().queryClient;
-      if (!qc) throw new Error("QueryClient não inicializado");
+const QueryClientContext = createContext<QueryClientHelpers | null>(null);
 
-      const mode = options?.mode === "include" ? "include" : "exact";
+export function QueryClientContextProvider({
+  children,
+}: PropsWithChildren<{}>) {
+  return (
+    <SWRConfig value={{}}>
+      <InnerQueryClientProvider>{children}</InnerQueryClientProvider>
+    </SWRConfig>
+  );
+}
 
-      if (mode === "include") {
-        await qc.invalidateQueries({
-          predicate: (query) => {
-            const queryKey = query?.queryKey;
-            const targetKey = key?.[0];
+function InnerQueryClientProvider({ children }: PropsWithChildren) {
+  const { cache, mutate } = useSWRConfig();
 
-            if (
-              Array.isArray(queryKey) &&
-              queryKey.length > 0 &&
-              typeof queryKey[0] === "string" &&
-              typeof targetKey === "string"
-            ) {
-              return queryKey[0].startsWith(targetKey);
-            }
+  const helpers = useMemo<QueryClientHelpers>(
+    () => ({
+      async refetch(key, options) {
+        const keys = Array.from(cache.keys()) as string[];
+
+        const matchedKeys = keys.filter((k) => {
+          try {
+            const parsedKey = parseJSON(k);
+            if (!Array.isArray(parsedKey)) return false;
+
+            return parsedKey[0] === key[0];
+          } catch {
             return false;
-          },
+          }
         });
-      } else {
-        await qc.invalidateQueries({ queryKey: key, exact: mode === "exact" });
-      }
-    },
-    invalidateQueries: async (key: any) => {
-      const qc = get().queryClient;
-      if (!qc) throw new Error("QueryClient não inicializado");
 
-      console.log(key, "kk")
-      if (
-        Array.isArray(key) &&
-        key.length === 1 &&
-        typeof key[0] === "string"
-      ) {
-        await qc.invalidateQueries({
-          predicate: (query) => {
-            const queryKey = query?.queryKey;
-            const targetKey = key[0];
+        await Promise.all(matchedKeys.map((k) => mutate(k)));
+      },
 
-            return (
-              Array.isArray(queryKey) &&
-              typeof queryKey[0] === "string" &&
-              queryKey[0].startsWith(targetKey)
-            );
-          },
-        });
-      } else {
-        await qc.invalidateQueries({ queryKey: key, exact: true });
-      }
-    },
-    clearCache: () => {
-      const qc = get().queryClient;
-      if (!qc) return;
-      qc.clear();
-    },
-    mutate: (key: any, data) => {
-      const qc = get().queryClient;
-      if (!qc) return;
-      qc.setQueryData(key, data);
-    },
-  }));
+      async invalidateQueries(key) {
+        this.refetch(key);
+      },
 
-type QueryStoreType = ReturnType<typeof createQueryStore>;
+      clearCache() {
+        for (const key of cache.keys()) {
+          cache.delete(key);
+        }
+      },
 
-const QueryClientContext = createContext<QueryStoreType | null>(null);
-
-const queryClient = new QueryClient();
-
-function QueryClientContextProvider({ children }: React.PropsWithChildren<{queryClient: QueryClient}>) {
-  const storeRef = useRef<QueryStoreType | null>(null);
-  if (!storeRef.current) {
-    storeRef.current = createQueryStore();
-    storeRef.current.setState({ queryClient });
-  }
+      mutate(key, data) {
+        mutate(key, data, false);
+      },
+    }),
+    [cache]
+  );
 
   return (
-    <QueryClientContext.Provider value={storeRef.current}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientContext.Provider value={helpers}>
+      {children}
     </QueryClientContext.Provider>
   );
 }
 
-function useQueryClient<T = QueryStoreState>(
-  selector?: (state: QueryStoreState) => T
-): T {
-  const store = useContext(QueryClientContext);
-  if (!store)
-    throw new Error("Missing QueryClientContext.Provider in the tree");
+export function useQueryClient(): any;
+export function useQueryClient<SelectorReturn>(
+  selector: (client: any) => SelectorReturn
+): SelectorReturn;
+export function useQueryClient<SelectorReturn>(
+  selector?: (client: any) => SelectorReturn
+): SelectorReturn | any {
+  const context = useContext(QueryClientContext);
+  if (!context) {
+    throw new Error("Missing QueryClientContext.Provider");
+  }
 
-  const safeSelector = selector ?? ((state) => state as T);
-
-  return useStore(store, safeSelector);
+  return selector ? selector(context) : context;
 }
-
-export { QueryClientContextProvider, useQueryClient };

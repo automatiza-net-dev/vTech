@@ -1,17 +1,13 @@
-// Core
 import React, { useState, useEffect } from "react";
 
-// Services
 import { documentServices } from "@/OLD/services/document.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
-// Components
 import { Popconfirm } from "antd";
 import { Button } from "infinity-forge";
 import Editor from "@/OLD/components/Editor";
 import Print from "@/OLD/components/mini-components/Print";
 
-// Utils
 import { sortItems } from "@/OLD/utils/sortItems";
 import { FormHandler, Select } from "infinity-forge";
 import moment from "moment";
@@ -31,7 +27,7 @@ function FormChild({
   remove,
   updateData,
   registerPrint,
-}) {
+}: any) {
   const [documentSearch, setDocumentSearch] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
 

@@ -1,14 +1,32 @@
-import { callApiOneTime } from "@/presentation/utils";
-import { QueryOptions as QueryOptionsInfinity, QueryState } from "./types";
-import * as tanstack from '@tanstack/react-query';
+import useSWR, { mutate as globalMutate, useSWRConfig } from "swr";
+import useSWRMutation from "swr/mutation";
+import { QueryState } from "./types";
 
 export type useQueryProps<T> = {
   onSuccess?: (data: Awaited<T>) => void;
   onError?: (error: unknown) => void;
   isMutation?: boolean;
-  queryKey: any[],
+  queryKey: any[];
   queryFn: (params?: any) => T;
-} & QueryOptionsInfinity;
+  interval?: false | string | number;
+  enableCache?: boolean;
+  enabled?: boolean;
+};
+
+function parseInterval(interval: string | number | false): number | undefined {
+  if (interval === false) return undefined;
+
+  switch (interval) {
+    case "2s": return 2000;
+    case "5s": return 5000;
+    case "10s": return 10000;
+    case "20s": return 20000;
+    case "30s": return 30000;
+    case "1min": return 60000;
+    case "3min": return 180000;
+    default: return typeof interval === "number" ? interval : undefined;
+  }
+}
 
 export function useQuery<T>({
   queryFn,
@@ -16,64 +34,52 @@ export function useQuery<T>({
   onError,
   interval = false,
   queryKey,
-  enableCache,
+  enableCache = true,
   enabled = true,
   isMutation,
-  ...rest
 }: useQueryProps<T>) {
-  const queryClient = tanstack.useQueryClient();
+  const key = JSON.stringify(queryKey);
+  const { mutate: globalMutate } = useSWRConfig();
 
+  const revalidateInterval = parseInterval(interval);
 
-  function parseInterval(interval): number | false {
-    switch (interval) {
-      case "2s": return 2000;
-      case "5s": return 5000;
-      case "10s": return 10000;
-      case "20s": return 20000;
-      case "30s": return 30000;
-      case "1min": return 60000;
-      case "3min": return 180000;
-      default: return interval;
-    }
-  }
-
-  const refetchInterval = parseInterval(interval);
-
-  function changeCache(data: any) {
-    queryClient.setQueryData(queryKey, data);
-  }
+  const changeCache = (data: Awaited<T>) => {
+    globalMutate(key, data, false);
+  };
 
   if (isMutation) {
-    const mutation = tanstack.useMutation({
-      mutationKey: queryKey,
-      mutationFn: async (params?: any) => {
-        const res = await queryFn(params);
-        onSuccess?.(res);
-        return res;
-      },
-      onError,
-      ...rest
-    });
+    const { trigger, data, error, isMutating } = useSWRMutation(
+      key,
+      async (_key, { arg }) => {
+        try {
+          const result = await queryFn(arg);
+          onSuccess?.(result);
+          return result;
+        } catch (err) {
+          onError?.(err);
+          throw err;
+        }
+      }
+    );
 
     return {
-      loading: mutation.isPending,
-      data: mutation.data,
-      error: mutation.error,
-      isFetching: mutation.isPending,
-      isLoading: mutation.isPending,
-      mutate: mutation.mutateAsync,
-      refetch: mutation.mutateAsync,
-      mutateAsync: mutation.mutateAsync,
+      data,
+      error,
+      isLoading: isMutating,
+      isFetching: isMutating,
+      loading: isMutating,
+      mutate: trigger,
+      mutateAsync: trigger,
+      refetch: trigger,
       changeCache,
     } as Required<QueryState<Awaited<T>>>;
   }
 
-  const { data, error, isFetching, isLoading, refetch } = tanstack.useQuery({
-    queryKey: queryKey,
-    queryFn: async ({ queryKey }) => {
+  const swr = useSWR(
+    enabled ? key : null,
+    async () => {
       try {
-        const [_key, params] = queryKey;
-        const res = await queryFn(params);
+        const res = await queryFn(queryKey?.[1]);
         onSuccess?.(res);
         return res;
       } catch (err) {
@@ -81,38 +87,29 @@ export function useQuery<T>({
         throw err;
       }
     },
-    enabled,
-    ...rest,
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    retry: 0,
-  });
+    {
+      refreshInterval: revalidateInterval,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
-  function mutate(params?: any) {
-    const newKey = [queryKey, params];
-    return queryClient.fetchQuery({
-      queryKey: newKey,
-      queryFn: ({ queryKey }) => {
-        const [_key, params] = queryKey;
-        return queryFn(params);
-      },
-    }).then((res) => {
-      queryClient.setQueryData(queryKey, res);
-      return res;
-    });
-  }
+  const mutateAsync = async (params?: any) => {
+    const newKey = JSON.stringify([queryKey[0], params]);
+    const result = await queryFn(params);
+    globalMutate(newKey, result, false);
+    return result;
+  };
 
   return {
-    data,
-    loading: isLoading,
-    error,
-    isFetching,
-    isLoading,
-    mutate,
-    refetch,
+    data: swr.data,
+    loading: swr.isLoading,
+    error: swr.error,
+    isFetching: swr.isValidating,
+    isLoading: swr.isLoading,
+    mutate: mutateAsync,
+    mutateAsync,
+    refetch: swr.mutate,
     changeCache,
-    mutateAsync: mutate,
-  } as unknown as Required<QueryState<Awaited<T>>>;
+  } as Required<QueryState<Awaited<T>>>;
 }

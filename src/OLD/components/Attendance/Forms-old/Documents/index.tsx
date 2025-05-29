@@ -146,7 +146,7 @@ export default function Documents({
         setDocument(false);
         return createToast({
           message: "Documento salvo com sucesso!",
-          status: "succes",
+          status: "success",
         });
       })
       .catch((_err) => {
