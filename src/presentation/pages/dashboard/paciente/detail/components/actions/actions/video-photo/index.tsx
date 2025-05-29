@@ -29,7 +29,7 @@ export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
 
   const patientId = router.query.id as string;
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   useEffect(() => {
     (async () => {

@@ -45,7 +45,7 @@ export function Actions({
 
   const synchedItems = useLoadSynchedTreatmentsItems(synchedItemsFilter);
 
-  const refetch = useQueryClient((state) => state.refetch);
+  const {refetch} = useQueryClient();
   const selectedDate = useScheduling((state) => state.selectedDate);
   const listCancelledEvents = useScheduling(
     (state) => state.listCancelledEvents

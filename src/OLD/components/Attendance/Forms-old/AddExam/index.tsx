@@ -47,11 +47,10 @@ export default function LaunchExam({
   const [report, setReport] = useState("");
   const [request, setRequest] = useState("");
   const [fileList, setFileList] = useState([]);
-  const [viewArquives, setViewArquives] = useState([]);
   const [examSearch, setExamSearch] = useState("");
 
   const patient = useLoadPatient();
-
+  const queryClient = useQueryClient();
   const router = useRouter();
   const eventId = router.query.innerpage;
 
@@ -169,7 +168,7 @@ export default function LaunchExam({
     [fileList]
   );
 
-  const refetch = useQueryClient((st) => st.refetch);
+
 
   const submitExamLauching = useCallback(
     (visible = false) => {
@@ -227,7 +226,7 @@ export default function LaunchExam({
           }
         })
         .finally(() => {
-          refetch(["LastUpdates"], { mode: "include" });
+          queryClient?.refetch(["LastUpdates"], { mode: "include" });
 
           if (!error) {
             modal && setModal && setModal(false);
@@ -276,7 +275,7 @@ export default function LaunchExam({
           });
         })
         .finally(() => {
-          refetch(["LastUpdates"], { mode: "include" });
+          queryClient?.refetch(["LastUpdates"], { mode: "include" });
 
           if (!visible) {
             setSelectedExam({});
@@ -291,37 +290,13 @@ export default function LaunchExam({
     [selectedExam, request, report, patient, eventId, data, fileList]
   );
 
-  const removeAttachment = useCallback(
-    (attachmentId) => {
-      setLoading(true);
-      patientExamsService
-        .removeAttachment(
-          examPatientData?.timeline_info.patient_exam.id,
-          attachmentId
-        )
-        .then((_res) => {
-          setLoading(false);
-          refetch(["LastUpdates"], { mode: "include" });
-          return createToast({ message: "Anexo removido!", status: "success" });
-        })
-        .catch((err) => {
-          setLoading(false);
-          return createToast({
-            message: "Houve um problema ao remover o anexo",
-            status: "error",
-          });
-        });
-    },
-    [examPatientData]
-  );
-
   const removeData = () => {
     setLoading(true);
     timelineService
       .removeComplete(examPatientData?._id)
       .then((_res) => {
         setLoading(false);
-        refetch(["LastUpdates"], { mode: "include" });
+        queryClient?.refetch(["LastUpdates"], { mode: "include" });
         return createToast({
           message: "Registro removido com sucesso!",
           status: "error",
@@ -354,7 +329,7 @@ export default function LaunchExam({
         clinic={userInfo?.data?.unit}
         modal={modal}
         update={examPatientData}
-        viewArquives={viewArquives}
+        viewArquives={[]}
         replaceText={replaceText}
         examSearch={examSearch}
         setExamSearch={setExamSearch}
@@ -442,7 +417,7 @@ export default function LaunchExam({
         modal={modal}
         clinic={userInfo?.data?.unit}
         update={examPatientData}
-        viewArquives={viewArquives}
+        viewArquives={[]}
         replaceText={replaceText}
         examSerch={examSearch}
         setExamSearch={setExamSearch}

@@ -23,7 +23,7 @@ export function FormEditAccessControls({
   controllerRole,
 }: IFormEditAccessControlsProps) {
   const { createToast } = useToast();
-  const refetch = useQueryClient((state) => state.refetch);
+  const {refetch} = useQueryClient();
   const { data, isFetching } = useAccessControls({ id: controllerRole?.id });
 
   return (

@@ -14,7 +14,7 @@ export type DetailCard = {
 } & IDetailCard;
 
 export function ProfileInfos({ patient }: { patient: Patient }) {
-  const refetch = useQueryClient(st => st.refetch);
+  const {refetch} = useQueryClient();
 
   const {type} = useConfigurationsSystem()
 

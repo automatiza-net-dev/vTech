@@ -19,7 +19,7 @@ export function Prescription(
   const [open, setOpen] = useState(false);
 
   const { values } = useFormikContext<{ status: string }>();
-  const refetch = useQueryClient(state => state.refetch)
+  const {refetch} = useQueryClient()
 
   if (
     values.status &&

@@ -21,7 +21,7 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any)
 
   const patient = useLoadPatient();
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   const vetsQuery = useQuery({
     queryKey: ["allVets"],

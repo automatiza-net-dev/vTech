@@ -36,7 +36,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const patient = useLoadPatient();
   const { createToast } = useToast();
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
   const router = useRouter();
 
   const beforeUpload = useCallback((file) => {

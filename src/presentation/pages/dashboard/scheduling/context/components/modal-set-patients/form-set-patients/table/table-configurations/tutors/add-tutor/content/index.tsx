@@ -25,7 +25,7 @@ export function AddTutorContent({ id, setModal, origin }) {
 
   const { data, mutate, isLoading } = useLoadAllPatientTutor({});
 
-  const refetch = useQueryClient((state) => state.refetch);
+  const {refetch} = useQueryClient();
   const queryKeyLoadAllPatientTutor = useLoadAllPatientTutorKEY();
   const queryKeyLoadSchedulePatients = useLoadSchedulesPatientsKEY();
 

@@ -16,7 +16,7 @@ export function ActionsListUserController(props) {
 
   const isActualUser = props.id === user?.user?.id;
 
-  const refetch = useQueryClient((s) => s.refetch);
+  const {refetch} = useQueryClient();
 
   return (
     <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>

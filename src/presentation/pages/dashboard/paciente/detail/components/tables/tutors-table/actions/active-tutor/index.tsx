@@ -19,7 +19,7 @@ export function ActiveTutor(props: Tutor) {
   const { createToast } = useToast();
   const setMainTutor = useSetMainTutor();
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   const patientId = patient.data?.id;
   const isTutorActive = patient?.data?.tutor?.id === props.id;

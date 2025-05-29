@@ -22,7 +22,7 @@ export function useSubmitSchedule() {
     setCreateSchedulingArgs,
   } = useScheduling((state) => state);
 
-  const refetch = useQueryClient((state) => state.refetch);
+  const {refetch} = useQueryClient();
 
   const scheduleUsers = useLoadAllSchedulesUser({
     to: DateToYYYYMMDD(selectedDate || new Date()) || "",

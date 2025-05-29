@@ -13,7 +13,7 @@ export default function TutorCreatePage() {
 
   const listTutorsPermission = useUserHasPermission("TUT00");
 
-  const refetch = useQueryClient(state => state.refetch)
+  const {refetch} = useQueryClient()
   const patientTutorKey = useLoadAllPatientTutorKEY()
 
   const props = {

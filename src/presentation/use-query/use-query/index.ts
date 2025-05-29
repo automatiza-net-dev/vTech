@@ -1,4 +1,4 @@
-import useSWR, { mutate as globalMutate, useSWRConfig } from "swr";
+import useSWR, {useSWRConfig } from "swr";
 import useSWRMutation from "swr/mutation";
 import { QueryState } from "./types";
 

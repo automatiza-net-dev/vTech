@@ -45,7 +45,7 @@ export function Profile(props: Patient) {
   } = props;
 
   const { type } = useConfigurationsSystem();
-  const refetch = useQueryClient(st => st.refetch);
+  const {refetch} = useQueryClient();
 
   return (
     <Error name="Profile">

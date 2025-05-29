@@ -29,7 +29,7 @@ function Patologies({
 
   const patient = useLoadPatient();
 
-  const refetch = useQueryClient(st => st.refetch);
+  const {refetch} = useQueryClient();
   const router = useRouter();
 
   const getAllPathologies = useCallback(() => {

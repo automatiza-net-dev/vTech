@@ -27,7 +27,7 @@ export function Pathologie({
   const { createToast } = useToast();
   const { data, isFetching } = useLoadAllPathologies();
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   return (
     <Error name="Pathologie">

@@ -1,11 +1,10 @@
-//@ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import { vaccinesService } from "@/OLD/services/vaccine-service";
 
 import { RemoteChangeStatus } from "@/data";
-import { useLoadPatient, useLoadAllScheduleStatuses } from "@/presentation";
+import { useLoadPatient, useLoadAllScheduleStatuses, useQueryClient } from "@/presentation";
 import { container, patientTypes } from "@/container";
 
 import moment from "moment";
@@ -17,16 +16,15 @@ import {
   FormHandler,
   Button,
   useToast,
-  useQueryClient,
 } from "infinity-forge";
 import { Container } from "./styles";
 
 function Vaccines({ modal, setModal, value, reloadSchedule }) {
-  const [data, setData] = useState({});
+  const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
-  const [allProtocols, setAllProtocols] = useState([]);
-  const [selectedProtocol, setSelectedProtocol] = useState({});
-  const [applications, setApplications] = useState([]);
+  const [allProtocols, setAllProtocols] = useState<any>([]);
+  const [selectedProtocol, setSelectedProtocol] = useState<any>({});
+  const [applications, setApplications] = useState<any>([]);
 
   const { createToast } = useToast();
 
@@ -35,7 +33,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
   const eventId = router.query.scheduleId;
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   const getProtocols = useCallback(() => {
     setLoading(true);
@@ -75,7 +73,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
 
   const submitVaccine = useCallback(async () => {
     setLoading(false);
-    const applicationsData = applications.map((item) => {
+    const applicationsData = applications.map((item: any) => {
       return {
         ...item,
         date: moment(item?.date),
@@ -90,10 +88,10 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
         applications: applicationsData,
       })
       .then(async (_res) => {
-        setLoading(false);
-        setModal(false);
-        setData({});
-        setApplications([]);
+        // setLoading(false);
+        // setModal(false);
+        // setData({});
+        // setApplications([]);
         await refetch(["LastUpdates", patient.data?.id]);
         await refetch(["LoadAllVaccines"], { mode: "include" });
 
@@ -106,7 +104,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
             scheduleStatuses.data?.find((status) => status.type === "ATEND")
               ?.id || "";
 
-          container
+         await container
             .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
             .change({
               scheduleId: router.query.scheduleId as string,
