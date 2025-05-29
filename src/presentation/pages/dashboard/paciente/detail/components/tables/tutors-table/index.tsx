@@ -4,8 +4,9 @@ import {
   FormCreateTutor,
   useVerifyPermissions,
   useLoadSchedulesPatients,
+  useLoadPatient,
 } from "@/presentation";
-import { Patient, Tutor } from "@/domain";
+import { Tutor } from "@/domain";
 
 import { columns } from "./columns";
 import { ActiveTutor } from "./actions";
@@ -13,9 +14,13 @@ import { Unlink } from "@/OLD/components/Tutor/unlink";
 
 import * as S from "./styles";
 
-export function TutorsTable(props: Patient) {
+export function TutorsTable() {
+  const patient = useLoadPatient();
+  const props = patient?.data;
+
   const { data, mutate } = useLoadSchedulesPatients({
     patientFilters: { tag: props.tag },
+    enabled: !!props?.tag,
   });
 
   const hasPermission = useVerifyPermissions("PET04");
@@ -58,8 +63,9 @@ export function TutorsTable(props: Patient) {
         idTooltip="unlink"
         content="Desvincular Tutor/Pet"
         trigger={
-          <button type="button" className="action-button"><Unlink patientId={props.id} tutorId={p.id} customSubmit={mutate} /></button>
-          
+          <button type="button" className="action-button">
+            <Unlink patientId={props.id} tutorId={p.id} customSubmit={mutate} />
+          </button>
         }
       />
     ));
