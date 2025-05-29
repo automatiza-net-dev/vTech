@@ -7,7 +7,6 @@ import {
   Button,
   Select,
   useToast,
-  useQuery,
   InputMask,
   FormHandler,
   removeDigits,
@@ -17,6 +16,7 @@ import {
 import * as yup from "yup";
 
 import { PermissionItem, useConfigurationsSystem } from "@/presentation";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
   const [open, setOpen] = useState(false);

@@ -1,9 +1,9 @@
 import { ScheduleStatus } from "@/domain";
 import { useConfigurationsSystem } from "@/presentation";
+import { useQuery } from "@/presentation/use-query/use-query";
 import {
   HeadComponent,
   Icon,
-  useQuery,
   LoaderCircle,
   api,
 } from "infinity-forge";

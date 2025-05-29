@@ -1,11 +1,9 @@
-import { useVerifyFinanceSchedule } from "@/presentation/pages/dashboard/scheduling/utils";
 
 import {
   api,
   formatNumberToCurrency,
   Input,
   InputPassword,
-  useQuery,
 } from "infinity-forge";
 
 import * as S from "./styles";

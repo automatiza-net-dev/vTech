@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import {
   api,
-  useQuery,
   FormHandler,
   PageWrapper,
   LoaderCircle,
@@ -14,12 +13,12 @@ import moment from "moment";
 import { ReportDRE } from "./report";
 
 import * as S from "./styles";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export function DreReport() {
   const [months, setMonths] = useState(0);
   const [dateDRE, setDateDRE] = useState(null);
 
-  console.log(months)
 
   const { data, mutate, isFetching } = useQuery({
     queryKey: ["DRE", dateDRE, months],

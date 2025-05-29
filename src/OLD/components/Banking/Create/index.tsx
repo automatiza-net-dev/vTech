@@ -11,7 +11,7 @@ import { useTutor } from "@/OLD/hooks/useTutor";
 import { bankingService } from "@/OLD/services/banking.service";
 
 import { Container } from "./styles";
-import { api, Button, PageWrapper, useQuery } from "infinity-forge";
+import { api, Button, PageWrapper } from "infinity-forge";
 import { Input, DatePicker, Radio, Select, AutoComplete } from "antd";
 
 import {
@@ -19,6 +19,7 @@ import {
   useToast,
   Select as SelectInfinityForge,
 } from "infinity-forge";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 const { Group } = Radio;
 const { Option } = Select;

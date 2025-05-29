@@ -1,9 +1,9 @@
 
 import { useVerifyFinanceSchedule } from "@/presentation/pages/dashboard/scheduling/utils";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 import {
   api,
-  useQuery,
 } from "infinity-forge";
 
 export function useScheduleAuthorization({ patientId }) {

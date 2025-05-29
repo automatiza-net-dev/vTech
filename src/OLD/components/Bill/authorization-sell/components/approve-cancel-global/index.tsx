@@ -7,7 +7,6 @@ import {
   Select,
   TextEditor,
   useAuthAdmin,
-  useQuery,
 } from "infinity-forge";
 
 import { Bill } from "@/domain";
@@ -15,6 +14,7 @@ import { Bill } from "@/domain";
 import * as S from "./styles";
 import { useFormikContext } from "formik";
 import { useSystem } from "@/presentation";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export function ApproveCancelGlobal({
   cancelled,
