@@ -25,7 +25,13 @@ export function useQuery<T>({
 
   const cache = enableCache
     ? callApiOneTime
-    : {};
+    : {
+        staleTime: 0,           
+  cacheTime: 0,             
+  refetchOnMount: true,     
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
+    };
 
   function parseInterval(interval): number | false {
     switch (interval) {
