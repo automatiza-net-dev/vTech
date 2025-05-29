@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import {
   Input,
@@ -10,20 +10,23 @@ import {
   InputFile,
   FormHandler,
   useAuthAdmin,
+  LoaderCircle,
   TextEditor,
-  toBase64,
 } from "infinity-forge";
 import moment from "moment";
+import { useReactToPrint } from "react-to-print";
 
 import { useQueryClient } from "@/presentation/use-query";
 
 import * as yup from "yup";
 
 import {
+  PrintHeader,
   AddBudgetNew,
   useDictionary,
   useLoadPatient,
   useLoadSchedule,
+  PdfPatientAttendance,
   useLoadAllScheduleStatuses,
   useConfigurationsSystem,
 } from "@/presentation";
@@ -41,6 +44,8 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   const [modal, setModal] = useState(false);
   const [attendance, setAttendance] = useState<TimeLine | null>(null);
 
+  const componentRef = useRef<HTMLDivElement>(null);
+
   const queryClient = useQueryClient();
 
   const router = useRouter();
@@ -49,6 +54,15 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   const patient = useLoadPatient();
   const scheduleStatuses = useLoadAllScheduleStatuses();
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    onAfterPrint: async () => {
+      mutate && mutate();
+      reloadSchedule && reloadSchedule();
+      await queryClient.refetch(["LastUpdates"], { mode: "include" });
+    },
+  });
 
   const { user } = useAuthAdmin();
   const { type } = useConfigurationsSystem();
@@ -134,15 +148,11 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         reloadSchedule && reloadSchedule();
       }
 
-      mutate && mutate();
-      onSuccess && onSuccess();
-      reloadSchedule && reloadSchedule();
-
-      const query = toBase64({...attendanceResponse?.timeline_info, patient: patient.data });
-      window.open(
-        `/impressao/paciente/atendimento?timeline_info=${query}`,
-        "_blank"
-      );
+      if (!data?.print) {
+        mutate && mutate();
+        onSuccess && onSuccess();
+        reloadSchedule && reloadSchedule();
+      }
     } catch (err: any) {
       if (err?.error?.message) {
         return createToast({ status: "error", message: err?.error?.message });
@@ -166,9 +176,9 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       : [],
   };
 
-  // if (schedule.isFetching) {
-  //   return <LoaderCircle color="#ccc" size={20} />;
-  // }
+  if (schedule.isFetching) {
+    return <LoaderCircle color="#ccc" size={20} />;
+  }
 
   return (
     <S.Service>
@@ -183,9 +193,9 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         customSubmit={[
           {
             action: async (data) => {
-              await handleSubmit({ ...data, print: true }, async () => {
-                await queryClient.refetch(["LastUpdates"], { mode: "include" });
-              });
+              await handleSubmit({ ...data, print: true }, async () => {});
+
+              setTimeout(() => handlePrint(), 500);
             },
             props: () => ({
               text: "IMPRIMIR",
@@ -297,26 +307,24 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       {props?.timeline_info?.attendance?.id && (
         <AttendanceBudgets id={props.timeline_info?.attendance.id} />
       )}
+      <div style={{ display: "none" }}>
+        <div ref={componentRef} style={{ padding: "0 20px" }}>
+          <div className="uk-text-center uk-margin-top">
+            <PrintHeader />
+          </div>
+
+          <PdfPatientAttendance {...timeLine?.timeline_info} patient={patient?.data} />
+        </div>
+      </div>
     </S.Service>
   );
 }
 
 function Protocol({ timeLine }) {
-  const [protocoloAtual, setProtocoloAtual] = useState("");
-  const { values, setFieldValue } = useFormikContext<any>();
+  const { setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
-    if (values.protocoloAtual !== protocoloAtual) {
-      setProtocoloAtual(values.protocoloAtual);
-    }
-  }, [values.protocoloAtual]);
-
-  useEffect(() => {
-    setFieldValue("protocol", protocoloAtual || "");
-  }, [protocoloAtual]);
-
-  useEffect(() => {
-    setProtocoloAtual(timeLine?.timeline_info?.protocol);
+    setFieldValue("protocol", timeLine?.timeline_info?.protocol || "");
   }, []);
 
   return <TextEditor label="Protocolo" name="protocol" />;
