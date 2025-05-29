@@ -28,7 +28,7 @@ export function useQuery<T>({
     : {
         staleTime: 0,           
   cacheTime: 0,             
-  refetchOnMount: true,     // garante que refaça a chamada se o componente for montado novamente
+  refetchOnMount: true,     
   refetchOnReconnect: false,
   refetchOnWindowFocus: false,
     };
