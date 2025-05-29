@@ -1,9 +1,9 @@
-import { container, TypesAutomatiza } from "@/container";
 import api from "@/OLD/services";
-
+import {api as apiInfinity} from "infinity-forge";
 const getUser = async () => {
-  const ip = await container.get<any>(TypesAutomatiza.storage).get("ip");
-  return await api.get(`/auth/me?ip=${ip?.value}`);
+
+          const ip = await apiInfinity({ url: "ip", method: "get" }, "/api/");
+  return await api.get(`/auth/me?ip=${ip}`);
 };
 
 const getOneUser = async (id) => {
