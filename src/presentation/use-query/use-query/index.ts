@@ -77,7 +77,8 @@ export function useQuery<T>({
         onSuccess?.(res);
         return res;
       } catch (err) {
-        onError?.(err)
+        onError?.(err);
+        throw err;
       }
     },
     enabled,
