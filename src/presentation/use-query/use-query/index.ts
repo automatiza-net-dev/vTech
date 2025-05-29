@@ -81,12 +81,12 @@ export function useQuery<T>({
       }
     },
     enabled,
+    ...rest,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     retry: 0,
-    ...rest
   });
 
   function mutate(params?: any) {
