@@ -23,7 +23,6 @@ export function useQuery<T>({
 }: useQueryProps<T>) {
   const queryClient = tanstack.useQueryClient();
 
-  const cache = callApiOneTime
 
   function parseInterval(interval): number | false {
     switch (interval) {
@@ -82,7 +81,11 @@ export function useQuery<T>({
       }
     },
     enabled,
-    ...cache,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    retry: 0,
     ...rest
   });
 
