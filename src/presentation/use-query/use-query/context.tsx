@@ -6,7 +6,7 @@ interface QueryClientHelpers {
     key: string | any[],
     options?: { mode?: "exact" | "include" }
   ) => Promise<void>;
-  invalidateQueries: (key: string | any[]) => Promise<void>;
+  invalidateQueries: (key: string | {queryKey:string | any[]} | any[]) => Promise<void>;
   clearCache: () => void;
   mutate: (key: string, data: any) => void;
 }
@@ -22,21 +22,17 @@ export function useQueryClient(): QueryClientHelpers {
         try {
           const parsedKey = parseJSON(k);
           if (!Array.isArray(parsedKey)) return false;
-          console.log(parsedKey,"parsed", (Array.isArray(key) ? key[0] : parseJSON(key)?.[0]))
-          
           return parsedKey[0] === (Array.isArray(key) ? key[0] : parseJSON(key)?.[0]);
         } catch {
           return false;
         }
       });
 
-      console.log(matchedKeys)
-
       await Promise.all(matchedKeys.map((k) => mutate(k)));
     },
 
     async invalidateQueries(key) {
-      return this.refetch(key);
+      return this.refetch( typeof key === "object" ? (key as any).queryKey : key);
     },
 
     clearCache() {
