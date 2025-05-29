@@ -14,7 +14,7 @@ import {
 import { useProfile } from "@/OLD/hooks/useProfile.ts";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile.ts";
 
-import { Button, useToast } from "infinity-forge";
+import { Button, Tooltip, useToast } from "infinity-forge";
 import PaymentsPanel from "@/OLD/components/Notes/PaymentsPanel";
 import { Input, Table, Popconfirm, Modal, Typography } from "antd";
 const { TextArea } = Input;
@@ -112,75 +112,110 @@ export function Details({ receiptId, setVisible }: any) {
           actions: (
             <div style={{ display: "flex", gap: "0.75rem" }}>
               {cancelFNPermission && (
-                <MdOutlineCancel
-                  opacity={validToCancel ? 1 : 0.5}
-                  onClick={() => {
-                    if (!validToCancel) return;
+                <Tooltip
+                  idTooltip="cancelar"
+                  enableHover
+                  content={"Cancelar nota fiscal"}
+                  trigger={
+                    <MdOutlineCancel
+                      opacity={validToCancel ? 1 : 0.5}
+                      onClick={() => {
+                        if (!validToCancel) return;
 
-                    setOpenCancelNfe(true);
-                    setCancelNfeData({
-                      issuedDocumentId: doc.id,
-                      reason: "",
-                    });
-                  }}
-                  size={25}
-                  className="icon"
-                  cursor={"pointer"}
+                        setOpenCancelNfe(true);
+                        setCancelNfeData({
+                          issuedDocumentId: doc.id,
+                          reason: "",
+                        });
+                      }}
+                      size={25}
+                      className="icon"
+                      cursor={"pointer"}
+                    />
+                  }
                 />
               )}
+
               {disableFNPermission && (
-                <FiRefreshCw
-                  opacity={validToDisable ? 1 : 0.5}
-                  onClick={() => {
-                    if (!validToDisable) return;
+                <Tooltip
+                  idTooltip="Inutilizar"
+                  enableHover
+                  content={"Inutilizar nota fiscal"}
+                  trigger={
+                    <MdOutlineSyncDisabled
+                      opacity={validToDisable ? 1 : 0.5}
+                      onClick={() => {
+                        if (!validToDisable) return;
 
-                    setOpenDisableNfe(true);
-                    setDisableNfeData({
-                      issuedDocumentId: doc.id,
-                      reason: "",
-                    });
-                  }}
-                  size={25}
-                  className="icon"
-                  cursor={"pointer"}
+                        setOpenDisableNfe(true);
+                        setDisableNfeData({
+                          issuedDocumentId: doc.id,
+                          reason: "",
+                        });
+                      }}
+                      size={25}
+                      className="icon"
+                      cursor={"pointer"}
+                    />
+                  }
                 />
               )}
+              <Tooltip
+                idTooltip="Atualizar"
+                enableHover
+                content={"Atualizar dados da nota fiscal"}
+                trigger={
+                  <FiRefreshCw
+                    opacity={validToUpdate ? 1 : 0.5}
+                    onClick={() => {
+                      if (!validToUpdate) return;
 
-              <MdOutlineSyncDisabled
-                opacity={validToUpdate ? 1 : 0.5}
-                onClick={() => {
-                  if (!validToUpdate) return;
-
-                  updateNfeMutation.mutate(doc.id);
-                }}
-                size={25}
-                className="icon"
-                cursor={"pointer"}
+                      updateNfeMutation.mutate(doc.id);
+                    }}
+                    size={25}
+                    className="icon"
+                    cursor={"pointer"}
+                  />
+                }
               />
 
               {doc?.corrections.length > 0 ? (
-                <TbAlertTriangle
-                  size={20}
-                  color="var(--red)"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setNfeErrorsVisible(true);
-                    return setNfeErrors(doc?.corrections);
-                  }}
+                <Tooltip
+                  idTooltip="Visualizar"
+                  enableHover
+                  content={"Visualizar mensagem de erro"}
+                  trigger={
+                    <TbAlertTriangle
+                      size={20}
+                      color="var(--red)"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setNfeErrorsVisible(true);
+                        return setNfeErrors(doc?.corrections);
+                      }}
+                    />
+                  }
                 />
               ) : (
-                <RiPrinterCloudLine
-                  opacity={validToPrint ? 1 : 0.5}
-                  onClick={() => {
-                    if (!validToPrint) {
-                      return;
-                    }
+                <Tooltip
+                  idTooltip="Imprimir"
+                  enableHover
+                  content={"Imprimir DANFE"}
+                  trigger={
+                    <RiPrinterCloudLine
+                      opacity={validToPrint ? 1 : 0.5}
+                      onClick={() => {
+                        if (!validToPrint) {
+                          return;
+                        }
 
-                    window.open(doc.authorization_pdf_path, "_blank");
-                  }}
-                  size={25}
-                  className="icon"
-                  cursor={"pointer"}
+                        window.open(doc.authorization_pdf_path, "_blank");
+                      }}
+                      size={25}
+                      className="icon"
+                      cursor={"pointer"}
+                    />
+                  }
                 />
               )}
             </div>
@@ -204,7 +239,9 @@ export function Details({ receiptId, setVisible }: any) {
             title={`Deseja remover este item?`}
             onConfirm={() => removeReceiptItemSubmit(product?.id)}
           >
-            <FiTrash2 style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }} />
+            <FiTrash2
+              style={{ cursor: "pointer", fontSize: "1.2rem", color: "red" }}
+            />
           </Popconfirm>
         ),
       }))
@@ -495,7 +532,7 @@ export function Details({ receiptId, setVisible }: any) {
         </form>
       </Modal>
       <Modal
-        title="Cancelamento de Nota Fiscal de Produto"
+        
         visible={openCancelNfe}
         onCancel={() => {
           setOpenCancelNfe(false);
@@ -504,6 +541,7 @@ export function Details({ receiptId, setVisible }: any) {
         footer={null}
         width={500}
       >
+        <h3 className="font-18-bold">Cancelamento de Nota Fiscal de Produto</h3>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -545,7 +583,6 @@ export function Details({ receiptId, setVisible }: any) {
       </Modal>
 
       <Modal
-        title="Inutilização de Nota Fiscal de Produto"
         visible={openDisableNfe}
         onCancel={() => {
           setOpenDisableNfe(false);
@@ -554,6 +591,7 @@ export function Details({ receiptId, setVisible }: any) {
         footer={null}
         width={500}
       >
+         <h3 className="font-18-bold">Motivo inutilização</h3>
         <form
           onSubmit={(e) => {
             e.preventDefault();
