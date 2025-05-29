@@ -15,8 +15,6 @@ import {
 
 import {useQuery} from "@/presentation/use-query"
 
-import { QueryClient } from '@tanstack/react-query';
-
 import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -47,10 +45,7 @@ import "infinity-forge/dist/infinity-forge.css";
 import Link from "next/link";
 import { PermissionsProvider } from "@/presentation/context/permissions";
 
-import { QueryClient as QueryClientInfinity } from "infinity-query"
 import { QueryClientContextProvider } from "@/presentation/use-query/use-query/context";
-
-  const queryClientInfinity = new QueryClientInfinity()
 
 export default function App({ Component, pageProps }) {
   const [menus, setMenus] = useState<any>(null);
@@ -67,7 +62,6 @@ export default function App({ Component, pageProps }) {
     <QueryClientContextProvider>
       <ConfigurationsSystemProvider configurations={configurations}>
         <InfinityForgeProviders
-          queryClient={queryClientInfinity}
           atena={{ disableAuth: true, roles: ["aa"] } as any}
           i18n={{ roleToEditLanguage: ["aa"], disableEditMode: true } as any}
           auth={{
