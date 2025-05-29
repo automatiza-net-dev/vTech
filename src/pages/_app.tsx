@@ -45,11 +45,8 @@ import "@/OLD/styles/uikit.css";
 import "infinity-forge/dist/infinity-forge.css";
 import Link from "next/link";
 import { PermissionsProvider } from "@/presentation/context/permissions";
-import { QueryClientProvider } from "@tanstack/react-query";
-const queryClient = new QueryClient();
 
 import { QueryClient as QueryClientInfinity } from "infinity-query";
-import { QueryClientContextProvider } from "@/presentation/use-query/use-query/context";
 
 const queryClientInfinity = new QueryClientInfinity();
 
