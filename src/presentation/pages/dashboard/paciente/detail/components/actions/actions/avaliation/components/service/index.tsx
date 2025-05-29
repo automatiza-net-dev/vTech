@@ -46,7 +46,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const router = useRouter();
   const { createToast } = useToast();
@@ -103,8 +103,16 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       setAttendance(attendanceResponse);
 
       if (scheduleDate) {
-        queryClient.refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "true"]);
-        queryClient.refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "false"]);
+        queryClient.refetch([
+          "RemoteLoadAllSchedulesUser",
+          scheduleDate,
+          "true",
+        ]);
+        queryClient.refetch([
+          "RemoteLoadAllSchedulesUser",
+          scheduleDate,
+          "false",
+        ]);
       }
 
       createToast({
@@ -306,10 +314,23 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 }
 
 function Protocol({ timeLine }) {
-  const { setFieldValue } = useFormikContext();
+  const [protocoloAtual, setProtocoloAtual] = useState("");
+  const { values, setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
-    setFieldValue("protocol", timeLine?.timeline_info?.protocol || "");
+    if (values.protocoloAtual !== protocoloAtual) {
+      setProtocoloAtual(values.protocoloAtual);
+    }
+  }, [values.protocoloAtual]);
+
+  useEffect(() => {
+    setFieldValue("protocol", protocoloAtual || "");
+  }, [protocoloAtual]);
+
+  useEffect(() => {
+    setProtocoloAtual(
+      timeLine?.timeline_info?.protocol
+    );
   }, []);
 
   return <TextEditor label="Protocolo" name="protocol" />;

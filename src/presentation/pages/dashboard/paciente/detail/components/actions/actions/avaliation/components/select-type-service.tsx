@@ -48,7 +48,7 @@ export function SelectTypeService({
         base: resume,
       });
 
-    setFieldValue("protocol", response.result);
+    setFieldValue("protocoloAtual", response.result);
     setBody && setBody(response.result);
   }
 
