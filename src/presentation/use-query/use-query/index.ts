@@ -25,7 +25,13 @@ export function useQuery<T>({
 
   const cache = enableCache
     ? callApiOneTime
-    : {};
+    : {
+        staleTime: 0,           
+  cacheTime: 0,             
+  refetchOnMount: true,     // garante que refaça a chamada se o componente for montado novamente
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
+    };
 
   function parseInterval(interval): number | false {
     switch (interval) {
