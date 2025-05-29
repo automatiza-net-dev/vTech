@@ -21,11 +21,7 @@ export function PacientePage() {
 
   const {type} = useConfigurationsSystem()
 
-  if (isLoading || !data) {
-    return <>Carregando...</>;
-  }
-
-  const tabs: TabItem[] & { active: boolean }[] = [
+    const tabs: TabItem[] & { active: boolean }[] = [
     {
       title: "Últimas Atualizações",
       content: LastUpdates,
@@ -34,7 +30,7 @@ export function PacientePage() {
     },
     {
       title: "Tutores",
-      content: (props) => <TutorsTable {...data} {...props} />,
+      content: TutorsTable,
       key: "tutors",
       active: type === "Vet",
     },
@@ -77,6 +73,10 @@ export function PacientePage() {
       active: type !== "Vet",
     },
   ].filter((item) => item.active);
+
+  if (isLoading || !data) {
+    return <>Carregando...</>;
+  }
 
   return (
     <S.Paciente>
