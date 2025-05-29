@@ -8,7 +8,8 @@
     "sancla": "next dev -p 3058",
     "clinicas": "next dev -p 3057",
     "odonto": "next dev -p 3060",
-    "build": "next build"
+    "build": "next build",
+    "start": "next start -p 3058"
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
