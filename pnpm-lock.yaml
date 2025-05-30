@@ -72,8 +72,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.16(react@19.1.0)
       infinity-forge:
-        specifier: ^10.3.7
-        version: 10.3.7(@emotion/is-prop-valid@1.3.1)(@types/react@19.1.6)(formik@2.4.6(react@19.1.0))(moment@2.30.1)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(styled-components@6.1.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(use-sync-external-store@1.5.0(react@19.1.0))(yup@1.6.1)
+        specifier: ^10.5.1
+        version: 10.5.1(@emotion/is-prop-valid@1.3.1)(@types/react@19.1.6)(formik@2.4.6(react@19.1.0))(moment@2.30.1)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(styled-components@6.1.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(use-sync-external-store@1.5.0(react@19.1.0))(yup@1.6.1)
       infinity-query:
         specifier: ^0.0.8
         version: 0.0.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1651,8 +1651,8 @@ packages:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
 
-  infinity-forge@10.3.7:
-    resolution: {integrity: sha512-85r4tPQDTl9fZa829tJ8YSCIxg1SL5ZqTwgK8T3Z/cdz68kXHT+28ljPLLhikHEK3eafG/BdLvHxbhtuLTWZAg==}
+  infinity-forge@10.5.1:
+    resolution: {integrity: sha512-CP9jmCGv0wXJUZlCvPF221STQyqytsQQnrFqZBMNc1fZ7jlmctD9RqWAp4gkLZWBu8WHIYZV/nYOzYkts0nDAQ==}
     peerDependencies:
       formik: '>=2.4.6'
       moment: '>=2.30.1'
@@ -4486,7 +4486,7 @@ snapshots:
 
   indent-string@4.0.0: {}
 
-  infinity-forge@10.3.7(@emotion/is-prop-valid@1.3.1)(@types/react@19.1.6)(formik@2.4.6(react@19.1.0))(moment@2.30.1)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(styled-components@6.1.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(use-sync-external-store@1.5.0(react@19.1.0))(yup@1.6.1):
+  infinity-forge@10.5.1(@emotion/is-prop-valid@1.3.1)(@types/react@19.1.6)(formik@2.4.6(react@19.1.0))(moment@2.30.1)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(styled-components@6.1.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(use-sync-external-store@1.5.0(react@19.1.0))(yup@1.6.1):
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
@@ -4507,6 +4507,7 @@ snapshots:
       react-select: 5.10.1(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-window: 1.8.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       styled-components: 6.1.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      swr: 2.3.3(react@19.1.0)
       yup: 1.6.1
       zustand: 5.0.5(@types/react@19.1.6)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     transitivePeerDependencies:
