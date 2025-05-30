@@ -44,7 +44,7 @@ export default function Documents({
 
   const router = useRouter();
   const patient = useLoadPatient();
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   const { type } = useConfigurationsSystem();
 
@@ -146,7 +146,7 @@ export default function Documents({
         setDocument(false);
         return createToast({
           message: "Documento salvo com sucesso!",
-          status: "succes",
+          status: "success",
         });
       })
       .catch((_err) => {

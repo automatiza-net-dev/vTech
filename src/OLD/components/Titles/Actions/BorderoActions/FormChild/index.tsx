@@ -1,5 +1,3 @@
-// @ts-nocheck
-import { memo } from "react";
 
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { useCheckingAccounts } from "@/OLD/hooks/useCheckingAccounts";
@@ -14,13 +12,12 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 const { TextArea } = Input;
 
-const FormChild = memo(function FormChild({
-  data,
+export default function FormChild({
   setData,
   submit,
   setVisible,
   type,
-  paymentType = "all",
+  data
 }) {
   const { paymentMethods } = usePaymentMethods();
   const { checkingAccounts } = useCheckingAccounts();
@@ -37,21 +34,21 @@ const FormChild = memo(function FormChild({
             <AutoComplete
               className="uk-width-1-1"
               onChange={(val) =>
-                setData({ ...data, checkingAccountDescription: val })
+                setData(state => ({ ...state, checkingAccountDescription: val }))
               }
               onSelect={(_, opt) =>
-                setData({
-                  ...data,
+                setData(state => ({
+                  ...state,
                   checkingAccountDescription: opt?.val,
                   checkingAccountId: opt?.id,
-                })
+                }))
               }
               options={checkingAccounts?.map((account) => ({
                 ...account,
                 value: account?.description,
                 key: account?.id,
               }))}
-              filterOption={(val, opt) =>
+              filterOption={(val, opt: any) =>
                 normalizeStr(opt?.value?.toUpperCase())?.includes(
                   normalizeStr(val?.toUpperCase())
                 )
@@ -69,15 +66,15 @@ const FormChild = memo(function FormChild({
                 }))}
                 value={data?.paymentMethodDescription}
                 onChange={(val) =>
-                  setData({ ...data, paymentMethodDescription: val })
+                  setData(state => ({ ...state, paymentMethodDescription: val }))
                 }
                 onSelect={(val, opt) =>
-                  setData({
-                    ...data,
+                  setData(state => ({
+                    ...state,
                     checkingAccountId: opt?.checkingAccount?.id,
                     paymentMethodId: opt?.id,
                     paymentMethodDescription: opt?.value,
-                  })
+                  }))
                 }
                 filterOption={(val, opt) =>
                   normalizeStr(opt?.value?.toUpperCase())?.includes(
@@ -91,7 +88,7 @@ const FormChild = memo(function FormChild({
               <DatePicker
                 slotProps={{ textField: { variant: "standard" } }}
                 value={data?.paymentDate}
-                onChange={(val) => setData({ ...data, paymentDate: val })}
+                onChange={(val) => setData(state => ({ ...state, paymentDate: val }))}
               />
             </div>
           </div>
@@ -101,13 +98,13 @@ const FormChild = memo(function FormChild({
               <Input
                 value={data?.interestValue}
                 onChange={(e) => {
-                  setData({
-                    ...data,
+                  setData(state => ({
+                    ...state,
                     interestPercentage: 0,
                     interestValue: currencyFormatter(
                       convertIntlCurrency(e.target.value)
                     ),
-                  });
+                  }));
                 }}
               />
             </div>
@@ -116,12 +113,12 @@ const FormChild = memo(function FormChild({
               <Input
                 value={data?.interestPercentage}
                 onChange={(e) => {
-                  if (e.target.value >= 0 && e.target.value <= 100) {
-                    setData({
-                      ...data,
+                  if (Number(e.target.value) >= 0 && Number(e.target.value) <= 100) {
+                    setData(state => ({
+                      ...state,
                       interestPercentage: e.target.value,
                       interestValue: currencyFormatter(0),
-                    });
+                    }));
                   }
                 }}
               />
@@ -131,13 +128,13 @@ const FormChild = memo(function FormChild({
               <Input
                 value={data?.discountValue}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setData(state => ({
+                    ...state,
                     discountPercentage: 0,
                     discountValue: currencyFormatter(
                       convertIntlCurrency(e.target.value)
                     ),
-                  })
+                  }))
                 }
               />
             </div>
@@ -146,12 +143,12 @@ const FormChild = memo(function FormChild({
               <Input
                 value={data?.discountPercentage}
                 onChange={(e) => {
-                  if (e.target.value >= 0 && e.target.value <= 100) {
-                    setData({
-                      ...data,
+                  if (Number(e.target.value) >= 0 && Number(e.target.value) <= 100) {
+                    setData(state => ({
+                      ...state,
                       discountPercentage: e.target.value,
                       discountValue: currencyFormatter(0),
-                    });
+                    }));
                   }
                 }}
               />
@@ -164,7 +161,7 @@ const FormChild = memo(function FormChild({
             <label>Motivo estorno</label>
             <TextArea
               value={data?.reason}
-              onChange={(e) => setData({ ...data, reason: e.target.value })}
+              onChange={(e) => setData(state =>({ ...state, reason: e.target.value }))}
             />
           </div>
         </>
@@ -189,6 +186,4 @@ const FormChild = memo(function FormChild({
       </footer>
     </section>
   );
-});
-
-export default FormChild;
+}

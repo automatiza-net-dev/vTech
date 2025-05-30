@@ -93,7 +93,7 @@ const BorderoActions = memo(function BorderoActions({
         id: bordero?.id,
         paymentMethodId: downData?.paymentMethodId,
         checkingAccountId: downData?.checkingAccountId,
-        paymentDate: moment(downData?.paymentdate).format("YYYY-MM-DD"),
+        paymentDate: downData?.paymentDate?.format("YYYY-MM-DD"),
         interestValue: convertIntlCurrency(downData?.interestValue),
         interestPercentage: downData?.interestPercentage,
         discountValue: convertIntlCurrency(downData?.discountValue),

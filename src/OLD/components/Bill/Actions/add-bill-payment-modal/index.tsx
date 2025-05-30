@@ -20,7 +20,7 @@ export function AddBillPaymentModal({
 }) {
   const [paymentsVisible, setPaymentsVisible] = React.useState(false);
 
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
   const addPaymentPermission = useUserHasPermission("VEN04");
 
   if (!addPaymentPermission) {

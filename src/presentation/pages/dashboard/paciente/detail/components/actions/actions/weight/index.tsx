@@ -20,7 +20,7 @@ export function Weight(props: DropdownComponentProps) {
 
   const { user } = useAuthAdmin();
   const { createToast } = useToast();
-  const refetch = useQueryClient((st) => st.refetch);
+  const {refetch} = useQueryClient();
 
   const patientId = router.query.id as string;
 

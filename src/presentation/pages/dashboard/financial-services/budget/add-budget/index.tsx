@@ -50,7 +50,7 @@ export function AddBudgetNew({
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();
-  const refetch = useQueryClient(st => st.refetch);
+  const {refetch} = useQueryClient();
   const { user } = useAuthAdmin();
   const { type } = useConfigurationsSystem();
 

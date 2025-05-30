@@ -117,7 +117,7 @@ function BorderoActions({
         id: bordero?.id,
         paymentMethodId: downData?.paymentMethodId,
         checkingAccountId: downData?.checkingAccountId,
-        paymentDate: moment(downData?.paymentDate).format("YYYY-MM-DD"),
+      paymentDate: downData?.paymentDate?.format("YYYY-MM-DD"),
         interestValue: convertIntlCurrency(downData?.interestValue),
         interestPercentage: parseInt(downData?.interestPercentage),
         discountValue: convertIntlCurrency(downData?.discountValue),
@@ -188,11 +188,14 @@ function BorderoActions({
           </Popconfirm>
       )}
       {bordero?.status === "Fechado" && downBorderoPermission && (
+        <>
           <IoMdDownload
             size={20}
             className="custom-icon"
             onClick={() => setDownModalVisible(true)}
-          />
+          />  
+        </>
+        
       )}
       {bordero?.status === "Baixado" && revertBorderoPermission && (
           <BsArrowCounterclockwise

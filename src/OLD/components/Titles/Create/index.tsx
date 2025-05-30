@@ -12,11 +12,10 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import moment from "moment";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { currencyFormatter } from "@/OLD/components/Budget";
-import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Components
 import { Container } from "./styles";
-import { Input, DatePicker, Button, AutoComplete, Radio } from "antd";
+import { Input, DatePicker, Button, Radio } from "antd";
 import Installments from "./Installments";
 
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";

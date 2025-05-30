@@ -9,7 +9,6 @@ import {
   Input,
   Button,
   Select,
-  useQuery,
   FormHandler,
   InputDateRange,
   InputDatePicker,
@@ -17,6 +16,7 @@ import {
 
 import { Container } from "./styles";
 import { useSystem } from "@/presentation";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export default function TitlesFilters({
   type,

@@ -21,7 +21,7 @@ export function FormUserController({
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { createToast } = useToast();
-  const refetch = useQueryClient(s => s.refetch);
+  const {refetch} = useQueryClient();
 
   const id = userController?.id;
 

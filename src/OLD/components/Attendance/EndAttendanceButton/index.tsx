@@ -32,7 +32,7 @@ export function EndAttendanceButton() {
   const { attendances } = useAttendances(patient?.data?.id, reload);
   const { schedule } = useSchedule(scheduleId, reload);
 
-  const refetch = useQueryClient(st => st.refetch);
+  const refetch = useQueryClient();
 
   const attendancesToClose = attendances.filter(
     (attendance) => !attendance?.end_date

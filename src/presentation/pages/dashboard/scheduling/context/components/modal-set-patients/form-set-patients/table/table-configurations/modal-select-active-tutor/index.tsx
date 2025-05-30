@@ -28,7 +28,7 @@ export function ModalSelectActiveTutor({
   const { createToast } = useToast();
   const setMainTutor = useSetMainTutor();
 
-  const refetch  = useQueryClient(state => state.refetch);
+  const {refetch}  = useQueryClient();
 
   const queryKeyLoadSchedulesPatients = useLoadSchedulesPatientsKEY();
 

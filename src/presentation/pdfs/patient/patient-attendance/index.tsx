@@ -1,16 +1,15 @@
 import moment from "moment";
 import { useAuthAdmin } from "infinity-forge";
 
-import { TimeLine } from "@/domain";
-import { useConfigurationsSystem, useLoadPatient } from "@/presentation";
+import { Patient, TimeLine } from "@/domain";
+import { useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
 export function PdfPatientAttendance(
-  props: Partial<TimeLine["timeline_info"]>
+  props: Partial<TimeLine["timeline_info"]> & { patient: Patient }
 ) {
   const { user } = useAuthAdmin();
-  const { data } = useLoadPatient();
 
   const { type } = useConfigurationsSystem();
 
@@ -21,16 +20,16 @@ export function PdfPatientAttendance(
           <strong>
             {type === "Vet" ? "Pet:" : "Paciente:"}:
           </strong>
-          <span>{data?.name || "-"}</span>
+          <span>{props.patient?.name || "-"}</span>
         </span>
 
         <span className="font-14-regular">
           <strong>Peso:</strong>
-          {data?.weight ? (
+          {props.patient?.weight ? (
             <span>
-              {data?.weight || "-"} Em{" "}
-              {data?.weight_date
-                ? moment(data?.weight_date).format("DD/MM/YYYY")
+              {props.patient?.weight || "-"} Em{" "}
+              {props.patient?.weight_date
+                ? moment(props.patient?.weight_date).format("DD/MM/YYYY")
                 : "-"}
             </span>
           ) : (
@@ -43,12 +42,12 @@ export function PdfPatientAttendance(
         {type === "Vet" && (
           <span className="font-14-regular">
             <strong>Espécie:</strong>
-            <span>{data?.specie || "-"}</span>
+            <span>{props.patient?.specie || "-"}</span>
           </span>
         )}
 
         <span className="font-14-regular">
-          <strong>Sexo:</strong> <span>{data?.genderText || "-"}</span>
+          <strong>Sexo:</strong> <span>{props.patient?.genderText || "-"}</span>
         </span>
       </div>
 
@@ -56,12 +55,12 @@ export function PdfPatientAttendance(
         {type === "Vet" && (
           <span className="font-14-regular">
             <strong>Raça:</strong>
-            <span>{data?.race || "-"}</span>
+            <span>{props.patient?.race || "-"}</span>
           </span>
         )}
 
         <span className="font-14-regular">
-          <strong>Idade:</strong> <span>{data?.age || "-"}</span>
+          <strong>Idade:</strong> <span>{props.patient?.age || "-"}</span>
         </span>
       </div>
 
@@ -69,24 +68,24 @@ export function PdfPatientAttendance(
         <div className="row">
           <span className="font-14-regular">
             <strong>Pelagem:</strong>
-            <span>{data?.hair || "-"}</span>
+            <span>{props.patient?.hair || "-"}</span>
           </span>
 
           <span className="font-14-regular">
-            <strong>Chip:</strong> <span>{data?.tag || "-"}</span>
+            <strong>Chip:</strong> <span>{props.patient?.tag || "-"}</span>
           </span>
         </div>
       )}
 
-      {data?.tutor && (
+      {props.patient?.tutor && (
         <div className="row">
           <span className="font-14-regular">
             <strong>Responsável:</strong>
-            <span>{data.tutor?.name || "-"}</span>
+            <span>{props.patient.tutor?.name || "-"}</span>
           </span>
 
           <span className="font-14-regular">
-            <strong>CPF:</strong> <span>{data?.tutor?.document || "-"}</span>
+            <strong>CPF:</strong> <span>{props.patient?.tutor?.document || "-"}</span>
           </span>
         </div>
       )}
@@ -94,7 +93,7 @@ export function PdfPatientAttendance(
       <div className="row" style={{ width: "100%" }}>
         <span className="font-14-regular" style={{ display: "flex", width: "100%" }}>
           <strong>Endereço:</strong>
-          <div>{data?.tutor?.address || "-"}</div>
+          <div>{props.patient?.tutor?.address || "-"}</div>
         </span>
       </div>
 

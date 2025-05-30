@@ -1,6 +1,5 @@
 import {
   api,
-  useQuery,
   useTable,
   useToast,
   BadRequestError,
@@ -16,6 +15,7 @@ import {
 } from "@/presentation";
 
 import * as yup from "yup";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export default function TipoVendaRelacionada() {
   return (

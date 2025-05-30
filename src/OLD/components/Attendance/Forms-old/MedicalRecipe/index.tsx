@@ -43,7 +43,7 @@ function AddMedicalRecipe({
 
   const {type} = useConfigurationsSystem()
 
-  const refetch = useQueryClient(st => st.refetch);
+  const {refetch} = useQueryClient();
 
   const replaceText = (str, setState) => {
 

@@ -1,25 +1,18 @@
-// @ts-nocheck
-// Core
-import { memo, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-// Services
 import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
-// Components
 import { Button, Input, Modal, Select } from "antd";
-import { useToast } from "infinity-forge";
-import { useMutation } from "@/presentation/use-query";
-const { TextArea } = Input;
-const { Option } = Select;
+import { useMutation,  useQueryClient} from "@/presentation/use-query";
 
-const UpdateTaxOperation = memo(function UpdateTaxOperation({
+function UpdateTaxOperation({
   initialData,
   visible,
   hide,
 }) {
   const queryClient = useQueryClient();
 
-  const [data, setData] = useState({
+  const [data, setData] = useState<any>({
     code: "",
     description: "",
     movementType: null,
@@ -179,6 +172,6 @@ const UpdateTaxOperation = memo(function UpdateTaxOperation({
       </form>
     </Modal>
   );
-});
+}
 
 export default UpdateTaxOperation;

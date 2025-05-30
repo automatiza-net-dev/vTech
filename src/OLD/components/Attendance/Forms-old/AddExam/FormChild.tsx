@@ -127,13 +127,23 @@ export default function FormChild({
                 <label>Data de solicitação</label>
                 <br />
                 <DatePicker
-                  defaultValue={moment(new Date())}
+                  defaultValue={moment()}
                   disabled={examPatientData}
                   format={"DD/MM/YYYY"}
-                  value={data?.realizedAt}
-                  onChange={(e) => setData({ ...data, realizedAt: e })}
+                  value={data?.requestedAt}
+                  onChange={(e) => setData({ ...data, requestedAt: e })}
                 />
               </div>
+
+          {data?.createdAt &&    <div>
+                <label>Data lançamento</label>
+                <br />
+                <DatePicker
+                  disabled={true}
+                  format={"DD/MM/YYYY"}
+                  value={data?.createdAt}
+                />
+              </div>}
             </div>
             <div className="uk-flex uk-flex-around uk-margin-top">
               <p className="uk-margin-remove">Solicitação</p>

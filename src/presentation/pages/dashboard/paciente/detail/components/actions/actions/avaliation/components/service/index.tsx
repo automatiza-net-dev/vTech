@@ -46,7 +46,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const router = useRouter();
   const { createToast } = useToast();
@@ -55,7 +55,14 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
   const patient = useLoadPatient();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const handlePrint = useReactToPrint({ contentRef: componentRef });
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    onAfterPrint: async () => {
+      mutate && mutate();
+      reloadSchedule && reloadSchedule();
+      await queryClient.refetch(["LastUpdates"], { mode: "include" });
+    },
+  });
 
   const { user } = useAuthAdmin();
   const { type } = useConfigurationsSystem();
@@ -103,8 +110,16 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       setAttendance(attendanceResponse);
 
       if (scheduleDate) {
-        queryClient.refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "true"]);
-        queryClient.refetch(["RemoteLoadAllSchedulesUser", scheduleDate, "false"]);
+        queryClient.refetch([
+          "RemoteLoadAllSchedulesUser",
+          scheduleDate,
+          "true",
+        ]);
+        queryClient.refetch([
+          "RemoteLoadAllSchedulesUser",
+          scheduleDate,
+          "false",
+        ]);
       }
 
       createToast({
@@ -133,9 +148,11 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         reloadSchedule && reloadSchedule();
       }
 
-      mutate && mutate();
-      onSuccess && onSuccess();
-      reloadSchedule && reloadSchedule();
+      if (!data?.print) {
+        mutate && mutate();
+        onSuccess && onSuccess();
+        reloadSchedule && reloadSchedule();
+      }
     } catch (err: any) {
       if (err?.error?.message) {
         return createToast({ status: "error", message: err?.error?.message });
@@ -176,11 +193,9 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         customSubmit={[
           {
             action: async (data) => {
-              await handleSubmit(data, async () => {
-                await queryClient.refetch(["LastUpdates"], { mode: "include" });
-              });
+              await handleSubmit({ ...data, print: true }, async () => {});
 
-              handlePrint();
+              setTimeout(() => handlePrint(), 500);
             },
             props: () => ({
               text: "IMPRIMIR",
@@ -298,7 +313,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
             <PrintHeader />
           </div>
 
-          <PdfPatientAttendance {...timeLine?.timeline_info} />
+          <PdfPatientAttendance {...timeLine?.timeline_info} patient={patient?.data} />
         </div>
       </div>
     </S.Service>
@@ -306,7 +321,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 }
 
 function Protocol({ timeLine }) {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
     setFieldValue("protocol", timeLine?.timeline_info?.protocol || "");

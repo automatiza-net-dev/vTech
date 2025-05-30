@@ -34,7 +34,7 @@ const verifyFields = (data) => {
   return "ok";
 };
 
-const FormChild = memo(function FormChild({
+function FormChild({
   data,
   setData,
   submit,
@@ -224,6 +224,6 @@ const FormChild = memo(function FormChild({
       )}
     </Container>
   );
-});
+}
 
 export default FormChild;

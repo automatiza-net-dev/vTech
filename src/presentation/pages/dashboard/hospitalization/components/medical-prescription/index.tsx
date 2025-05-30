@@ -1,7 +1,6 @@
 import {
   api,
   Select,
-  useQuery,
   FormHandler,
   LoaderCircle,
 } from "infinity-forge";
@@ -12,6 +11,7 @@ import { NewPrescription } from "./new-prescription";
 
 import * as S from "./styles";
 import { Prescription } from "./prescription";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export function MedicalPrescription({ id }) {
   const { data, isLoading } = useQuery({

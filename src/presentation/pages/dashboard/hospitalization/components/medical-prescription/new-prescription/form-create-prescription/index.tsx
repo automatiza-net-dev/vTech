@@ -13,7 +13,7 @@ export function FormCreatePrescription({
   onCreate,
   previousPrescription,
 }) {
-  const refetch = useQueryClient((s) => s.refetch);
+  const {refetch} = useQueryClient();
 
   return (
     <S.FormCreatePrescription>

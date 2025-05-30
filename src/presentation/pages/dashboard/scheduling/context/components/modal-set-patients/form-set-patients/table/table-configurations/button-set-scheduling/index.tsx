@@ -36,7 +36,7 @@ export function ButtonSetSchedulling(props) {
 
   const assignutor = useAssignTutor();
 
-  const refetch = useQueryClient((state) => state.refetch);
+  const {refetch} = useQueryClient();
   const queryKeyLoadSchedulePatients = useLoadSchedulesPatientsKEY();
 
   return (

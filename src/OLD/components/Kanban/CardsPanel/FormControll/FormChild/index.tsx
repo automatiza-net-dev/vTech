@@ -12,10 +12,10 @@ import {
   api,
   formatNumberToCurrency,
   FormHandler,
-  useQuery,
   Select as SelectInfinityForge,
 } from "infinity-forge";
 import moment from "moment";
+import { useQuery } from "@/presentation/use-query/use-query";
 
 const FormChild = memo(function ({
   data,

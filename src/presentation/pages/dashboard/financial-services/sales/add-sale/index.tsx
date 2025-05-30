@@ -9,7 +9,6 @@ import {
   useAuthAdmin,
   BadRequestError,
   Select,
-  useQuery,
   api,
 } from "infinity-forge";
 
@@ -39,6 +38,7 @@ import {
 
 import * as S from "./styles";
 import { useQueryClient } from "@/presentation/use-query"
+import { useQuery } from "@/presentation/use-query/use-query";
 
 export function AddSale({
   type = "create",

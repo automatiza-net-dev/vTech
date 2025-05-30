@@ -47,11 +47,10 @@ export default function LaunchExam({
   const [report, setReport] = useState("");
   const [request, setRequest] = useState("");
   const [fileList, setFileList] = useState([]);
-  const [viewArquives, setViewArquives] = useState([]);
   const [examSearch, setExamSearch] = useState("");
 
   const patient = useLoadPatient();
-
+  const queryClient = useQueryClient();
   const router = useRouter();
   const eventId = router.query.innerpage;
 
@@ -98,15 +97,21 @@ export default function LaunchExam({
       setLoading(false);
       return;
     }
+
     setLoading(true);
     patientExamsService
       .showPatientExam(patientExamId)
       .then((res) => {
         res.data?.attachments?.length > 0 && setFileList(res.data?.attachments);
+        console.log("res", res)
         setData({
           patientExamId,
           examId: res?.data?.exam?.id,
-          realizedAt: moment(res?.data?.created_at),
+          requestedAt: moment(
+            res?.data?.requestedAt?.slice(0, 10),
+            "YYYY-MM-DD"
+          ),
+          createdAt: moment(res?.data?.created_at?.slice(0, 10), "YYYY-MM-DD"),
           laboratory: res?.data?.laboratory,
           releasedAt: moment(res?.data?.relesed_at),
           resultDate: moment(
@@ -142,7 +147,7 @@ export default function LaunchExam({
       setLoading(true);
       const formData = new FormData();
       formData.append("patientId", patient.data?.id);
-      formData.append("realizedAt", moment(new Date()).format("YYYY-MM-DD"));
+      formData.append("requestedAt", moment(new Date()).format("YYYY-MM-DD"));
 
       fileList.forEach((item: any) => {
         formData.append("attachments[]", item.originFileObj);
@@ -163,7 +168,7 @@ export default function LaunchExam({
     [fileList]
   );
 
-  const refetch = useQueryClient((st) => st.refetch);
+
 
   const submitExamLauching = useCallback(
     (visible = false) => {
@@ -180,6 +185,7 @@ export default function LaunchExam({
           scheduleId: eventId,
           solicitorId: userInfo?.data?.id,
           status: report,
+          requestedAt: moment(data?.requestedAt).format("YYYY-MM-DD"),
         })
         .then(async (res) => {
           fileList.length > 0
@@ -220,7 +226,7 @@ export default function LaunchExam({
           }
         })
         .finally(() => {
-          refetch(["LastUpdates"], { mode: "include" });
+          queryClient?.refetch(["LastUpdates"], { mode: "include" });
 
           if (!error) {
             modal && setModal && setModal(false);
@@ -269,7 +275,7 @@ export default function LaunchExam({
           });
         })
         .finally(() => {
-          refetch(["LastUpdates"], { mode: "include" });
+          queryClient?.refetch(["LastUpdates"], { mode: "include" });
 
           if (!visible) {
             setSelectedExam({});
@@ -284,37 +290,13 @@ export default function LaunchExam({
     [selectedExam, request, report, patient, eventId, data, fileList]
   );
 
-  const removeAttachment = useCallback(
-    (attachmentId) => {
-      setLoading(true);
-      patientExamsService
-        .removeAttachment(
-          examPatientData?.timeline_info.patient_exam.id,
-          attachmentId
-        )
-        .then((_res) => {
-          setLoading(false);
-          refetch(["LastUpdates"], { mode: "include" });
-          return createToast({ message: "Anexo removido!", status: "success" });
-        })
-        .catch((err) => {
-          setLoading(false);
-          return createToast({
-            message: "Houve um problema ao remover o anexo",
-            status: "error",
-          });
-        });
-    },
-    [examPatientData]
-  );
-
   const removeData = () => {
     setLoading(true);
     timelineService
       .removeComplete(examPatientData?._id)
       .then((_res) => {
         setLoading(false);
-        refetch(["LastUpdates"], { mode: "include" });
+        queryClient?.refetch(["LastUpdates"], { mode: "include" });
         return createToast({
           message: "Registro removido com sucesso!",
           status: "error",
@@ -347,7 +329,7 @@ export default function LaunchExam({
         clinic={userInfo?.data?.unit}
         modal={modal}
         update={examPatientData}
-        viewArquives={viewArquives}
+        viewArquives={[]}
         replaceText={replaceText}
         examSearch={examSearch}
         setExamSearch={setExamSearch}
@@ -368,7 +350,7 @@ export default function LaunchExam({
                 <FileUploader {...item} url={item?.attachment} key={i} />
               ) : (
                 <div style={{ marginTop: "10px" }}>
-                    {isImage(window.URL.createObjectURL(item.originFileObj)) ? (
+                  {isImage(window.URL.createObjectURL(item.originFileObj)) ? (
                     <img
                       src={window.URL.createObjectURL(item.originFileObj)}
                       width={150}
@@ -376,7 +358,10 @@ export default function LaunchExam({
                     />
                   ) : (
                     <div className="uk-margin-small-right">
-                      <FileIcon url={window.URL.createObjectURL(item.originFileObj)} size={50} />
+                      <FileIcon
+                        url={window.URL.createObjectURL(item.originFileObj)}
+                        size={50}
+                      />
                     </div>
                   )}
                   <span>{item?.originFileObj?.name}</span>
@@ -432,7 +417,7 @@ export default function LaunchExam({
         modal={modal}
         clinic={userInfo?.data?.unit}
         update={examPatientData}
-        viewArquives={viewArquives}
+        viewArquives={[]}
         replaceText={replaceText}
         examSerch={examSearch}
         setExamSearch={setExamSearch}
@@ -452,7 +437,10 @@ export default function LaunchExam({
                     />
                   ) : (
                     <div className="uk-margin-small-right">
-                      <FileIcon url={window.URL.createObjectURL(item.originFileObj)} size={50} />
+                      <FileIcon
+                        url={window.URL.createObjectURL(item.originFileObj)}
+                        size={50}
+                      />
                     </div>
                   )}
 
@@ -494,13 +482,19 @@ export interface FileIconProps {
 export const isImage = (fileName: string) => {
   const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
 
-  const fileNameAcess = typeof fileName === "string" ? fileName : typeof fileName === "object" ? (fileName as any)?.type : "";
+  const fileNameAcess =
+    typeof fileName === "string"
+      ? fileName
+      : typeof fileName === "object"
+      ? (fileName as any)?.type
+      : "";
 
-  return imageExtensions.some(ext => fileNameAcess?.toLowerCase()?.includes(ext));
+  return imageExtensions.some((ext) =>
+    fileNameAcess?.toLowerCase()?.includes(ext)
+  );
 };
 
 export const FileIcon: React.FC<FileIconProps> = ({ url, size = 24 }) => {
-
   const commonProps = {
     width: size,
     height: size,
@@ -509,7 +503,8 @@ export const FileIcon: React.FC<FileIconProps> = ({ url, size = 24 }) => {
     xmlns: "http://www.w3.org/2000/svg",
   };
 
-  return  <svg {...commonProps}>
+  return (
+    <svg {...commonProps}>
       <path
         d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"
         fill="#95A5A6"
@@ -518,4 +513,5 @@ export const FileIcon: React.FC<FileIconProps> = ({ url, size = 24 }) => {
         FILE
       </text>
     </svg>
+  );
 };

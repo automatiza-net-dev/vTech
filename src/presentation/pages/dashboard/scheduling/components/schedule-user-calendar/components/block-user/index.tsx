@@ -2,11 +2,11 @@ import { ScheduleUser } from "@/domain";
 
 import * as S from "./styles";
 import { BlockUserButton } from "@/OLD/components/Colaborators/Collaborators/Absence/Create";
-import { Icon, Tooltip } from "infinity-forge";
+import {  Tooltip } from "infinity-forge";
 import { useQueryClient } from "@/presentation/use-query"
 
 export function BlockUser({ scheduleUser }: { scheduleUser: ScheduleUser }) {
-  const refetch = useQueryClient((state) => state.refetch);
+  const {refetch} = useQueryClient();
 
   return (
     <S.BlockUser>

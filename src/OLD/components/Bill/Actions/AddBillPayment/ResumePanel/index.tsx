@@ -1,15 +1,11 @@
-// @ts-nocheck
-// Core
-import React, { memo, useEffect, useState } from "react";
+import React, { memo } from "react";
 
-// Utils
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-// Components
 import { Container } from "./styles";
 import { Input } from "antd";
 
-export const ResumePanel = memo(function ResumePanel({ bill, formData }) {
+export default function ResumePanel({ bill, formData }: any) {
   let totalPayed = 0;
 
   for (let i = 0; i < bill?.payments?.length; i += 1) {
@@ -84,6 +80,5 @@ export const ResumePanel = memo(function ResumePanel({ bill, formData }) {
       </section>
     </Container>
   );
-});
+}
 
-export default ResumePanel;

@@ -1,23 +1,19 @@
-// @ts-nocheck
-// Core
-import React, { memo, useState } from "react";
 
-// Utils
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
-// Components
 import { Container } from "./styles";
 import { Button, useToast } from "infinity-forge";
-import { Input, Modal } from "antd";
+import { Input } from "antd";
 
 export function DetailsPanel({
+  loading,
+  setLoading,
   formData,
   setFormData,
   submit,
   bill,
-}) {
-  const [confirmModal, setConfirmModal] = useState(false);
+}: any) {
   let totalPayed = 0;
 
   const { createToast } = useToast();
@@ -26,7 +22,9 @@ export function DetailsPanel({
     totalPayed += bill?.payments[i]?.total_value;
   }
 
-  const valuesVerification = () => {
+  const valuesVerification = async () => {
+    try {
+    setLoading(true)
     if (
       parseFloat(totalPayed?.toFixed(2)) +
         convertIntlCurrency(formData?.installmentsValue) >
@@ -45,7 +43,10 @@ export function DetailsPanel({
       });
     }
 
-    return submit();
+    await submit();
+    }catch {}finally {
+      setLoading(false)
+    }
   };
 
   const someRequiresConfirmation = Array.from(
@@ -146,7 +147,7 @@ export function DetailsPanel({
             alignItems: "center",
           }}
         >
-          <Button type="submit" text="Confirmar" />
+          <Button type="submit" text="Confirmar" disabled={loading} loading={loading} />
 
           {someRequiresConfirmation && (
             <p

@@ -1,19 +1,14 @@
-// @ts-nocheck
-// Core
-import React, { memo } from "react";
 
-// Container
 import { Container } from "./styles";
 
-// Utils
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-const NonTefPanel = memo(function NonTefPanel({
+function NonTefPanel({
   methods,
   formData,
   setFormData,
   bill,
-}) {
+}: any) {
   let totalPayed = 0;
 
   for (let i = 0; i < bill?.payments?.length; i += 1) {
@@ -57,6 +52,6 @@ const NonTefPanel = memo(function NonTefPanel({
       </div>
     </Container>
   );
-});
+}
 
 export default NonTefPanel;

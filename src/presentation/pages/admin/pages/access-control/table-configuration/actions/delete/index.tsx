@@ -9,7 +9,7 @@ import { adminTypes, container } from "@/container";
 export function Delete(props: ControllerRole) {
   const { createToast } = useToast()
 
-  const refetch = useQueryClient(s => s.refetch)
+  const {refetch} = useQueryClient()
 
   return (
     <ButtonDelete onClick={async () => {

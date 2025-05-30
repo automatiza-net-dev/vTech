@@ -18,7 +18,7 @@ export function Tutors({
   id: string;
   name: string;
 }) {
-  const refetch = useQueryClient(st => st.refetch);
+  const {refetch} = useQueryClient();
 
   return (
     <Error name="birthDate">

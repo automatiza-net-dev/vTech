@@ -23,14 +23,14 @@ import { container, TypesAutomatiza } from "@/container";
 import { RemoteBudget } from "@/data";
 import { AxiosError } from "axios";
 
-const AddPayments = memo(function AddPayments({
+function AddPayments({
   receipt,
   setReload,
   origin = "receipts",
   budgetId = false,
   accountPlanId,
-  onUpdatePayment
-}) {
+  onUpdatePayment,
+}: any) {
   const [flags, setFlags] = useState(false);
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -93,6 +93,7 @@ const AddPayments = memo(function AddPayments({
       items: [
         {
           ...data,
+          accountPlanId,
           totalValue: convertIntlCurrency(data?.installmentValue),
         },
       ],
@@ -105,13 +106,20 @@ const AddPayments = memo(function AddPayments({
 
       setLoading(false);
       setPaymentsReload((prv) => !prv);
-      onUpdatePayment && onUpdatePayment()
+      onUpdatePayment && onUpdatePayment();
       queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
 
-      return createToast({ status: "success", message: "Pagamento adicionado com sucesso!"  })
+      return createToast({
+        status: "success",
+        message: "Pagamento adicionado com sucesso!",
+      });
     } catch (err) {
-
-      if (window.confirm(err?.error?.message || err?.errors?.[0]?.field + " " +  err?.errors?.[0]?.message)) {
+      if (
+        window.confirm(
+          err?.error?.message ||
+            err?.errors?.[0]?.field + " " + err?.errors?.[0]?.message
+        )
+      ) {
         await container
           .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
           .createPayment({
@@ -125,8 +133,11 @@ const AddPayments = memo(function AddPayments({
         setLoading(false);
         setPaymentsReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-       
-        return createToast({ status: "success", message: "Pagamento adicionado com sucesso!"  })
+
+        return createToast({
+          status: "success",
+          message: "Pagamento adicionado com sucesso!",
+        });
       }
     }
   }, [budget, data]);
@@ -137,13 +148,17 @@ const AddPayments = memo(function AddPayments({
       .then((_res) => {
         setPaymentsReload((prv) => !prv);
         queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
-      
 
-      createToast({ status: "success", message: "Pagamento removido com sucesso!"   })
+        createToast({
+          status: "success",
+          message: "Pagamento removido com sucesso!",
+        });
       })
       .catch((err) => {
-
-        return  createToast({ status: "error", message: err?.response?.data?.message?.split(":")[1]   })
+        return createToast({
+          status: "error",
+          message: err?.response?.data?.message?.split(":")[1],
+        });
       });
   };
 
@@ -170,26 +185,45 @@ const AddPayments = memo(function AddPayments({
       setReload((prv) => !prv);
       queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
 
-      onUpdatePayment && onUpdatePayment()
+      onUpdatePayment && onUpdatePayment();
 
-      return createToast({ status: "success", message:"Pagamento adicionado com sucesso!"  })
+      return createToast({
+        status: "success",
+        message: "Pagamento adicionado com sucesso!",
+      });
     } catch (error) {
-      if (window.confirm(error?.error?.message || (error?.errors?.[0]?.field + " " +  error?.errors?.[0]?.message))) {
-        await receiptService.createReceiptPayment({
-          ...payload,
-          items: payload.items.map((item) => ({
-            ...item,
-            maxParcelas: true,
-          })),
-        });
+      if (
+        window.confirm(
+          error?.response?.data?.message ||
+            error?.error?.message ||
+            error?.errors?.[0]?.field + " " + error?.errors?.[0]?.message
+        )
+      ) {
+        try {
+          await receiptService.createReceiptPayment({
+            ...payload,
+            items: payload.items.map((item) => ({
+              ...item,
+              accountPlanId,
+              maxParcelas: true,
+            })),
+          });
 
-        setLoading(false);
-        setReload((prv) => !prv);
-        queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
+          setLoading(false);
+          setReload((prv) => !prv);
+          queryClient.invalidateQueries({ queryKey: ["paymentsPreview"] });
+        } catch (err) {
+          createToast({
+            status: "error",
+            message: error?.response?.data?.message,
+          });
+        } finally {
+          setLoading(false);
+        }
       }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, [data, accountPlanId]);
 
   const verifyRender = () => {
@@ -255,6 +289,8 @@ const AddPayments = memo(function AddPayments({
                       >
                         {flag?.flag?.description}
                         <br />
+                         {"(" + flag?.acquirer?.description + ")"}
+                          <br />
                         <span className="uk-text-muted text-small">
                           Até {flag?.max_installments}x
                         </span>
@@ -300,6 +336,8 @@ const AddPayments = memo(function AddPayments({
                       >
                         {flag?.flag?.description}
                         <br />
+                               {"(" + flag?.acquirer?.description + ")"}
+                          <br />
                         <span className="uk-text-muted text-small">
                           Até {flag?.max_installments}x
                         </span>
@@ -320,10 +358,10 @@ const AddPayments = memo(function AddPayments({
                       onClick={() => {
                         setData({
                           maxInstallments: method?.max_installments,
-                          installments:
+                          installments: method?.flags && method?.flags?.length > 0 ?
                             method?.flags?.[0]?.max_installments === 1
                               ? 1
-                              : method?.flags?.[0]?.installments,
+                              : method?.flags?.[0]?.installments : method?.max_installments,
                           paymentMethodId: method?.id,
                           installmentValue: currencyFormatter(
                             origin !== "budgets"
@@ -337,6 +375,7 @@ const AddPayments = memo(function AddPayments({
                       }`}
                     >
                       {method?.description}
+           
                     </div>
                   ))}
             </div>
@@ -400,29 +439,28 @@ const AddPayments = memo(function AddPayments({
               })}
             </div>
             <footer
-                  style={{
-                    marginTop: 15,
-                    display: "flex",
-                    gap: 5,
-                    flexDirection: "column",
-                    textAlign: "center",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+              style={{
+                marginTop: 15,
+                display: "flex",
+                gap: 5,
+                flexDirection: "column",
+                textAlign: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Button
                 onClick={() =>
                   origin !== "budgets" ? submitPayment() : submitBudgetPayment()
                 }
+                loading={loading}
+                disabled={loading}
                 classCallback="uk-margin-top"
                 text="Confirmar"
               />
 
               {someRequiresConfirmation && (
-                <p
-                  style={{ marginTop: 5 }}
-                  className="font-14-regular"
-                >
+                <p style={{ marginTop: 5 }} className="font-14-regular">
                   Parcelas marcadas em <strong>amarelo</strong> precisarão de
                   autorização do supervisor para finalização da venda
                 </p>
@@ -534,6 +572,6 @@ const AddPayments = memo(function AddPayments({
       )}
     </Container>
   );
-});
+}
 
 export default AddPayments;
