@@ -27,7 +27,7 @@ import {
 
 const { Group } = Radio;
 
-export default function Create({ type = "", setVisible, setReload }: any) {
+export default function Create({ type = "", setVisible }: any) {
   const [submitStage, setSubmitStage] = useState(false);
   const [installments, setInstallments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -50,7 +50,7 @@ export default function Create({ type = "", setVisible, setReload }: any) {
   const { paymentMethods } = usePaymentMethods(false, false);
   const { plans } = usePlans();
   const { tutors } = useTutor(false, false);
-  const { suppliers } = useSuppliers(false, false);
+  const { suppliers } = useSuppliers(false);
 
   const { clinic } = useProfile();
 
