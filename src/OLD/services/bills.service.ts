@@ -46,11 +46,6 @@ const createMultipleItems = async (formData) => {
   const { data } = await api.post("/bills/create-items", formData);
 };
 
-const createBillPayment = async (formData) => {
-  const { data } = await api.post(`/bills/create-payment`, formData);
-
-  return data;
-};
 
 const convertBillToTreatment = async (form) => {
   const { data } = await api.post("/bills/create-treatment", form);
@@ -61,9 +56,8 @@ const convertBillToTreatment = async (form) => {
 const verifyDiscount = async (data) =>
   await api.post("/bills/check-item-discount", data);
 
-// DELETE
-const removeBillPaymentBlock = async (data) =>
-  await api.delete("/bills/delete-payment-block", { data });
+
+
 
 // PUT
 const closeBillPayment = async (id) => await api.put(`/bills/close-bill/${id}`);
@@ -96,11 +90,9 @@ export const billService = {
   getFiscalData,
   createBill,
   createBillItem,
-  createBillPayment,
   convertBillToTreatment,
   createMultipleItems,
   verifyDiscount,
-  removeBillPaymentBlock,
   removeBill,
   closeBillPayment,
   reopenBillPayment,

@@ -65,16 +65,6 @@ export const useCreateBillItem = () => {
 };
 
 
-export const useCreateBillPayment = () => {
-  return useMutation({
-    queryKey: ["useCreateBillPayment"], queryFn: async (formData) => {
-      const data = await billService.createBillPayment(formData);
-
-      return data;
-    }
-  });
-};
-
 export const useShowBill = (id, enabled) => {
   return useQuery({
     queryKey: ["bills", id],

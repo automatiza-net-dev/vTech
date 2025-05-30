@@ -21,8 +21,9 @@ export function useQueryClient(): QueryClientHelpers {
       const matchedKeys = keys.filter((k) => {
         try {
           const parsedKey = parseJSON(k);
+       
           if (!Array.isArray(parsedKey)) return false;
-          return parsedKey[0] === (Array.isArray(key) ? key[0] : parseJSON(key)?.[0]);
+          return parsedKey[0] === (Array.isArray(key) ? (key?.[0] as string)?.toLowerCase() : (parseJSON(key)?.[0] as string)?.toLowerCase());
         } catch {
           return false;
         }

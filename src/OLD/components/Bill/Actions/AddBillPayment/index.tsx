@@ -1,64 +1,55 @@
-// @ts-nocheck
-// Core
-import React, { useState, memo, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQueryClient } from "@/presentation/use-query";
 
-// Services
 import { RemoteBills } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 import { billService } from "@/OLD/services/bills.service";
 
-// Hooks
-import { useCreateBillPayment, useShowBill } from "@/OLD/hooks/useBills";
+import { useShowBill } from "@/OLD/hooks/useBills";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useLoadAllPatientTutor } from "@/presentation";
 
-// Utils
 import moment from "moment";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-import { currencyFormatter } from "@/OLD/components/Budget";
 
-// Components
-import { Modal } from "antd";
 import CardPanel from "./CardPanel";
 import { Container } from "./styles";
 import NonTefPanel from "./NonTefPanel";
 import ResumePanel from "./ResumePanel";
 import { DetailsPanel } from "./DetailsPanel";
 import { PaymentsPreviewComponent } from "@/presentation";
-import RemoveBillPayment from "./RemoveBillPayment";
 import ProductsPanel from "../Details/ProductsPanel";
-import { Select, FormHandler, useToast, BadRequestError } from "infinity-forge";
+import { Select, FormHandler, useToast, api } from "infinity-forge";
 import { Button } from "infinity-forge";
 import { AxiosError } from "axios";
 
 function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
   const [reload, setReload] = useState(false);
-  const [filters, setFilters] = useState({ active: true });
-  const [cashierFilters, setCashierFilters] = useState({
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState<any>({ active: true });
+  const [cashierFilters, setCashierFilters] = useState<any>({
     from: moment(new Date()).startOf("day"),
     to: moment(new Date()).endOf("day"),
     status: "ABERTO",
   });
 
-  const [debitMethods, setDebitMethods] = useState([]);
-  const [creditMethods, setCreditMethods] = useState([]);
-  const [nonTefMethods, setNonTefMethods] = useState([]);
+  const [debitMethods, setDebitMethods] = useState<any>([]);
+  const [creditMethods, setCreditMethods] = useState<any>([]);
+  const [nonTefMethods, setNonTefMethods] = useState<any>([]);
   const [higherBlock, setHigherBlock] = useState(0);
-  const [blockArr, setBlockArr] = useState([]);
-  const [formData, setFormData] = useState({
+  const [blockArr, setBlockArr] = useState<any>([]);
+  const [formData, setFormData] = useState<any>({
     expirationDate: moment(),
   });
   const [allowEditFinancialRsp, setAllowEditFinancialRsp] = useState(false);
-  const [financialResponsible, setFinancialResponsible] = useState({});
+  const [financialResponsible, setFinancialResponsible] = useState<any>({});
 
   const queryClient = useQueryClient();
   const endBillPermission = useUserHasPermission("VEN06");
 
   const { createToast } = useToast();
-  const { mutate } = useCreateBillPayment();
 
   const { data } = useShowBill(billId, true);
   const users = useLoadAllPatientTutor({});
@@ -80,50 +71,6 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
 
     setNonTefMethods(paymentMethods?.filter((method) => method?.tef === "NAO"));
   };
-
-  const columns = [
-    {
-      title: "Forma Pgto",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
-      render: (record) => record?.description,
-    },
-    {
-      title: "Adquirente",
-      dataIndex: "acquirer",
-      key: "acquirer",
-      render: (record) => record?.description,
-    },
-    {
-      title: "Bandeira",
-      dataIndex: "flag",
-      key: "flag",
-      render: (record) => record?.description,
-    },
-    {
-      title: "Parcelas",
-      dataIndex: "installments",
-      key: "installments",
-    },
-    {
-      title: "Valor",
-      dataIndex: "total_value",
-      key: "total_value",
-      render: (record) => currencyFormatter(record),
-    },
-    {
-      title: "Ações",
-      dataIndex: "actions",
-      key: "actions",
-      render: (_, record) => (
-        <RemoveBillPayment
-          paymentId={record?.id}
-          reload={reload}
-          setReload={setReload}
-        />
-      ),
-    },
-  ];
 
   const closePayment = useCallback(() => {
     let error = false;
@@ -164,8 +111,8 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
     }
     queryClient.refetch(["bills", true], { mode: "include" });
 
-    setReloadBill & setReloadBill(s => !s)
-    queryClient.invalidateQueries(["paymentsPreview"], { mode: "include" });
+    setReloadBill & setReloadBill((s) => !s);
+    queryClient.invalidateQueries(["paymentsPreview"]);
 
     closePayment();
 
@@ -211,37 +158,45 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
     paymentMethods?.length > 0 && filterMethods();
   }, [paymentMethods]);
 
-  const submitPayment = useCallback((params) => {
-    if (cashiers.length === 0) {
-      return createToast({
-        status: "error",
-        message: "Nenhum caixa diário aberto",
-      });
-    }
+  const submitPayment = useCallback(
+    async (params) => {
+      setLoading(true);
 
-    if (
-      paymentMethods.find(
-        (method) => method?.id === formData?.paymentMethodId
-      ) !== "NÃO" &&
-      !formData?.installments
-    ) {
-      return createToast({
-        status: "error",
-        message: "Selecione a quantidade de parcelas",
-      });
-    }
+      if (cashiers.length === 0) {
+        return createToast({
+          status: "error",
+          message: "Nenhum caixa diário aberto",
+        });
+      }
 
-    const paylaod = {
-      ...formData,
-      maxParcelas: params?.maxParcelas || formData?.maxParcelas,
-      installmentsValue: convertIntlCurrency(formData?.installmentsValue),
-      billId,
-    };
+      if (
+        paymentMethods.find(
+          (method) => method?.id === formData?.paymentMethodId
+        ) !== "NÃO" &&
+        !formData?.installments
+      ) {
+        return createToast({
+          status: "error",
+          message: "Selecione a quantidade de parcelas",
+        });
+      }
 
-    mutate(paylaod, {
-      onSuccess: () => {
-    queryClient.refetch(["bills", true], { mode: "include" });
-        setReloadBill & setReloadBill(s => !s)
+      const payload = {
+        ...formData,
+        maxParcelas: params?.maxParcelas || formData?.maxParcelas,
+        installmentsValue: convertIntlCurrency(formData?.installmentsValue),
+        billId,
+      };
+
+      try {
+        await api({
+          url: "bills/create-payment",
+          method: "post",
+          body: payload,
+        });
+
+        queryClient.refetch(["bills", true], { mode: "include" });
+        setReloadBill & setReloadBill((s) => !s);
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
           expirationDate: moment(),
@@ -251,14 +206,13 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
           status: "success",
           message: "Pagamento adicionado com sucesso!",
         });
-      },
-      onError: (err) => {
-
+      } catch (err: any) {
         if (err instanceof AxiosError) {
-          if (window.confirm(err.response.data.message) && !params?.maxParcelas) {
-           
-            
-            submitPayment({maxParcelas: true })
+          if (
+            window.confirm(err?.response?.data?.message) &&
+            !params?.maxParcelas
+          ) {
+            submitPayment({ maxParcelas: true });
             setFormData({
               expirationDate: moment(),
             });
@@ -266,7 +220,6 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
 
           return;
         }
-
 
         if (
           err.response.data.message.includes(
@@ -285,12 +238,14 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
             message: "Não existe caixa diário aberto",
           });
         }
-      
-        setReloadBill & setReloadBill(s => !s)
-       queryClient.refetch(["bills", true], { mode: "include" });
-      },
-    });
-  }, [formData, billId]);
+
+        setReloadBill & setReloadBill((s) => !s);
+        queryClient.refetch(["bills", true], { mode: "include" });
+      } finally {
+      }
+    },
+    [formData, billId]
+  );
 
   return (
     <Container>
@@ -357,7 +312,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
           </div>
         </header>
         <hr />
-        <section classNamme="payment-detail-container uk-padding uk-shadow-small">
+        <section className="payment-detail-container uk-padding uk-shadow-small">
           <div className="uk-flex">
             <section className="uk-width-1-5">
               <CardPanel
@@ -387,6 +342,8 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
               bill={data}
               formData={formData}
               setFormData={setFormData}
+              loading={loading}
+              setLoading={setLoading}
               submit={submitPayment}
             />
             <ResumePanel bill={data} formData={formData} />

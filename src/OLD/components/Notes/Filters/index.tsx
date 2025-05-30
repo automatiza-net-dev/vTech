@@ -15,7 +15,7 @@ import { MdOutlineClear } from "react-icons/md";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-const Filters = memo(function Filters({ filters, setFilters, setReload }) {
+export default function Filters({ filters, setFilters, setReload }) {
   const [values, setValues] = useState({});
 
   const { colaborators } = useColaborators();
@@ -27,7 +27,7 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
   useEffect(() => {
     document.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
-        setFilters({ ...filters, noSearch: false });
+        setFilters(state => ({ ...state, noSearch: false }));
         setReload((prv) => !prv);
       }
     });
@@ -164,6 +164,5 @@ const Filters = memo(function Filters({ filters, setFilters, setReload }) {
       </section>
     </Container>
   );
-});
+}
 
-export default Filters;

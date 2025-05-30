@@ -119,12 +119,12 @@ export default function AddPaymentsScreen({
                 menuPlacement="bottom"
                 name="accountPlanId"
                 placeholder="Selecionar"
-                options={[
-                  ...plans.map((plan) => ({
+                options={
+                 plans?.map((plan) => ({
                     value: plan.id,
                     label: plan.description,
-                  })),
-                ]}
+                  })) || []
+                }
               />
             </FormHandler>
           )}

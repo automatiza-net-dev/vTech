@@ -91,6 +91,7 @@ export function useQuery<T>({
       refreshInterval: revalidateInterval,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
+       shouldRetryOnError: false,
     }
   );
 

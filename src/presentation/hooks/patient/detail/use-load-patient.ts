@@ -21,6 +21,6 @@ export function useLoadPatient(patientId?: Patient["id"]) {
   return useQuery({
     queryKey: ["RemotePatient", ID],
     queryFn: fetcher,
-    enabled: router.isReady,
+    enabled: !!(router.isReady && ID),
   });
 }

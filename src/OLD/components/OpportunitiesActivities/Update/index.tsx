@@ -1,17 +1,15 @@
-// @ts-nocheck
 import { memo, useState, useEffect, useCallback } from "react";
 
 import { opportunitiesService } from "@/OLD/services/opportunities.service";
 
-import { Modal } from "antd";
 import FormChild from "../FormChild";
 
 import moment from "moment";
-import { Button, useToast } from "infinity-forge";
+import { Button, Modal, useToast } from "infinity-forge";
 import CreateActivity from "@/OLD/components/OpportunitiesActivities/Create";
 import { useProfile } from "@/OLD/hooks/useProfile";
 
-const Update = memo(function ({
+function Update({
   setReload,
   visible,
   setVisible,
@@ -21,20 +19,24 @@ const Update = memo(function ({
   colaborators,
   actTypes,
 }) {
-  const [data, setData] = useState({});
+  const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [execution, setExecution] = useState(false);
   const [showNewActivity, setShowNewActivity] = useState(false);
   const [newActivityModal, setNewActivityModal] = useState(false);
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
-  const {user} = useProfile()
+  const { user } = useProfile();
 
   useEffect(() => {
-    console.log(activity?.user?.name || activity?.openingUser?.name || user?.name, "@@")
+    console.log(
+      activity?.user?.name || activity?.openingUser?.name || user?.name,
+      "@@"
+    );
     setData({
-      collabName: activity?.user?.name || activity?.openingUser?.name || user?.name,
+      collabName:
+        activity?.user?.name || activity?.openingUser?.name || user?.name,
       userId: activity?.user?.id || activity?.openingUser?.id,
       activityId: activity?.activity?.id,
       executionDate: moment(
@@ -52,7 +54,10 @@ const Update = memo(function ({
       .then((_res) => {
         setReload((prv) => !prv);
 
-        return createToast({ status: "success",  message: "Atividade executada com sucesso!" })
+        return createToast({
+          status: "success",
+          message: "Atividade executada com sucesso!",
+        });
       });
   };
 
@@ -73,13 +78,18 @@ const Update = memo(function ({
       setNewActivityModal(true);
 
       if (!execution) {
-        
-        return createToast({ status: "success",  message: "Atividade atualizada com sucesso!" })
+        return createToast({
+          status: "success",
+          message: "Atividade atualizada com sucesso!",
+        });
       } else {
         submitExecution();
       }
     } catch (error) {
-      createToast({ status: "error",  message: "Houve um erro ao atualizar a atividade" })
+      createToast({
+        status: "error",
+        message: "Houve um erro ao atualizar a atividade",
+      });
     }
   }
 
@@ -97,12 +107,18 @@ const Update = memo(function ({
       setLoading(false);
 
       if (!execution) {
-        return createToast({ status: "success",  message: "Atividade atualizada com sucesso!" })
+        return createToast({
+          status: "success",
+          message: "Atividade atualizada com sucesso!",
+        });
       } else {
         submitExecution();
       }
     } catch (error) {
-      return createToast({ status: "error",  message: "Houve um erro ao atualizar a atividade" }) 
+      return createToast({
+        status: "error",
+        message: "Houve um erro ao atualizar a atividade",
+      });
     }
   }
 
@@ -114,10 +130,9 @@ const Update = memo(function ({
     <>
       <Modal
         title={edit ? "Atualizar atividade" : "Detalhes atividade"}
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        footer={null}
-        width={1000}
+        open={visible}
+        onClose={() => setVisible(false)}
+        styles={{ maxWidth: 1000 }}
       >
         <FormChild
           colaborators={colaborators}
@@ -135,18 +150,17 @@ const Update = memo(function ({
       </Modal>
 
       <Modal
-        title="Cadastrar nova atividade"
-        visible={newActivityModal}
-        onCancel={() => setNewActivityModal(false)}
-        footer={
-          <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            <Button text="Sim" onClick={() => setShowNewActivity(true)} />
-            <Button text="Não" onClick={() => setNewActivityModal(false)} />
-          </div>
-        }
-        width={500}
+        open={newActivityModal}
+        onClose={() => setNewActivityModal(false)}
+        styles={{ maxWidth: 500 }}
       >
+        <h3 className="font-18-bold">Cadastrar nova atividade</h3>
         <span>Deseja criar uma nova atividade para esta Oportunidade?</span>
+
+        <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
+          <Button text="Sim" onClick={() => setShowNewActivity(true)} />
+          <Button text="Não" onClick={() => setNewActivityModal(false)} />
+        </div>
       </Modal>
 
       {showNewActivity && (
@@ -162,6 +176,6 @@ const Update = memo(function ({
       )}
     </>
   );
-});
+}
 
 export default Update;

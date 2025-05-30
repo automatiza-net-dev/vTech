@@ -1,27 +1,24 @@
 import { useEffect, useState } from "react";
 import { supplierService } from "@/OLD/services/supplier.service";
+import { useQuery } from "@/presentation";
 
-export const useSuppliers = (filters, reload = false) => {
-  const [suppliers, setSuppliers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+export const useSuppliers = (filters) => {
 
-  const fetchData = () => {
-    setLoading(true);
-    supplierService
-      .index(filters)
-      .then((res) => setSuppliers(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
+  const { data, mutate, isLoading } = useQuery({
+    queryKey: ["suppliers"], queryFn: async () => {
 
-  useEffect(() => {
-    fetchData();
-  }, [filters, reload]);
+      const response = await supplierService
+        .index(filters)
+        .then((res) => res.data)
+
+      return response
+    }
+  })
 
   return {
-    suppliers,
-    fetchSuppliers: fetchData,
-    loadingSuppliers: loading,
+    suppliers: data,
+    fetchSuppliers: mutate,
+    loadingSuppliers: isLoading,
   };
 };
 

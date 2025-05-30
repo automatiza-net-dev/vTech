@@ -118,6 +118,8 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
   const submitDownBordero = useCallback(() => {
     setLoading(true);
 
+    console.log("@@@", downData)
+
     financesService
       .downBordero({
         id: bordero?.id,

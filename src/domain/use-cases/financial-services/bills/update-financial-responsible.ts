@@ -8,7 +8,7 @@ export type UpdateFinancialResponsible = {
 
 export namespace UpdateFinancialResponsible {
   export type Params = {
-    BillId: Bill["id"];
+    billId: Bill["id"];
     financialResponsibleId: User["id"];
   };
 

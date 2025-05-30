@@ -112,6 +112,8 @@ function BorderoActions({
   const submitDownBordero = useCallback(() => {
     setLoading(true);
 
+    console.log("UE", downData)
+
     financesService
       .downBordero({
         id: bordero?.id,

@@ -1,21 +1,17 @@
-// @ts-nocheck
-// Core
 import React, { memo, useState, useEffect } from "react";
 
-// Components
 import { Container } from "./styles";
 
-// Utils
 import { currencyFormatter } from "@/OLD/components/Budget";
 
-const CardPanel = memo(function DebitPanel({
+function DebitPanel({
   methods,
   title,
   formData,
   setFormData,
   bill,
 }) {
-  const [flagsGroups, setFlagsGroups] = useState([]);
+  const [flagsGroups, setFlagsGroups] = useState<any>([]);
 
   let totalPayed = 0;
 
@@ -99,6 +95,6 @@ const CardPanel = memo(function DebitPanel({
       </div>
     </Container>
   );
-});
+}
 
-export default CardPanel;
+export default DebitPanel;

@@ -1,21 +1,19 @@
-// @ts-nocheck
-import React, { memo, useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useQueryClient } from "@/presentation/use-query";
 
 import { billService } from "@/OLD/services/bills.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import { Button, useToast } from "infinity-forge";
-import { Popconfirm, notification } from "antd";
+import { api, Button, useToast } from "infinity-forge";
 
-const RemoveBillPayment = memo(function ({
+function RemoveBillPayment({
   payments,
   setEditExpirationDate = false,
   data = false,
   editExpirationDate,
   billId,
-}) {
+}: any) {
   const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient();
@@ -39,25 +37,30 @@ const RemoveBillPayment = memo(function ({
     });
   };
 
-  const removeBillPayment = useCallback(() => {
+  const removeBillPayment = useCallback(async () => {
     setLoading(true);
 
-    billService
-      .removeBillPaymentBlock({ block: payments[0].block, billId })
-      .then((_res) => {
-        setLoading(false);
-        queryClient.invalidateQueries(["bills"]);
-        return createToast({
-          status: "success",
-          message: "Bloco removido com sucesso!",
-        });
-      })
-      .catch((err) => {
-        verifyErrors(err?.response?.data?.message);
-        setLoading(false);
+    try {
+      await api({
+        url: "bills/delete-payment-block",
+        method: "delete",
+        body: {
+            block: payments[0].block,
+            billId,
+        },
       });
 
-    setLoading(false);
+      await queryClient.refetch(["bills"]);
+      createToast({
+        status: "success",
+        message: "Bloco removido com sucesso!",
+      });
+    } catch (err: any) {
+      console.log(err, "@erro")
+      verifyErrors(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
   }, [payments, billId]);
 
   const updateBillExpirationDate = useCallback(() => {
@@ -90,7 +93,9 @@ const RemoveBillPayment = memo(function ({
     >
       {updateExpirationDatePermission && (
         <Button
-          onClick={() => updateBillExpirationDate()}
+          loading={loading}
+          disabled={loading}
+          onClick={updateBillExpirationDate}
           text={
             !editExpirationDate
               ? "Alterar Vencimento"
@@ -99,19 +104,12 @@ const RemoveBillPayment = memo(function ({
         />
       )}
 
-      {/* <Popconfirm
-          title="Deseja realmete excluir esse pagamento?"
-         
-          okText="Sim"
-          cancelText="Não"
-          placement="left"
-        >
-        </Popconfirm> */}
       {removeBlockPermission && !editExpirationDate && (
-        <Button text="Remover Pagamento" onClick={removeBillPayment} />
+        <Button text="Remover Pagamento"  loading={loading}
+          disabled={loading} onClick={removeBillPayment} />
       )}
     </div>
   );
-});
+}
 
 export default RemoveBillPayment;

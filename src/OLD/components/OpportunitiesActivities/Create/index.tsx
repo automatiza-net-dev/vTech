@@ -11,7 +11,7 @@ import { Modal } from "antd";
 import moment from "moment";
 import { useAuthAdmin, useToast } from "infinity-forge";
 
-const Create = memo(function Create({
+function Create({
   visible,
   setVisible,
   setReload,
@@ -79,6 +79,6 @@ const Create = memo(function Create({
       />
     </Modal>
   );
-});
+}
 
 export default Create;

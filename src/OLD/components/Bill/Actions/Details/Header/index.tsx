@@ -77,7 +77,7 @@ export default function Header({
         </div>
       </section>
 
-      <section className="uk-flex uk-flex-center">
+      <section className="uk-flex uk-flex-center" style={{  marginTop: 15 }}>
         <div className="uk-margin-small-right">
           <label>Nome Cliente</label>
           <Input disabled value={bill?.client?.name} />
@@ -90,7 +90,7 @@ export default function Header({
         )}
 
         <div className="uk-width-1-2">
-          <label className="uk-margin-right">Resp. financeiro</label>
+          <label className="uk-margin-right">Informar outro Contratante / Pagador</label>
           {!changeFields?.finResponsible ? (
             <label
               className="uk-link"
@@ -119,7 +119,6 @@ export default function Header({
             </>
           )}
 
-          {finResponsible?.name && (
             <FormHandler disableEnterKeySubmitForm>
               <Select
                 disabled={!changeFields?.finResponsible}
@@ -144,7 +143,6 @@ export default function Header({
                 }}
               />
             </FormHandler>
-          )}
         </div>
 
         <div className="uk-margin-small-right uk-width-1-2">

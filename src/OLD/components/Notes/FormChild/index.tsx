@@ -17,7 +17,7 @@ import moment from "moment";
 import { FiTrash2 } from "react-icons/fi";
 import { FormHandler, Select } from "infinity-forge";
 
-const FormChild = memo(function FormChild({
+export default function FormChild({
   data,
   setData,
   submit,
@@ -27,12 +27,10 @@ const FormChild = memo(function FormChild({
   removeItemSubmit = false,
 }: any) {
   const [items, setItems] = useState<any>([]);
-  const [productType, setProductType] = useState("");
+  const [productType, ] = useState("");
 
   const { suppliers } = useSuppliers({});
   const { products } = useReceiptProducts();
-
-  suppliers && sortItems(suppliers, "corporateName");
 
   const addItemPermission = useUserHasPermission("ENT02");
   const removeItemPermission = useUserHasPermission("ENT03");
@@ -383,6 +381,5 @@ const FormChild = memo(function FormChild({
       </footer>
     </Container>
   );
-});
+}
 
-export default FormChild;
