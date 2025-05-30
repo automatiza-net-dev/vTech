@@ -88,8 +88,6 @@ const BorderoActions = memo(function BorderoActions({
   const submitDownBordero = useCallback(() => {
     setLoading(true);
 
-    console.log("aqui?", downData)
-
     financesService
       .downBordero({
         id: bordero?.id,
