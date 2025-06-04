@@ -4,8 +4,8 @@ import { useReactToPrint } from "react-to-print";
 import { RemoteBills } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
-import { useQuery } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 
 import { Modal, useToast, Button, api } from "infinity-forge";
 

@@ -13,7 +13,7 @@ import moment from "moment";
 import { ReportDRE } from "./report";
 
 import * as S from "./styles";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 export function DreReport() {
   const [months, setMonths] = useState(0);

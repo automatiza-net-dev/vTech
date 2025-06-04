@@ -11,8 +11,8 @@ import { taxationGroupRulesService } from "@/OLD/services/taxation-group-rules.s
 // Icons
 import { FiTrash2 } from "react-icons/fi";
 import { useToast } from "infinity-forge";
-import { useMutation } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 
 const DeleteTaxationGroupRule = memo(function DeleteTaxationGroupRule({
   close,

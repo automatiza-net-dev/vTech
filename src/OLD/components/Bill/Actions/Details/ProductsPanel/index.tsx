@@ -2,7 +2,7 @@
 import React, { memo, useState, useEffect, useRef } from "react";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { currencyFormatter } from "@/OLD/components/Budget";
 

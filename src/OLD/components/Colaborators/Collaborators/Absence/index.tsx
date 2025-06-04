@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useColaborator } from "@/OLD/hooks/useColaborators";
 import { memo, useEffect } from "react";
 import { useToast } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { calendarService } from "@/OLD/services/calendar.service";
 import { columns } from "./columns";
 import { Create } from "./Create";

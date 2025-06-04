@@ -15,7 +15,7 @@ import {
 } from "@/presentation";
 
 import * as yup from "yup";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 export default function TipoVendaRelacionada() {
   return (

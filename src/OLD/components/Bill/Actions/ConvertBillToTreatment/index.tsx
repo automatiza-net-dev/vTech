@@ -4,7 +4,7 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 import { Tooltip, useToast } from "infinity-forge";
 import { useSystem } from "@/presentation";
 import { Bill } from "@/domain";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 export default function ConvertBillToTreatment({ bill, setReload , CustomComponent}: { bill: Bill, setReload?: any, CustomComponent?: ({ onClick }) => React.ReactNode }) {
 

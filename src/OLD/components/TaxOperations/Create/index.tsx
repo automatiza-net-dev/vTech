@@ -7,8 +7,8 @@ import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 // Components
 import { Button, Input, Modal, Select } from "antd";
-import { useMutation } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 import { useToast } from "infinity-forge";
 const { TextArea } = Input;
 

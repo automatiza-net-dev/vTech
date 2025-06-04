@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { RemoteBills } from "@/data";
 import { container, TypesAutomatiza } from "@/container";

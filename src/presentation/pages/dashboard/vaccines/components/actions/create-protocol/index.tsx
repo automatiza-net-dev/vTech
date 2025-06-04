@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { RemoteVaccine } from "@/data";
 import { TypesAutomatiza, container } from "@/container";

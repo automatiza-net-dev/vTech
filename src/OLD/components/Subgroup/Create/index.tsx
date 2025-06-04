@@ -8,7 +8,7 @@ import { subgroupsService } from "@/OLD/services/subgroups.service";
 // Components
 import { Button, Input, Select } from "antd";
 import { useToast } from "infinity-forge";
-import { useMutation } from "@/presentation/use-query";
+import { useMutation } from "infinity-forge";
 
 import { Modal } from "infinity-forge";
 

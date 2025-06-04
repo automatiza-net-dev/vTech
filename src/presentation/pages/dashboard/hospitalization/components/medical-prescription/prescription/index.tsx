@@ -3,7 +3,7 @@ import { useState } from "react";
 import moment from "moment";
 import { useFormikContext } from "formik";
 import { api, Button } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { PermissionItem } from "@/presentation";
 

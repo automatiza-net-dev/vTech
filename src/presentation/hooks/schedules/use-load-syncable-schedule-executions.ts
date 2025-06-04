@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteSchedule } from "@/data";
 import { TypesAutomatiza, container } from "@/container";

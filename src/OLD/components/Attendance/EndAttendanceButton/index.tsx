@@ -14,7 +14,7 @@ import { Button, useToast } from "infinity-forge";
 import { Modal, Select, Button as AntButton } from "antd";
 
 import moment from "moment";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 export function EndAttendanceButton() {
   const [showSelectAttendances, setShowSelectAttendances] = useState(false);

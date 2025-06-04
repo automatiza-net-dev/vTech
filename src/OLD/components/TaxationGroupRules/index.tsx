@@ -16,7 +16,7 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 // Components
 import { Select, Table } from "antd";
 import { Button, PageWrapper } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import columns from "./Columns";

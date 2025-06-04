@@ -1,5 +1,3 @@
-import { useQuery, useQueryProps } from './index'
+import {  useMutation as InfinityUseMutation } from 'infinity-forge'
 
-export function useMutation<T>(props: useQueryProps<T>) {
-  return useQuery({ ...props, isMutation: true })
-}
+export const useMutation = InfinityUseMutation

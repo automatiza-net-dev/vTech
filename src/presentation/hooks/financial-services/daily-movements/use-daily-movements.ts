@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteDailyMovements } from "@/data";
 import { callApiOneTime } from "@/presentation";

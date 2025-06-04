@@ -25,7 +25,7 @@ import { Col, Input, Row, Switch, Table, AutoComplete, Select } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button, useToast } from "infinity-forge";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "@/presentation/use-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { Container } from "../styles";
 import CreateProductVariation from "./create-variation";
 import UpdateBusinessUnitProduct from "./edit";

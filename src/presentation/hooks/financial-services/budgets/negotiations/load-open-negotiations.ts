@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteBudget } from "@/data";
 import { container, financialServicesTypes } from "@/container";

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { billService } from "@/OLD/services/bills.service";
 

@@ -8,8 +8,8 @@ import { Select, FormHandler, useToast, Button } from "infinity-forge";
 
 import moment from "moment";
 import { useLoadPatient } from "@/presentation";
-import { useMutation, useQuery } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation, useQuery } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 import { petsService } from "@/OLD/services/patient.service";
 
 function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any) {

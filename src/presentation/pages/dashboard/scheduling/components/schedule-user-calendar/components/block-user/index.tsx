@@ -3,7 +3,7 @@ import { ScheduleUser } from "@/domain";
 import * as S from "./styles";
 import { BlockUserButton } from "@/OLD/components/Colaborators/Collaborators/Absence/Create";
 import {  Tooltip } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 export function BlockUser({ scheduleUser }: { scheduleUser: ScheduleUser }) {
   const {refetch} = useQueryClient();

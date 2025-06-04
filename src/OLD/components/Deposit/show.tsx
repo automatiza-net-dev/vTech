@@ -2,7 +2,7 @@
 import { Col, Input, Row, Skeleton, Table, Typography } from "antd";
 import "moment/locale/pt-br";
 import { memo, useRef } from "react";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { depositService } from "@/OLD/services/deposit.service";
 
 import { Button, PageWrapper } from "infinity-forge";

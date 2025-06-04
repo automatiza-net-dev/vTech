@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { useRouter } from "next/router";
 
@@ -21,6 +21,7 @@ export function useLoadPatient(patientId?: Patient["id"]) {
   return useQuery({
     queryKey: ["RemotePatient", ID],
     queryFn: fetcher,
+    enableCache: true,
     enabled: !!(router.isReady && ID),
   });
 }

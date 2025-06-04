@@ -10,7 +10,7 @@ import {
 } from "@/OLD/components/Bill/authorization-sell/components";
 import AddBillItem from "@/OLD/components/Bill/Actions/AddBillItem";
 import { AddBillPaymentModal } from "@/OLD/components/Bill/Actions/add-bill-payment-modal";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 export function BillsList(props: NegotiationCardProps) {
   const queryClient = useQueryClient();

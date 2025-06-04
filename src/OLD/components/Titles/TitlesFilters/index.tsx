@@ -16,7 +16,7 @@ import {
 
 import { Container } from "./styles";
 import { useSystem } from "@/presentation";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 export default function TitlesFilters({
   type,

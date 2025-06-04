@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";

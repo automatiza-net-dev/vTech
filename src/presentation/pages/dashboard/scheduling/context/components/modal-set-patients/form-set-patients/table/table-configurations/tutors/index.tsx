@@ -1,5 +1,5 @@
 import { Error } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { Tutor } from "@/domain";
 import { FormCreatePatient } from "@/presentation/pages/dashboard/paciente";

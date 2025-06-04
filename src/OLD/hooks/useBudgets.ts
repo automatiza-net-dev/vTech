@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@/presentation/use-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { budgetService } from "@/OLD/services/budgets.service";
 
 import moment from "moment";

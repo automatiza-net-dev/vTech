@@ -11,7 +11,7 @@ import {
 import { RemotePatient } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 import { DropdownComponentProps } from "../dropdown-item";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import * as S from "./styles";
 

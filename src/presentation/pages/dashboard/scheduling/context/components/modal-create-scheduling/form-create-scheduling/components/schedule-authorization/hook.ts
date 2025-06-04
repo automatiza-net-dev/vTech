@@ -1,6 +1,6 @@
 
 import { useVerifyFinanceSchedule } from "@/presentation/pages/dashboard/scheduling/utils";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 import {
   api,

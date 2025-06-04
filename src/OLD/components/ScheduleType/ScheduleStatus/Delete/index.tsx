@@ -5,8 +5,8 @@ import { FiTrash2 } from "react-icons/fi";
 
 import { Popconfirm } from "antd";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
-import { useMutation } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useToast } from "infinity-forge";
 

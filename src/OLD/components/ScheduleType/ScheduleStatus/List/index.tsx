@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Badge, Table, Tag } from "antd";
 import { memo, useEffect } from "react";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { scheduleTypeServices } from "@/OLD/services/scheduleType.service";
 import { columns } from "./columns";
 import { useToast } from "infinity-forge";

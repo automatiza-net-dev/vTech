@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { api } from "infinity-forge";
 
 import { Product } from "@/domain";

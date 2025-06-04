@@ -2,8 +2,8 @@
 import React, { memo } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Popconfirm } from "antd";
-import { useMutation } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 import { animalServices } from "@/OLD/services/animal.service";
 
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";

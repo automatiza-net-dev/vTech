@@ -12,7 +12,7 @@ import { useProfile } from "@/OLD/hooks/useProfile";
 import { useRouter } from "next/router";
 
 import { useToast } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 function Patologies({
   modal,

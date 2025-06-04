@@ -1,6 +1,6 @@
 import { RemoteUserController } from "@/data";
 import { adminTypes, container } from "@/container";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 export function useLoadUsersController() {
   

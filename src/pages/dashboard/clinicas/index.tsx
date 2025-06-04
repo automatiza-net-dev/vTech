@@ -12,7 +12,7 @@ import { RemoteBusinessUnits } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 import { LayoutDashboard, useMe, usePermission } from "@/presentation";
 import { BusinessUnit } from "@/domain";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 function Page() {
   const canEditClinic = usePermission("CLI02");

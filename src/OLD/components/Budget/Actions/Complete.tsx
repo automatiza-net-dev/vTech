@@ -3,7 +3,7 @@ import { Button, Checkbox, DatePicker, Input, Table } from "antd";
 import moment from "moment";
 import * as React from "react";
 import { useRouter } from "next/router";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 import { currencyFormatter } from "..";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { useCompleteBudget } from "@/OLD/hooks/useBudgets";

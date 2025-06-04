@@ -37,8 +37,8 @@ import {
 } from "../../budget/add-budget/components";
 
 import * as S from "./styles";
-import { useQueryClient } from "@/presentation/use-query"
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQueryClient } from "infinity-forge"
+import { useQuery } from "infinity-forge";
 
 export function AddSale({
   type = "create",

@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { LoadBill } from "@/domain";
 import { RemoteBills } from "@/data";

@@ -1,5 +1,5 @@
 import { FormHandler, Input, InputMask, useToast } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { UserController } from "@/domain";
 import { RemoteUserController } from "@/data";
