@@ -63,10 +63,7 @@ export function Actions({
       await refetch([refetchKeyWeekCalendar || "-"]);
     } else {
       await refetch([
-        "RemoteLoadAllSchedulesUser",
-        DateToYYYYMMDD(selectedDate || new Date()),
-        listCancelledEvents,
-      ]);
+        "RemoteLoadAllSchedulesUser"], { mode: "include" });
     }
   }
 

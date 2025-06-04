@@ -110,16 +110,9 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
       setAttendance(attendanceResponse);
 
       if (scheduleDate) {
-        queryClient.refetch([
-          "RemoteLoadAllSchedulesUser",
-          scheduleDate,
-          "true",
-        ]);
-        queryClient.refetch([
-          "RemoteLoadAllSchedulesUser",
-          scheduleDate,
-          "false",
-        ]);
+        queryClient.refetch(["RemoteLoadAllSchedulesUser"], {
+          mode: "include",
+        });
       }
 
       createToast({
@@ -313,7 +306,10 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
             <PrintHeader />
           </div>
 
-          <PdfPatientAttendance {...timeLine?.timeline_info} patient={patient?.data} />
+          <PdfPatientAttendance
+            {...timeLine?.timeline_info}
+            patient={patient?.data}
+          />
         </div>
       </div>
     </S.Service>
