@@ -118,11 +118,35 @@ export default function ConfirmacaoAgendamento() {
   }
 
   if (status !== "AN" && status !== "AC" && status !== "CANC") {
-    if (status == "FAL") {
-      return <>FALTOU</>;
-    }
+    return (
+      <Styles>
+        <HeadComponent
+          headContent={{
+            pageTitle: "Confirmacao",
+          }}
+        />
 
-    return <>AGENDAMENTO NÃO EXISTENTE OU EXPIRADO</>;
+        <header>
+          <div className="container">
+            <img src={logo_url} />
+          </div>
+        </header>
+
+        <section className="container">
+          <h1 className="font-24-bold">Confirmação de agendamento</h1>
+
+          <div>
+            <div className="intern-container">
+              <h2 className="font-20-bold">
+                {status === "FAL"
+                  ? "Faltou"
+                  : "Agendamento não disponível para Confirmação ou Cancelamento"}
+              </h2>
+            </div>
+          </div>
+        </section>
+      </Styles>
+    );
   }
 
   const start = moment(data.startHour).locale("pt-br");
