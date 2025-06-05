@@ -1,12 +1,7 @@
 import { ScheduleStatus } from "@/domain";
 import { useConfigurationsSystem } from "@/presentation";
 import { useQuery } from "infinity-forge";
-import {
-  HeadComponent,
-  Icon,
-  LoaderCircle,
-  api,
-} from "infinity-forge";
+import { HeadComponent, Icon, LoaderCircle, api } from "infinity-forge";
 import moment from "moment";
 
 import { useRouter } from "next/router";
@@ -43,6 +38,11 @@ type ConfirmtionSchedule = {
   confirmationDate: null;
   confirmationOrigin: null;
   status: ScheduleStatus;
+  scheduleServiceTypes: {
+    description: string;
+    treatmentItem: string | null;
+    productivityItem: string | null;
+  }[];
 };
 
 export default function ConfirmacaoAgendamento() {
@@ -135,7 +135,7 @@ export default function ConfirmacaoAgendamento() {
     <Styles>
       <HeadComponent
         headContent={{
-          pageTitle: "Confirmação",
+          pageTitle: "Confirmacao",
         }}
       />
 
@@ -249,7 +249,7 @@ export default function ConfirmacaoAgendamento() {
             ) : (
               <h2 className="font-20-bold">
                 Olá, {type === "Vet" ? data?.holder?.name : data?.patient?.name}
-                , temos um agendamento para você!
+                , temos um agendamento para voce!
               </h2>
             )}
 
@@ -278,7 +278,9 @@ export default function ConfirmacaoAgendamento() {
                 <div>
                   <h3 className="font-16-bold">Clínica</h3>
 
-                  <p className="font-14-regular">{data?.businessUnit?.identification}</p>
+                  <p className="font-14-regular">
+                    {data?.businessUnit?.identification}
+                  </p>
                 </div>
               </div>
 
@@ -343,13 +345,15 @@ export default function ConfirmacaoAgendamento() {
 
               <div className="item">
                 <div className="icon">
-                 <Icon name="IconBox" color="#fff" />
+                  <Icon name="IconBox" color="#fff" />
                 </div>
 
                 <div>
                   <h3 className="font-16-bold">Serviço</h3>
 
-                  <p className="font-14-regular">Lipospiração</p>
+                  <p className="font-14-regular">
+                    {data?.scheduleServiceTypes.at(0)?.description}
+                  </p>
                 </div>
               </div>
 
@@ -376,9 +380,8 @@ export default function ConfirmacaoAgendamento() {
                   <h3 className="font-16-bold">Data e Horário</h3>
 
                   <p className="font-14-regular">
-                    {`${
-                      diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)
-                    }, ${dataFormatada}, você tem um agendamento às ${horaFormatada}hs`}
+                    {`${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)
+                      }, ${dataFormatada}, você tem um agendamento às ${horaFormatada}hs`}
                   </p>
                 </div>
               </div>
@@ -413,7 +416,8 @@ export default function ConfirmacaoAgendamento() {
                   <h3 className="font-16-bold">Situação</h3>
 
                   <span className="font-14-bold">
-                    <Icon name="IconClockNotFilled" /> {data?.status?.description}
+                    <Icon name="IconClockNotFilled" />{" "}
+                    {data?.status?.description}
                   </span>
                 </div>
               </div>
@@ -521,13 +525,11 @@ export default function ConfirmacaoAgendamento() {
                       const address = data.businessUnit;
                       const location = `${address.address}, ${address.number} - ${address.district}, ${address.city} - ${address.state}, ${address.postalCode}`;
 
-                      const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=Consulta com ${
-                        data.user.name
-                      }&dates=${startFormatted}/${endFormatted}&details=Consulta agendada para o paciente ${
-                        data.patient.name
-                      }&location=${encodeURIComponent(
-                        location
-                      )}&sf=true&output=xml`;
+                      const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=Consulta com ${data.user.name
+                        }&dates=${startFormatted}/${endFormatted}&details=Consulta agendada para o paciente ${data.patient.name
+                        }&location=${encodeURIComponent(
+                          location,
+                        )}&sf=true&output=xml`;
 
                       window.open(googleCalendarUrl, "_blank");
                     }}
