@@ -19,7 +19,7 @@ import {
   useToast,
   Select as SelectInfinityForge,
 } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 const { Group } = Radio;
 const { Option } = Select;

@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { container, patientTypes } from "@/container";
 import { LoadAllScheduleServicesGroups } from "@/domain";

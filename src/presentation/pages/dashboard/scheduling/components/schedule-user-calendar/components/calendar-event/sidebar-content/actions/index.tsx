@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import moment from "moment";
 import { Error } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { useLoadSynchedTreatmentsItems } from "@/presentation";
 
@@ -63,10 +63,7 @@ export function Actions({
       await refetch([refetchKeyWeekCalendar || "-"]);
     } else {
       await refetch([
-        "RemoteLoadAllSchedulesUser",
-        DateToYYYYMMDD(selectedDate || new Date()),
-        listCancelledEvents,
-      ]);
+        "RemoteLoadAllSchedulesUser"], { mode: "include" });
     }
   }
 

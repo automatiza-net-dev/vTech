@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { BadRequestError } from "infinity-forge";
 
 import { RemoteCashiersResume } from "@/data";

@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { api, Select } from "infinity-forge";
 
 export function SelectGender({ isRegister }) {

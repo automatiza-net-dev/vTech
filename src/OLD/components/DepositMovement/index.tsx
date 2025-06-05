@@ -6,7 +6,7 @@ import { InputBox } from "./styles";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { useMemo, useState, useEffect, useRef } from "react";
-import { useMutation, useQuery } from "@/presentation/use-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { useColaborators } from "@/OLD/hooks/useColaborators";
 import { useProfile, useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { depositService } from "@/OLD/services/deposit.service";

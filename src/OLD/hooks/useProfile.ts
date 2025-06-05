@@ -1,5 +1,5 @@
 import { useAuthAdmin } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { userService } from "@/OLD/services/user.service";
 
 export const useProfile = (type = false, reload = false) => {

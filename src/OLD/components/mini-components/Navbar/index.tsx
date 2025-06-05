@@ -19,7 +19,7 @@ import { sessionService } from "@/OLD/services/session.service";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { InfraTypes, container } from "@/container";
 import { useAuthAdmin } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { useConfigurationsSystem } from "@/presentation";
 
 const icons = [

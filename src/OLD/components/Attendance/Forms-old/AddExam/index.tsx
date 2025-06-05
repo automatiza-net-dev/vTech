@@ -10,7 +10,7 @@ import { textReplaceService } from "@/OLD/services/textReplace.service";
 import { timelineService } from "@/OLD/services/timeline.service";
 
 import { useMe } from "@/presentation/hooks";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 import {
   useLoadPatient,
   useLoadAllScheduleStatuses,

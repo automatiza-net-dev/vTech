@@ -1,6 +1,6 @@
 import { useFormikContext } from "formik";
 import { api } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 export type Departament = {
   systemId: string;

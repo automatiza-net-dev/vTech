@@ -15,7 +15,7 @@ import {
   Select as SelectInfinityForge,
 } from "infinity-forge";
 import moment from "moment";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 const FormChild = memo(function ({
   data,

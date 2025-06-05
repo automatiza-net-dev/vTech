@@ -3,7 +3,7 @@ import { Card, Col, Divider, Row, Skeleton } from "antd";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import moment from "moment";
 import "moment/locale/pt-br";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { calendarService } from "@/OLD/services/calendar.service";
 
 import * as S from "./styles";

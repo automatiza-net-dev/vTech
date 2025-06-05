@@ -23,7 +23,7 @@ import { MdDownload } from "react-icons/md";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { FileIcon, isImage } from "../AddExam";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const [loading, setLoading] = useState(false);

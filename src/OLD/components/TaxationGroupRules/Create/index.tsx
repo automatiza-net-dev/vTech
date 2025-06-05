@@ -12,8 +12,8 @@ import { taxationGroupsService } from "@/OLD/services/taxation-group.service";
 
 // Components
 import { Alert, Button, Input, InputNumber, Modal, Select } from "antd";
-import { useMutation, useQuery } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation, useQuery } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 import { BR_STATES } from "../data/br_states";
 import { ICMS_CST_NAO_SIMPLES, ICMS_CST_SIMPLES } from "../data/icms_cst";
 import { IPI_CST_ENTRADA, IPI_CST_SAIDA } from "../data/ipi_cst";

@@ -3,7 +3,7 @@ import {  DetailCard, Error, IDetailCard } from "infinity-forge";
 ;
 import { Patient } from "@/domain";
 import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { Profile } from "./profile";
 

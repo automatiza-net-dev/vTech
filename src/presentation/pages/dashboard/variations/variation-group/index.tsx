@@ -1,7 +1,7 @@
 import { AccessDenied, PermissionItem, usePermission } from "@/presentation";
 
 import moment from "moment";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { PageWrapper, api, useTable, useToast } from "infinity-forge";
 
 type VariationGroup = {

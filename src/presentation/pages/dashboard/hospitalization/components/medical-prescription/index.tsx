@@ -11,7 +11,7 @@ import { NewPrescription } from "./new-prescription";
 
 import * as S from "./styles";
 import { Prescription } from "./prescription";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 export function MedicalPrescription({ id }) {
   const { data, isLoading } = useQuery({

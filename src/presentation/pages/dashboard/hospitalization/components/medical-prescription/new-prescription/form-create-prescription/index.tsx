@@ -1,6 +1,6 @@
 import moment from "moment";
 import { FormHandler, api, InputRadio } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { schema } from "./schema";
 import { Frequency } from "./frequency";

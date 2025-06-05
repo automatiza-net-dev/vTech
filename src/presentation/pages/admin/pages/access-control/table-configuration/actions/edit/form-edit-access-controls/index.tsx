@@ -1,5 +1,5 @@
 import { Modal, FormHandler, useToast } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { Permissions } from "./permissions";
 import { Departaments } from "./departaments";

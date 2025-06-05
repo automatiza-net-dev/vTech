@@ -24,7 +24,7 @@ import {
 } from "@/OLD/hooks/useBills";
 import * as React from "react";
 import { GrAddCircle } from "react-icons/gr";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { FiTrash2 } from "react-icons/fi";
 

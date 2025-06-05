@@ -1,5 +1,5 @@
 import { useAuthAdmin } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteMeta } from "@/data";
 import { LoadGoal, User } from "@/domain";

@@ -90,8 +90,8 @@ export function NegotiationCard(props: NegotiationCardProps) {
                 <div style={{ marginRight: 20 }}>
                   <Button
                     type="button"
-                    onClick={() => {
-                      onClick()
+                    onClick={async () => {
+                      await onClick()
 
                       queryClient.invalidateQueries({
                         queryKey: ["openNegotiations", router?.query?.id as string],

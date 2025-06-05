@@ -14,7 +14,7 @@ import {
   useLoadAllPatientTutorKEY,
 } from "@/presentation";
 import { ButtonCreateTutor } from "../button-create-tutor";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 export function AddTutorContent({ id, setModal, origin }) {
   const [initialHolder, setInitialHolder] = useState(null);

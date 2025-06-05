@@ -20,7 +20,7 @@ import {
   useToast,
 } from "infinity-forge";
 
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { LaunchRelatedSale } from "./launch-related-sale";
 import { CancelAction } from "./cancel";

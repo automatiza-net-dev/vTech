@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { useToast } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { RemoteChangeStatus } from "@/data";
 import { container, patientTypes } from "@/container";

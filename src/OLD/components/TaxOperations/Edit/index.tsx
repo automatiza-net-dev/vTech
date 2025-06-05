@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 import { Button, Input, Modal, Select } from "antd";
-import { useMutation,  useQueryClient} from "@/presentation/use-query";
+import { useMutation,  useQueryClient} from "infinity-forge";
 
 function UpdateTaxOperation({
   initialData,

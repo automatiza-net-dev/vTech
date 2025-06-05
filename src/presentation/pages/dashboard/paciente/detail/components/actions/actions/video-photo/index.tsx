@@ -16,7 +16,7 @@ import {
 import { DropdownComponentProps } from "../dropdown-item";
 
 import * as S from "./styles";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
   const [loading, setLoading] = useState(false);

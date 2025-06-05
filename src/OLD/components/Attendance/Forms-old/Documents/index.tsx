@@ -17,7 +17,7 @@ import { useLoadPatient } from "@/presentation/hooks";
 // Components
 import FormChild from "./FormChild";
 import { useToast } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 // utils
 import moment from "moment";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { Modal, useLoadAllPatientTutorKEY } from "@/presentation";
 

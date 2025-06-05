@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { useFormikContext } from "formik";
 import { api, Input, InputCurrency, Select, Textarea } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { FluidTherapy } from "./fluid-therapy";
 

@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Container } from "./styles";
 
 import moment from "moment";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { financesService } from "@/OLD/services/finances.service";
 
 const keyMap = {

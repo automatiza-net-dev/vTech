@@ -2,7 +2,7 @@ import { RemoteBills } from "@/data";
 import { Print } from "@/presentation";
 import { Document as IDocument } from "@/domain";
 import { container, TypesAutomatiza } from "@/container";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 import { Button, Icon } from "infinity-forge";
 
 import * as S from "./styles";

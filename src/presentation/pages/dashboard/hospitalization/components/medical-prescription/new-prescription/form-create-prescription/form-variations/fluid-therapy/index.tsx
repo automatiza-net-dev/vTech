@@ -1,4 +1,4 @@
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import { api, Input, InputCurrency, Select } from "infinity-forge";
 
 export function FluidTherapy() {

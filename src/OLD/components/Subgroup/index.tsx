@@ -15,7 +15,7 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 // Components
 import { Select, Table } from "antd";
 import { Button, PageWrapper, useToast } from "infinity-forge";
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 import columns from "./Columns";
 import CreateSubgroup from "./Create";
 import DeleteSubgroup from "./Delete";

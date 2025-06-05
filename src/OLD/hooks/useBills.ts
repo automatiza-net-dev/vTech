@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@/presentation/use-query";
+import { useMutation, useQuery } from "infinity-forge";
 import { billService } from "@/OLD/services/bills.service";
 import moment from "moment";
 

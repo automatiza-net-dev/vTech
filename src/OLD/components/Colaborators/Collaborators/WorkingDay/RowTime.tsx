@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { userService } from "@/OLD/services/user.service";
 import { convertTime } from "@/OLD/utils/convertDate";
 import { Delete } from "./Delete";
-import { useQueryClient } from "@/presentation/use-query";
+import { useQueryClient } from "infinity-forge";
 
 import { TimePicker } from "@mui/x-date-pickers";
 

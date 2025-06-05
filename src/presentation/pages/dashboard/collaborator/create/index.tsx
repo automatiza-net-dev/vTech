@@ -16,7 +16,7 @@ import {
 import * as yup from "yup";
 
 import { PermissionItem, useConfigurationsSystem } from "@/presentation";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 export function CreateCollaborator({ onSuccess }: { onSuccess?: () => void }) {
   const [open, setOpen] = useState(false);

@@ -10,8 +10,8 @@ import { taxOperationService } from "@/OLD/services/tax-operation.service";
 
 // Icons
 import { FiTrash2 } from "react-icons/fi";
-import { useMutation } from "@/presentation/use-query";
-import { useQueryClient } from "@/presentation/use-query";
+import { useMutation } from "infinity-forge";
+import { useQueryClient } from "infinity-forge";
 
 // Utils
 import { permissionControl } from "@/OLD/utils/permissionsControlFake";

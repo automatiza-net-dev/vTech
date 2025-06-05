@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Error, HighlightText, Icon } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { Patient } from "@/domain";
 import { FormCreatePatient } from "../../../../create";

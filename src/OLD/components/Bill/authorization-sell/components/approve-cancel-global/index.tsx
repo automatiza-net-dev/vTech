@@ -14,7 +14,7 @@ import { Bill } from "@/domain";
 import * as S from "./styles";
 import { useFormikContext } from "formik";
 import { useSystem } from "@/presentation";
-import { useQuery } from "@/presentation/use-query/use-query";
+import { useQuery } from "infinity-forge";
 
 export function ApproveCancelGlobal({
   cancelled,

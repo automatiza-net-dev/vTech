@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useQuery } from "@/presentation/use-query";
+import { useQuery } from "infinity-forge";
 
 import { RemoteDre } from "@/data";
 import { TypesAutomatiza, container } from "@/container";

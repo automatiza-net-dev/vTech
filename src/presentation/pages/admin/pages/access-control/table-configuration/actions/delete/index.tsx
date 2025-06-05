@@ -1,5 +1,5 @@
 import { useToast } from "infinity-forge";
-import { useQueryClient } from "@/presentation/use-query"
+import { useQueryClient } from "infinity-forge"
 
 import { ControllerRole } from "@/domain";
 import { ButtonDelete } from "@/presentation";
