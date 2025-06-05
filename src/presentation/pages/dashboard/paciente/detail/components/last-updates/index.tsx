@@ -33,6 +33,8 @@ export function LastUpdates({ changeTab }: TabContentProps) {
         .get<RemotePatient>(TypesAutomatiza.RemotePatient)
         .loadLastUpdates({ id: patient.data?.id });
 
+      response?.[0] && setTimeLineSelected(response?.[0]);
+
       return response;
     },
     enabled: !!patient.data?.id,
