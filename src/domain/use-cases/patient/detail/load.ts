@@ -7,6 +7,7 @@ export type LoadPatient = {
 export namespace LoadPatient {
   export type Params = {
     patientId: Patient["id"];
+    scheduleId?: string
   };
 
   export type Model = Patient

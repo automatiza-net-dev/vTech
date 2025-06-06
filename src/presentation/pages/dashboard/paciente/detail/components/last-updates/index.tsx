@@ -33,7 +33,15 @@ export function LastUpdates({ changeTab }: TabContentProps) {
         .get<RemotePatient>(TypesAutomatiza.RemotePatient)
         .loadLastUpdates({ id: patient.data?.id });
 
-      response?.[0] && setTimeLineSelected(response?.[0]);
+      if (patient.data.scheduleAttendanceId) {
+        const possibleTimeline = response.find((r, idx) => r?.timeline_info?.attendance?.id === patient.data.scheduleAttendanceId)
+        if (possibleTimeline) {
+          setTimeLineSelected(possibleTimeline);
+        }
+
+      } else {
+        response?.[0] && setTimeLineSelected(response?.[0]);
+      }
 
       return response;
     },
