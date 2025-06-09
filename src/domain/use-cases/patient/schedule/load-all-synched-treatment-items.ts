@@ -1,8 +1,8 @@
-import { ScheduleExecution, Event } from "@/domain";
+import { Event } from "@/domain";
 
 export type LoadAllSynchedTreatmentItems = {
   loadSynchedTreatmentItems: (
-    params: LoadSynchedTreatmentItems.Params
+    params: LoadSynchedTreatmentItems.Params,
   ) => Promise<any>;
 };
 
@@ -12,6 +12,19 @@ export namespace LoadSynchedTreatmentItems {
   };
 
   export type Model = {
-    executions: ScheduleExecution;
+    items: {
+      treatmentId: number;
+      treatmentItemId: number;
+      productId: string;
+      productDescription: string;
+      executions: {
+        treatmentExecutionId: number;
+        productivityItemId: number;
+        productivityItemDescription: string;
+        executionUserId: string | null;
+        executionUserName: string | null;
+        executionDate: string | null;
+      }[];
+    }[];
   }[];
 }

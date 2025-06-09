@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import moment from "moment";
 import { Error } from "infinity-forge";
-import { useQueryClient } from "infinity-forge"
+import { useQueryClient } from "infinity-forge";
 
 import { useLoadSynchedTreatmentsItems } from "@/presentation";
 
@@ -43,12 +43,27 @@ export function Actions({
   const [treatmentItensOpen, setTreatmentItensOpen] = useState(false);
   const [synchedItemsFilter, setSynchedItemsFilter] = useState({});
 
+  useEffect(() => {
+    if (!event) {
+      return;
+    }
+
+    if (event.event?.serviceType.type !== "P") {
+      return;
+    }
+
+    setSynchedItemsFilter({
+      eventId: event.event.id,
+    });
+    setTreatmentItensOpen(true);
+  }, [event]);
+
   const synchedItems = useLoadSynchedTreatmentsItems(synchedItemsFilter);
 
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
   const selectedDate = useScheduling((state) => state.selectedDate);
   const listCancelledEvents = useScheduling(
-    (state) => state.listCancelledEvents
+    (state) => state.listCancelledEvents,
   );
 
   const description = event?.event?.serviceStatus?.description;
@@ -62,8 +77,7 @@ export function Actions({
     if (viewCalendar !== "day") {
       await refetch([refetchKeyWeekCalendar || "-"]);
     } else {
-      await refetch([
-        "RemoteLoadAllSchedulesUser"], { mode: "include" });
+      await refetch(["RemoteLoadAllSchedulesUser"], { mode: "include" });
     }
   }
 
@@ -117,28 +131,6 @@ export function Actions({
                           Mostrar itens tratamento
                         </span>
                       </span>
-
-                      {treatmentItensOpen && synchedItems?.data && (
-                        <div>
-                          {synchedItems?.data?.map(({ executions }) => (
-                            <span>
-                              - {executions?.productDescription} -{" "}
-                              {executions?.productivityItemdescription}
-                              <br />
-                              <span style={{ marginLeft: "20px" }}>
-                                {executions?.executionDate
-                                  ? `executado em: ${moment(
-                                      executions?.executionDate
-                                    ).format("DD/MM/YYYY - HH:mm")}h`
-                                  : ""}
-                                {executions?.executionUserName
-                                  ? ` por ${executions?.executionUserName}`
-                                  : ""}
-                              </span>
-                            </span>
-                          ))}
-                        </div>
-                      )}
                     </>
                   ) : (
                     <span
@@ -150,6 +142,26 @@ export function Actions({
             );
           })}
         </div>
+
+        {treatmentItensOpen && synchedItems?.data && (
+          <div className="actions-infos">
+            <div>
+              {synchedItems?.data
+                ?.flatMap((r) => r.items)
+                .map((row) => (
+                  <div key={row.treatmentId}>
+                    <h3 style={{ fontWeight: '600' }}>{row.productDescription}</h3>
+                    <ul>
+                      {row.executions.map((execution) => (
+                        <li key={execution.productivityItemId}>- {execution.productivityItemDescription}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
         {isCancelled && (
           <div className="canceled-box">
             <strong>Dados Cancelamento:</strong>
@@ -198,8 +210,8 @@ export function Actions({
 
             {(description === "Agendado (Confirmado)" ||
               description === "Agendado (Não confirmado)") && (
-              <MissedSchedule {...propsActions} />
-            )}
+                <MissedSchedule {...propsActions} />
+              )}
 
             {description !== "Atendimento finalizado" &&
               description !== "Em atendimento" && (
