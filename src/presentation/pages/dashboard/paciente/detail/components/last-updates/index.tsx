@@ -24,8 +24,8 @@ export function LastUpdates({ changeTab }: TabContentProps) {
     null
   );
 
-  const actionsPatient = useActionsPatient();
   const patient = useLoadPatient();
+  const actionsPatient = useActionsPatient(patient?.data);
   const { data, isFetching } = useQuery({
     queryKey: ["LastUpdates", patient.data?.id],
     queryFn: async () => {

@@ -2,7 +2,7 @@ import { Weight } from "./weight";
 // import { Pathologie } from "./pathologie";
 import { Avaliation } from "./avaliation";
 
-import { TimeLineEvent, TimelineType } from "@/domain";
+import { Patient, TimeLineEvent, TimelineType } from "@/domain";
 
 // temp
 import {
@@ -10,7 +10,6 @@ import {
   AddSale,
   FormCreateTutor,
   useDictionary,
-  useLoadPatient,
   useAssignTutor,
   useConfigurationsSystem,
 } from "@/presentation";
@@ -38,21 +37,20 @@ type ActionPatient = {
   SingleComponent: (props) => any;
 };
 
-export function useActionsPatient(): {
+export function useActionsPatient(patient?: Patient): {
   list: ActionPatient[];
   activeActions: ActionPatient[];
 } {
   const { getWord } = useDictionary();
-  const patient = useLoadPatient();
   const assignutor = useAssignTutor();
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem()
 
   const listActions = [
     {
       active: true,
       label:
-      type !== "Vet" ? "Avaliação" : "Atendimentos",
+        type !== "Vet" ? "Avaliação" : "Atendimentos",
       value: type !== "Vet" ? "Avaliação" : "Consulta",
       Icon: (
         <svg
@@ -67,7 +65,7 @@ export function useActionsPatient(): {
           <path d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm96 304c0 4.4-3.6 8-8 8h-56v56c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8v-56h-56c-4.4 0-8-3.6-8-8v-48c0-4.4 3.6-8 8-8h56v-56c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v56h56c4.4 0 8 3.6 8 8v48zm0-192c0 4.4-3.6 8-8 8H104c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h176c4.4 0 8 3.6 8 8v16z"></path>
         </svg>
       ),
-      Component: Avaliation,
+      Component: (props) => <Avaliation {...props} />,
       SingleComponent: (props) => {
         switch (props.timeline_info.event) {
           case "TROCA_TUTOR_PRINCIPAL":
@@ -156,7 +154,7 @@ export function useActionsPatient(): {
       SingleComponent: VideoPhoto,
     },
     {
-      active: !patient.data?.death && type === "Vet",
+      active: !patient?.death && type === "Vet",
       label: "Óbito",
       value: "OBITO",
       Icon: (
@@ -448,10 +446,10 @@ export function useActionsPatient(): {
           <FormCreateTutor
             {...props}
             onSuccess={async (data) => {
-              patient?.data?.id &&
+              patient?.id &&
                 (await assignutor.mutateAsync({
                   holder: data.id,
-                  patient: patient?.data?.id,
+                  patient: patient?.id,
                 }));
 
               props.setModal(false);

@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import { useConfigurationsSystem } from "@/presentation";
+import { useConfigurationsSystem, useLoadPatient } from "@/presentation";
 import { useActionsPatient } from "../../actions/actions/options";
 
 import { CardTimeLineProps } from "./interfaces";
@@ -12,7 +12,8 @@ export function CardTimeLine({
   timeLineSelected,
   setTimeLineSelected,
 }: CardTimeLineProps) {
-  const actionsPatient = useActionsPatient();
+  const patient = useLoadPatient();
+  const actionsPatient = useActionsPatient(patient?.data);
 
   const {type} = useConfigurationsSystem()
 
