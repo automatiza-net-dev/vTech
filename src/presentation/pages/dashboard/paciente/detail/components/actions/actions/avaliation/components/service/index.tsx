@@ -179,7 +179,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         isStickyButtons
         schema={{
           protocol: yup.string().required("Campo requerido"),
-          resume: yup.string().required("Campo requerido"),
+          resume: yup.string()
         }}
         cleanFieldsOnSubmit={false}
         initialData={initialData}

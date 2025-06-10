@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { TimeLine } from "@/domain";
 import { Modal } from "infinity-forge";
@@ -19,6 +19,7 @@ export type DropdownItemActionProps = {
   Component?: (props: DropdownComponentProps) => any;
   value?: string;
   reloadSchedule?: any;
+  defaultValue?: boolean
 };
 
 export function DropdownItemAction({
@@ -27,8 +28,17 @@ export function DropdownItemAction({
   Component,
   value,
   reloadSchedule,
+  defaultValue = false
 }: DropdownItemActionProps) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if(open){
+      return
+    }
+
+    setOpen(defaultValue)
+  }, [])
 
   return (
     <>

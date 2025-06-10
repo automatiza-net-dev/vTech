@@ -4,9 +4,11 @@ import { useActionsPatient } from "./options";
 import { DropdownItemAction } from "./dropdown-item";
 
 import * as S from "./styles";
+import { useLoadPatient } from "@/presentation/hooks";
 
 export function Actions({ reloadSchedule }: { reloadSchedule: any }) {
-  const actionsPatient = useActionsPatient();
+  const patient = useLoadPatient();
+  const actionsPatient = useActionsPatient(patient?.data);
 
   return (
     <Error name="AddButton">
@@ -19,6 +21,11 @@ export function Actions({ reloadSchedule }: { reloadSchedule: any }) {
               <DropdownItemAction
                 key={option.value}
                 {...option}
+                defaultValue={
+                  ["Avaliação", "Atendimentos"].includes(option.label)
+                    ? !!patient.data.scheduleAttendanceId
+                    : false
+                }
                 reloadSchedule={reloadSchedule}
               />
             ))}

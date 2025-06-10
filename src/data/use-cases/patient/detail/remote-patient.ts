@@ -25,7 +25,7 @@ export class RemotePatient
   ) {}
   async load(params: domain.LoadPatient.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`patients/display/${params?.patientId}`),
+      url: this.makeApiURL.make(`patients/display/${params?.patientId}?scheduleId=${params?.scheduleId ?? ''}`),
       method: "get",
     });
 

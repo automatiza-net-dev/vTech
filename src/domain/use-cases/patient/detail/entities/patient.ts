@@ -38,6 +38,7 @@ export interface PatientHuman {
   email?: string;
   scheduleId?: Event["event"]["id"];
   scheduleStartedAt?: string;
+  scheduleAttendanceId?: number
   tutor: Tutor;
   community: boolean;
   patientAnimal: PatientAnimal;
