@@ -59,7 +59,7 @@ export default function Bills() {
         id: bill?.id,
         internalCode: bill?.internalCode,
         fn: bill?.hasDocuments ? "Sim" : "Não",
-        bill_date: dateFormatter(bill?.bill_date),
+        bill_date: moment(new Date(bill?.bill_date)).format("DD/MM/YYYY HH:mm"),
         code: bill?.tag ?? "-",
         client: bill?.client?.name || "-",
         patient: bill.patient?.name ?? "-",
