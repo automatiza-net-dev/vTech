@@ -276,12 +276,13 @@ export function SinglePendingProducts({
                           value: unit?.name,
                           key: unit?.id,
                         }))}
-                        value={item?.unitId}
+                        value={item?.unitDescription}
                         onChange={(val, option) => {
                           let arr = [...data];
                           arr.splice(i, 1, {
                             ...item,
                             unitId: option.id,
+                            unitDescription: option.description,
                             sendUpdate: true,
                           });
                           setData(arr);
@@ -290,7 +291,8 @@ export function SinglePendingProducts({
                           let arr = [...data];
                           arr.splice(i, 1, {
                             ...item,
-                            subgroupId: opt?.id,
+                            unitId: opt?.id,
+                            unitDescription: opt?.description,
                             sendUpdate: true,
                           });
                           setData(arr);
