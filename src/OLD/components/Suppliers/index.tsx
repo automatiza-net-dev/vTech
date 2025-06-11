@@ -31,7 +31,7 @@ const Suppliers = memo(function Suppliers() {
   const canEditSuppliers = useUserHasPermission("FOR02");
   // const canDeleteSuppliers = useUserHasPermission("FOR03"); /// Botao nao existe
 
-  const { suppliers } = useSuppliers(filters, reload);
+  const { suppliers, loadingSuppliers, fetchSuppliers } = useSuppliers(filters);
 
   const router = useRouter();
 
@@ -69,13 +69,13 @@ const Suppliers = memo(function Suppliers() {
                   onClick={() => {
                     router.push(`/dashboard/fornecedores/editar/${item.id}`);
                   }}
-                  style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
                 />
               )}
             </section>
           ),
         };
-      })
+      }),
     );
   };
 
@@ -88,13 +88,22 @@ const Suppliers = memo(function Suppliers() {
   ) : (
     <PageWrapper title="Fornecedores">
       <Container>
-        <Filters filters={filters} setFilters={setFilters} />
-        <div className="uk-flex uk-flex-right">
-            <Button
-              disabled={!canCreateSuppliers}
-              onClick={() => router.push("/dashboard/fornecedores/novo")}
-              text="Cadastrar"
-            />
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          shouldRefetch={() => fetchSuppliers()}
+        />
+        <div className="uk-flex uk-flex-right" style={{ gap: 20 }}>
+          <Button
+            disabled={!canCreateSuppliers}
+            onClick={() => router.push("/dashboard/fornecedores/novo")}
+            text="Cadastrar"
+          />
+          <Button
+            loading={loadingSuppliers}
+            onClick={() => fetchSuppliers()}
+            text="Filtrar"
+          />
         </div>
         <hr />
         <Table columns={suppliersColumns} dataSource={formattedSuppliers} />

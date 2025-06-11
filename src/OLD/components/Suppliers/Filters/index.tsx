@@ -6,7 +6,7 @@ import { InputBox } from "../styles";
 
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
-const Filters = memo(function Filters({ filters, setFilters }) {
+const Filters = memo(function Filters({ filters, setFilters, shouldRefetch }) {
   return (
     <section className="uk-margin-top">
       <section style={{ display: "flex", width: "100%" }}>
@@ -18,6 +18,11 @@ const Filters = memo(function Filters({ filters, setFilters }) {
               onChange={(e) =>
                 setFilters({ ...filters, name: normalizeStr(e.target.value) })
               }
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  shouldRefetch();
+                }
+              }}
             />
           </InputBox>
         </div>
@@ -29,6 +34,11 @@ const Filters = memo(function Filters({ filters, setFilters }) {
               onChange={(e) =>
                 setFilters({ ...filters, document: e.target.value })
               }
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  shouldRefetch();
+                }
+              }}
             />
           </InputBox>
         </div>
