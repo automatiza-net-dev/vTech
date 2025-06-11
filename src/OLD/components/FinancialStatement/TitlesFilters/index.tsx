@@ -31,6 +31,7 @@ export default function TitlesFilters({
   clinics,
   loadingFinances,
   setCreateTitleVisible,
+  isLoading = false,
 }: any) {
   const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
   const { setTitles } = useAuth();
@@ -41,7 +42,7 @@ export default function TitlesFilters({
         label: tutor?.name,
         value: tutor?.id,
       })),
-    [formatedTutors]
+    [formatedTutors],
   );
 
   const paymentMethodOptions = useMemo(
@@ -50,7 +51,7 @@ export default function TitlesFilters({
         label: method.description,
         value: method.id,
       })),
-    [paymentMethods]
+    [paymentMethods],
   );
 
   const planOptions = useMemo(
@@ -59,7 +60,7 @@ export default function TitlesFilters({
         label: plan.description,
         value: plan.id,
       })),
-    [plans]
+    [plans],
   );
 
   useEffect(() => {
@@ -90,7 +91,7 @@ export default function TitlesFilters({
       }));
 
       const sortedClients = [...formattedTutors, ...formattedSuppliers].sort(
-        (a, b) => a.value.localeCompare(b.value)
+        (a, b) => a.value.localeCompare(b.value),
       );
 
       setFormatedTutors(sortedClients);
@@ -124,7 +125,7 @@ export default function TitlesFilters({
     },
   });
 
-    const tfeAquires = useQuery({
+  const tfeAquires = useQuery({
     queryKey: ["tfeAquires"],
     queryFn: async () => {
       const response = await api({
@@ -132,7 +133,7 @@ export default function TitlesFilters({
         url: `payment-methods/tef-acquirers`,
       });
 
-      return response
+      return response;
     },
   });
 
@@ -152,7 +153,7 @@ export default function TitlesFilters({
   });
 
   const createTitlePermission = useUserHasPermission(
-    `${accessControlTitles(type)}01`
+    `${accessControlTitles(type)}01`,
   );
 
   return (
@@ -182,6 +183,7 @@ export default function TitlesFilters({
             setTitles([]);
             setReload(!reload);
           }}
+          loading={isLoading}
           text="Filtrar"
         />
       </div>
@@ -236,6 +238,11 @@ export default function TitlesFilters({
               placeholder="DD/MM/YYYY"
               label="Data emissão"
               names={["fromIssue", "toIssue"]}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
 
             {/* <InputDateRange
@@ -254,6 +261,11 @@ export default function TitlesFilters({
               placeholder="DD/MM/YYYY"
               label="Data Vencimento/Pagamento"
               names={["iterationDateFrom", "iterationDateTo"]}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
 
             {/* <InputDateRange
@@ -272,6 +284,11 @@ export default function TitlesFilters({
               placeholder="DD/MM/YYYY"
               label="Data aceite"
               names={["fromAcceptDate ", "toAcceptDate"]}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
           </div>
 
@@ -283,22 +300,67 @@ export default function TitlesFilters({
                 placeholder="MM/YYYY"
                 label="Data competência"
                 name="competence"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
 
-              <Input label="Nº Comprovante / NSU" name="nsu" />
+              <Input
+                label="Nº Comprovante / NSU"
+                name="nsu"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
+              />
             </div>
 
             <div className="row">
-              <Input label="Documento" name="document" />
-              <Input label="Nota Fiscal" name="fiscalNote" />
+              <Input
+                label="Documento"
+                name="document"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
+              />
+              <Input
+                label="Nota Fiscal"
+                name="fiscalNote"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
+              />
             </div>
 
             <div className="row">
               {unit?.configs?.businessUnits?.internal_code && (
-                <Input label="Código Interno" name="internalCode" />
+                <Input
+                  label="Código Interno"
+                  name="internalCode"
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      setReload((prev) => !prev);
+                    }
+                  }}
+                />
               )}
 
-              <Input label="Historico" name="historic" />
+              <Input
+                label="Historico"
+                name="historic"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
+              />
             </div>
           </div>
 
@@ -309,6 +371,11 @@ export default function TitlesFilters({
               name="client"
               options={clientOptions}
               isClearable
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
 
             <Select
@@ -325,6 +392,11 @@ export default function TitlesFilters({
                   return { ...prv, checkingAccountId: value };
                 });
               }}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
 
             <Select
@@ -333,6 +405,11 @@ export default function TitlesFilters({
               name="plan"
               options={planOptions}
               isClearable
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
           </div>
 
@@ -343,6 +420,11 @@ export default function TitlesFilters({
               name="paymentMethod"
               options={paymentMethodOptions}
               isClearable
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
 
             <Select
@@ -354,17 +436,29 @@ export default function TitlesFilters({
                 label: item?.description,
                 value: item.id,
               }))}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
 
-              <Select
+            <Select
               label="Adquirente Tef."
               name="tefAcquirerId"
               onlyOneValue
               isClearable
-              options={tfeAquires?.data?.map((item) => ({
-                label: item?.description,
-                value: item.id,
-              })) || []}
+              options={
+                tfeAquires?.data?.map((item) => ({
+                  label: item?.description,
+                  value: item.id,
+                })) || []
+              }
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
             />
           </div>
 
@@ -381,6 +475,11 @@ export default function TitlesFilters({
                   { label: "Crédito", value: "CREDITO" },
                   { label: "Débito", value: "DEBITO" },
                 ]}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
 
               <Select
@@ -394,6 +493,11 @@ export default function TitlesFilters({
                   { label: "Aberto", value: "ABERTO" },
                   { label: "Baixado", value: "BAIXADO" },
                 ]}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
             </div>
 
@@ -409,6 +513,11 @@ export default function TitlesFilters({
                 ]}
                 name="accept"
                 label="Aceite"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
 
               <Select
@@ -422,6 +531,11 @@ export default function TitlesFilters({
                 ]}
                 name="reconciled"
                 label="Conciliado"
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
             </div>
 
@@ -435,6 +549,11 @@ export default function TitlesFilters({
                 name="groupBorderos"
                 label="Agrupa títulos borderô"
                 isClearable
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
 
               <Select
@@ -449,6 +568,11 @@ export default function TitlesFilters({
                   { label: "Data Pagamento", value: "payment_date" },
                   { label: "Documento / Parcela", value: "doc" },
                 ]}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
               />
             </div>
           </div>

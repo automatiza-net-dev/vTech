@@ -46,7 +46,6 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { useSystem } from "@/presentation";
 
 export default function Titles({ type }: any) {
-
   const [filters, setFilters] = useState({
     type: !type ? "all" : type === "receive" ? "CREDITO" : "DEBITO",
     order: "expiration_date",
@@ -56,6 +55,7 @@ export default function Titles({ type }: any) {
     accept: "",
     reconciled: "",
   });
+
   const [reload, setReload] = useState(false);
   const [formatedFinances, setFormatedFinances] = useState([]);
   const [suppliersFilters, setSuppliersFilters] = useState({});
@@ -181,9 +181,8 @@ export default function Titles({ type }: any) {
           : "-",
         paymentMethod:
           finance?.source === "FINANCE"
-            ? `${finance?.payment_method} ${
-                finance?.tef_flag ? ` - ${finance?.tef_flag}` : ""
-              }`
+            ? `${finance?.payment_method} ${finance?.tef_flag ? ` - ${finance?.tef_flag}` : ""
+            }`
             : "-",
         nsu: finance?.nsu_document || "-",
         internalCode: finance?.internal_code || finance?.internalCode || "-",
@@ -339,13 +338,13 @@ export default function Titles({ type }: any) {
     <AccessDenied loading={listTitlesPermission} />
   ) : (
     <PageWrapper
-      title={`    Lançamento de títulos (${
-        type === "receive" ? "Crédito" : "Débito"
-      })`}
+      title={`    Lançamento de títulos (${type === "receive" ? "Crédito" : "Débito"
+        })`}
     >
       <Container>
         <TitlesFilters
           type={type}
+          isLoading={loadingFinances}
           filters={filters}
           setFilters={setFilters}
           paymentMethods={paymentMethods}
@@ -382,10 +381,10 @@ export default function Titles({ type }: any) {
                   <strong>Total:&nbsp;</strong>
                   {currencyFormatter(
                     finances?.length > 0 &&
-                      finances?.reduce(
-                        (acc, current) => acc + current?.total_value,
-                        0
-                      )
+                    finances?.reduce(
+                      (acc, current) => acc + current?.total_value,
+                      0
+                    )
                   )}
                 </div>
                 <div className="uk-width-1-1">

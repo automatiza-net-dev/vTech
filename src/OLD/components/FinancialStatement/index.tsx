@@ -440,6 +440,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
       <Container>
         <TitlesFilters
           setCreateTitleVisible={setCreateTitleVisible}
+          isLoading={loadingFinances}
           type={type}
           tefFlags={tefFlags}
           checkingAccounts={checkingAccounts}
