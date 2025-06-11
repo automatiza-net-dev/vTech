@@ -174,7 +174,7 @@ export function SinglePendingProducts({
                           let arr = [...data];
                           arr.splice(i, 1, {
                             ...item,
-                            productDescription: opt?.value,
+                            productDescription: val?.target.value,
                             sendUpdate: true,
                           });
                           setData(arr);
@@ -392,7 +392,7 @@ export function SinglePendingProducts({
                               let arr = [...data];
                               arr.splice(i, 1, {
                                 ...item,
-                                fractionValue: val,
+                                fractionValue: e.target.value,
                                 sendUpdate: true,
                               });
                               setData(arr);
