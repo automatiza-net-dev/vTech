@@ -9,7 +9,7 @@ const { TextArea } = Input;
 // Utils
 import Masks from "@/OLD/utils/masks";
 
-const FormChild = memo(function FormChild({ data, setData, numberInput }) {
+const FormChild = memo(function FormChild({ data, setData, numberInput, showObservations = true }) {
   return (
     <section>
       {numberInput && (
@@ -24,13 +24,16 @@ const FormChild = memo(function FormChild({ data, setData, numberInput }) {
           />
         </div>
       )}
-      <div className="uk-margin-top">
-        <label>Observações</label>
-        <TextArea
-          onChange={(e) => setData({ ...data, observations: e.target.value })}
-          value={data?.observations}
-        />
-      </div>
+      {showObservations && (
+        <div className="uk-margin-top">
+          <label>Observações</label>
+          <TextArea
+            onChange={(e) => setData({ ...data, observations: e.target.value })}
+            value={data?.observations}
+          />
+        </div>
+      )}
+
     </section>
   );
 });
