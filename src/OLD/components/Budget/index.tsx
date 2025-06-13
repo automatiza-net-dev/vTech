@@ -77,7 +77,7 @@ const mapper = (data = [], setReload) => {
       id: budget?.id,
       internalCode: budget?.internalCode,
       evaluator: budget?.reviewer?.name || "-",
-      budget_date: dateFormatter(budget.budget_date),
+      budget_date: moment(new Date(budget.budget_date)).format("DD/MM/YYYY HH:mm"),
       expiration_date: dateFormatter(budget.expiration_date),
       tag: budget.tag ?? "-",
       finished_at: budget.finished_at ? dateFormatter(budget.finished_at) : "-",

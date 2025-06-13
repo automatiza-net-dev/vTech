@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useQueryClient } from "infinity-forge";
-
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import Masks from "@/OLD/utils/masks";
 import { RemoteBills } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
 import { billService } from "@/OLD/services/bills.service";
-
 import { useShowBill } from "@/OLD/hooks/useBills";
 import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
-import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
+import { useDailyCasher, useDailyCashier } from "@/OLD/hooks/useDailyCashiers";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { useLoadAllPatientTutor } from "@/presentation";
-
+import {
+	useLoadAllPatientTutor,
+	useSearchDailyMovements,
+} from "@/presentation";
 import moment from "moment";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
-
 import CardPanel from "./CardPanel";
 import { Container } from "./styles";
 import NonTefPanel from "./NonTefPanel";
@@ -21,360 +20,609 @@ import ResumePanel from "./ResumePanel";
 import { DetailsPanel } from "./DetailsPanel";
 import { PaymentsPreviewComponent } from "@/presentation";
 import ProductsPanel from "../Details/ProductsPanel";
-import { Select, FormHandler, useToast, api } from "infinity-forge";
-import { Button } from "infinity-forge";
+import DailyCashierFormChild from "../../../DailyCashier/Actions/FormChild";
+import { Modal as AntdModal } from "antd";
+import {
+	Select,
+	FormHandler,
+	useToast,
+	api,
+	useQueryClient,
+	useQuery,
+	useMutation,
+	Button,
+	Modal,
+	useTable,
+	useAuthAdmin,
+} from "infinity-forge";
 import { AxiosError } from "axios";
+import { useDailyCashierTableActions } from "@/OLD/components/DailyCashier/table";
+import { currencyFormatter } from "@/OLD/components/Budget";
+import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 
 function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
-  const [reload, setReload] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [filters, setFilters] = useState<any>({ active: true });
-  const [cashierFilters, setCashierFilters] = useState<any>({
-    from: moment(new Date()).startOf("day"),
-    to: moment(new Date()).endOf("day"),
-    status: "ABERTO",
-  });
+	const [reload, setReload] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [filters, setFilters] = useState<any>({ active: true });
+	const [cashierFilters, setCashierFilters] = useState<any>({
+		from: moment(new Date()).startOf("day"),
+		to: moment(new Date()).endOf("day"),
+		status: "ABERTO",
+	});
 
-  const [debitMethods, setDebitMethods] = useState<any>([]);
-  const [creditMethods, setCreditMethods] = useState<any>([]);
-  const [nonTefMethods, setNonTefMethods] = useState<any>([]);
-  const [higherBlock, setHigherBlock] = useState(0);
-  const [blockArr, setBlockArr] = useState<any>([]);
-  const [formData, setFormData] = useState<any>({
-    expirationDate: moment(),
-  });
-  const [allowEditFinancialRsp, setAllowEditFinancialRsp] = useState(false);
-  const [financialResponsible, setFinancialResponsible] = useState<any>({});
+	const [debitMethods, setDebitMethods] = useState<any>([]);
+	const [creditMethods, setCreditMethods] = useState<any>([]);
+	const [nonTefMethods, setNonTefMethods] = useState<any>([]);
+	const [higherBlock, setHigherBlock] = useState(0);
+	const [blockArr, setBlockArr] = useState<any>([]);
+	const [formData, setFormData] = useState<any>({
+		expirationDate: moment(),
+	});
+	const [allowEditFinancialRsp, setAllowEditFinancialRsp] = useState(false);
+	const [financialResponsible, setFinancialResponsible] = useState<any>({});
 
-  const queryClient = useQueryClient();
-  const endBillPermission = useUserHasPermission("VEN06");
+	const queryClient = useQueryClient();
+	const endBillPermission = useUserHasPermission("VEN06");
 
-  const { createToast } = useToast();
+	const { createToast } = useToast();
 
-  const { data } = useShowBill(billId, true);
-  const users = useLoadAllPatientTutor({});
-  const { paymentMethods } = usePaymentMethods(filters);
-  const { cashiers } = useDailyCasher(false, cashierFilters);
+	const { data } = useShowBill(billId, true);
+	const users = useLoadAllPatientTutor({});
+	const { paymentMethods } = usePaymentMethods(filters);
+	const { cashiers, fetchDailyCashiers } = useDailyCasher(
+		false,
+		cashierFilters,
+	);
 
-  const filterMethods = () => {
-    setDebitMethods(
-      paymentMethods?.filter(
-        (method) => method?.tef !== "NAO" && method?.type === "DEBITO"
-      )
-    );
+	const [hideCashierModal, setHideCashierModal] = useState(false);
+	const cashierStatusQuery = useQuery({
+		queryKey: ["check-cashier-status"],
+		queryFn: async () => {
+			const response = await api({
+				url: "daily-cashiers/check-cashier-status",
+				method: "get",
+				// body: {
+				//   active: true,
+				// },
+			});
 
-    setCreditMethods(
-      paymentMethods?.filter(
-        (method) => method?.tef !== "NAO" && method?.type === "CREDITO"
-      )
-    );
+			fetchDailyCashiers();
 
-    setNonTefMethods(paymentMethods?.filter((method) => method?.tef === "NAO"));
-  };
+			return response as {
+				id: string | null;
+				hasRows: boolean;
+				hasPermission: boolean;
+				status: "Hoje" | "Anterior" | null;
+			};
+		},
+	});
 
-  const closePayment = useCallback(() => {
-    let error = false;
-    billService
-      .closeBillPayment(data?.id)
-      .then((_res) => {
-        createToast({
-          status: "success",
-          message: "Venda finalizada com sucesso!",
-        });
-      })
-      .catch((err) => {
-        error = true;
-        createToast({
-          status: "error",
-          message:
-            err?.response?.data?.message ||
-            "Houve um erro ao finalizar a venda, verifique se há valores pendentes",
-        });
-      })
-      .finally(() => {
-        if (!error) {
-          setVisible(false);
-        }
-      });
-  }, [data?.id]);
+	const dailyCashierQuery = useDailyCashier();
+	const dailyCashierActions = useDailyCashierTableActions({
+		mutate: dailyCashierQuery.mutate,
+	}) as any;
 
-  const verifyPayment = () => {
-    let totalPayed = 0;
+	const filterMethods = () => {
+		setDebitMethods(
+			paymentMethods?.filter(
+				(method) => method?.tef !== "NAO" && method?.type === "DEBITO",
+			),
+		);
 
-    for (let i = 0; i < data?.payments?.length; i += 1) {
-      totalPayed += data?.payments[i]?.total_value;
-    }
+		setCreditMethods(
+			paymentMethods?.filter(
+				(method) => method?.tef !== "NAO" && method?.type === "CREDITO",
+			),
+		);
 
-    if (data?.total_value - totalPayed > 0) {
-      createToast({ status: "error", message: "Há valores pendentes" });
-      return;
-    }
-    queryClient.refetch(["bills", true], { mode: "include" });
+		setNonTefMethods(paymentMethods?.filter((method) => method?.tef === "NAO"));
+	};
 
-    setReloadBill & setReloadBill((s) => !s);
-    queryClient.invalidateQueries(["paymentsPreview"]);
+	const closePayment = useCallback(() => {
+		let error = false;
+		billService
+			.closeBillPayment(data?.id)
+			.then((_res) => {
+				createToast({
+					status: "success",
+					message: "Venda finalizada com sucesso!",
+				});
+			})
+			.catch((err) => {
+				error = true;
+				createToast({
+					status: "error",
+					message:
+						err?.response?.data?.message ||
+						"Houve um erro ao finalizar a venda, verifique se há valores pendentes",
+				});
+			})
+			.finally(() => {
+				if (!error) {
+					setVisible(false);
+				}
+			});
+	}, [data?.id]);
 
-    closePayment();
+	const verifyPayment = () => {
+		let totalPayed = 0;
 
-    return totalPayed;
-  };
+		for (let i = 0; i < data?.payments?.length; i += 1) {
+			totalPayed += data?.payments[i]?.total_value;
+		}
 
-  const submitFinancialResponsible = async () => {
-    try {
-      await container
-        .get<RemoteBills>(TypesAutomatiza.RemoteBills)
-        .updateFinancialResponsible({
-          financialResponsibleId: financialResponsible.id,
-          billId,
-        });
+		if (data?.total_value - totalPayed > 0) {
+			createToast({ status: "error", message: "Há valores pendentes" });
+			return;
+		}
+		queryClient.refetch(["bills", true], { mode: "include" });
 
-      setAllowEditFinancialRsp(false);
-    } catch (err) {
-      createToast({ message: "Houve um erro ao atualizar o responsável" });
-    } finally {
-      createToast({
-        message: "Responsável financeiro atualizado com sucesso!",
-      });
-    }
-  };
+		setReloadBill & setReloadBill((s) => !s);
+		queryClient.invalidateQueries(["paymentsPreview"]);
 
-  useEffect(() => {
-    data?.payments?.map((item) => {
-      if (item?.block > higherBlock) {
-        setHigherBlock(item?.block);
-      }
-    });
+		closePayment();
 
-    setFinancialResponsible({
-      id: data?.financialResponsible?.id,
-    });
-  }, [data, reload, higherBlock]);
+		return totalPayed;
+	};
 
-  useEffect(() => {
-    setBlockArr(Array.from(Array(higherBlock).keys()));
-  }, [higherBlock]);
+	const submitFinancialResponsible = async () => {
+		try {
+			await container
+				.get<RemoteBills>(TypesAutomatiza.RemoteBills)
+				.updateFinancialResponsible({
+					financialResponsibleId: financialResponsible.id,
+					billId,
+				});
 
-  useEffect(() => {
-    paymentMethods?.length > 0 && filterMethods();
-  }, [paymentMethods]);
+			setAllowEditFinancialRsp(false);
+		} catch (err) {
+			createToast({ message: "Houve um erro ao atualizar o responsável" });
+		} finally {
+			createToast({
+				message: "Responsável financeiro atualizado com sucesso!",
+			});
+		}
+	};
 
-  const submitPayment = useCallback(
-    async (params) => {
-      setLoading(true);
+	useEffect(() => {
+		data?.payments?.map((item) => {
+			if (item?.block > higherBlock) {
+				setHigherBlock(item?.block);
+			}
+		});
 
-      if (cashiers.length === 0) {
-        return createToast({
-          status: "error",
-          message: "Nenhum caixa diário aberto",
-        });
-      }
+		setFinancialResponsible({
+			id: data?.financialResponsible?.id,
+		});
+	}, [data, reload, higherBlock]);
 
-      if (
-        paymentMethods.find(
-          (method) => method?.id === formData?.paymentMethodId
-        ) !== "NÃO" &&
-        !formData?.installments
-      ) {
-        return createToast({
-          status: "error",
-          message: "Selecione a quantidade de parcelas",
-        });
-      }
+	useEffect(() => {
+		setBlockArr(Array.from(Array(higherBlock).keys()));
+	}, [higherBlock]);
 
-      const payload = {
-        ...formData,
-        maxParcelas: params?.maxParcelas || formData?.maxParcelas,
-        installmentsValue: convertIntlCurrency(formData?.installmentsValue),
-        billId,
-      };
+	useEffect(() => {
+		paymentMethods?.length > 0 && filterMethods();
+	}, [paymentMethods]);
 
-      try {
-        await api({
-          url: "bills/create-payment",
-          method: "post",
-          body: payload,
-        });
+	const submitPayment = useCallback(
+		async (params) => {
+			setLoading(true);
 
-        queryClient.refetch(["bills", true], { mode: "include" });
-        setReloadBill & setReloadBill((s) => !s);
-        queryClient.invalidateQueries(["paymentsPreview"]);
-        setFormData({
-          expirationDate: moment(),
-        });
+			if (cashiers.length === 0) {
+				return createToast({
+					status: "error",
+					message: "Nenhum caixa diário aberto",
+				});
+			}
 
-        return createToast({
-          status: "success",
-          message: "Pagamento adicionado com sucesso!",
-        });
-      } catch (err: any) {
-        if (err instanceof AxiosError) {
-          if (
-            window.confirm(err?.response?.data?.message) &&
-            !params?.maxParcelas
-          ) {
-            submitPayment({ maxParcelas: true });
-            setFormData({
-              expirationDate: moment(),
-            });
-          }
+			if (
+				paymentMethods.find(
+					(method) => method?.id === formData?.paymentMethodId,
+				) !== "NÃO" &&
+				!formData?.installments
+			) {
+				return createToast({
+					status: "error",
+					message: "Selecione a quantidade de parcelas",
+				});
+			}
 
-          return;
-        }
+			const payload = {
+				...formData,
+				maxParcelas: params?.maxParcelas || formData?.maxParcelas,
+				installmentsValue: convertIntlCurrency(formData?.installmentsValue),
+				billId,
+			};
 
-        if (
-          err.response.data.message.includes(
-            "Não foi possível encontrar o caixa aberto para o usuário"
-          )
-        ) {
-          return createToast({
-            status: "error",
-            message: "Não existe caixa diário aberto para o seu Login",
-          });
-        }
+			try {
+				await api({
+					url: "bills/create-payment",
+					method: "post",
+					body: payload,
+				});
 
-        if (err.response.data.message?.includes("E_NOT_OPEN")) {
-          return createToast({
-            status: "error",
-            message: "Não existe caixa diário aberto",
-          });
-        }
+				queryClient.refetch(["bills", true], { mode: "include" });
+				setReloadBill & setReloadBill((s) => !s);
+				queryClient.invalidateQueries(["paymentsPreview"]);
+				setFormData({
+					expirationDate: moment(),
+				});
 
-        setReloadBill & setReloadBill((s) => !s);
-        queryClient.refetch(["bills", true], { mode: "include" });
-      } finally {
-      }
-    },
-    [formData, billId]
-  );
+				return createToast({
+					status: "success",
+					message: "Pagamento adicionado com sucesso!",
+				});
+			} catch (err: any) {
+				if (err instanceof AxiosError) {
+					if (
+						window.confirm(err?.response?.data?.message) &&
+						!params?.maxParcelas
+					) {
+						submitPayment({ maxParcelas: true });
+						setFormData({
+							expirationDate: moment(),
+						});
+					}
 
-  return (
-    <Container>
-      <div className="uk-margin-top">
-        <header>
-          <div>
-            <h3 className="uk-margin-remove">
-              Pagamento da venda, código:&nbsp;{data?.tag}
-            </h3>
-            <strong>
-              Data:&nbsp;{moment(new Date()).format("DD/MM/YYYY - HH:mm")}
-              &nbsp;Cliente:&nbsp;
-              {data?.client?.name}
-            </strong>
-          </div>
-          <div>
-            <label className="uk-margin-right">Resp. financeiro</label>
-            {!allowEditFinancialRsp ? (
-              <label
-                className="uk-link"
-                onClick={() => setAllowEditFinancialRsp(true)}
-              >
-                Alterar
-              </label>
-            ) : (
-              <>
-                <span
-                  className="uk-link uk-margin-right"
-                  onClick={() => submitFinancialResponsible()}
-                >
-                  Salvar
-                </span>
-                <span
-                  className="uk-link"
-                  onClick={() => {
-                    setAllowEditFinancialRsp(false);
-                  }}
-                >
-                  Cancelar
-                </span>
-              </>
-            )}
+					return;
+				}
 
-            {users.data && users.data.length > 0 && (
-              <FormHandler
-                initialData={financialResponsible}
-                onChangeForm={{
-                  callbackResult: (data) => setFinancialResponsible(data),
-                }}
-              >
-                <Select
-                  disabled={!allowEditFinancialRsp}
-                  menuPlacement="bottom"
-                  name="id"
-                  options={users.data?.map((item) => ({
-                    value: item.id,
-                    label: item.name,
-                  }))}
-                  onlyOneValue
-                  value={financialResponsible.id}
-                />
-              </FormHandler>
-            )}
-          </div>
-        </header>
-        <hr />
-        <section className="payment-detail-container uk-padding uk-shadow-small">
-          <div className="uk-flex">
-            <section className="uk-width-1-5">
-              <CardPanel
-                methods={debitMethods}
-                setFormData={setFormData}
-                formData={formData}
-                bill={data}
-                title="Débito"
-              />
-              <div className="uk-margin-top">
-                <CardPanel
-                  methods={creditMethods}
-                  title="Crédito"
-                  setFormData={setFormData}
-                  formData={formData}
-                  bill={data}
-                />
-              </div>
-            </section>
-            <NonTefPanel
-              methods={nonTefMethods}
-              setFormData={setFormData}
-              formData={formData}
-              bill={data}
-            />
-            <DetailsPanel
-              bill={data}
-              formData={formData}
-              setFormData={setFormData}
-              loading={loading}
-              setLoading={setLoading}
-              submit={submitPayment}
-            />
-            <ResumePanel bill={data} formData={formData} />
-          </div>
-        </section>
-        <hr />
-        <PaymentsPreviewComponent {...data} setData={setFormData} />
-        <hr />
-        {blockArr?.length > 0 &&
-          blockArr?.map((i) => (
-            <ProductsPanel
-              key={i}
-              payments={data?.payments?.filter((item) => item?.block === i + 1)}
-              reload={reload}
-              setReload={setReload}
-              remove={data?.status === "BAIXADA" ? false : true}
-              billId={data?.id}
-            />
-          ))}
-        <footer className="uk-margin-top uk-flex uk-flex-right">
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Button onClick={() => setVisible(false)} text="Salvar" />
+				if (
+					err.response.data.message.includes(
+						"Não foi possível encontrar o caixa aberto para o usuário",
+					)
+				) {
+					return createToast({
+						status: "error",
+						message: "Não existe caixa diário aberto para o seu Login",
+					});
+				}
 
-            {endBillPermission && (
-              <Button onClick={() => verifyPayment()} text="Finalizar" />
-            )}
-          </div>
-        </footer>
-      </div>
-    </Container>
-  );
+				if (err.response.data.message?.includes("E_NOT_OPEN")) {
+					return createToast({
+						status: "error",
+						message: "Não existe caixa diário aberto",
+					});
+				}
+
+				setReloadBill & setReloadBill((s) => !s);
+				queryClient.refetch(["bills", true], { mode: "include" });
+			} finally {
+			}
+		},
+		[formData, billId],
+	);
+
+	const shouldShowModal = useMemo(() => {
+		if (!cashierStatusQuery.data || hideCashierModal) {
+			return false;
+		}
+
+		if (cashierStatusQuery.data.hasRows) {
+			return cashierStatusQuery.data.status !== "Hoje";
+		}
+
+		// Se não tem nenhum caixa "válido", apenas mostrar mesmo
+		// o conteúdo vai variar apenas
+		return true;
+	}, [cashierStatusQuery?.data, hideCashierModal]);
+
+	return (
+		<Container>
+			{!!cashierStatusQuery.data && (
+				<Modal
+					title={"Fechamento de Caixa"}
+					open={shouldShowModal}
+					onClose={() => setHideCashierModal(true)}
+					styles={{ width: "500px", padding: "20px" }}
+					children={
+						<DailyCashierSync
+							{...cashierStatusQuery.data}
+							shouldHide={() => setHideCashierModal(true)}
+						/>
+					}
+				/>
+			)}
+
+			<div className="uk-margin-top">
+				<header>
+					<div>
+						<h3 className="uk-margin-remove">
+							Pagamento da venda, código:&nbsp;{data?.tag}
+						</h3>
+						<strong>
+							Data:&nbsp;{moment(new Date()).format("DD/MM/YYYY - HH:mm")}
+							&nbsp;Cliente:&nbsp;
+							{data?.client?.name}
+						</strong>
+					</div>
+					<div>
+						<label className="uk-margin-right">Resp. financeiro</label>
+						{!allowEditFinancialRsp ? (
+							<label
+								className="uk-link"
+								onClick={() => setAllowEditFinancialRsp(true)}
+							>
+								Alterar
+							</label>
+						) : (
+							<>
+								<span
+									className="uk-link uk-margin-right"
+									onClick={() => submitFinancialResponsible()}
+								>
+									Salvar
+								</span>
+								<span
+									className="uk-link"
+									onClick={() => {
+										setAllowEditFinancialRsp(false);
+									}}
+								>
+									Cancelar
+								</span>
+							</>
+						)}
+
+						{users.data && users.data.length > 0 && (
+							<FormHandler
+								initialData={financialResponsible}
+								onChangeForm={{
+									callbackResult: (data) => setFinancialResponsible(data),
+								}}
+							>
+								<Select
+									disabled={!allowEditFinancialRsp}
+									menuPlacement="bottom"
+									name="id"
+									options={users.data?.map((item) => ({
+										value: item.id,
+										label: item.name,
+									}))}
+									onlyOneValue
+									value={financialResponsible.id}
+								/>
+							</FormHandler>
+						)}
+					</div>
+				</header>
+				<hr />
+				<section className="payment-detail-container uk-padding uk-shadow-small">
+					<div className="uk-flex">
+						<section className="uk-width-1-5">
+							<CardPanel
+								methods={debitMethods}
+								setFormData={setFormData}
+								formData={formData}
+								bill={data}
+								title="Débito"
+							/>
+							<div className="uk-margin-top">
+								<CardPanel
+									methods={creditMethods}
+									title="Crédito"
+									setFormData={setFormData}
+									formData={formData}
+									bill={data}
+								/>
+							</div>
+						</section>
+						<NonTefPanel
+							methods={nonTefMethods}
+							setFormData={setFormData}
+							formData={formData}
+							bill={data}
+						/>
+						<DetailsPanel
+							bill={data}
+							formData={formData}
+							setFormData={setFormData}
+							loading={loading}
+							setLoading={setLoading}
+							submit={submitPayment}
+						/>
+						<ResumePanel bill={data} formData={formData} />
+					</div>
+				</section>
+				<hr />
+				<PaymentsPreviewComponent {...data} setData={setFormData} />
+				<hr />
+				{blockArr?.length > 0 &&
+					blockArr?.map((i) => (
+						<ProductsPanel
+							key={i}
+							payments={data?.payments?.filter((item) => item?.block === i + 1)}
+							reload={reload}
+							setReload={setReload}
+							remove={data?.status === "BAIXADA" ? false : true}
+							billId={data?.id}
+						/>
+					))}
+				<footer className="uk-margin-top uk-flex uk-flex-right">
+					<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+						<Button onClick={() => setVisible(false)} text="Salvar" />
+
+						{endBillPermission && (
+							<Button onClick={() => verifyPayment()} text="Finalizar" />
+						)}
+					</div>
+				</footer>
+			</div>
+		</Container>
+	);
+}
+
+function DailyCashierSync(props: {
+	id?: string | null;
+	hasRows: boolean;
+	hasPermission: boolean;
+	status: string | null;
+	shouldHide: () => void;
+}) {
+	const queryClient = useQueryClient();
+	const { user } = useAuthAdmin();
+	const [cashierModalState, setCashierModalState] = useState<
+		"hidden" | "closingOld" | "openingNew"
+	>("hidden");
+	const dailyMovementsQuery = useSearchDailyMovements({
+		status: "Aberto",
+	});
+
+	const [openData, setOpenData] = useState({
+		cashierTotal: currencyFormatter(0),
+	});
+	const [closeData, setCloseData] = useState({
+		cashierTotal: currencyFormatter(0),
+		observations: "",
+	});
+
+	const openDailyCashierMutation = useMutation({
+		queryKey: ["open-daily-cashier"],
+		queryFn: async () => {
+			await dailyCasherService.openDailyCasher({
+				dailyMovementId: dailyMovementsQuery.data?.[0]?.id,
+				initialBalance: Masks.noMoney(closeData?.cashierTotal),
+				userId: user?.id,
+				openingDate: moment(new Date()).toISOString(),
+			});
+
+			queryClient.invalidateQueries({
+				queryKey: ["check-cashier-status"],
+			});
+		},
+	});
+
+	const closeCashierMutation = useMutation({
+		queryKey: ["close-daily-cashier"],
+		queryFn: async () => {
+			await dailyCasherService.closeDailyCasher(props?.id ?? '', {
+				observations: closeData?.observations,
+				cashierTotal: Masks.noMoney(closeData?.cashierTotal),
+				userId: user?.id,
+				closingDate: moment(new Date()).toISOString(),
+			});
+
+			setCashierModalState("openingNew");
+		},
+	});
+
+	if (props.hasRows) {
+		if (props.hasPermission) {
+			return (
+				<>
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "center",
+						}}
+					>
+						<h3>
+							Existe um caixa diário de dias anteriores aberto. Deseja fechá-lo
+							e abrir um novo Caixa Diário?
+						</h3>
+						<div style={{ display: "flex", gap: 10, paddingTop: 16 }}>
+							<Button
+								text="Sim"
+								onClick={() => setCashierModalState("closingOld")}
+							/>
+							<Button text="Não" onClick={() => props.shouldHide()} />
+						</div>
+					</div>
+
+					<AntdModal
+						open={cashierModalState === "closingOld"}
+						title={"Fechamento de Caixa"}
+						onOk={() => closeCashierMutation.mutate()}
+						onCancel={() => setCashierModalState("hidden")}
+						zIndex={1600}
+						centered
+						confirmLoading={closeCashierMutation.isLoading}
+					>
+						<DailyCashierFormChild
+							data={closeData}
+							setData={setCloseData}
+							numberInput={true}
+						/>
+					</AntdModal>
+
+					<AntdModal
+						open={cashierModalState === "openingNew"}
+						title={"Abertura de Caixa"}
+						onOk={() => openDailyCashierMutation.mutate()}
+						onCancel={() => setCashierModalState("hidden")}
+						zIndex={1600}
+						centered
+						confirmLoading={openDailyCashierMutation.isLoading}
+					>
+						<DailyCashierFormChild
+							data={openData}
+							setData={setOpenData}
+							numberInput={true}
+							showObservations={false}
+						/>
+					</AntdModal>
+				</>
+			);
+		}
+
+		return (
+			<h3>
+				Existe um caixa diário de dias anteriores aberto. É necessário fechar
+				este caixa e abrir um novo antes de lançar os pagamentos da venda.
+			</h3>
+		);
+	}
+
+	if (props.hasPermission) {
+		return (
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
+				<h3>
+					Não existe caixa diário aberto para a data de hoje. Deseja abrir um
+					Caixa Diário?
+				</h3>
+				<div style={{ display: "flex", gap: 10, paddingTop: 16 }}>
+					<Button
+						text="Sim"
+						onClick={() => setCashierModalState("openingNew")}
+					/>
+					<Button text="Não" onClick={() => props.shouldHide()} />
+				</div>
+
+				<AntdModal
+					open={cashierModalState === "openingNew"}
+					title={"Abertura de Caixa"}
+					onOk={() => openDailyCashierMutation.mutate()}
+					onCancel={() => setCashierModalState("hidden")}
+					zIndex={1600}
+					centered
+					confirmLoading={openDailyCashierMutation.isLoading}
+				>
+					<DailyCashierFormChild
+						data={openData}
+						setData={setOpenData}
+						numberInput={true}
+						showObservations={false}
+					/>
+				</AntdModal>
+			</div>
+		);
+	}
+
+	return (
+		<>
+			<h3>
+				Não existe Caixa Diario Aberto. É necessário um caixa para lançamento
+				dos pagamentos da venda.
+			</h3>
+		</>
+	);
 }
 
 export default AddBillPayment;

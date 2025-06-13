@@ -9,6 +9,7 @@ const ProductivityItems = memo(function ProductivityItems({ productId }) {
 
   return (
     <Table
+    style={{width: '100%'}}
       dataSource={items}
       columns={[
         { title: "Qtd", key: "qtd", dataIndex: "quantity" },

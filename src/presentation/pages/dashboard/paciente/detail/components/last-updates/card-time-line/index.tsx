@@ -54,11 +54,11 @@ export function CardTimeLine({
   const labelControl = (info) => {
     switch (info.event) {
       case "OBITO":
-        return <span>Óbito</span>;
+        return <span>Óbito</span>
       case "TROCA_TUTOR_PRINCIPAL":
-        return <span>Troca tutor principal</span>;
+        return <span>Troca tutor principal</span>
       case "INTERNACAO":
-        return <span>Internação</span>;
+        return <span>Internação</span>
       case "ALTA":
         return (
           <>
@@ -73,7 +73,7 @@ export function CardTimeLine({
       default:
         return (
           <div>
-            <span>{timeline?.timeline_type.description}</span>;
+            <span>{timeline?.timeline_type.description}</span>
             {timeline?.timeline_type.description === "Consulta" && (
               <span>{timeline?.timeline_info?.service?.description}</span>
             )}

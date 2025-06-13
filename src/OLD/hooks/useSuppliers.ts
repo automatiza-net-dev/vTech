@@ -3,22 +3,23 @@ import { supplierService } from "@/OLD/services/supplier.service";
 import { useQuery } from "@/presentation";
 
 export const useSuppliers = (filters) => {
-
-  const { data, mutate, isLoading } = useQuery({
-    queryKey: ["suppliers"], queryFn: async () => {
+  const { data, refetch, isLoading, isFetching } = useQuery({
+    queryKey: ["suppliers"],
+    queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const response = await supplierService
         .index(filters)
-        .then((res) => res.data)
+        .then((res) => res.data);
 
-      return response
-    }
-  })
+      return response;
+    },
+  });
 
   return {
     suppliers: data,
-    fetchSuppliers: mutate,
-    loadingSuppliers: isLoading,
+    fetchSuppliers: refetch,
+    loadingSuppliers: isLoading || isFetching,
   };
 };
 

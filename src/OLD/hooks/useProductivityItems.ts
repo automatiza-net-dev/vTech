@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { productivityItemsService } from "@/OLD/services/productivityItems.service";
 
-export const useProductivityItems = (product) => {
+export const useProductivityItems = (productID: string) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
-    if (!product) {
+    if (!productID) {
       return;
     }
 
     setLoading(true);
 
     productivityItemsService
-      .getProductivityItems({ product })
+      .getProductivityProducts({ product: productID })
       .then((res) => setItems(res.data))
       .catch(() => setLoading(false))
       .finally(() => setLoading(false));
@@ -21,7 +21,7 @@ export const useProductivityItems = (product) => {
 
   useEffect(() => {
     fetchData();
-  }, [product]);
+  }, [productID]);
 
   return {
     items,

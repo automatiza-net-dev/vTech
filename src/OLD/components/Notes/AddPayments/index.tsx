@@ -173,7 +173,7 @@ function AddPayments({
           installmentValue: convertIntlCurrency(data?.installmentValue),
           issueDate: moment().toISOString(),
           expirationDate: moment(data?.expirationDate).toISOString(),
-          accountPlanId,
+          accountPlanId: accountPlanId === '' ? null : accountPlanId,
         },
       ],
     };
