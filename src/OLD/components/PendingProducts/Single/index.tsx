@@ -359,20 +359,22 @@ export function SinglePendingProducts({
                               value: unit?.name,
                             }))}
                             value={item?.fractionUnitDescription}
-                            onChange={(val) => {
+                            onChange={(val, opt) => {
                               let arr = [...data];
                               arr.splice(i, 1, {
                                 ...item,
+                                fractionUnitId: opt?.id,
                                 fractionUnitDescription: val,
                                 sendUpdate: true,
                               });
                               setData(arr);
                             }}
-                            onSelect={(_, opt) => {
+                            onSelect={(val, opt) => {
                               let arr = [...data];
                               arr.splice(i, 1, {
                                 ...item,
-                                fractinoUnitId: opt?.id,
+                                fractionUnitId: opt?.id,
+                                fractionUnitDescription: val,
                                 sendUpdate: true,
                               });
                               setData(arr);
