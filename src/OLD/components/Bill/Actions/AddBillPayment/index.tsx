@@ -453,7 +453,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill }: any) {
 }
 
 function DailyCashierSync(props: {
-	id: string;
+	id?: string | null;
 	hasRows: boolean;
 	hasPermission: boolean;
 	status: string | null;
@@ -495,7 +495,7 @@ function DailyCashierSync(props: {
 	const closeCashierMutation = useMutation({
 		queryKey: ["close-daily-cashier"],
 		queryFn: async () => {
-			await dailyCasherService.closeDailyCasher(props.id, {
+			await dailyCasherService.closeDailyCasher(props?.id ?? '', {
 				observations: closeData?.observations,
 				cashierTotal: Masks.noMoney(closeData?.cashierTotal),
 				userId: user?.id,
