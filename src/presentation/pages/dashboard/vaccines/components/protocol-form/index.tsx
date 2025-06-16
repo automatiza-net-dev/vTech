@@ -18,6 +18,7 @@ export function ProtocolForm(props: {
 
   const protocolSchema = {
     name: Yup.string().required("Campo obrigatório"),
+    doses: Yup.string().min(1, "Deve ter no mínimo 1 dose").required("Campo obrigatório"),
   };
 
   return (
