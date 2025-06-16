@@ -61,7 +61,14 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
 							}}
 						>
 							<section className="input-container" style={{}}>
-								<Input name="name" label="Nome da Vacina" />
+								<Input
+									name="name"
+									label={
+										props.type === "vermifuge"
+											? "Nome da Vermifugo"
+											: "Nome da Vacina"
+									}
+								/>
 								<Input name="protocol" label="Protocolo" />
 								<div className="uk-width-1-1">
 									<label>Espécie</label>
@@ -95,7 +102,9 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
 							<Button
 								text="Filtrar"
 								style={{ marginTop: "10px" }}
-								loading={vaccinesProtocols.isFetching || speciesQuery.loadingSpecies}
+								loading={
+									vaccinesProtocols.isFetching || speciesQuery.loadingSpecies
+								}
 								onClick={() => {
 									setParams((prv) => ({ ...prv, fetch: true }));
 									vaccinesProtocols.mutate();
