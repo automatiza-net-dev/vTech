@@ -58,7 +58,7 @@ export default function FastCreateTutor({
 	};
 
 	const { tutorOrigins } = useTutorOrigins();
-	const selectOrigin = tutorOrigins?.find(
+	const selectedOrigin = tutorOrigins?.find(
 		(origin) => origin?.id === data?.tutorOriginId,
 	);
 	const shouldDisplayMarketingSelect = selectedOrigin
