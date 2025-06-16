@@ -354,35 +354,6 @@ export default function FastCreateTutor({
 									))}
 								</select>
 							</div>
-							{selectedOrigin?.default && (
-								<div>
-									<label>Campanha mídia</label>
-									<AutoComplete
-										className="uk-width-1-1"
-										options={uniqueOrigins?.sort().map((item) => ({
-											value: item,
-											key: item,
-										}))}
-										value={data?.clientOriginItemDescription}
-										onChange={(val) =>
-											setData({ ...data, clientOriginItemDescription: val })
-										}
-										onSelect={(_, opt) =>
-											setData({
-												...data,
-												clientOriginItemDescription: opt?.value,
-											})
-										}
-										filterOption={(inputValue, option) =>
-											option.value
-												.toUpperCase()
-												.includes(inputValue.toUpperCase())
-												? option
-												: null
-										}
-									/>
-								</div>
-							)}
 							{shouldDisplayMarketingSelect && (
 								<div>
 									<label>Campanha Marketing</label>
