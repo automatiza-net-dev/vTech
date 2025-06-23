@@ -9,8 +9,11 @@ export function SelectOrigin() {
 
 	const campaignsQuery = useLoadCampaings({
 		active: true,
+		// @ts-ignore error
 		clientOriginId: values?.clientOriginId,
 	});
+	
+  // @ts-ignore error
 	const selectedOrigin = data?.find((cq) => cq.id === values?.clientOriginId);
 	const shouldDisplayMarketingSelect = selectedOrigin
 		? selectedOrigin.default ||
