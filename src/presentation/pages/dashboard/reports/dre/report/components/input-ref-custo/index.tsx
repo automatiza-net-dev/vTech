@@ -5,7 +5,7 @@ import { useFormikContext } from "formik";
 import { Percentage } from "./percentage";
 import { Agrupamento } from "../../types";
 import { calcRefCusto } from "../../utils";
-import { InputCurrency } from "../../input-currency";
+import { InputCurrency } from "infinity-forge";
 
 export function InputRefCusto({
   tag,
@@ -39,8 +39,6 @@ export function InputRefCusto({
           const itemValue = values.dreFlatten[item];
 
           if (String(tag) === String(item)) {
-            console.log(parsedValue);
-
             return {
               ...reducer,
               [item]: {
@@ -84,9 +82,10 @@ export function InputRefCusto({
   return (
     <div className="group_values">
       <InputCurrency
+       onChangeMode="blur"
+        onChangeBlur={onChangeInputCurrency as any}
         name={`dreFlatten.${tag}.custo`}
         disabled={!!refCusto}
-        onChangeInput={onChangeInputCurrency as any}
       />
 
       <Percentage tag={tag} />
