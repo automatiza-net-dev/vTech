@@ -105,10 +105,10 @@ export default function Create({ type = "", setVisible }: any) {
 
     const formattedSuppliers = Array.isArray(suppliers)
       ? suppliers.map((supplier) => ({
-          ...supplier,
-          value: supplier?.name,
-          key: supplier?.id,
-        }))
+        ...supplier,
+        value: supplier?.name,
+        key: supplier?.id,
+      }))
       : [];
 
     const formattedClients = [...formattedTutors, ...formattedSuppliers];
@@ -175,55 +175,58 @@ export default function Create({ type = "", setVisible }: any) {
   }, [type]);
 
   useEffect(() => {
-    data?.installments &&
-      setInstallments(
-        Array.from(Array(parseInt(data?.installments))).map((_, index) => {
-          return {
-            qtyInstallments: installments?.length,
-            clientId: data?.clientId,
-            type: titleType,
-            accountPlanId: data?.accountPlanId,
-            paymentMethodId: data?.paymentMethodId,
-            document: data?.document,
-            historic: data?.historic,
-            issueDate: data?.issueDate,
-            expirationDate: moment(data?.expirationDate).add(
-              index * 1,
-              "month"
-            ),
-            originalValue: data?.originalValue,
-            // accept: data?.accept,
-            installment: index + 1,
-            originFlag: "FINANCEIRO",
-            paymentValue: data?.paymentValue,
-            competenceDate:
-              data?.parcType === "parc"
-                ? moment(data?.issueDate)
-                : moment(data?.issueDate).add(index * 1, "month"),
-            fiscalNote: data?.fiscalNote,
-            reconciled: false,
-            checkingAccountId: data?.checkingAccountId,
-            feeValue: currencyFormatter(data?.feeValue),
-            feePercentage: data?.feePercentage,
-            observation: data?.observation,
-            userDocument: data?.userDocument,
-            nsuDocument: data?.nsuDocument,
-            barCode: data?.barCode,
-            bank: data?.bank,
-            agency: data?.agency,
-            account: data?.account,
-            tefFlagId: data?.tefFlagId,
-            tefAcquirerId: paymentMethods
-              .find(
-                (payment) =>
-                  payment.id === installments?.[index]?.paymentMethodId
-              )
-              ?.flags?.find((item) => item?.flag?.id === data?.tefFlagId)
-              ?.acquirer?.id,
-            accept: "NAO",
-          } as any;
-        })
-      );
+    if (!data.installments) {
+      return
+    }
+
+    setInstallments(
+      Array.from({ length: data.installments }).map((_, index) => {
+        return {
+          qtyInstallments: data.installments,
+          clientId: data?.clientId,
+          type: titleType,
+          accountPlanId: data?.accountPlanId,
+          paymentMethodId: data?.paymentMethodId,
+          document: data?.document,
+          historic: data?.historic,
+          issueDate: data?.issueDate,
+          expirationDate: moment(data?.expirationDate).add(
+            index * 1,
+            "month"
+          ),
+          originalValue: data?.originalValue,
+          // accept: data?.accept,
+          installment: index + 1,
+          originFlag: "FINANCEIRO",
+          paymentValue: data?.paymentValue,
+          competenceDate:
+            data?.parcType === "parc"
+              ? moment(data?.issueDate)
+              : moment(data?.issueDate).add(index * 1, "month"),
+          fiscalNote: data?.fiscalNote,
+          reconciled: false,
+          checkingAccountId: data?.checkingAccountId,
+          feeValue: currencyFormatter(data?.feeValue),
+          feePercentage: data?.feePercentage,
+          observation: data?.observation,
+          userDocument: data?.userDocument,
+          nsuDocument: data?.nsuDocument,
+          barCode: data?.barCode,
+          bank: data?.bank,
+          agency: data?.agency,
+          account: data?.account,
+          tefFlagId: data?.tefFlagId,
+          tefAcquirerId: paymentMethods
+            .find(
+              (payment) =>
+                payment.id === installments?.[index]?.paymentMethodId
+            )
+            ?.flags?.find((item) => item?.flag?.id === data?.tefFlagId)
+            ?.acquirer?.id,
+          accept: "NAO",
+        } as any;
+      })
+    );
   }, [data, titleType]);
 
   const [flags, setFlags] = useState([]);
