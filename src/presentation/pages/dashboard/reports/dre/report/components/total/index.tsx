@@ -8,50 +8,54 @@ import { calcRefCusto } from "../../utils";
 import { Percentage } from "./percentage";
 import { InputCurrency } from "../../input-currency";
 
-function InputTotal({
-  tag,
-  total,
-}: Agrupamento & { initialFlattenList: any }) {
+function InputTotal({ tag, total }: Agrupamento & { initialFlattenList: any }) {
   const { values, setFieldValue } = useFormikContext<any>();
 
- const findItemIsGroupToExtraRefCusto = useCallback((refCusto: string) => {
-    return refCusto.split(" ")
-    .filter((item) => !isNaN(Number(item)) || /^[+\-*/]$/.test(item.trim()))
-    .filter((item) => item !== "" && !isNaN(Number(item))).reduce((reducer, item) => {
-      const valueItem = values.dreFlatten[item];
+  const findItemIsGroupToExtraRefCusto = useCallback((refCusto: string) => {
+    return refCusto
+      .split(" ")
+      .filter((item) => !isNaN(Number(item)) || /^[+\-*/]$/.test(item.trim()))
+      .filter((item) => item !== "" && !isNaN(Number(item)))
+      .reduce((reducer, item) => {
+        const valueItem = values.dreFlatten[item];
 
+        if (valueItem && valueItem.itens && valueItem.itens.length > 0) {
+          const newRef = reducer + valueItem.refCusto;
 
-      if(valueItem && valueItem.itens && valueItem.itens.length > 0) {
-        const newRef = reducer + valueItem.refCusto
-      
-        return findItemIsGroupToExtraRefCusto(newRef)
-      }
+          return findItemIsGroupToExtraRefCusto(newRef);
+        }
 
-      return reducer + ` + ${item}`
-    }, "");
-  }, [])
- 
+        return reducer + ` + ${item}`;
+      }, "");
+  }, []);
+
+  const delay = 2000;
+
   useEffect(() => {
-    if(total && total > 0) {
+    setTimeout(() => {
+      if (typeof total === "number") {
+        const groupDresById = values.dreFlattenArray.filter(
+          (dre) => dre.refs && dre.refs.map((r) => String(r)).includes(tag)
+        );
 
-      const groupDresById = values.dreFlattenArray.filter(
-        (dre) => dre.refs && dre.refs.map((r) => String(r)).includes(tag)
-      );
+        if (groupDresById && groupDresById.length > 0) {
+          for (const dre of groupDresById) {
+            const fatherRefCusto = findItemIsGroupToExtraRefCusto(dre.refCusto);
 
-      if (groupDresById && groupDresById.length > 0) {
-        for (const dre of groupDresById) {
-          const fatherRefCusto =  findItemIsGroupToExtraRefCusto(dre.refCusto)
+            const costDreFather = calcRefCusto(
+              fatherRefCusto,
+              values.dreFlatten,
+              true
+            );
 
-          const costDreFather = calcRefCusto(
-            fatherRefCusto,
-            values.dreFlatten,
-            true
-          );
-  
-          setFieldValue(`dreFlatten.${dre.tag}.total`, costDreFather?.toFixed(2));
+            setFieldValue(
+              `dreFlatten.${dre.tag}.total`,
+              costDreFather?.toFixed(2)
+            );
+          }
         }
       }
-    }
+    }, delay);
   }, []);
 
   return (
@@ -63,4 +67,4 @@ function InputTotal({
   );
 }
 
-export default memo(InputTotal)
+export default memo(InputTotal);
