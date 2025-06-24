@@ -72,8 +72,7 @@ export function InputRefCusto({
   }
 
   useEffect(() => {
-    if (custo && custo > 0) {
-      
+    if (typeof custo === "number") {
       onChangeInputCurrency(custo);
     }
   }, []);

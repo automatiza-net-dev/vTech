@@ -33,7 +33,7 @@ function InputTotal({ tag, total }: Agrupamento & { initialFlattenList: any }) {
 
   useEffect(() => {
     setTimeout(() => {
-      if (total && total > 0) {
+      if (typeof total === "number") {
         const groupDresById = values.dreFlattenArray.filter(
           (dre) => dre.refs && dre.refs.map((r) => String(r)).includes(tag)
         );
