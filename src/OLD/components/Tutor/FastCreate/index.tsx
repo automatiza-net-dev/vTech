@@ -356,7 +356,7 @@ export default function FastCreateTutor({
 							</div>
 							{shouldDisplayMarketingSelect && (
 								<div>
-									<label>Campanha Marketing</label>
+									<label>Campanha / Midia</label>
 									<AutoComplete
 										className="uk-width-1-1"
 										options={campaignsQuery.data?.map((item) => ({
@@ -371,8 +371,9 @@ export default function FastCreateTutor({
 
 											setData({
 												...data,
-												marketingCampaignId: selectedOption?.id,
-												marketingCampaignDescription: val,
+												marketingCampaignId: undefined, 
+												// marketingCampaignDescription: val,
+                        clientOriginItemDescription: val
 											});
 										}}
 										onSelect={(_, opt) => {
@@ -384,6 +385,7 @@ export default function FastCreateTutor({
 												...data,
 												marketingCampaignId: selectedOption?.id,
 												marketingCampaignDescription: opt.value,
+                        clientOriginItemDescription: undefined
 											});
 										}}
 										filterOption={(inputValue, option) => {
