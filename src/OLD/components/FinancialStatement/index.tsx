@@ -108,25 +108,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   const router = useRouter();
   const componentRef = useRef();
 
-  const sortFinances = () => {
-    filters?.order &&
-      finances.sort((a, b) => {
-        if (filters?.order !== "doc") {
-          return moment(a[filters?.order]).diff(moment(b[filters?.order]));
-        } else {
-          if (`${a.document}` < `${b.document}`) {
-            return -1;
-          }
-          if (`${a.document}` > `${b.document}`) {
-            return 1;
-          }
-          if (a.document === b.document) {
-            return a.installment - b.installment;
-          }
-          return 0;
-        }
-      });
-  };
 
   const handleExport = () => {
     const formatted = finances?.map((item) => ({
@@ -163,8 +144,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   };
 
   const formatFinances = (recentDown = false) => {
-    sortFinances();
-
     setFormatedFinances(
       finances.map((finance) => {
         {
