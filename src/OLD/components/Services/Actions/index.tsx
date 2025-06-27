@@ -251,7 +251,7 @@ const Actions = memo(function Actions({ service, setReload }) {
                   }}
                 >
                   <Button onClick={() => setAddProductivityState("form")}>
-                    Adicionar
+                    Novo item produtividade
                   </Button>
 
                   <Table
