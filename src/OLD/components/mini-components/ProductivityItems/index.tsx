@@ -1,26 +1,166 @@
 // @ts-nocheck
-import { memo } from "react";
+import { memo, useCallback, useState } from "react";
 import { useProductivityItems } from "@/OLD/hooks/useProductivityItems";
 
-import { Table } from "antd";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { Table, Tooltip, Modal } from "antd";
+import { productivityItemsService } from "@/OLD/services/productivityItems.service";
+import {
+	FormHandler,
+	useToast,
+	schema,
+	InputSwitch,
+	Input,
+} from "infinity-forge";
 
 const ProductivityItems = memo(function ProductivityItems({ productId }) {
-  const { items } = useProductivityItems(productId);
+	const { items, fetchItems } = useProductivityItems(productId);
+	const { createToast } = useToast();
 
-  return (
-    <Table
-    style={{width: '100%'}}
-      dataSource={items}
-      columns={[
-        { title: "Qtd", key: "qtd", dataIndex: "quantity" },
-        {
-          title: "Descrição item produtividade",
-          key: "description",
-          dataIndex: "description",
-        },
-      ]}
-    />
-  );
+	const [editProductivityItemState, setEditProductivityItemState] = useState<
+		"closed" | "form"
+	>("closed");
+	const [editingProductivityItem, setEditingProductivityItem] = useState({
+		id: 0,
+		description: "",
+		active: false,
+		order: 0,
+	});
+
+	const deleteItemProduct = useCallback(async (itemProductID: string) => {
+		productivityItemsService
+			.deleteProductivityItemProduct(itemProductID)
+			.then(() => {
+				fetchItems();
+			})
+			.catch((err) => {
+				return createToast({
+					message: err.response.data.message,
+					status: "error",
+				});
+			});
+	}, []);
+
+	return (
+		<>
+			<Table
+				style={{ width: "100%" }}
+				dataSource={items.map((r) => ({
+					quantity: r.quantity,
+					description: r.description,
+					order: r.order,
+					actions: (
+						<div className="uk-flex" style={{ gap: 20 }}>
+							<Tooltip title={"Editar"}>
+								<FiEdit2
+									style={{ cursor: "pointer" }}
+									onClick={async () => {
+										console.log("r??", r);
+										setEditProductivityItemState("form");
+										setEditingProductivityItem({
+											id: r.id,
+											description: r.description,
+											order: r.order,
+											active: r.active,
+										});
+									}}
+								/>
+							</Tooltip>
+							<Tooltip title={"Apagar"}>
+								<FiTrash2
+									style={{ cursor: "pointer" }}
+									onClick={async () => {
+										await deleteItemProduct(r.id);
+									}}
+								/>
+							</Tooltip>
+						</div>
+					),
+				}))}
+				columns={[
+					{ title: "Qtd", key: "qtd", dataIndex: "quantity" },
+					{
+						title: "Descrição item produtividade",
+						key: "description",
+						dataIndex: "description",
+					},
+					{
+						title: "Sequência",
+						key: "order",
+						dataIndex: "order",
+					},
+					{
+						title: "Ações",
+						key: "actions",
+						dataIndex: "actions",
+					},
+				]}
+			/>
+			{editingProductivityItem.id !== 0 && (
+				<Modal
+					title={`Atualizar item de produtividade: ${editingProductivityItem.description}`}
+					width={700}
+					visible={editProductivityItemState !== "closed"}
+					onCancel={() => {
+						setEditProductivityItemState("closed");
+						setEditingProductivityItem({
+							id: 0,
+							description: "",
+							order: 0,
+							active: false,
+						});
+					}}
+					footer={null}
+					style={{}}
+				>
+					<FormHandler
+						isStickyButtons
+						schema={{
+							order: schema.required(),
+							// active: schema.required(),
+						}}
+						initialData={editingProductivityItem}
+						onSucess={async (formData) => {
+							await productivityItemsService.updateProductivityItemProduct({
+								id: editingProductivityItem.id,
+								active: formData.active,
+								order: formData.order,
+							});
+
+							fetchItems();
+							setEditingProductivityItem({
+								id: 0,
+								description: "",
+								order: 0,
+								active: false,
+							});
+							setEditProductivityItemState("closed");
+						}}
+						disableEnterKeySubmitForm
+						cleanFieldsOnSubmit={false}
+						button={{ text: "Salvar" }}
+					>
+						<section className="form-container">
+							<div className="uk-flex uk-flex-wrap">
+								<div className="uk-width-1-2" style={{ paddingLeft: "10px" }}>
+									<Input
+										name="order"
+										label="* Sequência"
+										type="number"
+										required
+									/>
+								</div>
+
+								<div className="uk-width-1-2" style={{ paddingLeft: "10px" }}>
+									<InputSwitch name="active" label="* Ativo" />
+								</div>
+							</div>
+						</section>
+					</FormHandler>
+				</Modal>
+			)}
+		</>
+	);
 });
 
 export default ProductivityItems;

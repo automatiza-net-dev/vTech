@@ -145,6 +145,20 @@ const Actions = memo(function Actions({ service, setReload }) {
     enabled: productivityVisible,
   });
 
+  const deleteItem = useCallback(async (itemID: string) => {
+    productivityItemsService
+      .deleteProductivityItem(itemID)
+      .then((res) => {
+        productivityItems.refetch();
+      })
+      .catch((err) => {
+        return createToast({
+          message: err.response.data.message,
+          status: "error",
+        });
+      });
+  }, []);
+
   return (
     <section className="uk-flex uk-flex-around">
       <FiEdit2
@@ -291,6 +305,14 @@ const Actions = memo(function Actions({ service, setReload }) {
                                   reservedMinutes: r.reserved_minutes,
                                   active: r.active,
                                 });
+                              }}
+                            />
+                          </Tooltip>
+                          <Tooltip title={"Apagar"}>
+                            <FiTrash2
+                              style={{ cursor: "pointer" }}
+                              onClick={async () => {
+                                await deleteItem(r.id);
                               }}
                             />
                           </Tooltip>
