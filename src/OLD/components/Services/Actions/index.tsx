@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, memo, useCallback, useEffect } from "react";
+import React, { useState, memo, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import {
 	useQuery,
@@ -14,7 +14,7 @@ import {
 	Textarea,
 	InputCurrency,
 	useQueryClient,
-  Popconfirm,
+	Popconfirm,
 } from "infinity-forge";
 
 import { servicesService } from "@/OLD/services/services.service";
@@ -26,7 +26,7 @@ import { FiEdit2, FiTrash2, FiCheck } from "react-icons/fi";
 import { VscTasklist } from "react-icons/vsc";
 import { FaPlus } from "react-icons/fa";
 
-import { Modal, Button, Table, Tooltip } from "antd";
+import { Modal, Button, Table, Tooltip, Input as AntdInput } from "antd";
 import EditForm from "./EditForm";
 import ProductivityItems from "@/OLD/components/mini-components/ProductivityItems";
 import ServiceDetails from "../Single";
@@ -70,9 +70,24 @@ const Actions = memo(function Actions({ service, setReload }) {
 		enabled: productivityVisible,
 	});
 
+	const [term, setTerm] = useState("");
+	const filteredOptions = useMemo(() => {
+		if (!productivityItems.data?.data) {
+			return [];
+		}
+
+		if (term === "") {
+			return productivityItems.data?.data;
+		}
+
+		return productivityItems.data?.data.filter((item) =>
+			JSON.stringify(item).toLowerCase().includes(term.toLowerCase()),
+		);
+	}, [term, productivityItems.data?.data]);
+
 	useEffect(() => {
 		productivityItems.refetch();
-	}, [addProductivityState, productivityItems.refetch]);
+	}, [addProductivityState]);
 
 	const canEditService = useUserHasPermission("SRV02");
 	const canDeleteService = useUserHasPermission("SRV03");
@@ -276,12 +291,29 @@ const Actions = memo(function Actions({ service, setReload }) {
 										width: "100%",
 									}}
 								>
-									<Button onClick={() => setAddProductivityState("form")}>
-										Novo item produtividade
-									</Button>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											width: "100%",
+											gap: "16px",
+										}}
+									>
+										<AntdInput
+											name="description"
+											addonBefore="Item de Produtividade"
+                      value={term}
+                      onChange={(e) => setTerm(e.target.value)}
+										/>
+
+										<Button onClick={() => setAddProductivityState("form")}>
+											Novo item produtividade
+										</Button>
+									</div>
 
 									<Table
-										dataSource={productivityItems.data?.data.map((r) => ({
+										dataSource={filteredOptions.map((r) => ({
 											description: `${r.description} (${r.type_qty ?? "-"})`,
 											actions: (
 												<div className="uk-flex" style={{ gap: 20 }}>
