@@ -13,547 +13,590 @@ import { useUniquetutorOrigins } from "@/OLD/hooks/useTutorOrigins";
 import { sortItems } from "@/OLD/utils/sortItems";
 import masks from "@/OLD/utils/masks";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
-import { useConfigurationsSystem } from "@/presentation";
+import { useConfigurationsSystem, useLoadCampaings } from "@/presentation";
 
 export default function FastCreateTutor({
-  visible,
-  setVisible,
-  fetchData,
-  payload,
-  setPayload,
-  setSearch,
-  setTutorsReload = false,
-  prevValues = false,
-  prevPhone = false,
+	visible,
+	setVisible,
+	fetchData,
+	payload,
+	setPayload,
+	setSearch,
+	setTutorsReload = false,
+	prevValues = false,
+	prevPhone = false,
 }) {
-  const [data, setData] = useState();
-  const [patientData, setPatientData] = useState({});
-  const [patientSubmit, setPatientSubmit] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [reload, setReload] = useState(false);
-  const [allPatients, setAllPatients] = useState(false);
-  const [tutorInfo, setTutorInfo] = useState([]);
-  const [tutorInfoVisible, setTutorInfoVisible] = useState(false);
-  const [selectedOrigin, setSelectedOrigin] = useState(false);
-  const [selectedTutor, setSelectedTutor] = useState({});
+	const [data, setData] = useState();
+	const [patientData, setPatientData] = useState({});
+	const [patientSubmit, setPatientSubmit] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const [reload, setReload] = useState(false);
+	const [allPatients, setAllPatients] = useState(false);
+	const [tutorInfo, setTutorInfo] = useState([]);
+	const [tutorInfoVisible, setTutorInfoVisible] = useState(false);
+	const [selectedOrigin, setSelectedOrigin] = useState(false);
+	const [selectedTutor, setSelectedTutor] = useState({});
 
-  const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
+	const { uniqueOrigins } = useUniquetutorOrigins(selectedOrigin);
 
-  const submitButton = useRef();
-  const {type} = useConfigurationsSystem()
+	const submitButton = useRef();
+	const { type } = useConfigurationsSystem();
 
-  const {createToast} = useToast()
+	const { createToast } = useToast();
 
-  const checkPhone = (phone) => {
-    setLoading(true);
-    petsService
-      .checkPhone({ phone })
-      .then((res) => {
-        if (res?.data?.length > 0) {
-          setTutorInfo(res.data);
-          setTutorInfoVisible(true);
-        }
-      })
-      .finally(() => setLoading(false));
-  };
+	const checkPhone = (phone) => {
+		setLoading(true);
+		petsService
+			.checkPhone({ phone })
+			.then((res) => {
+				if (res?.data?.length > 0) {
+					setTutorInfo(res.data);
+					setTutorInfoVisible(true);
+				}
+			})
+			.finally(() => setLoading(false));
+	};
 
-  const { tutorOrigins } = useTutorOrigins();
-  const { races } = useRaces(
-    { description: "" },
-    reload,
-    setReload,
-    false,
-    visible
-  );
+	const { tutorOrigins } = useTutorOrigins();
+	const selectOrigin = tutorOrigins?.find(
+		(origin) => origin?.id === data?.tutorOriginId,
+	);
+	const shouldDisplayMarketingSelect = selectedOrigin
+		? selectedOrigin.default ||
+			selectedOrigin.description === "Campanha de Mkt Ativa"
+		: false;
 
-  sortItems(tutorOrigins, "description");
+	const { races } = useRaces(
+		{ description: "" },
+		reload,
+		setReload,
+		false,
+		visible,
+	);
 
-  const getAllPatients = useCallback(() => {
-    setLoading(true);
-    petsService
-      .getPatients()
-      .then((res) => {
-        setAllPatients(res);
-      })
-      .catch((_err) => {
-        setLoading(false);
-        return createToast({ status: "error", message: "Houve um erro ao buscar os pacientes..." })
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+	sortItems(tutorOrigins, "description");
 
-  useEffect(() => {
-    if (prevPhone) {
-      setData((prv) => ({ ...prv, tutorPhone: masks?.phone(prevPhone) }));
-    }
-  }, [prevPhone]);
+	const getAllPatients = useCallback(() => {
+		setLoading(true);
+		petsService
+			.getPatients()
+			.then((res) => {
+				setAllPatients(res);
+			})
+			.catch((_err) => {
+				setLoading(false);
+				return createToast({
+					status: "error",
+					message: "Houve um erro ao buscar os pacientes...",
+				});
+			})
+			.finally(() => {
+				setLoading(false);
+			});
+	}, []);
 
-  useEffect(() => {
-    getAllPatients();
-  }, [getAllPatients]);
+	useEffect(() => {
+		if (prevPhone) {
+			setData((prv) => ({ ...prv, tutorPhone: masks?.phone(prevPhone) }));
+		}
+	}, [prevPhone]);
 
-  useEffect(() => {
-    prevValues &&
-      setData((prv) => ({
-        ...prv,
-        tutorName: prevValues?.tutor,
-      }));
-  }, []);
+	useEffect(() => {
+		getAllPatients();
+	}, [getAllPatients]);
 
-  const vincPatientToTutor = (patientId, tutorId) => {
-    petsService
-      .assignPatientToTutor({ holder: tutorId, patient: patientId })
-      .then((_res) => fetchData());
-  };
+	useEffect(() => {
+		prevValues &&
+			setData((prv) => ({
+				...prv,
+				tutorName: prevValues?.tutor,
+			}));
+	}, []);
 
-  const fastCreate = useCallback(() => {
-    if (!data?.tutorOriginId) {
-      return  createToast({ status: "error", message: "Informe como conheceu a clinica" })
-    }
+	const vincPatientToTutor = (patientId, tutorId) => {
+		petsService
+			.assignPatientToTutor({ holder: tutorId, patient: patientId })
+			.then((_res) => fetchData());
+	};
 
-    setLoading(true);
-    petsService
-      .fastPatientRegister({
-        ...data,
-        ...patientData,
-        tutorPhone: masks?.noPhone(data?.tutorPhone),
-      })
-      .then((res) => {
-        setSearch(res?.data?.tutor?.name);
- 
-        setPayload({
-          ...payload,
-          patientName: res?.data?.patient?.name,
-          tutor_id: res?.data?.tutor.id,
-          contactId: res.data.tutor.id,
-          tutorName: res.data?.tutor.name,
-          clientId: res.data?.patient?.id,
-          contact: { cellphone: data?.tutorPhone },
-          originDescription: data?.originDescription,
-          originId: data?.tutorOriginId,
-          clientOriginItemDescription: data?.clientOriginItemDescription,
-          raceDescription: races.find(
-            (item) => item.id === patientData?.patientRaceId
-          )?.description,
-          raceId: patientData?.patientRaceId,
-          gender: patientData?.patientGender,
-        });
-        setTutorsReload && setTutorsReload((prv) => !prv);
-        res?.data?.patient?.id &&  vincPatientToTutor(res?.data?.patient?.id, res?.data?.tutor?.id);
-        setLoading(false);
-        setVisible(false);
-        setPatientData({});
-        fetchData();
-      })
-      .catch((_err) => {
-        setLoading(false);
-        return  createToast({ status: "error", message: "Verifique os campos informados" })
-      });
-  }, [patientData, data]);
+	const fastCreate = useCallback(() => {
+		if (!data?.tutorOriginId) {
+			return createToast({
+				status: "error",
+				message: "Informe como conheceu a clinica",
+			});
+		}
 
-  const verifyTutorName = (name, phone) => {
-    if (name === "" || !name) {
-      return `Nao informado - ${phone}`;
-    }
-    return name;
-  };
+		setLoading(true);
+		petsService
+			.fastPatientRegister({
+				...data,
+				...patientData,
+				tutorPhone: masks?.noPhone(data?.tutorPhone),
+			})
+			.then((res) => {
+				setSearch(res?.data?.tutor?.name);
 
-  const createOnlyTutor = useCallback(() => {
-    let message = false;
-    if (!data?.tutorOriginId) {
-      message = "Informe como conheceu a clinica";
-    }
+				setPayload({
+					...payload,
+					patientName: res?.data?.patient?.name,
+					tutor_id: res?.data?.tutor.id,
+					contactId: res.data.tutor.id,
+					tutorName: res.data?.tutor.name,
+					clientId: res.data?.patient?.id,
+					contact: { cellphone: data?.tutorPhone },
+					originDescription: data?.originDescription,
+					originId: data?.tutorOriginId,
+					clientOriginItemDescription: data?.clientOriginItemDescription,
+					raceDescription: races.find(
+						(item) => item.id === patientData?.patientRaceId,
+					)?.description,
+					raceId: patientData?.patientRaceId,
+					gender: patientData?.patientGender,
+				});
+				setTutorsReload && setTutorsReload((prv) => !prv);
+				res?.data?.patient?.id &&
+					vincPatientToTutor(res?.data?.patient?.id, res?.data?.tutor?.id);
+				setLoading(false);
+				setVisible(false);
+				setPatientData({});
+				fetchData();
+			})
+			.catch((_err) => {
+				setLoading(false);
+				return createToast({
+					status: "error",
+					message: "Verifique os campos informados",
+				});
+			});
+	}, [patientData, data]);
 
-    if (!data?.tutorPhone || data?.tutorPhone === "") {
-      message = "Informe o telefone para contato";
-    }
+	const verifyTutorName = (name, phone) => {
+		if (name === "" || !name) {
+			return `Nao informado - ${phone}`;
+		}
+		return name;
+	};
 
-    if (data?.tutorPhone?.length < 15) {
-      message = "o telefone precisa ter 11 digitos";
-    }
+	const createOnlyTutor = useCallback(() => {
+		let message = false;
+		if (!data?.tutorOriginId) {
+			message = "Informe como conheceu a clinica";
+		}
 
-    if (message) {
-      return  createToast({ status: "error", message: message })
-    } else {
-      setLoading(true);
-      petsService
-        .fastPatientRegister({
-          ...data,
-          tutorName: verifyTutorName(data?.tutorName),
-        })
-        .then((res) => {
-          type === "Vet"
-            ? setPayload({
-                ...payload,
-                clientId: res?.data?.patient?.id || patientData?.id,
-                contactId: res.data.tutor.id,
-                tutorName: res.data?.tutor.name,
-                contact: { cellphone: data?.tutorPhone },
-                originDescription: data?.originDescription,
-                originId: data?.tutorOriginId,
-                clientOriginItemDescription: data?.clientOriginItemDescription,
-                patientName: res?.data?.patient?.name || patientData?.name,
-                patient_id: res.data?.patient?.id || patientData?.id,
-                raceDescription:
-                  races.find((item) => item.id === patientData?.patientRaceId)
-                    ?.description || patientData?.race?.description,
-                raceId: patientData?.patientRaceId || patientData?.race?.id,
-                gender: patientData?.patientGender || patientData?.gender,
-              })
-            : setPayload({
-                ...payload,
-                patientName: res?.data?.tutor.name,
-                clientId: res.data?.tutor.id,
-                tutorName: res.data.tutor.name,
-                contactId: res.data.tutor.id,
-                contact: { cellphone: data?.tutorPhone },
-                originDescription: data?.originDescription,
-                originId: data?.tutorOriginId,
-                clientOriginItemDescription: data?.clientOriginItemDescription,
-              });
+		if (!data?.tutorPhone || data?.tutorPhone === "") {
+			message = "Informe o telefone para contato";
+		}
 
-          type === "Vet" && vincPatientToTutor(patientData?.id, res?.data?.tutor?.id);
+		if (data?.tutorPhone?.length < 15) {
+			message = "o telefone precisa ter 11 digitos";
+		}
 
-          setTutorsReload && setTutorsReload((prv) => !prv);
-         
-          setVisible(false);
-        })
-        .catch((err) => {
-          setLoading(false);
-          createToast({ status: "error", message: "Verifique os campos informados" })
-        })
-        .finally(() => {
-          setLoading(false);
-          // fetchData();
-        });
-    }
-  }, [data, patientData]);
+		if (message) {
+			return createToast({ status: "error", message: message });
+		} else {
+			setLoading(true);
+			petsService
+				.fastPatientRegister({
+					...data,
+					tutorName: verifyTutorName(data?.tutorName),
+				})
+				.then((res) => {
+					type === "Vet"
+						? setPayload({
+								...payload,
+								clientId: res?.data?.patient?.id || patientData?.id,
+								contactId: res.data.tutor.id,
+								tutorName: res.data?.tutor.name,
+								contact: { cellphone: data?.tutorPhone },
+								originDescription: data?.originDescription,
+								originId: data?.tutorOriginId,
+								clientOriginItemDescription: data?.clientOriginItemDescription,
+								patientName: res?.data?.patient?.name || patientData?.name,
+								patient_id: res.data?.patient?.id || patientData?.id,
+								raceDescription:
+									races.find((item) => item.id === patientData?.patientRaceId)
+										?.description || patientData?.race?.description,
+								raceId: patientData?.patientRaceId || patientData?.race?.id,
+								gender: patientData?.patientGender || patientData?.gender,
+							})
+						: setPayload({
+								...payload,
+								patientName: res?.data?.tutor.name,
+								clientId: res.data?.tutor.id,
+								tutorName: res.data.tutor.name,
+								contactId: res.data.tutor.id,
+								contact: { cellphone: data?.tutorPhone },
+								originDescription: data?.originDescription,
+								originId: data?.tutorOriginId,
+								clientOriginItemDescription: data?.clientOriginItemDescription,
+							});
 
-  return (
-    <>
-      <Modal
-        visible={visible}
-        confirmLoading={loading}
-        onCancel={() => setVisible(false)}
-        footer={null}
-        title={
-          type !== "Vet"
-            ? "Cadastro rápido de Clientes"
-            : "Cadastro rápido de tutor e paciente"
-        }
-        width={900}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            !patientSubmit || type !== "Vet"
-              ? createOnlyTutor()
-              : fastCreate();
-          }}
-        >
-          <div className="uk-flex uk-flex-around">
-            <section className="uk-width-1-3">
-              {   type === "Vet" && (
-                <>
-                  Tutor
-                  <hr />
-                </>
-              )}
-              <div className="uk-margin-small">
-                <label>Nome *</label>
-                <input
-                  className="uk-input"
-                  type="text"
-                  placeholder="Digite o nome completo"
-                  value={data?.tutorName}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      tutorName: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="uk-margin-small">
-                <label>Telefone *</label>
-                <input
-                  className="uk-input"
-                  type="text"
-                  required
-                  minLength="14"
-                  maxLength="15"
-                  value={data?.tutorPhone}
-                  onBlur={() => {
-                    if (data?.tutorPhone?.length < 15) {
-                      createToast({ status: "error", message: "O telefone precisa ter 11 digitos" })
-                    }
-                  }}
-                  onChange={(e) => {
-                    e.target.value.length >= 14 &&
-                      checkPhone(masks?.noPhone(e.target.value));
-                    setData({
-                      ...data,
-                      tutorPhone: masks.phone(e.target.value),
-                    });
-                  }}
-                  placeholder="(00) 90000-0000"
-                />
-              </div>
-              <div className="uk-margin-small">
-                <label>Como conheceu a clinica *</label>
-                <select
-                  className="uk-select uk-width-1-1"
-                  value={data?.tutorOriginId || ""}
-                  onChange={(e) => {
-                    const selectedOption = tutorOrigins.find(
-                      (origin) => origin.id === e.target.value
-                    );
-                    setData({
-                      ...data,
-                      tutorOriginId: selectedOption?.id,
-                      originDescription: selectedOption?.description,
-                    });
-                    setSelectedOrigin(selectedOption);
-                  }}
-                >
-                  <option value="">Selecione uma opção</option>
-                  {(tutorOrigins || []).map((origin) => (
-                    <option key={origin.id} value={origin.id}>
-                      {origin.description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {selectedOrigin?.default && (
-                <div>
-                  <label>Campanha mídia</label>
-                  <AutoComplete
-                    className="uk-width-1-1"
-                    options={uniqueOrigins?.sort().map((item) => ({
-                      value: item,
-                      key: item,
-                    }))}
-                    value={data?.clientOriginItemDescription}
-                    onChange={(val) =>
-                      setData({ ...data, clientOriginItemDescription: val })
-                    }
-                    onSelect={(_, opt) =>
-                      setData({
-                        ...data,
-                        clientOriginItemDescription: opt?.value,
-                      })
-                    }
-                    filterOption={(inputValue, option) =>
-                      option.value
-                        .toUpperCase()
-                        .includes(inputValue.toUpperCase())
-                        ? option
-                        : null
-                    }
-                  />
-                </div>
-              )}
-            </section>
+					type === "Vet" &&
+						vincPatientToTutor(patientData?.id, res?.data?.tutor?.id);
 
-            {type === "Vet" && (
-              <section className="uk-width-1-3">
-                Paciente
-                <hr />
-                <div className="uk-margin-small">
-                  <label>Nome*</label>
-                  <br />
-                  <AutoComplete
-                    options={[
-                      ...(!!allPatients
-                        ? allPatients.map((item) => ({
-                            value: item.id,
-                            label: item.name,
-                          }))
-                        : []),
-                    ]}
-                    type="text"
-                    placeholder="Selecione ou informe o nome do novo paciente"
-                    className="uk-width-1-1"
-                    value={
-                      patientData?.patientName
-                        ? patientData?.patientName
-                        : patientData?.name
-                    }
-                    onSelect={(e) => {
-                      setPatientSubmit(false);
-                      setPatientData(
-                        allPatients.find((item) => item?.id === e)
-                      );
-                      setPayload({ ...payload, patient_id: e });
-                    }}
-                    onChange={(e) => {
-                      setPatientSubmit(true);
-                      setPatientData({
-                        ...patientData,
-                        patientName: e,
-                      });
-                      if (e === "") {
-                        setPatientData({ ...payload, patientName: "" });
-                      }
-                    }}
-                    filterOption={(input, option) =>
-                      option?.label?.toLowerCase().includes(input.toLowerCase())
-                    }
-                  />
-                </div>
-                <div className="uk-margin-small uk-width-1-1">
-                  <label>Raça</label>
-                  <select
-                    disabled={!patientSubmit}
-                    className="uk-select uk-width-1-1"
-                    value={
-                      patientData?.patientRaceId
-                        ? patientData?.patientRaceId
-                        : patientData?.patientAnimal?.race?.id
-                    }
-                    onChange={(e) =>
-                      setPatientData({
-                        ...patientData,
-                        patientRaceId: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="">Selecione uma opção</option>
-                    {(races || []).map((item, i) => (
-                      <option value={item.id}>{item.description}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="uk-margin-small">
-                  <label>Gênero</label>
-                  <select
-                    id={"gender"}
-                    className="uk-select uk-width-1-1"
-                    disabled={!patientSubmit}
-                    value={
-                      patientData?.patientGender
-                        ? patientData?.patientGender
-                        : patientData?.gender
-                    }
-                    onChange={(e) =>
-                      setPatientData({
-                        ...patientData,
-                        patientGender: e.target.value,
-                      })
-                    }
-                  >
-                    <option>Selecione</option>
-                    <option value="macho">Macho</option>
-                    <option value="femea">Fêmea</option>
-                  </select>
-                </div>
-              </section>
-            )}
-          </div>
-          <hr />
-          <footer
-            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
-          >
-            <Button text="salvar" loading={loading} type="submit" />
-            <Button
-              text="cancelar"
-              onClick={() => setVisible(false)}
-              style={{ backgroundColor: "#ff7b5a" }}
-            />
-          </footer>
-        </form>
-      </Modal>
-      <Modal
-        visible={tutorInfoVisible}
-        onCancel={() => setTutorInfoVisible(false)}
-        onOk={() => {
-          setPayload((prv) => ({
-            ...prv,
-            tutor_id: selectedTutor?.id,
-            tutorName: selectedTutor?.name,
-            contactId: selectedTutor?.id,
-            clientId: selectedTutor?.id,
-            originDescription: selectedTutor?.clientOrigin?.description,
-            originId: selectedTutor?.clientOrigin?.id,
-            contact: { cellphone: data?.tutorPhone },
-          }));
-          setTutorInfoVisible(false);
-          setVisible(false);
-        }}
-        title="Selecionar paciente"
-      >
-        <section>
-          <div>
-            Cliente(s) vinculados ao telefone
-            <AutoComplete
-              className="uk-width-1-1"
-              options={tutorInfo?.map((tutor) => ({
-                ...tutor,
-                value: tutor?.name,
-                key: tutor?.id,
-              }))}
-              value={selectedTutor?.name}
-              onChange={(val) =>
-                setSelectedTutor((prv) => ({ ...prv, name: val }))
-              }
-              onSelect={(_, opt) => {
-                setSelectedTutor(opt);
+					setTutorsReload && setTutorsReload((prv) => !prv);
 
-                setPayload({
-                  ...payload,
-                  clientId: opt.id,
-                  contactId: opt.id,
-                  tutorName: opt.name,
-                  contact: { cellphone: data?.tutorPhone },
-                  originDescription: opt?.clientOrigin?.description,
-                  originId: opt?.clientOrigin?.id,
-                });
-              }}
-              filterOption={(val, opt) =>
-                normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val?.toUpperCase())
-                )
-              }
-            />
-          </div>
-          
-          {type === "Vet" && (
-            <div className="uk-margin-small-top">
-              <label>Selecionar Pet</label>
-              <Select
-                className="uk-width-1-1"
-                onChange={(val) => {
-                  const patient = selectedTutor?.dependents.find(
-                    (dp) => dp?.id === val
-                  );
-                  setPayload({
-                    ...payload,
-                    patientName: patient?.name,
-                    clientId: patient?.id,
-                    raceDescription: patient?.race?.description,
-                    raceId: patient?.race?.id,
-                    gender: patient?.gender,
-                  });
-                }}
-              >
-                {selectedTutor.dependents &&
-                  selectedTutor?.dependents.map((pat) => (
-                    <Option value={pat?.id} key={pat?.id}>
-                      {pat?.name}
-                    </Option>
-                  ))}
-              </Select>
-            </div>
-          )}
-        </section>
-      </Modal>
-    </>
-  );
+					setVisible(false);
+				})
+				.catch((err) => {
+					setLoading(false);
+					createToast({
+						status: "error",
+						message: "Verifique os campos informados",
+					});
+				})
+				.finally(() => {
+					setLoading(false);
+					// fetchData();
+				});
+		}
+	}, [data, patientData]);
+
+	const campaignsQuery = useLoadCampaings({
+		active: true,
+		clientOriginId: data?.tutorOriginId,
+	});
+
+	return (
+		<>
+			<Modal
+				visible={visible}
+				confirmLoading={loading}
+				onCancel={() => setVisible(false)}
+				footer={null}
+				title={
+					type !== "Vet"
+						? "Cadastro rápido de Clientes"
+						: "Cadastro rápido de tutor e paciente"
+				}
+				width={900}
+			>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						!patientSubmit || type !== "Vet" ? createOnlyTutor() : fastCreate();
+					}}
+				>
+					<div className="uk-flex uk-flex-around">
+						<section className="uk-width-1-3">
+							{type === "Vet" && (
+								<>
+									Tutor
+									<hr />
+								</>
+							)}
+							<div className="uk-margin-small">
+								<label>Nome *</label>
+								<input
+									className="uk-input"
+									type="text"
+									placeholder="Digite o nome completo"
+									value={data?.tutorName}
+									onChange={(e) =>
+										setData({
+											...data,
+											tutorName: e.target.value,
+										})
+									}
+								/>
+							</div>
+							<div className="uk-margin-small">
+								<label>Telefone *</label>
+								<input
+									className="uk-input"
+									type="text"
+									required
+									minLength="14"
+									maxLength="15"
+									value={data?.tutorPhone}
+									onBlur={() => {
+										if (data?.tutorPhone?.length < 15) {
+											createToast({
+												status: "error",
+												message: "O telefone precisa ter 11 digitos",
+											});
+										}
+									}}
+									onChange={(e) => {
+										e.target.value.length >= 14 &&
+											checkPhone(masks?.noPhone(e.target.value));
+										setData({
+											...data,
+											tutorPhone: masks.phone(e.target.value),
+										});
+									}}
+									placeholder="(00) 90000-0000"
+								/>
+							</div>
+							<div className="uk-margin-small">
+								<label>Como conheceu a clinica *</label>
+								<select
+									className="uk-select uk-width-1-1"
+									value={data?.tutorOriginId || ""}
+									onChange={(e) => {
+										const selectedOption = tutorOrigins.find(
+											(origin) => origin.id === e.target.value,
+										);
+										setData({
+											...data,
+											tutorOriginId: selectedOption?.id,
+											originDescription: selectedOption?.description,
+										});
+										setSelectedOrigin(selectedOption);
+									}}
+								>
+									<option value="">Selecione uma opção</option>
+									{(tutorOrigins || []).map((origin) => (
+										<option key={origin.id} value={origin.id}>
+											{origin.description}
+										</option>
+									))}
+								</select>
+							</div>
+							{shouldDisplayMarketingSelect && (
+								<div>
+									<label>Campanha / Midia</label>
+									<AutoComplete
+										className="uk-width-1-1"
+										options={campaignsQuery.data?.map((item) => ({
+											value: item.description,
+											key: item.description,
+										}))}
+										value={data?.marketingCampaignDescription}
+										onChange={(val) => {
+											const selectedOption = campaignsQuery.data.find(
+												(cq) => cq.description === val,
+											);
+
+											setData({
+												...data,
+												marketingCampaignId: undefined, 
+												// marketingCampaignDescription: val,
+                        clientOriginItemDescription: val
+											});
+										}}
+										onSelect={(_, opt) => {
+											const selectedOption = campaignsQuery.data.find(
+												(cq) => cq.description === opt.value,
+											);
+
+											setData({
+												...data,
+												marketingCampaignId: selectedOption?.id,
+												marketingCampaignDescription: opt.value,
+                        clientOriginItemDescription: undefined
+											});
+										}}
+										filterOption={(inputValue, option) => {
+											return option.value
+												.toUpperCase()
+												.includes(inputValue.toUpperCase())
+												? option
+												: null;
+										}}
+									/>
+								</div>
+							)}
+						</section>
+
+						{type === "Vet" && (
+							<section className="uk-width-1-3">
+								Paciente
+								<hr />
+								<div className="uk-margin-small">
+									<label>Nome*</label>
+									<br />
+									<AutoComplete
+										options={[
+											...(!!allPatients
+												? allPatients.map((item) => ({
+														value: item.id,
+														label: item.name,
+													}))
+												: []),
+										]}
+										type="text"
+										placeholder="Selecione ou informe o nome do novo paciente"
+										className="uk-width-1-1"
+										value={
+											patientData?.patientName
+												? patientData?.patientName
+												: patientData?.name
+										}
+										onSelect={(e) => {
+											setPatientSubmit(false);
+											setPatientData(
+												allPatients.find((item) => item?.id === e),
+											);
+											setPayload({ ...payload, patient_id: e });
+										}}
+										onChange={(e) => {
+											setPatientSubmit(true);
+											setPatientData({
+												...patientData,
+												patientName: e,
+											});
+											if (e === "") {
+												setPatientData({ ...payload, patientName: "" });
+											}
+										}}
+										filterOption={(input, option) =>
+											option?.label?.toLowerCase().includes(input.toLowerCase())
+										}
+									/>
+								</div>
+								<div className="uk-margin-small uk-width-1-1">
+									<label>Raça</label>
+									<select
+										disabled={!patientSubmit}
+										className="uk-select uk-width-1-1"
+										value={
+											patientData?.patientRaceId
+												? patientData?.patientRaceId
+												: patientData?.patientAnimal?.race?.id
+										}
+										onChange={(e) =>
+											setPatientData({
+												...patientData,
+												patientRaceId: e.target.value,
+											})
+										}
+									>
+										<option value="">Selecione uma opção</option>
+										{(races || []).map((item, i) => (
+											<option value={item.id}>{item.description}</option>
+										))}
+									</select>
+								</div>
+								<div className="uk-margin-small">
+									<label>Gênero</label>
+									<select
+										id={"gender"}
+										className="uk-select uk-width-1-1"
+										disabled={!patientSubmit}
+										value={
+											patientData?.patientGender
+												? patientData?.patientGender
+												: patientData?.gender
+										}
+										onChange={(e) =>
+											setPatientData({
+												...patientData,
+												patientGender: e.target.value,
+											})
+										}
+									>
+										<option>Selecione</option>
+										<option value="macho">Macho</option>
+										<option value="femea">Fêmea</option>
+									</select>
+								</div>
+							</section>
+						)}
+					</div>
+					<hr />
+					<footer
+						style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+					>
+						<Button text="salvar" loading={loading} type="submit" />
+						<Button
+							text="cancelar"
+							onClick={() => setVisible(false)}
+							style={{ backgroundColor: "#ff7b5a" }}
+						/>
+					</footer>
+				</form>
+			</Modal>
+			<Modal
+				visible={tutorInfoVisible}
+				onCancel={() => setTutorInfoVisible(false)}
+				onOk={() => {
+					setPayload((prv) => ({
+						...prv,
+						tutor_id: selectedTutor?.id,
+						tutorName: selectedTutor?.name,
+						contactId: selectedTutor?.id,
+						clientId: selectedTutor?.id,
+						originDescription: selectedTutor?.clientOrigin?.description,
+						originId: selectedTutor?.clientOrigin?.id,
+						contact: { cellphone: data?.tutorPhone },
+					}));
+					setTutorInfoVisible(false);
+					setVisible(false);
+				}}
+				title="Selecionar paciente"
+			>
+				<section>
+					<div>
+						Cliente(s) vinculados ao telefone
+						<AutoComplete
+							className="uk-width-1-1"
+							options={tutorInfo?.map((tutor) => ({
+								...tutor,
+								value: tutor?.name,
+								key: tutor?.id,
+							}))}
+							value={selectedTutor?.name}
+							onChange={(val) =>
+								setSelectedTutor((prv) => ({ ...prv, name: val }))
+							}
+							onSelect={(_, opt) => {
+								setSelectedTutor(opt);
+
+								setPayload({
+									...payload,
+									clientId: opt.id,
+									contactId: opt.id,
+									tutorName: opt.name,
+									contact: { cellphone: data?.tutorPhone },
+									originDescription: opt?.clientOrigin?.description,
+									originId: opt?.clientOrigin?.id,
+								});
+							}}
+							filterOption={(val, opt) =>
+								normalizeStr(opt?.value.toUpperCase()).includes(
+									normalizeStr(val?.toUpperCase()),
+								)
+							}
+						/>
+					</div>
+
+					{type === "Vet" && (
+						<div className="uk-margin-small-top">
+							<label>Selecionar Pet</label>
+							<Select
+								className="uk-width-1-1"
+								onChange={(val) => {
+									const patient = selectedTutor?.dependents.find(
+										(dp) => dp?.id === val,
+									);
+									setPayload({
+										...payload,
+										patientName: patient?.name,
+										clientId: patient?.id,
+										raceDescription: patient?.race?.description,
+										raceId: patient?.race?.id,
+										gender: patient?.gender,
+									});
+								}}
+							>
+								{selectedTutor.dependents &&
+									selectedTutor?.dependents.map((pat) => (
+										<Option value={pat?.id} key={pat?.id}>
+											{pat?.name}
+										</Option>
+									))}
+							</Select>
+						</div>
+					)}
+				</section>
+			</Modal>
+		</>
+	);
 }
 
 FastCreateTutor.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  setVisible: PropTypes.func.isRequired,
+	visible: PropTypes.bool.isRequired,
+	setVisible: PropTypes.func.isRequired,
 };

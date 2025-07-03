@@ -40,9 +40,11 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
 
   const updateFlag = useCallback(() => {
     setLoading(true);
-    updateFee();
     paymentMethodsService
-      .updateFlag(flag?.id, data)
+      .updateFlag(flag?.id, {
+        ...data,
+        flagInstallments: installmentsData
+      })
       .then((_res) =>
         createToast({
           message: "Informações atualizadas com sucesso!",
@@ -62,17 +64,6 @@ const Actions = memo(function Actions({ flag, reload, setReload }) {
         setReload(!reload);
       });
   }, [data, flag?.id, installmentsData]);
-
-  const updateFee = () => {
-    setLoading(true);
-    installmentsData.forEach((installment) =>
-      paymentMethodsService.updateFeeFlagInstallments(installment?.id, {
-        fee: installment?.fee,
-      })
-    );
-
-    setReload((prv) => !prv);
-  };
 
   useEffect(() => {
     flag?.installments?.length > 0 &&

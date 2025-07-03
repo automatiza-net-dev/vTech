@@ -30,3 +30,29 @@ export function useLoadAllVaccinesProtocols(
     enabled: params?.fetch ?? false,
   });
 }
+
+export function useLoadAllVaccinesProtocolsOnDemand(
+  params: LoadVaccineProtocols.Params & { fetch: boolean }
+) {
+  const router = useRouter();
+
+  async function fetcher() {
+    const newObj = {
+      ...params,
+      type: router?.pathname?.includes("vacinas") ? "vaccine" : "vermifuge",
+    };
+
+    const response = await container
+      .get<RemoteVaccine>(TypesAutomatiza.RemoteVaccine)
+      .loadAllProtocols(newObj);
+
+    return response;
+  }
+
+  return useQuery({
+    queryKey: ["LoadAllVaccineProtocols", "on-demand"],
+    queryFn: fetcher,
+    
+    enabled: params?.fetch ?? false,
+  });
+}

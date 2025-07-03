@@ -13,7 +13,7 @@ export function CreateProtocol({ vaccineId }: { vaccineId: string }) {
     name: "",
     vaccineId,
     specieId: "",
-    doses: 0,
+    doses: 1,
     interval: 0,
   });
 

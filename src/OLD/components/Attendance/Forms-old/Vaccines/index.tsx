@@ -33,7 +33,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
   const eventId = router.query.scheduleId;
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
 
   const getProtocols = useCallback(() => {
     setLoading(true);
@@ -104,7 +104,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
             scheduleStatuses.data?.find((status) => status.type === "ATEND")
               ?.id || "";
 
-         await container
+          await container
             .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
             .change({
               scheduleId: router.query.scheduleId as string,
@@ -152,10 +152,10 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
                 disabled={!modal}
                 onlyOneValue
                 onChangeInput={async (value) => {
-                  setData({ ...data, protocolId: value });
                   const selected = allProtocols.find(
                     (item) => item.id === value
                   );
+                  setData({ ...data, protocolId: value, doses: selected.doses, interval: selected.interval });
                   setSelectedProtocol(selected);
                   setApplications(
                     Array.from(Array(selected.doses), (_, i) => i + 1).map(
@@ -166,9 +166,9 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
                             item === 1
                               ? moment(new Date())
                               : moment(new Date()).add(
-                                  (item - 1) * selected.interval,
-                                  "days"
-                                ),
+                                (item - 1) * selected.interval,
+                                "days"
+                              ),
                         };
                       }
                     )
@@ -186,14 +186,24 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
               <DatePicker
                 format="DD/MM/YYYY"
                 className="uk-margin-right"
-                value={applications[0].date}
+                value={applications[0]?.date}
                 onChange={(e) => {
-                  const obj = [...applications];
-                  obj.splice(0, 1, {
-                    ...applications[0],
-                    date: e,
-                  });
-                  setApplications(obj);
+                  setApplications(
+                    Array.from(Array(data.doses), (_, i) => i + 1).map(
+                      (item, i) => {
+                        return {
+                          dose: item,
+                          date:
+                            item === 1
+                              ? moment(e)
+                              : moment(e).add(
+                                (item - 1) * data.interval,
+                                "days"
+                              ),
+                        };
+                      }
+                    )
+                  );
                 }}
               />
             </div>

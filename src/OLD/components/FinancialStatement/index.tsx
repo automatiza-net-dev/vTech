@@ -108,25 +108,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   const router = useRouter();
   const componentRef = useRef();
 
-  const sortFinances = () => {
-    filters?.order &&
-      finances.sort((a, b) => {
-        if (filters?.order !== "doc") {
-          return moment(a[filters?.order]).diff(moment(b[filters?.order]));
-        } else {
-          if (`${a.document}` < `${b.document}`) {
-            return -1;
-          }
-          if (`${a.document}` > `${b.document}`) {
-            return 1;
-          }
-          if (a.document === b.document) {
-            return a.installment - b.installment;
-          }
-          return 0;
-        }
-      });
-  };
 
   const handleExport = () => {
     const formatted = finances?.map((item) => ({
@@ -140,8 +121,8 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
       valor: item?.value,
       dt_vencimento: item?.expiration_date
         ? moment(item?.expiration_date, "YYYY-MM-DD[T]HH:mm:ss").format(
-            "DD/MM/YYYY"
-          )
+          "DD/MM/YYYY"
+        )
         : "-",
       valor_pago: item?.payment_value ? item?.payment_value : "-",
       data_pagamento: item?.payment_date
@@ -163,8 +144,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   };
 
   const formatFinances = (recentDown = false) => {
-    sortFinances();
-
     setFormatedFinances(
       finances.map((finance) => {
         {
@@ -199,9 +178,9 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
                     tefAcquirerId: finance?.tef_adquirente_id || false,
                     paymentDate: finance?.payment_date
                       ? moment(
-                          finance?.payment_date,
-                          "YYYY-MM-DD[T]HH:mm:ss"
-                        ).format("YYYY-MM-DD")
+                        finance?.payment_date,
+                        "YYYY-MM-DD[T]HH:mm:ss"
+                      ).format("YYYY-MM-DD")
                       : null,
                   });
                   setGroupDetailsVisible(true);
@@ -220,7 +199,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
                       type: finance?.type,
                     });
                     setEdit(false);
-                    return setUpdateOpen(true); 
+                    return setUpdateOpen(true);
                   }
                   if (finance?.source === "BORDERO") {
                     setSelectedBorderoId(finance?.id);
@@ -255,21 +234,20 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
           ),
           expirationDate: finance?.expiration_date
             ? moment(finance?.expiration_date, "YYYY-MM-DD[T]HH:mm:ss").format(
-                "DD/MM/YYYY"
-              )
+              "DD/MM/YYYY"
+            )
             : "-",
           paymentValue: currencyFormatter(
             finance?.payment_value ? finance?.payment_value : 0
           ),
           paymentDate: finance?.payment_date
             ? moment(finance?.payment_date, "YYYY-MM-DD[T]HH:mm:ss").format(
-                "DD/MM/YYYY"
-              )
+              "DD/MM/YYYY"
+            )
             : "-",
           paymentMethod: finance?.payment_method
-            ? `${finance?.payment_method} ${
-                finance?.tef_flag ? ` - ${finance?.tef_flag}` : ""
-              }`
+            ? `${finance?.payment_method} ${finance?.tef_flag ? ` - ${finance?.tef_flag}` : ""
+            }`
             : "-",
           nsu: finance?.nsu_document || "-",
           actions: (
@@ -382,11 +360,9 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   }, [data]);
 
   useEffect(() => {
-    titles.length === 0
-      ? finances.length > 0
-        ? formatFinances()
-        : setFormatedFinances([])
-      : formatFinances(true);
+    if (titles.length === 0 && finances.length > 0) {
+      formatFinances()
+    }
   }, [finances, reload]);
 
   useEffect(() => {
@@ -466,11 +442,10 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
           <div className="uk-flex uk-flex-right">
             Saldo{" "}
             {filters?.checkingAccountId
-              ? `Conta corrente ${
-                  checkingAccounts.find(
-                    (account) => account?.id === filters?.checkingAccountId
-                  )?.description
-                }: `
+              ? `Conta corrente ${checkingAccounts.find(
+                (account) => account?.id === filters?.checkingAccountId
+              )?.description
+              }: `
               : `unidade ${clinic?.fantasy_name}: `}
             {currencyFormatter(balance?.balance)}
           </div>
@@ -493,56 +468,56 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
                   <strong>Total Crédito:&nbsp;</strong>
                   {currencyFormatter(
                     finances?.length > 0 &&
-                      finances
-                        ?.filter((finance) => finance?.type === "CREDITO")
-                        .reduce((acc, current) => acc + current?.total_value, 0)
+                    finances
+                      ?.filter((finance) => finance?.type === "CREDITO")
+                      .reduce((acc, current) => acc + current?.total_value, 0)
                   )}
                 </div>
                 <div className="uk-width-1-2 uk-margin-right">
                   <strong>Total Realizado Crédito:&nbsp;</strong>
                   {currencyFormatter(
                     finances?.length > 0 &&
-                      finances
-                        ?.filter((finance) => finance?.type === "CREDITO")
-                        .reduce(
-                          (acc, current) => acc + current?.payment_value,
-                          0
-                        )
+                    finances
+                      ?.filter((finance) => finance?.type === "CREDITO")
+                      .reduce(
+                        (acc, current) => acc + current?.payment_value,
+                        0
+                      )
                   )}
                 </div>
                 <div className="uk-width-1-2 uk-margin-right">
                   <strong>Total a receber Crédito:&nbsp;</strong>
                   {currencyFormatter(
                     finances?.length > 0 &&
-                      finances
-                        ?.filter(
-                          (finance) =>
-                            finance?.type === "CREDITO" &&
-                            finance?.status === "ABERTO"
-                        )
-                        .reduce((acc, current) => acc + current?.total_value, 0)
+                    finances
+                      ?.filter(
+                        (finance) =>
+                          finance?.type === "CREDITO" &&
+                          finance?.status === "ABERTO"
+                      )
+                      .reduce((acc, current) => acc + current?.total_value, 0)
                   )}
                 </div>
                 <div className="uk-width-1-2 uk-margin-right">
                   <strong>Total Debitos:&nbsp;</strong>
                   {currencyFormatter(
                     finances?.length > 0 &&
-                      finances
-                        ?.filter((finance) => finance?.type === "DEBITO")
-                        .reduce((acc, current) => acc + current?.total_value, 0)
+                    finances
+                      ?.filter((finance) => finance?.type === "DEBITO")
+                      .reduce((acc, current) => acc + current?.total_value, 0)
                   )}
                 </div>
                 <div className="uk-width-1-2 uk-margin-right">
                   <strong>Total a vencer Debitos:&nbsp;</strong>
                   {currencyFormatter(
                     finances?.length > 0 &&
-                      finances
-                        ?.filter(
-                          (finance) =>
-                            finance?.type === "DEBITO" &&
-                            finance?.status === "Aberto"
-                        )
-                        .reduce((acc, current) => acc + current?.total_value, 0)
+                    finances
+                      ?.filter(
+                        (finance) =>
+                          finance?.type === "DEBITO" &&
+                          finance?.status === "Aberto"
+                      )
+                      .reduce((acc, current) => acc + current?.total_value, 0)
                   )}
                 </div>
               </div>

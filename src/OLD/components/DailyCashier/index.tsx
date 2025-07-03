@@ -25,12 +25,12 @@ export function DailyCashier() {
         {
           name: "fromOpening",
           InputComponent: "InputDatePicker",
-          label: "Início",
+          label: "Data Inicial",
         },
         {
           name: "toOpening",
           InputComponent: "InputDatePicker",
-          label: "Fim",
+          label: "Data Final",
         },
         {
           name: "tag",
