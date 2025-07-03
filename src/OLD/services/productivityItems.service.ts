@@ -51,7 +51,7 @@ const updateProductivityItemProduct = async (data: {
 
 const createProductivityProduct = async (data: {
 	items: {
-		productivityItemId: string;
+		productivityItemId: number;
 		productId: string;
 		quantity: number;
 		order: number;

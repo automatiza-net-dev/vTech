@@ -11,11 +11,19 @@ import {
 	schema,
 	InputSwitch,
 	Input,
+	useQuery,
+	Popconfirm,
 } from "infinity-forge";
 
 const ProductivityItems = memo(function ProductivityItems({ productId }) {
-	const { items, fetchItems } = useProductivityItems(productId);
 	const { createToast } = useToast();
+
+	const productivityProducts = useQuery({
+		queryKey: ["productivity-item-products", productId],
+		queryFn: () =>
+			productivityItemsService.getProductivityProducts({ product: productId }),
+		enabled: !!productId,
+	});
 
 	const [editProductivityItemState, setEditProductivityItemState] = useState<
 		"closed" | "form"
@@ -27,11 +35,11 @@ const ProductivityItems = memo(function ProductivityItems({ productId }) {
 		order: 0,
 	});
 
-	const deleteItemProduct = useCallback(async (itemProductID: string) => {
+	const deleteItemProduct = useCallback(async (itemProductID: number) => {
 		productivityItemsService
 			.deleteProductivityItemProduct(itemProductID)
 			.then(() => {
-				fetchItems();
+				productivityProducts.refetch();
 			})
 			.catch((err) => {
 				return createToast({
@@ -45,7 +53,7 @@ const ProductivityItems = memo(function ProductivityItems({ productId }) {
 		<>
 			<Table
 				style={{ width: "100%" }}
-				dataSource={items.map((r) => ({
+				dataSource={productivityProducts.data?.data.map((r) => ({
 					quantity: r.quantity,
 					description: r.description,
 					order: r.order,
@@ -55,7 +63,6 @@ const ProductivityItems = memo(function ProductivityItems({ productId }) {
 								<FiEdit2
 									style={{ cursor: "pointer" }}
 									onClick={async () => {
-										console.log("r??", r);
 										setEditProductivityItemState("form");
 										setEditingProductivityItem({
 											id: r.id,
@@ -67,12 +74,16 @@ const ProductivityItems = memo(function ProductivityItems({ productId }) {
 								/>
 							</Tooltip>
 							<Tooltip title={"Apagar"}>
-								<FiTrash2
-									style={{ cursor: "pointer" }}
-									onClick={async () => {
+								<Popconfirm
+									onConfirm={async () => {
 										await deleteItemProduct(r.id);
 									}}
-								/>
+									idTooltip="a"
+									title="Você deseja mesmo apagar esse item?"
+									position="top-right"
+								>
+									<FiTrash2 style={{ cursor: "pointer" }} />
+								</Popconfirm>
 							</Tooltip>
 						</div>
 					),
@@ -127,7 +138,7 @@ const ProductivityItems = memo(function ProductivityItems({ productId }) {
 								order: formData.order,
 							});
 
-							fetchItems();
+							productivityProducts.refetch();
 							setEditingProductivityItem({
 								id: 0,
 								description: "",
