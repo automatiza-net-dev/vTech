@@ -145,11 +145,19 @@ const Actions = memo(function Actions({ service, setReload }) {
     enabled: productivityVisible,
   });
 
+  useEffect(() => {
+    productivityItems.refetch();
+  }, [addProductivityState, productivityItems.refetch]);
+
   const deleteItem = useCallback(async (itemID: string) => {
     productivityItemsService
       .deleteProductivityItem(itemID)
       .then((res) => {
         productivityItems.refetch();
+        return createToast({
+          message: 'Item de produtividade excluído com sucesso!',
+          status: "success",
+        });
       })
       .catch((err) => {
         return createToast({
@@ -383,6 +391,11 @@ const Actions = memo(function Actions({ service, setReload }) {
                       active: false,
                     });
                     setAddProductivityState("listing");
+                    createToast({
+                      message: 'Item de produtividade adicionado com sucesso!',
+                      status: "success",
+                    })
+
                   }}
                   disableEnterKeySubmitForm
                   cleanFieldsOnSubmit={false}
