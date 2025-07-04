@@ -7,7 +7,6 @@ import {
 	Tab,
 	useToast,
 	Input,
-	Select,
 	InputSwitch,
 	api,
 	schema,
@@ -15,7 +14,9 @@ import {
 	InputCurrency,
 	useQueryClient,
 	Popconfirm,
+	useAuthAdmin,
 } from "infinity-forge";
+import { Select } from "antd";
 
 import { servicesService } from "@/OLD/services/services.service";
 import { productivityItemsService } from "@/OLD/services/productivityItems.service";
@@ -25,6 +26,7 @@ import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { FiEdit2, FiTrash2, FiCheck } from "react-icons/fi";
 import { VscTasklist } from "react-icons/vsc";
 import { FaPlus } from "react-icons/fa";
+import { IoDocumentTextOutline } from "react-icons/io5";
 
 import { Modal, Button, Table, Tooltip, Input as AntdInput } from "antd";
 import EditForm from "./EditForm";
@@ -88,6 +90,10 @@ const Actions = memo(function Actions({ service, setReload }) {
 	useEffect(() => {
 		productivityItems.refetch();
 	}, [addProductivityState]);
+
+	const [documentState, setDocumentState] = useState<"closed" | "open">(
+		"closed",
+	);
 
 	const canEditService = useUserHasPermission("SRV02");
 	const canDeleteService = useUserHasPermission("SRV03");
@@ -153,7 +159,7 @@ const Actions = memo(function Actions({ service, setReload }) {
 				}),
 			)
 			.catch((err) => {
-				const message = verifyErrors(err?.response?.data?.errors);
+				const message = verifyErrors(err?.response?.data?.errors) ?? "-";
 				createToast({ message, status: "warning" });
 
 				error = true;
@@ -171,7 +177,7 @@ const Actions = memo(function Actions({ service, setReload }) {
 	const deleteItem = useCallback(async (itemID: number) => {
 		productivityItemsService
 			.deleteProductivityItem(itemID)
-			.then((res) => {
+			.then(() => {
 				productivityItems.refetch();
 				return createToast({
 					message: "Item de produtividade excluído com sucesso!",
@@ -205,13 +211,19 @@ const Actions = memo(function Actions({ service, setReload }) {
 				}}
 			/>
 
+			<IoDocumentTextOutline
+				onClick={() => {
+					setDocumentState("open");
+				}}
+			/>
+
 			{/*canEditService && <FiEdit2 onClick={() => setUpdateVisible(true)} />*/}
 			<Popconfirm
+				idTooltip="sut"
 				title="Deseja remover esse serviço?"
 				onConfirm={removeService}
 				okText="Sim"
 				cancelText="Não"
-				placement="left"
 			>
 				{canDeleteService && (
 					<FiTrash2
@@ -220,11 +232,12 @@ const Actions = memo(function Actions({ service, setReload }) {
 					/>
 				)}
 			</Popconfirm>
+
 			<Modal
 				width={800}
 				title="Alterar dados do serviço"
 				footer={null}
-				visible={updateVisible}
+				open={updateVisible}
 				onCancel={() => setUpdateVisible(false)}
 			>
 				<EditForm
@@ -234,11 +247,12 @@ const Actions = memo(function Actions({ service, setReload }) {
 					setVisible={setUpdateVisible}
 				/>
 			</Modal>
+
 			{productivityVisible && (
 				<Modal
 					title={`Items de produtividade: ${service.description ?? "-"}`}
 					width={600}
-					visible={productivityVisible}
+					open={productivityVisible}
 					onCancel={() => setProductivityVisible(false)}
 					footer={null}
 					style={{}}
@@ -263,12 +277,12 @@ const Actions = memo(function Actions({ service, setReload }) {
 									: "Cadastrar item de produtividade"
 							}
 							width={700}
-							visible={addProductivityState !== "closed"}
+							open={addProductivityState !== "closed"}
 							onCancel={() => {
 								setAddProductivityState((prev) =>
 									prev === "form" ? "listing" : "closed",
 								);
-								setEditingProductivity((p) => ({
+								setEditingProductivity(() => ({
 									id: 0,
 									description: "",
 									reservedMinutes: 0,
@@ -303,8 +317,8 @@ const Actions = memo(function Actions({ service, setReload }) {
 										<AntdInput
 											name="description"
 											addonBefore="Item de Produtividade"
-                      value={term}
-                      onChange={(e) => setTerm(e.target.value)}
+											value={term}
+											onChange={(e) => setTerm(e.target.value)}
 										/>
 
 										<Button onClick={() => setAddProductivityState("form")}>
@@ -502,7 +516,7 @@ const Actions = memo(function Actions({ service, setReload }) {
 			)}
 			{detailsVisible && (
 				<Modal
-					visible={detailsVisible}
+					open={detailsVisible}
 					onCancel={() => setDetailsVisible(false)}
 					width={1200}
 					footer={null}
@@ -514,8 +528,192 @@ const Actions = memo(function Actions({ service, setReload }) {
 					/>
 				</Modal>
 			)}
+
+			<Modal
+				title={`Vincular Documentos ao Serviço: ${service?.description}`}
+				width={700}
+				open={documentState === "open"}
+				onCancel={() => {
+					setDocumentState("closed");
+				}}
+				footer={null}
+				style={{}}
+			>
+				<DocumentTable serviceId={service.id} />
+			</Modal>
 		</section>
 	);
 });
 
 export default Actions;
+
+function DocumentTable(props: { serviceId: string }) {
+	const { user } = useAuthAdmin();
+	const [formData, setFormData] = useState<{
+		documentTemplateId: string | null;
+		productId: string;
+		type: string;
+	}>({
+		documentTemplateId: null,
+		productId: props.serviceId,
+		type: "geral",
+	});
+
+	const serviceDocuments = useQuery({
+		queryKey: ["service-documents", props.serviceId],
+		queryFn: () =>
+			api<
+				{
+					id: number;
+					system_id: number;
+					system_product_id: number;
+					economic_group_id: string | null;
+					business_unit_id: string | null;
+					product_id: string;
+					document_template_id: string;
+					document_template_title: string;
+					type: string;
+					active: boolean;
+					origin: string;
+				}[]
+			>({
+				url: "product-documents",
+				method: "get",
+				body: {
+					product: props.serviceId,
+					// product: "6a79d4b8-52ef-4881-ab66-b0281704ec94",
+				},
+			}),
+	});
+	const availableDocuments = useQuery({
+		queryKey: ["available-documents", props.serviceId],
+		queryFn: () =>
+			api<
+				{
+					id: string;
+					title: string;
+				}[]
+			>({
+				url: "document-templates",
+				method: "get",
+				body: {},
+			}),
+	});
+
+	const createDocument = useCallback(async () => {
+		await api({
+			url: `product-documents`,
+			body: {
+				economicGroupId: user.unit.economicGroup.id,
+				businessUnitId: user.unit.id,
+				productId: formData.productId,
+				documentTemplateId: formData.documentTemplateId,
+				type: formData.type,
+			},
+			method: "post",
+		});
+
+		setFormData({
+			documentTemplateId: null,
+			productId: props.serviceId,
+			type: "geral",
+		});
+
+		serviceDocuments.refetch();
+	}, [formData, user, props.serviceId]);
+
+	const deleteDocument = useCallback(async (documentID: number) => {
+		await api({
+			url: `product-documents/${documentID}`,
+			method: "delete",
+		});
+
+		serviceDocuments.refetch();
+	}, []);
+
+	return (
+		<div>
+			<div
+				style={{
+					width: "100%",
+					display: "flex",
+					flexDirection: "row",
+					alignItems: "end",
+					gap: 10,
+				}}
+			>
+				<div
+					style={{
+						width: "100%",
+						overflow: "hidden",
+						display: "flex",
+						flexDirection: "column",
+						gap: 4,
+					}}
+				>
+					<span>Documentos para Vincular</span>
+					<Select
+						showSearch
+						autoClearSearchValue
+						style={{ width: "100%" }}
+						placeholder="Selecione um documento"
+						value={formData.documentTemplateId}
+						onChange={(v) =>
+							setFormData((state) => ({ ...state, documentTemplateId: v }))
+						}
+						filterOption={(input, option) =>
+							(option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+						}
+						options={availableDocuments.data?.map((r) => ({
+							label: r.title,
+							value: r.id,
+						}))}
+					/>
+				</div>
+
+				<Button
+					disabled={formData.documentTemplateId === null}
+					onClick={createDocument}
+				>
+					Criar
+				</Button>
+			</div>
+
+			<Table
+				dataSource={serviceDocuments.data?.map((r) => ({
+					description: r.document_template_title,
+					actions: (
+						<div className="uk-flex" style={{ gap: 20 }}>
+							<Tooltip title={"Apagar"}>
+								<Popconfirm
+									onConfirm={async () => {
+										await deleteDocument(r.id);
+									}}
+									idTooltip="a"
+									title="Você deseja mesmo apagar esse item?"
+									position="top-right"
+								>
+									<FiTrash2 style={{ cursor: "pointer" }} />
+								</Popconfirm>
+							</Tooltip>
+						</div>
+					),
+				}))}
+				columns={[
+					{
+						title: "Descrição",
+						key: "description",
+						dataIndex: "description",
+					},
+					{
+						title: "Ações",
+						key: "actions",
+						dataIndex: "actions",
+					},
+				]}
+				className="uk-margin-small-top"
+				style={{ width: "100%" }}
+			/>
+		</div>
+	);
+}
