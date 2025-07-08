@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 // Utils
 import moment from "moment";
@@ -6,20 +6,22 @@ import "moment/locale/pt-br";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 
 // Icons
-import { FiCheck } from "react-icons/fi";
-import { VscTasklist } from "react-icons/vsc";
+import { MdEdit } from "react-icons/md";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 // Components
-import { Select, Table } from "antd";
-import { api, Button, PageWrapper } from "infinity-forge";
+import { Select, Table, Popconfirm } from "antd";
+import {
+	api,
+	BadRequestError,
+	Button,
+	PageWrapper,
+	useToast,
+} from "infinity-forge";
 import { useQuery, Modal } from "infinity-forge";
-import { useQueryClient } from "infinity-forge";
 import columns from "./Columns";
-import DeleteDepartment from "./Delete";
-import EditDepartment from "./Edit";
 import { Container, Input } from "./styles";
 import CreateDepartment from "./Create";
-import DetailsDepartment from "./Show";
 
 const { Option } = Select;
 
@@ -30,7 +32,9 @@ const mapper = ({ data }) => ({
 	createdAt: moment(data?.created_at).format("DD/MM/YYYY - HH:mm"),
 });
 
-function Products() {
+function Departments() {
+	const { createToast } = useToast();
+
 	const [filters, setFilters] = useState<Record<string, string | boolean>>({
 		noSearch: true,
 		type: "sistema",
@@ -60,6 +64,22 @@ function Products() {
 		},
 		enabled: !filters.noSearch,
 	});
+
+	const deleteDepartment = useCallback(async (deptoID: number) => {
+		try {
+			await api({
+				url: `departments/${deptoID}`,
+				method: "delete",
+			});
+			departmentsQuery.refetch();
+		} catch (err) {
+			const msg =
+				err instanceof BadRequestError
+					? err.error.message
+					: "Erro ao excluir departamento";
+			createToast({ status: "error", message: msg });
+		}
+	}, []);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -148,11 +168,20 @@ function Products() {
 							...d,
 							actions: (
 								<div className="uk-flex uk-flex-around">
-									<FiCheck size={20} onClick={() => {}} />
-									<VscTasklist
-										style={{ cursor: "pointer" }}
-										onClick={() => {}}
-									/>
+									<MdEdit size={20} onClick={() => {}} />
+
+									<Popconfirm
+										title="Deseja remover esse departamento?"
+										onConfirm={() => deleteDepartment(d.id)}
+										okText="Sim"
+										cancelText="Não"
+										placement="left"
+									>
+										<FaRegTrashAlt
+											style={{ cursor: "pointer" }}
+											onClick={() => {}}
+										/>
+									</Popconfirm>
 								</div>
 							),
 						}))}
@@ -188,4 +217,4 @@ function Products() {
 	);
 }
 
-export default Products;
+export default Departments;
