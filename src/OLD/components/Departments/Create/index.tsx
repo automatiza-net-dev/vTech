@@ -30,11 +30,12 @@ type TCreateDepartment = {
 	active?: boolean;
 
 	items: {
-		id?: string;
+		id?: number;
 		description: string;
 		requiresObservation: boolean;
 		order: number;
 		photo?: Blob;
+		active?: boolean;
 	}[];
 
 	products: { id: string; description: string; mode: "create" | "update" }[];
@@ -90,20 +91,29 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 		products: [],
 	});
 	useEffect(() => {
-		if (!props.initialData) return;
+		if (!props.initialData) {
+			return;
+		}
 
 		setData({
 			economicGroupId: props.initialData.economic_group_id ?? undefined,
 			businessUnitId: props.initialData.business_unit_id ?? undefined,
 			description: props.initialData.description,
-			items: [],
+			items: props.initialData.items.map((item) => ({
+				id: item.id,
+				description: item.description,
+				requiresObservation: item.requiresObservation,
+				order: item.order,
+				// photo
+				active: item.active,
+			})),
 			products: props.initialData.products.map((product) => ({
 				id: product.product.id,
 				description: product.product.description,
 				mode: "update",
 			})),
 		});
-	}, []);
+	}, [props.initialData]);
 
 	const [itemFormState, setItemFormState] = useState<
 		"open" | "closed" | number
@@ -175,21 +185,21 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 
 	const deleteItem = useCallback(
 		async (idx: number) => {
-			if (props.initialData) {
+			if (!!props.initialData?.items[idx]?.id) {
 				await api({
-					url: `departments/destroy-item`,
+					url: `departments/delete-item`,
 					method: "put",
 					body: {
 						departmentId: props.initialData.id,
 						departmentItemId: props.initialData.items[idx].id,
 					},
 				});
-			} else {
-				setData((old) => ({
-					...old,
-					items: old.items.filter((_, i) => i !== idx),
-				}));
 			}
+
+			setData((old) => ({
+				...old,
+				items: old.items.filter((_, i) => i !== idx),
+			}));
 
 			props.shouldRefresh();
 		},
@@ -198,7 +208,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 
 	const deleteProduct = useCallback(
 		async (idx: number) => {
-			if (props.initialData) {
+			if (props.initialData?.products[idx]?.product.id) {
 				await api({
 					url: `departments/delete-products`,
 					method: "put",
@@ -207,12 +217,12 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 						products: [props.initialData.products[idx].product.id],
 					},
 				});
-			} else {
-				setData((old) => ({
-					...old,
-					products: old.products.filter((_, i) => i !== idx),
-				}));
 			}
+
+			setData((old) => ({
+				...old,
+				products: old.products.filter((_, i) => i !== idx),
+			}));
 
 			props.shouldRefresh();
 		},
@@ -221,135 +231,85 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 
 	const submitCreate = useCallback(async () => {
 		try {
-			if (props.initialData) {
-				await api({
-					url: `departments/${props.initialData.id}`,
-					method: "put",
-					headers: {},
-					body: {
-						businessUnitId:
-							businessUnitsQuery.businessUnits.find((eg) => {
-								if (eg.fantasyName === data.businessUnitId) {
-									return true;
-								}
+			const formData = new FormData();
 
-								if (eg.companyName === data.businessUnitId) {
-									return true;
-								}
+			// Campos simples
+			if (data.economicGroupId) {
+				formData.append(
+					"economicGroupId",
+					economicGroupsQuery.allEconomicGroup.find((eg) => {
+						if (eg.company_name === data.economicGroupId) {
+							return true;
+						}
 
-								if (eg.identification === data.businessUnitId) {
-									return true;
-								}
+						if (eg.fantasy_name === data.economicGroupId) {
+							return true;
+						}
 
-								return false;
-							})?.id ?? "",
-
-						description: data.description,
-						// image: data.image,
-					},
-				});
-
-				// await api({
-				// 	url: `departments/update-products`,
-				// 	method: "put",
-				// 	headers: {},
-				// 	body: {
-				// 		departmentId: props.initialData.id,
-				// 		products: data.products.reduce((acc, curr) => {
-				// 			if (curr.mode === "update") {
-				// 				acc.push(curr.id);
-				// 			}
-				//
-				// 			return acc;
-				// 		}, [] as string[]),
-				// 	},
-				// });
-
-				createToast({
-					message: "Departamento atualizado com sucesso",
-					status: "success",
-				});
-			} else {
-				const formData = new FormData();
-
-				// Campos simples
-				if (data.economicGroupId) {
-					formData.append(
-						"economicGroupId",
-						economicGroupsQuery.allEconomicGroup.find((eg) => {
-							if (eg.company_name === data.economicGroupId) {
-								return true;
-							}
-
-							if (eg.fantasy_name === data.economicGroupId) {
-								return true;
-							}
-
-							return false;
-						})?.id ?? "",
-					);
-				}
-
-				if (data.businessUnitId) {
-					formData.append(
-						"businessUnitId",
-						businessUnitsQuery.businessUnits.find((eg) => {
-							if (eg.fantasyName === data.businessUnitId) {
-								return true;
-							}
-
-							if (eg.companyName === data.businessUnitId) {
-								return true;
-							}
-
-							if (eg.identification === data.businessUnitId) {
-								return true;
-							}
-
-							return false;
-						})?.id ?? "",
-					);
-				}
-
-				formData.append("description", data.description);
-
-				if (data.image) {
-					formData.append("image", data.image);
-				}
-
-				data.items.forEach((item, index) => {
-					formData.append(`items[${index}][description]`, item.description);
-					formData.append(
-						`items[${index}][requiresObservation]`,
-						String(item.requiresObservation),
-					);
-					formData.append(`items[${index}][order]`, String(item.order));
-					if (item.photo) {
-						formData.append(`photos[${index}]`, item.photo);
-					}
-				});
-
-				data.products.forEach((product, index) => {
-					if (product.mode === "create") {
-						formData.append(`products[${index}]`, product.id);
-					}
-				});
-
-				await api({
-					url: "departments",
-					method: "post",
-					headers: {
-						"Content-Type": "multipart/form-data; boundary=something",
-					},
-					body: formData,
-				});
-
-				createToast({
-					message: "Departamento criado com sucesso",
-					status: "success",
-				});
-				props.shouldClose();
+						return false;
+					})?.id ?? "",
+				);
 			}
+
+			if (data.businessUnitId) {
+				formData.append(
+					"businessUnitId",
+					businessUnitsQuery.businessUnits.find((eg) => {
+						if (eg.fantasyName === data.businessUnitId) {
+							return true;
+						}
+
+						if (eg.companyName === data.businessUnitId) {
+							return true;
+						}
+
+						if (eg.identification === data.businessUnitId) {
+							return true;
+						}
+
+						return false;
+					})?.id ?? "",
+				);
+			}
+
+			formData.append("description", data.description);
+
+			if (data.image) {
+				formData.append("image", data.image);
+			}
+
+			data.items.forEach((item, index) => {
+				formData.append(`items[${index}][description]`, item.description);
+				formData.append(
+					`items[${index}][requiresObservation]`,
+					String(item.requiresObservation),
+				);
+				formData.append(`items[${index}][order]`, String(item.order));
+				if (item.photo) {
+					formData.append(`photos[${index}]`, item.photo);
+				}
+			});
+
+			data.products.forEach((product, index) => {
+				if (product.mode === "create") {
+					formData.append(`products[${index}]`, product.id);
+				}
+			});
+
+			await api({
+				url: "departments",
+				method: "post",
+				headers: {
+					"Content-Type": "multipart/form-data; boundary=something",
+				},
+				body: formData,
+			});
+
+			createToast({
+				message: "Departamento criado com sucesso",
+				status: "success",
+			});
+			props.shouldClose();
 		} catch (err) {
 			createToast({
 				message: props.initialData
@@ -364,6 +324,65 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 		if (!props.initialData) return;
 
 		try {
+			const tasks = data.items.reduce((acc, curr) => {
+				console.log("updating??", curr);
+				const formData = new FormData();
+				formData.append("departmentId", props.initialData!.id.toString());
+				formData.append("description", curr.description);
+				if (curr.photo) {
+					formData.append("photo", curr.photo);
+				}
+				formData.append("active", curr.active?.toString() ?? "");
+				formData.append("order", curr.order.toString());
+				formData.append(
+					"requiresObservation",
+					curr.requiresObservation.toString(),
+				);
+
+				if (curr.id) {
+					acc.push(
+						api({
+							url: `departments/update-item/${curr.id}`,
+							method: "put",
+							headers: {
+								"Content-Type": "multipart/form-data; boundary=something",
+							},
+							body: formData,
+						}),
+					);
+				} else {
+					acc.push(
+						api({
+							url: `departments/store-item`,
+							method: "post",
+							headers: {
+								"Content-Type": "multipart/form-data; boundary=something",
+							},
+							body: formData,
+						}),
+					);
+				}
+
+				return acc;
+			}, [] as Promise<any>[]);
+			await Promise.all(tasks);
+
+			await api({
+				url: `departments/update-products`,
+				method: "put",
+				headers: {},
+				body: {
+					departmentId: props.initialData.id,
+					products: data.products.reduce((acc, curr) => {
+						// if (curr.mode === "update") {
+						acc.push(curr.id);
+						// }
+
+						return acc;
+					}, [] as string[]),
+				},
+			});
+
 			await api({
 				url: `departments/${props.initialData.id}`,
 				method: "put",
@@ -392,26 +411,11 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				},
 			});
 
-			// await api({
-			// 	url: `departments/update-products`,
-			// 	method: "put",
-			// 	headers: {},
-			// 	body: {
-			// 		departmentId: props.initialData.id,
-			// 		products: data.products.reduce((acc, curr) => {
-			// 			if (curr.mode === "update") {
-			// 				acc.push(curr.id);
-			// 			}
-			//
-			// 			return acc;
-			// 		}, [] as string[]),
-			// 	},
-			// });
-
 			createToast({
 				message: "Departamento atualizado com sucesso",
 				status: "success",
 			});
+			props.shouldRefresh();
 		} catch (err) {
 			createToast({
 				message:
@@ -539,7 +543,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 							required={true}
 							style={{
 								display: "flex",
-                alignItems: "center",
+								alignItems: "center",
 								justifyContent: "center",
 							}}
 						>
@@ -558,7 +562,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				<Table
 					className="uk-margin-top"
 					dataSource={data.items.map((d, idx) => ({
-						description: d.description,
+						description: [d.id ? "✅" : "❌", d.description].join(" "),
 						requiresObservation: d.requiresObservation ? "Sim" : "Não",
 						actions: (
 							<div className="uk-flex uk-flex-around">
@@ -608,7 +612,10 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				<Table
 					className="uk-margin-top"
 					dataSource={data.products.map((d, idx) => ({
-						description: d.description,
+						description:
+							d.mode === "create"
+								? `❌${d.description}`
+								: `✅ ${d.description}`,
 						actions: (
 							<div className="uk-flex uk-flex-around">
 								<Popconfirm

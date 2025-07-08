@@ -21,5 +21,7 @@ export type TDepartment = {
 		description: string;
 		photo: string | null;
 		requiresObservation: boolean;
+		order: number;
+		active: boolean;
 	}[];
 };
