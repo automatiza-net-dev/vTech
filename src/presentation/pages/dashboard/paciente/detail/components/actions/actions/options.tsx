@@ -26,7 +26,7 @@ import MedicalRecipes from "@/OLD/components/Attendance/Forms-old/MedicalRecipe"
 import DosesModal from "@/OLD/components/Attendance/Timeline/LaunchedVaccinesList/DosesModal";
 import { HospitalizationForm } from "./hospitalization";
 import { DischargeForm } from "./discharge";
-import { Icon } from "infinity-forge";
+import { Icon, useAuthAdmin } from "infinity-forge";
 import { VideoPhoto } from "./video-photo";
 
 type ActionPatient = {
@@ -46,6 +46,7 @@ export function useActionsPatient(patient?: Patient): {
 	const assignutor = useAssignTutor();
 
 	const { type } = useConfigurationsSystem();
+  const {user} = useAuthAdmin();
 
 	const listActions = [
 		{
@@ -133,7 +134,7 @@ export function useActionsPatient(patient?: Patient): {
 			),
 		},
 		{
-			active: true,
+			active: user.unit.unitConfig.treatment,
 			label: "Execução de Tratamento",
 			value: "Execução de Tratamento",
 			Icon: (
