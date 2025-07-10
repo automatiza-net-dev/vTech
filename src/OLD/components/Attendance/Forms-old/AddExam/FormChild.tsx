@@ -72,7 +72,7 @@ export default function FormChild({
 
   return (
     <Container>
-      <FormHandler isStickyButtons>
+      <FormHandler isStickyButtons disableEnterKeySubmitForm>
         <div>
           {modal ? (
             <>
