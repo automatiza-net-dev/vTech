@@ -27,8 +27,8 @@ export function SignInAdmin() {
           onSucess={async (data) => {
             const ipAddress = await api({ url: "ip", method: "get" }, "/api/");
 
-            // const systemUrl = new URL(window.location.origin).origin;
-        const systemUrl = 'https://dev-sancla.automatiza.net'
+            const systemUrl = new URL(window.location.origin).origin;
+        // const systemUrl = 'https://dev-sancla.automatiza.net'
 
             const response = await api({
               url: "auth/controller-login",
