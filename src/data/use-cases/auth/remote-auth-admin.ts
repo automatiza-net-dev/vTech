@@ -12,8 +12,8 @@ export class RemoteAuthAdmin implements domainVtech.AuthAdmin {
     @inject(InfraTypes.authorizeAdminHttp) private readonly httpClient: domainVtech.HttpClient<domainVtech.AuthAdmin.Model>
   ) {}
   async auth(params: domainVtech.AuthAdmin.Params) {
-    // const systemUrl = new URL(window.location.origin).origin;
-        const systemUrl = 'https://dev-sancla.automatiza.net'
+    const systemUrl = new URL(window.location.origin).origin;
+        // const systemUrl = 'https://dev-sancla.automatiza.net'
 
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("auth/admin-login"),
