@@ -2,7 +2,7 @@ import { Weight } from "./weight";
 // import { Pathologie } from "./pathologie";
 import { Avaliation } from "./avaliation";
 
-import { Patient, TimeLineEvent, TimelineType } from "@/domain";
+import { Patient, TimeLine, TimeLineEvent, TimelineType } from "@/domain";
 
 // temp
 import {
@@ -16,6 +16,7 @@ import {
 import Exams from "@/OLD/components/Attendance/Forms-old/AddExam";
 import Vaccines from "@/OLD/components/Attendance/Forms-old/Vaccines";
 import Executions from "@/OLD/components/Attendance/Forms-old/Executions";
+import ReadExecution from "@/OLD/components/Attendance/Forms-old/Executions/read-execution";
 import DeathReport from "@/OLD/components/Attendance/Forms-old/Death";
 import Observations from "@/OLD/components/Attendance/Forms-old/Notes";
 import Documents from "@/OLD/components/Attendance/Forms-old/Documents";
@@ -46,7 +47,7 @@ export function useActionsPatient(patient?: Patient): {
 	const assignutor = useAssignTutor();
 
 	const { type } = useConfigurationsSystem();
-  const {user} = useAuthAdmin();
+	const { user } = useAuthAdmin();
 
 	const listActions = [
 		{
@@ -134,9 +135,10 @@ export function useActionsPatient(patient?: Patient): {
 			),
 		},
 		{
-			active: user.unit.unitConfig.treatment,
-			label: "Execução de Tratamento",
-			value: "Execução de Tratamento",
+			// active: user.unit.unitConfig.treatment,
+			active: true,
+			label: "Execução de Tratamentos",
+			value: "Execução de Tratamentos",
 			Icon: (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +153,11 @@ export function useActionsPatient(patient?: Patient): {
 				</svg>
 			),
 			Component: Executions,
-			SingleComponent: (props) => <Executions {...props} modal={false} />,
+			SingleComponent: (
+				props: TimeLine & {
+					changeTags: (key: string) => void;
+				},
+			) => <ReadExecution {...props} />,
 		},
 
 		{

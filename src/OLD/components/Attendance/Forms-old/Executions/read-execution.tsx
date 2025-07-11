@@ -1,0 +1,89 @@
+import { TimeLine } from "@/domain";
+import { Input } from "antd";
+
+export default function ReadTimelineExecution(props: TimeLine & {}) {
+	if (!props.timeline_info.treatment) return <p>Não há dados</p>;
+
+	return (
+		<div className="uk-flex-column uk-flex-between">
+			<p
+				style={{
+					fontSize: "20px",
+					color: "black",
+					fontWeight: "semibold",
+				}}
+			>
+				Execução de tratamento
+			</p>
+			<hr />
+
+			<div
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(4, 1fr)",
+					gridTemplateRows: "auto auto",
+					gap: "10px",
+				}}
+			>
+				<div style={{ gridColumn: "span 1", gridRow: "1" }}>
+					<span>Código do tratamento</span>
+					<Input value={props.timeline_info.treatment.execution.id} readOnly />
+				</div>
+				<div style={{ gridColumn: "2 / span 2", gridRow: "1" }}>
+					<span>Cliente</span>
+					<Input
+						value={props.timeline_info.treatment.client?.name ?? "-"}
+						readOnly
+					/>
+				</div>
+				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
+					<span>Data Lançamento</span>
+					<Input
+						value={props.timeline_info.treatment.execution.issueDate}
+						readOnly
+					/>
+				</div>
+				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
+					<span>Data Agendamento</span>
+					<Input
+						value={props.timeline_info.treatment.execution.scheduleDate ?? "-"}
+						readOnly
+					/>
+				</div>
+				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
+					<span>Data Execução</span>
+					<Input
+						value={props.timeline_info.treatment.execution.executionDate ?? "-"}
+						readOnly
+					/>
+				</div>
+
+				<div style={{ gridColumn: "span 2", gridRow: "3" }}>
+					<span>Usuário Lançamento</span>
+					<Input value={props.timeline_info.requester?.name ?? "-"} readOnly />
+				</div>
+
+				<div style={{ gridColumn: "span 2", gridRow: "3" }}>
+					<span>Profissional Execução</span>
+					<Input value={props.timeline_info.technician?.name ?? "-"} readOnly />
+				</div>
+
+				<div style={{ gridColumn: "1 / -1", gridRow: "4" }}>
+					<span>Item executado</span>
+					<Input
+						value={props.timeline_info.treatment.item.description ?? "-"}
+						readOnly
+					/>
+				</div>
+
+				<div style={{ gridColumn: "1 / -1", gridRow: "5" }}>
+					<span>Observações</span>
+					<Input
+						value={props.timeline_info.treatment.execution.observations ?? "-"}
+						readOnly
+					/>
+				</div>
+			</div>
+		</div>
+	);
+}
