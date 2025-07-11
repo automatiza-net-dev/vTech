@@ -104,14 +104,14 @@ function DeathForm({ modal = false, setModal = () => ({}), timeline_info }: any)
   }, [timeline_info, modal]);
 
   return (
-    <FormHandler isStickyButtons>
+    <FormHandler isStickyButtons disableEnterKeySubmitForm>
       <>
         <div className="uk-width-1-1">
           <label>Veterinário responsável</label>
           {vetsQuery?.data &&
             vetsQuery?.data?.length > 0 &&
             selectedVet.user !== null && (
-              <FormHandler initialData={selectedVet}>
+              <FormHandler initialData={selectedVet} disableEnterKeySubmitForm>
                 <Select
                   menuPlacement="bottom"
                   name="user"

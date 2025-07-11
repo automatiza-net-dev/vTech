@@ -141,7 +141,9 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
           <label>Protocolos</label>
           <br />
           {allProtocols && allProtocols.length > 0 && (
-            <FormHandler>
+            <FormHandler
+disableEnterKeySubmitForm
+            >
               <Select
                 menuPlacement="bottom"
                 name="exam"

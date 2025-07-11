@@ -35,12 +35,12 @@ function FormChild({
   sortItems(allRecipes, "description");
 
   return (
-    <FormHandler isStickyButtons>
+    <FormHandler isStickyButtons disableEnterKeySubmitForm>
       <div>
         {modal ? (
           <>
             <label>Receita Médica</label>
-            <FormHandler>
+            <FormHandler disableEnterKeySubmitForm>
               <Select
                 menuPlacement="bottom"
                 name="exam"

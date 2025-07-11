@@ -248,6 +248,7 @@ function useConfigurationsSystemConfigurations() {
       ref.current = 1;
       (async () => {
         const systemUrl = new URL(window.location.origin).origin;
+        // const systemUrl = 'https://dev-sancla.automatiza.net'
 
         setTimeout(async () => {
           const response = await api({

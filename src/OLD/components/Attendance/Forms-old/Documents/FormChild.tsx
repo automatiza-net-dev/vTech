@@ -49,7 +49,7 @@ function FormChild({
   sortItems(allDocuments, "title");
 
   return (
-    <FormHandler isStickyButtons>
+    <FormHandler isStickyButtons disableEnterKeySubmitForm>
       <div>
         <label>Documento</label>
         {allDocuments && allDocuments.length > 0 && (
