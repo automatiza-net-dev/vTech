@@ -33,13 +33,13 @@ function FormChild({
   sortItems(allPathologies, "description");
 
   return (
-    <FormHandler isStickyButtons>
+    <FormHandler isStickyButtons disableEnterKeySubmitForm>
       {modal ? (
         <>
           <div>
             <label>Patologia</label>
             {allPathologies && allPathologies.length > 0 && (
-              <FormHandler>
+              <FormHandler disableEnterKeySubmitForm>
                 <Select
                   menuPlacement="bottom"
                   name="exam"

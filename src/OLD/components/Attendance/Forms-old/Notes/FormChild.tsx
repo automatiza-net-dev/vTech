@@ -31,7 +31,7 @@ function FormChild({
   remove,
 }: any) {
   return (
-    <FormHandler isStickyButtons>
+    <FormHandler isStickyButtons disableEnterKeySubmitForm>
       <div>
         <div>
           <div className="uk-flex uk-flex-between">
