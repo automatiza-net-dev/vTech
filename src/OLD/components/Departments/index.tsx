@@ -35,7 +35,7 @@ function Departments() {
 	});
 	const [createFormState, setCreateFormState] = useState<
 		"closed" | "open" | TDepartment
-	>("open");
+	>("closed");
 
 	const departmentsQuery = useQuery({
 		queryKey: ["departments"],
@@ -66,6 +66,10 @@ function Departments() {
 	}, []);
 
 	useEffect(() => {
+		if (createFormState !== "closed") {
+			return;
+		}
+
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Enter") {
 				departmentsQuery.refetch();
@@ -75,7 +79,7 @@ function Departments() {
 		document.addEventListener("keypress", handleKeyDown);
 
 		return () => document.removeEventListener("keypress", handleKeyDown);
-	}, []);
+	}, [createFormState]);
 
 	return (
 		<PageWrapper title="Controle de departamentos">

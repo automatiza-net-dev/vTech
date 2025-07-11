@@ -6,18 +6,13 @@ import {
 	Checkbox,
 	Table,
 	Form,
-	AutoComplete,
 	Switch,
 	Popconfirm,
 } from "antd";
-import { api, Modal, useQuery } from "infinity-forge";
+import { api, Modal, useAuthAdmin, useQuery } from "infinity-forge";
 import { Button, useToast } from "infinity-forge";
 import { MdEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-
-// Utils
-import { useEconomicGroup } from "@/OLD/hooks/useEconomicGroup";
-import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 
 import type { TDepartment } from "../departments";
 
@@ -78,6 +73,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 	shouldClose: () => void;
 }) {
 	const { createToast } = useToast();
+	const { user } = useAuthAdmin();
 
 	const [data, setData] = useState<TCreateDepartment>({
 		// 	economicGroupId?: string;
@@ -134,6 +130,13 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 		term: "",
 		shouldSearch: false,
 	});
+	const [productsToAdd, setProductsToAdd] = useState<
+		{
+			id: string;
+			description: string;
+			mode: "create" | "update";
+		}[]
+	>([]);
 	const productsQuery = useQuery({
 		enabled: productFormSearch.shouldSearch,
 		queryKey: ["products"],
@@ -152,9 +155,21 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 			});
 		},
 	});
+	useEffect(() => {
+		if (productFormState === "closed") {
+			return;
+		}
 
-	const economicGroupsQuery = useEconomicGroup();
-	const businessUnitsQuery = useBusinessUnitsByUser();
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Enter") {
+				productsQuery.refetch();
+			}
+		};
+
+		document.addEventListener("keypress", handleKeyDown);
+
+		return () => document.removeEventListener("keypress", handleKeyDown);
+	}, [productFormState]);
 
 	const addItem = useCallback(() => {
 		if (typeof itemFormState === "number") {
@@ -162,7 +177,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				...old,
 				items: old.items.map((item, index) => {
 					if (index === itemFormState) {
-						return createItem;
+						return { id: item.id, ...createItem };
 					}
 
 					return item;
@@ -208,6 +223,11 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 
 	const deleteProduct = useCallback(
 		async (idx: number) => {
+			setData((old) => ({
+				...old,
+				products: old.products.filter((_, i) => i !== idx),
+			}));
+
 			if (props.initialData?.products[idx]?.product.id) {
 				await api({
 					url: `departments/delete-products`,
@@ -217,14 +237,9 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 						products: [props.initialData.products[idx].product.id],
 					},
 				});
+
+				props.shouldRefresh();
 			}
-
-			setData((old) => ({
-				...old,
-				products: old.products.filter((_, i) => i !== idx),
-			}));
-
-			props.shouldRefresh();
 		},
 		[props.initialData],
 	);
@@ -233,44 +248,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 		try {
 			const formData = new FormData();
 
-			// Campos simples
-			if (data.economicGroupId) {
-				formData.append(
-					"economicGroupId",
-					economicGroupsQuery.allEconomicGroup.find((eg) => {
-						if (eg.company_name === data.economicGroupId) {
-							return true;
-						}
-
-						if (eg.fantasy_name === data.economicGroupId) {
-							return true;
-						}
-
-						return false;
-					})?.id ?? "",
-				);
-			}
-
-			if (data.businessUnitId) {
-				formData.append(
-					"businessUnitId",
-					businessUnitsQuery.businessUnits.find((eg) => {
-						if (eg.fantasyName === data.businessUnitId) {
-							return true;
-						}
-
-						if (eg.companyName === data.businessUnitId) {
-							return true;
-						}
-
-						if (eg.identification === data.businessUnitId) {
-							return true;
-						}
-
-						return false;
-					})?.id ?? "",
-				);
-			}
+			formData.append("economicGroupId", user.unit.economicGroup.id);
 
 			formData.append("description", data.description);
 
@@ -318,7 +296,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				status: "error",
 			});
 		}
-	}, [data]);
+	}, [data, user]);
 
 	const submitUpdate = useCallback(async () => {
 		if (!props.initialData) return;
@@ -388,23 +366,6 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				method: "put",
 				headers: {},
 				body: {
-					businessUnitId:
-						businessUnitsQuery.businessUnits.find((eg) => {
-							if (eg.fantasyName === data.businessUnitId) {
-								return true;
-							}
-
-							if (eg.companyName === data.businessUnitId) {
-								return true;
-							}
-
-							if (eg.identification === data.businessUnitId) {
-								return true;
-							}
-
-							return false;
-						})?.id ?? "",
-
 					description: data.description,
 					active: data.active,
 					// image: data.image,
@@ -415,7 +376,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				message: "Departamento atualizado com sucesso",
 				status: "success",
 			});
-			props.shouldRefresh();
+			props.shouldClose();
 		} catch (err) {
 			createToast({
 				message:
@@ -452,54 +413,6 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 						gap: "10px",
 					}}
 				>
-					{!props.initialData?.id && (
-						<Form.Item
-							labelAlign="left"
-							required={true}
-							style={{
-								height: "38px",
-							}}
-						>
-							<label>Grupo Econômico</label>
-							<AutoComplete
-								value={data.economicGroupId}
-								getPopupContainer={(trigger) => trigger.parentNode}
-								onSelect={(v) => setData({ ...data, economicGroupId: v })}
-								options={economicGroupsQuery.allEconomicGroup?.map((eg) => ({
-									...eg,
-									value: [
-										eg.fantasy_name,
-										eg.company_name,
-										"Não definido",
-									].find(Boolean) as string,
-								}))}
-							/>
-						</Form.Item>
-					)}
-
-					<Form.Item
-						labelAlign="left"
-						style={{
-							height: "38px",
-						}}
-					>
-						<label>Unidade</label>
-						<AutoComplete
-							value={data.businessUnitId}
-							getPopupContainer={(trigger) => trigger.parentNode}
-							options={businessUnitsQuery.businessUnits?.map((bu) => ({
-								...bu,
-								value: [
-									bu.identification,
-									bu.fantasyName,
-									bu.companyName,
-									"Não definido",
-								].find(Boolean) as string,
-							}))}
-							onSelect={(v) => setData({ ...data, businessUnitId: v })}
-						/>
-					</Form.Item>
-
 					<Form.Item
 						labelAlign="left"
 						required={true}
@@ -642,7 +555,18 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 							<Button
 								type="button"
 								text="Adicionar Produto"
-								onClick={() => setProductFormState("open")}
+								onClick={() => {
+									setProductFormState("open");
+									if (props.initialData) {
+										setProductsToAdd(
+											data.products.map((p) => ({
+												id: p.id,
+												description: p.description,
+												mode: "update",
+											})),
+										);
+									}
+								}}
 							/>
 						</div>
 					)}
@@ -850,25 +774,21 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 								actions: (
 									<div className="uk-flex uk-flex-around">
 										<Checkbox
-											checked={data.products.some((f) => f.id === d.id)}
+											checked={productsToAdd.some((f) => f.id === d.id)}
 											onChange={(e) => {
 												if (e.target.checked) {
-													setData((old) => ({
+													setProductsToAdd((old) => [
 														...old,
-														products: [
-															...old.products,
-															{
-																id: d.id,
-																description: d.description,
-																mode: "create",
-															},
-														],
-													}));
+														{
+															id: d.id,
+															description: d.description,
+															mode: "create",
+														},
+													]);
 												} else {
-													setData((old) => ({
-														...old,
-														products: old.products.filter((p) => p.id !== d.id),
-													}));
+													setProductsToAdd((old) =>
+														old.filter((p) => p.id !== d.id),
+													);
 												}
 											}}
 										/>
@@ -876,6 +796,27 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 								),
 							}))}
 						/>
+
+						<div
+							style={{
+								display: "flex",
+								gap: "10px",
+								alignItems: "center",
+								justifyContent: "flex-end",
+								paddingTop: "10px",
+							}}
+						>
+							<Button
+								text="SALVAR"
+								onClick={() => {
+									setData((old) => ({
+										...old,
+										products: productsToAdd,
+									}));
+									setProductFormState("closed");
+								}}
+							/>
+						</div>
 					</div>
 				</Modal>
 
