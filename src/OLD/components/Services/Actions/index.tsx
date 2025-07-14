@@ -675,7 +675,7 @@ function DocumentTable(props: { serviceId: string }) {
 					disabled={formData.documentTemplateId === null}
 					onClick={createDocument}
 				>
-					Criar
+				Vincular	
 				</Button>
 			</div>
 
@@ -690,7 +690,7 @@ function DocumentTable(props: { serviceId: string }) {
 										await deleteDocument(r.id);
 									}}
 									idTooltip="a"
-									title="Você deseja mesmo apagar esse item?"
+									title="Você deseja desfazer o vinculo do Documento?"
 									position="top-right"
 								>
 									<FiTrash2 style={{ cursor: "pointer" }} />
