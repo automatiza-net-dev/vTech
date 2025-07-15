@@ -90,7 +90,13 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 				<div style={{ gridColumn: "1 / -1", gridRow: "4" }}>
 					<span>Item executado</span>
 					<Input
-						value={props.timeline_info.treatment.item.description ?? "-"}
+						value={[
+							props.timeline_info.treatment.item.description,
+							props.timeline_info.treatment.execution
+								.productivityItemDescription,
+						]
+							.filter(Boolean)
+							.join(" - ")}
 						readOnly
 					/>
 				</div>
