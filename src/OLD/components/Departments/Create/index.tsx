@@ -177,7 +177,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				...old,
 				items: old.items.map((item, index) => {
 					if (index === itemFormState) {
-						return { id: item.id, ...createItem };
+						return { id: item.id, active: item.active, ...createItem };
 					}
 
 					return item;
@@ -303,7 +303,6 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 
 		try {
 			const tasks = data.items.reduce((acc, curr) => {
-				console.log("updating??", curr);
 				const formData = new FormData();
 				formData.append("departmentId", props.initialData!.id.toString());
 				formData.append("description", curr.description);
