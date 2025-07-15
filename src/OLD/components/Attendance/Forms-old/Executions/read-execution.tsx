@@ -1,4 +1,5 @@
 import { TimeLine } from "@/domain";
+import moment from "moment";
 import { Input } from "antd";
 
 export default function ReadTimelineExecution(props: TimeLine & {}) {
@@ -39,21 +40,39 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
 					<span>Data Lançamento</span>
 					<Input
-						value={props.timeline_info.treatment.execution.issueDate}
+						value={
+							props.timeline_info.treatment.execution.issueDate
+								? moment(
+										props.timeline_info.treatment.execution.issueDate,
+									).format("DD/MM/YYYY HH:mm:ss")
+								: "-"
+						}
 						readOnly
 					/>
 				</div>
 				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
 					<span>Data Agendamento</span>
 					<Input
-						value={props.timeline_info.treatment.execution.scheduleDate ?? "-"}
+						value={
+							props.timeline_info.treatment.execution.scheduleDate
+								? moment(
+										props.timeline_info.treatment.execution.scheduleDate,
+									).format("DD/MM/YYYY HH:mm:ss")
+								: "-"
+						}
 						readOnly
 					/>
 				</div>
 				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
 					<span>Data Execução</span>
 					<Input
-						value={props.timeline_info.treatment.execution.executionDate ?? "-"}
+						value={
+							props.timeline_info.treatment.execution.executionDate
+								? moment(
+										props.timeline_info.treatment.execution.executionDate,
+									).format("DD/MM/YYYY HH:mm:ss")
+								: "-"
+						}
 						readOnly
 					/>
 				</div>
