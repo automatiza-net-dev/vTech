@@ -30,6 +30,7 @@ export function ApplyDiscount() {
             name="discount"
             placeholder="Desconto"
             onChangeMode="blur"
+            decimalLimit={2}
           />
         </div>
 
@@ -37,7 +38,7 @@ export function ApplyDiscount() {
           type="button"
           onClick={() => {
             const cart = values?.cart ?? [];
-            const discountValue = Number(values?.discount ?? 0);
+            const discountValue = Number(values?.discount.replaceAll(',', '.') ?? '0');
             const discountType = values?.discountType;
 
             if (!cart.length || !discountValue || !discountType) return;
