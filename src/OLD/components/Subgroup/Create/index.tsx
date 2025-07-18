@@ -1,23 +1,31 @@
-// @ts-nocheck
 // Core
-import { memo, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 // Services
 import { subgroupsService } from "@/OLD/services/subgroups.service";
 
 // Components
 import { Button, Input, Select } from "antd";
-import { useToast } from "infinity-forge";
+import { useQueryClient, useToast } from "infinity-forge";
 import { useMutation } from "infinity-forge";
 
 import { Modal } from "infinity-forge";
+import { AxiosError } from "axios";
 
 const { TextArea } = Input;
 
-export default function CreateSubgroup({ visible, hide, subgroups = [] }) {
+export default function CreateSubgroup({ visible, hide, subgroups = [] }: {
+  visible: boolean
+  hide: () => void
+  subgroups: { id: string, description: string, parent: string }[]
+}) {
+  const { createToast } = useToast();
   const queryClient = useQueryClient();
 
-  const [data, setData] = useState({ description: "", parent: null });
+  const [data, setData] = useState<{
+    description: string
+    parent: string | null
+  }>({ description: "", parent: null });
 
   const { mutate, isLoading } = useMutation({
     queryKey: ["CreateSubgroupmutation"],
@@ -32,18 +40,23 @@ export default function CreateSubgroup({ visible, hide, subgroups = [] }) {
       setData({ description: "", parent: null });
     },
     onError: (error) => {
-      createToast({
-        message: err.response.data.errors[0].message,
-        status: "error",
-      });
+      if (error instanceof AxiosError) {
+        createToast({
+          message: error?.response?.data.errors[0].message,
+          status: "error",
+        });
+      } else {
+        createToast({
+          message: 'Erro ao cadastrar Subgrupo',
+          status: "error",
+        });
+      }
     },
   });
 
   const submitExam = useCallback(() => {
     mutate(data);
   }, [data]);
-
-  console.log(visible);
 
   return (
     <Modal open={visible} onClose={() => hide()}>
@@ -71,13 +84,14 @@ export default function CreateSubgroup({ visible, hide, subgroups = [] }) {
               subgroups.find((item) => item?.id === data?.parent)?.description
             }
             onChange={(e) => setData({ ...data, parent: e })}
+            getPopupContainer={trigger => trigger.parentNode}
           >
             {subgroups
               .sort((a, b) => a.description.localeCompare(b.description))
               .map((item, i) => (
-                <Option key={i} value={item?.id}>
+                <Select.Option key={i} value={item.id}>
                   {item?.description}
-                </Option>
+                </Select.Option>
               ))}
           </Select>
         </div>
