@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 import { productService } from "@/OLD/services/product.service";
 import { subgroupsService } from "@/OLD/services/subgroups.service";
@@ -72,14 +72,17 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
     queryFn: () => variationGroupService.listVariationGroups(),
   });
 
-  useQuery({
+  const subgroupsQuery = useQuery({
     queryKey: ["subgroups"],
     queryFn: () => subgroupsService.listSubgroups(),
-    onSuccess: (data) => {
-      sortItems(data, "description");
-      setParsedSubgroups(data);
-    },
   });
+  useEffect(() => {
+    if (!subgroupsQuery.data) return;
+
+    sortItems(subgroupsQuery.data, "description");
+    setParsedSubgroups(subgroupsQuery.data);
+  }, [subgroupsQuery.data]);
+
   const { data: taxationGroups } = useQuery({
     queryKey: ["taxation-groups"],
     queryFn: async () => {
@@ -169,7 +172,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
     const parsedVariations = data.variations.map((variation) => {
       const options = variation.variation_options;
       const vGroup = variationGroupsData.find(
-        (variationGroup) => variationGroup.id === data?.variationGroup
+        (variationGroup) => variationGroup.id === data?.variationGroup,
       );
 
       if (!vGroup || vGroup.variations.length !== options.length) {
@@ -421,7 +424,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                           }
                           filterOption={(val, opt) =>
                             normalizeStr(opt?.value.toUpperCase()).includes(
-                              normalizeStr(val?.toUpperCase())
+                              normalizeStr(val?.toUpperCase()),
                             )
                           }
                         />
@@ -781,7 +784,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                           value={data["price"].costPrice}
                           onChange={(e) => {
                             data["price"].costPrice = Masks.money(
-                              e.target.value
+                              e.target.value,
                             );
                             setData({ ...data });
                           }}
@@ -919,7 +922,7 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                           value={data["price"].maximumDiscountValue}
                           onChange={(e) => {
                             data["price"].maximumDiscountValue = Masks.money(
-                              e.target.value
+                              e.target.value,
                             );
                             setData({ ...data });
                           }}
