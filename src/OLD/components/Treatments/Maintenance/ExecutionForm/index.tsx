@@ -248,6 +248,7 @@ export default function ExecutionForm({ data, reload, setReload }) {
                         normalizeStr(val.toUpperCase())
                       )
                     }
+                    getPopupContainer={trigger => trigger.parentNode}
                   />
                 </div>
                 <div className="uk-margin-small-right">
