@@ -49,7 +49,7 @@ export function ApplyDiscount() {
                 if (!variation) return item;
 
                 const quantity = Number(variation.quantity) || 0;
-                const unitPrice = variation.total || 0;
+                const unitPrice = variation.unitaryValue || 0;
                 const totalDiscount =
                   (quantity * unitPrice * discountValue) / 100;
 
