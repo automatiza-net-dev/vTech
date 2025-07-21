@@ -133,7 +133,7 @@ function Form({
             <div className="row">
               <Input name="name" label="Nome*" />
 
-              <InputBirthday patientId={data.birth_date ? patientId : undefined} required={isRegister} />
+              <InputBirthday patientId={data?.birth_date ? patientId : undefined} required={isRegister} />
 
              {data && <Input name="tag" label="RG" disabled={!hasTAG} />}
             </div>
