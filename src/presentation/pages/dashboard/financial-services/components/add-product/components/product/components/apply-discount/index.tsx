@@ -41,7 +41,8 @@ export function ApplyDiscount() {
             const discountValue = Number(values?.discount.replaceAll(',', '.') ?? '0');
             const discountType = values?.discountType;
 
-            if (!cart.length || !discountValue || !discountType) return;
+
+            if (!cart.length  || !discountType) return;
 
             if (discountType === "percent") {
               const updatedCart = cart.map((item) => {
@@ -58,6 +59,10 @@ export function ApplyDiscount() {
                   variations: [
                     {
                       ...variation,
+                      total:
+                        Math.round(
+                          (variation.unitaryValue - totalDiscount) * 100
+                        ) / 100,
                       discountValue: Math.round(totalDiscount * 100) / 100, // arredondando para 2 casas
                     },
                   ],
