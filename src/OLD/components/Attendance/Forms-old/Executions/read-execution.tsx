@@ -28,13 +28,22 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 			>
 				<div style={{ gridColumn: "span 1", gridRow: "1" }}>
 					<span>Código do tratamento</span>
-					<Input value={props.timeline_info.treatment.execution.id} readOnly />
+					<Input
+						value={props.timeline_info.treatment.execution.id}
+						readOnly
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
+					/>
 				</div>
 				<div style={{ gridColumn: "2 / span 2", gridRow: "1" }}>
 					<span>Cliente</span>
 					<Input
 						value={props.timeline_info.treatment.client?.name ?? "-"}
 						readOnly
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
 					/>
 				</div>
 				<div style={{ gridColumn: "span 1", gridRow: "2" }}>
@@ -47,6 +56,9 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 									).format("DD/MM/YYYY HH:mm:ss")
 								: "-"
 						}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
 						readOnly
 					/>
 				</div>
@@ -55,11 +67,14 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 					<Input
 						value={
 							props.timeline_info.treatment.execution.scheduleDate
-								? moment(
-										props.timeline_info.treatment.execution.scheduleDate,
-									).format("DD/MM/YYYY HH:mm:ss")
+								? moment(props.timeline_info.treatment.execution.scheduleDate)
+										.add(3, "hours")
+										.format("DD/MM/YYYY HH:mm:ss")
 								: "-"
 						}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
 						readOnly
 					/>
 				</div>
@@ -73,18 +88,33 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 									).format("DD/MM/YYYY HH:mm:ss")
 								: "-"
 						}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
 						readOnly
 					/>
 				</div>
 
 				<div style={{ gridColumn: "span 2", gridRow: "3" }}>
 					<span>Usuário Lançamento</span>
-					<Input value={props.timeline_info.requester?.name ?? "-"} readOnly />
+					<Input
+						value={props.timeline_info.requester?.name ?? "-"}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
+						readOnly
+					/>
 				</div>
 
 				<div style={{ gridColumn: "span 2", gridRow: "3" }}>
 					<span>Profissional Execução</span>
-					<Input value={props.timeline_info.technician?.name ?? "-"} readOnly />
+					<Input
+						value={props.timeline_info.technician?.name ?? "-"}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
+						readOnly
+					/>
 				</div>
 
 				<div style={{ gridColumn: "1 / -1", gridRow: "4" }}>
@@ -97,6 +127,9 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 						]
 							.filter(Boolean)
 							.join(" - ")}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
 						readOnly
 					/>
 				</div>
@@ -105,6 +138,9 @@ export default function ReadTimelineExecution(props: TimeLine & {}) {
 					<span>Observações</span>
 					<Input
 						value={props.timeline_info.treatment.execution.observations ?? "-"}
+						style={{
+							backgroundColor: "rgba(10, 10, 10, 0.05)",
+						}}
 						readOnly
 					/>
 				</div>
