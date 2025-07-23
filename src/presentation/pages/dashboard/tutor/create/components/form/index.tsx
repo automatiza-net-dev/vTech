@@ -189,12 +189,12 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                 logradouro: { label: "Rua*" },
                 number: { label: "Número*" },
                 complemento: { label: "Complemento" },
-                ibge: { label: "Cód*", readOnly: true },
+                ibge: { label: "Cód*" },
               }  as any,
               {
                 bairro: { label: "Bairro*" },
-                uf: { label: "Estado*", readOnly: true },
-                localidade: { label: "Cidade*", readOnly: true },
+                uf: { label: "Estado*" },
+                localidade: { label: "Cidade*" },
                 residence: {
                   label: "Tipo de residência*",
                   Component: Select,

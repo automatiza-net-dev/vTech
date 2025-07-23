@@ -135,8 +135,8 @@ export function useActionsPatient(patient?: Patient): {
 			),
 		},
 		{
-			// active: user.unit.unitConfig.treatment,
-			active: true,
+			active: user.unit.unitConfig.treatment,
+			// active: true,
 			label: "Execução de Tratamentos",
 			value: "Execução de Tratamentos",
 			Icon: (

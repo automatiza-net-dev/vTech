@@ -30,6 +30,7 @@ export function ApplyDiscount() {
             name="discount"
             placeholder="Desconto"
             onChangeMode="blur"
+            decimalLimit={2}
           />
         </div>
 
@@ -37,10 +38,11 @@ export function ApplyDiscount() {
           type="button"
           onClick={() => {
             const cart = values?.cart ?? [];
-            const discountValue = Number(values?.discount ?? 0);
+            const discountValue = Number(values?.discount.replaceAll(',', '.') ?? '0');
             const discountType = values?.discountType;
 
-            if (!cart.length || !discountValue || !discountType) return;
+
+            if (!cart.length  || !discountType) return;
 
             if (discountType === "percent") {
               const updatedCart = cart.map((item) => {
@@ -48,7 +50,7 @@ export function ApplyDiscount() {
                 if (!variation) return item;
 
                 const quantity = Number(variation.quantity) || 0;
-                const unitPrice = variation.total || 0;
+                const unitPrice = variation.unitaryValue || 0;
                 const totalDiscount =
                   (quantity * unitPrice * discountValue) / 100;
 
@@ -57,6 +59,10 @@ export function ApplyDiscount() {
                   variations: [
                     {
                       ...variation,
+                      total:
+                        Math.round(
+                          (variation.unitaryValue - totalDiscount) * 100
+                        ) / 100,
                       discountValue: Math.round(totalDiscount * 100) / 100, // arredondando para 2 casas
                     },
                   ],
