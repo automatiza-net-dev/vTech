@@ -108,6 +108,7 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				description: product.product.description,
 				mode: "update",
 			})),
+			active: props.initialData.active,
 		});
 	}, [props.initialData]);
 
@@ -830,7 +831,11 @@ const UpsertDepartment = memo(function UpsertDepartment(props: {
 				>
 					<Button type="submit" text="Salvar" disabled={false} />
 
-					<Button type="button" onClick={() => props.shouldClose()} text="Voltar" />
+					<Button
+						type="button"
+						onClick={() => props.shouldClose()}
+						text="Voltar"
+					/>
 				</footer>
 			</form>
 		</div>
