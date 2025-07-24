@@ -10,29 +10,22 @@ const getAllBankings = async ({
   to,
 }) =>
   api.get(
-    `/bankings${type ? `?type=${type}` : ""}${
-      document ? `${type ? "&" : "?"}document=${document}` : ""
-    }${
-      reconciled
-        ? `${type || document ? "&" : "?"}reconciled=${reconciled}`
-        : ""
-    }${
-      account
-        ? `${type || document || reconciled ? "&" : "?"}account=${account}`
-        : ""
-    }${
-      competence
-        ? `${
-            type || document || reconciled || account ? "&" : "?"
-          }competence=${competence}`
-        : ""
-    }${
-      from
-        ? `${
-            type || document || reconciled || account || competence ? "&" : "?"
-          }from=${from}&to=${to}`
-        : ""
-    }`
+    `/bankings${type ? `?type=${type}` : ""}${document ? `${type ? "&" : "?"}document=${document}` : ""
+    }${reconciled
+      ? `${type || document ? "&" : "?"}reconciled=${reconciled}`
+      : ""
+    }${account
+      ? `${type || document || reconciled ? "&" : "?"}account=${account}`
+      : ""
+    }${competence
+      ? `${type || document || reconciled || account ? "&" : "?"
+      }competence=${competence}`
+      : ""
+    }${from
+      ? `${type || document || reconciled || account || competence ? "&" : "?"
+      }from=${from}&to=${to}`
+      : ""
+    }`,
   );
 
 const createBanking = async (data) => api.post("/bankings/create", data);
@@ -40,8 +33,12 @@ const createBanking = async (data) => api.post("/bankings/create", data);
 const updateBanking = async (id, data) =>
   api.put(`/bankings/update/${id}`, data);
 
+const deleteBanking = async (id: string) =>
+  api.delete(`/bankings/delete/${id}`);
+
 export const bankingService = {
   getAllBankings,
   createBanking,
   updateBanking,
+  deleteBanking
 };
