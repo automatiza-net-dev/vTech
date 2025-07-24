@@ -114,6 +114,7 @@ function Vaccines({ modal, setModal, value, reloadSchedule }) {
           reloadSchedule && reloadSchedule();
         }
 
+        setModal(false);
         return createToast({
           message: "Vacina lançada com sucesso!",
           status: "success",
