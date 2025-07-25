@@ -99,7 +99,7 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
       .then((_res) => {
         setLoading(false);
         setReload((prv) => !prv);
-      
+
         return createToast({
           status: "success",
           message: "Borderô reaberto com sucesso!",
@@ -107,7 +107,7 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
       })
       .catch((err) => {
         setLoading(false);
-     
+
         return createToast({
           status: "error",
           message: "houve um erro ao reabrir o borderô",
@@ -123,7 +123,7 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
         id: bordero?.id,
         paymentMethodId: downData?.paymentMethodId,
         checkingAccountId: downData?.checkingAccountId,
-         paymentDate: downData?.paymentDate?.format("YYYY-MM-DD"),
+        paymentDate: downData?.paymentDate?.format("YYYY-MM-DD"),
         interestValue: convertIntlCurrency(downData?.interestValue),
         interestPercentage: downData?.interestPercentage,
         discountValue: convertIntlCurrency(downData?.discountValue),
@@ -137,7 +137,7 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
           interestValue: currencyFormatter(0),
           discountValue: currencyFormatter(0),
         });
-      
+
         return createToast({
           status: "success",
           message: "Bordero baixado com sucesso!",
@@ -238,7 +238,9 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
         </div>
       </header>
       <hr />
-      <Table columns={columns} dataSource={formattedTitles} />
+      <Table pagination={false} columns={columns} dataSource={formattedTitles} />
+      <hr />
+
       <footer className="uk-flex uk-flex-right" style={{ gap: "10px" }}>
         {bordero?.status === "Aberto" && (
           <Button onClick={closeBordero} text="Fechar borderô" />
@@ -255,12 +257,10 @@ const BorderoDetails = memo(function BorderoDetails({ borderoId, setVisible }) {
         {bordero?.status === "Baixado" && (
           <Button
             onClick={() => setRevertModalVisible(true)}
-            text="Extornar borderô"
+            text="Estornar borderô"
           />
         )}
-      </footer>
-      <hr />
-      <footer className="uk-flex uk-flex-right">
+
         <Button onClick={() => setVisible(false)} text="Fechar" />
       </footer>
       <Modal
