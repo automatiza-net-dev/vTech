@@ -89,6 +89,17 @@ export default function Filters({ filters, setFilters, setReload }) {
           </InputBox>
         </div>
         <div style={{ width: "25%" }}>
+          <label>Nota Fiscal:</label>
+          <InputBox className="uk-width-1-5">
+            &nbsp;
+            <Input
+              placeholder="Número nota fiscal"
+              value={filters?.fiscalDocumentSequence}
+              onChange={(e) => setFilters({ ...filters, fiscalDocumentSequence: e.target.value })}
+            />
+          </InputBox>
+        </div>
+        <div style={{ width: "25%" }}>
           <label>Funcionário:</label>
           <InputBox className="uk-width-1-4">
             &nbsp;
