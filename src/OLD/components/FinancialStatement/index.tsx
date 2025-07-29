@@ -360,7 +360,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
   }, [data]);
 
   useEffect(() => {
-    if (titles.length === 0 && finances.length > 0) {
+    if (titles.length === 0) {
       formatFinances()
     }
   }, [finances, reload]);
