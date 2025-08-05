@@ -22,340 +22,395 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { currencyFormatter } from "@/OLD/components/Budget";
 
 function Single() {
-  const [data, setData] = useState({});
-  const [reload, setReload] = useState(false);
-  const [ids, setIds] = useState({});
-  const [values, setValues] = useState({});
-  const [fiscalDataFilters, setFiscalDataFilters] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [backConfirm, setBackConfirm] = useState({});
+	const [data, setData] = useState({});
+	const [reload, setReload] = useState(false);
+	const [ids, setIds] = useState({});
+	const [values, setValues] = useState({});
+	const [fiscalDataFilters, setFiscalDataFilters] = useState({});
+	const [loading, setLoading] = useState(false);
+	const [backConfirm, setBackConfirm] = useState({});
 
-  const router = useRouter();
-  const { createToast } = useToast();
+	const router = useRouter();
+	const { createToast } = useToast();
 
-  const { receipt } = useReceipt(ids, reload);
-  const { colaborators } = useColaborators();
-  const { plans } = usePlans();
-  const { products } = useReceiptProducts();
-  const { fiscalData } = useFiscalData(fiscalDataFilters);
+	const { receipt } = useReceipt(ids, reload);
+	const { colaborators } = useColaborators();
+	const { plans } = usePlans();
+	const { products } = useReceiptProducts();
+	const { fiscalData } = useFiscalData(fiscalDataFilters);
 
-  sortItems(colaborators, "name");
-  sortItems(plans, "description");
-  sortItems(products, "description");
+	sortItems(colaborators, "name");
+	sortItems(plans, "description");
+	sortItems(products, "description");
 
-  useEffect(() => {
-    setIds({ ids: [router.query.id], status: "PendenteXml" });
-  }, [router.query.id]);
+	useEffect(() => {
+		setIds({ ids: [router.query.id], status: "PendenteXml" });
+	}, [router.query.id]);
 
-  useEffect(() => {
-    receipt?.length > 0 &&
-      setFiscalDataFilters({ bill: receipt[0]?.id, type: "ENTRADA" });
-  }, [receipt]);
+	useEffect(() => {
+		receipt?.length > 0 &&
+			setFiscalDataFilters({ bill: receipt[0]?.id, type: "ENTRADA" });
+	}, [receipt]);
 
-  useEffect(() => {
-    receipt?.length > 0 &&
-      setData({ ...receipt[0], createdAt: moment(receipt[0]?.created_at) });
-  }, [receipt]);
+	useEffect(() => {
+		receipt?.length > 0 &&
+			setData({ ...receipt[0], createdAt: moment(receipt[0]?.created_at) });
+	}, [receipt]);
 
-  useEffect(() => {
-    if (backConfirm?.createReceiptProduct && backConfirm?.supplierProduct) {
-      router.push("/dashboard/notas-entrada");
-    }
-  }, [backConfirm]);
+	useEffect(() => {
+		if (backConfirm?.createReceiptProduct && backConfirm?.supplierProduct) {
+			router.push("/dashboard/notas-entrada");
+		}
+	}, [backConfirm]);
 
-  const createReceiptProduct = useCallback(() => {
-    setLoading(true);
+	const createReceiptProduct = useCallback(() => {
+		setLoading(true);
 
-    receiptService
-      .createReceiptProduct({
-        receiptId: data?.id,
-        receiptItemIds: data?.items
-          ?.filter((product) => product?.newProduct)
-          ?.map((product) => product?.id),
-      })
-      .then((_res) => {
-        setBackConfirm((prv) => ({ ...prv, createReceiptProduct: true }));
-        setLoading(false);
-        setReload((prv) => !prv);
+		receiptService
+			.createReceiptProduct({
+				receiptId: data?.id,
+				receiptItemIds: data?.items
+					?.filter((product) => product?.newProduct)
+					?.map((product) => product?.id),
+			})
+			.then((_res) => {
+				setBackConfirm((prv) => ({ ...prv, createReceiptProduct: true }));
+				setLoading(false);
+				setReload((prv) => !prv);
 
-        createToast({
-          status: "success",
-          message: "Produtos inseridos com sucesso!",
-        });
-      })
-      .catch((err) => {
-        setLoading(false);
-        return createToast({
-          message: "Houve um erro ao salvar as informações da importação",
-          status: "error",
-        });
-      });
-  }, [JSON.stringify(data)]);
+				createToast({
+					status: "success",
+					message: "Produtos inseridos com sucesso!",
+				});
+			})
+			.catch((err) => {
+				setLoading(false);
+				return createToast({
+					message: "Houve um erro ao salvar as informações da importação",
+					status: "error",
+				});
+			});
+	}, [JSON.stringify(data)]);
 
-  const createReceiptSupplierProduct = useCallback(() => {
-    setLoading(true);
+	const createReceiptSupplierProduct = useCallback(() => {
+		setLoading(true);
 
-    receiptService
-      .createSupplierProduct({
-        receiptId: receipt[0]?.id,
-        items: data?.items
-          ?.filter((product) => product?.existingProduct)
-          ?.map((product) => ({
-            supplierId: data?.supplier?.id,
-            productVariationId: product?.newProductId,
-            productSupplier: product?.product_supplier_xml,
-          })),
-      })
-      .then((_res) => {
-        setBackConfirm((prv) => ({ ...prv, supplierProduct: true }));
-        setLoading(false);
-        setReload((prv) => !prv);
-        createToast({
-          status: "success",
-          message: "Produtos criados e vinculados com sucesso",
-        });
-      })
-      .catch((err) => {
-        setLoading(false);
+		receiptService
+			.createSupplierProduct({
+				receiptId: receipt[0]?.id,
+				items: data?.items
+					?.filter((product) => product?.existingProduct)
+					?.map((product) => ({
+						supplierId: data?.supplier?.id,
+						productVariationId: product?.newProductId,
+						productSupplier: product?.product_supplier_xml,
+					})),
+			})
+			.then((_res) => {
+				setBackConfirm((prv) => ({ ...prv, supplierProduct: true }));
+				setLoading(false);
+				setReload((prv) => !prv);
+				createToast({
+					status: "success",
+					message: "Produtos criados e vinculados com sucesso",
+				});
+			})
+			.catch((err) => {
+				setLoading(false);
 
-        return createToast({
-          message: "Houve um erro ao inserir os novos produtos",
-          status: "error",
-        });
-      });
-  }, [JSON.stringify(data)]);
+				return createToast({
+					message: "Houve um erro ao inserir os novos produtos",
+					status: "error",
+				});
+			});
+	}, [JSON.stringify(data)]);
 
-  const submitFinishReceipt = useCallback(() => {
-    setLoading(true);
+	const updateReceiptItems = useCallback(() => {
+		setLoading(true);
 
-    receiptService
-      ?.finishReceipt({ receiptId: receipt[0]?.id })
-      .then((res) => {
-        setReload((prv) => !prv);
+		receiptService
+			.updateReceiptItems({
+				receiptId: receipt[0]?.id,
+				items: data?.items?.map((product) => ({
+					receiptItemId: product.id,
+					fractionValue: product.productVariation.product.fractioned
+						? product.productVariation.product.fraction_value
+						: 1,
+				})),
+			})
+			.then((_res) => {})
+			.catch((err) => {
+				setLoading(false);
+				return createToast({
+					message: "Houve um erro ao atualizar os itens",
+					status: "error",
+				});
+			});
+	}, [JSON.stringify(data)]);
 
-        createToast({
-          status: "success",
-          message: "Nota de entrada finalizada com sucesso",
-        });
-      })
-      .catch((err) => {
-        if (err?.response?.data?.code === "E_NO_VARIATION") {
-          return createToast({
-            message:
-              "Existem produtos da nota que ainda não foram relacionados",
-            status: "error",
-          });
-        }
+	const submitFinishReceipt = useCallback(() => {
+		setLoading(true);
 
-        if (err?.response?.data?.message) {
-          return createToast({
-            message: err?.response?.data?.message?.split(":")[1],
-            status: "error",
-          });
-        }
-      });
-  }, [receipt[0]?.id]);
+		receiptService
+			?.finishReceipt({ receiptId: receipt[0]?.id })
+			.then((res) => {
+				setReload((prv) => !prv);
 
-  console.log("a", data?.createdAt)
-  console.log("b", fiscalData?.[0]?.authorization_date)
+				createToast({
+					status: "success",
+					message: "Nota de entrada finalizada com sucesso",
+				});
+			})
+			.catch((err) => {
+				if (err?.response?.data?.code === "E_NO_VARIATION") {
+					return createToast({
+						message:
+							"Existem produtos da nota que ainda não foram relacionados",
+						status: "error",
+					});
+				}
 
-  return (
-    <Container className="uk-padding">
-      <h3 className="uk-margin-remove">Nota de entrada - Entrada via Xml</h3>
-      <div className="uk-flex uk-margin-small-top" style={{ gap: "10px" }}>
-        <div className="uk-width-1-5">
-          <label>Código da entrada</label>
-          <Input value={data?.tag} disabled />
-        </div>
-        <div className="uk-width-1-3">
-          <label>Funcionário</label>
-          <Input disabled value={receipt[0]?.seller?.name} />
-        </div>
-        <div>
-          <label>Fornecedor</label>
-          <Input disabled value={receipt[0]?.supplier?.name} />
-        </div>
-      </div>
-      <section className="custom-header uk-margin-small-top">
-        <div className="uk-flex" style={{ gap: "10px" }}>
-          <div className="uk-width-1-2">
-            <label>Chave Acesso Nfe</label>
-            <Input value={fiscalData[0]?.access_key} disabled />
-          </div>
-          <div className="uk-width-1-5">
-            <label>Nota fiscal</label>
-            <Input value={fiscalData[0]?.sequence} disabled />
-          </div>
-          <div className="uk-width-1-5">
-            <label>Modelo</label>
-            <Input disabled value={fiscalData[0]?.model} />
-          </div>
-          <div className="uk-width-1-5">
-            <label>Serie</label>
-            <Input disabled value={fiscalData[0]?.series} />
-          </div>
+				if (err?.response?.data?.message) {
+					return createToast({
+						message: err?.response?.data?.message?.split(":")[1],
+						status: "error",
+					});
+				}
+			});
+	}, [receipt[0]?.id]);
 
-       {fiscalData?.[0]?.authorization_date && <div>
-            <label>Data Emissão</label>
-            <br />
-            <DatePicker
-              slotProps={{ textField: { variant: "standard" } }}
-              value={ moment(fiscalData[0]?.authorization_date)}
-              disabled
-            />
-          </div> }
-        </div>
-      </section>
-      <Tabs defaultActiveKey="1">
-        <TabPane key="1" tab="Produtos" className="custom-tab uk-padding-small">
-          <h4 className="uk-heading-line uk-margin-small-top">
-            <span>Produtos</span>
-          </h4>
-          {data?.items?.map((item, i) => (
-            <div>
-              <div
-                className={`${
-                  item?.productVariation?.product?.description &&
-                  "custom-background"
-                } uk-padding-small uk-margin-small-top`}
-              >
-                <section className="uk-flex" style={{ gap: "10px" }}>
-                  <div className="uk-width-1-2">
-                    <label>Descrição Produto - XML</label>
-                    <Input disabled value={item?.description_xml} />
-                  </div>
-                  <div className="uk-width-1-2">
-                    <label>Código de barras - XML</label>
-                    <Input disabled value={item?.barcode_xml} />
-                  </div>
-                  <div className="uk-width-1-5">
-                    <label>R$ Unit</label>
-                    <Input
-                      disabled
-                      value={currencyFormatter(item?.unitary_value)}
-                    />
-                  </div>
-                  <div className="uk-width-1-5">
-                    <label>Qtd</label>
-                    <Input disabled value={item?.quantity} />
-                  </div>
-                  <div className="uk-width-1-5">
-                    <label>R$ Desconto</label>
-                    <Input
-                      disabled
-                      value={currencyFormatter(item?.discount_value)}
-                    />
-                  </div>
-                  <div className="uk-width-1-5">
-                    <label>R$ Total</label>
-                    <Input
-                      disabled
-                      value={currencyFormatter(item?.total_value)}
-                    />
-                  </div>
-                </section>
+	return (
+		<Container className="uk-padding">
+			<h3 className="uk-margin-remove">Nota de entrada - Entrada via Xml</h3>
+			<div className="uk-flex uk-margin-small-top" style={{ gap: "10px" }}>
+				<div className="uk-width-1-5">
+					<label>Código da entrada</label>
+					<Input value={data?.tag} disabled />
+				</div>
+				<div className="uk-width-1-3">
+					<label>Funcionário</label>
+					<Input disabled value={receipt[0]?.seller?.name} />
+				</div>
+				<div>
+					<label>Fornecedor</label>
+					<Input disabled value={receipt[0]?.supplier?.name} />
+				</div>
+			</div>
+			<section className="custom-header uk-margin-small-top">
+				<div className="uk-flex" style={{ gap: "10px" }}>
+					<div className="uk-width-1-2">
+						<label>Chave Acesso Nfe</label>
+						<Input value={fiscalData[0]?.access_key} disabled />
+					</div>
+					<div className="uk-width-1-5">
+						<label>Nota fiscal</label>
+						<Input value={fiscalData[0]?.sequence} disabled />
+					</div>
+					<div className="uk-width-1-5">
+						<label>Modelo</label>
+						<Input disabled value={fiscalData[0]?.model} />
+					</div>
+					<div className="uk-width-1-5">
+						<label>Serie</label>
+						<Input disabled value={fiscalData[0]?.series} />
+					</div>
 
-                <section
-                  className="uk-margin-small-top uk-flex"
-                  style={{ gap: "10px" }}
-                >
-                  <div className="uk-width-1-2">
-                    <label>Produto encontrado:</label>
-                    <Input
-                      className="uk-width-1-1"
-                      disabled
-                      value={item?.productVariation?.product?.description}
-                    />
-                  </div>
-                  {!item?.productVariation && (
-                    <>
-                      <div className="uk-width-1-2">
-                        <label>Relacionar Produto</label>
-                        <AutoComplete
-                          className="uk-width-1-1"
-                          disabled={item?.newProduct}
-                          onChange={(val) => {
-                            let newArr = [...data?.items];
-                            newArr.splice(i, 1, {
-                              ...data?.items[i],
-                              existingProduct: val !== "" ? true : false,
-                            });
-                            setData({ ...data, items: newArr });
-                          }}
-                          onSelect={(_, opt) => {
-                            let newArr = [...data?.items];
-                            newArr.splice(i, 1, {
-                              ...data?.items[i],
-                              existingProduct: true,
-                              newProductId: opt?.id,
-                            });
-                            setData({ ...data, items: newArr });
-                          }}
-                          options={products?.map((product) => ({
-                            ...product,
-                            value: product?.description,
-                            key: product?.id,
-                          }))}
-                          filterOption={(val, opt) =>
-                            normalizeStr(opt?.value.toUpperCase()).includes(
-                              normalizeStr(val?.toUpperCase())
-                            )
-                          }
-                        />
-                      </div>
-                      <div>
-                        <label>Inserir produto no cadastro</label>&nbsp;
-                        <Checkbox
-                          disabled={item?.existingProduct}
-                          onChange={(e) => {
-                            let newArr = [...data?.items];
-                            newArr.splice(i, 1, {
-                              ...data?.items[i],
-                              newProduct: e.target.checked,
-                            });
-                            setData({ ...data, items: newArr });
-                          }}
-                          checked={item?.newProduct}
-                        />
-                      </div>
-                    </>
-                  )}
-                </section>
-              </div>
-              <hr />
-            </div>
-          ))}
-          <footer className="uk-flex uk-flex-right">
-            <Button text="Voltar" onClick={() => router.back()} />
+					{fiscalData?.[0]?.authorization_date && (
+						<div>
+							<label>Data Emissão</label>
+							<br />
+							<DatePicker
+								slotProps={{ textField: { variant: "standard" } }}
+								value={moment(fiscalData[0]?.authorization_date)}
+								disabled
+							/>
+						</div>
+					)}
+				</div>
+			</section>
+			<Tabs defaultActiveKey="1">
+				<TabPane key="1" tab="Produtos" className="custom-tab ">
+					<h4 className="uk-heading-line uk-margin-small-top">
+						<span>Produtos</span>
+					</h4>
+					{data?.items?.map((item, i) => (
+						<div>
+							<div
+								className={`${
+									item?.productVariation?.product?.description &&
+									"custom-background"
+								} uk-padding-small uk-margin-small-top`}
+							>
+								<section className="uk-flex" style={{ gap: "10px" }}>
+									<div className="uk-width-1-2">
+										<label>Descrição Produto - XML</label>
+										<Input disabled value={item?.description_xml} />
+									</div>
+									<div className="uk-width-1-2">
+										<label>Código de barras - XML</label>
+										<Input disabled value={item?.barcode_xml} />
+									</div>
+									<div className="uk-width-1-5">
+										<label>R$ Unit</label>
+										<Input
+											disabled
+											value={currencyFormatter(item?.unitary_value)}
+										/>
+									</div>
+									<div className="uk-width-1-5">
+										<label>Qtd</label>
+										<Input disabled value={item?.quantity} />
+									</div>
+									<div className="uk-width-1-5">
+										<label>R$ Desconto</label>
+										<Input
+											disabled
+											value={currencyFormatter(item?.discount_value)}
+										/>
+									</div>
+									<div className="uk-width-1-5">
+										<label>R$ Total</label>
+										<Input
+											disabled
+											value={currencyFormatter(item?.total_value)}
+										/>
+									</div>
+								</section>
 
-            <Button
-              text="Finalizar Entrada"
-              onClick={() => submitFinishReceipt()}
-            />
+								<section
+									className="uk-margin-small-top uk-flex"
+									style={{ gap: "10px" }}
+								>
+									<div className="uk-width-1-2">
+										<label>Produto encontrado:</label>
+										<Input
+											className="uk-width-1-1"
+											disabled
+											value={item?.productVariation?.product?.description}
+										/>
+									</div>
+									{item?.productVariation?.product?.fractioned && (
+										<div className="uk-width-1-6">
+											<label>Qtd Embalagem Compra:</label>
+											<Input
+												className="uk-width-1-1"
+												value={data?.productVariation?.product?.fraction_value}
+												onInput={(e) => {
+													setData((old) => {
+														const newItems = old.items.map(
+															(oldRecord, oldIndex) => {
+																if (oldIndex !== i) {
+																	return oldRecord;
+																}
 
-            <Button
-              onClick={() => {
-                data?.items?.filter((product) => product?.existingProduct)
-                  ?.length > 0
-                  ? createReceiptSupplierProduct()
-                  : setBackConfirm((prv) => ({
-                      ...prv,
-                      supplierProduct: true,
-                    }));
+																const newRecord = { ...oldRecord };
+																if (!e.currentTarget.value) {
+																	console.log("no value on currentTarget");
+																	return newRecord;
+																}
+																newRecord.productVariation.product.fraction_value =
+																	Number.parseFloat(e.currentTarget.value);
+																return newRecord;
+															},
+														);
 
-                data?.items?.filter((product) => product?.newProduct)?.length >
-                0
-                  ? createReceiptProduct()
-                  : setBackConfirm((prv) => ({
-                      ...prv,
-                      createReceiptProduct: true,
-                    }));
-              }}
-              text="Salvar"
-            />
-          </footer>
-        </TabPane>
-        {/* <TabPane
+														old.items = newItems;
+														return old;
+													});
+												}}
+											/>
+										</div>
+									)}
+									{!item?.productVariation && (
+										<>
+											<div className="uk-width-1-2">
+												<label>Relacionar Produto</label>
+												<AutoComplete
+													className="uk-width-1-1"
+													disabled={item?.newProduct}
+													onChange={(val) => {
+														let newArr = [...data?.items];
+														newArr.splice(i, 1, {
+															...data?.items[i],
+															existingProduct: val !== "" ? true : false,
+														});
+														setData({ ...data, items: newArr });
+													}}
+													onSelect={(_, opt) => {
+														let newArr = [...data?.items];
+														newArr.splice(i, 1, {
+															...data?.items[i],
+															existingProduct: true,
+															newProductId: opt?.id,
+														});
+														setData({ ...data, items: newArr });
+													}}
+													options={products?.map((product) => ({
+														...product,
+														value: product?.description,
+														key: product?.id,
+													}))}
+													filterOption={(val, opt) =>
+														normalizeStr(opt?.value.toUpperCase()).includes(
+															normalizeStr(val?.toUpperCase()),
+														)
+													}
+												/>
+											</div>
+											<div>
+												<label>Inserir produto no cadastro</label>&nbsp;
+												<Checkbox
+													disabled={item?.existingProduct}
+													onChange={(e) => {
+														let newArr = [...data?.items];
+														newArr.splice(i, 1, {
+															...data?.items[i],
+															newProduct: e.target.checked,
+														});
+														setData({ ...data, items: newArr });
+													}}
+													checked={item?.newProduct}
+												/>
+											</div>
+										</>
+									)}
+								</section>
+							</div>
+							<hr />
+						</div>
+					))}
+					<footer className="uk-flex uk-flex-right" style={{ gap: "8px" }}>
+						<Button text="Voltar" onClick={() => router.back()} />
+
+						<Button
+							text="Finalizar Entrada"
+							onClick={() => submitFinishReceipt()}
+						/>
+
+						<Button
+							onClick={() => {
+								updateReceiptItems();
+								data?.items?.filter((product) => product?.existingProduct)
+									?.length > 0
+									? createReceiptSupplierProduct()
+									: setBackConfirm((prv) => ({
+											...prv,
+											supplierProduct: true,
+										}));
+
+								data?.items?.filter((product) => product?.newProduct)?.length >
+								0
+									? createReceiptProduct()
+									: setBackConfirm((prv) => ({
+											...prv,
+											createReceiptProduct: true,
+										}));
+							}}
+							text="Salvar"
+						/>
+					</footer>
+				</TabPane>
+				{/* <TabPane
           key="2"
           tab="Pagamentos"
           className="custom-tab uk-padding-small"
@@ -370,9 +425,9 @@ function Single() {
             setReload={setReload}
           />
         </TabPane> */}
-      </Tabs>
-    </Container>
-  );
+			</Tabs>
+		</Container>
+	);
 }
 
 export default Single;
