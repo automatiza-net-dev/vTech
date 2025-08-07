@@ -67,6 +67,7 @@ export function Notes() {
             value: currencyFormatter(receipt?.totalValue),
             status: receipt?.status,
             origin: receipt?.origin || "-",
+            fiscalDocumentSequence: receipt.fiscalDocumentSequence,
             actions: (
               <div className="uk-flex uk-flex-around">
                 {receipt?.origin !== "Xml" && receipt?.status !== "Baixada" && (

@@ -29,6 +29,12 @@ export const receiptsColumns = [
     key: "origin",
     dataIndex: "origin"
   },
+{
+    title: "Nota Fiscal",
+    key: "fiscalDocumentSequence",
+    dataIndex: "fiscalDocumentSequence"
+  },
+
   { title: "Status", key: "status", dataIndex: "status" },
   {
     title: "Ações",
