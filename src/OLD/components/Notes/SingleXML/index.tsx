@@ -294,36 +294,19 @@ function Single() {
 											<label>Qtd Embalagem Compra:</label>
 											<Input
 												className="uk-width-1-1"
+												type="number"
 												value={item.fraction_value}
-												onInput={(e) => {
+												onChange={(e) => {
+													const value = Number.parseFloat(
+														e.currentTarget.value,
+													);
 													setData((old) => {
-														const newItems = old.items.map(
-															(oldRecord, oldIndex) => {
-																if (oldIndex !== i) {
-																	console.log("index mismatch", oldIndex, i);
-																	return oldRecord;
-																}
-
-																const newRecord = { ...oldRecord };
-																if (!e?.currentTarget?.value) {
-																	console.log("no value on currentTarget");
-																	return newRecord;
-																}
-																newRecord.fraction_value = Number.parseFloat(
-																	e.currentTarget.value,
-																);
-
-																console.log(
-																	"setting value",
-																	oldRecord.fraction_value,
-																	newRecord.fraction_value,
-																);
-																return newRecord;
-															},
-														);
-
-														old.items = newItems;
-														return { ...old };
+														const newItems = [...old.items];
+														newItems[i] = {
+															...newItems[i],
+															fraction_value: value,
+														};
+														return { ...old, items: newItems };
 													});
 												}}
 											/>
