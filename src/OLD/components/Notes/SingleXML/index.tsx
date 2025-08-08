@@ -134,7 +134,7 @@ function Single() {
 				items: data?.items?.map((product) => ({
 					receiptItemId: product.id,
 					fractionValue: product?.productVariation?.product?.fractioned
-						? product?.productVariation?.product?.fraction_value
+						? product?.fraction_value
 						: 1,
 				})),
 			})
