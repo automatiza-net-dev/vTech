@@ -133,8 +133,8 @@ function Single() {
 				receiptId: receipt[0]?.id,
 				items: data?.items?.map((product) => ({
 					receiptItemId: product.id,
-					fractionValue: product.productVariation.product.fractioned
-						? product.productVariation.product.fraction_value
+					fractionValue: product?.productVariation?.product?.fractioned
+						? product?.fraction_value
 						: 1,
 				})),
 			})
@@ -294,28 +294,19 @@ function Single() {
 											<label>Qtd Embalagem Compra:</label>
 											<Input
 												className="uk-width-1-1"
-												value={data?.productVariation?.product?.fraction_value}
-												onInput={(e) => {
+												type="number"
+												value={item.fraction_value}
+												onChange={(e) => {
+													const value = Number.parseFloat(
+														e.currentTarget.value,
+													);
 													setData((old) => {
-														const newItems = old.items.map(
-															(oldRecord, oldIndex) => {
-																if (oldIndex !== i) {
-																	return oldRecord;
-																}
-
-																const newRecord = { ...oldRecord };
-																if (!e.currentTarget.value) {
-																	console.log("no value on currentTarget");
-																	return newRecord;
-																}
-																newRecord.productVariation.product.fraction_value =
-																	Number.parseFloat(e.currentTarget.value);
-																return newRecord;
-															},
-														);
-
-														old.items = newItems;
-														return old;
+														const newItems = [...old.items];
+														newItems[i] = {
+															...newItems[i],
+															fraction_value: value,
+														};
+														return { ...old, items: newItems };
 													});
 												}}
 											/>

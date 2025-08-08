@@ -50,6 +50,11 @@ export const detailsProductColumns = [
     dataIndex: "quantity"
   },
   {
+    title: "Qtd. Embalagem Compra",
+    key: "fractionValue",
+    dataIndex: "fractionValue"
+  },
+  {
     title: "Cód. Produto",
     key: "productCode",
     dataIndex: "productCode"

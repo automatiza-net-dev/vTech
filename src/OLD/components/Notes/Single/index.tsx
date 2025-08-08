@@ -229,6 +229,7 @@ export function Details({ receiptId, setVisible }: any) {
     setProducts(
       receipt[0]?.items?.map((product) => ({
         quantity: product?.quantity,
+        fractionValue: product.fraction_value ? product.fraction_value : product.status === 'PendenteXml' ? '-' : product.fraction_value,
         productCode: product?.productVariation?.product?.reference_code,
         description: product?.productVariation?.product?.description,
         unitPrice: currencyFormatter(product?.unitary_value),
@@ -532,7 +533,7 @@ export function Details({ receiptId, setVisible }: any) {
         </form>
       </Modal>
       <Modal
-        
+
         visible={openCancelNfe}
         onCancel={() => {
           setOpenCancelNfe(false);
@@ -591,7 +592,7 @@ export function Details({ receiptId, setVisible }: any) {
         footer={null}
         width={500}
       >
-         <h3 className="font-18-bold">Motivo inutilização</h3>
+        <h3 className="font-18-bold">Motivo inutilização</h3>
         <form
           onSubmit={(e) => {
             e.preventDefault();
