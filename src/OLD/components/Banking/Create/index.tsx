@@ -1,5 +1,4 @@
 import React, { memo, useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/router";
 
 import moment from "moment";
 
@@ -20,9 +19,9 @@ import { useQuery } from "infinity-forge";
 const { Group } = Radio;
 const { Option } = Select;
 
-const Create = memo(function FormChild({}) {
+const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 	const [data, setData] = useState<any>({
-		type: "CREDITO",
+		type: "transaction",
 		reconciled: "true",
 		feeValue: 0,
 		feePercentage: 0,
@@ -36,52 +35,8 @@ const Create = memo(function FormChild({}) {
 	const { tutors } = useTutor(false, false);
 	const { paymentMethods } = usePaymentMethods(false, false);
 
-	const router = useRouter();
+	// const router = useRouter();
 	const { createToast } = useToast();
-
-	const createBanking = useCallback(() => {
-		setLoading(true);
-		let error = false;
-		bankingService
-			.createBanking({
-				...data,
-				checkingAccountId: data?.originAccount,
-				issueDate: moment(data?.issueDate).toISOString(),
-				installment: 1,
-				originFlag: "BANCARIO",
-				competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
-			})
-			.then((_res) => {
-				createToast({
-					status: "success",
-					message: "Transação salva com sucesso",
-				});
-			})
-			.catch((err) => {
-				setLoading(false);
-				error = true;
-				const message = err?.response?.data?.errors[0].message;
-				if (message) {
-					createToast({
-						status: "error",
-						message: message,
-					});
-					return;
-				}
-
-				createToast({
-					status: "error",
-					message: "Houve um erro ao salvar a transação...",
-				});
-			})
-			.finally(() => {
-				if (!error) {
-					setLoading(false);
-					setData({});
-					router.back();
-				}
-			});
-	}, [data]);
 
 	const createTransaction = useCallback(async () => {
 		setLoading(true);
@@ -91,28 +46,15 @@ const Create = memo(function FormChild({}) {
 			await bankingService.createBanking({
 				...data,
 				type: "DEBITO",
-				accountPlanId: data?.originId,
-				checkingAccountId: data?.originAccount,
+				originFlag: "FINANCEIRO",
 				issueDate: moment(data?.issueDate).toISOString(),
-				originFlag: "BANCARIO",
 				competenceDate: moment(data?.competenceDate).format("MM/YYYY"),
-				reconciled: "true",
-			});
-
-			await bankingService.createBanking({
-				...data,
-				type: "CREDITO",
-				accountPlanId: data?.destinyId,
-				checkingAccountId: data?.destinyAccount,
-				issueDate: moment(data.issueDate).toISOString(),
-				originFlag: "BANCARIO",
-				competenceDate: moment(data.competenceDate).format("MM/YYYY"),
-				reconciled: "true",
 			});
 
 			setLoading(false);
 			setData({});
-			router.back();
+			cleanUp();
+			// router.back();
 
 			createToast({
 				status: "success",
@@ -128,7 +70,7 @@ const Create = memo(function FormChild({}) {
 				message: errorMessage,
 			});
 		}
-	}, [data, router]);
+	}, [data]);
 
 	const formatTutors = () => {
 		setFormatedTutors(
@@ -182,9 +124,7 @@ const Create = memo(function FormChild({}) {
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						data?.type !== "transaction"
-							? createBanking()
-							: createTransaction();
+						createTransaction();
 					}}
 				>
 					<div className="form-body uk-padding uk-margin-top">
@@ -273,27 +213,6 @@ const Create = memo(function FormChild({}) {
 									<Radio value="false">Não</Radio>
 								</Group>
 							</div>
-							<div className="uk-margin-left">
-								<label>Tipo Lançamento</label>
-								<br />
-								<Group
-									defaultValue="CREDITO"
-									onChange={(e) =>
-										setData({
-											reconciled: "true",
-											feeValue: 0,
-											feePercentage: 0,
-											discountValue: 0,
-											discountPercentage: 0,
-											type: e.target.value,
-										})
-									}
-								>
-									<Radio value="CREDITO">Crédito</Radio>
-									<Radio value="DEBITO">Débito</Radio>
-									<Radio value="transaction">Transferência</Radio>
-								</Group>
-							</div>
 						</div>
 						<div className="uk-flex uk-margin-top">
 							<div className="uk-margin-right">
@@ -324,19 +243,10 @@ const Create = memo(function FormChild({}) {
 									value={data?.historic}
 								/>
 							</div>
-							<div className="uk-margin-left uk-width-1-6">
-								<label>Nota Fiscal</label>
-								<Input
-									value={data?.fiscalNote}
-									onChange={(e) =>
-										setData({ ...data, fiscalNote: e.target.value })
-									}
-								/>
-							</div>
 						</div>
 						<div className="uk-flex uk-margin-top">
 							<div className="uk-width-1-6 uk-margin-right">
-								<label>Taxa</label>
+								<label>R$ Juros</label>
 								<Input
 									type="number"
 									value={data?.feeValue}
@@ -346,7 +256,7 @@ const Create = memo(function FormChild({}) {
 								/>
 							</div>
 							<div className="uk-width-1-6 uk-margin-right">
-								<label>Taxa (Porcentagem)</label>
+								<label>% Juros</label>
 								<Input
 									type="number"
 									value={data?.feePercentage}
@@ -356,7 +266,7 @@ const Create = memo(function FormChild({}) {
 								/>
 							</div>
 							<div className="uk-width-1-6 uk-margin-right">
-								<label>Desconto</label>
+								<label>R$ Desconto</label>
 								<Input
 									type="number"
 									value={data?.discountValue}
@@ -366,7 +276,7 @@ const Create = memo(function FormChild({}) {
 								/>
 							</div>
 							<div className="uk-width-1-6 uk-margin-right">
-								<label>Desconto (porcentagem)</label>
+								<label>% Desconto</label>
 								<Input
 									type="number"
 									value={data?.discountPercentage}
@@ -442,78 +352,43 @@ const Create = memo(function FormChild({}) {
 								/>
 							</div>
 
-							{data?.type === "transaction" && (
-								<>
-									<div>
-										<label>Plano Contas Origem</label>
-										<Select
-											showSearch
-											className="uk-width-1-1"
-											value={data?.accountPlanId}
-											onChange={(e) => setData({ ...data, originId: e })}
-											optionFilterProp="children"
-											filterOption={(input, option) => {
-												const normalizedInput = normalize(input);
-												const normalizedOption = normalize(
-													option?.children?.toString() || "",
-												);
-												return normalizedOption.includes(normalizedInput);
-											}}
-										>
-											{plans?.length > 0 &&
-												plans?.map(
-													(plan, i) =>
-														plan.type === "DEBITO" && (
-															<Option key={"plans-debit-" + i} value={plan?.id}>
-																{plan?.description}
-															</Option>
-														),
-												)}
-										</Select>
-									</div>
-								</>
-							)}
-
-							{data?.type !== "transaction" && (
-								<div>
-									<label>Plano Contas</label>
-									<Select
-										showSearch
-										value={data?.accountPlanId}
-										className="uk-width-1-1"
-										placeholder="Selecione um plano"
-										onChange={(e) => setData({ ...data, accountPlanId: e })}
-										optionFilterProp="children"
-										filterOption={(input, option) => {
-											const normalizedInput = normalize(input);
-											const normalizedOption = normalize(
-												option?.children?.toString() || "",
-											);
-											return normalizedOption.includes(normalizedInput);
-										}}
-									>
-										{plans
-											?.filter((plan) => plan.type === data.type)
-											?.map((plan, i) => (
-												<Option key={`plans${i}`} value={plan.id}>
-													{plan.description}
-												</Option>
-											))}
-									</Select>
-								</div>
-							)}
-
 							<div>
-								<label>
-									{data?.type === "transaction"
-										? "Conta Corrente Origem"
-										: "Conta Corrente"}
-								</label>
+								<label>Plano Contas Origem</label>
 								<Select
 									showSearch
 									className="uk-width-1-1"
-									value={data?.originAccount}
-									onChange={(e) => setData({ ...data, originAccount: e })}
+									value={data?.fromAccountPlanId}
+									onChange={(e) => setData({ ...data, fromAccountPlanId: e })}
+									optionFilterProp="children"
+									filterOption={(input, option) => {
+										const normalizedInput = normalize(input);
+										const normalizedOption = normalize(
+											option?.children?.toString() || "",
+										);
+										return normalizedOption.includes(normalizedInput);
+									}}
+								>
+									{plans?.length > 0 &&
+										plans?.map(
+											(plan, i) =>
+												plan.type === "DEBITO" && (
+													<Option key={"plans-debit-" + i} value={plan?.id}>
+														{plan?.description}
+													</Option>
+												),
+										)}
+								</Select>
+							</div>
+
+							<div>
+								<label>Conta Corrente Origem</label>
+								<Select
+									showSearch
+									className="uk-width-1-1"
+									value={data?.fromCheckingAccountId}
+									onChange={(e) =>
+										setData({ ...data, fromCheckingAccountId: e })
+									}
 									optionFilterProp="children"
 									filterOption={(input, option) => {
 										const normalizedInput = normalize(input);
@@ -536,72 +411,67 @@ const Create = memo(function FormChild({}) {
 							</div>
 						</div>
 
-						{data?.type === "transaction" && (
-							<div
-								style={{
-									display: "grid",
-									marginTop: 20,
-									gridTemplateColumns: "repeat(3, 1fr)",
-									gap: 10,
-								}}
-							>
-								<div className="">
-									<label>Plano Contas Destino</label>
-									<Select
-										showSearch
-										className="uk-width-1-1"
-										value={data?.accountPlanId}
-										onChange={(e) => setData({ ...data, destinyId: e })}
-										optionFilterProp="children"
-										filterOption={(input, option) => {
-											const normalizedInput = normalize(input);
-											const normalizedOption = normalize(
-												option?.children?.toString() || "",
-											);
-											return normalizedOption.includes(normalizedInput);
-										}}
-									>
-										{plans?.length > 0 &&
-											plans?.map(
-												(plan, i) =>
-													plan.type === "CREDITO" && (
-														<Option key={"plans-credit-" + i} value={plan?.id}>
-															{plan?.description}
-														</Option>
-													),
-											)}
-									</Select>
-								</div>
-
-								<div>
-									<label>Conta corrente destino</label>
-									<Select
-										showSearch
-										className="uk-width-1-1"
-										value={data?.destinyAccount}
-										onChange={(e) => setData({ ...data, destinyAccount: e })}
-										optionFilterProp="children"
-										filterOption={(input, option) => {
-											const normalizedInput = normalize(input);
-											const normalizedOption = normalize(
-												option?.children?.toString() || "",
-											);
-											return normalizedOption.includes(normalizedInput);
-										}}
-									>
-										{checkingAccounts?.length > 0 &&
-											checkingAccounts?.map((account, i) => (
-												<Option
-													key={"checkingAccounts-" + i}
-													value={account?.id}
-												>
-													{account?.description}
-												</Option>
-											))}
-									</Select>
-								</div>
+						<div
+							style={{
+								display: "grid",
+								marginTop: 20,
+								gridTemplateColumns: "repeat(3, 1fr)",
+								gap: 10,
+							}}
+						>
+							<div className="">
+								<label>Plano Contas Destino</label>
+								<Select
+									showSearch
+									className="uk-width-1-1"
+									value={data?.toAccountPlanId}
+									onChange={(e) => setData({ ...data, toAccountPlanId: e })}
+									optionFilterProp="children"
+									filterOption={(input, option) => {
+										const normalizedInput = normalize(input);
+										const normalizedOption = normalize(
+											option?.children?.toString() || "",
+										);
+										return normalizedOption.includes(normalizedInput);
+									}}
+								>
+									{plans?.length > 0 &&
+										plans?.map(
+											(plan, i) =>
+												plan.type === "CREDITO" && (
+													<Option key={"plans-credit-" + i} value={plan?.id}>
+														{plan?.description}
+													</Option>
+												),
+										)}
+								</Select>
 							</div>
-						)}
+
+							<div>
+								<label>Conta Corrente Destino</label>
+								<Select
+									showSearch
+									className="uk-width-1-1"
+									value={data?.toCheckingAccountId}
+									onChange={(e) => setData({ ...data, toCheckingAccountId: e })}
+									optionFilterProp="children"
+									filterOption={(input, option) => {
+										const normalizedInput = normalize(input);
+										const normalizedOption = normalize(
+											option?.children?.toString() || "",
+										);
+										return normalizedOption.includes(normalizedInput);
+									}}
+								>
+									{checkingAccounts?.length > 0 &&
+										checkingAccounts?.map((account, i) => (
+											<Option key={"checkingAccounts-" + i} value={account?.id}>
+												{account?.description}
+											</Option>
+										))}
+								</Select>
+							</div>
+						</div>
 					</div>
 					<footer
 						style={{
@@ -612,7 +482,7 @@ const Create = memo(function FormChild({}) {
 					>
 						<Button type="submit" text="Salvar" />
 
-						<Button onClick={() => router.back()} text="Voltar" type="button" />
+						<Button onClick={() => cleanUp()} text="Voltar" type="button" />
 					</footer>
 				</form>
 			</Container>
