@@ -4,6 +4,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 
+import { Collapse } from "antd";
 import {
 	api,
 	Input,
@@ -238,351 +239,319 @@ export default function TitlesFilters({
 						},
 					}}
 				>
-					<div className="box">
-						<InputDateRange
-							id="Date"
-							isClearable
-							enableFilter
-							placeholder="DD/MM/YYYY"
-							label="Data emissão"
-							names={["fromIssue", "toIssue"]}
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
+					<div
+						style={{ display: "flex", flexDirection: "column", width: "100%" }}
+					>
+						<div className="box">
+							<div className="row">
+								<div style={{ minWidth: "350px" }}>
+									<InputDateRange
+										id="Date"
+										isClearable
+										enableFilter
+										placeholder="DD/MM/YYYY"
+										label="Data Vencimento/Pagamento"
+										names={["iterationDateFrom", "iterationDateTo"]}
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+								</div>
 
-						{/* <InputDateRange
-              id="Date"
-              isClearable
-              enableFilter
-              placeholder="DD/MM/YYYY"
-              label="Data Vencimento"
-              names={["fromExpiration", "toExpiration"]}
-            /> */}
-
-						<InputDateRange
-							id="Date"
-							isClearable
-							enableFilter
-							placeholder="DD/MM/YYYY"
-							label="Data Vencimento/Pagamento"
-							names={["iterationDateFrom", "iterationDateTo"]}
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-
-						{/* <InputDateRange
-              id="Date"
-              isClearable
-              enableFilter
-              placeholder="DD/MM/YYYY"
-              label="Data Pagamento"
-              names={["fromPayment", "toPayment"]}
-            /> */}
-
-						<InputDateRange
-							id="DateAccept"
-							isClearable
-							enableFilter
-							placeholder="DD/MM/YYYY"
-							label="Data aceite"
-							names={["fromAcceptDate ", "toAcceptDate"]}
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-					</div>
-
-					<div className="box">
-						<div className="row">
-							<InputDatePicker
-								id="Date"
-								mode="month"
-								placeholder="MM/YYYY"
-								label="Data competência"
-								name="competence"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-
-							<Input
-								label="Nº Comprovante / NSU"
-								name="nsu"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-						</div>
-
-						<div className="row">
-							<Input
-								label="Documento"
-								name="document"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-							<Input
-								label="Nota Fiscal"
-								name="fiscalNote"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-						</div>
-
-						<div className="row">
-							{unit?.configs?.businessUnits?.internal_code && (
-								<Input
-									label="Código Interno"
-									name="internalCode"
+								<Select
+									label="Conta corrente"
+									name="checkingAccountId"
+									onlyOneValue
+									isClearable
+									options={checkingAccounts?.data?.map((item) => ({
+										label: item?.description,
+										value: item.id,
+									}))}
+									onChangeInput={(value) => {
+										setFilters((prv) => {
+											return { ...prv, checkingAccountId: value };
+										});
+									}}
 									onKeyDown={(ev) => {
 										if (ev.key === "Enter") {
 											setReload((prev) => !prev);
 										}
 									}}
 								/>
-							)}
 
-							<Input
-								label="Historico"
-								name="historic"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-						</div>
-					</div>
+								<Input
+									label="Nº Comprovante / NSU"
+									name="nsu"
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
+								<Input
+									label="Documento"
+									name="document"
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
+								<Select
+									label="Tipo título"
+									onlyOneValue
+									name="type"
+									isClearable
+									placeholder="Todos"
+									options={[
+										{ label: "Todos", value: "" },
+										{ label: "Crédito", value: "CREDITO" },
+										{ label: "Débito", value: "DEBITO" },
+									]}
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
 
-					<div className="box">
-						<Select
-							onlyOneValue
-							label="Nome do Titular"
-							name="client"
-							options={clientOptions}
-							isClearable
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
+								<Select
+									name="status"
+									label="Situação"
+									placeholder="Todos"
+									isClearable
+									onlyOneValue
+									options={[
+										{ label: "Todos", value: "" },
+										{ label: "Aberto", value: "ABERTO" },
+										{ label: "Baixado", value: "BAIXADO" },
+									]}
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
+								<Select
+									onlyOneValue
+									options={[
+										{ label: "Sim", value: "sim" },
+										{ label: "Não", value: "nao" },
+									]}
+									name="groupBorderos"
+									label="Agrupa títulos borderô"
+									isClearable
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
 
-						<Select
-							label="Conta corrente"
-							name="checkingAccountId"
-							onlyOneValue
-							isClearable
-							options={checkingAccounts?.data?.map((item) => ({
-								label: item?.description,
-								value: item.id,
-							}))}
-							onChangeInput={(value) => {
-								setFilters((prv) => {
-									return { ...prv, checkingAccountId: value };
-								});
-							}}
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-
-						<Select
-							onlyOneValue
-							label="Plano Contas"
-							name="plan"
-							options={planOptions}
-							isClearable
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-					</div>
-
-					<div className="box">
-						<Select
-							onlyOneValue
-							label="Forma de pagamento"
-							name="paymentMethod"
-							options={paymentMethodOptions}
-							isClearable
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-
-						<Select
-							label="Bandeira Tef."
-							name="tefFlagId"
-							onlyOneValue
-							isClearable
-							options={tfeFlags?.data?.map((item) => ({
-								label: item?.description,
-								value: item.id,
-							}))}
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-
-						<Select
-							label="Adquirente Tef."
-							name="tefAcquirerId"
-							onlyOneValue
-							isClearable
-							options={
-								tfeAquires?.data?.map((item) => ({
-									label: item?.description,
-									value: item.id,
-								})) || []
-							}
-							onKeyDown={(ev) => {
-								if (ev.key === "Enter") {
-									setReload((prev) => !prev);
-								}
-							}}
-						/>
-					</div>
-
-					<div className="box">
-						<div className="row">
-							<Select
-								label="Tipo título"
-								onlyOneValue
-								name="type"
-								isClearable
-								placeholder="Todos"
-								options={[
-									{ label: "Todos", value: "" },
-									{ label: "Crédito", value: "CREDITO" },
-									{ label: "Débito", value: "DEBITO" },
-								]}
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-
-							<Select
-								name="status"
-								label="Situação"
-								placeholder="Todos"
-								isClearable
-								onlyOneValue
-								options={[
-									{ label: "Todos", value: "" },
-									{ label: "Aberto", value: "ABERTO" },
-									{ label: "Baixado", value: "BAIXADO" },
-								]}
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
+								<Select
+									label="Ordenar por"
+									name="order"
+									onlyOneValue
+									isClearable
+									options={[
+										{ label: "Data Vencimento", value: "expiration_date" },
+										{ label: "Data Emissão", value: "issue_date" },
+										{ label: "Data Competência", value: "competence_date" },
+										{ label: "Data Pagamento", value: "payment_date" },
+										{ label: "Documento / Parcela", value: "doc" },
+									]}
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
+							</div>
 						</div>
 
-						<div className="row">
-							<Select
-								onlyOneValue
-								placeholder="Todos"
-								isClearable
-								options={[
-									{ label: "Todos", value: "" },
-									{ label: "Sim", value: "SIM" },
-									{ label: "Não", value: "NAO" },
-								]}
-								name="accept"
-								label="Aceite"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
+						<Collapse defaultActiveKey={["1"]} ghost>
+							<Collapse.Panel header="Mais filtros" key="1">
+								<div className="row">
+									<div style={{ minWidth: "350px" }}>
+										<InputDateRange
+											id="Date"
+											isClearable
+											enableFilter
+											placeholder="DD/MM/YYYY"
+											label="Data emissão"
+											names={["fromIssue", "toIssue"]}
+											onKeyDown={(ev) => {
+												if (ev.key === "Enter") {
+													setReload((prev) => !prev);
+												}
+											}}
+										/>
+									</div>
 
-							<Select
-								onlyOneValue
-								placeholder="Todos"
-								isClearable
-								options={[
-									{ label: "Todos", value: "" },
-									{ label: "Sim", value: "true" },
-									{ label: "Não", value: "false" },
-								]}
-								name="reconciled"
-								label="Conciliado"
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-						</div>
+									<InputDatePicker
+										id="Date"
+										mode="month"
+										placeholder="MM/YYYY"
+										label="Data competência"
+										name="competence"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
 
-						<div className="row">
-							<Select
-								onlyOneValue
-								options={[
-									{ label: "Sim", value: "sim" },
-									{ label: "Não", value: "nao" },
-								]}
-								name="groupBorderos"
-								label="Agrupa títulos borderô"
-								isClearable
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
+									<Input
+										label="Nota Fiscal"
+										name="fiscalNote"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
 
-							<Select
-								label="Ordenar por"
-								name="order"
-								onlyOneValue
-								isClearable
-								options={[
-									{ label: "Data Vencimento", value: "expiration_date" },
-									{ label: "Data Emissão", value: "issue_date" },
-									{ label: "Data Competência", value: "competence_date" },
-									{ label: "Data Pagamento", value: "payment_date" },
-									{ label: "Documento / Parcela", value: "doc" },
-								]}
-								onKeyDown={(ev) => {
-									if (ev.key === "Enter") {
-										setReload((prev) => !prev);
-									}
-								}}
-							/>
-						</div>
+									<Select
+										onlyOneValue
+										label="Nome do Titular"
+										name="client"
+										options={clientOptions}
+										isClearable
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<Select
+										onlyOneValue
+										label="Plano Contas"
+										name="plan"
+										options={planOptions}
+										isClearable
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<Select
+										onlyOneValue
+										placeholder="Todos"
+										isClearable
+										options={[
+											{ label: "Todos", value: "" },
+											{ label: "Sim", value: "SIM" },
+											{ label: "Não", value: "NAO" },
+										]}
+										name="accept"
+										label="Aceite"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<Select
+										onlyOneValue
+										placeholder="Todos"
+										isClearable
+										options={[
+											{ label: "Todos", value: "" },
+											{ label: "Sim", value: "true" },
+											{ label: "Não", value: "false" },
+										]}
+										name="reconciled"
+										label="Conciliado"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+								</div>
+
+								<div className="row">
+									<div style={{ minWidth: "350px" }}>
+										<InputDateRange
+											id="DateAccept"
+											isClearable
+											enableFilter
+											placeholder="DD/MM/YYYY"
+											label="Data aceite"
+											names={["fromAcceptDate ", "toAcceptDate"]}
+											onKeyDown={(ev) => {
+												if (ev.key === "Enter") {
+													setReload((prev) => !prev);
+												}
+											}}
+										/>
+									</div>
+
+									<Input
+										label="Historico"
+										name="historic"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<Select
+										onlyOneValue
+										label="Forma de pagamento"
+										name="paymentMethod"
+										options={paymentMethodOptions}
+										isClearable
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<Select
+										label="Bandeira Tef."
+										name="tefFlagId"
+										onlyOneValue
+										isClearable
+										options={tfeFlags?.data?.map((item) => ({
+											label: item?.description,
+											value: item.id,
+										}))}
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<Select
+										label="Adquirente Tef."
+										name="tefAcquirerId"
+										onlyOneValue
+										isClearable
+										options={
+											tfeAquires?.data?.map((item) => ({
+												label: item?.description,
+												value: item.id,
+											})) || []
+										}
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+								</div>
+							</Collapse.Panel>
+						</Collapse>
 					</div>
 				</FormHandler>
 			</Container>

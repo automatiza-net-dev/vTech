@@ -38,8 +38,8 @@ import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
-import { Button, PageWrapper, useToast } from "infinity-forge";
-import { Table, Modal } from "antd";
+import { Button, PageWrapper, useQuery, useToast } from "infinity-forge";
+import { Table, Modal, Row, Col, Divider, Typography } from "antd";
 import TitlesFilters from "./TitlesFilters";
 import FinancesActions from "@/OLD/components/Titles/Actions";
 import BorderoActions from "./Actions/BorderoActions";
@@ -101,6 +101,15 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	const { clinic } = useProfile();
 	const [unit, setUnit] = useState({ unit: clinic?.id });
 	const { checkingAccounts } = useCheckingAccounts(unit as any);
+
+  const controlResumeQuery = useQuery({
+    queryKey: ['control-resume', reload],
+    queryFn: async () => {
+      const result = await financesService.getControlResume(filters)
+
+      return result.data
+    }
+  })
 
 	const createTitlePermission = useUserHasPermission(
 		`${accessControlTitles(type)}01`,
@@ -413,6 +422,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 
 	const imprimir = useReactToPrint({ contentRef: componentRef });
 
+
 	return !listTitlesPermission || listTitlesPermission === "loading" ? (
 		<AccessDenied loading={listTitlesPermission} />
 	) : (
@@ -442,6 +452,22 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					clinics={clinics}
 					loadingFinances={loadingFinances}
 				/>
+				<hr />
+
+				<Row align="middle" justify="space-between" style={{}}>
+					{controlResumeQuery.data?.map((item, index) => (
+						<React.Fragment key={item.label}>
+							<Col style={{ textAlign: "left", minWidth: 150 }}>
+								<Typography.Text type="secondary">{item.label}</Typography.Text>
+								<br />
+								<Typography.Title level={4} style={{ margin: 0 }}>
+									{item.value}
+								</Typography.Title>
+							</Col>
+						</React.Fragment>
+					))}
+				</Row>
+
 				<hr />
 				<div className="uk-width-1-1">
 					<div className="uk-flex uk-flex-right">
