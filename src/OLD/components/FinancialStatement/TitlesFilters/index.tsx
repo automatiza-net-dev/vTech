@@ -371,7 +371,7 @@ export default function TitlesFilters({
 							</div>
 						</div>
 
-						<Collapse defaultActiveKey={["1"]} ghost>
+						<Collapse defaultActiveKey={[]} ghost>
 							<Collapse.Panel header="Mais filtros" key="1">
 								<div className="row">
 									<div style={{ minWidth: "350px" }}>
