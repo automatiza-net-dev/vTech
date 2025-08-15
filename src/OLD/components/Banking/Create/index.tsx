@@ -15,6 +15,7 @@ import { Input, DatePicker, Radio, Select, AutoComplete } from "antd";
 
 import { useToast } from "infinity-forge";
 import { useQuery } from "infinity-forge";
+import { AxiosError } from "axios";
 
 const { Group } = Radio;
 const { Option } = Select;
@@ -28,6 +29,7 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 		discountValue: 0,
 		discountPercentage: 0,
 	});
+	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [loading, setLoading] = useState(false);
 	const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
 	const { plans } = usePlans();
@@ -69,6 +71,25 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 				status: "error",
 				message: errorMessage,
 			});
+
+			if (err instanceof AxiosError) {
+				if (
+					"errors" in err.response?.data &&
+					Array.isArray(err.response?.data.errors)
+				) {
+					setErrors(
+						err.response.data.errors.reduce((acc, curr) => {
+							if (!acc[curr.field]) {
+								acc[curr.field] = [];
+							}
+
+							acc[curr.field].push(curr.message);
+
+							return acc;
+						}, {}),
+					);
+				}
+			}
 		}
 	}, [data]);
 
@@ -172,6 +193,12 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										}}
 									/>
 								)}
+
+								{errors["clientId"] && (
+									<p style={{ color: "red" }}>
+										{errors["clientId"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="uk-margin-right">
 								<label>Data emissão</label>
@@ -181,6 +208,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 									value={data?.issueDate ? moment(data.issueDate) : moment()}
 									onChange={(e) => setData({ ...data, issueDate: e })}
 								/>
+								{errors["issueDate"] && (
+									<p style={{ color: "red" }}>
+										{errors["issueDate"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div>
 								<label>Mês/Ano Competência</label>
@@ -197,6 +229,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 									}
 									onChange={(e) => setData({ ...data, competenceDate: e })}
 								/>
+								{errors["competenceDate"] && (
+									<p style={{ color: "red" }}>
+										{errors["competenceDate"].join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 						<div className="uk-flex uk-margin-top">
@@ -212,6 +249,12 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 									<Radio value="true">Sim</Radio>
 									<Radio value="false">Não</Radio>
 								</Group>
+
+								{errors["reconciled"] && (
+									<p style={{ color: "red" }}>
+										{errors["reconciled"].join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 						<div className="uk-flex uk-margin-top">
@@ -223,6 +266,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 									}
 									value={data?.document}
 								/>
+								{errors["document"] && (
+									<p style={{ color: "red" }}>
+										{errors["document"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="uk-margin-right">
 								<label>Valor Lançamento</label>
@@ -233,6 +281,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 									}
 									value={data?.documentValue}
 								/>
+								{errors["documentValue"] && (
+									<p style={{ color: "red" }}>
+										{errors["documentValue"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div>
 								<label>Historico</label>
@@ -242,6 +295,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 									}
 									value={data?.historic}
 								/>
+								{errors["historic"] && (
+									<p style={{ color: "red" }}>
+										{errors["historic"].join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 						<div className="uk-flex uk-margin-top">
@@ -254,6 +312,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										setData({ ...data, feeValue: e.target.value })
 									}
 								/>
+								{errors["feeValue"] && (
+									<p style={{ color: "red" }}>
+										{errors["feeValue"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="uk-width-1-6 uk-margin-right">
 								<label>% Juros</label>
@@ -264,6 +327,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										setData({ ...data, feePercentage: e.target.value })
 									}
 								/>
+								{errors["feePercentage"] && (
+									<p style={{ color: "red" }}>
+										{errors["feePercentage"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="uk-width-1-6 uk-margin-right">
 								<label>R$ Desconto</label>
@@ -274,6 +342,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										setData({ ...data, discountValue: e.target.value })
 									}
 								/>
+								{errors["discountValue"] && (
+									<p style={{ color: "red" }}>
+										{errors["discountValue"].join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="uk-width-1-6 uk-margin-right">
 								<label>% Desconto</label>
@@ -284,6 +357,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										setData({ ...data, discountPercentage: e.target.value })
 									}
 								/>
+								{errors["discountPercentage"] && (
+									<p style={{ color: "red" }}>
+										{errors["discountPercentage"].join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 						<div
@@ -319,6 +397,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 											</Option>
 										))}
 								</Select>
+								{errors["paymentMethodId"] && (
+									<p style={{ color: "red" }}>
+										{errors["paymentMethodId"].join(", ")}
+									</p>
+								)}
 							</div>
 
 							<div>
@@ -334,6 +417,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										setData({ ...data, tefFlagId: value });
 									}}
 								/>
+								{errors["tefFlagId"] && (
+									<p style={{ color: "red" }}>
+										{errors["tefFlagId"].join(", ")}
+									</p>
+								)}
 							</div>
 
 							<div>
@@ -350,6 +438,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 										setData({ ...data, acquirerId: value });
 									}}
 								/>
+								{errors["acquirerId"] && (
+									<p style={{ color: "red" }}>
+										{errors["acquirerId"].join(", ")}
+									</p>
+								)}
 							</div>
 
 							<div>
@@ -378,6 +471,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 												),
 										)}
 								</Select>
+								{errors["fromAccountPlanId"] && (
+									<p style={{ color: "red" }}>
+										{errors["fromAccountPlanId"].join(", ")}
+									</p>
+								)}
 							</div>
 
 							<div>
@@ -408,6 +506,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 											</Option>
 										))}
 								</Select>
+								{errors["fromCheckingAccountId"] && (
+									<p style={{ color: "red" }}>
+										{errors["fromCheckingAccountId"].join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 
@@ -445,6 +548,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 												),
 										)}
 								</Select>
+								{errors["toAccountPlanId"] && (
+									<p style={{ color: "red" }}>
+										{errors["toAccountPlanId"].join(", ")}
+									</p>
+								)}
 							</div>
 
 							<div>
@@ -470,6 +578,11 @@ const Create = memo(function FormChild({ cleanUp }: { cleanUp: () => void }) {
 											</Option>
 										))}
 								</Select>
+								{errors["toCheckingAccountId"] && (
+									<p style={{ color: "red" }}>
+										{errors["toCheckingAccountId"].join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 					</div>
