@@ -219,9 +219,9 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 					},
 					{
 						action: async (data) => {
-							setModal(true);
-							// await handleSubmit(data, () => {
-							// });
+							await handleSubmit(data, () => {
+								setModal(true);
+							});
 						},
 						props: () => ({
 							text: `NOVO ${getWord("Orçamento").toUpperCase()}`,
