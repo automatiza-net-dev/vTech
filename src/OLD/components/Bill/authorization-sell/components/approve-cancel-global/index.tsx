@@ -40,6 +40,13 @@ export function ApproveCancelGlobal({
 		enabled: cancelled === "A" && !!unit?.id,
 	});
 
+	const onlyProducts = bill.items.every(
+		(it) => it.productVariation.product.type === "product",
+	);
+	const onlyServices = bill.items.every(
+		(it) => it.productVariation.product.type === "service",
+	);
+
 	return (
 		<>
 			<S.Cancel>
@@ -102,7 +109,8 @@ export function ApproveCancelGlobal({
 
 					{cancelled === "A" &&
 						values?.cancelled === "true" &&
-						unit?.configs?.businessUnits?.controls_deposit === true && (
+						unit?.configs?.businessUnits?.controls_deposit === true &&
+						!onlyServices && (
 							<Select
 								label="Depósito estoque - devolução cancelamento"
 								name="depositId"
