@@ -88,7 +88,7 @@ const mapper = (data = [], setReload) => {
       status: budgetStatusFormatter(budget, setReload),
       actions: (
         <>
-          <BudgetActions key={budget.id} budget={budget} />
+          <BudgetActions key={budget.id} budget={budget} mode={'tooltip'} />
         </>
       ),
     };

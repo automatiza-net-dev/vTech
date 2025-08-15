@@ -10,10 +10,12 @@ export default function AddPaymentPreview({
 	budgetId,
 	budgetTag,
 	onUpdatePayment,
+	mode,
 }: {
 	onUpdatePayment?: () => void;
 	budgetId: string;
 	budgetTag: string;
+	mode: "button" | "tooltip";
 }) {
 	const hasPermission = usePermission("ORC02");
 	const [visible, setVisible] = useState(false);
@@ -26,7 +28,24 @@ export default function AddPaymentPreview({
 
 	return (
 		<>
-			<Button text="Pagamentos" onClick={() => setVisible(true)} />
+			{mode === "button" && (
+				<Button text="Pagamentos" onClick={() => setVisible(true)} />
+			)}
+
+			{mode === "tooltip" && (
+				<Tooltip
+					idTooltip="add-payment-prev"
+					content="Pagamentos"
+					enableHover
+					trigger={
+						<MdMonetizationOn
+							onClick={() => setVisible(true)}
+							size={20}
+							className="icon"
+						/>
+					}
+				/>
+			)}
 
 			<Modal
 				open={visible}

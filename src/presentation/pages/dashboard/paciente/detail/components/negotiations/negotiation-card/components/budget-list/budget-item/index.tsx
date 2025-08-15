@@ -202,6 +202,7 @@ export function BudgetItem({
 							<AddPaymentPreview
 								budgetId={budget.id}
 								budgetTag={budget.tag}
+                mode="button"
 								onUpdatePayment={() => {
 									queryClient.invalidateQueries(["openNegotiations"]);
 								}}
