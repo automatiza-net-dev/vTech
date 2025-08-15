@@ -223,48 +223,43 @@ function Products() {
             isLoading || Object.keys(filters).length === 0
               ? []
               : data
-                  ?.map((d) =>
-                    mapper({
-                      data: d,
-                    })
-                  )
-                  .map((d) => ({
-                    ...d,
-                    actions: (
-                      <div className="uk-flex uk-flex-around">
-                        <FiCheck
-                          size={20}
+                ?.map((d) =>
+                  mapper({
+                    data: d,
+                  })
+                )
+                .map((d) => ({
+                  ...d,
+                  actions: (
+                    <div className="uk-flex uk-flex-around">
+                      {canEditProduct && (
+                        <FiEdit2
                           onClick={() => {
                             setSelectedId(d?.id);
                             setDetailsVisible(true);
                           }}
+                          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
                         />
-                        <VscTasklist
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setSelectedProduct(d);
-                            setProductivityVisible(true);
+                      )}
+                      <VscTasklist
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          setSelectedProduct(d);
+                          setProductivityVisible(true);
+                        }}
+                      />
+
+                      {canDeleteProduct && (
+                        <DeleteProduct
+                          id={d.id}
+                          hide={() => {
+                            queryClient.invalidateQueries(["products"]);
                           }}
                         />
-                        {canEditProduct && (
-                          <FiEdit2
-                            onClick={() => {
-                              push(`/dashboard/product/${d.id}`);
-                            }}
-                            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
-                          />
-                        )}
-                        {canDeleteProduct && (
-                          <DeleteProduct
-                            id={d.id}
-                            hide={() => {
-                              queryClient.invalidateQueries(["products"]);
-                            }}
-                          />
-                        )}
-                      </div>
-                    ),
-                  }))
+                      )}
+                    </div>
+                  ),
+                }))
           }
           columns={columns}
           locale={{
