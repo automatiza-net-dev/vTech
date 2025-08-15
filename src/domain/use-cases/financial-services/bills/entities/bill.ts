@@ -49,6 +49,12 @@ export type Bill = {
   additionalInformation: number;
   cancelled_at: Date | null;
   cancellation_observation: null | string;
+  cancelDate: null | string;
+  cancelReason: null | string;
+  cancelUser: {
+    id: User["id"];
+    name: User["user"]["name"];
+  } | null;
   status: "BAIXADA" | "ABERTA" | "Venda em Aberto" | "Nao Aprovada";
   document_status: "Gerados" | null;
   created_at: Date;

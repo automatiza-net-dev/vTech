@@ -181,7 +181,7 @@ export function AuthorizationSell(
           >
             {(props?.isCancelled || props.cancelled === "P" || props.cancelled === "A") && (
               <PermissionItem hash="VEN18">
-                  <ApproveCancelGlobal cancelled={props.cancelled} />
+                  <ApproveCancelGlobal bill={data} cancelled={props.cancelled} />
               </PermissionItem>
             )}
 
