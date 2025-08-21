@@ -50,17 +50,17 @@ export default function ConvertBillToTreatment({
   //false - só baixada
   //true - em ambas
 
-  const generate_treatment_opened_bill =
-    unit?.configs?.bills?.generate_treatment_opened_bill;
+  // const generate_treatment_opened_bill =
+  //   unit?.configs?.bills?.generate_treatment_opened_bill;
 
-  if (
-    (!generate_treatment_opened_bill && bill.status !== "BAIXADA") ||
-    (generate_treatment_opened_bill &&
-      bill.status !== "ABERTA" &&
-      bill.status !== "BAIXADA")
-  ) {
-    return <></>;
-  }
+  // if (
+  //   (!generate_treatment_opened_bill && bill.status !== "BAIXADA") ||
+  //   (generate_treatment_opened_bill &&
+  //     bill.status !== "ABERTA" &&
+  //     bill.status !== "BAIXADA")
+  // ) {
+  //   return <></>;
+  // }
 
   return (
     <Tooltip

@@ -40,9 +40,9 @@ export function ApproveCancelGlobal({
 		enabled: cancelled === "A" && !!unit?.id,
 	});
 
-	const onlyProducts = bill.items.every(
-		(it) => it.productVariation.product.type === "product",
-	);
+	// const onlyProducts = bill.items.every(
+	// 	(it) => it.productVariation.product.type === "product",
+	// );
 	const onlyServices = bill.items.every(
 		(it) => it.productVariation.product.type === "service",
 	);
