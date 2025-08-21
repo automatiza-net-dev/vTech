@@ -19,7 +19,6 @@ import * as S from "./styles";
 import { useQueryClient } from "infinity-forge";
 
 export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
-	console.log({ rest });
 	const [loading, setLoading] = useState(false);
 	const [photos, setPhotos] = useState<FileSystemType[] | null>(null);
 
@@ -103,6 +102,26 @@ export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
 									});
 								}
 
+								const photosToDelete = data.photos
+									? photos?.reduce((acc, ph, idx) => {
+											if (!data.photos.find((dp) => dp.url === ph.url)) {
+												acc.push(idx);
+											}
+											return acc;
+										}, [] as number[])
+									: photos?.map((_, idx) => idx);
+								if (photosToDelete && photosToDelete?.length > 0) {
+									const tasks =
+										photosToDelete?.map((phD) =>
+											api({
+												url: `n-timeline/photos/attachments/${rest._id}/${phD}`,
+												method: "delete",
+												headers: {},
+											}),
+										) ?? [];
+									await Promise.all(tasks);
+								}
+
 								createToast({
 									message: "Video/Foto atualizado com sucesso!",
 									status: "success",
@@ -123,9 +142,9 @@ export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
 								});
 							}
 
-							await refetch(["LastUpdates"], { mode: "include" });
-
-							setModal && setModal(false);
+							// await refetch(["LastUpdates"], { mode: "include" });
+							//
+							// setModal && setModal(false);
 						}}
 						cleanFieldsOnSubmit={false}
 						isStickyButtons
