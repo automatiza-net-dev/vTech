@@ -156,19 +156,17 @@ export default function LaunchExam({
       patientExamsService.createAttachment(id, formData).then((_res) => {
         examPatientData
           ? createToast({
-              message: "Exame atualizado com sucesso!",
-              status: "success",
-            })
+            message: "Exame atualizado com sucesso!",
+            status: "success",
+          })
           : createToast({
-              message: "Exame solicitado com sucesso!",
-              status: "success",
-            });
+            message: "Exame solicitado com sucesso!",
+            status: "success",
+          });
       });
     },
     [fileList]
   );
-
-
 
   const submitExamLauching = useCallback(
     (visible = false) => {
@@ -191,9 +189,9 @@ export default function LaunchExam({
           fileList.length > 0
             ? submitArquives(res?.data?.id)
             : createToast({
-                message: "Exame solicitado com sucesso!",
-                status: "success",
-              });
+              message: "Exame solicitado com sucesso!",
+              status: "success",
+            });
 
           if (
             router?.query?.scheduleId &&
@@ -263,9 +261,9 @@ export default function LaunchExam({
           fileList.length > 0
             ? submitArquives(examPatientData?.timeline_info?.patient_exam?.id)
             : createToast({
-                message: "Exame atualizado com sucesso!",
-                status: "success",
-              });
+              message: "Exame atualizado com sucesso!",
+              status: "success",
+            });
         })
         .catch((err) => {
           setLoading(false);
@@ -307,6 +305,31 @@ export default function LaunchExam({
       });
   };
 
+  const removeMedia = useCallback(
+    (idx: number) => {
+      setLoading(true);
+      timelineService
+        .removeExamMedia(examPatientData?._id, idx)
+        .then(async (_res) => {
+          setLoading(false);
+          await queryClient.refetch(["LastUpdates", router.query.id]);
+          return createToast({
+            message: "Anexo removido com sucesso!",
+            status: "success",
+          });
+        })
+        .catch((_err) => {
+          setLoading(false);
+          return createToast({
+            message: "Houve um erro ao remover o anexo selecionado",
+            status: "error",
+          });
+        });
+    },
+    [examPatientData]
+  );
+
+
   return !modal ? (
     <>
       <FormChild
@@ -347,7 +370,7 @@ export default function LaunchExam({
           {fileList?.length > 0 &&
             fileList.map((item: any, i) => {
               return item?.attachment ? (
-                <FileUploader {...item} url={item?.attachment} key={i} />
+                <FileUploader {...item} removeMedia={removeMedia} idx={i} url={item?.attachment} key={i} />
               ) : (
                 <div style={{ marginTop: "10px" }}>
                   {isImage(window.URL.createObjectURL(item.originFileObj)) ? (
@@ -486,8 +509,8 @@ export const isImage = (fileName: string) => {
     typeof fileName === "string"
       ? fileName
       : typeof fileName === "object"
-      ? (fileName as any)?.type
-      : "";
+        ? (fileName as any)?.type
+        : "";
 
   return imageExtensions.some((ext) =>
     fileNameAcess?.toLowerCase()?.includes(ext)
