@@ -301,7 +301,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 <strong>Caixa</strong>
               </h5>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Saldo inicial:</p>
+                <p className="uk-margin-remove">Saldo inicial / troco:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.opening_balance
                     ? currencyFormatter(selectedData?.opening_balance)
