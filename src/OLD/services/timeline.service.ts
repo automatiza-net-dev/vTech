@@ -82,6 +82,9 @@ const removeSinglePhoto = async (id, index, route) =>
 const removeObservationMedia = async (timelineId, mediaIndex) =>
   await api.delete(`/n-timeline/observations/${timelineId}/${mediaIndex}`);
 
+const removeExamMedia = async (timelineId, mediaIndex) =>
+  await api.delete(`/n-timeline/evaluation/${timelineId}/${mediaIndex}`);
+
 export const timelineService = {
   insertWeight,
   insertDocument,
@@ -110,4 +113,5 @@ export const timelineService = {
   removeObservationMedia,
   getCompleteHospitalizationsTimeline,
   removeComplete,
+removeExamMedia
 };
