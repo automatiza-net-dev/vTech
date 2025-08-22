@@ -15,7 +15,7 @@ import { Button } from "antd";
 import { Container } from "./styles";
 import Header from "./Header";
 
-const CashierReport = memo(function ({ selectedData, type, setVisible }) {
+const CashierReport = memo(function({ selectedData, type, setVisible }) {
   const [paymentMethods, setPaymentMethods] = useState([]);
 
   const { reports } = useDumpDailyCasher(selectedData?.id);
@@ -28,18 +28,16 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
       reports?.bill_payments.map((item) => {
         if (
           !arr.includes(
-            `${item?.payment_method?.description}${
-              item?.payment_description?.tef_aquirer_description
-                ? ` - ${item?.payment_description?.tef_aquirer_description}`
-                : ""
+            `${item?.payment_method?.description}${item?.payment_description?.tef_aquirer_description
+              ? ` - ${item?.payment_description?.tef_aquirer_description}`
+              : ""
             }`
           )
         ) {
           arr.push(
-            `${item?.payment_method?.description}${
-              item?.payment_description?.tef_aquirer_description
-                ? ` - ${item?.payment_description?.tef_aquirer_description}`
-                : ""
+            `${item?.payment_method?.description}${item?.payment_description?.tef_aquirer_description
+              ? ` - ${item?.payment_description?.tef_aquirer_description}`
+              : ""
             }`
           );
         }
@@ -145,10 +143,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => {
@@ -166,10 +163,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -183,10 +179,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -200,10 +195,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -215,10 +209,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -232,10 +225,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -251,10 +243,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -332,14 +323,16 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                     : currencyFormatter("0")}
                 </p>
               </div>
-              <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Fundo Caixa:</p>
-                <p className="uk-margin-remove">
-                  {selectedData?.cashier_funds
-                    ? currencyFormatter(selectedData?.cashier_funds)
-                    : currencyFormatter("0")}
-                </p>
-              </div>
+              {false && (
+                <div className="uk-flex uk-flex-between">
+                  <p className="uk-margin-remove">Fundo Caixa:</p>
+                  <p className="uk-margin-remove">
+                    {selectedData?.cashier_funds
+                      ? currencyFormatter(selectedData?.cashier_funds)
+                      : currencyFormatter("0")}
+                  </p>
+                </div>
+              )}
               <div className="uk-flex uk-flex-between">
                 <p className="uk-margin-remove">Total caixa (gaveta):</p>
                 <p className="uk-margin-remove">
