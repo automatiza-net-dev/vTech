@@ -342,7 +342,7 @@ const CashierReport = memo(function({ selectedData, type, setVisible }) {
                 </p>
               </div>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Saldo caixa:</p>
+                <p className="uk-margin-remove">Diferença caixa:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.cashier_balance
                     ? currencyFormatter(selectedData?.cashier_balance)
