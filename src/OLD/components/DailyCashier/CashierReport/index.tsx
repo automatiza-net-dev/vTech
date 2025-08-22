@@ -54,13 +54,13 @@ const CashierReport = memo(function({ selectedData, type, setVisible }) {
         <hr />
         <section className="uk-margin-top">
           <h5
-            className="uk-margin-remove"
+            className="uk-margin-remove custom-title"
             style={{
               color: "#ffffff",
               textAlign: "center",
             }}
           >
-            <strong>Despesas</strong>
+            <strong>Sangrias</strong>
           </h5>
           <div className="uk-flex uk-flex-around">
             <div>
@@ -96,7 +96,7 @@ const CashierReport = memo(function({ selectedData, type, setVisible }) {
               textAlign: "center",
             }}
           >
-            <strong>Recebimentos</strong>
+            <strong>Suprimentos</strong>
           </h5>
           <div className="uk-flex uk-flex-around">
             <div>
