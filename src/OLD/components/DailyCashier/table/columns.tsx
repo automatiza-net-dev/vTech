@@ -57,7 +57,7 @@ export const columns = [
     id: "closing_date",
   },
   {
-    label: "Saldo",
+    label: "Diferença",
     Component: {
       Element: (props) => (
         <Link href={`/dashboard/movimentacao-caixa/${props.id}`}>
