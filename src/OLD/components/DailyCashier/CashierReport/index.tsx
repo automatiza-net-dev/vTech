@@ -317,7 +317,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 </p>
               </div>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Total Recebimentos:</p>
+                <p className="uk-margin-remove">Total Suprimentos:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.receipts_total
                     ? currencyFormatter(selectedData?.receipts_total)
@@ -325,7 +325,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 </p>
               </div>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Total Despesas:</p>
+                <p className="uk-margin-remove">Total Sangrias:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.expenses_total
                     ? currencyFormatter(selectedData?.expenses_total)
