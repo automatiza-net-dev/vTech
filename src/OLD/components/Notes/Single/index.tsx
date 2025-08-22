@@ -231,7 +231,7 @@ export function Details({ receiptId, setVisible }: any) {
         quantity: product?.quantity,
         fractionValue: product.fraction_value ? product.fraction_value : product.status === 'PendenteXml' ? '-' : product.fraction_value,
         productCode: product?.productVariation?.product?.reference_code,
-        description: product?.productVariation?.product?.description,
+        description: !product.productVariation ? `[NÃO RELACIONADO] ${product?.description_xml ?? '-'}` : product?.productVariation?.product?.description,
         unitPrice: currencyFormatter(product?.unitary_value),
         discount: currencyFormatter(product?.discount_value),
         total: currencyFormatter(product?.total_value),
