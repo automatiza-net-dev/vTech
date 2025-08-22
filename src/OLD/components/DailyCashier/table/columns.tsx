@@ -61,7 +61,7 @@ export const columns = [
     Component: {
       Element: (props) => (
         <Link href={`/dashboard/movimentacao-caixa/${props.id}`}>
-          {formatNumberToCurrency(props.cashier_balance)}
+          {props.status === 'ABERTO' ? '-' : formatNumberToCurrency(props.cashier_balance)}
         </Link>
       ),
       props: {},
