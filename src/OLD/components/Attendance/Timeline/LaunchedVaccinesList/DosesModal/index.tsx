@@ -139,6 +139,7 @@ export function DosesModal({
       <FormChild
         loading={loading}
         changeTab={changeTab}
+        vaccine={vaccine}
         vaccineData={vaccineData}
         calendars={calendars}
         actionState={actionState}
