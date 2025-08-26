@@ -390,59 +390,42 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                   </div>
 
                   <div className="uk-width-1-4">
-                    <label>Produto fracionado</label>
-                    <Select
-                      className="uk-width-1-1"
-                      value={data?.fractioned}
-                      onChange={(val) => setData({ ...data, fractioned: val })}
+                    <Form.Item
+                      labelAlign="left"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
                     >
-                      <Option value={true}>Sim</Option>
-                      <Option value={false}>Não</Option>
-                    </Select>
+                      <label>Código NCM</label>
+                      <Input
+                        value={data?.ncm}
+                        onChange={(e) =>
+                          setData({ ...data, ncm: Masks.ncm(e.target.value) })
+                        }
+                      />
+                    </Form.Item>
                   </div>
 
-                  {data?.fractioned && (
-                    <>
-                      <div className="uk-width-1-4">
-                        <label>Unidade fracionamento</label>
-                        <AutoComplete
-                          className="uk-width-1-1"
-                          options={unitsData?.data?.map((unit) => ({
-                            ...unit,
-                            value: unit?.name,
-                          }))}
-                          value={data?.fractionUnitDescription}
-                          onChange={(val) =>
-                            setData({ ...data, fractionUnitDescription: val })
-                          }
-                          onSelect={(_, opt) =>
-                            setData({
-                              ...data,
-                              fractionUnitDescription: opt?.value,
-                              fractionUnitId: opt?.id,
-                            })
-                          }
-                          filterOption={(val, opt) =>
-                            normalizeStr(opt?.value.toUpperCase()).includes(
-                              normalizeStr(val?.toUpperCase()),
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="uk-width-1-4">
-                        <label>Qtd Embalagem</label>
-                        <Input
-                          value={data?.fractionValue}
-                          onChange={(e) =>
-                            setData({ ...data, fractionValue: e.target.value })
-                          }
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="uk-margin-top uk-flex uk-flex-between">
-                  <div className="uk-width-1-1">
+                  <div className="uk-width-1-4">
+                    <Form.Item
+                      labelAlign="left"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <label>Código CEST</label>
+                      <Input
+                        value={data?.cest}
+                        onChange={(e) =>
+                          setData({ ...data, cest: e.target.value })
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <div className="uk-width-1-4">
                     <Form.Item
                       labelAlign="left"
                       required
@@ -458,7 +441,6 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                         required
                         value={String(data?.taxationGroupId)}
                         onChange={(value) => {
-                          console.log(value);
                           setData((prev) => ({
                             ...prev,
                             taxationGroupId: String(value),
@@ -468,44 +450,6 @@ const CreateProduct = memo(function CreateProduct({ setVisible }: any) {
                           label: item.name,
                           value: item.id,
                         }))}
-                      />
-                    </Form.Item>
-                  </div>
-
-                  <div className="uk-width-1-1 uk-padding uk-padding-remove-vertical uk-padding-remove-left">
-                    <Form.Item
-                      labelAlign="left"
-                      style={{
-                        width: "80%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <label>Código NCM</label>
-                      <Input
-                        value={data?.ncm}
-                        onChange={(e) =>
-                          setData({ ...data, ncm: Masks.ncm(e.target.value) })
-                        }
-                      />
-                    </Form.Item>
-                  </div>
-
-                  <div className="uk-width-1-1 uk-padding uk-padding-remove-vertical uk-padding-remove-left">
-                    <Form.Item
-                      labelAlign="left"
-                      style={{
-                        width: "80%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <label>Código CEST</label>
-                      <Input
-                        value={data?.cest}
-                        onChange={(e) =>
-                          setData({ ...data, cest: e.target.value })
-                        }
                       />
                     </Form.Item>
                   </div>

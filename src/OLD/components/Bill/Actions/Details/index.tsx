@@ -332,7 +332,9 @@ export default function Details({ billId, setVisible }: any) {
           moment(item?.reviewCancelDate).format("DD/MM/YYYY HH:mm")}{" "}
         <br />
         {item?.reviewCancelNotes && (
-          <p className="font-14-regular">{item?.reviewCancelNotes}</p>
+          <p className="font-14-regular" dangerouslySetInnerHTML={{
+            __html: item?.reviewCancelNotes ?? ''
+          }} />
         )}
       </>
     );

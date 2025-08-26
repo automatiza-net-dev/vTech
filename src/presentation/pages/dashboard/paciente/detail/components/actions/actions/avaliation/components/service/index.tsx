@@ -75,6 +75,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 	const schedule = useLoadSchedule(scheduleId);
 
 	async function handleSubmit(data, onSuccess: () => void) {
+		console.log("calling handleSubmit");
 		try {
 			if (!data?.scheduleServiceId || data?.scheduleServiceId == "") {
 				return createToast({
@@ -219,9 +220,55 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 					},
 					{
 						action: async (data) => {
-							await handleSubmit(data, () => {
-								setModal(true);
-							});
+							if (!data.tag) {
+								try {
+									const payload = {
+										...data,
+										scheduleId: scheduleId,
+										realizedAt: moment().toDate(),
+										technicianId: user?.user?.id as string,
+										scheduleServiceId: data.scheduleServiceId
+											? data.scheduleServiceId[0]
+											: "",
+										patientId,
+										photos: data?.photos?.map((photo) => photo.file),
+									};
+
+									const attendanceResponse = await container
+										.get<RemoteAttendances>(TypesAutomatiza.RemoteAttendances)
+										["open"]({
+											...payload,
+											typeSystem: type,
+											id: attendanceId
+												? type !== "Vet"
+													? timeLine._id
+													: attendanceId
+												: undefined,
+										});
+
+									setAttendance(attendanceResponse);
+
+									// createToast({
+									// 	message: `Atendimento criado com sucesso!`,
+									// 	status: "success",
+									// });
+
+									mutate && mutate();
+									setModal(true);
+									// reloadSchedule && reloadSchedule();
+								} catch (err: any) {
+									createToast({
+										status: "error",
+										message:
+											err?.error?.message ??
+											"Houve um erro ao criar a avaliação",
+									});
+								}
+							} else {
+								await handleSubmit(data, () => {
+									setModal(true);
+								});
+							}
 						},
 						props: () => ({
 							text: `NOVO ${getWord("Orçamento").toUpperCase()}`,
@@ -288,7 +335,7 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
 				onClose={async () => {
 					setModal(false);
 
-					await queryClient.refetch(["LastUpdates"], { mode: "include" });
+					// await queryClient.refetch(["LastUpdates"], { mode: "include" });
 				}}
 			>
 				<AddBudgetNew

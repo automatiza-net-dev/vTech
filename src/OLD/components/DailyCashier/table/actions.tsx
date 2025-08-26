@@ -138,7 +138,7 @@ export function useDailyCashierTableActions({
         {
           name: "initialBalance",
           InputComponent: "InputCurrency",
-          label: "Saldo inicial (R$):",
+          label: "Saldo inicial / Troco (R$):",
         },
       ],
     ],

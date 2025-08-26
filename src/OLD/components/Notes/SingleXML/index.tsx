@@ -289,29 +289,25 @@ function Single() {
 											value={item?.productVariation?.product?.description}
 										/>
 									</div>
-									{item?.productVariation?.product?.fractioned && (
-										<div className="uk-width-1-6">
-											<label>Qtd Embalagem Compra:</label>
-											<Input
-												className="uk-width-1-1"
-												type="number"
-												value={item.fraction_value}
-												onChange={(e) => {
-													const value = Number.parseFloat(
-														e.currentTarget.value,
-													);
-													setData((old) => {
-														const newItems = [...old.items];
-														newItems[i] = {
-															...newItems[i],
-															fraction_value: value,
-														};
-														return { ...old, items: newItems };
-													});
-												}}
-											/>
-										</div>
-									)}
+									<div className="uk-width-1-6">
+										<label>Qtd Embalagem Compra:</label>
+										<Input
+											className="uk-width-1-1"
+											type="number"
+											value={item.fraction_value}
+											onChange={(e) => {
+												const value = Number.parseFloat(e.currentTarget.value);
+												setData((old) => {
+													const newItems = [...old.items];
+													newItems[i] = {
+														...newItems[i],
+														fraction_value: value,
+													};
+													return { ...old, items: newItems };
+												});
+											}}
+										/>
+									</div>
 									{!item?.productVariation && (
 										<>
 											<div className="uk-width-1-2">

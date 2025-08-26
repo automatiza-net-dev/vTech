@@ -17,7 +17,7 @@ const CashierHeader = memo(function CashierHeader({ casherData }) {
           <div className="uk-flex uk-flex-around">
             <div>
               <label>Nº Caixa</label>
-              <Input value={casherData?.id} disabled />
+              <Input value={casherData?.tag} disabled />
             </div>
             <div>
               <label>Funcionário</label>

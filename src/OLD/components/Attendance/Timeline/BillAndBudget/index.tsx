@@ -70,6 +70,7 @@ export function BillAndBudget({ patient }) {
                 key={item.id}
                 budget={item}
                 setReload={setReload}
+                mode={'tooltip'}
               />
             ),
         };

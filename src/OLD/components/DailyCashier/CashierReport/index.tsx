@@ -15,7 +15,7 @@ import { Button } from "antd";
 import { Container } from "./styles";
 import Header from "./Header";
 
-const CashierReport = memo(function ({ selectedData, type, setVisible }) {
+const CashierReport = memo(function({ selectedData, type, setVisible }) {
   const [paymentMethods, setPaymentMethods] = useState([]);
 
   const { reports } = useDumpDailyCasher(selectedData?.id);
@@ -28,18 +28,16 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
       reports?.bill_payments.map((item) => {
         if (
           !arr.includes(
-            `${item?.payment_method?.description}${
-              item?.payment_description?.tef_aquirer_description
-                ? ` - ${item?.payment_description?.tef_aquirer_description}`
-                : ""
+            `${item?.payment_method?.description}${item?.payment_description?.tef_aquirer_description
+              ? ` - ${item?.payment_description?.tef_aquirer_description}`
+              : ""
             }`
           )
         ) {
           arr.push(
-            `${item?.payment_method?.description}${
-              item?.payment_description?.tef_aquirer_description
-                ? ` - ${item?.payment_description?.tef_aquirer_description}`
-                : ""
+            `${item?.payment_method?.description}${item?.payment_description?.tef_aquirer_description
+              ? ` - ${item?.payment_description?.tef_aquirer_description}`
+              : ""
             }`
           );
         }
@@ -56,13 +54,13 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
         <hr />
         <section className="uk-margin-top">
           <h5
-            className="uk-margin-remove"
+            className="uk-margin-remove custom-title"
             style={{
               color: "#ffffff",
               textAlign: "center",
             }}
           >
-            <strong>Despesas</strong>
+            <strong>Sangrias</strong>
           </h5>
           <div className="uk-flex uk-flex-around">
             <div>
@@ -98,7 +96,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
               textAlign: "center",
             }}
           >
-            <strong>Recebimentos</strong>
+            <strong>Suprimentos</strong>
           </h5>
           <div className="uk-flex uk-flex-around">
             <div>
@@ -145,10 +143,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => {
@@ -166,10 +163,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -183,10 +179,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -200,10 +195,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -215,10 +209,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -232,10 +225,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -251,10 +243,9 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 {reports.bill_payments
                   .filter(
                     (bill) =>
-                      `${bill?.payment_method?.description}${
-                        bill?.payment_description?.tef_aquirer_description
-                          ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                          : ""
+                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
+                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
+                        : ""
                       }` === method
                   )
                   .map((bill) => (
@@ -301,7 +292,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 <strong>Caixa</strong>
               </h5>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Saldo inicial:</p>
+                <p className="uk-margin-remove">Saldo inicial / troco:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.opening_balance
                     ? currencyFormatter(selectedData?.opening_balance)
@@ -317,7 +308,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 </p>
               </div>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Total Recebimentos:</p>
+                <p className="uk-margin-remove">Total Suprimentos:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.receipts_total
                     ? currencyFormatter(selectedData?.receipts_total)
@@ -325,21 +316,23 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 </p>
               </div>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Total Despesas:</p>
+                <p className="uk-margin-remove">Total Sangrias:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.expenses_total
                     ? currencyFormatter(selectedData?.expenses_total)
                     : currencyFormatter("0")}
                 </p>
               </div>
-              <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Fundo Caixa:</p>
-                <p className="uk-margin-remove">
-                  {selectedData?.cashier_funds
-                    ? currencyFormatter(selectedData?.cashier_funds)
-                    : currencyFormatter("0")}
-                </p>
-              </div>
+              {false && (
+                <div className="uk-flex uk-flex-between">
+                  <p className="uk-margin-remove">Fundo Caixa:</p>
+                  <p className="uk-margin-remove">
+                    {selectedData?.cashier_funds
+                      ? currencyFormatter(selectedData?.cashier_funds)
+                      : currencyFormatter("0")}
+                  </p>
+                </div>
+              )}
               <div className="uk-flex uk-flex-between">
                 <p className="uk-margin-remove">Total caixa (gaveta):</p>
                 <p className="uk-margin-remove">
@@ -349,7 +342,7 @@ const CashierReport = memo(function ({ selectedData, type, setVisible }) {
                 </p>
               </div>
               <div className="uk-flex uk-flex-between">
-                <p className="uk-margin-remove">Saldo caixa:</p>
+                <p className="uk-margin-remove">Diferença caixa:</p>
                 <p className="uk-margin-remove">
                   {selectedData?.cashier_balance
                     ? currencyFormatter(selectedData?.cashier_balance)

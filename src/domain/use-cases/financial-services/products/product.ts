@@ -61,7 +61,7 @@ export type Product = {
   economic_group_id: string;
   description: string;
   quantity: string | number;
-  type: "product";
+  type: "product" | 'service';
   treatmentExecutions?: TreatmentExecutions[];
   courtesyApprovedUser?: {
     id: string;

@@ -26,7 +26,7 @@ const Container = styled.div`
   }
 `;
 
-function BudgetActions({ budget, setReload = false }) {
+function BudgetActions({ budget, setReload = false, mode }) {
   const [budgetComplete, setBudgetComplete] = React.useState(null);
 
   const componentRef = React.useRef<HTMLDivElement>(null);
@@ -44,7 +44,7 @@ function BudgetActions({ budget, setReload = false }) {
     <Container>
       <AddBudget budgetId={budget?.id} />
 
-      <AddPaymentPreview budgetId={budget?.id} budgetTag={budget?.tag} />
+      <AddPaymentPreview budgetId={budget?.id} budgetTag={budget?.tag} mode={mode} />
 
       <CompleteBudget budget={budget} setReload={setReload} />
 

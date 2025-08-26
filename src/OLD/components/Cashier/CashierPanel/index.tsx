@@ -55,11 +55,11 @@ const CashierPanel = memo(function CashierPanel({
               }}
             >
               <ImArrowRight size={50} color="var(--green)" />
-              &nbsp; Lançar recebimento
+              &nbsp; Lançar suprimento 
             </Button>
           )}
           <div className="uk-padding-small sub-section uk-margin-top">
-            <label>Recebimentos</label>
+            <label>Suprimentos</label>
             <div className="uk-flex uk-flex-around">
               <div>
                 <label>Descrição</label>
@@ -99,11 +99,11 @@ const CashierPanel = memo(function CashierPanel({
               }}
             >
               <ImArrowLeft size={50} color="var(--red)" />
-              &nbsp; Lançar Despesa
+              &nbsp; Lançar sangria 
             </Button>
           )}
           <div className="uk-padding-small sub-section uk-margin-top">
-            <label>Despesas</label>
+            <label>Sangrias</label>
             <div className="uk-flex uk-flex-around">
               <div>
                 <label>Descrição</label>
