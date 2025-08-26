@@ -8,6 +8,7 @@ import {
 	Button,
 	useMutation,
 	useQueryClient,
+	Popconfirm,
 } from "infinity-forge";
 
 import { Input } from "antd";
@@ -319,12 +320,21 @@ export default function FormChild({
 					className="uk-margin-top uk-flex uk-flex-right"
 					style={{ gap: "10px" }}
 				>
-					<Button
-						disabled={deleteVaccineRecord.isLoading}
-						type="button"
-						onClick={() => deleteVaccineRecord.mutate()}
-						text="Excluir"
-					/>
+					<Popconfirm
+						onConfirm={async () => {
+							deleteVaccineRecord.mutate();
+						}}
+						idTooltip="a"
+						title="Você deseja mesmo apagar esse item?"
+						position="top-right"
+					>
+						<Button
+							disabled={deleteVaccineRecord.isLoading}
+							type="button"
+							text="Excluir"
+						/>
+					</Popconfirm>
+
 					<Button
 						disabled={deleteVaccineRecord.isLoading}
 						type="button"
