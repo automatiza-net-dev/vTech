@@ -1,4 +1,10 @@
-import { Column, useMutation, useQueryClient, useToast } from "infinity-forge";
+import {
+	Column,
+	Popconfirm,
+	useMutation,
+	useQueryClient,
+	useToast,
+} from "infinity-forge";
 import { FiTrash2 } from "react-icons/fi";
 import moment from "moment";
 
@@ -102,13 +108,21 @@ export const columns: Column<ScheduleVaccine>[] = [
 				});
 
 				return (
-					<FiTrash2
-						onClick={() => deleteVaccineRecord.mutate()}
-						style={{
-							cursor: "pointer",
-							color: "red",
+					<Popconfirm
+						onConfirm={async () => {
+							deleteVaccineRecord.mutate();
 						}}
-					/>
+						idTooltip="a"
+						title="Você deseja mesmo apagar esse item?"
+						position="top-right"
+					>
+						<FiTrash2
+							style={{
+								cursor: "pointer",
+								color: "red",
+							}}
+						/>
+					</Popconfirm>
 				);
 			},
 			props: {},
