@@ -11,7 +11,7 @@ import {
 	Popconfirm,
 } from "infinity-forge";
 
-import { Input } from "antd";
+import { Checkbox, Input } from "antd";
 
 import moment from "moment";
 import { timelineService } from "@/OLD/services/timeline.service";
@@ -80,8 +80,11 @@ export default function FormChild({
 				</label>
 				<p>{`${vaccineData?.vaccine} - ${vaccineData?.protocolLabel}`}</p>
 			</div>
-			<div className="uk-margin-top uk-flex">
-				<div className="uk-width-1-6">
+			<div className="uk-margin-top uk-flex" style={{ gap: "5px" }}>
+				<div
+					className="uk-width-1-6"
+					style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+				>
 					<label> Dose </label>
 					{calendars.length > 0 &&
 						calendars.map((item) => (
@@ -90,7 +93,10 @@ export default function FormChild({
 							</div>
 						))}
 				</div>
-				<div className="uk-width-1-3">
+				<div
+					className="uk-width-1-3"
+					style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+				>
 					<label> Data prevista </label>
 					{calendars.length > 0 &&
 						calendars.map((item, i) => (
@@ -116,7 +122,10 @@ export default function FormChild({
 							</div>
 						))}
 				</div>
-				<div className="uk-width-1-2 input-box">
+				<div
+					className="uk-width-1-2 input-box"
+					style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+				>
 					<label> Data de aplicação </label>
 					{calendars.length > 0 &&
 						calendars.map((item, i) => (
@@ -140,7 +149,10 @@ export default function FormChild({
 							</div>
 						))}
 				</div>
-				<div className="uk-width-1-4">
+				<div
+					className="uk-width-1-4"
+					style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+				>
 					<label> Laboratório </label>
 					{calendars.length > 0 &&
 						calendars.map((item, i) => (
@@ -162,7 +174,10 @@ export default function FormChild({
 							</div>
 						))}
 				</div>
-				<div className="uk-width-1-4">
+				<div
+					className="uk-width-1-4"
+					style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+				>
 					<label> Lote </label>
 					{calendars.length > 0 &&
 						calendars.map((item, i) => (
@@ -184,9 +199,88 @@ export default function FormChild({
 							</div>
 						))}
 				</div>
+				{!modal && (
+					<div
+						className="uk-width-1-4"
+						style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+					>
+						<label> Apl. fora da Clínica </label>
+						{calendars.length > 0 &&
+							calendars.map((item, i) => (
+								<div>
+									<Input
+										disabled={
+											!(actionState === "vaccine" && selectedIndex === i)
+										}
+										value={
+											actionState === "vaccine" && selectedIndex === i
+												? actualData?.appliedOutside
+													? "Sim"
+													: ""
+												: item?.batch
+													? "Sim"
+													: ""
+										}
+									/>
+								</div>
+							))}
+					</div>
+				)}
 
 				{modal && (
-					<div className="uk-width-1-4">
+					<div
+						className="uk-width-1-3"
+						style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+					>
+						<label> Aplicado fora da Clínica? </label>
+						{calendars.length > 0 &&
+							calendars.map((item, i) => (
+								<div
+									className={`uk-flex uk-flex-around uk-width-1-1 ${
+										i > 0 ? "uk-margin-small-top" : ""
+									}`}
+								>
+									<span>
+										<Checkbox
+											disabled={
+												!(actionState === "vaccine" && selectedIndex === i)
+											}
+											onChange={(event) => {
+												setSelectedIndex(i);
+												setActionState("vaccine");
+
+												if (!event.target.checked) {
+													setActualData({
+														...item,
+														...actualData,
+														appliedOutside: event.target.checked,
+													});
+													return;
+												}
+
+												setActualData({
+													...item,
+													...actualData,
+													appliedOutside: event.target.checked,
+													applicationDate:
+														actualData.applicationDate ?? new Date(),
+													laboratory:
+														actualData.laboratory ?? "Fora da Clinica",
+													batch: actualData.batch ?? "Fora da Clinica",
+												});
+											}}
+										/>
+									</span>
+								</div>
+							))}
+					</div>
+				)}
+
+				{modal && (
+					<div
+						className="uk-width-1-4"
+						style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+					>
 						<label> Ações </label>
 						{calendars.length > 0 &&
 							calendars.map((item, i) => (

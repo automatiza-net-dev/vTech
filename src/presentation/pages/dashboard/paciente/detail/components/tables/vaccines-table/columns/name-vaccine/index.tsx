@@ -17,7 +17,7 @@ export function NameVaccine(props) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        styles={{ maxWidth: "700px", padding: 30 }}
+        styles={{ maxWidth: "1200px", padding: 30 }}
       >
         <DosesModal
           modal={true}

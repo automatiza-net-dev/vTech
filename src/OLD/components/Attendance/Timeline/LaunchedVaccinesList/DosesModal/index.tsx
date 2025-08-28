@@ -60,6 +60,7 @@ export function DosesModal({
                 ? moment(item?.application_date)
                 : "",
               dose: item?.dose,
+              appliedOutside: item?.appliedOutside ?? false
             };
           })
         );
@@ -117,6 +118,7 @@ export function DosesModal({
       applicationDate: moment(data?.applicationDate),
       batch: data?.batch,
       laboratory: data?.laboratory,
+      appliedOutside: data?.appliedOutside ?? false
     };
 
     !data?.schedulingDate && delete obj.schedulingDate;

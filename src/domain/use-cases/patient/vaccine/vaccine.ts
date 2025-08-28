@@ -34,4 +34,5 @@ export type Vaccine = {
     | "Dose aplicada"
     | "Dose Pendente - em dia"
     | "Dose Pendente - atrasada";
+  aplicado_fora: boolean;
 };

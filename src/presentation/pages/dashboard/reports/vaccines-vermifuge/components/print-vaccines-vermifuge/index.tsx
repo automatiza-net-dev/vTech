@@ -28,6 +28,7 @@ export function PrintVaccinesVermifugeReport({
             <th>Data Aplicação</th>
             <th>Laboratorio</th>
             <th>Lote</th>
+            <th>Aplicado Fora</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -47,6 +48,7 @@ export function PrintVaccinesVermifugeReport({
                 <td>{item?.data_aplicacao ? item?.data_aplicacao : "-"}</td>
                 <td>{item?.laboratorio}</td>
                 <td>{item?.lote}</td>
+                <td>{item?.aplicado_fora ? 'Sim' : 'Não'}</td>
                 <td>{item?.status}</td>
               </tr>
             ))}
