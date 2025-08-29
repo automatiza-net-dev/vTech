@@ -102,14 +102,14 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	const [unit, setUnit] = useState({ unit: clinic?.id });
 	const { checkingAccounts } = useCheckingAccounts(unit as any);
 
-  const controlResumeQuery = useQuery({
-    queryKey: ['control-resume', reload],
-    queryFn: async () => {
-      const result = await financesService.getControlResume(filters)
+	const controlResumeQuery = useQuery({
+		queryKey: ["control-resume", reload],
+		queryFn: async () => {
+			const result = await financesService.getControlResume(filters);
 
-      return result.data
-    }
-  })
+			return result.data;
+		},
+	});
 
 	const createTitlePermission = useUserHasPermission(
 		`${accessControlTitles(type)}01`,
@@ -422,7 +422,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 
 	const imprimir = useReactToPrint({ contentRef: componentRef });
 
-
 	return !listTitlesPermission || listTitlesPermission === "loading" ? (
 		<AccessDenied loading={listTitlesPermission} />
 	) : (
@@ -469,19 +468,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 				</Row>
 
 				<hr />
-				<div className="uk-width-1-1">
-					<div className="uk-flex uk-flex-right">
-						Saldo{" "}
-						{filters?.checkingAccountId
-							? `Conta corrente ${
-									checkingAccounts.find(
-										(account) => account?.id === filters?.checkingAccountId,
-									)?.description
-								}: `
-							: `unidade ${clinic?.fantasy_name}: `}
-						{currencyFormatter(balance?.balance)}
-					</div>
-				</div>
+
 				{titles?.length > 0 && (
 					<ButtonsPanel
 						setReload={setReload}
@@ -493,80 +480,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					pagination={{ onChange: (page) => setCurrentPage(page) }}
 					columns={Columns(selectAllFinances)}
 					dataSource={formatedFinances}
-					footer={() => (
-						<footer className="uk-flex uk-flex-center">
-							<div className="uk-flex uk-flex-around custom-footer-box">
-								<div className="uk-width-1-2 uk-margin-right">
-									<strong>Total Crédito:&nbsp;</strong>
-									{currencyFormatter(
-										finances?.length > 0 &&
-											finances
-												?.filter((finance) => finance?.type === "CREDITO")
-												.reduce(
-													(acc, current) => acc + current?.total_value,
-													0,
-												),
-									)}
-								</div>
-								<div className="uk-width-1-2 uk-margin-right">
-									<strong>Total Realizado Crédito:&nbsp;</strong>
-									{currencyFormatter(
-										finances?.length > 0 &&
-											finances
-												?.filter((finance) => finance?.type === "CREDITO")
-												.reduce(
-													(acc, current) => acc + current?.payment_value,
-													0,
-												),
-									)}
-								</div>
-								<div className="uk-width-1-2 uk-margin-right">
-									<strong>Total a receber Crédito:&nbsp;</strong>
-									{currencyFormatter(
-										finances?.length > 0 &&
-											finances
-												?.filter(
-													(finance) =>
-														finance?.type === "CREDITO" &&
-														finance?.status === "ABERTO",
-												)
-												.reduce(
-													(acc, current) => acc + current?.total_value,
-													0,
-												),
-									)}
-								</div>
-								<div className="uk-width-1-2 uk-margin-right">
-									<strong>Total Debitos:&nbsp;</strong>
-									{currencyFormatter(
-										finances?.length > 0 &&
-											finances
-												?.filter((finance) => finance?.type === "DEBITO")
-												.reduce(
-													(acc, current) => acc + current?.total_value,
-													0,
-												),
-									)}
-								</div>
-								<div className="uk-width-1-2 uk-margin-right">
-									<strong>Total a vencer Debitos:&nbsp;</strong>
-									{currencyFormatter(
-										finances?.length > 0 &&
-											finances
-												?.filter(
-													(finance) =>
-														finance?.type === "DEBITO" &&
-														finance?.status === "Aberto",
-												)
-												.reduce(
-													(acc, current) => acc + current?.total_value,
-													0,
-												),
-									)}
-								</div>
-							</div>
-						</footer>
-					)}
 				/>
 				<div style={{ display: "none" }}>
 					<div ref={componentRef}>
