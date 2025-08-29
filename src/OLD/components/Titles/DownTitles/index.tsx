@@ -109,7 +109,7 @@ function DownTitles({ setVisible, setReload }: any) {
       bank: item?.bank,
       agency: item?.agency,
       account: item?.account,
-      tefFlagId: item?.flagId === "" ? null : item?.tefFlagId,
+      tefFlagId: item?.flagId ? null : item?.tefFlagId,
       tefAcquirerId: item?.tefAcquirerId,
       increaseValue: 0,
       IncreasePercentage: 0,

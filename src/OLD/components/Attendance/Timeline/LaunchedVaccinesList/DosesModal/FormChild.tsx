@@ -247,6 +247,7 @@ export default function FormChild({
 											disabled={
 												!(actionState === "vaccine" && selectedIndex === i)
 											}
+                      defaultChecked={item.appliedOutside}
 											onChange={(event) => {
 												setSelectedIndex(i);
 												setActionState("vaccine");
