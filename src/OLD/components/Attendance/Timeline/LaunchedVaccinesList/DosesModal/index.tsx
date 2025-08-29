@@ -102,6 +102,7 @@ export function DosesModal({
               ? moment(item?.application_date)
               : "",
             dose: item?.dose,
+            appliedOutside: item.appliedOutside
           };
         })
       );

@@ -70,6 +70,8 @@ export default function FormChild({
 			);
 	}, [calendars]);
 
+  console.log({calendars})
+
 	return (
 		<form>
 			<div>
