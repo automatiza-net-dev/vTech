@@ -103,13 +103,21 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	const { checkingAccounts } = useCheckingAccounts(unit as any);
 
 	const controlResumeQuery = useQuery({
-		queryKey: ["control-resume", reload],
+		queryKey: ["control-resume", filters],
 		queryFn: async () => {
+			if (filters.noSearch) {
+				return [];
+			}
+
 			const result = await financesService.getControlResume(filters);
 
 			return result.data;
 		},
 	});
+
+	useEffect(() => {
+		controlResumeQuery.refetch();
+	}, [reload]);
 
 	const createTitlePermission = useUserHasPermission(
 		`${accessControlTitles(type)}01`,
@@ -451,21 +459,27 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					clinics={clinics}
 					loadingFinances={loadingFinances}
 				/>
-				<hr />
 
-				<Row align="middle" justify="space-between" style={{}}>
-					{controlResumeQuery.data?.map((item, index) => (
-						<React.Fragment key={item.label}>
-							<Col style={{ textAlign: "left", minWidth: 150 }}>
-								<Typography.Text type="secondary">{item.label}</Typography.Text>
-								<br />
-								<Typography.Title level={4} style={{ margin: 0 }}>
-									{item.value}
-								</Typography.Title>
-							</Col>
-						</React.Fragment>
-					))}
-				</Row>
+				{controlResumeQuery.data?.length > 0 && (
+					<>
+						<hr />
+						<Row align="middle" justify="space-between" style={{}}>
+							{controlResumeQuery.data?.map((item, index) => (
+								<React.Fragment key={item.label}>
+									<Col style={{ textAlign: "left", minWidth: 150 }}>
+										<Typography.Text type="secondary">
+											{item.label}
+										</Typography.Text>
+										<br />
+										<Typography.Title level={4} style={{ margin: 0 }}>
+											{item.value}
+										</Typography.Title>
+									</Col>
+								</React.Fragment>
+							))}
+						</Row>
+					</>
+				)}
 
 				<hr />
 
