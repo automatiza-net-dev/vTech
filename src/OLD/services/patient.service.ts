@@ -5,6 +5,10 @@ const getTutors = async (params) => {
   return api.get(`/patient-tutors`, { params });
 };
 
+const getNonPatients = async (params: Record<string, any>) => {
+  return api.get(`/patient-tutors/all`, { params });
+};
+
 const getSingleTutor = async (id) => {
   return api.get(`/patient-tutors/${id}`);
 };
@@ -116,4 +120,5 @@ export const petsService = {
   getPatientMetadata,
   getPatientSalesMetadata,
   getPatientHairTypes,
+getNonPatients
 };
