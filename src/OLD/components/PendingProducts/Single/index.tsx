@@ -52,6 +52,10 @@ const verifyFields = (arr) => {
 			if (!item?.taxationGroupId) {
 				verification = `Grupo de tributação obrigatório - Produto ${item?.productDescription}`;
 			}
+
+			if (!item?.icmsOrigin) {
+				verification = `Origem de ICMS obrigatória - Produto ${item?.productDescription}`;
+			}
 		});
 	}
 
@@ -121,7 +125,6 @@ export function SinglePendingProducts({
 		try {
 			const items = data?.filter((item) => item?.sendUpdate);
 			const verify = verifyFields(items);
-
 
 			!verify
 				? receiptService
