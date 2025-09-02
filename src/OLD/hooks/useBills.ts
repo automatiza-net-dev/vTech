@@ -73,7 +73,8 @@ export const useShowBill = (id, enabled) => {
 
       return response;
     },
-    enabled: enabled && !!id
+    enabled: enabled && !!id,
+    interval: '5s'
   }
   );
 };
