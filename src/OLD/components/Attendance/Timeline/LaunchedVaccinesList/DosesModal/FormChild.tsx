@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from "react";
 
-import { TbVaccine } from "react-icons/tb";
+import { TbVaccine, TbEraser } from "react-icons/tb";
 
 import {
 	Icon,
@@ -16,6 +16,7 @@ import { Checkbox, Input } from "antd";
 import moment from "moment";
 import { timelineService } from "@/OLD/services/timeline.service";
 import { AxiosError } from "axios";
+import { vaccinesService } from "@/OLD/services/vaccine-service";
 
 export default function FormChild({
 	changeTab,
@@ -34,6 +35,29 @@ export default function FormChild({
 }: any) {
 	const { createToast } = useToast();
 	const queryClient = useQueryClient();
+
+	const clearVaccineRecord = useMutation({
+		queryKey: ["clear", vaccine],
+		queryFn: async (calendarID: string) => {
+			await vaccinesService.clearVaccineCalendar(calendarID);
+
+			queryClient.invalidateQueries(["LoadAllPatientVaccines"]);
+		},
+		onError(error) {
+			if (error instanceof AxiosError) {
+				createToast({
+					message: error.response?.data?.message ?? "Erro limpando registro",
+					status: "error",
+				});
+				return;
+			}
+
+			createToast({
+				message: "Erro limpando registro",
+				status: "error",
+			});
+		},
+	});
 
 	const deleteVaccineRecord = useMutation({
 		queryKey: ["vaccine", vaccine],
@@ -69,8 +93,6 @@ export default function FormChild({
 					},
 			);
 	}, [calendars]);
-
-  console.log({calendars})
 
 	return (
 		<form>
@@ -247,7 +269,7 @@ export default function FormChild({
 											disabled={
 												!(actionState === "vaccine" && selectedIndex === i)
 											}
-                      defaultChecked={item.appliedOutside}
+											defaultChecked={item.appliedOutside}
 											onChange={(event) => {
 												setSelectedIndex(i);
 												setActionState("vaccine");
@@ -291,6 +313,7 @@ export default function FormChild({
 									className={`uk-flex uk-flex-around uk-width-1-1 ${
 										i > 0 ? "uk-margin-small-top" : ""
 									}`}
+									style={{ gap: "8px" }}
 								>
 									<span>
 										<TbVaccine
@@ -385,6 +408,23 @@ export default function FormChild({
 											<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"></path>
 										</svg>
 									</span>
+
+									<span>
+										<button
+											type="button"
+											onClick={() => {
+												clearVaccineRecord.mutate(item.id);
+											}}
+											style={{
+												background: "transparent",
+												border: 0,
+												padding: 0,
+											}}
+										>
+											<TbEraser size={"20px"} />
+										</button>
+									</span>
+
 									<span>
 										<button
 											type="button"
