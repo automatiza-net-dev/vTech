@@ -19,7 +19,7 @@ export default function MedicalRecipesListPage() {
   const [reload, setReload] = useState(false);
 
   const router = useRouter();
-  const {createToast} = useToast()
+  const { createToast } = useToast()
 
   const { documents, loadingDocuments } = useMedicalRecipes(filters, reload);
 
@@ -32,10 +32,10 @@ export default function MedicalRecipesListPage() {
     recipeServices
       .remove(id)
       .then((_res) =>
-         createToast({ status: "success", message: "Modelo de receita médica removida com sucesso!" })
+        createToast({ status: "success", message: "Modelo de receita médica removida com sucesso!" })
       )
-      .catch((err) => { 
-        createToast({ status: "error", message:  "Houve um erro ao remover a receita..." })
+      .catch((err) => {
+        createToast({ status: "error", message: "Houve um erro ao remover a receita..." })
       })
       .finally(() => {
         setReload(!reload);
@@ -45,7 +45,7 @@ export default function MedicalRecipesListPage() {
   return (
     <LayoutDashboard>
       {!listMedicalRecipesPermission ||
-      listMedicalRecipesPermission === "loading" ? (
+        listMedicalRecipesPermission === "loading" ? (
         <AccessDenied loading={listMedicalRecipesPermission} />
       ) : (
         <PageWrapper title="Receitas médicas">
@@ -59,7 +59,7 @@ export default function MedicalRecipesListPage() {
                     setFilters({ ...filters, title: e.target.value })
                   }
                 />
-  
+
               </InputBox>
               <InputBox>
                 <input
@@ -106,7 +106,7 @@ export default function MedicalRecipesListPage() {
                 },
                 {
                   title: "Ações",
-                  render: (record) => (
+                  render: (record) => record.economic_group_id ? (
                     <div className="uk-flex uk-flex-around">
                       {canEditMedicalRecipe && (
                         <FiEdit2
@@ -133,7 +133,11 @@ export default function MedicalRecipesListPage() {
                         )}
                       </Popconfirm>
                     </div>
-                  ),
+                  ) : (
+                    <div className="">
+                      <span style={{ fontWeight: 'bold' }}>Padrão</span>
+                    </div>
+                  )
                 },
               ]}
               dataSource={documents}

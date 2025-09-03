@@ -30,7 +30,7 @@ export const List = memo(({ refreshTable, setRefreshTable, serviceType }) => {
               ),
               created_at: convertDate(item.created_at),
               status: item.active ? "Ativo" : "Inativo",
-              actions: (
+              actions: item.economic_group_id ? (
                 <div className="uk-flex">
                   <Delete
                     id={item.id}
@@ -45,6 +45,10 @@ export const List = memo(({ refreshTable, setRefreshTable, serviceType }) => {
                     reload={refreshTable}
                     setReload={setRefreshTable}
                   />
+                </div>
+              ) : (
+                <div className="">
+                  <span style={{ fontWeight: 'bold' }}>Padrão</span>
                 </div>
               ),
             };

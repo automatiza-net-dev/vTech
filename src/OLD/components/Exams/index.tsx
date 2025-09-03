@@ -36,7 +36,7 @@ const Exams = memo(function Exams() {
   const canEditExams = useUserHasPermission("EXA02");
   const canDeleteExams = useUserHasPermission("EXA03");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast()
 
   const getAllExams = useCallback(() => {
     setLoading(true);
@@ -54,7 +54,7 @@ const Exams = memo(function Exams() {
               status: item?.active ? "Ativo" : "Inativo",
               type: item?.type === "" ? "Tipo não informado" : item?.type,
               ownLaboratory: item?.own_laboratory ? "Sim" : "Não",
-              actions: (
+              actions: item.economic_group_id ? (
                 <div className="uk-flex uk-flex-around">
                   {canEditExams && (
                     <FiEdit2
@@ -72,6 +72,10 @@ const Exams = memo(function Exams() {
                       id={item?.id}
                     />
                   )}
+                </div>
+              ) : (
+                <div className="">
+                  <span style={{ fontWeight: 'bold' }}>Padrão</span>
                 </div>
               ),
             };
@@ -103,7 +107,7 @@ const Exams = memo(function Exams() {
               placeholder="Nome"
               onChange={(e) => setFilters({ ...filters, name: e.target.value })}
             />
-           
+
           </Input>
           <Input>
             <input
@@ -113,7 +117,7 @@ const Exams = memo(function Exams() {
                 setFilters({ ...filters, description: e.target.value })
               }
             />
-         
+
           </Input>
           <Input>
             <input
@@ -121,7 +125,7 @@ const Exams = memo(function Exams() {
               placeholder="Tipo"
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
             />
-          
+
           </Input>
           <div className="uk-margin-small-top">
             {canCreateExams && (

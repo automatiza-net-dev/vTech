@@ -9,7 +9,7 @@ import { ProtocolsTable } from "./components/protocols-table";
 
 import { CreateVaccine } from "./components";
 import { LayoutDashboard } from "@/presentation";
-import { EditVaccine } from "./components/actions";
+import { EditVaccine, DefaultVaccine } from "./components/actions";
 import { DeleteVaccine } from "./components/actions/delete-vaccine";
 import { Input, FormHandler, PageWrapper, Button } from "infinity-forge";
 
@@ -38,7 +38,7 @@ export function VaccinesProtocols(props: { type: "vaccine" | "vermifuge" }) {
 
 	const protocolsTableProps = {
 		data: vaccinesProtocols.data,
-		actions: [DeleteVaccine, EditVaccine],
+		actions: [DefaultVaccine, DeleteVaccine, EditVaccine],
 		type: props?.type === "vaccine" ? "Vacina" : "Vermifugo",
 	};
 

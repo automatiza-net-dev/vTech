@@ -75,7 +75,7 @@ const Subgroups = memo(function Subgroups() {
             parent: item?.parent?.description,
             createdAt: moment(item?.created_at).format("DD/MM/YYYY - HH:mm"),
             status: item?.active ? "Ativo" : "Inativo",
-            actions: (
+            actions: item.economic_group_id ? (
               <div className="uk-flex uk-flex-around">
                 {canEditSubGroup && (
                   <FiEdit2
@@ -107,6 +107,10 @@ const Subgroups = memo(function Subgroups() {
                     />}
                   </Popconfirm>
                 )}
+              </div>
+            ) : (
+              <div className="">
+                <span style={{ fontWeight: 'bold' }}>Padrão</span>
               </div>
             ),
           }))}

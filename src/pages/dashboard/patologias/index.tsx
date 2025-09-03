@@ -24,16 +24,16 @@ export default function PathologiesListPage() {
   const canDeletePathology = useUserHasPermission("PAT03");
   const listPathologiesPermission = useUserHasPermission("PAT00");
 
-  const {createToast} = useToast()
+  const { createToast } = useToast()
 
   const removePathology = (id) => {
     pathologiesServices
       .remove(id)
-      .then((_res) => createToast({ status: "success", message:  "Patologia removida com sucesso"  })
-      
+      .then((_res) => createToast({ status: "success", message: "Patologia removida com sucesso" })
+
       )
       .catch((_err) => {
-        createToast({ status: "error", message:  "Houve um erro ao remover a patologia..."  })
+        createToast({ status: "error", message: "Houve um erro ao remover a patologia..." })
       })
       .finally(() => {
         setReload(!reload);
@@ -56,7 +56,7 @@ export default function PathologiesListPage() {
                     setFilters({ ...filters, description: e.target.value })
                   }
                 />
-    
+
               </InputBox>
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -92,7 +92,7 @@ export default function PathologiesListPage() {
                 },
                 {
                   title: "Ações",
-                  render: (record) => (
+                  render: (record) => record.economic_group_id ? (
                     <div className="uk-flex uk-flex-around">
                       {canEditPathology && (
                         <FiEdit2
@@ -116,6 +116,10 @@ export default function PathologiesListPage() {
                           />
                         )}
                       </Popconfirm>
+                    </div>
+                  ) : (
+                    <div className="">
+                      <span style={{ fontWeight: 'bold' }}>Padrão</span>
                     </div>
                   ),
                 },

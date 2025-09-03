@@ -40,8 +40,12 @@ function PlansGroup() {
           dreGroup: group?.dreGroup?.description || "---",
           active: group?.active ? "Ativo" : "Inativo",
           createdAt: moment(group?.created_at).format("DD/MM/YYYY"),
-          actions: (
+          actions: group?.economic_group_id ? (
             <Actions reload={reload} setReload={setReload} group={group} />
+          ) : (
+            <div className="">
+              <span style={{ fontWeight: 'bold' }}>Padrão</span>
+            </div>
           ),
         };
       })
@@ -69,13 +73,13 @@ function PlansGroup() {
 
         return err?.response?.data.errors
           ? createToast({
-              message: `houve um erro ao efetuar o cadastro, verifique o campo: ${err?.response?.data.errors[0].field}`,
-              status: "error",
-            })
+            message: `houve um erro ao efetuar o cadastro, verifique o campo: ${err?.response?.data.errors[0].field}`,
+            status: "error",
+          })
           : createToast({
-              message: "Houve um problema ao efetuar o cadastro do grupo...",
-              status: "error",
-            });
+            message: "Houve um problema ao efetuar o cadastro do grupo...",
+            status: "error",
+          });
       })
       .finally(() => {
         if (!error) {
