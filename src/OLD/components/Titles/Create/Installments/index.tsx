@@ -146,7 +146,7 @@ function Installments({
               obj.splice(index, 1, {
                 ...installments[index],
                 paymentMethodId: value,
-                tefFlagId: "",
+                tefFlagId: null,
               });
 
               setFlags(

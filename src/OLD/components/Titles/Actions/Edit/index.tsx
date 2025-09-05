@@ -259,7 +259,7 @@ const Edit = memo(function Edit({
 
                 setData({
                   ...data,
-                  tefFlagId: "",
+                  tefFlagId: null,
                   checkingAccountId: paymentSelected?.checkingAccount?.id || data?.checkingAccountId,
                   paymentMethodId: paymentSelected?.id,
                 });
