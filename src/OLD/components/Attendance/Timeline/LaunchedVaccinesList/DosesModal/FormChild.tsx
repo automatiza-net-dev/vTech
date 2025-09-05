@@ -237,13 +237,11 @@ export default function FormChild({
 											!(actionState === "vaccine" && selectedIndex === i)
 										}
 										value={
-											actionState === "vaccine" && selectedIndex === i
-												? actualData?.appliedOutside
+											item.applicationDate
+												? item?.appliedOutside
 													? "Sim"
-													: ""
-												: item?.batch
-													? "Sim"
-													: ""
+													: "Não"
+												: ""
 										}
 									/>
 								</div>
@@ -432,15 +430,19 @@ export default function FormChild({
 									<Tooltip
 										idTooltip="action"
 										enableHover
-										position="top-center"
+										position="bottom-center"
 										content={"Limpar dados da aplicação"}
 										trigger={
-											<TbEraser
-												size={"24px"}
-												onClick={() => {
+											<Popconfirm
+												onConfirm={async () => {
 													clearVaccineRecord.mutate(item.id);
 												}}
-											/>
+												idTooltip="a"
+												title="Deseja limpar os dados de aplicação desta dose da Vacina ?"
+												position="top-left"
+											>
+												<TbEraser size={"24px"} />
+											</Popconfirm>
 										}
 									/>
 
