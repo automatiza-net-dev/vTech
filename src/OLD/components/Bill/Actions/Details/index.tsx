@@ -73,7 +73,10 @@ export default function Details({ billId, setVisible }: any) {
   const cancelFNPermission = useUserHasPermission("VEN09");
   const disableFNPermission = useUserHasPermission("VEN10");
 
-  const { data } = useShowBill(billId, true);
+  const { data, refetch } = useShowBill(billId, true);
+  useEffect(() => {
+    refetch()
+  }, [])
 
   useEffect(() => {
     const _id = data?.id;
