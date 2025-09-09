@@ -174,7 +174,7 @@ const Header = memo(function ({
               setOptions({ ...options, newPaymentMethodId: val });
               setData(
                 data?.map((title) => {
-                  return { ...title, paymentMethodId: val, flagId: "" };
+                  return { ...title, paymentMethodId: val, flagId: null };
                 })
               );
             }}

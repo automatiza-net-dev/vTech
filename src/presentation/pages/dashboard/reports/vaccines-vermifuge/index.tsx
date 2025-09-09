@@ -67,6 +67,7 @@ export function VaccinesVermifugeReport({
       data_aplicacao: item?.data_aplicacao ?? "-",
       laboratorio: item?.laboratorio,
       lote: item?.lote,
+      aplicado_fora: item?.aplicado_fora ? 'Sim' : 'Não',
       status: item.status,
     }));
 

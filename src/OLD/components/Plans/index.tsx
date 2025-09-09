@@ -87,7 +87,7 @@ const Plans = memo(function Plans() {
           type: plan?.type,
           status: plan?.active ? "Ativo" : "Inativo",
           parent: plan?.parent?.description,
-          actions: (
+          actions: plan.economic_group_id ? (
             <Actions
               plans={plans}
               plansGroup={plansGroup}
@@ -95,6 +95,10 @@ const Plans = memo(function Plans() {
               setReload={setReload}
               plan={plan}
             />
+          ) : (
+            <div className="">
+              <span style={{ fontWeight: 'bold' }}>Padrão</span>
+            </div>
           ),
         };
       })

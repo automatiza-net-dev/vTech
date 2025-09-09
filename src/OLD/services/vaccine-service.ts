@@ -12,49 +12,53 @@ const showVacine = async (id) => await api.get(`/vaccines/${id}`);
 const updateVacine = async (id, data) => await api.put(`/vaccines/${id}`, data);
 
 const createVaccineProtocol = async (data) =>
-  await api.post("/vaccine-protocols", data);
+	await api.post("/vaccine-protocols", data);
 
 const listProtocols = async ({ vaccine, specie, name, type }: any) =>
-  await api.get(
-    `/vaccine-protocols${vaccine ? `?vaccine=${vaccine}` : ""}${
-      specie ? `${vaccine ? "&" : "?"}specie=${specie}` : ""
-    }${name ? `${vaccine || specie ? "&" : "?"}name=${name}` : ""}${
-      type ? `${vaccine || specie || name ? "&" : "?"}type=${type}` : ""
-    }`
-  );
+	await api.get(
+		`/vaccine-protocols${vaccine ? `?vaccine=${vaccine}` : ""}${
+			specie ? `${vaccine ? "&" : "?"}specie=${specie}` : ""
+		}${name ? `${vaccine || specie ? "&" : "?"}name=${name}` : ""}${
+			type ? `${vaccine || specie || name ? "&" : "?"}type=${type}` : ""
+		}`,
+	);
 
 const updateProtocol = async (id, data) =>
-  await api.put(`/vaccine-protocols/${id}`, data);
+	await api.put(`/vaccine-protocols/${id}`, data);
 
 const launchVaccine = async (data) => await api.post("/patient-vaccines", data);
 
 const listPatientVaccinesLaunched = async ({ patientId, vaccine } = false) =>
-  await api.get(
-    `/patient-vaccines${patientId ? `?patient=${patientId}` : ""}${
-      vaccine ? `${patientId ? "&" : "?"}vaccine=${vaccine}` : ""
-    }`
-  );
+	await api.get(
+		`/patient-vaccines${patientId ? `?patient=${patientId}` : ""}${
+			vaccine ? `${patientId ? "&" : "?"}vaccine=${vaccine}` : ""
+		}`,
+	);
 
 const showPatientVaccine = async (id) =>
-  await api.get(`/patient-vaccines/${id}`);
+	await api.get(`/patient-vaccines/${id}`);
 
 const updateApplicationDate = async (id, data) =>
-  api.put(`/vaccine-calendars/${id}`, data);
+	api.put(`/vaccine-calendars/${id}`, data);
 
 const getVaccineCalendarData = async ({ schedule }) =>
-  await api.get(`/vaccine-calendars${schedule ? `?schedule=${schedule}` : ""}`);
+	await api.get(`/vaccine-calendars${schedule ? `?schedule=${schedule}` : ""}`);
+
+const clearVaccineCalendar = async (id) =>
+	api.put(`/vaccines/clear-calendar/${id}`);
 
 export const vaccinesService = {
-  createVaccine,
-  createVaccineProtocol,
-  listVaccines,
-  listProtocols,
-  showVacine,
-  updateVacine,
-  updateProtocol,
-  launchVaccine,
-  listPatientVaccinesLaunched,
-  updateApplicationDate,
-  showPatientVaccine,
-  getVaccineCalendarData,
+	createVaccine,
+	createVaccineProtocol,
+	listVaccines,
+	listProtocols,
+	showVacine,
+	updateVacine,
+	updateProtocol,
+	launchVaccine,
+	listPatientVaccinesLaunched,
+	updateApplicationDate,
+	showPatientVaccine,
+	getVaccineCalendarData,
+	clearVaccineCalendar,
 };

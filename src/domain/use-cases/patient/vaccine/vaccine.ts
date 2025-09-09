@@ -16,6 +16,7 @@ export type Vaccine = {
   updated_at: string;
   active?: boolean;
   subgroupId?: string;
+  economic_group_id: string | null
   unidade: BusinessUnit["identification"];
   paciente: Patient["name"];
   tutor: Tutor["name"];
@@ -34,4 +35,5 @@ export type Vaccine = {
     | "Dose aplicada"
     | "Dose Pendente - em dia"
     | "Dose Pendente - atrasada";
+  aplicado_fora: boolean;
 };

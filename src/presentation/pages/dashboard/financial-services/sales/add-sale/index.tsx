@@ -26,6 +26,7 @@ import {
   useLoadAllDailyMovements,
   useConfigurationsSystem,
   useSystem,
+  useLoadAllNonPatients,
 } from "@/presentation";
 import { RemoteBills } from "@/data";
 import { Bill, UpdateBill } from "@/domain";
@@ -79,7 +80,7 @@ export function AddSale({
 
   const internalCode = bill?.data?.internalCode;
 
-  const tutors = useLoadAllPatientTutor({
+  const tutors = useLoadAllNonPatients({
     enabled: !patient || !bill?.data?.patient,
   })?.data;
 

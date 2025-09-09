@@ -34,6 +34,10 @@ export function DeleteVaccine(props: VaccineProtocol) {
     });
   };
 
+  if(!props?.vaccine?.economic_group_id){
+    return null
+  }
+
   return (
     <S.DeleteVaccine>
       <Tooltip

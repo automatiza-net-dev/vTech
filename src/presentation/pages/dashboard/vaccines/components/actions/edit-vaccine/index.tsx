@@ -86,6 +86,10 @@ export function EditVaccine(props: VaccineProtocol) {
     });
   }, [open]);
 
+  if(!props?.vaccine?.economic_group_id){
+    return null
+  }
+
   return (
     <S.EditVaccine>
       <Tooltip

@@ -477,6 +477,7 @@ export function List({
               <label>Selecionar pet</label>
               <AutoComplete
                 className="uk-width-1-1"
+                style={{height: '300px'}}
                 options={patients?.map((patient: any) => ({
                   ...patient,
                   key: patient?.id,
@@ -490,6 +491,7 @@ export function List({
                     normalizeStr(val.toUpperCase())
                   )
                 }
+                getPopupContainer={(trigger) => trigger.parentNode}
               />
               <hr />
               <footer className="uk-flex uk-flex-right">

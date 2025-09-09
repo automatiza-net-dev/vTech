@@ -35,7 +35,7 @@ function DocumentList() {
   const canEditDocument = useUserHasPermission("DOC02");
   const canDeleteDocument = useUserHasPermission("DOC03");
 
-  const { createToast} = useToast()
+  const { createToast } = useToast()
 
   const removeDocument = (id) => {
     setLoading(true);
@@ -45,7 +45,7 @@ function DocumentList() {
       )
       .catch((err) => {
         setLoading(false);
-        return   createToast({ status: "error", message: "Houve um erro ao remover o documento" })
+        return createToast({ status: "error", message: "Houve um erro ao remover o documento" })
       })
       .finally(() => {
         setLoading(false);
@@ -117,7 +117,7 @@ function DocumentList() {
             },
             {
               title: "Ações",
-              render: (record) => (
+              render: (record) => record.economic_group_id ? (
                 <div className="uk-flex uk-flex-around">
                   {canEditDocument && (
                     <FiEdit2
@@ -135,12 +135,16 @@ function DocumentList() {
                     placement="left"
                   >
                     {canDeleteDocument && (
-                      <FiTrash2 
-                        className="uk-link" 
+                      <FiTrash2
+                        className="uk-link"
                         style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'red' }}
                       />
                     )}
                   </Popconfirm>
+                </div>
+              ) : (
+                <div className="">
+                  <span style={{fontWeight: 'bold'}}>Padrão</span>
                 </div>
               ),
             },

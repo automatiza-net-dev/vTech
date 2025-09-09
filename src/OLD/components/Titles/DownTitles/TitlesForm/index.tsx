@@ -232,7 +232,7 @@ function TitlesForm({
                         newArr.splice(i, 1, {
                           ...title,
                           paymentMethodId: val,
-                          flagId: "",
+                          flagId: null,
                         });
 
                         setData(newArr);

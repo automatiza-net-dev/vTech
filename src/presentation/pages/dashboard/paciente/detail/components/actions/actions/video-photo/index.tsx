@@ -142,9 +142,9 @@ export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
 								});
 							}
 
-							// await refetch(["LastUpdates"], { mode: "include" });
-							//
-							// setModal && setModal(false);
+							await refetch(["LastUpdates"], { mode: "include" });
+
+							setModal && setModal(false);
 						}}
 						cleanFieldsOnSubmit={false}
 						isStickyButtons

@@ -57,9 +57,6 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           message: "Venda finalizada com sucesso!",
         });
 
-        console.log(_res, "@");
-
-        queryClient.invalidateQueries(["bills"]);
         setReload && setReload((prv) => !prv);
       })
       .catch((err) => {
@@ -68,7 +65,11 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
           "Houve um erro ao finalizar a venda, verifique se ainda há valores pendentes";
 
         createToast({ status: "error", message: errorMessage });
-      });
+      })
+      .finally(() => {
+        queryClient.invalidateQueries(["bills"]);
+      })
+
   }, [bill?.id, queryClient, setReload]);
 
   const reopenBillPayment = React.useCallback(() => {
@@ -124,12 +125,12 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
       {(bill?.status === "ABERTA" ||
         bill?.status === "Venda em Aberto" ||
         bill?.status === "Nao Aprovada") && (
-        <>
-          <AddBillItem bill={bill} />
+          <>
+            <AddBillItem bill={bill} />
 
-          <AddBillPaymentModal bill={bill} setReload={setReload} setSelectedId={setSelectedId} />
-        </>
-      )}
+            <AddBillPaymentModal bill={bill} setReload={setReload} setSelectedId={setSelectedId} />
+          </>
+        )}
 
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
