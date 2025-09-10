@@ -111,6 +111,7 @@ export function SinglePendingProducts({
 				meta: item?.productVariation?.businessUnitProducts[0]?.meta || 0,
 				commissionMeta:
 					item?.productVariation?.businessUnitProducts[0]?.commission_meta || 0,
+				ncm: item?.productVariation?.product?.ncm,
 			})),
 		);
 	};
