@@ -231,7 +231,7 @@ export function VaccinesVermifugeReport({
                     value: "Doses não aplicadas",
                   },
                   {
-                    label: "Doses Atrasadas",
+                    label: "Doses Pendentes",
                     value: "Doses atrasadas",
                   },
                   {
