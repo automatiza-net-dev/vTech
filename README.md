@@ -7,4 +7,3 @@ clientName=Sanclá
 client=sancla
 .
 ..
-...
