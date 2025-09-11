@@ -78,7 +78,7 @@ export function Notes() {
                   />
                 )}
                 {/* TODO CHAMAR MODAL EM TESE PARA ELIMINAR PAGINA... */}
-                {receipt?.status === "PendenteXml" && (
+                {['Ativo', 'PendenteXml'].includes(receipt?.status) && (
                   <MdOutlineChecklist
                     size={20}
                     className="custom-icon"
