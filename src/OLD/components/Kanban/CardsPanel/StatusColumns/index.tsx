@@ -21,7 +21,6 @@ import { PlusOutline } from "styled-icons/evaicons-outline";
 import { BsFillClockFill } from "react-icons/bs";
 
 import moment from "moment";
-import { currencyFormatter } from "@/OLD/components/Budget";
 import { caracterLimit } from "@/OLD/utils/generalUtils";
 
 const detectClockColor = (date, duration) => {
@@ -388,26 +387,24 @@ function StatusColumns({
 					/>
 				</>
 			)}
-			{syncOpportunityVisible && (
-				<Modal
-					open={syncOpportunityVisible}
-					onClose={() => setSyncOpportunityVisible(false)}
-					styles={{ width: "700px", padding: "20px" }}
-					children={
-						<>
-							{`Vincular agendamentos - ${
-								selectedOpportunity?.client?.name ||
-								selectedOpportunity?.contact?.name
-							}`}
-							<SyncOpportunity
-								data={selectedOpportunity}
-								setVisible={setSyncOpportunityVisible}
-								setReload={setReload}
-							/>
-						</>
-					}
-				/>
-			)}
+			<Modal
+				open={syncOpportunityVisible}
+				onCancel={() => setSyncOpportunityVisible(false)}
+				style={{ width: "700px", padding: "20px" }}
+				children={
+					<>
+						{`Vincular agendamentos - ${
+							selectedOpportunity?.client?.name ||
+							selectedOpportunity?.contact?.name
+						}`}
+						<SyncOpportunity
+							data={selectedOpportunity}
+							setVisible={setSyncOpportunityVisible}
+							setReload={setReload}
+						/>
+					</>
+				}
+			/>
 			<FormControll
 				formData={formData}
 				setFormData={setFormData}
