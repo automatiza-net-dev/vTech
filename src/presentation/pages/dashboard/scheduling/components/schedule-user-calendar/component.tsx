@@ -78,7 +78,7 @@ export function ScheduleUserCalendar({
 							(a, b) =>
 								new Date(a.start).getTime() - new Date(b.start).getTime(),
 						)
-						.filter((evt) => evt.scheduledOutside)
+						.filter((evt) => evt.scheduledOutside && evt.type === "schedule")
 						.map((event) => {
 							return (
 								<div
