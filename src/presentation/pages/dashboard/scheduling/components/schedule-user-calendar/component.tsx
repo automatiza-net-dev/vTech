@@ -72,6 +72,28 @@ export function ScheduleUserCalendar({
 			</div>
 
 			<div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+				<div className="schedule_content">
+					{scheduleUser.events
+						.sort(
+							(a, b) =>
+								new Date(a.start).getTime() - new Date(b.start).getTime(),
+						)
+						.filter((evt) => evt.scheduledOutside)
+						.map((event) => {
+							return (
+								<div
+									key={event.event.id + selectedDate?.toISOString()}
+									style={{ marginBottom: "10px" }}
+								>
+									<CalendarEvent
+										event={event}
+										viewCalendar={viewCalendar}
+										scheduleUser={scheduleUser}
+									/>
+								</div>
+							);
+						})}
+				</div>
 				{rangeProfessionalWorking.map((event) => (
 					<FullCalendar
 						{...calendarConfigurations}
