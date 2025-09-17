@@ -71,47 +71,71 @@ export function ScheduleUserCalendar({
 				<div />
 			</div>
 
-			{rangeProfessionalWorking.map((event) => (
-				<FullCalendar
-					{...calendarConfigurations}
-					contentHeight={"410px"}
-					slotDuration={formattedDuration || "00:15:00"}
-					slotLabelInterval={formattedDuration || "00:15:00"}
-					events={events}
-					dateClick={({ date }) =>
-						setModalPatients({ date, scheduleUser, type: "create" })
-					}
-					slotMaxTime={event.end ?? "23:59"}
-					slotMinTime={event.start ?? "00:00"}
-					initialDate={selectedDate}
-					eventContent={(event) => (
-						<CalendarEvent
-							viewCalendar={viewCalendar}
-							scheduleUser={scheduleUser}
-							event={event.event._def.extendedProps.props}
-						/>
-					)}
-					slotLabelDidMount={function (arg) {
-						arg.el.addEventListener("click", function (_) {
-							const clickedTimeText = arg.text;
-
-							const combinedDateTime = combineDateAndTime(
-								selectedDate,
-								clickedTimeText,
+			<div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+				<div className="schedule_content">
+					{scheduleUser.events
+						.sort(
+							(a, b) =>
+								new Date(a.start).getTime() - new Date(b.start).getTime(),
+						)
+						.filter((evt) => evt.scheduledOutside && evt.type === "schedule")
+						.map((event) => {
+							return (
+								<div
+									key={event.event.id + selectedDate?.toISOString()}
+									style={{ marginBottom: "10px" }}
+								>
+									<CalendarEvent
+										event={event}
+										viewCalendar={viewCalendar}
+										scheduleUser={scheduleUser}
+									/>
+								</div>
 							);
+						})}
+				</div>
+				{rangeProfessionalWorking.map((event) => (
+					<FullCalendar
+						{...calendarConfigurations}
+						contentHeight={"410px"}
+						slotDuration={formattedDuration || "00:15:00"}
+						slotLabelInterval={formattedDuration || "00:15:00"}
+						events={events}
+						dateClick={({ date }) =>
+							setModalPatients({ date, scheduleUser, type: "create" })
+						}
+						slotMaxTime={event.end ?? "23:59"}
+						slotMinTime={event.start ?? "00:00"}
+						initialDate={selectedDate}
+						eventContent={(event) => (
+							<CalendarEvent
+								viewCalendar={viewCalendar}
+								scheduleUser={scheduleUser}
+								event={event.event._def.extendedProps.props}
+							/>
+						)}
+						slotLabelDidMount={function (arg) {
+							arg.el.addEventListener("click", function (_) {
+								const clickedTimeText = arg.text;
 
-							setModalPatients({
-								type: "create",
-								scheduleUser,
-								date: new Date(combinedDateTime),
+								const combinedDateTime = combineDateAndTime(
+									selectedDate,
+									clickedTimeText,
+								);
+
+								setModalPatients({
+									type: "create",
+									scheduleUser,
+									date: new Date(combinedDateTime),
+								});
 							});
-						});
-					}}
-					headerToolbar={false}
-					dayHeaders={false}
-					viewClassNames={"view"}
-				/>
-			))}
+						}}
+						headerToolbar={false}
+						dayHeaders={false}
+						viewClassNames={"view"}
+					/>
+				))}
+			</div>
 		</S.ScheduleUserCalendar>
 	);
 }
