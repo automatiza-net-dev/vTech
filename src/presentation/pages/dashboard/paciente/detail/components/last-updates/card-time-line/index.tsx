@@ -15,7 +15,7 @@ export function CardTimeLine({
   const patient = useLoadPatient();
   const actionsPatient = useActionsPatient(patient?.data);
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem()
 
   const Action = actionsPatient.list?.find(
     (action) =>
@@ -52,6 +52,9 @@ export function CardTimeLine({
   };
 
   const labelControl = (info) => {
+    if (timeline.timeline_type.description === 'Fotos') {
+      return <span>Fotos, Videos e Documentos</span>
+    }
     switch (info.event) {
       case "OBITO":
         return <span>Óbito</span>
@@ -104,7 +107,7 @@ export function CardTimeLine({
 
           {isPhotosAndVideos && (
             <>
-              <span>Fotos e vídeos</span>
+              <span>Fotos, vídeos e documentos</span>
               <span>{timeline.timeline_info.title}</span>
             </>
           )}
