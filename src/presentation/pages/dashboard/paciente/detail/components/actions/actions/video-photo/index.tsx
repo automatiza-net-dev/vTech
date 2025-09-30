@@ -91,7 +91,6 @@ export function VideoPhoto({ setModal, ...rest }: DropdownComponentProps) {
 								});
 
 								if (payload.photos?.length > 0) {
-									console.log(payload.photos);
 									await api({
 										url: `n-timeline/photos/attachments/${rest._id}`,
 										method: "post",

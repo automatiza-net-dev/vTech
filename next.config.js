@@ -5,7 +5,7 @@ import("next").NextConfig;
 const nextConfig = {
   reactStrictMode: false,
   env: {
-    api: process.env.api
+    api: process.env.sancla_api ?? process.env.api
   },
   compiler: {
     styledComponents: true

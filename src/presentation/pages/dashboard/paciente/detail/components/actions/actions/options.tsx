@@ -162,7 +162,7 @@ export function useActionsPatient(patient?: Patient): {
 
 		{
 			active: true,
-			label: "Fotos e Videos",
+			label: "Fotos, Videos e Documentos",
 			value: "Fotos",
 			Icon: (
 				<svg
