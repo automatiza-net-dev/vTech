@@ -169,6 +169,7 @@ export default function Titles({ type }: any) {
         issueDate: finance?.issue_date
           ? moment(finance?.issue_date).format("DD/MM/YYYY")
           : "Não informado",
+        competenceDate: finance?.competence_date ?? '',
         value: currencyFormatter(finance?.total_value),
         expirationDate: finance?.expiration_date
           ? moment(finance?.expiration_date).format("DD/MM/YYYY")

@@ -135,6 +135,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 			parcela: `${item?.installment} / ${item?.qty_installments}`,
 			nota_fiscal: item?.fiscal_note,
 			pessoa: item?.client,
+			competencia: item?.competence_date,
 			emissao: item?.issue_date
 				? moment(item?.issue_date).format("DD/MM/YYYY")
 				: "-",
@@ -240,6 +241,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					fiscalNote: finance?.fiscal_note || "-",
 					accept: finance.accept,
 					client: finance?.client || finance?.historic || "-",
+					competenceDate: finance?.competence_date ?? '-',
 					issueDate: finance?.issue_date
 						? moment(finance?.issue_date).format("DD/MM/YYYY")
 						: "-",
