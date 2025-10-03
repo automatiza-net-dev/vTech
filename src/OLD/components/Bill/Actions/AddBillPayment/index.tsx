@@ -481,7 +481,7 @@ function DailyCashierSync(props: {
 		queryFn: async () => {
 			await dailyCasherService.openDailyCasher({
 				dailyMovementId: dailyMovementsQuery.data?.[0]?.id,
-				initialBalance: Masks.noMoney(closeData?.cashierTotal),
+				initialBalance: Masks.noMoney(openData?.cashierTotal),
 				userId: user?.id,
 				openingDate: moment(new Date()).toISOString(),
 			});
