@@ -21,10 +21,17 @@ import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { FiEdit2 } from "react-icons/fi";
 
 // Components
-import { Col, Input, Row, Switch, Table, AutoComplete, Select } from "antd";
-import { DatePicker } from "@mui/x-date-pickers";
+import {
+	Col,
+	Input,
+	Row,
+	Switch,
+	Table,
+	AutoComplete,
+	Select,
+	Modal,
+} from "antd";
 import { Button, useToast } from "infinity-forge";
-import { useRouter } from "next/router";
 import { useMutation, useQuery } from "infinity-forge";
 import { Container } from "../styles";
 import CreateProductVariation from "./create-variation";
@@ -96,7 +103,7 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
 
 	const { data, error, refetch } = useQuery({
 		queryKey: ["products", id],
-		queryFn: () => productService.showProduct(id),
+		queryFn: () => productService.showProduct(id, {}),
 	});
 
 	const { mutate, isLoading } = useMutation({
@@ -106,6 +113,20 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
 		},
 		onSuccess: () => {
 			refetch();
+		},
+	});
+
+	const [stockModal, setStockModal] = useState<{
+		businessUnitId: string;
+		productVariationId: string;
+		businessUnitProductId: string;
+	} | null>(null);
+	const calculateStockCtx = useQuery({
+		queryKey: ["CalculateStock", stockModal],
+		enabled: !!stockModal?.productVariationId,
+		queryFn: () => {
+			console.log("stockModal", stockModal);
+			return productService.calculateStock(stockModal);
 		},
 	});
 
@@ -509,6 +530,20 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
 												dataSource={mapData(variation.businessUnitProducts).map(
 													(d) => ({
 														...d,
+														stock: (
+															<p
+																style={{ cursor: "pointer" }}
+																onClick={() =>
+																	setStockModal({
+																		businessUnitId: d.businessUnitId,
+																		productVariationId: d.productVariationId,
+																		businessUnitProductId: d.id,
+																	})
+																}
+															>
+																{d.stock}
+															</p>
+														),
 														actions: (
 															<div className="uk-flex uk-flex-around">
 																<FiEdit2
@@ -555,6 +590,43 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
 					refetch();
 				}}
 			/>
+
+			<Modal
+				title={`Informações de Estoque - ${data?.description}`}
+				footer={null}
+				width={800}
+				open={!!stockModal && !!data}
+				onCancel={() => setStockModal(null)}
+				centered
+			>
+				<Table
+					columns={[
+						{
+							title: "Depósito",
+							dataIndex: "description",
+							key: "description",
+						},
+						{
+							title: "Quantidade",
+							dataIndex: "quantity",
+							key: "quantity",
+						},
+					]}
+					dataSource={
+						calculateStockCtx.data
+							? [
+									...calculateStockCtx.data,
+									{
+										description: "Total",
+										quantity: calculateStockCtx.data.reduce((acc, curr) => {
+											return acc + Number.parseFloat(curr.quantity);
+										}, 0),
+									},
+								]
+							: [{ description: "Total", quantity: "-" }]
+					}
+				/>
+			</Modal>
 		</Container>
 	);
 });
