@@ -7,7 +7,7 @@ export const Container = styled.div`
     background-color: #ffffff;
   }
 
-  .clinic-header {
+  .clinic-header, .clinic-header-2 {
     display: none;
   }
 
@@ -35,6 +35,10 @@ export const Container = styled.div`
     }
 
     .clinic-header {
+      display: block;
+    }
+
+    .clinic-header-2 {
       display: block;
     }
 

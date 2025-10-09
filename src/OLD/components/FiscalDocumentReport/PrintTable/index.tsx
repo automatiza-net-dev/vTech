@@ -8,8 +8,13 @@ import { Button } from "infinity-forge";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 
-function PrintTable(props: { reports?: Record<string, string | null>[] }) {
+function PrintTable(props: {
+	reports?: Record<string, string | null>[];
+	label: string;
+}) {
 	const componentRef = useRef();
+	const { clinic } = useProfile();
+	console.log({ clinic });
 
 	const imprimir = useReactToPrint({ contentRef: componentRef });
 
@@ -19,7 +24,8 @@ function PrintTable(props: { reports?: Record<string, string | null>[] }) {
 				<div className="clinic-header">
 					<PrintHeader />
 					<div className="uk-text-center">
-						<h4 className="">Relatório de notas emitidas</h4>
+						<h4 className="">{`Relatório de notas fiscais - ${clinic?.fantasy_name ?? "-"}`}</h4>
+						<p className="report-subtitle">{props.label}</p>
 					</div>
 				</div>
 				<div className="table-section">
@@ -34,8 +40,8 @@ function PrintTable(props: { reports?: Record<string, string | null>[] }) {
 					</section>
 					{(props?.reports?.length ?? 0) > 0 ? (
 						<section className="table-box">
-							{props.reports?.map((item) => (
-								<RowBox key={item.tag}>
+							{props.reports?.map((item, idx) => (
+								<RowBox key={item.tag + idx}>
 									<div>{moment(item.dataemissao).format("DD/MM/YYYY")}</div>
 									<div>{item.numeronf}</div>
 									<div>{item.valornf}</div>
