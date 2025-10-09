@@ -22,6 +22,36 @@ const getCheckingAccountsReports = async (params: Record<string, string>) =>
     }[]
   >("/reports/checking-accounts", { params });
 
+const getFiscalDocumentReport = async (
+  params: Record<string, string | boolean>,
+) =>
+  await api.get<
+    {
+      dataemissao: string;
+      numeronf: string;
+      valornf: string;
+      tiponota: string;
+      status: string | null;
+      statusmessage: string | null;
+      tag: string;
+      cliente: string;
+      movimento: string;
+      transmissao: string;
+      model: string;
+      rps_series: string;
+      chave: string | null;
+      datarecibo: string | null;
+      verification_code: string | null;
+      cancellation_receipt_date: string | null;
+      cancellation_receipt: string | null;
+      inutilizacaodata: string | null;
+      inutilizacaorecibo: string | null;
+      inutilizacaomotivo: string | null;
+      authorization_xml_path: string | null;
+      authorization_pdf_path: string | null;
+    }[]
+  >("/reports/fiscal-document", { params });
+
 const getExpiredReports = async (params) =>
   await api.get("/reports/expired", { params });
 
@@ -101,4 +131,5 @@ export const reportsService = {
   getReceiptsReport,
   getAnaliticalReceiptsReport,
   getProductStockReport,
+  getFiscalDocumentReport,
 };
