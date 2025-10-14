@@ -103,7 +103,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	const { checkingAccounts } = useCheckingAccounts(unit as any);
 
 	const controlResumeQuery = useQuery({
-		queryKey: ["control-resume", filters],
+		queryKey: ["control-resume"],
 		queryFn: async () => {
 			if (filters.noSearch) {
 				return [];
@@ -241,7 +241,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					fiscalNote: finance?.fiscal_note || "-",
 					accept: finance.accept,
 					client: finance?.client || finance?.historic || "-",
-					competenceDate: finance?.competence_date ?? '-',
+					competenceDate: finance?.competence_date ?? "-",
 					issueDate: finance?.issue_date
 						? moment(finance?.issue_date).format("DD/MM/YYYY")
 						: "-",
