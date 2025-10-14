@@ -160,20 +160,17 @@ function Single() {
 				});
 			})
 			.catch((err) => {
-				if (err?.response?.data?.code === "E_NO_VARIATION") {
-					return createToast({
-						message:
-							"Existem produtos da nota que ainda não foram relacionados",
-						status: "error",
-					});
-				}
-
 				if (err?.response?.data?.message) {
 					return createToast({
 						message: err?.response?.data?.message?.split(":")[1],
 						status: "error",
 					});
 				}
+
+				return createToast({
+					message: "Erro no processamento da nota",
+					status: "error",
+				});
 			});
 	}, [receipt[0]?.id]);
 
