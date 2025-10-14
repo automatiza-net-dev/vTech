@@ -161,8 +161,9 @@ function Single() {
 			})
 			.catch((err) => {
 				if (err?.response?.data?.message) {
+					const [_, ...tokens] = err?.response?.data?.message?.split(":");
 					return createToast({
-						message: err?.response?.data?.message?.split(":")[1],
+						message: tokens.join(" "),
 						status: "error",
 					});
 				}
