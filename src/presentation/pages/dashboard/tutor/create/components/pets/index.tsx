@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 export function Pets({
 	addPet,
 	handleSuccess,
+	tutorId,
 }: {
 	tutor?: Tutor;
 	handleSuccess?(data: any): Promise<void>;
@@ -26,7 +27,7 @@ export function Pets({
 	);
 
 	const patientFilters = {
-		fetch: modalAddPet,
+		tutorID: tutorId,
 	};
 
 	const { createToast } = useToast();
