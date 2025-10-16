@@ -1,23 +1,24 @@
 import {
-  Error,
-  Input,
-  Select,
-  ViaCep,
-  InputCep,
-  useToast,
-  InputMask,
-  FormHandler,
-  InputCpfCnpj,
-  InputSwitch,
+	Error,
+	Input,
+	Select,
+	ViaCep,
+	InputCep,
+	useToast,
+	InputMask,
+	FormHandler,
+	InputCpfCnpj,
+	InputSwitch,
+	ValidationError,
 } from "infinity-forge";
 import moment from "moment";
 
 import { RemoteTutor } from "@/data";
 import {
-  useLoadTutor,
-  useConfigurationsSystem,
-  useSystem,
-  usePermission,
+	useLoadTutor,
+	useConfigurationsSystem,
+	useSystem,
+	usePermission,
 } from "@/presentation";
 import { TypesAutomatiza, container } from "@/container";
 
@@ -35,190 +36,203 @@ import { ICreateTutorFormProps } from "./interfaces";
 import * as S from "./styles";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
-  const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
+	const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
 
-  const { unit } = useSystem();
-  const { createToast } = useToast();
-  const hasTag = usePermission("TUT04");
-  const { type } = useConfigurationsSystem();
-  const { data, isFetching, mutate } = useLoadTutor(tutorId);
+	const { unit } = useSystem();
+	const { createToast } = useToast();
+	const hasTag = usePermission("TUT04");
+	const { type } = useConfigurationsSystem();
+	const { data, isFetching, mutate } = useLoadTutor(tutorId);
 
-  defineRequireFields(origin, ["CEP*"]);
+	defineRequireFields(origin, ["CEP*"]);
 
-  if ((!data || isFetching) && tutorId) {
-    return <></>;
-  }
+	if ((!data || isFetching) && tutorId) {
+		return <></>;
+	}
 
-  const isRegister = origin === "Cadastro";
+	const isRegister = origin === "Cadastro";
 
-  const requiresDocument =
-    (isRegister && unit?.configs?.businessUnits?.requires_client_document) ||
-    isRegister;
+	const requiresDocument =
+		(isRegister && unit?.configs?.businessUnits?.requires_client_document) ||
+		isRegister;
 
-  async function handleSuccess(data) {
-    const payload = {
-      ...data,
-      origin,
-      photo:
-        data?.photo &&
-        Array.isArray(data?.photo) &&
-        data.photo.find((photo) => photo?.file)
-          ? data?.photo[0]?.file
-          : undefined,
-    };
+	async function handleSuccess(formData) {
+		const payload = {
+			...data,
+			...formData,
+			origin,
+			photo:
+				formData?.photo &&
+				Array.isArray(formData?.photo) &&
+				formData.photo.find((photo) => photo?.file)
+					? formData?.photo[0]?.file
+					: undefined,
+		};
 
-    const response = await container
-      .get<RemoteTutor>(TypesAutomatiza.RemoteTutor)
-      [tutorId ? "update" : "create"](payload);
+		try {
+			const response = await container
+				.get<RemoteTutor>(TypesAutomatiza.RemoteTutor)
+				[tutorId ? "update" : "create"](payload);
 
-    createToast({
-      status: "success",
-      message: tutorId ? "Alterado com sucesso" : "Criado com sucesso",
-    });
+			createToast({
+				status: "success",
+				message: tutorId ? "Alterado com sucesso" : "Criado com sucesso",
+			});
 
-    tutorId && mutate();
+			tutorId && mutate();
 
-    setOpen && setOpen(false);
+			setOpen && setOpen(false);
 
-    onSuccess && onSuccess(response);
-  }
+			onSuccess && onSuccess(response);
+		} catch (err) {
+			if (err instanceof ValidationError) {
+				console.log(err.errors);
+			}
+		}
+	}
 
-  return (
-    <Error name="CreateTutorForm">
-      <S.CreateTutorForm>
-        <FormHandler
-          disableEnterKeySubmitForm
-          isStickyButtons
-          cleanFieldsOnSubmit
-          initialData={initialData({ data, tutorId })}
-          button={{ text: "SALVAR" }}
-          onSucess={handleSuccess}
-        >
-          <h2 className="font-22-bold">
-            {tutorId
-              ? `Editar - ${data?.name}`
-              : type === "Vet"
-              ? "Novo Tutor"
-              : "Novo Paciente"}
-          </h2>
-          <div className="row">
-            <InputPhoto name="photo" isLocalFile multiple />
+	return (
+		<Error name="CreateTutorForm">
+			<S.CreateTutorForm>
+				<FormHandler
+					disableEnterKeySubmitForm
+					isStickyButtons
+					cleanFieldsOnSubmit
+					initialData={initialData({ data, tutorId })}
+					button={{ text: "SALVAR" }}
+					onSucess={handleSuccess}
+				>
+					<h2 className="font-22-bold">
+						{tutorId
+							? `Editar - ${data?.name}`
+							: type === "Vet"
+								? "Novo Tutor"
+								: "Novo Paciente"}
+					</h2>
+					<div className="row">
+						<InputPhoto name="photo" isLocalFile multiple />
 
-            <div>
-              <div className="row">
-                <InputCorporateName />
+						<div>
+							<div className="row">
+								<InputCorporateName />
 
-                <InputCpfCnpj
-                  name="document"
-                  label={requiresDocument ? "cpf/cnpj*" : "cpf/cnpj"}
-                />
+								<InputCpfCnpj
+									name="document"
+									label={requiresDocument ? "cpf/cnpj*" : "cpf/cnpj"}
+								/>
 
-                <InputMask name="inscription" label="RG" mask="__.___.___-_" />
+								<InputMask name="inscription" label="RG" mask="__.___.___-_" />
 
-                <Input
-                  name="birthDate"
-                  type="date"
-                  label={
-                    isRegister ? "Data de nascimento*" : "Data de nascimento"
-                  }
-                  max={moment().format("YYYY-MM-DD")}
-                />
-              </div>
+								<Input
+									name="birthDate"
+									type="date"
+									label={
+										isRegister ? "Data de nascimento*" : "Data de nascimento"
+									}
+									max={moment().format("YYYY-MM-DD")}
+								/>
+							</div>
 
-              <div className="row">
-                <Input name="name" label="Nome Social / Nome Fantasia" />
+							<div className="row">
+								<Input
+									name="name"
+									label="Nome Social / Nome Fantasia"
+									required
+								/>
 
-                <SelectGender isRegister={isRegister} />
+								<SelectGender isRegister={isRegister} />
 
-                <Select
-                  menuPlacement="bottom"
-                  label="Estado Civil"
-                  name="civilStatus"
-                  options={[
-                    { value: "Solteiro(a)", label: "Solteiro(a)" },
-                    { value: "Casado(a)", label: "Casado(a)" },
-                    { value: "Separado(a)", label: "Separado(a)" },
-                    { value: "Divorciado(a)", label: "Divorciado(a)" },
-                    { value: "Viuvo(a)", label: "Viuvo(a)" },
-                  ]}
-                  onlyOneValue
-                />
+								<Select
+									menuPlacement="bottom"
+									label="Estado Civil"
+									name="civilStatus"
+									options={[
+										{ value: "Solteiro(a)", label: "Solteiro(a)" },
+										{ value: "Casado(a)", label: "Casado(a)" },
+										{ value: "Separado(a)", label: "Separado(a)" },
+										{ value: "Divorciado(a)", label: "Divorciado(a)" },
+										{ value: "Viuvo(a)", label: "Viuvo(a)" },
+									]}
+									onlyOneValue
+								/>
 
-                <Input name="nationality" label="Nacionalidade" />
-              </div>
+								<Input name="nationality" label="Nacionalidade" />
+							</div>
 
-              <div className="row">
-                <SelectProfession origin={origin} />
+							<div className="row">
+								<SelectProfession origin={origin} />
 
-                <SelectOrigin />
-              </div>
+								<SelectOrigin />
+							</div>
 
-              <div className="row">
-                <Input name="tags" label="Tag / Observação" />
+							<div className="row">
+								<Input name="tags" label="Tag / Observação" />
 
-              {tutorId &&  <Input name="tag" label="Código" disabled={!hasTag}  />}
+								{tutorId && (
+									<Input name="tag" label="Código" disabled={!hasTag} />
+								)}
 
-                {type !== "Vet" && (
-                  <>
-                    <InputSwitch label="Diabetes" name="diabetes" />
+								{type !== "Vet" && (
+									<>
+										<InputSwitch label="Diabetes" name="diabetes" />
 
-                    <InputSwitch label="Hipertensão" name="hypertension" />
-                  </>
-                )}
+										<InputSwitch label="Hipertensão" name="hypertension" />
+									</>
+								)}
 
-                {tutorId && (
-                  <div className="row">
-                    <InputSwitch name="active" label="Ativo" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+								{tutorId && (
+									<div className="row">
+										<InputSwitch name="active" label="Ativo" />
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
 
-          <Contacts origin={origin} />
+					<Contacts origin={origin} />
 
-          <h3 className="font-18-bold" style={{ marginBottom: 15 }}>
-            Endereço
-          </h3>
+					<h3 className="font-18-bold" style={{ marginBottom: 15 }}>
+						Endereço
+					</h3>
 
-          <InputCep<ViaCep>
-            showAllFields
-            providerType="ibge"
-            fields={[
-              {
-                logradouro: { label: "Rua*" },
-                number: { label: "Número*" },
-                complemento: { label: "Complemento" },
-                ibge: { label: "Cód*" },
-              }  as any,
-              {
-                bairro: { label: "Bairro*" },
-                uf: { label: "Estado*" },
-                localidade: { label: "Cidade*" },
-                residence: {
-                  label: "Tipo de residência*",
-                  Component: Select,
-                  onlyOneValue: true,
-                  options: [
-                    { label: "Casa", value: "CASA" },
-                    {
-                      label: "Apartamento",
-                      value: "APARTAMENTO",
-                    },
-                    { value: "CONDOMINIO", label: "Condominio" },
-                    { value: "SITIO", label: "Sitio" },
-                    { value: "COMERCIAL", label: "Comercial" },
-                  ],
-                },
-              },
-            ]}
-          />
+					<InputCep<ViaCep>
+						showAllFields
+						providerType="ibge"
+						fields={[
+							{
+								logradouro: { label: "Rua*" },
+								number: { label: "Número*" },
+								complemento: { label: "Complemento" },
+								ibge: { label: "Cód*" },
+							} as any,
+							{
+								bairro: { label: "Bairro*" },
+								uf: { label: "Estado*" },
+								localidade: { label: "Cidade*" },
+								residence: {
+									label: "Tipo de residência*",
+									Component: Select,
+									onlyOneValue: true,
+									options: [
+										{ label: "Casa", value: "CASA" },
+										{
+											label: "Apartamento",
+											value: "APARTAMENTO",
+										},
+										{ value: "CONDOMINIO", label: "Condominio" },
+										{ value: "SITIO", label: "Sitio" },
+										{ value: "COMERCIAL", label: "Comercial" },
+									],
+								},
+							},
+						]}
+					/>
 
-          {type === "Vet" && (
-            <Pets tutor={data} {...props} handleSuccess={handleSuccess} />
-          )}
-        </FormHandler>
-      </S.CreateTutorForm>
-    </Error>
-  );
+					{type === "Vet" && (
+						<Pets tutor={data} {...props} handleSuccess={handleSuccess} />
+					)}
+				</FormHandler>
+			</S.CreateTutorForm>
+		</Error>
+	);
 }
