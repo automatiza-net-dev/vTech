@@ -177,6 +177,7 @@ export function Pets({
 				<Modal open={modal} onClose={() => setModal(false)}>
 					<FormCreatePatient
 						isModal={false}
+						tutorId={tutorId}
 						onSuccess={async (data: Patient) => {
 							await mutate();
 
