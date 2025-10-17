@@ -12,104 +12,141 @@ import Filters from "./Filters";
 
 import { suppliersColumns } from "./Columns";
 
-import { Button, PageWrapper } from "infinity-forge";
+import { Button, PageWrapper, useMutation, useToast } from "infinity-forge";
 
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import masks from "@/OLD/utils/masks";
 import Link from "next/link";
+import { supplierService } from "@/OLD/services/supplier.service";
+import { AxiosError } from "axios";
 
 const Suppliers = memo(function Suppliers() {
-  const [filters, setFilters] = useState({});
-  const [reload, setReload] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formattedSuppliers, setFormattedSuppliers] = useState([]);
+	const [filters, setFilters] = useState({});
+	const [reload, setReload] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [formattedSuppliers, setFormattedSuppliers] = useState([]);
+	const { createToast } = useToast();
 
-  const listSuppliersPermission = useUserHasPermission("FOR00");
-  const canCreateSuppliers = useUserHasPermission("FOR01");
-  const canEditSuppliers = useUserHasPermission("FOR02");
-  // const canDeleteSuppliers = useUserHasPermission("FOR03"); /// Botao nao existe
+	const listSuppliersPermission = useUserHasPermission("FOR00");
+	const canCreateSuppliers = useUserHasPermission("FOR01");
+	const canEditSuppliers = useUserHasPermission("FOR02");
+	const canDeleteSuppliers = useUserHasPermission("FOR03"); /// Botao nao existe
 
-  const { suppliers, loadingSuppliers, fetchSuppliers } = useSuppliers(filters);
+	const { suppliers, loadingSuppliers, fetchSuppliers } = useSuppliers(filters);
 
-  const router = useRouter();
+	const deleteSupplier = useMutation({
+		queryKey: ["delete-supplier"],
+		queryFn: async (id: string) => {
+			try {
+				await supplierService.destroy(id);
+				fetchSuppliers(filters);
+			} catch (err) {
+				if (err instanceof AxiosError) {
+					if ("message" in err.response?.data) {
+						return createToast({
+							message: err.response?.data.message.split(": ").at(1),
+							status: "error",
+						});
+					}
+				}
 
-  const suppliersMapper = () => {
-    setLoading(true);
-    setFormattedSuppliers(
-      suppliers?.map((item) => {
-        return {
-          corporateName: item?.corporateName,
-          name: (
-            <span
-              className="uk-link"
-              onClick={() =>
-                router.push(`/dashboard/fornecedores/detalhes/${item?.id}`)
-              }
-            >
-              {item?.name}
-            </span>
-          ),
-          email: item?.email,
-          document: item?.document
-            ? masks?.cnpj(item?.document)
-            : item?.document,
-          tag: item?.tag,
-          telephone: item?.telephone
-            ? masks?.phone(item?.telephone)
-            : item?.telephone,
-          cellphone: item?.cellphone
-            ? masks?.phone(item?.cellphone)
-            : item?.cellphone,
-          actions: (
-            <section>
-              {canEditSuppliers && (
-                <FiEdit2
-                  onClick={() => {
-                    router.push(`/dashboard/fornecedores/editar/${item.id}`);
-                  }}
-                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                />
-              )}
-            </section>
-          ),
-        };
-      }),
-    );
-  };
+				return createToast({
+					message: "Erro durante exclusão de fornecedor",
+					status: "error",
+				});
+			}
+		},
+	});
 
-  useEffect(() => {
-    suppliers?.length > 0 ? suppliersMapper() : setFormattedSuppliers([]);
-  }, [suppliers, canCreateSuppliers, canEditSuppliers]);
+	const router = useRouter();
 
-  return !listSuppliersPermission || listSuppliersPermission === "loading" ? (
-    <AccessDenied loading={listSuppliersPermission} />
-  ) : (
-    <PageWrapper title="Fornecedores">
-      <Container>
-        <Filters
-          filters={filters}
-          setFilters={setFilters}
-          shouldRefetch={() => fetchSuppliers()}
-        />
-        <div className="uk-flex uk-flex-right" style={{ gap: 20 }}>
-          <Button
-            disabled={!canCreateSuppliers}
-            onClick={() => router.push("/dashboard/fornecedores/novo")}
-            text="Cadastrar"
-          />
-          <Button
-            loading={loadingSuppliers}
-            onClick={() => fetchSuppliers()}
-            text="Filtrar"
-          />
-        </div>
-        <hr />
-        <Table columns={suppliersColumns} dataSource={formattedSuppliers} />
-      </Container>
-    </PageWrapper>
-  );
+	const suppliersMapper = () => {
+		setLoading(true);
+		setFormattedSuppliers(
+			suppliers?.map((item) => {
+				return {
+					corporateName: item?.corporateName,
+					name: (
+						<span
+							className="uk-link"
+							onClick={() =>
+								router.push(`/dashboard/fornecedores/detalhes/${item?.id}`)
+							}
+						>
+							{item?.name}
+						</span>
+					),
+					email: item?.email,
+					document: item?.document
+						? masks?.cnpj(item?.document)
+						: item?.document,
+					tag: item?.tag,
+					telephone: item?.telephone
+						? masks?.phone(item?.telephone)
+						: item?.telephone,
+					cellphone: item?.cellphone
+						? masks?.phone(item?.cellphone)
+						: item?.cellphone,
+					actions: (
+						<section
+							style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+						>
+							{canEditSuppliers && (
+								<FiEdit2
+									onClick={() => {
+										router.push(`/dashboard/fornecedores/editar/${item.id}`);
+									}}
+									style={{ cursor: "pointer", fontSize: "1.2rem" }}
+								/>
+							)}
+							{canDeleteSuppliers && (
+								<FiTrash2
+									onClick={() => {
+										deleteSupplier.mutate(item.id);
+									}}
+									style={{ cursor: "pointer", fontSize: "1.2rem" }}
+								/>
+							)}
+						</section>
+					),
+				};
+			}),
+		);
+	};
+
+	useEffect(() => {
+		suppliers?.length > 0 ? suppliersMapper() : setFormattedSuppliers([]);
+	}, [suppliers, canCreateSuppliers, canEditSuppliers]);
+
+	return !listSuppliersPermission || listSuppliersPermission === "loading" ? (
+		<AccessDenied loading={listSuppliersPermission} />
+	) : (
+		<PageWrapper title="Fornecedores">
+			<Container>
+				<Filters
+					filters={filters}
+					setFilters={setFilters}
+					shouldRefetch={() => fetchSuppliers()}
+				/>
+				<div className="uk-flex uk-flex-right" style={{ gap: 20 }}>
+					<Button
+						disabled={!canCreateSuppliers}
+						onClick={() => router.push("/dashboard/fornecedores/novo")}
+						text="Cadastrar"
+					/>
+					<Button
+						loading={loadingSuppliers}
+						onClick={() => fetchSuppliers()}
+						text="Filtrar"
+					/>
+				</div>
+				<hr />
+				<Table columns={suppliersColumns} dataSource={formattedSuppliers} />
+			</Container>
+		</PageWrapper>
+	);
 });
 
 export default Suppliers;
