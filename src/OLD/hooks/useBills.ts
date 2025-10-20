@@ -3,9 +3,9 @@ import { useMutation, useQuery } from "infinity-forge";
 import { billService } from "@/OLD/services/bills.service";
 import moment from "moment";
 
-export const useGetAllBills = (params, reload) => {
+export const useGetAllBills = (params) => {
   return useQuery({
-    queryKey: ["bills", reload, params],
+    queryKey: ["bills"],
     queryFn: async () => {
       let newObj = { ...params };
       const keys = Object.keys(params);
