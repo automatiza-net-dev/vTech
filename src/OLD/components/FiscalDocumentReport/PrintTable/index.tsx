@@ -40,7 +40,7 @@ function PrintTable(props: {
 					{(props?.reports?.length ?? 0) > 0 ? (
 						<section className="table-box">
 							{props.reports?.map((item, idx) => (
-								<RowBox key={item.tag + idx}>
+								<RowBox key={(item?.tag ?? "") + idx}>
 									<div>{moment(item.dataemissao).format("DD/MM/YYYY")}</div>
 									<div>{item.numeronf}</div>
 									<div>{item.valornf}</div>

@@ -5,35 +5,43 @@ import { LoadSchedulesPatient } from "@/domain";
 import { RemoteLoadSchedulesPatient } from "@/data";
 import { container, patientTypes } from "@/container";
 
-type PatientFilterProps = (LoadSchedulesPatient.Params & { fetch?: boolean }) | null
+type PatientFilterProps =
+	| (LoadSchedulesPatient.Params & { fetch?: boolean })
+	| null;
 
 export function useLoadSchedulesPatients({
-  patientFilters,
-  enabled
+	patientFilters,
+	enabled,
 }: {
-  patientFilters?: PatientFilterProps;
-  enabled?: boolean
+	patientFilters?: PatientFilterProps;
+	enabled?: boolean;
 }) {
-  async function fetcher() {
-    const response = await container
-      .get<RemoteLoadSchedulesPatient>(patientTypes.RemoteLoadSchedulesPatient)
-      .load(patientFilters || {});
+	async function fetcher() {
+		const response = await container
+			.get<RemoteLoadSchedulesPatient>(patientTypes.RemoteLoadSchedulesPatient)
+			.load(patientFilters || {});
 
-    return response;
-  }
+		return response;
+	}
 
-  const queryKey = useLoadSchedulesPatientsKEY(patientFilters);
+	const queryKey = useLoadSchedulesPatientsKEY(patientFilters);
 
-  return useQuery({
-    queryKey,
-    queryFn: fetcher,
-    
-    enabled: enabled,
-  });
+	return useQuery({
+		queryKey,
+		queryFn: fetcher,
+
+		enabled: enabled,
+	});
 }
 
-export function useLoadSchedulesPatientsKEY(patientFilters?: PatientFilterProps) {
-  const contextPatientFilters = useScheduling((state) => state.patientsFilters);
+export function useLoadSchedulesPatientsKEY(
+	patientFilters?: PatientFilterProps,
+) {
+	const contextPatientFilters = useScheduling((state) => state.patientsFilters);
 
-  return ["RemoteLoadSchedulesPatients", JSON.stringify(patientFilters || contextPatientFilters)]
+	return [
+		"RemoteLoadSchedulesPatients",
+		JSON.stringify(patientFilters || contextPatientFilters),
+	];
 }
+

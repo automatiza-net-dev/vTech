@@ -30,6 +30,7 @@ export namespace LoadSchedulesPatient {
     name?: string;
     tag?: string;
     tutor?: string;
+    tutorID?: string;
     phone?: string;
     document?: string;
     id?: Patient["id"];
