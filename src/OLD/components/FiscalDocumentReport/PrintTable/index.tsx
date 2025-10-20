@@ -12,9 +12,8 @@ function PrintTable(props: {
 	reports?: Record<string, string | null>[];
 	label: string;
 }) {
-	const componentRef = useRef();
+	const componentRef = useRef(null);
 	const { clinic } = useProfile();
-	console.log({ clinic });
 
 	const imprimir = useReactToPrint({ contentRef: componentRef });
 
