@@ -27,7 +27,7 @@ export function Pets({
 	);
 
 	const patientFilters = {
-		tutorID: tutorId,
+		// tutorID: tutorId,
 	};
 
 	const { createToast } = useToast();
