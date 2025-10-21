@@ -431,7 +431,7 @@ export function List({
 				}}
 			>
 				<FormCreatePatient
-					tutorId={selectedTutor.id}
+					tutorId={selectedTutor?.id}
 					onSuccess={() => setCreatePetVisible(false)}
 					initialDataForm={
 						selectedTutor && {
