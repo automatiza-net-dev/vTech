@@ -145,7 +145,7 @@ export function AddSale({
 		cart: type === "edit" ? bill?.data?.products : [],
 		sellerId: bill?.data?.seller?.id || user?.id,
 		financialResponsibleId: bill?.data?.financialResponsible?.id,
-		additionalInformation: bill?.data.additionalInformation,
+		additionalInformation: bill?.data?.additionalInformation,
 	};
 
 	async function handleSubmit(data, _, initialValues) {
