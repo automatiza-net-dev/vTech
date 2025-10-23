@@ -93,6 +93,8 @@ export function SinglePendingProducts({
           item?.productVariation?.businessUnitProducts[0]?.minimum_stock || 0,
         maximumStock:
           item?.productVariation?.businessUnitProducts[0]?.maximum_stock || 0,
+        originalPrice:
+          item?.productVariation?.businessUnitProducts[0]?.cost_price || 0,
         costPrice: currencyFormatter(
           item?.productVariation?.businessUnitProducts[0]?.cost_price || 0,
         ),
@@ -112,6 +114,7 @@ export function SinglePendingProducts({
         commissionMeta:
           item?.productVariation?.businessUnitProducts[0]?.commission_meta || 0,
         ncm: item?.productVariation?.product?.ncm,
+        fractionValue: item?.productVariation?.product?.fraction_value || 0,
       })),
     );
   };
@@ -465,39 +468,8 @@ export function SinglePendingProducts({
                         }}
                       />
                     </div>
-
                     <div className="uk-width-1-6">
-                      <label>Estoque Min</label>
-                      <Input
-                        value={item?.minimumStock}
-                        onChange={(e) => {
-                          let arr = [...data];
-                          arr.splice(i, 1, {
-                            ...item,
-                            minimumStock: e.target.value,
-                            sendUpdate: true,
-                          });
-                          setData(arr);
-                        }}
-                      />
-                    </div>
-                    <div className="uk-width-1-6">
-                      <label>Estoque Máx</label>
-                      <Input
-                        value={item?.maximumStock}
-                        onChange={(e) => {
-                          let arr = [...data];
-                          arr.splice(i, 1, {
-                            ...item,
-                            maximumStock: e.target.value,
-                            sendUpdate: true,
-                          });
-                          setData(arr);
-                        }}
-                      />
-                    </div>
-                    <div className="uk-width-1-6">
-                      <label>R$ Custo</label>
+                      <label>R$ Custo Embalagem</label>
                       <Input
                         value={item?.costPrice}
                         onChange={(e) => {
@@ -516,6 +488,7 @@ export function SinglePendingProducts({
                           arr.splice(i, 1, {
                             ...item,
                             costPrice: newCost,
+                            originalPrice: convertIntlCurrency(e.target.value),
                             price: currencyFormatter(price.toFixed(2)),
                             profitMargin: profitMargin.toFixed(2),
                             sendUpdate: true,
@@ -523,6 +496,23 @@ export function SinglePendingProducts({
 
                           setData(arr);
                         }}
+                      />
+                    </div>
+
+                    <div className="uk-width-1-6">
+                      <label>Qtd Embalag.</label>
+                      <Input value={item?.fractionValue ?? 0} readOnly />
+                    </div>
+
+                    <div className="uk-width-1-6">
+                      <label>Custo Unit.</label>
+                      <Input
+                        value={currencyFormatter(
+                          item?.fractionValue && item?.originalPrice
+                            ? item.fractionValue * item.originalPrice
+                            : 0,
+                        )}
+                        readOnly
                       />
                     </div>
 
@@ -607,6 +597,42 @@ export function SinglePendingProducts({
                         }}
                       />
                     </div>
+                  </div>
+                  <div
+                    className="uk-flex uk-margin-small-top"
+                    style={{ gap: "5px" }}
+                  >
+                    <div className="uk-width-1-6">
+                      <label>Estoque Min</label>
+                      <Input
+                        value={item?.minimumStock}
+                        onChange={(e) => {
+                          let arr = [...data];
+                          arr.splice(i, 1, {
+                            ...item,
+                            minimumStock: e.target.value,
+                            sendUpdate: true,
+                          });
+                          setData(arr);
+                        }}
+                      />
+                    </div>
+                    <div className="uk-width-1-6">
+                      <label>Estoque Máx</label>
+                      <Input
+                        value={item?.maximumStock}
+                        onChange={(e) => {
+                          let arr = [...data];
+                          arr.splice(i, 1, {
+                            ...item,
+                            maximumStock: e.target.value,
+                            sendUpdate: true,
+                          });
+                          setData(arr);
+                        }}
+                      />
+                    </div>
+
                     <div className="uk-width-1-4">
                       <label>Tipo meta</label>
                       <Select
