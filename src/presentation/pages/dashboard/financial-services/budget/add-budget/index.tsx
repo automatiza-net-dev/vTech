@@ -32,7 +32,7 @@ import { DeleteCartItems } from "../../utils/delete-cart-items";
 import { IAddBudgetProps } from "./interfaces";
 
 import * as S from "./styles";
-import { useQueryClient } from "infinity-forge"
+import { useQueryClient } from "infinity-forge";
 
 export function AddBudgetNew({
   setModal,
@@ -50,19 +50,20 @@ export function AddBudgetNew({
 
   const { getWord } = useDictionary();
   const { createToast } = useToast();
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
   const { user } = useAuthAdmin();
   const { type } = useConfigurationsSystem();
 
-  const {unit} = useSystem()
+  const { unit } = useSystem();
 
   const userIsReviewer = unit?.configs?.businessUnits?.reviewer !== "N";
 
   const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
-  const hasSyncScheduleMovements = unit?.configs?.schedules?.syncScheduleMovements;
+  const hasSyncScheduleMovements =
+    unit?.configs?.schedules?.syncScheduleMovements;
 
   const activeDailyMovement = dailyMovements.data?.find(
-    (movement) => movement.status === "Aberto"
+    (movement) => movement.status === "Aberto",
   );
 
   const isFetching =
@@ -95,8 +96,8 @@ export function AddBudgetNew({
   const clientId = budgetId
     ? budgetDetail?.data?.client?.id
     : type === "Vet"
-    ? patient.data?.tutor?.id
-    : patient?.data?.id;
+      ? patient.data?.tutor?.id
+      : patient?.data?.id;
 
   const expirationDate = budgetId
     ? moment(budgetDetail.data.expiration_date).toDate()
@@ -159,7 +160,7 @@ export function AddBudgetNew({
         .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
         [budgetId ? "update" : "create"](payload);
 
-      await DeleteCartItems(initialValues?.cart, data.cart);
+      // await DeleteCartItems(initialValues?.cart, data.cart);
 
       listCreated && listCreated(response.id);
 
@@ -170,8 +171,8 @@ export function AddBudgetNew({
         } com sucesso`,
       });
 
-      patientId && refetch(["LastUpdates", patientId])
-    
+      patientId && refetch(["LastUpdates", patientId]);
+
       setModal && setModal(false);
     } catch (err) {
       if (
@@ -180,7 +181,7 @@ export function AddBudgetNew({
       ) {
         if (
           window.confirm(
-            `Desconto máximo foi excedido, O orçamento possui itens com desconto acima do permitido, deseja gravar e enviar o orçamento para aprovação ?`
+            `Desconto máximo foi excedido, O orçamento possui itens com desconto acima do permitido, deseja gravar e enviar o orçamento para aprovação ?`,
           )
         ) {
           handleSubmit({ ...data, maxDiscount: true }, _, initialValues);
