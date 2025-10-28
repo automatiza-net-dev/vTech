@@ -10,7 +10,8 @@ export function ContactItem({
   index,
   isCrm,
   notGiven,
-}: Contact & { index: number; isCrm: boolean }) {
+  errorMessage,
+}: Contact & { index: number; isCrm: boolean; errorMessage?: string }) {
   const { values, setFieldValue } = useFormikContext<{ contacts: Contact[] }>();
   const types = [
     { value: "email", label: !isCrm ? "Email*" : "Email" },
@@ -39,19 +40,22 @@ export function ContactItem({
         }}
       />
 
-      {type === "email" ? (
-        <Input
-          name={`contacts[${index}].contact`}
-          label="Email*"
-          readOnly={notGiven}
-        />
-      ) : (
-        <InputMask
-          label={types.find((t) => t.value === type)?.label || ""}
-          name={`contacts[${index}].contact`}
-          mask="(__) _____-____"
-        />
-      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+        {type === "email" ? (
+          <Input
+            name={`contacts[${index}].contact`}
+            label="Email*"
+            readOnly={notGiven}
+          />
+        ) : (
+          <InputMask
+            label={types.find((t) => t.value === type)?.label || ""}
+            name={`contacts[${index}].contact`}
+            mask="(__) _____-____"
+          />
+        )}
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
 
       <Input name={`contacts[${index}].observation`} label="Observação" />
 
@@ -103,7 +107,7 @@ export function ContactItem({
             onClick={() =>
               setFieldValue(
                 "contacts",
-                contacts.filter((_, i) => i !== index)
+                contacts.filter((_, i) => i !== index),
               )
             }
           >

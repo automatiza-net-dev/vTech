@@ -34,6 +34,7 @@ import { InputCorporateName } from "./input-corporate-name";
 import { ICreateTutorFormProps } from "./interfaces";
 
 import * as S from "./styles";
+import { useState } from "react";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
@@ -43,6 +44,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   const hasTag = usePermission("TUT04");
   const { type } = useConfigurationsSystem();
   const { data, isFetching, mutate } = useLoadTutor(tutorId);
+  const [manualErrors, setManualErrors] = useState<Record<string, string>>({});
 
   defineRequireFields(origin, ["CEP*"]);
 
@@ -121,7 +123,17 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
       onSuccess && onSuccess(response);
     } catch (err) {
-      console.log(err);
+      if (err instanceof ValidationError) {
+        setManualErrors(
+          Object.keys(err.errors).reduce(
+            (acc, curr) => {
+              acc[curr] = err.errors[curr].errors.join(", ");
+              return acc;
+            },
+            {} as Record<string, string>,
+          ),
+        );
+      }
     }
   }
 
@@ -135,8 +147,8 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
           initialData={initialData({ data, tutorId })}
           button={{ text: "SALVAR" }}
           onSucess={async (successData) => {
-            console.log("onSuccess", successData);
-            handleSuccess(successData);
+            setManualErrors({});
+            await handleSuccess(successData);
           }}
         >
           <h2 className="font-22-bold">
@@ -151,7 +163,11 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
             <div>
               <div className="row">
-                <InputCorporateName />
+                <InputCorporateName
+                  errorMessage={
+                    manualErrors["name"] || manualErrors["corporateName"]
+                  }
+                />
 
                 <InputCpfCnpj
                   name="document"
@@ -199,7 +215,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <SelectProfession origin={origin} />
 
-                <SelectOrigin />
+                <SelectOrigin errorMessage={manualErrors["clientOriginId"]} />
               </div>
 
               <div className="row">
@@ -226,7 +242,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             </div>
           </div>
 
-          <Contacts origin={origin} />
+          <Contacts origin={origin} errors={manualErrors} />
 
           <h3 className="font-18-bold" style={{ marginBottom: 15 }}>
             Endereço
