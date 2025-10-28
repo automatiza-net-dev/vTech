@@ -31,7 +31,7 @@ export function Pets({
   };
 
   const { createToast } = useToast();
-  const { values, setFieldValue, errors } = useFormikContext<Tutor>();
+  const { values, setFieldValue } = useFormikContext<Tutor>();
   const { data, isLoading, mutate } = useLoadSchedulesPatients({
     patientFilters,
     enabled: !!modalAddPet,
@@ -48,8 +48,6 @@ export function Pets({
 
   const [petId] = useField("petId");
   const pets = values["patients"] || [];
-
-  console.log("shitty component", { errors, values });
 
   return (
     <InputControl name="holders">
@@ -183,11 +181,14 @@ export function Pets({
             onSuccess={async (data: Patient) => {
               await mutate();
 
-              setTimeout(() => {
-                setFieldValue("petId", data.id);
+              setFieldValue("patients", [
+                ...values.patients,
+                { id: data.id, name: data.name },
+              ]);
 
-                setModal(false);
-              }, 500);
+              setFieldValue("petId", data.id);
+              setModal(false);
+              setModalAddPet(false);
             }}
           />
         </Modal>
