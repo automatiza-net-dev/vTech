@@ -77,6 +77,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
       } else if (typeof value === "object") {
         objectToFormData(value, form, formKey);
       } else {
+        // @ts-expect-error
         form.append(formKey, value);
       }
     }
