@@ -288,7 +288,7 @@ export default function Create({ type = "", setVisible }: any) {
                   />
                 </div>
                 <div className="uk-margin-small-right">
-                  <label> Data 1º parcelaa </label>
+                  <label> Data 1º parcela</label>
                   <DatePicker
                     className="uk-width-1-1"
                     picker="date"
