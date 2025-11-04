@@ -46,12 +46,11 @@ const OpActivities = memo(function OpActivities({
 
   const { opportunity } = useShowOpportunity(
     !op?.id ? router.query.innerpage : op?.id,
-    reload
+    reload,
   );
   const { clinic } = useProfile();
 
   useEffect(() => {
-    console.log(opportunity)
     setOpportunitiesData({
       balance: opportunity?.balance,
       active: opportunity?.active,
@@ -99,7 +98,7 @@ const OpActivities = memo(function OpActivities({
       ? setActivities(
           opportunity?.activities
             ?.sort((a, b) =>
-              moment(b.execution_date).diff(moment(a.execution_date))
+              moment(b.execution_date).diff(moment(a.execution_date)),
             )
             .map((activity) => ({
               balance: opportunity?.balance,
@@ -110,7 +109,7 @@ const OpActivities = memo(function OpActivities({
               status: activity?.status,
               marketingCampaignId: activity?.marketingCampaignId,
               executionDate: moment(activity?.execution_date).format(
-                "DD/MM/YYYY - HH:mm"
+                "DD/MM/YYYY - HH:mm",
               ),
               executedDate: activity?.executed_date
                 ? moment(activity?.executed_date).format("DD/MM/YYYY - HH:mm")
@@ -124,12 +123,12 @@ const OpActivities = memo(function OpActivities({
                   actTypes={actTypes}
                 />
               ),
-            }))
+            })),
         )
       : setActivities([]);
   }, [opportunity, op, actTypes, colaborators]);
 
-  const {type} = useConfigurationsSystem();
+  const { type } = useConfigurationsSystem();
 
   async function updateOpportunity() {
     setLoading(true);

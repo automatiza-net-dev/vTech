@@ -69,12 +69,12 @@ export class RemoteTutor
 
   async update(params: domain.EditTutor.Params) {
     const response = await this.httpClient.request({
-      url: this.makeApiURL.make(`patient-tutors/${params.id}`),
+      url: this.makeApiURL.make(`patient-tutors/${params instanceof FormData ? params.get('id') : params.id}`),
       method: "put",
       body: params,
-      headers: {
+      headers: params instanceof FormData ? {
         "Content-Type": "multipart/form-data; boundary=something",
-      },
+      } : undefined,
     });
 
     return response as domain.EditTutor.Model;

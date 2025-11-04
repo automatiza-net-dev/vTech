@@ -11,6 +11,8 @@ import {
   Button,
   useAuthAdmin,
   useToast,
+  useQuery,
+  api,
 } from "infinity-forge";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
@@ -21,6 +23,8 @@ import {
   FormCreateTutor,
   useLoadCampaings,
   useConfigurationsSystem,
+  useLoadSchedulesPatients,
+  useMutation,
 } from "@/presentation";
 import { SelectMidia } from "./select-midia";
 import { container, TypesAutomatiza } from "@/container";
@@ -31,6 +35,7 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
 import { Container } from "./styles";
+import { useField } from "formik";
 
 const { TextArea } = Input;
 const { Option } = SelectAnt;
@@ -52,6 +57,7 @@ export default function FormChild({
   edit,
   setEdit,
   setReload,
+  creatingOpportunity,
 }: any) {
   const [selectedPatients] = useState([]);
   const [refreshAutoComplete] = useState(false);
@@ -59,6 +65,7 @@ export default function FormChild({
   const [selectedOrigin, setSelectedOrigin] = useState<any>({});
   const [editPatientVisible, setEditPatientVisible] = useState(false);
   const [createPatientVisible, setCreatePatientVisible] = useState(false);
+  const [selectingPet, setSelectingPet] = useState(false);
 
   const { createToast } = useToast();
 
@@ -89,7 +96,7 @@ export default function FormChild({
               value: `${race.specie.description} > ${race.description}`,
               id: race.id,
             };
-          })
+          }),
         );
       })
       .catch((err) => {
@@ -145,7 +152,7 @@ export default function FormChild({
       });
   }, [type, crmStatus]);
 
-  const configurationSystem = useConfigurationsSystem()
+  const configurationSystem = useConfigurationsSystem();
 
   return (
     <Container
@@ -218,8 +225,7 @@ export default function FormChild({
             )}
           </div>
         </div>
-        {
-          configurationSystem.type === "Vet" && (
+        {configurationSystem.type === "Vet" && (
           <div className="uk-flex uk-flex-between uk-margin-small-top">
             <div className="uk-width-1-4 uk-margin-small-right">
               <div className="uk-width-1-1">
@@ -239,44 +245,32 @@ export default function FormChild({
                     style={{ display: "flex", alignItems: "center", gap: 5 }}
                   >
                     Pet
-                    <FormCreateTutor
-                      isModal
+                    <button
+                      type="button"
+                      onClick={() => setSelectingPet(true)}
+                      style={{
+                        height: 20,
+                        width: 20,
+                        background: "#000",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      +
+                    </button>
+                    <SelectPet
+                      opportunityId={op.id}
                       tutorId={
                         data?.contact?.id || data?.tutor_id || data.clientId
                       }
-                      addPet={{
-                        onInitOpenModalAddPet: true,
-                        onLinkPet: async ({ patientId, handleSuccess }) => {
-                          await handleSuccess();
-
-                          await container
-                            .get<RemoteCRM>(TypesAutomatiza.RemoteCRM)
-                            .createOpportunitiePatient({
-                              patientId,
-                              opportunityId: op.id,
-                            });
-
-                          (await setReload) && setReload((prv) => !prv);
-                        },
+                      visible={selectingPet}
+                      onClose={() => setSelectingPet(false)}
+                      onSuccess={async () => {
+                        setReload((prv) => !prv);
+                        setSelectingPet(false);
                       }}
-                      onSuccess={() => setReload && setReload((prv) => !prv)}
-                      origin="Crm"
-                      trigger={
-                        <button
-                          type="button"
-                          style={{
-                            height: 20,
-                            width: 20,
-                            background: "#000",
-                            color: "#fff",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          +
-                        </button>
-                      }
                     />
                   </label>
                 ) : (
@@ -302,7 +296,7 @@ export default function FormChild({
                   value={data?.patientName}
                   onChange={(val) => setData({ ...data, patientName: val })}
                   onSelect={(_val, opt) => {
-                    setData(state => ({
+                    setData((state) => ({
                       ...state,
                       clientId: opt?.id,
                       patientName: opt?.value,
@@ -310,7 +304,7 @@ export default function FormChild({
                   }}
                   filterOption={(val, opt) =>
                     normalizeStr(opt?.value.toUpperCase()).includes(
-                      normalizeStr(val?.toUpperCase())
+                      normalizeStr(val?.toUpperCase()),
                     )
                   }
                 />
@@ -321,9 +315,7 @@ export default function FormChild({
                 <label>Espécie {">"} Raça do pet</label>
 
                 {showSpecie && (
-                  <FormHandler
-                    disableEnterKeySubmitForm
-                  >
+                  <FormHandler disableEnterKeySubmitForm>
                     <Select
                       name="species"
                       controlledInitialValue={{ value: data?.raceId }}
@@ -337,12 +329,12 @@ export default function FormChild({
                       onlyOneValue
                       placeholder="Digite o nome da raça"
                       onChangeInput={(value) => {
-                        if(value === data.raceId) {
+                        if (value === data.raceId) {
                           return;
                         }
 
                         const choosed = races.find(
-                          (option: any) => option.value === value
+                          (option: any) => option.value === value,
                         ) as any;
 
                         setData({
@@ -426,7 +418,7 @@ export default function FormChild({
               }}
               filterOption={(val: any, opt: any) =>
                 normalizeStr(opt?.value.toUpperCase()).includes(
-                  normalizeStr(val?.toUpperCase())
+                  normalizeStr(val?.toUpperCase()),
                 )
               }
             />
@@ -633,15 +625,17 @@ export default function FormChild({
                 justifyContent: "flex-end",
               }}
             >
-            
               <Button
-              type="button"
+                type="button"
                 text="Cancelar"
                 onClick={() => router.push("/crm/kanban")}
               />
 
-                <Button type="submit" text="Salvar" />
-
+              <Button
+                type="submit"
+                text="Salvar"
+                loading={creatingOpportunity}
+              />
             </footer>
           ) : (
             <>
@@ -654,11 +648,15 @@ export default function FormChild({
                   justifyContent: "flex-end",
                 }}
               >
-                <Button type="submit" text="Salvar" />
+                <Button
+                  type="submit"
+                  text="Salvar"
+                  loading={creatingOpportunity}
+                />
 
                 <Button
-                type="button"
-                    onClick={() => () => router.push("/crm/kanban")}
+                  type="button"
+                  onClick={() => () => router.push("/crm/kanban")}
                   text="Cancelar"
                 />
               </footer>
@@ -698,5 +696,83 @@ export default function FormChild({
         </Modal>
       )}
     </Container>
+  );
+}
+
+function SelectPet(props: {
+  opportunityId: number;
+  tutorId: string;
+  visible: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [selectedPet, setSelectedPet] = useState<string | null>(null);
+  const { data } = useQuery({
+    queryKey: ["select-pet", props.tutorId],
+    queryFn: async () => {
+      const response = await api({
+        url: "patients/animals",
+        method: "get",
+        body: {
+          tutorID: props.tutorId,
+        },
+      });
+
+      return response;
+    },
+
+    enabled: props.visible,
+  });
+  const mutateIt = useMutation({
+    queryKey: ["mutate"],
+    queryFn: async () => {
+      if (!selectedPet) {
+        return;
+      }
+
+      await api({
+        url: `opportunities/client/${props.opportunityId}`,
+        method: "put",
+        body: {
+          clientId: selectedPet,
+        },
+      });
+
+      props.onSuccess();
+    },
+  });
+
+  const options = data
+    ?.map((patient) => {
+      return {
+        label: `${patient?.name} - RG:${patient?.tag} - Raça:${patient?.race?.specie?.description} > ${patient?.race?.description}`,
+        value: patient.id,
+      };
+    })
+    .filter((item) => item.value !== "-");
+
+  return (
+    <Modal
+      open={props.visible}
+      onCancel={props.onClose}
+      title="Selecione o pet"
+      centered
+      onOk={() => {
+        mutateIt.mutate();
+      }}
+    >
+      <SelectAnt
+        className="uk-width-1-1"
+        id={"gender"}
+        value={selectedPet}
+        onChange={(e) => setSelectedPet(e)}
+      >
+        {options?.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </SelectAnt>
+    </Modal>
   );
 }

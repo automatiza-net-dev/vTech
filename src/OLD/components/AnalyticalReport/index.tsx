@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { memo, useState, useRef, useEffect } from "react";
 
 import { useSalesAnalyticsReport } from "@/OLD/hooks/useReports";
@@ -26,11 +25,11 @@ const AnalyticalReport = memo(function () {
     setFilters({ ...filters, economicGroups: [clinic?.economicGroup?.id] });
   }, [clinic]);
 
-  const componentRef = useRef();
+  const componentRef = useRef(null);
 
   const imprimir = useReactToPrint({
     contentRef: componentRef,
-    onBeforePrint: () => setReload(!reload),
+    onBeforePrint: async () => setReload(!reload),
   });
 
   return !listAnalyticsReportsPermission ||

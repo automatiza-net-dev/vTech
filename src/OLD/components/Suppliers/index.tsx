@@ -12,26 +12,59 @@ import Filters from "./Filters";
 
 import { suppliersColumns } from "./Columns";
 
-import { Button, PageWrapper } from "infinity-forge";
+import {
+  Button,
+  PageWrapper,
+  Popconfirm,
+  useMutation,
+  useToast,
+} from "infinity-forge";
 
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import AccessDenied from "@/OLD/components/AccessDenied";
 
 import masks from "@/OLD/utils/masks";
 import Link from "next/link";
+import { supplierService } from "@/OLD/services/supplier.service";
+import { AxiosError } from "axios";
 
 const Suppliers = memo(function Suppliers() {
   const [filters, setFilters] = useState({});
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formattedSuppliers, setFormattedSuppliers] = useState([]);
+  const { createToast } = useToast();
 
   const listSuppliersPermission = useUserHasPermission("FOR00");
   const canCreateSuppliers = useUserHasPermission("FOR01");
   const canEditSuppliers = useUserHasPermission("FOR02");
-  // const canDeleteSuppliers = useUserHasPermission("FOR03"); /// Botao nao existe
+  const canDeleteSuppliers = useUserHasPermission("FOR03"); /// Botao nao existe
 
   const { suppliers, loadingSuppliers, fetchSuppliers } = useSuppliers(filters);
+
+  const deleteSupplier = useMutation({
+    queryKey: ["delete-supplier"],
+    queryFn: async (id: string) => {
+      try {
+        await supplierService.destroy(id);
+        fetchSuppliers(filters);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          if ("message" in err.response?.data) {
+            return createToast({
+              message: err.response?.data.message.split(": ").at(1),
+              status: "error",
+            });
+          }
+        }
+
+        return createToast({
+          message: "Erro durante exclusão de fornecedor",
+          status: "error",
+        });
+      }
+    },
+  });
 
   const router = useRouter();
 
@@ -63,7 +96,9 @@ const Suppliers = memo(function Suppliers() {
             ? masks?.phone(item?.cellphone)
             : item?.cellphone,
           actions: (
-            <section>
+            <section
+              style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+            >
               {canEditSuppliers && (
                 <FiEdit2
                   onClick={() => {
@@ -71,6 +106,18 @@ const Suppliers = memo(function Suppliers() {
                   }}
                   style={{ cursor: "pointer", fontSize: "1.2rem" }}
                 />
+              )}
+              {canDeleteSuppliers && (
+                <Popconfirm
+                  onConfirm={async () => {
+                    deleteSupplier.mutate(item.id);
+                  }}
+                  idTooltip="a"
+                  title="Você deseja mesmo apagar esse item?"
+                  position="top-right"
+                >
+                  <FiTrash2 style={{ cursor: "pointer", fontSize: "1.2rem" }} />
+                </Popconfirm>
               )}
             </section>
           ),

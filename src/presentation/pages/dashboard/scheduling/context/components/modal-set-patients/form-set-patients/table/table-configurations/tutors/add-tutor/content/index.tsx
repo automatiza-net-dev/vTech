@@ -1,89 +1,122 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Select,
-  FormHandler,
-  useToast,
-  LoaderCircle,
+	Select,
+	FormHandler,
+	useToast,
+	LoaderCircle,
+	useMutation,
 } from "infinity-forge";
+import { petsService } from "@/OLD/services/patient.service";
 
 import {
-  useAssignTutor,
-  useSetMainTutor,
-  useLoadAllPatientTutor,
-  useLoadSchedulesPatientsKEY,
-  useLoadAllPatientTutorKEY,
+	useAssignTutor,
+	useSetMainTutor,
+	useLoadAllPatientTutor,
+	useLoadSchedulesPatientsKEY,
+	useLoadAllPatientTutorKEY,
 } from "@/presentation";
 import { ButtonCreateTutor } from "../button-create-tutor";
-import { useQueryClient } from "infinity-forge"
+import { useQueryClient } from "infinity-forge";
 
 export function AddTutorContent({ id, setModal, origin }) {
-  const [initialHolder, setInitialHolder] = useState(null);
+	const [initialHolder, setInitialHolder] = useState(null);
 
-  const { createToast } = useToast();
-  const assignutor = useAssignTutor();
-  const setMainTutor = useSetMainTutor();
+	const { createToast } = useToast();
+	const assignTutor = useAssignTutor();
+	const setMainTutor = useSetMainTutor();
 
-  const { data, mutate, isLoading } = useLoadAllPatientTutor({});
+	const setMainTutorMutation = useMutation({
+		queryKey: ["set-main-tutor"],
+		queryFn: async (holder) => {
+			if (!holder) {
+				return;
+			}
 
-  const {refetch} = useQueryClient();
-  const queryKeyLoadAllPatientTutor = useLoadAllPatientTutorKEY();
-  const queryKeyLoadSchedulePatients = useLoadSchedulesPatientsKEY();
+			await petsService.assignPatientToTutor({
+				holder,
+				patient: id,
+			});
+			await petsService.setMainTutor(id, holder);
 
-  async function hanldeOnSuccess(param) {
-    await assignutor.mutateAsync({
-      ...param,
-      patient: id,
-    });
+			await refetch(queryKeyLoadSchedulePatients);
 
-    await setMainTutor.mutateAsync({
-      holder: param.holder,
-      patient: id,
-    });
+			await refetch(queryKeyLoadAllPatientTutor);
 
-    await refetch(queryKeyLoadSchedulePatients);
+			createToast({
+				message: "Tutor vinculado com sucesso!",
+				status: "success",
+			});
 
-    await refetch(queryKeyLoadAllPatientTutor);
+			setModal(false);
+		},
+	});
 
-    createToast({
-      message: "Tutor vinculado com sucesso!",
-      status: "success",
-    });
+	useEffect(() => {
+		setMainTutorMutation.mutate(initialHolder);
+	}, [initialHolder]);
 
-    setModal(false);
-  }
+	const { data, mutate, isLoading } = useLoadAllPatientTutor({ modal: true });
 
-  if (isLoading) {
-    return <LoaderCircle size={30} />;
-  }
+	const { refetch } = useQueryClient();
+	const queryKeyLoadAllPatientTutor = useLoadAllPatientTutorKEY();
+	const queryKeyLoadSchedulePatients = useLoadSchedulesPatientsKEY();
 
-  return (
-    <FormHandler
-      isStickyButtons
-      onSucess={hanldeOnSuccess}
-      button={{ text: "Vincular" }}
-      customAction={
-        {
-          props: { refetch: mutate, setInitialHolder, origin },
-          Component: ButtonCreateTutor,
-        } as any
-      }
-      initialData={{ holder: initialHolder }}
-    >
-      <div className="select-box">
-        <Select
-          label="Selecione o tutor a ser vinculado"
-          loading={isLoading}
-          name="holder"
-          onlyOneValue
-          options={
-            data?.map((item) => ({
-              label:
-                item?.name + " / " + item?.document + " / " + item?.cellphone,
-              value: item.id || "",
-            })) || []
-          }
-        />
-      </div>
-    </FormHandler>
-  );
+	async function handleOnSuccess(param) {
+		await assignTutor.mutateAsync({
+			...param,
+			patient: id,
+		});
+
+		await setMainTutor.mutateAsync({
+			holder: param.holder,
+			patient: id,
+		});
+
+		await refetch(queryKeyLoadSchedulePatients);
+
+		await refetch(queryKeyLoadAllPatientTutor);
+
+		createToast({
+			message: "Tutor vinculado com sucesso!",
+			status: "success",
+		});
+
+		setModal(false);
+	}
+
+	if (isLoading) {
+		return <LoaderCircle size={30} />;
+	}
+
+	return (
+		<FormHandler
+			isStickyButtons
+			onSucess={handleOnSuccess}
+			button={{ text: "Vincular" }}
+			customAction={
+				{
+					props: { refetch: mutate, setInitialHolder, origin },
+					Component: ButtonCreateTutor,
+				} as any
+			}
+			initialData={{ holder: initialHolder }}
+		>
+			<div className="select-box">
+				<Select
+					label="Selecione o tutor a ser vinculado"
+					loading={isLoading}
+					name="holder"
+					onlyOneValue
+					defaultValue={initialHolder ?? undefined}
+					options={
+						data?.map((item) => ({
+							label:
+								item?.name + " / " + item?.document + " / " + item?.cellphone,
+							value: item.id || "",
+						})) || []
+					}
+				/>
+			</div>
+		</FormHandler>
+	);
 }

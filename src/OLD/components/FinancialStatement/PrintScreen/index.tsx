@@ -30,6 +30,7 @@ function PrintTable({ data = [], loading }) {
             <div>pessoa</div>
             <div>emissao</div>
             <div>valor</div>
+            <div>Comp.</div>
             <div>Dt Venc.</div>
             <div>vlr pago</div>
             <div>forma pgto</div>
@@ -52,6 +53,7 @@ function PrintTable({ data = [], loading }) {
                       : "-"}
                   </div>
                   <div>{currencyFormatter(item?.value)}</div>
+                  <div>{item?.competence_date ?? '-'}</div>
                   <div>
                     {item?.expiration_date
                       ? moment(item?.expiration_date).format("DD/MM/YYYY")

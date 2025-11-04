@@ -42,7 +42,8 @@ function Form({
   patientId,
   onSuccess,
   initialDataForm = {},
-}: Partial<IFormCreatePatientProps> & {
+  specificTutor,
+}: Partial<IFormCreatePatientProps & { specificTutor?: string }> & {
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data, mutate, isFetching } = useLoadPatient(patientId);
@@ -52,22 +53,22 @@ function Form({
 
   const initialData = data
     ? {
-      ...data,
-      birthDate: moment(data?.birth_date).add(1, "days").toDate(),
-      death: String(data.death),
-      castrated: String(data.castrated),
-      holderId: data?.tutor?.id,
-      deathDate: data?.deathDate ? new Date(data?.deathDate) : null,
-      photo: [
-        {
-          id: 1,
-          fileType: ".png",
-          length: "0",
-          title: data.photo,
-          url: data.photo,
-        },
-      ] as FileSystemType[],
-    }
+        ...data,
+        birthDate: moment(data?.birth_date).add(1, "days").toDate(),
+        death: String(data.death),
+        castrated: String(data.castrated),
+        holderId: data?.tutor?.id,
+        deathDate: data?.deathDate ? new Date(data?.deathDate) : null,
+        photo: [
+          {
+            id: 1,
+            fileType: ".png",
+            length: "0",
+            title: data.photo,
+            url: data.photo,
+          },
+        ] as FileSystemType[],
+      }
     : { ...initialDataForm };
 
   if ((!data || isFetching) && patientId) {
@@ -81,14 +82,20 @@ function Form({
       birthDate: !isValidDate(formData?.birthDate)
         ? undefined
         : formData?.birthDate,
-        birthDate_change: formData?.birthDate_change, 
+      birthDate_change: formData?.birthDate_change,
       photo:
         formData?.photo &&
-          Array.isArray(formData?.photo) &&
-          formData.photo.find((photo) => photo?.file)
+        Array.isArray(formData?.photo) &&
+        formData.photo.find((photo) => photo?.file)
           ? formData?.photo[0]?.file
           : undefined,
     };
+
+    console.log(payload);
+
+    if (specificTutor) {
+      payload.holders = [{ id: specificTutor, name: "", main: false }];
+    }
 
     if (payload?.castrated === "null") {
       delete payload?.castrated;
@@ -96,7 +103,7 @@ function Form({
 
     const response = await container
       .get<RemotePatient>(TypesAutomatiza.RemotePatient)
-    [data ? "edit" : "create"](payload);
+      [data ? "edit" : "create"](payload);
 
     patientId && (await mutate());
 
@@ -133,9 +140,12 @@ function Form({
             <div className="row">
               <Input name="name" label="Nome*" />
 
-              <InputBirthday patientId={data?.birth_date ? patientId : undefined} required={isRegister} />
+              <InputBirthday
+                patientId={data?.birth_date ? patientId : undefined}
+                required={isRegister}
+              />
 
-             {data && <Input name="tag" label="RG" disabled={!hasTAG} />}
+              {data && <Input name="tag" label="RG" disabled={!hasTAG} />}
             </div>
 
             <div className="row">
@@ -206,7 +216,7 @@ function Form({
 
         {data && <InputDeath />}
 
-        <Tutors origin={origin} />
+        <Tutors origin={origin} specificTutor={specificTutor} />
       </FormHandler>
     </S.Create>
   );
@@ -220,14 +230,13 @@ export function FormCreatePatient({
   onSuccess,
   buttonText,
   initialDataForm,
-}: IFormCreatePatientProps) {
+  tutorId,
+}: IFormCreatePatientProps & { tutorId?: string }) {
   const [open, setOpen] = useState(false);
 
   const { type } = useConfigurationsSystem();
 
-  const canCreate = useVerifyPermissions(
-    type === "Vet" ? "PET01" : "TUT01"
-  );
+  const canCreate = useVerifyPermissions(type === "Vet" ? "PET01" : "TUT01");
 
   if (!canCreate) {
     return <></>;
@@ -287,6 +296,7 @@ export function FormCreatePatient({
       onSuccess={onSuccess}
       patientId={patientId}
       initialDataForm={initialDataForm}
+      specificTutor={tutorId}
     />
   );
 }

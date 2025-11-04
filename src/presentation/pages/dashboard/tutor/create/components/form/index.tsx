@@ -9,6 +9,7 @@ import {
   FormHandler,
   InputCpfCnpj,
   InputSwitch,
+  ValidationError,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -33,6 +34,7 @@ import { InputCorporateName } from "./input-corporate-name";
 import { ICreateTutorFormProps } from "./interfaces";
 
 import * as S from "./styles";
+import { useState } from "react";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
@@ -42,6 +44,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
   const hasTag = usePermission("TUT04");
   const { type } = useConfigurationsSystem();
   const { data, isFetching, mutate } = useLoadTutor(tutorId);
+  const [manualErrors, setManualErrors] = useState<Record<string, string>>({});
 
   defineRequireFields(origin, ["CEP*"]);
 
@@ -55,32 +58,83 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
     (isRegister && unit?.configs?.businessUnits?.requires_client_document) ||
     isRegister;
 
-  async function handleSuccess(data) {
+  function objectToFormData(obj, form = new FormData(), namespace = "") {
+    for (const [key, value] of Object.entries(obj)) {
+      if (value === undefined || value === null) continue;
+
+      const formKey = namespace ? `${namespace}[${key}]` : key;
+
+      if (value instanceof File) {
+        form.append(formKey, value);
+      } else if (Array.isArray(value)) {
+        value.forEach((v, i) => {
+          if (v instanceof File) {
+            form.append(`${formKey}[${i}]`, v);
+          } else if (typeof v === "object" && v !== null) {
+            objectToFormData(v, form, `${formKey}[${i}]`);
+          } else {
+            form.append(`${formKey}[${i}]`, v);
+          }
+        });
+      } else if (typeof value === "object") {
+        objectToFormData(value, form, formKey);
+      } else {
+        // @ts-expect-error
+        form.append(formKey, value);
+      }
+    }
+
+    return form;
+  }
+
+  async function handleSuccess(formData) {
+    const hasFile =
+      formData?.photo &&
+      Array.isArray(formData.photo) &&
+      formData.photo[0]?.file instanceof File;
+
     const payload = {
       ...data,
+      ...formData,
       origin,
       photo:
-        data?.photo &&
-        Array.isArray(data?.photo) &&
-        data.photo.find((photo) => photo?.file)
-          ? data?.photo[0]?.file
+        formData?.photo &&
+        Array.isArray(formData?.photo) &&
+        formData.photo.find((photo) => photo?.file)
+          ? formData?.photo[0]?.file
           : undefined,
     };
 
-    const response = await container
-      .get<RemoteTutor>(TypesAutomatiza.RemoteTutor)
-      [tutorId ? "update" : "create"](payload);
+    try {
+      const response = await container
+        .get<RemoteTutor>(TypesAutomatiza.RemoteTutor)
+        [tutorId ? "update" : "create"](
+          hasFile ? objectToFormData(payload) : payload,
+        );
 
-    createToast({
-      status: "success",
-      message: tutorId ? "Alterado com sucesso" : "Criado com sucesso",
-    });
+      createToast({
+        status: "success",
+        message: tutorId ? "Alterado com sucesso" : "Criado com sucesso",
+      });
 
-    tutorId && mutate();
+      tutorId && mutate();
 
-    setOpen && setOpen(false);
+      setOpen && setOpen(false);
 
-    onSuccess && onSuccess(response);
+      onSuccess && onSuccess(response);
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        setManualErrors(
+          Object.keys(err.errors).reduce(
+            (acc, curr) => {
+              acc[curr] = err.errors[curr].errors.join(", ");
+              return acc;
+            },
+            {} as Record<string, string>,
+          ),
+        );
+      }
+    }
   }
 
   return (
@@ -89,24 +143,31 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
         <FormHandler
           disableEnterKeySubmitForm
           isStickyButtons
-          cleanFieldsOnSubmit
+          cleanFieldsOnSubmit={false}
           initialData={initialData({ data, tutorId })}
           button={{ text: "SALVAR" }}
-          onSucess={handleSuccess}
+          onSucess={async (successData) => {
+            setManualErrors({});
+            await handleSuccess(successData);
+          }}
         >
           <h2 className="font-22-bold">
             {tutorId
               ? `Editar - ${data?.name}`
               : type === "Vet"
-              ? "Novo Tutor"
-              : "Novo Paciente"}
+                ? "Novo Tutor"
+                : "Novo Paciente"}
           </h2>
           <div className="row">
             <InputPhoto name="photo" isLocalFile multiple />
 
             <div>
               <div className="row">
-                <InputCorporateName />
+                <InputCorporateName
+                  errorMessage={
+                    manualErrors["name"] || manualErrors["corporateName"]
+                  }
+                />
 
                 <InputCpfCnpj
                   name="document"
@@ -126,7 +187,11 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               </div>
 
               <div className="row">
-                <Input name="name" label="Nome Social / Nome Fantasia" />
+                <Input
+                  name="name"
+                  label="Nome Social / Nome Fantasia"
+                  required
+                />
 
                 <SelectGender isRegister={isRegister} />
 
@@ -150,13 +215,15 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
               <div className="row">
                 <SelectProfession origin={origin} />
 
-                <SelectOrigin />
+                <SelectOrigin errorMessage={manualErrors["clientOriginId"]} />
               </div>
 
               <div className="row">
                 <Input name="tags" label="Tag / Observação" />
 
-              {tutorId &&  <Input name="tag" label="Código" disabled={!hasTag}  />}
+                {tutorId && (
+                  <Input name="tag" label="Código" disabled={!hasTag} />
+                )}
 
                 {type !== "Vet" && (
                   <>
@@ -175,7 +242,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             </div>
           </div>
 
-          <Contacts origin={origin} />
+          <Contacts origin={origin} errors={manualErrors} />
 
           <h3 className="font-18-bold" style={{ marginBottom: 15 }}>
             Endereço
@@ -190,7 +257,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                 number: { label: "Número*" },
                 complemento: { label: "Complemento" },
                 ibge: { label: "Cód*" },
-              }  as any,
+              } as any,
               {
                 bairro: { label: "Bairro*" },
                 uf: { label: "Estado*" },

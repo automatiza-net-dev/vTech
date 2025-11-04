@@ -249,7 +249,7 @@ export const Create = memo(function Create({ type }) {
               />
             </div>
             <div className="uk-margin-small-right">
-  <label>Data 1ª parcelaa</label>
+  <label>Data 1ª parcela</label>
    <DatePicker
                     className="uk-width-1-1"
                     picker="date"

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { memo, useState } from "react";
+import { Dispatch, memo, SetStateAction, useState } from "react";
 
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
 import { usePatients } from "@/OLD/hooks/usePatients";
@@ -12,7 +12,13 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { sortItems } from "@/OLD/utils/sortItems";
 
-export const Filters = memo(function Filters({ filters, setFilters }) {
+export const Filters = memo(function Filters({
+  filters,
+  setFilters,
+}: {
+  filters: Record<string, unknown>;
+  setFilters: Dispatch<SetStateAction<any>>;
+}) {
   const [values, setValues] = useState({});
 
   const { businessUnits } = useBusinessUnitsByUser(false);
@@ -119,7 +125,7 @@ export const Filters = memo(function Filters({ filters, setFilters }) {
             }}
             filterOption={(val, opt) =>
               normalizeStr(opt?.name.toUpperCase()).includes(
-                normalizeStr(val.toUpperCase())
+                normalizeStr(val.toUpperCase()),
               )
             }
           />
@@ -153,7 +159,7 @@ export const Filters = memo(function Filters({ filters, setFilters }) {
             }}
             filterOption={(val, opt) =>
               normalizeStr(opt?.name.toUpperCase()).includes(
-                normalizeStr(val.toUpperCase())
+                normalizeStr(val.toUpperCase()),
               )
             }
           />

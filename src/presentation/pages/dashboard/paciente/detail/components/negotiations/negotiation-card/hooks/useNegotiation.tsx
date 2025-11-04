@@ -4,6 +4,7 @@ import { useToast } from "infinity-forge";
 
 import { RemoteBudget } from "@/data";
 import { container, TypesAutomatiza } from "@/container";
+import { AxiosError } from "axios";
 
 export function useNegotiation() {
   const router = useRouter();
@@ -12,7 +13,7 @@ export function useNegotiation() {
 
   async function confirmBill(dataForm: any) {
     const containerBudget = container.get<RemoteBudget>(
-      TypesAutomatiza.RemoteBudget
+      TypesAutomatiza.RemoteBudget,
     );
 
     const promises = dataForm.budgets.map(async (budget) => {
@@ -35,14 +36,24 @@ export function useNegotiation() {
       });
     });
 
-    await Promise.all(promises);
+    try {
+      await Promise.all(promises);
 
-    queryClient.invalidateQueries(["openNegotiations"]);
+      queryClient.invalidateQueries(["openNegotiations"]);
 
-    createToast({
-      message: "Negociação aprovada com sucesso",
-      status: "success",
-    });
+      createToast({
+        message: "Negociação aprovada com sucesso",
+        status: "success",
+      });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const messageArr = err?.response?.data?.message.split(":");
+        return createToast({
+          message: messageArr[1] ?? "Erro ao aprovar Negociação",
+          status: "error",
+        });
+      }
+    }
   }
 
   return {

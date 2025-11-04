@@ -1,5 +1,5 @@
 import { Error } from "infinity-forge";
-import { useQueryClient } from "infinity-forge"
+import { useQueryClient } from "infinity-forge";
 
 import { Tutor } from "@/domain";
 import { FormCreatePatient } from "@/presentation/pages/dashboard/paciente";
@@ -10,50 +10,52 @@ import { SelectActiveTutor } from "./select-active-tutor";
 import * as S from "./styles";
 
 export function Tutors({
-  tutors,
-  id,
-  name,
+	tutors,
+	id,
+	name,
 }: {
-  tutors: Tutor[];
-  id: string;
-  name: string;
+	tutors: Tutor[];
+	id: string;
+	name: string;
 }) {
-  const {refetch} = useQueryClient();
+	const { refetch } = useQueryClient();
 
-  return (
-    <Error name="birthDate">
-      <S.Tutors>
-        <div className="tutors-list">
-          <div className="actions">
-            <AddTutor id={id} tutors={tutors} />
+	return (
+		<Error name="birthDate">
+			<S.Tutors>
+				<div className="tutors-list">
+					<div className="actions">
+						<AddTutor id={id} tutors={tutors} />
 
-            {tutors && tutors.length > 1 && <SelectActiveTutor tutors={tutors} id={id} />}
-          </div>
+						{tutors && tutors.length > 1 && (
+							<SelectActiveTutor tutors={tutors} id={id} />
+						)}
+					</div>
 
-          <div className="list">
-            {tutors?.map((tutor, index) => (
-              <span key={tutor.id} className="name">
-                {tutor.isMain ? (
-                  <strong>{tutor?.name}</strong>
-                ) : !name ? (
-                  <FormCreatePatient
-                    onSuccess={() => 
-                      refetch(["RemotePatient"], { mode: "include" })
-                    }
-                    trigger={<span>{tutor?.name}</span>}
-                    patientId={tutor.id}
-                    isModal
-                  />
-                ) : (
-                  tutor?.name
-                )}
+					<div className="list">
+						{tutors?.map((tutor, index) => (
+							<span key={tutor.id} className="name">
+								{tutor.isMain ? (
+									<strong>{tutor?.name}</strong>
+								) : !name ? (
+									<FormCreatePatient
+										onSuccess={() =>
+											refetch(["RemotePatient"], { mode: "include" })
+										}
+										trigger={<span>{tutor?.name}</span>}
+										patientId={tutor.id}
+										isModal
+									/>
+								) : (
+									tutor?.name
+								)}
 
-                <strong>{tutors.length - 1 === index ? "" : " | "}</strong>
-              </span>
-            ))}
-          </div>
-        </div>
-      </S.Tutors>
-    </Error>
-  );
+								<strong>{tutors.length - 1 === index ? "" : " | "}</strong>
+							</span>
+						))}
+					</div>
+				</div>
+			</S.Tutors>
+		</Error>
+	);
 }

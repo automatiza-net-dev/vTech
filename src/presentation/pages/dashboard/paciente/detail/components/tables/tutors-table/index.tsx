@@ -19,8 +19,8 @@ export function TutorsTable() {
   const props = patient?.data;
 
   const { data, mutate } = useLoadSchedulesPatients({
-    patientFilters: { tag: props.tag },
-    enabled: !!props?.tag,
+    patientFilters: { id: props.id },
+    enabled: !!props?.id,
   });
 
   const hasPermission = useVerifyPermissions("PET04");
