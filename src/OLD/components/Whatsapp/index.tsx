@@ -12,6 +12,7 @@ import { whatsappColumns } from "./Columns";
 
 import { Button, PageWrapper, Popconfirm, useMutation } from "infinity-forge";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { BsFillChatDotsFill } from "react-icons/bs";
 
 const WhatsappConfig = memo(function WhatsappConfig() {
   const router = useRouter();
@@ -42,6 +43,12 @@ const WhatsappConfig = memo(function WhatsappConfig() {
           <section
             style={{ display: "flex", alignItems: "center", gap: "1rem" }}
           >
+            <BsFillChatDotsFill
+              onClick={() => {
+                router.push(`/dashboard/whatsapp/mensagens/${cfg.id}`);
+              }}
+              style={{ cursor: "pointer", fontSize: "1.2rem" }}
+            />
             <FiEdit2
               onClick={() => {
                 router.push(`/dashboard/whatsapp/editar/${cfg.id}`);

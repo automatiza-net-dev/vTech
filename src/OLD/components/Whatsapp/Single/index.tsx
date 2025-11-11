@@ -1,184 +1,194 @@
-// @ts-nocheck
-import React, { memo, useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { petsService } from "@/OLD/services/patient.service";
-import { Table } from "antd";
-import { LoadingSkeleton } from "@/OLD/components/mini-components";
-import { Button, PageWrapper } from "infinity-forge";
-import Link from "next/link";
-import { convertDate } from "@/OLD/utils/convertDate";
+import { memo, useState } from "react";
+import { Button, PageWrapper, useQuery } from "infinity-forge";
+import { useParams } from "next/navigation";
+import { whatsappConfigService } from "@/OLD/services/whatsapp-config.service";
+import { Input as AntdInput, DatePicker, Modal, Table } from "antd";
+import { BsFillChatDotsFill } from "react-icons/bs";
+import { InputBox, Input } from "../styles";
+import { normalizeStr } from "@/OLD/utils/normalizeString";
+import { MdOutlineClear } from "react-icons/md";
 
-import { useSingleSupplier } from "@/OLD/hooks/useSuppliers";
-import { ImageUploadS3 } from "@/presentation";
+const WhatsappSingle = memo(function WhatsappSingle() {
+  const params = useParams();
 
-const Single = memo(function Single() {
-  const [loading, setLoading] = useState(false);
+  const [jsonMessage, setJsonMessage] = useState<string | null>(null);
+  const [filters, setFilters] = useState({
+    platformIntegration: "",
+    whatsappPhone: "",
+    startDate: "",
+    endDate: "",
+  });
 
-  const router = useRouter();
-  const id = router.query.id;
+  const messages = useQuery({
+    queryKey: ["whatsapp", params.id ?? "0", "messages"],
+    queryFn: async () => {
+      const result = await whatsappConfigService.searchMessages(
+        params.id as string,
+        filters,
+      );
+      return result.data;
+    },
+  });
 
-  const { supplier } = useSingleSupplier(id);
+  const shouldRefetch = () => messages.refetch();
 
-  return loading ? (
-    <LoadingSkeleton />
-  ) : (
+  const tableData =
+    messages.data?.map((msg) => ({
+      id: msg.id,
+      event_created: msg.event_created,
+      phone: msg.phone,
+      platformIntegration: msg.platformIntegration,
+      processed: msg.processed ? "Sim" : "Não",
+      created_at: msg.created_at,
+      actions: (
+        <section style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <BsFillChatDotsFill
+            onClick={() => {
+              setJsonMessage(JSON.stringify(msg.payload, null, 2));
+            }}
+            style={{ cursor: "pointer", fontSize: "1.2rem" }}
+          />
+        </section>
+      ),
+    })) ?? [];
+
+  return (
     <PageWrapper title="Detalhes do fornecedor">
-      <div>
-        <div
-          className="uk-card uk-card-body uk-margin-bottom"
-          style={{
-            background: "#fff",
-            borderRadius: "20px",
-            marginTop: "50px",
-            border: "0.5px solid #cacaca",
-          }}
-        >
-          <>
-            <div className="uk-margin-large-bottom">
-              <div
-                style={{
-                  borderRadius: "50%",
-                  background: "#ccc",
-                  width: "115px",
-                  height: "115px",
-                  display: "flex",
-                  border: "solid 3px var(--darkBlue)",
-                  marginTop: "50px",
-                  position: "absolute",
-                  top: -80,
-                }}
-              >
-                <ImageUploadS3
-                  src={
-                    supplier?.photo
-                  }
+      <Modal
+        open={!!jsonMessage}
+        onCancel={() => setJsonMessage(null)}
+        width={800}
+      >
+        <pre>{jsonMessage}</pre>
+      </Modal>
+      <div
+        className=""
+        style={{
+          marginTop: "50px",
+        }}
+      >
+        <section className="uk-margin-top uk-margin-bottom">
+          <section style={{ display: "flex", width: "100%" }}>
+            <div style={{ width: "25%" }}>
+              <Input style={{ width: "100%" }}>
+                <label htmlFor="">Datas</label>
+                <DatePicker.RangePicker
+                  onCalendarChange={(_, [from, to]) => {
+                    setFilters((prv) => ({
+                      ...prv,
+                      startDate: from,
+                      endDate: to,
+                    }));
+                  }}
                 />
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  right: 40,
-                }}
-              >
-                <Link href={`/dashboard/fornecedores/editar/${id}`}>
-                  <Button text="Editar" />
-                </Link>
-              </div>
+
+                <MdOutlineClear
+                  size={20}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setFilters((prv) => ({
+                      ...prv,
+                      startDate: "",
+                      endDate: "",
+                    }));
+                  }}
+                />
+              </Input>
             </div>
 
-            <div className="uk-flex uk-flex-between">
-              <div className="uk-flex uk-flex-column uk-width-1-4 uk-margin-top">
-                <h5 className="uk-heading-line">
-                  <span>Contato</span>
-                </h5>
-                <span>
-                  Telefone:{" "}
-                  {supplier?.tutor?.telephone === ""
-                    ? "Nenhum telefone cadastrado"
-                    : supplier?.tutor?.telephone}
-                </span>
-                <span>
-                  Celular:{" "}
-                  {supplier?.tutor?.cellphone === ""
-                    ? "Nenhum telefone cadastrado"
-                    : supplier?.tutor?.telephone}
-                </span>
-                <span>
-                  Email:{" "}
-                  {supplier?.tutor?.email === ""
-                    ? "Nenhum email cadastrado"
-                    : supplier?.tutor?.email}
-                </span>
-              </div>
-              <div className="uk-flex uk-flex-column uk-width-1-4">
-                <h5 className="uk-heading-line">
-                  <span>Documentos</span>
-                </h5>
-                <span>
-                  CNPJ:{" "}
-                  {supplier?.tutor?.document === ""
-                    ? "Nenhum documento cadastrado"
-                    : supplier?.tutor?.document}
-                </span>
-                <span>
-                  Incrição estadual:{" "}
-                  {supplier?.tutor?.inscription === ""
-                    ? "Nenhum documento cadastrado"
-                    : supplier?.tutor?.inscription}
-                </span>
-                <span>
-                  Razão Social:{" "}
-                  {supplier?.tutor?.corporate_name === ""
-                    ? "Nenhum telefone cadastrado"
-                    : supplier?.tutor?.corporate_name}
-                </span>
-                <span>
-                  Nome Fantasia:{" "}
-                  {supplier?.name === ""
-                    ? "Nome fantasia não cadastrado"
-                    : supplier?.name}
-                </span>
-                <span>
-                  Plano de contas padrão:
-                  {supplier?.tutor?.accountPlan?.description === ""
-                    ? "-"
-                    : supplier?.tutor?.accountPlan?.description}
-                </span>
-              </div>
-
-              <div className="uk-flex uk-flex-column uk-width-1-4">
-                <h5 className="uk-heading-line">
-                  <span>Endereço</span>
-                </h5>
-                <span>
-                  CEP:{" "}
-                  {supplier?.tutor?.postal_code === ""
-                    ? "Nenhum cep cadastrado"
-                    : supplier?.tutor?.postal_code}
-                </span>
-                <span>
-                  Rua:{" "}
-                  {supplier?.tutor?.street === ""
-                    ? "Nenhuma rua cadastrada"
-                    : supplier?.tutor?.street}
-                </span>
-                <span>
-                  Bairro:{" "}
-                  {supplier?.tutor?.district === ""
-                    ? "Nenhum bairro cadastrado"
-                    : supplier?.tutor?.district}
-                </span>
-                <span>
-                  Complemento:{" "}
-                  {supplier?.tutor?.complement === ""
-                    ? ""
-                    : supplier?.tutor?.complement}
-                </span>
-                <span>
-                  Número:{" "}
-                  {supplier?.tutor?.number === ""
-                    ? "Nenhum número cadastrado"
-                    : supplier?.tutor?.number}
-                </span>
-                <span>
-                  Cidade:{" "}
-                  {supplier?.tutor?.city === ""
-                    ? "Nenhuma cidade cadastrada"
-                    : supplier?.tutor?.city}
-                </span>
-                <span>
-                  Estado:{" "}
-                  {supplier?.tutor?.state === ""
-                    ? "Nenhum estado cadastrado"
-                    : supplier?.tutor?.state}
-                </span>
-              </div>
+            <div style={{ width: "25%" }}>
+              <label htmlFor="phone">Telefone</label>
+              <InputBox>
+                <AntdInput
+                  placeholder="Telefone"
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      whatsappPhone: normalizeStr(e.target.value),
+                    })
+                  }
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      shouldRefetch();
+                    }
+                  }}
+                />
+              </InputBox>
             </div>
-          </>
-        </div>
+
+            <div style={{ width: "25%" }}>
+              <label htmlFor="platformIntegration">Plataforma</label>
+              <InputBox>
+                <AntdInput
+                  placeholder="Plataforma"
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      platformIntegration: normalizeStr(e.target.value),
+                    })
+                  }
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      shouldRefetch();
+                    }
+                  }}
+                />
+              </InputBox>
+            </div>
+
+            <Button
+              text="Filtrar"
+              onClick={() => {
+                shouldRefetch();
+              }}
+            />
+          </section>
+        </section>
+
+        <Table
+          columns={[
+            {
+              title: "ID",
+              key: "id",
+              dataIndex: "id",
+            },
+            {
+              title: "Criação",
+              key: "event_created",
+              dataIndex: "event_created",
+            },
+
+            {
+              title: "Nro. Origem",
+              key: "phone",
+              dataIndex: "phone",
+            },
+            {
+              title: "Plataforma",
+              key: "platformIntegration",
+              dataIndex: "platformIntegration",
+            },
+            {
+              title: "Processado",
+              key: "processed",
+              dataIndex: "processed",
+            },
+            {
+              title: "Data Processamento",
+              key: "created_at",
+              dataIndex: "created_at",
+            },
+            {
+              title: "Ações",
+              key: "actions",
+              dataIndex: "actions",
+            },
+          ]}
+          dataSource={tableData}
+        />
       </div>
     </PageWrapper>
   );
 });
 
-export default Single;
+export default WhatsappSingle;
