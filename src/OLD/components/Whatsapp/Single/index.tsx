@@ -7,6 +7,7 @@ import { BsFillChatDotsFill } from "react-icons/bs";
 import { InputBox, Input } from "../styles";
 import { normalizeStr } from "@/OLD/utils/normalizeString";
 import { MdOutlineClear } from "react-icons/md";
+import moment from "moment";
 
 const WhatsappSingle = memo(function WhatsappSingle() {
   const params = useParams();
@@ -15,8 +16,8 @@ const WhatsappSingle = memo(function WhatsappSingle() {
   const [filters, setFilters] = useState({
     platformIntegration: "",
     whatsappPhone: "",
-    startDate: "",
-    endDate: "",
+    startDate: moment().startOf("day").format("YYYY-MM-DD"),
+    endDate: moment().endOf("day").format("YYYY-MM-DD"),
   });
 
   const messages = useQuery({
