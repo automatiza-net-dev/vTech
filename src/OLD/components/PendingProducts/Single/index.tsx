@@ -509,7 +509,7 @@ export function SinglePendingProducts({
                       <Input
                         value={currencyFormatter(
                           item?.fractionValue && item?.originalPrice
-                            ? item.fractionValue * item.originalPrice
+                            ? item.originalPrice / item.fractionValue
                             : 0,
                         )}
                         readOnly
