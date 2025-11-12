@@ -7,7 +7,12 @@ import FormChild from "../FormChild";
 import { useParams } from "next/navigation";
 
 const UpdateWhatsapp = memo(function UpdateWhatsapp() {
-  const [data, setData] = useState<Record<string, string | boolean>>({});
+  const [data, setData] = useState({
+    tintimClientId: "",
+    whatsappPhone: "",
+    platformIntegration: "",
+    active: false,
+  });
 
   const router = useRouter();
   const params = useParams();
@@ -22,6 +27,7 @@ const UpdateWhatsapp = memo(function UpdateWhatsapp() {
     }
 
     setData({
+      tintimClientId: config.data.tintimClientId ?? "",
       whatsappPhone: config.data.whatsappPhone ?? "",
       platformIntegration: config.data.platformIntegration ?? "",
       active: config.data.active ?? false,
@@ -31,11 +37,7 @@ const UpdateWhatsapp = memo(function UpdateWhatsapp() {
   const createConfigMutation = useMutation({
     queryKey: ["update-whatsapp-config"],
     queryFn: async () => {
-      await whatsappConfigService.updateConfig(params.id as string, {
-        whatsappPhone: (data.whatsappPhone as string) ?? "",
-        platformIntegration: (data.platformIntegration as string) ?? "",
-        active: data.active as boolean,
-      });
+      await whatsappConfigService.updateConfig(params.id as string, data);
 
       createToast({
         message: "Configuração atualizada com sucesso",

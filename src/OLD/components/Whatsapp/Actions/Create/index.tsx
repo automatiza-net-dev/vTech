@@ -5,7 +5,12 @@ import { whatsappConfigService } from "@/OLD/services/whatsapp-config.service";
 import FormChild from "../FormChild";
 
 const CreateWhatsapp = memo(function CreateWhatsapp() {
-  const [data, setData] = useState<Record<string, string>>({});
+  const [data, setData] = useState({
+    tintimClientId: "",
+    whatsappPhone: "",
+    platformIntegration: "",
+    active: true,
+  });
 
   const router = useRouter();
   const { createToast } = useToast();
@@ -14,6 +19,7 @@ const CreateWhatsapp = memo(function CreateWhatsapp() {
     queryKey: ["create-whatsapp-config"],
     queryFn: async () => {
       await whatsappConfigService.createConfig({
+        tintimClientId: data.tintimClientId,
         whatsappPhone: data.whatsappPhone ?? "",
         platformIntegration: data.platformIntegration ?? "",
       });

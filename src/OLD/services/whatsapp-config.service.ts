@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 
 type Config = {
   id: number;
+  tintimClientId: string | null;
   whatsappPhone: string;
   platformIntegration: string;
   active: boolean;
@@ -41,6 +42,7 @@ const showConfig = async (id: string): Promise<AxiosResponse<Config>> =>
   await api.get(`/whatsapp-messages-configs/${id}`);
 
 const createConfig = async (data: {
+  tintimClientId: string;
   whatsappPhone: string;
   platformIntegration: string;
 }) => await api.post(`/whatsapp-messages-configs`, data);
@@ -48,6 +50,7 @@ const createConfig = async (data: {
 const updateConfig = async (
   id: string,
   data: {
+    tintimClientId: string;
     whatsappPhone: string;
     platformIntegration: string;
     active: boolean;

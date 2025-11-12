@@ -1,13 +1,25 @@
 import { Input, Switch } from "antd";
-import { Button, useToast } from "infinity-forge";
+import { Button } from "infinity-forge";
 import { useRouter } from "next/router";
 import { type Dispatch, memo, type SetStateAction } from "react";
 import { Container } from "./styles";
 
 const FormChild = memo(
   (props: {
-    data: Record<string, string | boolean>;
-    setData: Dispatch<SetStateAction<Record<string, string | boolean>>>;
+    data: {
+      tintimClientId: string;
+      whatsappPhone: string;
+      platformIntegration: string;
+      active: boolean;
+    };
+    setData: Dispatch<
+      SetStateAction<{
+        tintimClientId: string;
+        whatsappPhone: string;
+        platformIntegration: string;
+        active: boolean;
+      }>
+    >;
     submit: () => void;
     showActive?: boolean;
   }) => {
@@ -27,10 +39,23 @@ const FormChild = memo(
           </div>
           <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
             <div className="uk-width-1-3 uk-margin-right">
+              <label htmlFor="tintimClientId">ID conta</label>
+              <Input
+                id={"tintimClientId"}
+                value={props.data?.tintimClientId}
+                onChange={(e) =>
+                  props.setData({
+                    ...props.data,
+                    tintimClientId: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="uk-width-1-3 uk-margin-right">
               <label htmlFor="whatsappPhone">Telefone</label>
               <Input
                 id={"whatsappPhone"}
-                value={props.data?.whatsappPhone as string}
+                value={props.data?.whatsappPhone}
                 onChange={(e) =>
                   props.setData({
                     ...props.data,
@@ -44,7 +69,7 @@ const FormChild = memo(
               <label htmlFor="whatsappPhone">Plataforma</label>
               <Input
                 id={"platformIntegration"}
-                value={props.data?.platformIntegration as string}
+                value={props.data?.platformIntegration}
                 onChange={(e) =>
                   props.setData({
                     ...props.data,
