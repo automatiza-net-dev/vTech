@@ -71,7 +71,7 @@ const WhatsappConfig = memo(function WhatsappConfig() {
     : [];
 
   return (
-    <PageWrapper title="Fornecedores">
+    <PageWrapper title="Configurações de Whatsapp">
       <Container>
         <Filters
           filters={filters}

@@ -54,7 +54,7 @@ const WhatsappSingle = memo(function WhatsappSingle() {
     })) ?? [];
 
   return (
-    <PageWrapper title="Configurações de Whatsapp">
+    <PageWrapper title="Mensagens de Whatsapp">
       <Modal
         open={!!jsonMessage}
         onCancel={() => setJsonMessage(null)}
