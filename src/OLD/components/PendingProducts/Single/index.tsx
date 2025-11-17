@@ -529,21 +529,6 @@ export function SinglePendingProducts({
                           });
                           setData(arr);
                         }}
-                        onBlur={() => {
-                          let arr = [...data];
-                          const cost =
-                            convertIntlCurrency(item?.costPrice) || 0;
-                          const margin = parseFloat(item?.profitMargin) || 0;
-                          const price = cost * (1 + margin / 100);
-
-                          arr.splice(i, 1, {
-                            ...item,
-                            price: currencyFormatter(price.toFixed(2)),
-                            sendUpdate: true,
-                          });
-
-                          setData(arr);
-                        }}
                       />
                     </div>
 
