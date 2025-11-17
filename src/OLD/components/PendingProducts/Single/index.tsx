@@ -501,7 +501,21 @@ export function SinglePendingProducts({
 
                     <div className="uk-width-1-6">
                       <label>Qtd Embalag.</label>
-                      <Input value={item?.fractionValue ?? 0} readOnly />
+                      <Input
+                        value={item?.fractionValue ?? 0}
+                        type="number"
+                        onChange={(e) => {
+                          let arr = [...data];
+
+                          arr.splice(i, 1, {
+                            ...item,
+                            fractionValue: e.target.valueAsNumber,
+                            sendUpdate: true,
+                          });
+
+                          setData(arr);
+                        }}
+                      />
                     </div>
 
                     <div className="uk-width-1-6">
@@ -512,7 +526,7 @@ export function SinglePendingProducts({
                             ? item.originalPrice / item.fractionValue
                             : 0,
                         )}
-                        readOnly
+                        disabled
                       />
                     </div>
 
