@@ -578,10 +578,20 @@ export function SinglePendingProducts({
                         value={item?.price}
                         onChange={(e) => {
                           let arr = [...data];
+
+                          const price = convertIntlCurrency(e.target.value);
+                          const costPrice =
+                            convertIntlCurrency(item?.costPrice) || 0;
+
                           arr.splice(i, 1, {
                             ...item,
                             price: currencyFormatter(
                               convertIntlCurrency(e.target.value),
+                            ),
+                            profitMargin: Number.parseFloat(
+                              (((price - costPrice) / costPrice) * 100).toFixed(
+                                2,
+                              ),
                             ),
                             sendUpdate: true,
                           });
