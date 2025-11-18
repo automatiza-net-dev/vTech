@@ -10,6 +10,7 @@ import {
   InputCpfCnpj,
   InputSwitch,
   ValidationError,
+  BadRequestError,
 } from "infinity-forge";
 import moment from "moment";
 
@@ -35,6 +36,7 @@ import { ICreateTutorFormProps } from "./interfaces";
 
 import * as S from "./styles";
 import { useState } from "react";
+import { AxiosError } from "axios";
 
 export function CreateTutorForm(props: ICreateTutorFormProps) {
   const { tutorId, origin = "Cadastro", setOpen, onSuccess } = props;
@@ -134,6 +136,13 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
           ),
         );
       }
+
+      if (err instanceof BadRequestError) {
+        createToast({
+          message: err.error.message ?? "Erro ao criar tutor",
+          status: "warning",
+        });
+      }
     }
   }
 
@@ -169,10 +178,16 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                   }
                 />
 
-                <InputCpfCnpj
-                  name="document"
-                  label={requiresDocument ? "cpf/cnpj*" : "cpf/cnpj"}
-                />
+                <div>
+                  <InputCpfCnpj
+                    name="document"
+                    label={requiresDocument ? "cpf/cnpj*" : "cpf/cnpj"}
+                  />
+
+                  {manualErrors["document"] && (
+                    <p>{manualErrors["document"]}</p>
+                  )}
+                </div>
 
                 <InputMask name="inscription" label="RG" mask="__.___.___-_" />
 
