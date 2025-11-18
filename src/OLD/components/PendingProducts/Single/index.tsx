@@ -501,7 +501,21 @@ export function SinglePendingProducts({
 
                     <div className="uk-width-1-6">
                       <label>Qtd Embalag.</label>
-                      <Input value={item?.fractionValue ?? 0} readOnly />
+                      <Input
+                        value={item?.fractionValue ?? 0}
+                        type="number"
+                        onChange={(e) => {
+                          let arr = [...data];
+
+                          arr.splice(i, 1, {
+                            ...item,
+                            fractionValue: e.target.valueAsNumber,
+                            sendUpdate: true,
+                          });
+
+                          setData(arr);
+                        }}
+                      />
                     </div>
 
                     <div className="uk-width-1-6">
@@ -509,10 +523,10 @@ export function SinglePendingProducts({
                       <Input
                         value={currencyFormatter(
                           item?.fractionValue && item?.originalPrice
-                            ? item.fractionValue * item.originalPrice
+                            ? item.originalPrice / item.fractionValue
                             : 0,
                         )}
-                        readOnly
+                        disabled
                       />
                     </div>
 
@@ -527,21 +541,6 @@ export function SinglePendingProducts({
                             profitMargin: e.target.value,
                             sendUpdate: true,
                           });
-                          setData(arr);
-                        }}
-                        onBlur={() => {
-                          let arr = [...data];
-                          const cost =
-                            convertIntlCurrency(item?.costPrice) || 0;
-                          const margin = parseFloat(item?.profitMargin) || 0;
-                          const price = cost * (1 + margin / 100);
-
-                          arr.splice(i, 1, {
-                            ...item,
-                            price: currencyFormatter(price.toFixed(2)),
-                            sendUpdate: true,
-                          });
-
                           setData(arr);
                         }}
                       />

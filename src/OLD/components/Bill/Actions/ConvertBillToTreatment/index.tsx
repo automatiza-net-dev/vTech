@@ -6,6 +6,7 @@ import { useSystem } from "@/presentation";
 import { Bill } from "@/domain";
 import { useQueryClient } from "infinity-forge";
 import { useRouter } from "next/router";
+import { AxiosError } from "axios";
 
 export default function ConvertBillToTreatment({
   bill,
@@ -33,17 +34,20 @@ export default function ConvertBillToTreatment({
       setReload && setReload((prv) => !prv);
 
       queryClient.refetch(["bills", true], { mode: "include" });
-  
+
       return createToast({
         status: "success",
         message: "Venda convertida com sucesso",
       });
-    } catch {
-      createToast({
-        status: "error",
-        message:
-          "Houve um erro ao converter a venda, contacte o administrador do sistema para mais detalhes",
-      });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        createToast({
+          status: "error",
+          message:
+            err?.response?.data.message.split(":")[1] ??
+            "Houve um erro ao converter a venda, contacte o administrador do sistema para mais detalhes",
+        });
+      }
     }
   };
 
