@@ -96,7 +96,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
     const payload = {
       ...data,
       ...formData,
-      origin: origin === 'Cadastro' ? 'Agenda' : origin,
+      origin: origin === "Cadastro" && !tutorId ? "Agenda" : origin,
       photo:
         formData?.photo &&
         Array.isArray(formData?.photo) &&
@@ -281,7 +281,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             ]}
           />
 
-          {type === "Vet" && (
+          {type === "Vet" && tutorId && (
             <Pets tutor={data} {...props} handleSuccess={handleSuccess} />
           )}
         </FormHandler>
