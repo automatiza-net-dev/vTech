@@ -504,12 +504,24 @@ export function SinglePendingProducts({
                       <Input
                         value={item?.fractionValue ?? 0}
                         type="number"
+                        min={0.1}
                         onChange={(e) => {
                           let arr = [...data];
+
+                          const unitValue =
+                            item.fractionValue === 0
+                              ? 0
+                              : item.originalPrice / e.target.valueAsNumber;
 
                           arr.splice(i, 1, {
                             ...item,
                             fractionValue: e.target.valueAsNumber,
+                            price: Number.parseFloat(
+                              (
+                                unitValue *
+                                (1 + item.profitMargin / 100)
+                              ).toFixed(2),
+                            ),
                             sendUpdate: true,
                           });
 
@@ -534,11 +546,25 @@ export function SinglePendingProducts({
                       <label>% Margem</label>
                       <Input
                         value={item?.profitMargin}
+                        type="number"
+                        min={0}
                         onChange={(e) => {
                           let arr = [...data];
+
+                          const unitValue =
+                            item.fractionValue === 0
+                              ? 0
+                              : item.originalPrice / item.fractionValue;
+
                           arr.splice(i, 1, {
                             ...item,
                             profitMargin: e.target.value,
+                            price: Number.parseFloat(
+                              (
+                                unitValue *
+                                (1 + e.target.valueAsNumber / 100)
+                              ).toFixed(2),
+                            ),
                             sendUpdate: true,
                           });
                           setData(arr);
@@ -561,23 +587,23 @@ export function SinglePendingProducts({
                           });
                           setData(arr);
                         }}
-                        onBlur={() => {
-                          let arr = [...data];
-                          const cost =
-                            convertIntlCurrency(item?.costPrice) || 0;
-                          const price = convertIntlCurrency(item?.price) || 0;
-                          const margin = cost
-                            ? ((price - cost) / cost) * 100
-                            : 0;
-
-                          arr.splice(i, 1, {
-                            ...item,
-                            profitMargin: margin.toFixed(2),
-                            sendUpdate: true,
-                          });
-
-                          setData(arr);
-                        }}
+                        // onBlur={() => {
+                        //   let arr = [...data];
+                        //   const cost =
+                        //     convertIntlCurrency(item?.costPrice) || 0;
+                        //   const price = convertIntlCurrency(item?.price) || 0;
+                        //   const margin = cost
+                        //     ? ((price - cost) / cost) * 100
+                        //     : 0;
+                        //
+                        //   arr.splice(i, 1, {
+                        //     ...item,
+                        //     profitMargin: margin.toFixed(2),
+                        //     sendUpdate: true,
+                        //   });
+                        //
+                        //   setData(arr);
+                        // }}
                       />
                     </div>
 
