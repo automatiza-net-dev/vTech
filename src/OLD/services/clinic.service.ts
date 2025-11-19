@@ -25,7 +25,7 @@ const getColaborators = async ({ name, document, phone, role }: any) => {
       document ? `${name ? "&" : "?"}document=${document}` : ""
     }${phone ? `${name || document ? "&" : "?"}phone=${phone}` : ""}${
       role ? `${name || document || phone ? "&" : "?"}role=${role}` : ""
-    }`
+    }`,
   );
 };
 
@@ -67,7 +67,11 @@ const createWorkingDay = async (data) => {
 const getCollabById = async (id) => await api.get(`/business-units/user/${id}`);
 
 const updateCollaborator = async (id, data) =>
-  await api.put(`/business-units/user/${id}`, data);
+  await api.put(`/business-units/user/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
 const updateUnitCollabRoles = async (data) =>
   await api.put(`/business-units/roles`, data);
