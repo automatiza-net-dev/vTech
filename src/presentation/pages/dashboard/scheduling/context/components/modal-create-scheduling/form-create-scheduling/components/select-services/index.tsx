@@ -13,9 +13,16 @@ import * as S from "./styles";
 export function SelectServices() {
   const { initialValues } = useFormikContext<any>();
 
-  const createSchedulingArgs = useScheduling((state) => state.createSchedulingArgs);
-  const scheduleServiceItems = useLoadAllScheduleServicesGroups({ patient: initialValues?.patientId?.[0] });
-  const { setTimingService, options, hasServicesStage } = useSelectService({ scheduleServiceItems: scheduleServiceItems?.data });
+  const createSchedulingArgs = useScheduling(
+    (state) => state.createSchedulingArgs,
+  );
+  const scheduleServiceItems = useLoadAllScheduleServicesGroups({
+    patient: initialValues?.patientId?.[0],
+    tutor: initialValues?.holderId?.[0],
+  });
+  const { setTimingService, options, hasServicesStage } = useSelectService({
+    scheduleServiceItems: scheduleServiceItems?.data,
+  });
 
   if (!scheduleServiceItems?.data) {
     return <></>;

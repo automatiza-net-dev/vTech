@@ -30,6 +30,7 @@ export namespace LoadAllScheduleServicesGroups {
   export type Params = {
     description?: string;
     patient?: Patient["id"];
+    tutor?: Patient["id"];
   };
 
   export type Model = ScheduleServiceItem[];
