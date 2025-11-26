@@ -6,7 +6,7 @@ export namespace ChangeStatus {
   export type Params = {
     statusId: string;
     scheduleId: string;
-    userEmail: string;
+    userEmail?: string;
     userPwd?: string;
   };
 
