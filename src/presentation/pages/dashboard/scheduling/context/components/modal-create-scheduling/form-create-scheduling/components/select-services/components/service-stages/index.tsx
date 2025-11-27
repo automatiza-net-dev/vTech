@@ -10,6 +10,7 @@ export function ServiceStages() {
   const { data, isFetching } = useLoadSyncableScheduleExecutions({
     scheduled: true,
     idPaciente: initialValues?.patientId?.[0],
+    tutorId: initialValues?.holderId?.[0],
   });
 
   const groupedData = data?.reduce((acc, item) => {
@@ -51,14 +52,15 @@ export function ServiceStages() {
                           id={id}
                           type="checkbox"
                           disabled={
-                             (item.financeBlocked  || !!(
+                            item.financeBlocked ||
+                            !!(
                               item?.executionDate !== "-" ||
                               item?.scheduleDate !== "-"
-                            ))
+                            )
                           }
                           checked={
                             !!values?.executions?.find(
-                              (exec) => exec?.id === id
+                              (exec) => exec?.id === id,
                             )
                           }
                           onChange={(e) => {
@@ -75,8 +77,8 @@ export function ServiceStages() {
                               setFieldValue(
                                 "executions",
                                 values?.executions?.filter(
-                                  (exec) => exec?.id !== id
-                                )
+                                  (exec) => exec?.id !== id,
+                                ),
                               );
                             }
                           }}

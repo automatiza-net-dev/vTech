@@ -147,7 +147,7 @@ export class RemoteSchedule
         `treatments/search-syncheable-schedule-executions/${params?.idPaciente}`
       ),
       method: "get",
-      body: { scheduled: params?.scheduled },
+      body: params,
     });
 
     return response as domain.LoadSyncableScheduleExecutions.Model;
