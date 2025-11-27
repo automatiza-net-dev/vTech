@@ -141,7 +141,7 @@ function PatientFinances({ event }: { event: Event }) {
     event,
   });
 
-  if (disableFinanceSchedule || financesExpired === "0") {
+  if (disableFinanceSchedule || financesExpired === 0) {
     return <></>;
   }
 
