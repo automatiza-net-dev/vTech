@@ -5,17 +5,17 @@ import { formatNumberToCurrency, Tooltip } from "infinity-forge";
 export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   const { unit } = useSystem();
 
-  const financesExpired = event?.event?.financesExpired || "0";
+  const financesExpired = event?.event?.financesExpired || 0;
   const configsHasShowFinancesSchedules =
     unit?.configs?.schedules?.show_finances_schedules;
 
   const disableFinanceSchedule =
     !configsHasShowFinancesSchedules ||
     !financesExpired ||
-    financesExpired === "0";
+    financesExpired === 0;
 
   function FinanceIcon() {
-    if (disableFinanceSchedule || financesExpired === "0") {
+    if (disableFinanceSchedule || financesExpired === 0) {
       return <></>;
     }
 

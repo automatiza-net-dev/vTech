@@ -6,7 +6,7 @@ export type Event = {
   type?: "working" | "unavailable" | "schedule";
   scheduledOutside: boolean
   event: {
-    financesExpired?: string;
+    financesExpired?: number;
     attendances?: {
       id: number;
       scheduleService: {
