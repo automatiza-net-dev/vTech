@@ -75,7 +75,7 @@ export function SideBarContent({
               onClick={() => {
                 copyToClipboard(
                   new URL(window.location.origin).origin +
-                    `/confirmacao?scheduleId=${event?.event?.id}`
+                    `/confirmacao?scheduleId=${event?.event?.id}`,
                 );
                 createToast({
                   status: "success",
@@ -111,7 +111,7 @@ export function SideBarContent({
                         phoneNumber: userPhone || "",
                         message,
                       }),
-                      "_blank"
+                      "_blank",
                     );
                   }}
                 />
@@ -141,7 +141,7 @@ function PatientFinances({ event }: { event: Event }) {
     event,
   });
 
-  if (disableFinanceSchedule) {
+  if (disableFinanceSchedule || financesExpired === "0") {
     return <></>;
   }
 
