@@ -8,7 +8,7 @@ import { clinicService } from "@/OLD/services/clinic.service";
 import { userService } from "@/OLD/services/user.service";
 
 // Components
-import {  Input, Select, Space, AutoComplete } from "antd";
+import { Input, Select, Space, AutoComplete } from "antd";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button, useToast } from "infinity-forge";
 import { Container } from "./styles";
@@ -24,7 +24,7 @@ import moment from "moment";
 
 function snakeToCamel(snakeCaseString) {
   return snakeCaseString.replace(/_([a-zA-Z])/g, (_, character) =>
-    character.toUpperCase()
+    character.toUpperCase(),
   );
 }
 
@@ -36,7 +36,7 @@ function EditColaborator() {
   const [cities, setCities] = useState([]);
   const router = useRouter();
 
-  const {createToast} = useToast()
+  const { createToast } = useToast();
 
   const getCollab = useCallback(() => {
     setLoading(true);
@@ -58,7 +58,10 @@ function EditColaborator() {
       .catch((_err) => {
         setLoading(false);
 
-        return createToast({ message: "Houve um problema ao buscar os detalhes do colaborador...", status: "error" })
+        return createToast({
+          message: "Houve um problema ao buscar os detalhes do colaborador...",
+          status: "error",
+        });
       })
       .finally(() => setLoading(false));
   }, [router.query.id]);
@@ -79,7 +82,10 @@ function EditColaborator() {
       .catch((_err) => {
         setLoading(false);
 
-        return createToast({ message: "Não foi possível localizar o cep informado!", status: "error" })
+        return createToast({
+          message: "Não foi possível localizar o cep informado!",
+          status: "error",
+        });
       });
   };
 
@@ -97,7 +103,7 @@ function EditColaborator() {
   const submitUpdate = useCallback(() => {
     setLoading(false);
     delete data.roles;
-    
+
     data?.phone &&
       data.phone
         .replace("(", "")
@@ -110,14 +116,25 @@ function EditColaborator() {
     parseInt(data.phone);
     parseInt(data.document);
 
+    console.log({ data });
+
     clinicService
-      .updateCollaborator(router.query.id, data)
-      .then((_res) =>  createToast({ message: "Colaborador atualizado com sucesso!", status: "success" })
-      
+      .updateCollaborator(router.query.id, {
+        ...data,
+        birthDate: data.birthDate?.toISOString(),
+      })
+      .then((_res) =>
+        createToast({
+          message: "Colaborador atualizado com sucesso!",
+          status: "success",
+        }),
       )
       .catch((_err) => {
         setLoading(false);
-       return createToast({ message: "Houve um erro ao atualizar os dados do colaborador...", status: "error" })
+        return createToast({
+          message: "Houve um erro ao atualizar os dados do colaborador...",
+          status: "error",
+        });
       })
       .finally(() => {
         setLoading(false);
@@ -131,10 +148,11 @@ function EditColaborator() {
       .checkDocument(Masks?.noDocument(doc))
       .then((res) => {
         if (!res?.data?.valid) {
-         return createToast({ message: "CPF Inválido", status: "warning" })
+          return createToast({ message: "CPF Inválido", status: "warning" });
         }
       })
-      .catch((err) => setLoading(false)).finally(() => setLoading(false));
+      .catch((err) => setLoading(false))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -181,7 +199,7 @@ function EditColaborator() {
                 onBlur={() =>
                   data?.document &&
                   verifyDocument(
-                    data?.document.replaceAll(".", "").replace("-", "")
+                    data?.document.replaceAll(".", "").replace("-", ""),
                   )
                 }
                 value={data?.document}
@@ -304,7 +322,7 @@ function EditColaborator() {
           </h4>
           <div
             className="input-box uk-margin-top uk-width-1-1 uk-flex"
-            style={{ justifyContent: "flex-start" }}
+            style={{ justifyContent: "flex-start", gap: "20px" }}
           >
             <div className="uk-width-1-5">
               <label>Registro Conselho</label>
@@ -313,6 +331,26 @@ function EditColaborator() {
                 value={data?.licensingJob}
                 onChange={(e) => {
                   setData({ ...data, licensingJob: e.target.value });
+                }}
+              />
+            </div>
+            <div className="uk-width-1-5">
+              <label>Assinatura</label>
+              <Input
+                className=""
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  if (!e.target.files) {
+                    return;
+                  }
+
+                  const file = e.target.files[0];
+                  if (!file) {
+                    return;
+                  }
+
+                  setData({ ...data, signature: file });
                 }}
               />
             </div>

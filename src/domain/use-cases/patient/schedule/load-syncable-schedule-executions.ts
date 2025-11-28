@@ -9,6 +9,7 @@ export type LoadSyncableScheduleExecutions = {
 export namespace LoadSyncableScheduleExecutions {
   export type Params = {
     idPaciente?: Patient["id"];
+    tutorId?: Patient["id"];
     scheduled?: boolean;
   };
 

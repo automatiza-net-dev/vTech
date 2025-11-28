@@ -18,11 +18,13 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const { ModalAuthorization, executeVerification } = useModalAuthorization({ event })
+  const { ModalAuthorization, executeVerification } = useModalAuthorization({
+    event,
+  });
 
   async function handleSucess(data) {
     const statusNotConfirmedId = scheduleStatuses.data?.find(
-      (status) => status.type === "AN"
+      (status) => status.type === "AN",
     )?.id;
     const statusId =
       scheduleStatuses.data?.find((status) => status.type === "AC")?.id || "";
@@ -35,20 +37,22 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
     };
     try {
       await container
-        .get<RemoteSchedule>(patientTypes.RemoteSchedule)
-        .confirm(payload);
-      await container
         .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
         .change({
           scheduleId: event.event.id,
           statusId,
+          userEmail: data.userEmail,
+          userPwd: data.userPwd,
         });
+      await container
+        .get<RemoteSchedule>(patientTypes.RemoteSchedule)
+        .confirm(payload);
       onExecuteAction && onExecuteAction();
       createToast({ message: "Agendamento confirmado!", status: "success" });
       setShowForm(false);
     } catch (e: any) {
       if (e?.error?.message) {
-        createToast({ message: e.error.message, status: "success" });
+        createToast({ message: e.error.message, status: "error" });
       }
     }
   }
@@ -71,7 +75,9 @@ export function ConfirmSchedule({ event, onExecuteAction }: ActionSchedule) {
         {showForm && (
           <FormHandler
             button={{ text: "Confirmar" }}
-            onSucess={async (formData) => executeVerification({ formData, handleSucess })}
+            onSucess={async (formData) =>
+              executeVerification({ formData, handleSucess })
+            }
             initialData={{ contactDate: moment().format("YYYY-MM-DDTHH:mm") }}
           >
             <Input type="datetime-local" name="contactDate" />

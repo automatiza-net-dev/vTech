@@ -33,6 +33,7 @@ import { IAddBudgetProps } from "./interfaces";
 
 import * as S from "./styles";
 import { useQueryClient } from "infinity-forge";
+import { budgetService } from "@/OLD/services/budgets.service";
 
 export function AddBudgetNew({
   setModal,
@@ -156,13 +157,23 @@ export function AddBudgetNew({
         expirationDate: moment(data.expirationDate).format("YYYY-MM-DD"),
       };
 
+      const finaisIds = new Set(formatItemsCart.map((i) => i.budgetItemId));
+      const diferenca = budgetDetail.data.items.filter((item) =>
+        item.variations.every((v) => !finaisIds.has(v.budgetItemId)),
+      );
+      await Promise.all(
+        diferenca.flatMap((d) =>
+          d.variations.map((dv) =>
+            budgetService.removeBudgetItem(dv.budgetItemId),
+          ),
+        ),
+      );
+
       const response = await container
         .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
         [budgetId ? "update" : "create"](payload);
 
-      // await DeleteCartItems(initialValues?.cart, data.cart);
-
-      listCreated && listCreated(response.id);
+      listCreated?.(response.id);
 
       createToast({
         status: "success",
@@ -173,7 +184,7 @@ export function AddBudgetNew({
 
       patientId && refetch(["LastUpdates", patientId]);
 
-      setModal && setModal(false);
+      setModal?.(false);
     } catch (err) {
       if (
         err instanceof BadRequestError &&
