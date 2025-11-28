@@ -24,7 +24,7 @@ export default function Executions(props: {
   const [selected, setSelected] = useState<number | null>(null);
 
   const searchQuery = useQuery({
-    enabled: !!patientID && props.modal,
+    enabled: !!patientID && props.modal && !patient.loading,
     queryKey: ["search-not-executed", patientID, holderID],
     queryFn: async () => {
       const response = await treatmentService.searchNotExecuted({
