@@ -35,7 +35,7 @@ export function useModalAuthorization({ event }) {
   );
 
   async function executeVerification({ formData, handleSucess }) {
-    if (!disableFinanceSchedule) {
+    if (disableFinanceSchedule) {
       setDataSaved({ formData, callback: handleSucess });
       setOpen(true);
     } else {
