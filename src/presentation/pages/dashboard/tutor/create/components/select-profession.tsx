@@ -5,7 +5,8 @@ import { useLoadAllProfessions } from "@/presentation";
 export function SelectProfession({ origin }) {
   const { data, isFetching } = useLoadAllProfessions();
 
-  const isRegister = origin === "Cadastro";
+  // const isRegister = origin === "Cadastro";
+  const isRegister = false;
 
   return (
     <Select

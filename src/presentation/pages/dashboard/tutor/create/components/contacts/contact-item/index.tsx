@@ -54,7 +54,7 @@ export function ContactItem({
             mask="(__) _____-____"
           />
         )}
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       </div>
 
       <Input name={`contacts[${index}].observation`} label="Observação" />

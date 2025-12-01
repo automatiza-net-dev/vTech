@@ -23,6 +23,7 @@ export type SystemUser = {
       schedules: {
         syncScheduleMovements?: boolean;
         show_finances_schedules?: boolean;
+        block_finance_pending?: boolean;
         interval?: number;
         allow_change_schedule_duration?: boolean;
       };

@@ -54,11 +54,13 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
     return <></>;
   }
 
-  const isRegister = origin === "Cadastro";
+  // const isRegister = origin === "Cadastro";
+  const isRegister = false;
 
-  const requiresDocument =
-    (isRegister && unit?.configs?.businessUnits?.requires_client_document) ||
-    isRegister;
+  // const requiresDocument =
+  //   (isRegister && unit?.configs?.businessUnits?.requires_client_document) ||
+  //   isRegister;
+  const requiresDocument = false;
 
   function objectToFormData(obj, form = new FormData(), namespace = "") {
     for (const [key, value] of Object.entries(obj)) {
@@ -98,7 +100,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
     const payload = {
       ...data,
       ...formData,
-      origin: origin === "Cadastro" && !tutorId ? "Agenda" : origin,
+      origin: "Agenda", // origin === "Cadastro" && !tutorId ? "Agenda" : origin,
       photo:
         formData?.photo &&
         Array.isArray(formData?.photo) &&
@@ -185,28 +187,51 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
                   />
 
                   {manualErrors["document"] && (
-                    <p>{manualErrors["document"]}</p>
+                    <p style={{ color: "red" }}>{manualErrors["document"]}</p>
                   )}
                 </div>
 
-                <InputMask name="inscription" label="RG" mask="__.___.___-_" />
+                <div>
+                  <InputMask
+                    name="inscription"
+                    label="RG"
+                    mask="__.___.___-_"
+                  />
 
-                <Input
-                  name="birthDate"
-                  type="date"
-                  label={
-                    isRegister ? "Data de nascimento*" : "Data de nascimento"
-                  }
-                  max={moment().format("YYYY-MM-DD")}
-                />
+                  {manualErrors["inscription"] && (
+                    <p style={{ color: "red" }}>
+                      {manualErrors["inscription"]}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Input
+                    name="birthDate"
+                    type="date"
+                    label={
+                      isRegister ? "Data de nascimento*" : "Data de nascimento"
+                    }
+                    max={moment().format("YYYY-MM-DD")}
+                  />
+
+                  {manualErrors["birthDate"] && (
+                    <p style={{ color: "red" }}>{manualErrors["birthDate"]}</p>
+                  )}
+                </div>
               </div>
 
               <div className="row">
-                <Input
-                  name="name"
-                  label="Nome Social / Nome Fantasia"
-                  required
-                />
+                <div>
+                  <Input
+                    name="name"
+                    label="Nome Social / Nome Fantasia*"
+                    required
+                  />
+                  {manualErrors["name"] && (
+                    <p style={{ color: "red" }}>{manualErrors["name"]}</p>
+                  )}
+                </div>
 
                 <SelectGender isRegister={isRegister} />
 

@@ -157,17 +157,19 @@ export function AddBudgetNew({
         expirationDate: moment(data.expirationDate).format("YYYY-MM-DD"),
       };
 
-      const finaisIds = new Set(formatItemsCart.map((i) => i.budgetItemId));
-      const diferenca = budgetDetail.data.items.filter((item) =>
-        item.variations.every((v) => !finaisIds.has(v.budgetItemId)),
-      );
-      await Promise.all(
-        diferenca.flatMap((d) =>
-          d.variations.map((dv) =>
-            budgetService.removeBudgetItem(dv.budgetItemId),
+      if (budgetId) {
+        const finaisIds = new Set(formatItemsCart.map((i) => i.budgetItemId));
+        const diferenca = budgetDetail.data.items.filter((item) =>
+          item.variations.every((v) => !finaisIds.has(v.budgetItemId)),
+        );
+        await Promise.all(
+          diferenca.flatMap((d) =>
+            d.variations.map((dv) =>
+              budgetService.removeBudgetItem(dv.budgetItemId),
+            ),
           ),
-        ),
-      );
+        );
+      }
 
       const response = await container
         .get<RemoteBudget>(TypesAutomatiza.RemoteBudget)
@@ -186,6 +188,7 @@ export function AddBudgetNew({
 
       setModal?.(false);
     } catch (err) {
+      console.log({ err });
       if (
         err instanceof BadRequestError &&
         err?.error?.message === "Desconto máximo foi excedido"

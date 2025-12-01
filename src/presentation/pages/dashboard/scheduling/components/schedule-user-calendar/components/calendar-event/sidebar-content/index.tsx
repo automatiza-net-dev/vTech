@@ -137,11 +137,11 @@ export function SideBarContent({
 }
 
 function PatientFinances({ event }: { event: Event }) {
-  const { financesExpired, disableFinanceSchedule } = useVerifyFinanceSchedule({
+  const { financesExpired, showDebt } = useVerifyFinanceSchedule({
     event,
   });
 
-  if (disableFinanceSchedule || financesExpired === 0) {
+  if (!showDebt) {
     return <></>;
   }
 

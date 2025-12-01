@@ -27,7 +27,7 @@ export function SelectOrigin(props: { errorMessage?: string }) {
           onlyOneValue
           menuPlacement="bottom"
           name="clientOriginId"
-          label="Como conheceu a clínica?"
+          label="Como conheceu a clínica?*"
           loading={isFetching}
           options={
             data?.map((origin) => ({
@@ -36,7 +36,9 @@ export function SelectOrigin(props: { errorMessage?: string }) {
             })) || []
           }
         />
-        {props.errorMessage && <p>{props.errorMessage}</p>}
+        {props.errorMessage && (
+          <p style={{ color: "red" }}>{props.errorMessage}</p>
+        )}
       </div>
 
       {shouldDisplayMarketingSelect && (

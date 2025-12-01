@@ -7,15 +7,23 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
 
   const financesExpired = event?.event?.financesExpired || 0;
   const configsHasShowFinancesSchedules =
-    unit?.configs?.schedules?.show_finances_schedules;
+    unit?.configs?.schedules?.show_finances_schedules || false;
+  const configsHasBlockFinancePending =
+    unit?.configs?.schedules?.block_finance_pending;
 
   const disableFinanceSchedule =
-    !configsHasShowFinancesSchedules ||
-    !financesExpired ||
-    financesExpired === 0;
+    !configsHasBlockFinancePending && financesExpired > 0;
+  const showDebt = !configsHasShowFinancesSchedules && financesExpired > 0;
+
+  console.log({
+    disableFinanceSchedule,
+    showDebt,
+    patient: event?.event.patient?.name ?? "no?",
+    event: event?.event.financesExpired,
+  });
 
   function FinanceIcon() {
-    if (disableFinanceSchedule || financesExpired === 0) {
+    if (!showDebt) {
       return <></>;
     }
 
@@ -55,6 +63,7 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   return {
     configsHasShowFinancesSchedules,
     disableFinanceSchedule,
+    showDebt,
     FinanceIcon,
     financesExpired,
   };
