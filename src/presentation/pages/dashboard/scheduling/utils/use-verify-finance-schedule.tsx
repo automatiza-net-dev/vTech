@@ -10,9 +10,7 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
     unit?.configs?.schedules?.show_finances_schedules;
 
   const disableFinanceSchedule =
-    !configsHasShowFinancesSchedules ||
-    !financesExpired ||
-    financesExpired === 0;
+    !configsHasShowFinancesSchedules || financesExpired > 0;
 
   function FinanceIcon() {
     if (disableFinanceSchedule || financesExpired === 0) {
