@@ -98,7 +98,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
     const payload = {
       ...data,
       ...formData,
-      origin: origin === "Cadastro" && !tutorId ? "Agenda" : origin,
+      origin: "Agenda", // origin === "Cadastro" && !tutorId ? "Agenda" : origin,
       photo:
         formData?.photo &&
         Array.isArray(formData?.photo) &&
