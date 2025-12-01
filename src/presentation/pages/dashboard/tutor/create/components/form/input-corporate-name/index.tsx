@@ -18,7 +18,9 @@ export function InputCorporateName(props: { errorMessage?: string }) {
         label="Nome / Razão Social*"
         required
       />
-      {props.errorMessage && <p>{props.errorMessage}</p>}
+      {props.errorMessage && (
+        <p style={{ color: "red" }}>{props.errorMessage}</p>
+      )}
     </div>
   );
 }
