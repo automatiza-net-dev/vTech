@@ -5,13 +5,13 @@ import { formatNumberToCurrency, Tooltip } from "infinity-forge";
 export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   const { unit } = useSystem();
 
-  const financesExpired = 90;
+  const financesExpired = event?.event?.financesExpired || 0;
   const configsHasShowFinancesSchedules = false;
   const configsHasBlockFinancePending =
     unit?.configs?.schedules?.block_finance_pending;
 
   const disableFinanceSchedule =
-    !configsHasBlockFinancePending && financesExpired > 0;
+    configsHasBlockFinancePending && financesExpired > 0;
   const showDebt = configsHasShowFinancesSchedules && financesExpired > 0;
 
   function FinanceIcon() {
