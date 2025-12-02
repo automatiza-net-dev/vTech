@@ -59,7 +59,10 @@ function FormChild({
           </div>
           <div className="uk-flex uk-flex-column uk-flex-middle uk-width-1-3">
             <label>Ativo</label>
-            <Switch defaultChecked={data?.active} />
+            <Switch
+              defaultChecked={data?.active}
+              onChange={(e) => setData({ ...data, active: e })}
+            />
           </div>
         </div>
         <div className="uk-flex uk-margin-top">
