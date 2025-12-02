@@ -13,14 +13,7 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
 
   const disableFinanceSchedule =
     !configsHasBlockFinancePending && financesExpired > 0;
-  const showDebt = !configsHasShowFinancesSchedules && financesExpired > 0;
-
-  console.log({
-    disableFinanceSchedule,
-    showDebt,
-    patient: event?.event.patient?.name ?? "no?",
-    event: event?.event.financesExpired,
-  });
+  const showDebt = configsHasShowFinancesSchedules && financesExpired > 0;
 
   function FinanceIcon() {
     if (!showDebt) {
