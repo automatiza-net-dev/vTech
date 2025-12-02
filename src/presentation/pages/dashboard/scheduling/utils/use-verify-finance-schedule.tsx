@@ -5,9 +5,8 @@ import { formatNumberToCurrency, Tooltip } from "infinity-forge";
 export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   const { unit } = useSystem();
 
-  const financesExpired = event?.event?.financesExpired || 0;
-  const configsHasShowFinancesSchedules =
-    unit?.configs?.schedules?.show_finances_schedules || false;
+  const financesExpired = 90;
+  const configsHasShowFinancesSchedules = false;
   const configsHasBlockFinancePending =
     unit?.configs?.schedules?.block_finance_pending;
 
