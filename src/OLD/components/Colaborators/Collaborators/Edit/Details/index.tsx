@@ -317,6 +317,7 @@ function EditColaborator() {
               />
             </div>
           </div>
+
           <h4 className="uk-heading-line">
             <span>Dados Profissionais</span>
           </h4>
@@ -334,8 +335,17 @@ function EditColaborator() {
                 }}
               />
             </div>
+          </div>
+
+          <h4 className="uk-heading-line" style={{ paddingTop: "24px" }}>
+            <span>Assinatura</span>
+          </h4>
+          <div
+            className="input-box uk-margin-top uk-width-1-1 uk-flex"
+            style={{ justifyContent: "flex-start", gap: "20px" }}
+          >
             <div className="uk-width-1-5">
-              <label>Assinatura</label>
+              <label>Nova Assinatura</label>
               <Input
                 className=""
                 type="file"
@@ -354,6 +364,18 @@ function EditColaborator() {
                 }}
               />
             </div>
+            {data.signatureImagePath && (
+              <div
+                className="uk-width-1-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label>Assinatura</label>
+                <img
+                  style={{ width: "150px" }}
+                  src={`https://automatiza-cdn.s3.sa-east-1.amazonaws.com/${data.signatureImagePath}`}
+                />
+              </div>
+            )}
           </div>
         </Container>
         <footer
