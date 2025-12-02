@@ -6,13 +6,23 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
   const { unit } = useSystem();
 
   const financesExpired = event?.event?.financesExpired || 0;
-  const configsHasShowFinancesSchedules = false;
+  const configsHasShowFinancesSchedules =
+    unit?.configs?.schedules?.show_finances_schedules;
   const configsHasBlockFinancePending =
     unit?.configs?.schedules?.block_finance_pending;
 
   const disableFinanceSchedule =
     configsHasBlockFinancePending && financesExpired > 0;
   const showDebt = configsHasShowFinancesSchedules && financesExpired > 0;
+
+  console.log({
+    tutor: event?.event?.holder?.name ?? "no name",
+    configsHasShowFinancesSchedules,
+    configsHasBlockFinancePending,
+    financesExpired,
+    showDebt,
+    disableFinanceSchedule,
+  });
 
   function FinanceIcon() {
     if (!showDebt) {
