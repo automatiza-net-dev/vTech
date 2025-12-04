@@ -12,6 +12,8 @@ import {
   useAuthAdmin,
   LoaderCircle,
   TextEditor,
+  useQuery,
+  api,
 } from "infinity-forge";
 import moment from "moment";
 import { useReactToPrint } from "react-to-print";
@@ -157,17 +159,19 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
     }
   }
 
-  const initialData = {
-    ...timeLine.timeline_info,
-    internalObservation: timeLine?.timeline_info?.internalObservation
-      ? timeLine?.timeline_info?.internalObservation
-      : schedule?.data?.serviceType?.description || "",
-    scheduleServiceId: timeLine?.timeline_info?.service?.id
-      ? [timeLine?.timeline_info?.service?.id]
-      : schedule?.data?.serviceType?.id
-        ? [schedule?.data?.serviceType?.id]
-        : [],
-  };
+  const initialData = !props.modal
+    ? {
+        ...timeLine.timeline_info,
+        internalObservation: timeLine?.timeline_info?.internalObservation
+          ? timeLine?.timeline_info?.internalObservation
+          : schedule?.data?.serviceType?.description || "",
+        scheduleServiceId: timeLine?.timeline_info?.service?.id
+          ? [timeLine?.timeline_info?.service?.id]
+          : schedule?.data?.serviceType?.id
+            ? [schedule?.data?.serviceType?.id]
+            : [],
+      }
+    : {};
 
   if (schedule.isFetching) {
     return <LoaderCircle color="#ccc" size={20} />;

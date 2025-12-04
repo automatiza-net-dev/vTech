@@ -19,7 +19,7 @@ export type DropdownItemActionProps = {
   Component?: (props: DropdownComponentProps) => any;
   value?: string;
   reloadSchedule?: any;
-  defaultValue?: boolean
+  defaultValue?: boolean;
 };
 
 export function DropdownItemAction({
@@ -28,17 +28,17 @@ export function DropdownItemAction({
   Component,
   value,
   reloadSchedule,
-  defaultValue = false
+  defaultValue = false,
 }: DropdownItemActionProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultValue);
 
-  useEffect(() => {
-    if(open){
-      return
-    }
-
-    setOpen(defaultValue)
-  }, [])
+  // useEffect(() => {
+  //   if (open) {
+  //     return;
+  //   }
+  //
+  //   setOpen(defaultValue);
+  // }, []);
 
   return (
     <>
