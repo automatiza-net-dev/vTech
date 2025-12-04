@@ -1,20 +1,23 @@
-//@ts-nocheck
-import { useState, useCallback } from "react";
+// @ts-nocheck
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { attendanceService } from "@/OLD/services/attendances.service";
 
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { useAttendances } from "@/OLD/hooks/useAttendances";
+import {
+  useAttendances,
+  useTreatmentsNotExecuted,
+} from "@/OLD/hooks/useAttendances";
 import { useSchedule } from "@/OLD/hooks/useSchedules";
 import { useLoadPatient } from "@/presentation";
-import { useScheduleStatus } from "@/OLD/hooks/useScheduleStatus";
 
 import { Button, useToast } from "infinity-forge";
 import { Modal, Select, Button as AntButton } from "antd";
 
 import moment from "moment";
 import { useQueryClient } from "infinity-forge";
+import Executions from "../Forms-old/Executions";
 
 export function EndAttendanceButton() {
   const [showSelectAttendances, setShowSelectAttendances] = useState(false);
@@ -32,10 +35,30 @@ export function EndAttendanceButton() {
   const { attendances } = useAttendances(patient?.data?.id, reload);
   const { schedule } = useSchedule(scheduleId, reload);
 
+  const [executionsState, setExecutionsState] = useState<
+    "hidden" | "show" | "processed"
+  >("hidden");
+  const searchQuery = useTreatmentsNotExecuted({
+    enabled: !!patient?.data.id,
+    patientID: patient?.data.id,
+    holderID:
+      patient?.data.holders?.find((f) => f.main)?.id ||
+      patient?.data.holders?.at(0)?.id,
+  });
+  useEffect(() => {
+    if (executionsState !== "hidden") {
+      return;
+    }
+
+    setExecutionsState((old) =>
+      searchQuery.data?.length === 0 ? "processed" : old,
+    );
+  }, [executionsState, searchQuery.data]);
+
   const refetch = useQueryClient();
 
   const attendancesToClose = attendances.filter(
-    (attendance) => !attendance?.end_date
+    (attendance) => !attendance?.end_date,
   );
 
   const closeAttendances = useCallback(() => {
@@ -78,7 +101,7 @@ export function EndAttendanceButton() {
                     schedule?.serviceStatus?.description === "Em atendimento"
                   ) {
                     const attendancesToClose = attendances?.find(
-                      (attendance) => !attendance?.end_date
+                      (attendance) => !attendance?.end_date,
                     );
 
                     attendancesToClose &&
@@ -101,6 +124,20 @@ export function EndAttendanceButton() {
           }}
         />
         <Modal
+          onCancel={() => setExecutionsState("processed")}
+          title="Fechar atendimento"
+          visible={executionsState === "show"}
+          footer={null}
+          width={"60%"}
+        >
+          <Executions
+            value="Execução de Tratamento"
+            modal
+            setModal={() => setExecutionsState("processed")}
+            reloadSchedule={() => ({})}
+          />
+        </Modal>
+        <Modal
           onCancel={() => setShowSelectAttendances(false)}
           title="Fechar atendimento"
           visible={showSelectAttendances}
@@ -110,7 +147,10 @@ export function EndAttendanceButton() {
           <div>
             <label>Selecione o atendimento a ser fechado</label>
             <Select
-              onChange={(val) => setSelectedAttendance(val)}
+              onChange={(val) => {
+                setSelectedAttendance(val);
+                setExecutionsState((old) => (old === "hidden" ? "show" : old));
+              }}
               className="uk-width-1-1"
               value={selectedAttendance}
             >
@@ -118,14 +158,14 @@ export function EndAttendanceButton() {
                 attendancesToClose
                   .slice() // Faz uma cópia do array original para evitar alterações indesejadas
                   .sort(
-                    (a, b) => new Date(a.start_date) - new Date(b.start_date)
+                    (a, b) => new Date(a.start_date) - new Date(b.start_date),
                   )
                   .map((attendance) => (
                     <Option value={attendance?.id}>
                       {attendance?.scheduleService?.description}
                       {" - "}
                       {moment(attendance.start_date).format(
-                        "DD/MM/YYYY - HH:mm"
+                        "DD/MM/YYYY - HH:mm",
                       )}
                     </Option>
                   ))}
