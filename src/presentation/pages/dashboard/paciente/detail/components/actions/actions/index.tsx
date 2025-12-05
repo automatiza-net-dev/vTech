@@ -10,6 +10,13 @@ export function Actions({ reloadSchedule }: { reloadSchedule: any }) {
   const patient = useLoadPatient();
   const actionsPatient = useActionsPatient(patient?.data);
 
+  const hasOpenAttendances = patient.data?.openAttendances || true;
+  const defaultValueFn = (label: string) => {
+    return ["Avaliação", "Atendimentos"].includes(label)
+      ? !hasOpenAttendances
+      : false;
+  };
+
   return (
     <Error name="AddButton">
       <S.Actions>
@@ -21,11 +28,7 @@ export function Actions({ reloadSchedule }: { reloadSchedule: any }) {
               <DropdownItemAction
                 key={option.value}
                 {...option}
-                defaultValue={
-                  ["Avaliação", "Atendimentos"].includes(option.label)
-                    ? !!patient.data.scheduleAttendanceId
-                    : false
-                }
+                defaultValue={defaultValueFn(option.label)}
                 reloadSchedule={reloadSchedule}
               />
             ))}

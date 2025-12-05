@@ -1,8 +1,7 @@
 import Maintenance from "@/OLD/components/Treatments/Maintenance";
-import { treatmentService } from "@/OLD/services/treatments.service";
+import { useTreatmentsNotExecuted } from "@/OLD/hooks/useAttendances";
 import { useLoadPatient } from "@/presentation";
 import { Table } from "antd";
-import { useQuery } from "infinity-forge";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
@@ -23,17 +22,10 @@ export default function Executions(props: {
 
   const [selected, setSelected] = useState<number | null>(null);
 
-  const searchQuery = useQuery({
+  const searchQuery = useTreatmentsNotExecuted({
     enabled: !!patientID && props.modal && !patient.loading,
-    queryKey: ["search-not-executed", patientID, holderID],
-    queryFn: async () => {
-      const response = await treatmentService.searchNotExecuted({
-        client: patientID,
-        holder: holderID,
-      });
-
-      return response.data;
-    },
+    patientID: patient?.data.id,
+    holderID,
   });
 
   if (searchQuery.isLoading || !props.modal) return <p>Loading...</p>;
