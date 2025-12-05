@@ -49,7 +49,6 @@ export function DreReport() {
           <FormHandler
             initialData={{ competence: dateDRE }}
             onSucess={async (data) => {
-              console.log(data)
               setDateDRE(data.competence);
             }}
             schema={{ competence: yup.string().required("Campo requerido") }}
