@@ -1,4 +1,3 @@
-
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 
@@ -24,33 +23,34 @@ export function DetailsPanel({
 
   const valuesVerification = async () => {
     try {
-    setLoading(true)
-    if (
-      parseFloat(totalPayed?.toFixed(2)) +
-        convertIntlCurrency(formData?.installmentsValue) >
-      parseFloat(bill?.total_value.toFixed(2))
-    ) {
-      return createToast({
-        status: "error",
-        message: "Valor pago maior que o valor total",
-      });
-    }
+      setLoading(true);
+      // if (
+      //   parseFloat(totalPayed?.toFixed(2)) +
+      //     convertIntlCurrency(formData?.installmentsValue) >
+      //   parseFloat(bill?.total_value.toFixed(2))
+      // ) {
+      //   return createToast({
+      //     status: "error",
+      //     message: "Valor pago maior que o valor total",
+      //   });
+      // }
 
-    if (convertIntlCurrency(formData?.installmentsValue) <= 0) {
-      return createToast({
-        status: "error",
-        message: "O valor do pagamento deve ser maior que zero",
-      });
-    }
+      if (convertIntlCurrency(formData?.installmentsValue) <= 0) {
+        return createToast({
+          status: "error",
+          message: "O valor do pagamento deve ser maior que zero",
+        });
+      }
 
-    await submit();
-    }catch {}finally {
-      setLoading(false)
+      await submit();
+    } catch {
+    } finally {
+      setLoading(false);
     }
   };
 
   const someRequiresConfirmation = Array.from(
-    Array(formData?.maxInstallments)
+    Array(formData?.maxInstallments),
   ).some((_, i) => {
     const requiresConfirmation =
       i + 1 > formData?.installments_without_password;
@@ -77,7 +77,7 @@ export function DetailsPanel({
                 setFormData({
                   ...formData,
                   installmentsValue: currencyFormatter(
-                    convertIntlCurrency(e.target.value)
+                    convertIntlCurrency(e.target.value),
                   ),
                 })
               }
@@ -111,7 +111,7 @@ export function DetailsPanel({
                       installments: i + 1,
                       paymentMethodFlagInstallmentId:
                         formData?.installmentsList?.find(
-                          (installment) => installment?.installment === i + 1
+                          (installment) => installment?.installment === i + 1,
                         )?.id,
                     });
                   };
@@ -147,7 +147,12 @@ export function DetailsPanel({
             alignItems: "center",
           }}
         >
-          <Button type="submit" text="Confirmar" disabled={loading} loading={loading} />
+          <Button
+            type="submit"
+            text="Confirmar"
+            disabled={loading}
+            loading={loading}
+          />
 
           {someRequiresConfirmation && (
             <p
