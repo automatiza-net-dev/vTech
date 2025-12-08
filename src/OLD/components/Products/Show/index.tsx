@@ -234,16 +234,7 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
         )}
       </div>
 
-      {!!data && !data.purpose && (
-        <>
-          <h2>Esse produto contém pendências e não pode ser atualizado</h2>
-          <Link href={"/dashboard/produtos-pendentes"}>
-            Acessar produtos pendentes
-          </Link>
-        </>
-      )}
-
-      {!!data && data.purpose && (
+      {!!data && (
         <div className="uk-margin-small-top">
           <Row gutter={{ xs: 3, sm: 7, md: 10, lg: 15 }}>
             <Col span={12}>
