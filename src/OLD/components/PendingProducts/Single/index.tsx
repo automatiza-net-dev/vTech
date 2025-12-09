@@ -114,7 +114,7 @@ export function SinglePendingProducts({
         commissionMeta:
           item?.productVariation?.businessUnitProducts[0]?.commission_meta || 0,
         ncm: item?.productVariation?.product?.ncm,
-        fractionValue: item?.productVariation?.product?.fraction_value || 0,
+        fractionValue: item?.fraction_value || 0,
       })),
     );
   };

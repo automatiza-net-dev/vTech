@@ -227,23 +227,26 @@ const ShowProduct = memo(function ShowProduct({ id, setVisible, setReload }) {
               marginTop: "20px",
             }}
           >
-            {data.purpose && <Button onClick={submitUpdate} text={"Salvar"} />}
+            {!data._invalidConfig && (
+              <Button onClick={submitUpdate} text={"Salvar"} />
+            )}
 
             <Button onClick={() => setVisible(false)} text="Voltar" />
           </div>
         )}
       </div>
 
-      {!!data && !data.purpose && (
+      {!!data && data._invalidConfig && (
         <>
           <h2>Esse produto contém pendências e não pode ser atualizado</h2>
+          <h3>Nota referente: {data.receipt.tag ?? "-"}</h3>
           <Link href={"/dashboard/produtos-pendentes"}>
             Acessar produtos pendentes
           </Link>
         </>
       )}
 
-      {!!data && data.purpose && (
+      {!!data && !data._invalidConfig && (
         <div className="uk-margin-small-top">
           <Row gutter={{ xs: 3, sm: 7, md: 10, lg: 15 }}>
             <Col span={12}>

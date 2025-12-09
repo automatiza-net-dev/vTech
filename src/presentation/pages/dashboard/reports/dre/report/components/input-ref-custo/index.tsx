@@ -11,15 +11,16 @@ export function InputRefCusto({
   tag,
   custo,
   initialFlattenList,
-}: Agrupamento & { initialFlattenList: any }) {
+  trick,
+}: Agrupamento & { initialFlattenList: any; trick?: boolean }) {
   const { values, setFieldValue } = useFormikContext<any>();
 
   async function onChangeInputCurrency(
     value: number | string,
-    callback?: () => void
+    callback?: () => void,
   ) {
-    callback && callback();
-    
+    callback?.();
+
     if (String(value).at(-1) === ",") {
       return;
     }
@@ -50,7 +51,7 @@ export function InputRefCusto({
 
           return { ...reducer, [item]: itemValue };
         },
-        {}
+        {},
       );
 
     const groupDresById: Agrupamento[] = (
@@ -63,13 +64,24 @@ export function InputRefCusto({
 
         const costDreFather = calcRefCusto(
           fatherRefCusto,
-          newListFlattenUpdateWithNewValue
+          newListFlattenUpdateWithNewValue,
         );
 
         setFieldValue(`dreFlatten.${dre.tag}.custo`, costDreFather?.toFixed(2));
       }
     }
   }
+
+  useEffect(() => {
+    if (!trick || tag !== "100066") {
+      return;
+    }
+
+    const __cost = values.dreFlatten[tag]?.custo;
+
+    onChangeInputCurrency(Math.random());
+    onChangeInputCurrency(__cost);
+  }, [trick]);
 
   useEffect(() => {
     if (typeof custo === "number") {
@@ -82,7 +94,7 @@ export function InputRefCusto({
   return (
     <div className="group_values">
       <InputCurrency
-       onChangeMode="blur"
+        onChangeMode="blur"
         onChangeBlur={onChangeInputCurrency as any}
         name={`dreFlatten.${tag}.custo`}
         disabled={!!refCusto}

@@ -8,6 +8,7 @@ import { flattenHierarchyToObject } from "./utils";
 import { Agrupamento, DreItem } from "./types";
 
 import * as S from "./styles";
+import { useEffect, useState } from "react";
 
 export function ReportDRE(props: {
   dre?: DreItem[];
@@ -18,6 +19,13 @@ export function ReportDRE(props: {
   setMonths: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const flatten = flattenHierarchyToObject(props.dre);
+
+  const [renderingState, setRenderingState] = useState<"not-ready" | "ready">(
+    "not-ready",
+  );
+  useEffect(() => {
+    setRenderingState("ready");
+  }, []);
 
   return (
     <S.ReportDRE>
@@ -30,8 +38,12 @@ export function ReportDRE(props: {
           Component: () => (
             <>
               {!props.months && (
-                <button type="button" className="retroativo" onClick={() => props.setMonths(1)}>
-                   REPLICAR CUSTO DO MÊS ANTERIOR
+                <button
+                  type="button"
+                  className="retroativo"
+                  onClick={() => props.setMonths(1)}
+                >
+                  REPLICAR CUSTO DO MÊS ANTERIOR
                 </button>
               )}
 
@@ -71,7 +83,7 @@ export function ReportDRE(props: {
                         ?.filter(
                           (item) =>
                             (!item.refs || item.refs?.length === 0) &&
-                            item.custo
+                            item.custo,
                         )
                         ?.map((i) => {
                           const custo = Number(i.custo || 0);
@@ -152,6 +164,7 @@ export function ReportDRE(props: {
                   groupLevel={1}
                   index={index}
                   initialFlattenList={flatten.dreFlatten}
+                  renderingState={renderingState}
                 />
               ))}
             </div>
@@ -167,7 +180,8 @@ function Group(
     initialFlattenList: any;
     index?: number;
     groupLevel: number;
-  }
+    renderingState: "ready" | "not-ready";
+  },
 ) {
   function GroupRecursive() {
     return (
@@ -179,6 +193,7 @@ function Group(
             groupLevel={props.groupLevel + 1}
             index={undefined}
             initialFlattenList={props?.initialFlattenList}
+            renderingState={props.renderingState}
           />
         ))}
       </>
@@ -199,8 +214,8 @@ function Group(
               props.groupLevel === 3
                 ? "10px"
                 : props.groupLevel === 4
-                ? "20px"
-                : "5px",
+                  ? "20px"
+                  : "5px",
           }}
         >
           {props?.description || "--"}
@@ -208,7 +223,10 @@ function Group(
 
         <div style={{ display: "flex", gap: 20 }}>
           <div style={{ position: "relative" }}>
-            <InputRefCusto {...props} />
+            <InputRefCusto
+              {...props}
+              trick={props.renderingState === "ready" && props.tag === "100066"}
+            />
           </div>
 
           <div style={{ position: "relative" }}>
