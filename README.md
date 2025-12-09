@@ -6,5 +6,3 @@ api=https://vetech-api-dev.automatiza.net/
 clientName=Sanclá
 client=sancla
 .
-..
-...
