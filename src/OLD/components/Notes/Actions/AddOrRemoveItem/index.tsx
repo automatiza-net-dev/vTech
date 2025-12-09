@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { receiptService } from "@/OLD/services/receipt.service";
 
@@ -16,7 +16,10 @@ export default function AddOrRemoveItem({ id, setReload, reload }) {
   const [data, setData] = useState({});
   const [ids, setIds] = useState<any>({ ids: [] });
 
-  const { receipt } = useReceipt(ids, reload);
+  const { receipt, refetch } = useReceipt(ids, reload);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const { createToast } = useToast();
 
@@ -55,6 +58,9 @@ export default function AddOrRemoveItem({ id, setReload, reload }) {
           status: "success",
           message: "Houve um erro ao remover o item",
         });
+      })
+      .finally(() => {
+        refetch();
       });
   };
 
@@ -92,26 +98,26 @@ export default function AddOrRemoveItem({ id, setReload, reload }) {
         onClick={() => setVisible(true)}
       />
 
-        <Modal
-          open={visible}
-          onClose={() => setVisible(false)}
-          styles={{ maxWidth: "1000px" }}
-        >
-          <h3 className="font-14-regular">
-            <span>
-             <strong>Entrada código: {receipt[0]?.tag}</strong> 
-            </span>
-          </h3>
+      <Modal
+        open={visible}
+        onClose={() => setVisible(false)}
+        styles={{ maxWidth: "1000px" }}
+      >
+        <h3 className="font-14-regular">
+          <span>
+            <strong>Entrada código: {receipt[0]?.tag}</strong>
+          </span>
+        </h3>
 
-          <FormChild
-            data={data}
-            setData={setData}
-            setVisible={setVisible}
-            type="update"
-            addItemSubmit={addReceiptItemSubmit}
-            removeItemSubmit={removeReceiptItemSubmit}
-          />  
-        </Modal>
+        <FormChild
+          data={data}
+          setData={setData}
+          setVisible={setVisible}
+          type="update"
+          addItemSubmit={addReceiptItemSubmit}
+          removeItemSubmit={removeReceiptItemSubmit}
+        />
+      </Modal>
     </>
   );
 }
