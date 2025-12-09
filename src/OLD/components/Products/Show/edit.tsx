@@ -85,7 +85,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               required
               readOnly
               value={data?.stock}
-              onChange={(value) => setData({ ...data, stock: value })}
+              onInput={(value) =>
+                setData({ ...data, stock: value.replace(",", ".") })
+              }
             />
           </div>
           <div className="uk-margin-top uk-flex uk-flex-column">
@@ -94,7 +96,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.minimumStock}
-              onChange={(value) => setData({ ...data, minimumStock: value })}
+              onInput={(value) =>
+                setData({ ...data, minimumStock: value.replace(",", ".") })
+              }
             />
           </div>
           <div className="uk-margin-top uk-flex uk-flex-column">
@@ -103,7 +107,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.maximumStock}
-              onChange={(value) => setData({ ...data, maximumStock: value })}
+              onInput={(value) =>
+                setData({ ...data, maximumStock: value.replace(",", ".") })
+              }
             />
           </div>
         </div>
@@ -118,7 +124,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.costPrice}
-              onChange={(value) => setData({ ...data, costPrice: value })}
+              onInput={(value) =>
+                setData({ ...data, costPrice: value.replace(",", ".") })
+              }
             />
           </div>
 
@@ -128,7 +136,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.profitMargin}
-              onChange={(value) => setData({ ...data, profitMargin: value })}
+              onInput={(value) =>
+                setData({ ...data, profitMargin: value.replace(",", ".") })
+              }
             />
           </div>
 
@@ -138,7 +148,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.price}
-              onChange={(value) => setData({ ...data, price: value })}
+              onInput={(value) => {
+                setData({ ...data, price: value.replace(",", ".") });
+              }}
             />
           </div>
         </div>
@@ -153,11 +165,19 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.maximumDiscountPercentage}
-              onChange={(val) => {
-                if (val <= 100) {
+              onInput={(val) => {
+                if (Number.isNaN(Number.parseFloat(val))) {
                   setData({
                     ...data,
-                    maximumDiscountPercentage: val,
+                    maximumDiscountPercentage: `0.${val.replace(",", ".")}`,
+                  });
+                  return;
+                }
+
+                if (Number.parseFloat(val) <= 100) {
+                  setData({
+                    ...data,
+                    maximumDiscountPercentage: val.replace(",", "."),
                   });
                 } else {
                   createToast({
@@ -175,11 +195,11 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.maximumDiscountValue}
-              onChange={(val) => {
-                if (val <= data?.price) {
+              onInput={(val) => {
+                if (Number.parseFloat(val) <= Number.parseFloat(data?.price)) {
                   setData({
                     ...data,
-                    maximumDiscountValue: val,
+                    maximumDiscountValue: val.replace(",", "."),
                   });
                 } else {
                   createToast({
@@ -219,7 +239,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.commission}
-              onChange={(value) => setData({ ...data, commission: value })}
+              onInput={(value) =>
+                setData({ ...data, commission: value.replace(",", ".") })
+              }
             />
           </div>
 
@@ -229,7 +251,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.meta}
-              onChange={(value) => setData({ ...data, meta: value })}
+              onChange={(value) =>
+                setData({ ...data, meta: value.replace(",", ".") })
+              }
             />
           </div>
 
@@ -239,7 +263,9 @@ const UpdateBusinessUnitProduct = function UpdateBusinessUnitProduct({
               style={{ width: "100%" }}
               required
               value={data?.commissionMeta}
-              onChange={(value) => setData({ ...data, commissionMeta: value })}
+              onChange={(value) =>
+                setData({ ...data, commissionMeta: value.replace(",", ".") })
+              }
             />
           </div>
         </div>
