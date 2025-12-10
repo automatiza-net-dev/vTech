@@ -7,22 +7,13 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
 
   const financesExpired = event?.event?.financesExpired || 0;
   const configsHasShowFinancesSchedules =
-    unit?.configs?.schedules?.show_finances_schedules;
+    unit?.configs?.schedules?.show_finances_schedules || false;
   const configsHasBlockFinancePending =
-    unit?.configs?.schedules?.block_finance_pending;
+    unit?.configs?.schedules?.block_finance_pending || false;
 
   const disableFinanceSchedule =
     configsHasBlockFinancePending && financesExpired > 0;
   const showDebt = configsHasShowFinancesSchedules && financesExpired > 0;
-
-  console.log({
-    tutor: event?.event?.holder?.name ?? "no name",
-    configsHasShowFinancesSchedules,
-    configsHasBlockFinancePending,
-    financesExpired,
-    showDebt,
-    disableFinanceSchedule,
-  });
 
   function FinanceIcon() {
     if (!showDebt) {
@@ -64,6 +55,7 @@ export function useVerifyFinanceSchedule({ event }: { event?: Event }) {
 
   return {
     configsHasShowFinancesSchedules,
+    configsHasBlockFinancePending,
     disableFinanceSchedule,
     showDebt,
     FinanceIcon,
