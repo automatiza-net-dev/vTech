@@ -148,7 +148,7 @@ function PatientFinances({ event }: { event: Event }) {
   return (
     <div className="status" style={{ display: "flex", gap: 5 }}>
       <h3 className="font-14-bold" style={{ marginBottom: 0, color: "red" }}>
-        Valores Vencidos
+        Valor pendente
       </h3>
 
       <span style={{ color: "red", fontWeight: "bold" }}>
