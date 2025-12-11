@@ -13,6 +13,7 @@ const FormChild = memo(function FormChild({
   setData,
   submit,
   setVisible,
+  errorsMap = {},
 }) {
   const { createToast } = useToast();
 
@@ -32,11 +33,14 @@ const FormChild = memo(function FormChild({
               setData({
                 ...data,
                 costPrice: currencyFormatter(
-                  convertIntlCurrency(e.target.value)
+                  convertIntlCurrency(e.target.value),
                 ),
               })
             }
           />
+          {errorsMap["costPrice"] && (
+            <p style={{ color: "red" }}>{errorsMap["costPrice"]}</p>
+          )}
         </div>
         <div className="uk-margin-small-right">
           <label>Margem de lucro</label>
@@ -44,6 +48,9 @@ const FormChild = memo(function FormChild({
             value={data?.profitMargin}
             onChange={(e) => setData({ ...data, profitMargin: e.target.value })}
           />
+          {errorsMap["profitMargin"] && (
+            <p style={{ color: "red" }}>{errorsMap["profitMargin"]}</p>
+          )}
         </div>
         <div>
           <label> Preço venda </label>
@@ -56,6 +63,9 @@ const FormChild = memo(function FormChild({
               })
             }
           />
+          {errorsMap["price"] && (
+            <p style={{ color: "red" }}>{errorsMap["price"]}</p>
+          )}
         </div>
       </div>
       <div className="uk-margin-top uk-flex">
@@ -75,6 +85,11 @@ const FormChild = memo(function FormChild({
               }
             }}
           />
+          {errorsMap["maximumDiscountPercentage"] && (
+            <p style={{ color: "red" }}>
+              {errorsMap["maximumDiscountPercentage"]}
+            </p>
+          )}
         </div>
         <div>
           <label>Desconto Máximo (R$)</label>
@@ -88,7 +103,7 @@ const FormChild = memo(function FormChild({
                 setData({
                   ...data,
                   maximumDiscountValue: currencyFormatter(
-                    convertIntlCurrency(e.target.value)
+                    convertIntlCurrency(e.target.value),
                   ),
                 });
               } else {
@@ -100,10 +115,13 @@ const FormChild = memo(function FormChild({
               }
             }}
           />
+          {errorsMap["maximumDiscountValue"] && (
+            <p style={{ color: "red" }}>{errorsMap["maximumDiscountValue"]}</p>
+          )}
         </div>
       </div>
       <div className="uk-margin-top">
-        <label>Tipo Meta</label>
+        <label>Tipo Meta*</label>
         <Select
           className="uk-width-1-1"
           value={data?.metaType}
@@ -112,33 +130,48 @@ const FormChild = memo(function FormChild({
           <Option value="q">Quantidade</Option>
           <Option value="v">Valor</Option>
         </Select>
+        {errorsMap["metaType"] && (
+          <p style={{ color: "red" }}>{errorsMap["metaType"]}</p>
+        )}
       </div>
       <div className="uk-margin-top uk-flex">
         <div className="uk-margin-small-right">
-          <label>Comissão</label>
+          <label>Comissão*</label>
           <Input
             type="number"
             value={data?.commission}
+            required
             onChange={(e) => setData({ ...data, commission: e.target.value })}
           />
+          {errorsMap["commission"] && (
+            <p style={{ color: "red" }}>{errorsMap["commission"]}</p>
+          )}
         </div>
         <div className="uk-margin-small-right">
-          <label>Meta</label>
+          <label>Meta*</label>
           <Input
             type="number"
             value={data?.meta}
+            required
             onChange={(e) => setData({ ...data, meta: e.target.value })}
           />
+          {errorsMap["meta"] && (
+            <p style={{ color: "red" }}>{errorsMap["meta"]}</p>
+          )}
         </div>
         <div className="uk-margin-small-right">
-          <label>Comissão Meta</label>
+          <label>Comissão Meta*</label>
           <Input
             type="number"
             value={data?.commissionMeta}
+            required
             onChange={(e) =>
               setData({ ...data, commissionMeta: e.target.value })
             }
           />
+          {errorsMap["commissionMeta"] && (
+            <p style={{ color: "red" }}>{errorsMap["commissionMeta"]}</p>
+          )}
         </div>
       </div>
       <hr />
