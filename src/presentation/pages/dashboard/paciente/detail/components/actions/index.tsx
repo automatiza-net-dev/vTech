@@ -45,7 +45,7 @@ export function ActionsPatient() {
                     status: "success",
                   });
                 }}
-                eventId={schedule?.data?.id}
+                event={schedule?.data}
                 patientId={schedule?.data?.patient?.id}
               />
             )}
