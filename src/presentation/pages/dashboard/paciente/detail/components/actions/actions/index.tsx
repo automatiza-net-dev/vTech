@@ -10,7 +10,9 @@ export function Actions({ reloadSchedule }: { reloadSchedule: any }) {
   const patient = useLoadPatient();
   const actionsPatient = useActionsPatient(patient?.data);
 
-  const hasOpenAttendances = patient.data?.openAttendances || true;
+  const hasOpenAttendances = patient.data
+    ? patient.data?.openAttendances
+    : true;
   const defaultValueFn = (label: string) => {
     return ["Avaliação", "Atendimentos"].includes(label)
       ? !hasOpenAttendances
