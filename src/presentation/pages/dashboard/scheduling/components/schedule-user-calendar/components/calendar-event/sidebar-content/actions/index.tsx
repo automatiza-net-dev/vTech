@@ -198,7 +198,7 @@ export function Actions({
             {description === "Na recepção" && (
               <StartService
                 buttonTitle="Dar inicio ao atendimento"
-                eventId={event.event.id}
+                event={event}
                 patientId={event.event.patient.id}
               />
             )}

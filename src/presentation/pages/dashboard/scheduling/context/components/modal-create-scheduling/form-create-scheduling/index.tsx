@@ -11,19 +11,17 @@ import {
   useConfigurationsSystem,
   useSystem,
 } from "@/presentation";
-
 import {
   SelectServices,
   SelectReturnable,
   SelectRescheduleReason,
 } from "./components";
 import { useSubmitSchedule } from "./handleSubmit";
-
 import * as S from "./styles";
 import { ScheduleAuthorization } from "./components/schedule-authorization";
 import { useScheduleAuthorization } from "./components/schedule-authorization/hook";
-
 import * as yup from "yup";
+import { useVerifyFinanceSchedule } from "../../../../utils/use-verify-finance-schedule";
 
 export function FormCreateScheduling() {
   const { unit } = useSystem();
@@ -31,7 +29,7 @@ export function FormCreateScheduling() {
 
   const { submit, scheduleUsers } = useSubmitSchedule();
   const createSchedulingArgs = useScheduling(
-    (state) => state.createSchedulingArgs
+    (state) => state.createSchedulingArgs,
   );
 
   const patientId =
@@ -41,20 +39,20 @@ export function FormCreateScheduling() {
             createSchedulingArgs?.id,
         ]
       : type === "Vet"
-      ? createSchedulingArgs?.id
-        ? [createSchedulingArgs?.id]
-        : []
-      : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
-      ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
-      : [];
+        ? createSchedulingArgs?.id
+          ? [createSchedulingArgs?.id]
+          : []
+        : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
+          ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.id]
+          : [];
 
   const holderId =
     type === "Vet"
       ? createSchedulingArgs?.event?.event?.holder?.id
         ? [createSchedulingArgs.event.event.holder.id]
         : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.id
-        ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.id]
-        : []
+          ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.id]
+          : []
       : undefined;
 
   const initialData = {
@@ -71,8 +69,11 @@ export function FormCreateScheduling() {
         ? createSchedulingArgs?.event?.event?.holder?.name
           ? [createSchedulingArgs.event.event.holder.name]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
-          ? [createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)?.name]
-          : []
+            ? [
+                createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)
+                  ?.name,
+              ]
+            : []
         : undefined,
     time: createSchedulingArgs?.date.toLocaleTimeString([], {
       hour: "2-digit",
@@ -88,24 +89,25 @@ export function FormCreateScheduling() {
               createSchedulingArgs?.name,
           ]
         : type === "Vet"
-        ? createSchedulingArgs?.event?.event?.patient?.name
-          ? [createSchedulingArgs.event.event.patient.name]
-          : createSchedulingArgs?.name
-          ? [createSchedulingArgs?.name]
-          : []
-        : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
-        ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.name]
-        : [],
+          ? createSchedulingArgs?.event?.event?.patient?.name
+            ? [createSchedulingArgs.event.event.patient.name]
+            : createSchedulingArgs?.name
+              ? [createSchedulingArgs?.name]
+              : []
+          : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
+            ? [createSchedulingArgs.tutors.find((tutor) => tutor.isMain)?.name]
+            : [],
     executions: [],
   };
 
+  const { configsHasBlockFinancePending } = useVerifyFinanceSchedule({});
   const { data, temFinancasEmAberto } = useScheduleAuthorization({
     patientId:
       createSchedulingArgs?.type !== "create"
         ? ""
         : type === "Vet"
-        ? holderId
-        : patientId,
+          ? holderId
+          : patientId,
   });
 
   const users = scheduleUsers?.map((user) => ({
@@ -123,7 +125,7 @@ export function FormCreateScheduling() {
         cleanFieldsOnSubmit={false}
         disableEnterKeySubmitForm
         schema={
-          temFinancasEmAberto
+          configsHasBlockFinancePending
             ? {
                 userEmail: yup.string().required("Campo requerido"),
                 userPwd: yup.string().required("Campo requerido"),
@@ -131,10 +133,11 @@ export function FormCreateScheduling() {
             : {}
         }
         customAction={
-          temFinancasEmAberto
+          configsHasBlockFinancePending || temFinancasEmAberto
             ? {
                 Component: () => (
                   <ScheduleAuthorization
+                    blocking={configsHasBlockFinancePending as boolean}
                     value={data?.["Valores em Atraso"] || 0}
                   />
                 ),
@@ -147,8 +150,8 @@ export function FormCreateScheduling() {
             {createSchedulingArgs?.type === "reschedule"
               ? "Reagendamento"
               : createSchedulingArgs?.type === "edit"
-              ? "Alterar Agendamento"
-              : "Criar agendamento"}
+                ? "Alterar Agendamento"
+                : "Criar agendamento"}
           </h2>
         </div>
 
