@@ -21,11 +21,13 @@ export function StartService({
   event,
   onSuccess,
   buttonTitle,
+  showNativeForm = false,
 }: {
   patientId: Patient["id"];
   event: any;
   onSuccess?: any;
   buttonTitle: string;
+  showNativeForm?: boolean;
 }) {
   const { push } = useRouter();
 
@@ -48,10 +50,10 @@ export function StartService({
     const response = await container
       .get<RemoteChangeStatus>(patientTypes.RemoteChangeStatus)
       .change({
-        scheduleId: event.event.id,
+        scheduleId: "id" in event ? event.id : event.event.id,
         statusId,
-        userEmail: data.userEmail,
-        userPwd: data.userPwd,
+        userEmail: data?.userEmail,
+        userPwd: data?.userPwd,
       });
 
     onSuccess && onSuccess();
@@ -70,7 +72,13 @@ export function StartService({
       <button
         className="reset-button orange start-attendance"
         type="button"
-        onClick={() => setShowForm(true)}
+        onClick={() => {
+          if (showNativeForm) {
+            setShowForm(true);
+          } else {
+            handleClick(null);
+          }
+        }}
       >
         <Icon name="PlayIcon" />
         <span>{buttonTitle}</span>
