@@ -49,26 +49,12 @@ export function InformCustomerArrival({
         <button
           type="button"
           onClick={() => {
-            setShowForm((state) => !state);
+            executeVerification({ formData: {}, handleSucess: handleClick });
           }}
         >
           <Icon name="IconUser" />
           Informar chegada do cliente
         </button>
-
-        {showForm && (
-          <FormHandler
-            button={{ text: "Confirmar" }}
-            onSucess={async (formData) =>
-              executeVerification({ formData, handleSucess: handleClick })
-            }
-            initialData={{ contactDate: moment().format("YYYY-MM-DDTHH:mm") }}
-          >
-            <Input type="datetime-local" name="contactDate" />
-
-            <Textarea name="observation" placeholder="Observação" />
-          </FormHandler>
-        )}
       </S.InformCustomerArrival>
     </PermissionItem>
   );
