@@ -47,6 +47,7 @@ export function ActionsPatient() {
                 }}
                 event={schedule?.data}
                 patientId={schedule?.data?.patient?.id}
+                showNativeForm={false}
               />
             )}
         </div>
