@@ -38,8 +38,8 @@ const checkPhone = async (data) =>
 
 const getPatientMetadata = async (id) => api.get(`/patients/metadata/${id}`);
 
-const getPatientSalesMetadata = async (id) =>
-  api.get(`/patients/sales-metadata/${id}`);
+const getPatientSalesMetadata = async (id: string, tutorID?: string) =>
+  api.get(`/patients/sales-metadata/${id}?tutor=${tutorID}`);
 
 const getPatientHairTypes = async () => await api.get("/patient-animal-hairs");
 
