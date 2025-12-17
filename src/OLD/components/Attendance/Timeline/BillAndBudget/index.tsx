@@ -31,7 +31,7 @@ export function BillAndBudget({ patient }) {
   const [cashierFilters, setCashierFilters] = useState({});
 
   const mainTutor =
-    patient?.holders.find((tutor) => tutor.isMain) ?? patient?.holders[0];
+    patient?.holders.find((tutor) => tutor.main) ?? patient?.holders[0];
 
   const { type } = useConfigurationsSystem();
   const { getWord } = useDictionary();
@@ -65,6 +65,8 @@ export function BillAndBudget({ patient }) {
               : budgetStatusFormatter(item, setReload),
           clientID: item?.clientID,
           client: item?.client,
+          patientID: item?.patientID,
+          patient: item?.patient,
           actions:
             item?._type === "sale" ? (
               <BillActions
@@ -94,7 +96,7 @@ export function BillAndBudget({ patient }) {
       columns={type !== "Vet" ? billAndBudgetLiftColumns : billAndBudgetColumns}
       dataSource={formatedMetadata}
       rowClassName={(record, index) =>
-        `ant-table-row ant-table-row-level-0 ${record.clientID === patient.id ? "______table-row" : ""}`
+        `ant-table-row ant-table-row-level-0 ${record.patientID === patient.id ? "______table-row" : ""}`
       }
     />
   );
