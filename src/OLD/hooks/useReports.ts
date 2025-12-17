@@ -186,7 +186,7 @@ export const useFinancesReports = (filters, reload) => {
   };
 };
 
-export const useSalesAnalyticsReport = (filters, reload, onSuccess) => {
+export const useSalesAnalyticsReport = (filters, reload) => {
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState([]);
 
@@ -207,7 +207,6 @@ export const useSalesAnalyticsReport = (filters, reload, onSuccess) => {
       .getSaleAnalyticsReport(newObj)
       .then((res) => {
         setReports(res.data);
-        onSuccess?.(res.data);
       })
       .catch((err) => setLoading(false))
       .finally(() => setLoading(false));
