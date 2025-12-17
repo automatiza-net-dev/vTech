@@ -29,7 +29,20 @@ const AnalyticalReport = memo(function () {
 
   const imprimir = useReactToPrint({
     contentRef: componentRef,
-    onBeforePrint: async () => setReload(!reload),
+    onBeforePrint: async () => {
+      setReload(!reload);
+      // Wait for data to load before printing
+      await new Promise((resolve) => {
+        const checkLoading = () => {
+          if (!loadingReports) {
+            resolve(true);
+          } else {
+            setTimeout(checkLoading, 100);
+          }
+        };
+        checkLoading();
+      });
+    },
   });
 
   return !listAnalyticsReportsPermission ||
@@ -43,12 +56,15 @@ const AnalyticalReport = memo(function () {
         <div className="uk-flex uk-flex-around">
           <Button
             className="uk-margin-small-right"
-            disabled={loadingReports}
             onClick={() => {
               imprimir();
             }}
           >
-            {loadingReports ? "Carregando..." : "Imprimir"}
+            {loadingReports
+              ? "Carregando..."
+              : reports?.length
+                ? "Imprimir"
+                : "Sem dados"}
           </Button>
         </div>
         <div style={{ display: "none" }}>
