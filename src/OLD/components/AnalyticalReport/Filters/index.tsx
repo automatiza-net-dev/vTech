@@ -110,6 +110,7 @@ export const Filters = memo(function Filters({
           <label>Cliente</label>
           <Select
             showSearch
+            allowClear
             className="uk-width-1-1"
             filterOption={false}
             onSearch={(val) => {

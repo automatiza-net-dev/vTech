@@ -1,23 +1,42 @@
 import { memo, useState, useRef, useEffect } from "react";
 
-import { useSalesAnalyticsReport } from "@/OLD/hooks/useReports";
+import { reportsService } from "@/OLD/services/reports.service";
 import { useProfile } from "@/OLD/hooks/useProfile";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import { Container } from "./styles";
 import Filters from "./Filters";
 import PrintScreen from "./PrintScreen";
 import AccessDenied from "@/OLD/components/AccessDenied";
 import { Button } from "antd";
-import { PageWrapper } from "infinity-forge";
+import { PageWrapper, useQuery } from "infinity-forge";
+import moment from "moment";
 
 const AnalyticalReport = memo(function () {
   const [filters, setFilters] = useState({});
-  const [reload, setReload] = useState(false);
 
   const { clinic } = useProfile();
-  const { reports, loadingReports } = useSalesAnalyticsReport(filters, reload);
+
+  const reportsQuery = useQuery({
+    queryKey: ["RemoteSalesAnalyticsReport", filters],
+    queryFn: () => {
+      const keys = Object.keys(filters);
+      let newObj = { ...filters };
+
+      if (keys.includes("fromDate")) {
+        newObj = {
+          ...newObj,
+          // @ts-ignore
+          fromDate: moment(filters?.fromDate).format("YYYY-MM-DD"),
+          // @ts-ignore
+          toDate: moment(filters.toDate).format("YYYY-MM-DD"),
+        };
+      }
+
+      return reportsService.getSaleAnalyticsReport(newObj).then((d) => d.data);
+    },
+  });
 
   const listAnalyticsReportsPermission = useUserHasPermission("REL06");
 
@@ -29,20 +48,6 @@ const AnalyticalReport = memo(function () {
 
   const imprimir = useReactToPrint({
     contentRef: componentRef,
-    onBeforePrint: async () => {
-      setReload(!reload);
-      // Wait for data to load before printing
-      await new Promise((resolve) => {
-        const checkLoading = () => {
-          if (!loadingReports) {
-            resolve(true);
-          } else {
-            setTimeout(checkLoading, 100);
-          }
-        };
-        checkLoading();
-      });
-    },
   });
 
   return !listAnalyticsReportsPermission ||
@@ -59,17 +64,14 @@ const AnalyticalReport = memo(function () {
             onClick={() => {
               imprimir();
             }}
+            disabled={reportsQuery.isLoading}
           >
-            {loadingReports
-              ? "Carregando..."
-              : reports?.length
-                ? "Imprimir"
-                : "Sem dados"}
+            {reportsQuery.isLoading ? "Carregando..." : "Imprimir"}
           </Button>
         </div>
         <div style={{ display: "none" }}>
           <div ref={componentRef}>
-            {reports?.length > 0 && <PrintScreen data={reports} />}
+            <PrintScreen data={reportsQuery?.data ?? []} />
           </div>
         </div>
       </Container>
