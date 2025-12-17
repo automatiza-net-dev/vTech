@@ -63,7 +63,11 @@ export function Profile(props: Patient) {
               }
               trigger={
                 <h1 className="font-20-regular">
-                  <span>{`${name} (${gender === "male" ? "Macho" : "Fêmea"})`}</span>
+                  {type === "Vet" ? (
+                    <span>{`${name} (${gender === "male" ? "Macho" : "Fêmea"})`}</span>
+                  ) : (
+                    <span>{name}</span>
+                  )}
                 </h1>
               }
               patientId={props.id}
