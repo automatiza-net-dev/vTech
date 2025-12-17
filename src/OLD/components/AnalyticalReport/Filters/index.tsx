@@ -22,15 +22,18 @@ export const Filters = memo(function Filters({
   const [values, setValues] = useState({});
 
   const { businessUnits } = useBusinessUnitsByUser(false);
-  const { patients } = usePatients();
   const { tutors } = useTutor(false, false);
+
+  const patients = filters.client
+    ? (tutors.find((t) => t.id === filters.client)?.patients ?? [])
+    : [];
 
   sortItems(tutors, "name");
   sortItems(patients, "name");
 
   return (
     <div className="uk-margin-small-top">
-      <div className="uk-flex uk-flex-around">
+      <div className="uk-flex uk-flex-center uk-flex-around">
         <InputBox className="uk-width-1-3">
           <label>Unidade:&nbsp;</label>
           <Select
@@ -134,6 +137,7 @@ export const Filters = memo(function Filters({
           <label>Paciente</label>
           <AutoComplete
             allowClear
+            disabled={!filters.client || patients?.length === 0}
             onClear={() => {
               const newObj = { ...filters };
               delete newObj?.patient;

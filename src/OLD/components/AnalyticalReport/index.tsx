@@ -43,11 +43,12 @@ const AnalyticalReport = memo(function () {
         <div className="uk-flex uk-flex-around">
           <Button
             className="uk-margin-small-right"
+            disabled={loadingReports}
             onClick={() => {
               imprimir();
             }}
           >
-            Imprimir
+            {loadingReports ? "Carregando..." : "Imprimir"}
           </Button>
         </div>
         <div style={{ display: "none" }}>
