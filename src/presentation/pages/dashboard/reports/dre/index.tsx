@@ -57,7 +57,7 @@ export function DreReport() {
             <div className="filters-container">
               <InputDatePicker
                 language="pt"
-                date={{ maxDate: new Date() }}
+                date={{ maxDate: moment(new Date()).add({years: 1}).toDate() }}
                 label="Competencia"
                 name="competence"
                 mode="month"
