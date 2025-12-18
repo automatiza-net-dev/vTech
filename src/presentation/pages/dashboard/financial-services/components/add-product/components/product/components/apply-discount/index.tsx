@@ -55,15 +55,14 @@ export function ApplyDiscount() {
                 const totalDiscount =
                   (quantity * unitPrice * discountValue) / 100;
 
+                const totalValue = quantity * unitPrice - totalDiscount;
+
                 return {
                   ...item,
                   variations: [
                     {
                       ...variation,
-                      total:
-                        Math.round(
-                          (variation.unitaryValue - totalDiscount) * 100,
-                        ) / 100,
+                      total: Math.round(totalValue * 100) / 100,
                       discountValue: Math.round(totalDiscount * 100) / 100, // arredondando para 2 casas
                     },
                   ],
