@@ -25,6 +25,8 @@ export interface PatientHuman {
   firstSale: null;
   isHospitalized: boolean;
   missingBills: string;
+  vetMissingBills: string;
+  vetMissingTutorBills: string;
   openAttendances: boolean;
   death: boolean;
   deathDate: Date;

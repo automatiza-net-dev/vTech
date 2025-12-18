@@ -62,7 +62,7 @@ export default function PathologiesListPage() {
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <Button
                 disabled={!canCreatePathology}
-                onClick={() => router.push("/dashboard/patologia/cadastrar")}
+                onClick={() => router.push("/dashboard/patologias/cadastrar")}
                 text="Cadastrar"
               />
             </div>

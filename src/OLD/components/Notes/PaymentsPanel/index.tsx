@@ -344,7 +344,7 @@ function PaymentsPanel({
 											})
 										}
 									>
-										{paymentsList?.[0]?.block !== editBlock && (
+										{receipt.status !== 'Baixada' && paymentsList?.[0]?.block !== editBlock && (
 											<>
 												{removePaymentsPermission && (
 													<Button
@@ -355,7 +355,7 @@ function PaymentsPanel({
 											</>
 										)}
 									</Popconfirm>
-									{paymentsList?.[0]?.block !== editBlock ? (
+									{receipt.status !== 'Baixada' && paymentsList?.[0]?.block !== editBlock ? (
 										<>
 											{updatePaymentsPermission && (
 												<Button

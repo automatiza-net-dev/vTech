@@ -9,20 +9,19 @@ import {
   LoaderCircle,
   InputCurrency,
   Input,
-  Tooltip,
 } from "infinity-forge";
 
 import { RemoteMeta } from "@/data";
 import { useLoadGoal } from "@/presentation";
-import { CreateGoal, LoadGoal, User } from "@/domain";
+import { LoadGoal } from "@/domain";
 import { TypesAutomatiza, container } from "@/container";
 
 import * as S from "./styles";
 import { CopyPastMonth } from "./copy-past-month";
 
 export function Goals() {
-  const list = Array.from({ length: 12 }).map((_, index) => {
-    return moment().add("month", 1).subtract("month", index).format("MM/YYYY");
+  const list = Array.from({ length: 24 }).map((_, index) => {
+    return moment().add("month", 12).subtract("month", index).format("MM/YYYY");
   });
 
   return (

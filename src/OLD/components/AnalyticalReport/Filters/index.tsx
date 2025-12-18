@@ -1,8 +1,7 @@
 // @ts-nocheck
-import { Dispatch, memo, SetStateAction, useState } from "react";
+import { Dispatch, memo, SetStateAction, useMemo, useState } from "react";
 
 import { useBusinessUnitsByUser } from "@/OLD/hooks/useBusinessUnits";
-import { usePatients } from "@/OLD/hooks/usePatients";
 import { useTutor } from "@/OLD/hooks/useTutor";
 
 import { InputBox } from "./styles";
@@ -22,15 +21,26 @@ export const Filters = memo(function Filters({
   const [values, setValues] = useState({});
 
   const { businessUnits } = useBusinessUnitsByUser(false);
-  const { patients } = usePatients();
   const { tutors } = useTutor(false, false);
+
+  const patients = filters.client
+    ? (tutors.find((t) => t.id === filters.client)?.dependents ?? [])
+    : [];
+
+  const filteredTutors = useMemo(() => {
+    if (!values.clientName || values.clientName === "") return tutors;
+
+    return tutors.filter((t) =>
+      t.name.toUpperCase().includes(values.clientName.toUpperCase()),
+    );
+  }, [values.clientName, tutors]);
 
   sortItems(tutors, "name");
   sortItems(patients, "name");
 
   return (
     <div className="uk-margin-small-top">
-      <div className="uk-flex uk-flex-around">
+      <div className="uk-flex uk-flex-center uk-flex-around">
         <InputBox className="uk-width-1-3">
           <label>Unidade:&nbsp;</label>
           <Select
@@ -98,42 +108,41 @@ export const Filters = memo(function Filters({
       <div className="uk-flex uk-flex-around uk-margin-small-top">
         <InputBox className="uk-width-1-3">
           <label>Cliente</label>
-          <AutoComplete
+          <Select
+            showSearch
             allowClear
-            onClear={() => {
-              const newObj = { ...filters };
-              delete newObj?.client;
-              setFilters(newObj);
-            }}
             className="uk-width-1-1"
-            value={values?.tutorName}
-            options={tutors?.map((tutor) => ({
-              ...tutor,
-              value: tutor?.name,
-            }))}
-            onChange={(val) => {
-              setValues({ ...values, tutorName: val });
+            filterOption={false}
+            onSearch={(val) => {
+              setValues({ ...values, clientName: val });
               if (val === "") {
                 const newObj = { ...filters };
-                delete newObj.client;
+                delete newObj.patient;
                 setFilters(newObj);
               }
             }}
-            onSelect={(_, option) => {
-              setValues({ ...values, tutorName: option?.value });
-              setFilters({ ...filters, client: option?.id });
+            value={filters?.client}
+            onChange={(val, opt) => {
+              // console.log('onChange', { val, opt });
+              setValues({
+                ...values,
+                clientName: opt?.children,
+                patientName: null,
+              });
+              setFilters({ ...filters, client: val, patient: null });
             }}
-            filterOption={(val, opt) =>
-              normalizeStr(opt?.name.toUpperCase()).includes(
-                normalizeStr(val.toUpperCase()),
-              )
-            }
-          />
+            notFoundContent={null}
+          >
+            {filteredTutors.map((t) => (
+              <Select.Option value={t?.id}>{t.name}</Select.Option>
+            ))}
+          </Select>
         </InputBox>
         <InputBox className="uk-width-1-3">
           <label>Paciente</label>
           <AutoComplete
             allowClear
+            disabled={!filters.client || patients?.length === 0}
             onClear={() => {
               const newObj = { ...filters };
               delete newObj?.patient;

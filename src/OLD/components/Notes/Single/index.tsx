@@ -235,7 +235,7 @@ export function Details({ receiptId, setVisible }: any) {
         unitPrice: currencyFormatter(product?.unitary_value),
         discount: currencyFormatter(product?.discount_value),
         total: currencyFormatter(product?.total_value),
-        delete: (
+        delete: receipt[0]?.status !== 'Baixada' && (
           <Popconfirm
             title={`Deseja remover este item?`}
             onConfirm={() => removeReceiptItemSubmit(product?.id)}

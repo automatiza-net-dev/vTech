@@ -28666,3 +28666,8 @@ iframe.uk-cover {
         page-break-after: avoid;
     }
 }
+
+
+.______table-row {
+    background-color: rgba(255, 165, 0, 0.1);
+}

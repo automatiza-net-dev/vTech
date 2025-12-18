@@ -30,7 +30,7 @@ export const usePatientMetadata = (id, reload = false) => {
   };
 };
 
-export const usePatientSalesMetadata = (id, reload = false) => {
+export const usePatientSalesMetadata = (id: string, tutorID?: string, reload = false) => {
   const [salesMetadata, setSalesMetadata] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +38,7 @@ export const usePatientSalesMetadata = (id, reload = false) => {
     setLoading(true);
 
     petsService
-      .getPatientSalesMetadata(id)
+      .getPatientSalesMetadata(id, tutorID)
       .then((res) => setSalesMetadata(res.data))
       .catch((_err) => setLoading(false))
       .finally(() => setLoading(false));
@@ -46,7 +46,7 @@ export const usePatientSalesMetadata = (id, reload = false) => {
 
   useEffect(() => {
     fetchData();
-  }, [id, reload]);
+  }, [id, tutorID, reload]);
 
   return {
     salesMetadata,

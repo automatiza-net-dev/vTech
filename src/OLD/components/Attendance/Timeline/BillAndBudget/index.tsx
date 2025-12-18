@@ -30,11 +30,17 @@ export function BillAndBudget({ patient }) {
   const [reload, setReload] = useState(false);
   const [cashierFilters, setCashierFilters] = useState({});
 
+  const mainTutor =
+    patient?.holders.find((tutor) => tutor.main) ?? patient?.holders[0];
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem();
   const { getWord } = useDictionary();
   const { cashiers } = useDailyCasher(cashierFilters);
-  const { salesMetadata } = usePatientSalesMetadata(patient?.id, reload);
+  const { salesMetadata } = usePatientSalesMetadata(
+    patient?.id,
+    mainTutor?.id,
+    reload,
+  );
 
   useEffect(() => {
     setCashierFilters({
@@ -57,7 +63,10 @@ export function BillAndBudget({ patient }) {
             item?._type === "sale"
               ? billStatusFormatter(item, setReload)
               : budgetStatusFormatter(item, setReload),
+          clientID: item?.clientID,
           client: item?.client,
+          patientID: item?.patientID,
+          patient: item?.patient,
           actions:
             item?._type === "sale" ? (
               <BillActions
@@ -70,11 +79,11 @@ export function BillAndBudget({ patient }) {
                 key={item.id}
                 budget={item}
                 setReload={setReload}
-                mode={'tooltip'}
+                mode={"tooltip"}
               />
             ),
         };
-      })
+      }),
     );
   };
 
@@ -84,12 +93,11 @@ export function BillAndBudget({ patient }) {
 
   return (
     <Table
-      columns={
-        type !== "Vet"
-          ? billAndBudgetLiftColumns
-          : billAndBudgetColumns
-      }
+      columns={type !== "Vet" ? billAndBudgetLiftColumns : billAndBudgetColumns}
       dataSource={formatedMetadata}
+      rowClassName={(record, index) =>
+        `ant-table-row ant-table-row-level-0 ${record.patientID === patient.id ? "______table-row" : ""}`
+      }
     />
   );
 }

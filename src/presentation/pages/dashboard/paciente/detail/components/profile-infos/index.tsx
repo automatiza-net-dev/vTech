@@ -1,9 +1,8 @@
 import moment from "moment";
-import {  DetailCard, Error, IDetailCard } from "infinity-forge";
-;
+import { DetailCard, Error, IDetailCard } from "infinity-forge";
 import { Patient } from "@/domain";
 import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
-import { useQueryClient } from "infinity-forge"
+import { useQueryClient } from "infinity-forge";
 
 import { Profile } from "./profile";
 
@@ -14,9 +13,9 @@ export type DetailCard = {
 } & IDetailCard;
 
 export function ProfileInfos({ patient }: { patient: Patient }) {
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem();
 
   const details: DetailCard[] = [
     {
@@ -44,14 +43,6 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       active: !!(type === "Vet" && patient.tutor),
     },
     {
-      id: 4,
-      icon: "IconGender",
-      color: "#FF7A00",
-      title: patient.gender,
-      subTitle: "Sexo",
-      active: true,
-    },
-    {
       id: 5,
       icon: patient.death ? "IconDeath" : "IconClock",
       color: patient.death ? "#E02F2F" : "#36A2EB",
@@ -67,10 +58,27 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       color: "#7E43D6",
       title: patient.missingBills || "R$ 0,00",
       subTitle: "Vendas em aberto",
-      active: true,
+      active: type !== "Vet",
     },
     {
       id: 7,
+      icon: "IconShopping2",
+      color: "#7E43D6",
+      title: patient.vetMissingBills || "R$ 0,00",
+      subTitle: "Vendas em aberto (Pet)",
+      active: type === "Vet",
+    },
+    {
+      id: 8,
+      icon: "IconShopping2",
+      color: "#7E43D6",
+      title: patient.vetMissingTutorBills || "R$ 0,00",
+      subTitle: "Vendas em aberto (Tutor)",
+      active: type === "Vet",
+    },
+
+    {
+      id: 9,
       icon: "IconHypertension",
       color: "#C700D9",
       title: patient.hypertension ? "Sim" : "Não",
@@ -78,7 +86,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       active: type !== "Vet",
     },
     {
-      id: 8,
+      id: 9,
       icon: "IconDiabets",
       color: "#002CCA",
       title: patient.diabetes ? "Sim" : "Não",
@@ -90,7 +98,6 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
   return (
     <Error name="ProfileInfos">
       <S.ProfileInfos>
-        
         <Profile {...patient} />
 
         {details && (
@@ -102,7 +109,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                     isModal
                     tutorId={patient.tutor.id}
                     onSuccess={async () =>
-                     await refetch(["RemotePatient"], { mode: "include" })
+                      await refetch(["RemotePatient"], { mode: "include" })
                     }
                     trigger={
                       <span

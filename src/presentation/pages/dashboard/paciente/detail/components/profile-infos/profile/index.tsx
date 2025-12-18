@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Error, HighlightText, Icon } from "infinity-forge";
-import { useQueryClient } from "infinity-forge"
+import { useQueryClient } from "infinity-forge";
 
 import { Patient } from "@/domain";
 import { FormCreatePatient } from "../../../../create";
@@ -45,7 +45,7 @@ export function Profile(props: Patient) {
   } = props;
 
   const { type } = useConfigurationsSystem();
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
 
   return (
     <Error name="Profile">
@@ -57,10 +57,16 @@ export function Profile(props: Patient) {
         <div>
           {name && (
             <FormCreatePatient
-              onSuccess={async () =>  await refetch(["RemotePatient"], { mode: "include" })}
+              onSuccess={async () =>
+                await refetch(["RemotePatient"], { mode: "include" })
+              }
               trigger={
                 <h1 className="font-20-regular">
-                  <span>{name}</span>
+                  {type === "Vet" ? (
+                    <span>{`${name} (${props.gender.toUpperCase()})`}</span>
+                  ) : (
+                    <span>{name}</span>
+                  )}
                 </h1>
               }
               patientId={props.id}
