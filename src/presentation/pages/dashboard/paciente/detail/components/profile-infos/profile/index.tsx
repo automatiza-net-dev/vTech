@@ -63,7 +63,7 @@ export function Profile(props: Patient) {
               trigger={
                 <h1 className="font-20-regular">
                   {type === "Vet" ? (
-                    <span>{`${name} (${props.gender.toUpperCase()})`}</span>
+                    <span>{`${name} (${props.gender ? props.gender.toUpperCase() : "-"})`}</span>
                   ) : (
                     <span>{name}</span>
                   )}
