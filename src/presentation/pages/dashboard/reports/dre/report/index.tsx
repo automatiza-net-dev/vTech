@@ -83,7 +83,8 @@ export function ReportDRE(props: {
                         ?.filter(
                           (item) =>
                             (!item.refs || item.refs?.length === 0) &&
-                            item.custo,
+                            item.custo &&
+                            typeof item.id === "string",
                         )
                         ?.map((i) => {
                           const custo = Number(i.custo || 0);
