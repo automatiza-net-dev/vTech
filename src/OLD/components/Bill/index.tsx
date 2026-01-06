@@ -11,7 +11,7 @@ import { MdOutlineClear } from "react-icons/md";
 
 import { api } from "infinity-forge";
 
-import { Input as AntInput, Select, Table } from "antd";
+import { Input as AntInput, Checkbox, InputNumber, Select, Table } from "antd";
 import { Modal, Button, PageWrapper } from "infinity-forge";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Container, Input, Label } from "./styles";
@@ -23,376 +23,457 @@ import { currencyFormatter, dateFormatter } from "../Budget";
 import BillActions from "./Actions/Container";
 
 import {
-	AddSale,
-	PermissionItem,
-	useConfigurationsSystem,
-	useSystem,
-	useQuery,
+  AddSale,
+  PermissionItem,
+  useConfigurationsSystem,
+  useSystem,
+  useQuery,
 } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";
+import { CgChevronDown, CgChevronUp } from "react-icons/cg";
 
 export default function Bills() {
-	const hasCreatePermission = usePermission("VEN01");
+  const hasCreatePermission = usePermission("VEN01");
 
-	const [visible, setVisible] = React.useState(false);
-	const [visible2, setVisible2] = React.useState(false);
-	const [filters, setFilters] = React.useState({
-		fromBill: moment(),
-		toBill: moment(),
-		noSearch: true,
-	});
-	const [reload, setReload] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const [visible2, setVisible2] = React.useState(false);
+  const [filters, setFilters] = React.useState({
+    fromBill: moment(),
+    toBill: moment(),
+    noSearch: true,
+  });
+  const [reload, setReload] = React.useState(false);
+  const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
 
-	const { type } = useConfigurationsSystem();
-	const { data, refetch } = useGetAllBills(filters);
+  const { type } = useConfigurationsSystem();
+  const { data, refetch } = useGetAllBills(filters);
   React.useEffect(() => {
     refetch()
   }, [reload])
 
-	const { cashiers } = useDailyCasher(false, filters);
+  const selectedRows = data ? data.filter((d => expandedRowKeys.includes(d.id))) : [];
 
-	const router = useRouter();
+  const { cashiers } = useDailyCasher(false, filters);
 
-	const mapper = (data = [], cashiers) => {
-		data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
+  const router = useRouter();
 
-		return data.map((bill) => {
-			return {
-				id: bill?.id,
-				internalCode: bill?.internalCode,
-				fn: bill?.hasDocuments ? "Sim" : "Não",
-				bill_date: moment(new Date(bill?.bill_date)).format("DD/MM/YYYY HH:mm"),
-				code: bill?.tag ?? "-",
-				client: bill?.client?.name || "-",
-				patient: bill.patient?.name ?? "-",
-				user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
-				total: currencyFormatter(bill?.total_value),
-				status:
-					billStatusFormatter(bill, setReload, visible2, setVisible2) || "-",
-				missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
-				billRelatedTypeDescription: bill?.bill_related_type?.description,
-				docActions: (
-					<ModalListagemDocumentosVenda
-						bill={bill}
-						refresh={() => setReload((prv) => !prv)}
-					/>
-				),
-				actions: (
-					<BillActions
-						bill={bill}
-						cashiers={cashiers}
-						client={bill?.client}
-						setReload={setReload}
-					/>
-				),
-			};
-		});
-	};
+  const mapper = (data = [], cashiers) => {
+    data.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
 
-	const listCreated = (id) => {
-		setFilters((prv) => ({ ...prv, bill_id: id, noSearch: false }));
-		setReload((prv) => !prv);
-	};
+    return data.map((bill) => {
+      return {
+        id: bill?.id,
+        internalCode: bill?.internalCode,
+        fn: bill?.hasDocuments ? "Sim" : "Não",
+        bill_date: moment(new Date(bill?.bill_date)).format("DD/MM/YYYY HH:mm"),
+        code: bill?.tag ?? "-",
+        client: bill?.client?.name || "-",
+        patient: bill.patient?.name ?? "-",
+        user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
+        total: currencyFormatter(bill?.total_value),
+        status:
+          billStatusFormatter(bill, setReload, visible2, setVisible2) || "-",
+        missingValue: currencyFormatter(bill?.total_value - bill?.paid_value),
+        billRelatedTypeDescription: bill?.bill_related_type?.description,
+        docActions: (
+          <ModalListagemDocumentosVenda
+            bill={bill}
+            refresh={() => setReload((prv) => !prv)}
+          />
+        ),
+        actions: (
+          <BillActions
+            bill={bill}
+            cashiers={cashiers}
+            client={bill?.client}
+            setReload={setReload}
+          />
+        ),
+      };
+    });
+  };
 
-	React.useEffect(() => {
-		document.addEventListener("keypress", (e) => {
-			if (e.key === "Enter") {
-				setFilters((prv) => ({ ...prv, noSearch: false }));
-				setReload((prv) => !prv);
-			}
-		});
-	}, []);
+  const listCreated = (id) => {
+    setFilters((prv) => ({ ...prv, bill_id: id, noSearch: false }));
+    setReload((prv) => !prv);
+  };
 
-	React.useEffect(() => {
-		if (router?.query?.id) {
-			listCreated(router.query.id);
-		}
-	}, [router.query]);
+  const handleToggleExpand = (recordId) => {
+    setExpandedRowKeys((prev) => {
+      const isExpanded = prev.includes(recordId);
+      if (isExpanded) {
+        return prev.filter((id) => id !== recordId);
+      } else {
+        return [...prev, recordId];
+      }
+    });
+  };
 
-	const { unit } = useSystem();
+  React.useEffect(() => {
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        setFilters((prv) => ({ ...prv, noSearch: false }));
+        setReload((prv) => !prv);
+      }
+    });
+  }, []);
 
-	const hasRelatedBills = unit?.configs?.bills?.related_bills;
-	const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
-	const hasGenerateBillDocuments =
-		unit?.configs?.businessUnits?.generate_bill_documents;
+  React.useEffect(() => {
+    if (router?.query?.id) {
+      listCreated(router.query.id);
+    }
+  }, [router.query]);
 
-	const billRelatedTypes = useQuery({
-		queryKey: ["bill-related-types"],
-		queryFn: async () => {
-			const active = true;
+  const { unit } = useSystem();
 
-			const response = await api({
-				url: "bill-related-types",
-				method: "get",
-				body: {
-					active: true,
-				},
-			});
+  const hasRelatedBills = unit?.configs?.bills?.related_bills;
+  const hasInternalCode = unit?.configs?.businessUnits?.internal_code;
+  const hasGenerateBillDocuments =
+    unit?.configs?.businessUnits?.generate_bill_documents;
 
-			return response as { id: string; description: string; active: boolean }[];
-		},
-	});
+  const billRelatedTypes = useQuery({
+    queryKey: ["bill-related-types"],
+    queryFn: async () => {
+      const active = true;
 
-	return (
-		<PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
-			<PageWrapper title="Vendas">
-				<Container>
-					<section className="uk-margin-top uk-width-1-1">
-						<div
-							className="uk-flex uk-flex-between uk-width-1-1"
-							style={{ gap: "1rem" }}
-						>
-							<Input style={{ width: "100%" }}>
-								<Label>Criação</Label>
-								<DatePicker
-									slotProps={{ textField: { variant: "standard" } }}
-									format="DD/MM/YYYY"
-									onChange={(val) => {
-										setFilters({
-											...filters,
-											fromBill: val,
-										});
-									}}
-									value={filters?.fromBill}
-								/>
-								à
-								<DatePicker
-									format="DD/MM/YYYY"
-									slotProps={{ textField: { variant: "standard" } }}
-									onChange={(val) => {
-										setFilters({
-											...filters,
-											toBill: val,
-										});
-									}}
-									value={filters?.toBill}
-								/>
-								<MdOutlineClear
-									size={40}
-									style={{ cursor: "pointer" }}
-									onClick={() => {
-										setFilters((prv) => ({
-											...prv,
-											fromBill: null,
-											toBill: null,
-										}));
-									}}
-								/>
-							</Input>
+      const response = await api({
+        url: "bill-related-types",
+        method: "get",
+        body: {
+          active: true,
+        },
+      });
 
-							<Input style={{ width: "50%" }}>
-								<Label>Status</Label>
-								<Select
-									allowClear
-									defaultValue={"all"}
-									placeholder="Status"
-									className="uk-width-1-1"
-									value={filters.status}
-									onChange={(e) => {
-										if (e === "all") {
-											const newObj = { ...filters };
-											delete newObj?.status;
-											return setFilters(newObj);
-										}
-										setFilters({ ...filters, status: e });
-									}}
-								>
-									<Select.Option value="all">Todos</Select.Option>
-									<Select.Option value="ABERTA">Aberta</Select.Option>
-									<Select.Option value="BAIXADA">Baixada</Select.Option>
-								</Select>
-							</Input>
+      return response as { id: string; description: string; active: boolean }[];
+    },
+  });
 
-							{hasInternalCode && (
-								<Input style={{ width: "70%" }}>
-									<label style={{ width: 140 }}>Código Interno</label>
-									<AntInput
-										value={filters?.internalCode}
-										onChange={(e) =>
-											setFilters({ ...filters, internalCode: e.target.value })
-										}
-									/>
-								</Input>
-							)}
+  return (
+    <PermissionItem hash="VEN00" DaniedComponent={AccessDenied}>
+      <PageWrapper title="Vendas">
+        <Container>
+          <section className="uk-margin-top uk-width-1-1">
+            <div
+              className="uk-flex uk-flex-between uk-width-1-1"
+              style={{ gap: "1rem" }}
+            >
+              <Input style={{ width: "100%" }}>
+                <Label>Criação</Label>
+                <DatePicker
+                  slotProps={{ textField: { variant: "standard" } }}
+                  format="DD/MM/YYYY"
+                  onChange={(val) => {
+                    setFilters({
+                      ...filters,
+                      fromBill: val,
+                    });
+                  }}
+                  value={filters?.fromBill}
+                />
+                à
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  slotProps={{ textField: { variant: "standard" } }}
+                  onChange={(val) => {
+                    setFilters({
+                      ...filters,
+                      toBill: val,
+                    });
+                  }}
+                  value={filters?.toBill}
+                />
+                <MdOutlineClear
+                  size={40}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setFilters((prv) => ({
+                      ...prv,
+                      fromBill: null,
+                      toBill: null,
+                    }));
+                  }}
+                />
+              </Input>
 
-							<Input style={{ width: "50%" }}>
-								<label>Código</label>
-								<AntInput
-									value={filters.tag}
-									onChange={(e) =>
-										setFilters({ ...filters, tag: e.target.value })
-									}
-								/>
-							</Input>
-						</div>
-						<div
-							className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
-							style={{ gap: "1rem" }}
-						>
-							<Input style={{ width: "100%" }}>
-								<Label>Cliente</Label>
-								<AntInput
-									value={filters.clientName}
-									onChange={(e) =>
-										setFilters({ ...filters, clientName: e.target.value })
-									}
-								/>
-							</Input>
-							{type === "Vet" && (
-								<Input style={{ width: "100%" }}>
-									<Label>Paciente</Label>
-									<AntInput
-										value={filters.patientName}
-										onChange={(e) =>
-											setFilters({ ...filters, patientName: e.target.value })
-										}
-									/>
-								</Input>
-							)}
+              <Input style={{ width: "50%" }}>
+                <Label>Status</Label>
+                <Select
+                  allowClear
+                  defaultValue={"all"}
+                  placeholder="Status"
+                  className="uk-width-1-1"
+                  value={filters.status}
+                  onChange={(e) => {
+                    if (e === "all") {
+                      const newObj = { ...filters };
+                      delete newObj?.status;
+                      return setFilters(newObj);
+                    }
+                    setFilters({ ...filters, status: e });
+                  }}
+                >
+                  <Select.Option value="all">Todos</Select.Option>
+                  <Select.Option value="ABERTA">Aberta</Select.Option>
+                  <Select.Option value="BAIXADA">Baixada</Select.Option>
+                </Select>
+              </Input>
 
-							{hasRelatedBills && (
-								<Input style={{ width: "100%" }}>
-									<Label>
-										Tipo Venda <br /> Relacionada
-									</Label>
-									<Select
-										allowClear
-										defaultValue={""}
-										className="uk-width-1-1"
-										value={filters.billRelatedTypeId}
-										onChange={(e) => {
-											if (e === "all") {
-												const newObj = { ...filters };
-												delete newObj?.billRelatedTypeId;
-												return setFilters(newObj);
-											}
-											setFilters({ ...filters, billRelatedTypeId: e });
-										}}
-									>
-										<Select.Option value="">Todos</Select.Option>
-										{billRelatedTypes?.data?.map((item) => (
-											<Select.Option value={item?.id} key={item.id}>
-												{item?.description}
-											</Select.Option>
-										))}
-									</Select>
-								</Input>
-							)}
-							<Input style={{ width: "100%" }}>
-								<Label>Pendências</Label>
-								<Select
-									allowClear
-									defaultValue={"Todos"}
-									placeholder="Pendências"
-									className="uk-width-1-1"
-									value={filters.pending}
-									onChange={(e) => {
-										if (e === "all") {
-											const newObj = { ...filters };
-											delete newObj?.pending;
-											return setFilters(newObj);
-										}
-										setFilters({ ...filters, pending: e });
-									}}
-								>
-									<Select.Option value="">Todos</Select.Option>
-									<Select.Option value={true}>Sim</Select.Option>
-									<Select.Option value={false}>Não</Select.Option>
-								</Select>
-							</Input>
-							<div
-								style={{
-									width: "100%",
-									display: "flex",
-									justifyContent: "right",
-									gap: "10px",
-								}}
-							>
-								{hasCreatePermission && (
-									<>
-										<Button
-											onClick={() => {
-												setVisible(true);
-											}}
-											text="Nova venda"
-										/>
-									</>
-								)}
+              {hasInternalCode && (
+                <Input style={{ width: "70%" }}>
+                  <label style={{ width: 140 }}>Código Interno</label>
+                  <AntInput
+                    value={filters?.internalCode}
+                    onChange={(e) =>
+                      setFilters({ ...filters, internalCode: e.target.value })
+                    }
+                  />
+                </Input>
+              )}
 
-								<Button
-									text="Filtrar"
-									onClick={() => {
-										const newObj = { ...filters };
-										delete newObj.bill_id;
-										setFilters((prv) => ({ ...newObj, noSearch: false }));
-										setReload((prv) => !prv);
-									}}
-								/>
-							</div>
-						</div>
-					</section>
-					<hr />
-					<div className="uk-margin-top">
-						<Table
-							columns={Columns({
-								hasInternalCode,
-								hasRelatedBills,
-								isVet: type === "Vet",
-								hasGenerateBillDocuments,
-							})}
-							dataSource={mapper(data, cashiers)}
-							footer={() => (
-								<section className="uk-flex uk-flex-center">
-									<div className="uk-flex uk-flex-around custom-footer-box">
-										<div className="uk-width-1-2 uk-margin-right">
-											<strong>Total:&nbsp;</strong>
-											{data?.length > 0 &&
-												currencyFormatter(
-													data.reduce(
-														(acc, current) => acc + current.total_value,
-														0,
-													),
-												)}
-										</div>
-										<div className="uk-width-1-1">
-											<strong>Total em aberto:&nbsp;</strong>
-											{data?.length > 0 &&
-												currencyFormatter(
-													data.reduce(
-														(acc, current) =>
-															acc +
-															(current?.total_value - current?.paid_value),
-														0,
-													),
-												)}
-										</div>
-										<div className="uk-width-1-1">
-											<strong>Total pago:</strong>
-											{data?.length > 0 &&
-												currencyFormatter(
-													data.reduce(
-														(acc, current) => acc + current?.paid_value,
-														0,
-													),
-												)}
-										</div>
-									</div>
-								</section>
-							)}
-						/>
-					</div>
-				</Container>
+              <Input style={{ width: "50%" }}>
+                <label>Código</label>
+                <AntInput
+                  value={filters.tag}
+                  onChange={(e) =>
+                    setFilters({ ...filters, tag: e.target.value })
+                  }
+                />
+              </Input>
+            </div>
+            <div
+              className="uk-flex uk-flex-between uk-width-1-1 uk-margin-small-top"
+              style={{ gap: "1rem" }}
+            >
+              <Input style={{ width: "100%" }}>
+                <Label>Cliente</Label>
+                <AntInput
+                  value={filters.clientName}
+                  onChange={(e) =>
+                    setFilters({ ...filters, clientName: e.target.value })
+                  }
+                />
+              </Input>
+              {type === "Vet" && (
+                <Input style={{ width: "100%" }}>
+                  <Label>Paciente</Label>
+                  <AntInput
+                    value={filters.patientName}
+                    onChange={(e) =>
+                      setFilters({ ...filters, patientName: e.target.value })
+                    }
+                  />
+                </Input>
+              )}
 
-				<Modal
-					open={visible}
-					styles={{ maxWidth: "90%", width: "100%" }}
-					stylesContent={{ height: "70dvh" }}
-					onClose={() => setVisible(false)}
-				>
-					<AddSale setModal={setVisible} listCreated={listCreated} />
-				</Modal>
-			</PageWrapper>
-		</PermissionItem>
-	);
+              {hasRelatedBills && (
+                <Input style={{ width: "100%" }}>
+                  <Label>
+                    Tipo Venda <br /> Relacionada
+                  </Label>
+                  <Select
+                    allowClear
+                    defaultValue={""}
+                    className="uk-width-1-1"
+                    value={filters.billRelatedTypeId}
+                    onChange={(e) => {
+                      if (e === "all") {
+                        const newObj = { ...filters };
+                        delete newObj?.billRelatedTypeId;
+                        return setFilters(newObj);
+                      }
+                      setFilters({ ...filters, billRelatedTypeId: e });
+                    }}
+                  >
+                    <Select.Option value="">Todos</Select.Option>
+                    {billRelatedTypes?.data?.map((item) => (
+                      <Select.Option value={item?.id} key={item.id}>
+                        {item?.description}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Input>
+              )}
+              <Input style={{ width: "100%" }}>
+                <Label>Pendências</Label>
+                <Select
+                  allowClear
+                  defaultValue={"Todos"}
+                  placeholder="Pendências"
+                  className="uk-width-1-1"
+                  value={filters.pending}
+                  onChange={(e) => {
+                    if (e === "all") {
+                      const newObj = { ...filters };
+                      delete newObj?.pending;
+                      return setFilters(newObj);
+                    }
+                    setFilters({ ...filters, pending: e });
+                  }}
+                >
+                  <Select.Option value="">Todos</Select.Option>
+                  <Select.Option value={true}>Sim</Select.Option>
+                  <Select.Option value={false}>Não</Select.Option>
+                </Select>
+              </Input>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "right",
+                  gap: "10px",
+                }}
+              >
+                {hasCreatePermission && (
+                  <>
+                    <Button
+                      onClick={() => {
+                        setVisible(true);
+                      }}
+                      text="Nova venda"
+                    />
+                  </>
+                )}
+
+                <Button
+                  text="Filtrar"
+                  onClick={() => {
+                    const newObj = { ...filters };
+                    delete newObj.bill_id;
+                    setFilters((prv) => ({ ...newObj, noSearch: false }));
+                    setReload((prv) => !prv);
+                  }}
+                />
+              </div>
+            </div>
+          </section>
+          <hr />
+          <div className="uk-margin-top">
+            <Table
+              columns={Columns({
+                hasInternalCode,
+                hasRelatedBills,
+                isVet: type === "Vet",
+                hasGenerateBillDocuments,
+                onToggleExpand: handleToggleExpand,
+                checkedKeys: expandedRowKeys,
+              })}
+              dataSource={mapper(data, cashiers)}
+              expandable={{
+                expandedRowRender: (record) => {
+                  const rawData = data.find((d) => d.id === record.id)
+                  if (!rawData) {
+                    return null
+                  }
+
+                  return (
+                    <Table
+                      columns={[
+                        {
+                          title: "Produto",
+                          dataIndex: "product",
+                          key: "product",
+                        },
+                        {
+                          title: "Quantidade",
+                          dataIndex: "quantity",
+                          key: "quantity",
+                          render: (val) => <InputNumber style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={val} />,
+                        },
+                        {
+                          title: "Valor Unitário",
+                          dataIndex: "unitaryValue",
+                          key: "unitaryValue",
+                          render: (val) => <AntInput style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={currencyFormatter(val)} />,
+                        },
+                        {
+                          title: "Valor Desconto",
+                          dataIndex: "discountValue",
+                          key: "discountValue",
+                          render: (val) => <AntInput style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={currencyFormatter(val)} />,
+                        },
+                        {
+                          title: "Total",
+                          dataIndex: "totalValue",
+                          key: "totalValue",
+                          render: (val) => <AntInput style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={currencyFormatter(val)} />,
+                        },
+                        {
+                          title: "Cortesia",
+                          dataIndex: "courtesy",
+                          key: "courtesy",
+                          render: (val) => <Checkbox checked={val} />
+                        },
+
+                      ]}
+                      dataSource={rawData.items?.map((item) => ({
+                        product: item.productVariation?.product?.description,
+                        quantity: item.quantity,
+                        unitaryValue: item.unitary_value,
+                        discountValue: item.discount_value,
+                        totalValue: item.total_value,
+                        courtesy: item.courtesy,
+                      }))}
+                      pagination={false}
+                    />
+                  )
+
+                },
+                expandIcon: ({ expanded, onExpand, record }) => {
+                  return expanded ? (
+                    <CgChevronDown size={20} onClick={(e) => onExpand(record, e)} />
+                  ) : (
+                    <CgChevronUp size={20} onClick={(e) => onExpand(record, e)} />
+                  );
+                },
+              }}
+              footer={() => (
+                <section className="uk-flex uk-flex-center">
+                  <div className="uk-flex uk-flex-around custom-footer-box">
+                    <div className="uk-width-1-2 uk-margin-right">
+                      <strong>Total:&nbsp;</strong>
+                      {currencyFormatter(
+                        selectedRows.reduce(
+                          (acc, current) => acc + current.total_value,
+                          0,
+                        ),
+                      )}
+                    </div>
+                    <div className="uk-width-1-1">
+                      <strong>Total em aberto:&nbsp;</strong>
+                      {currencyFormatter(
+                        selectedRows.reduce(
+                          (acc, current) =>
+                            acc +
+                            (current?.total_value - current?.paid_value),
+                          0,
+                        ),
+                      )}
+                    </div>
+                    <div className="uk-width-1-1">
+                      <strong>Total pago:</strong>
+                      {currencyFormatter(
+                        selectedRows.reduce(
+                          (acc, current) =>
+                            acc + current?.paid_value, 0),
+                      )}
+                    </div>
+                  </div>
+                </section>
+              )}
+            />
+          </div>
+        </Container>
+
+        <Modal
+          open={visible}
+          styles={{ maxWidth: "90%", width: "100%" }}
+          stylesContent={{ height: "70dvh" }}
+          onClose={() => setVisible(false)}
+        >
+          <AddSale setModal={setVisible} listCreated={listCreated} />
+        </Modal>
+      </PageWrapper>
+    </PermissionItem>
+  );
 }
