@@ -19,7 +19,8 @@ import AccessDenied from "@/OLD/components/AccessDenied";
 import { ModalListagemDocumentosVenda } from "./Actions/modal-listagem-documentos-venda";
 
 import { useGetAllBills } from "../../../OLD/hooks/useBills";
-import { currencyFormatter, dateFormatter } from "../Budget";
+import { currencyFormatter } from "@/OLD/components/Budget";
+import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import BillActions from "./Actions/Container";
 
 import {
@@ -53,6 +54,10 @@ export default function Bills() {
   }, [reload])
 
   const selectedRows = data ? data.filter((d => expandedRowKeys.includes(d.id))) : [];
+  const [virtualTotal, setVirtualTotal] = React.useState(currencyFormatter(0))
+  React.useEffect(() => {
+    setVirtualTotal(currencyFormatter(selectedRows.reduce((acc, current) => acc + current.total_value, 0)))
+  }, [expandedRowKeys])
 
   const { cashiers } = useDailyCasher(false, filters);
 
@@ -462,6 +467,20 @@ export default function Bills() {
                 </section>
               )}
             />
+
+            <section className="uk-flex uk-flex-center">
+              <div style={{ display: "flex", alignItems: 'end', gap: "1rem", marginLeft: 'auto', marginRight: 'auto' }}>
+                <div style={{ display: "flex", flexDirection: 'column', width: '250px' }}>
+                  <label style={{ width: 140 }}>Valor a receber:</label>
+                  <AntInput value={virtualTotal} onInput={(e) => setVirtualTotal(currencyFormatter(
+                    convertIntlCurrency(e.target.value)
+                  ))} />
+                </div>
+
+                <Button text='Pagar' />
+              </div>
+            </section>
+
           </div>
         </Container>
 
