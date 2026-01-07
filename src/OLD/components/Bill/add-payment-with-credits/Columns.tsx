@@ -1,10 +1,28 @@
-export const Columns = ({
-  hasInternalCode,
-  hasRelatedBills,
-  hasGenerateBillDocuments,
-  isVet,
+import { Checkbox, Table } from "antd";
+import type { ColumnsType } from "antd/lib/table";
+import type { Key } from "react";
+
+export const Columns = (props: {
+  hasInternalCode: boolean;
+  hasRelatedBills: boolean;
+  hasGenerateBillDocuments: boolean;
+  isVet: boolean;
+  onToggleExpand: (rec: string) => void;
+  checkedKeys: Key[];
 }) =>
   [
+    Table.EXPAND_COLUMN,
+    {
+      title: "",
+      key: "controls",
+      width: 20,
+      render: (_, record) => (
+        <Checkbox
+          checked={props.checkedKeys.includes(record.id)}
+          onChange={() => props.onToggleExpand(record.id)}
+        />
+      ),
+    },
     {
       title: "Data da Venda",
       dataIndex: "bill_date",
@@ -15,7 +33,7 @@ export const Columns = ({
       dataIndex: "code",
       key: "code",
     },
-    hasInternalCode
+    props.hasInternalCode
       ? {
           title: "Código Interno",
           dataIndex: "internalCode",
@@ -27,7 +45,7 @@ export const Columns = ({
       dataIndex: "client",
       key: "client",
     },
-    isVet
+    props.isVet
       ? {
           title: "Paciente",
           dataIndex: "patient",
@@ -50,7 +68,7 @@ export const Columns = ({
       key: "missingValue",
     },
 
-    hasRelatedBills
+    props.hasRelatedBills
       ? {
           title: "Tipo Venda Relacionada",
           dataIndex: "billRelatedTypeDescription",
@@ -67,7 +85,7 @@ export const Columns = ({
       dataIndex: "fn",
       key: "fn",
     },
-    hasGenerateBillDocuments
+    props.hasGenerateBillDocuments
       ? {
           title: "Status Doc.",
           dataIndex: "docActions",
@@ -79,4 +97,4 @@ export const Columns = ({
       dataIndex: "actions",
       key: "actions",
     },
-  ].filter(Boolean);
+  ].filter(Boolean) as ColumnsType<any>;

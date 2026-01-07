@@ -22,6 +22,7 @@ import { useGetAllBills } from "../../../OLD/hooks/useBills";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import BillActions from "./Actions/Container";
+import AddBillPaymentWithCredits from "./add-payment-with-credits";
 
 import {
   AddSale,
@@ -32,7 +33,6 @@ import {
 } from "@/presentation";
 import { billStatusFormatter } from "./utils/status-formater";
 import { usePermission } from "@/presentation/context/permissions";
-import { CgChevronDown, CgChevronUp } from "react-icons/cg";
 
 export default function Bills() {
   const hasCreatePermission = usePermission("VEN01");
@@ -45,19 +45,18 @@ export default function Bills() {
     noSearch: true,
   });
   const [reload, setReload] = React.useState(false);
-  const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
+
+  const [openCredits, setOpenCredits] = React.useState(false);
+  const [selectedTutor, setSelectedTutor] = React.useState<Record<
+    string,
+    string
+  > | null>(null);
 
   const { type } = useConfigurationsSystem();
   const { data, refetch } = useGetAllBills(filters);
   React.useEffect(() => {
-    refetch()
-  }, [reload])
-
-  const selectedRows = data ? data.filter((d => expandedRowKeys.includes(d.id))) : [];
-  const [virtualTotal, setVirtualTotal] = React.useState(currencyFormatter(0))
-  React.useEffect(() => {
-    setVirtualTotal(currencyFormatter(selectedRows.reduce((acc, current) => acc + current.total_value, 0)))
-  }, [expandedRowKeys])
+    refetch();
+  }, [reload, refetch]);
 
   const { cashiers } = useDailyCasher(false, filters);
 
@@ -93,6 +92,8 @@ export default function Bills() {
             cashiers={cashiers}
             client={bill?.client}
             setReload={setReload}
+            setOpenCredits={setOpenCredits}
+            setSelectedTutor={setSelectedTutor}
           />
         ),
       };
@@ -360,85 +361,15 @@ export default function Bills() {
                 hasRelatedBills,
                 isVet: type === "Vet",
                 hasGenerateBillDocuments,
-                onToggleExpand: handleToggleExpand,
-                checkedKeys: expandedRowKeys,
               })}
               dataSource={mapper(data, cashiers)}
-              expandable={{
-                expandedRowRender: (record) => {
-                  const rawData = data.find((d) => d.id === record.id)
-                  if (!rawData) {
-                    return null
-                  }
-
-                  return (
-                    <Table
-                      columns={[
-                        {
-                          title: "Produto",
-                          dataIndex: "product",
-                          key: "product",
-                        },
-                        {
-                          title: "Quantidade",
-                          dataIndex: "quantity",
-                          key: "quantity",
-                          render: (val) => <InputNumber style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={val} />,
-                        },
-                        {
-                          title: "Valor Unitário",
-                          dataIndex: "unitaryValue",
-                          key: "unitaryValue",
-                          render: (val) => <AntInput style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={currencyFormatter(val)} />,
-                        },
-                        {
-                          title: "Valor Desconto",
-                          dataIndex: "discountValue",
-                          key: "discountValue",
-                          render: (val) => <AntInput style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={currencyFormatter(val)} />,
-                        },
-                        {
-                          title: "Total",
-                          dataIndex: "totalValue",
-                          key: "totalValue",
-                          render: (val) => <AntInput style={{ backgroundColor: 'rgba(50, 50, 50, 0.05)' }} readOnly value={currencyFormatter(val)} />,
-                        },
-                        {
-                          title: "Cortesia",
-                          dataIndex: "courtesy",
-                          key: "courtesy",
-                          render: (val) => <Checkbox checked={val} />
-                        },
-
-                      ]}
-                      dataSource={rawData.items?.map((item) => ({
-                        product: item.productVariation?.product?.description,
-                        quantity: item.quantity,
-                        unitaryValue: item.unitary_value,
-                        discountValue: item.discount_value,
-                        totalValue: item.total_value,
-                        courtesy: item.courtesy,
-                      }))}
-                      pagination={false}
-                    />
-                  )
-
-                },
-                expandIcon: ({ expanded, onExpand, record }) => {
-                  return expanded ? (
-                    <CgChevronDown size={20} onClick={(e) => onExpand(record, e)} />
-                  ) : (
-                    <CgChevronUp size={20} onClick={(e) => onExpand(record, e)} />
-                  );
-                },
-              }}
               footer={() => (
                 <section className="uk-flex uk-flex-center">
                   <div className="uk-flex uk-flex-around custom-footer-box">
                     <div className="uk-width-1-2 uk-margin-right">
                       <strong>Total:&nbsp;</strong>
                       {currencyFormatter(
-                        selectedRows.reduce(
+                        (data ?? []).reduce(
                           (acc, current) => acc + current.total_value,
                           0,
                         ),
@@ -447,10 +378,9 @@ export default function Bills() {
                     <div className="uk-width-1-1">
                       <strong>Total em aberto:&nbsp;</strong>
                       {currencyFormatter(
-                        selectedRows.reduce(
+                        (data ?? []).reduce(
                           (acc, current) =>
-                            acc +
-                            (current?.total_value - current?.paid_value),
+                            acc + (current?.total_value - current?.paid_value),
                           0,
                         ),
                       )}
@@ -458,29 +388,16 @@ export default function Bills() {
                     <div className="uk-width-1-1">
                       <strong>Total pago:</strong>
                       {currencyFormatter(
-                        selectedRows.reduce(
-                          (acc, current) =>
-                            acc + current?.paid_value, 0),
+                        (data ?? []).reduce(
+                          (acc, current) => acc + current?.paid_value,
+                          0,
+                        ),
                       )}
                     </div>
                   </div>
                 </section>
               )}
             />
-
-            <section className="uk-flex uk-flex-center">
-              <div style={{ display: "flex", alignItems: 'end', gap: "1rem", marginLeft: 'auto', marginRight: 'auto' }}>
-                <div style={{ display: "flex", flexDirection: 'column', width: '250px' }}>
-                  <label style={{ width: 140 }}>Valor a receber:</label>
-                  <AntInput value={virtualTotal} onInput={(e) => setVirtualTotal(currencyFormatter(
-                    convertIntlCurrency(e.target.value)
-                  ))} />
-                </div>
-
-                <Button text='Pagar' />
-              </div>
-            </section>
-
           </div>
         </Container>
 
@@ -492,6 +409,12 @@ export default function Bills() {
         >
           <AddSale setModal={setVisible} listCreated={listCreated} />
         </Modal>
+
+        <AddBillPaymentWithCredits
+          isOpen={openCredits}
+          toggle={() => setOpenCredits((old) => !old)}
+          params={selectedTutor}
+        />
       </PageWrapper>
     </PermissionItem>
   );

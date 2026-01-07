@@ -15,6 +15,7 @@ import { useDictionary, useConfigurationsSystem } from "@/presentation";
 
 import { billStatusFormatter } from "@/OLD/components/Bill/utils/status-formater";
 import { budgetStatusFormatter } from "@/OLD/components/Budget";
+import AddBillPaymentWithCredits from "@/OLD/components/Bill/add-payment-with-credits";
 
 const labelControl = (str) => {
   switch (str) {
@@ -41,6 +42,7 @@ export function BillAndBudget({ patient }) {
     mainTutor?.id,
     reload,
   );
+  const [openCredits, setOpenCredits] = React.useState(false);
 
   useEffect(() => {
     setCashierFilters({
@@ -73,6 +75,7 @@ export function BillAndBudget({ patient }) {
                 bill={item}
                 setReload={setReload}
                 cashiers={cashiers}
+                setOpenCredits={setOpenCredits}
               />
             ) : (
               <BudgetActions
@@ -92,12 +95,24 @@ export function BillAndBudget({ patient }) {
   }, [salesMetadata, reload]);
 
   return (
-    <Table
-      columns={type !== "Vet" ? billAndBudgetLiftColumns : billAndBudgetColumns}
-      dataSource={formatedMetadata}
-      rowClassName={(record, index) =>
-        `ant-table-row ant-table-row-level-0 ${record.patientID === patient.id ? "______table-row" : ""}`
-      }
-    />
+    <>
+      <Table
+        columns={
+          type !== "Vet" ? billAndBudgetLiftColumns : billAndBudgetColumns
+        }
+        dataSource={formatedMetadata}
+        rowClassName={(record, index) =>
+          `ant-table-row ant-table-row-level-0 ${record.patientID === patient.id ? "______table-row" : ""}`
+        }
+      />
+      <AddBillPaymentWithCredits
+        isOpen={openCredits}
+        toggle={() => setOpenCredits((old) => !old)}
+        params={{
+          tutor: mainTutor?.id,
+          patient: patient?.id,
+        }}
+      />
+    </>
   );
 }
