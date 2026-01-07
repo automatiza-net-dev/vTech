@@ -1,6 +1,6 @@
 // @ts-nocheck
 import * as React from "react";
-import { Input as AntInput, Checkbox, InputNumber, Modal, Table } from "antd";
+import { Input as AntInput, Checkbox, Divider, InputNumber, Modal, Select, Table, Radio } from "antd";
 import { Button } from "infinity-forge";
 import { Container } from "../styles";
 import {
@@ -43,11 +43,21 @@ export default function AddBillPaymentWithCredits(props: {
   const selectedData = salesQuery.data
     ? salesQuery.data.filter((d) => selectedRows.includes(d.id))
     : [];
-  const [virtualTotal, setVirtualTotal] = React.useState(0);
+  
   const literalTotal = selectedData.reduce(
     (acc, current) => acc + Number.parseFloat(current.total_value),
     0,
   );
+  const selectedClients = selectedData.reduce((acc, curr) => {
+    if (!acc.find((d) => d.id === curr.clientID)) {
+      acc.push({ id: curr.clientID, name: curr.client });
+    }
+
+
+    return acc
+  }, [] as { id: string, name: string }[]);
+  
+  const [virtualTotal, setVirtualTotal] = React.useState(0);
   React.useEffect(() => {
     setVirtualTotal(
       selectedRows.reduce(
@@ -279,6 +289,8 @@ export default function AddBillPaymentWithCredits(props: {
             }}
           />
 
+          <Divider />
+
           <section
             className="uk-flex uk-flex-column uk-flex-center"
             style={{ marginTop: "20px" }}
@@ -293,26 +305,45 @@ export default function AddBillPaymentWithCredits(props: {
                 marginRight: "auto",
               }}
             >
-              {virtualTotal > literalTotal && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "end",
-                    gap: "1rem",
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                  }}
-                >
+              {selectedRows.length > 0 && virtualTotal > literalTotal && (
+                <>
                   <div
                     style={{
                       display: "flex",
-                      flexDirection: "column",
-                      width: "250px",
+                      alignItems: "end",
+                      marginLeft: "auto",
+                      marginRight: "auto",
                     }}
                   >
-                    <p>Select credit</p>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "250px",
+                      }}
+                    >
+                      <p>{`Diferença de ${currencyFormatter(virtualTotal - literalTotal)}`}</p>
+
+                      <Radio.Group>
+                        <Radio value={1} defaultChecked>Vale Crédito</Radio>
+                        <Radio value={2}>Troco</Radio>
+                      </Radio.Group>
+
+
+                      {selectedClients.length > 1 && (
+                        <div style={{ display: "flex", flexDirection: 'column' }}>
+                          <label style={{}}>Cliente:</label>
+                          <Select
+                            style={{ width: '100%' }}
+                            options={selectedClients.map((d) => ({ value: d.id, label: d.name }))}
+                          />
+                        </div>
+                      )}
+                    </div>
+
                   </div>
-                </div>
+                  <Divider />
+                </>
               )}
 
               <div
@@ -323,6 +354,7 @@ export default function AddBillPaymentWithCredits(props: {
                 }}
               >
                 <label style={{ width: 140 }}>Valor a receber:</label>
+
                 <AntInput
                   value={currencyFormatter(virtualTotal)}
                   onInput={(e) => {
@@ -331,7 +363,9 @@ export default function AddBillPaymentWithCredits(props: {
                 />
               </div>
 
-              <Button text="Pagar" />
+              <Button text="Pagar" disabled={virtualTotal === 0} style={{
+                cursor: virtualTotal === 0 ? 'not-allowed' : 'pointer'
+              }} />
             </div>
           </section>
         </div>
