@@ -174,19 +174,19 @@ function Page() {
   const createDepositMovementMutation = useMutation({
     queryKey: ["createDepositMovementMutation"],
     queryFn: (data) => depositService.createDepositMovement(data),
-        onSuccess: () => {
-        setCreateMovementData(initialCreateState);
-        setOpenCreate(false);
-        depositMovementsQuery.refetch();
-      },
-      onError: (err: any) => {
-        createToast({
-          status: "error",
-          message: err.response.data[0].message
-            ? err.response.data[0].message
-            : "Erro ao criar",
-        });
-      },
+    onSuccess: () => {
+      setCreateMovementData(initialCreateState);
+      setOpenCreate(false);
+      depositMovementsQuery.refetch();
+    },
+    onError: (err: any) => {
+      createToast({
+        status: "error",
+        message: err.response.data[0].message
+          ? err.response.data[0].message
+          : "Erro ao criar",
+      });
+    },
   }
   );
 
@@ -525,9 +525,25 @@ function Page() {
           <PageWrapper title="Nova Movimentação">
             <Form
               layout="vertical"
-              onSubmitCapture={() =>
+              onSubmitCapture={() => {
+                const fromDeposit = depositsQuery.data.find(
+                  q => q.id === createMovementData.fromDepositId
+                )
+                const toDeposit = depositsQuery.data.find(
+                  q => q.id === createMovementData.toDepositId
+                )
+                if (!fromDeposit || !toDeposit) { return }
+
+                if (fromDeposit.type === "Venda" && toDeposit.type === "Consumo") {
+                  if (!confirm("Deseja realmente retirar do consumo de volta para o estoque?")) {
+                    return
+                  }
+                }
+
+
+
                 createDepositMovementMutation.mutate(createMovementData)
-              }
+              }}
             >
               <div
                 className="uk-flex uk-flex-between"
@@ -551,11 +567,9 @@ function Page() {
                   >
                     {depositsQuery.data?.map(
                       (elem) =>
-                        elem?.type === "Venda" && (
-                          <Option value={elem.id}>
-                            {elem.description} - ({elem.id})
-                          </Option>
-                        )
+                        <Option value={elem.id}>
+                          {elem.description} - ({elem.id})
+                        </Option>
                     )}
                   </Select>
                 </Form.Item>
