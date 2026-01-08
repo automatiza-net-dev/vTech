@@ -12,6 +12,8 @@ export function DetailsPanel({
   setFormData,
   submit,
   bill,
+  fakeTotal = 0,
+  locked = false
 }: any) {
   let totalPayed = 0;
 
@@ -72,7 +74,8 @@ export function DetailsPanel({
           <div className="">
             <label>Valor a receber</label>
             <Input
-              value={formData?.installmentsValue}
+              readOnly={locked}
+              value={locked ? fakeTotal : formData?.installmentsValue}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -123,11 +126,10 @@ export function DetailsPanel({
                       }}
                       onClick={handleClick}
                       key={i}
-                      className={`uk-margin-right uk-margin-small-top uk-box-shadow-small installment-button ${
-                        formData?.installments === i + 1
-                          ? "selected-installments"
-                          : ""
-                      } `}
+                      className={`uk-margin-right uk-margin-small-top uk-box-shadow-small installment-button ${formData?.installments === i + 1
+                        ? "selected-installments"
+                        : ""
+                        } `}
                     >
                       {i + 1}
                     </div>
