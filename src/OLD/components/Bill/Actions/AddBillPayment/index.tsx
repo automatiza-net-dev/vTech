@@ -49,8 +49,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
 
   const isUsingChunking = chunkOfPayments.length > 0;
   const chunkingTotal = chunkOfPayments.reduce((acc, current) => acc + current.missing_value, 0);
-  console.log(chunkingTotal, chunkOfPayments);
-  const creditsQuery = useTutorCredits(chunkOfPayments.at(0).clientID ?? '', isUsingChunking);
+  const creditsQuery = useTutorCredits(chunkOfPayments.at(0)?.clientID ?? '', isUsingChunking);
 
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
