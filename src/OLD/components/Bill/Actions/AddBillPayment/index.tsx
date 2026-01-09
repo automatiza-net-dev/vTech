@@ -38,21 +38,19 @@ import {
 import { AxiosError } from "axios";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
+import { useTutorCredits } from "../../../../hooks/useListCredits";
 
-function AddBillPayment({ billId, setVisible, setReloadBill, chunkOfPayments = [] }: any) {
+function AddBillPayment({ billId, setVisible, setReloadBill, 
+  chunkOfPayments = [], creditOverflow = false, virtualTotal = null }: any) {
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
   const handleToggleSelected = (recordId: React.Key) => {
-    setSelectedRows((prev) => {
-      const exists = prev.includes(recordId);
-      if (exists) {
-        return prev.filter((id) => id !== recordId);
-      } else {
-        return [...prev, recordId];
-      }
-    });
+    setSelectedRows([recordId]);
   };
 
   const isUsingChunking = chunkOfPayments.length > 0;
+  const chunkingTotal = chunkOfPayments.reduce((acc, current) => acc + current.missing_value, 0);
+  console.log(chunkingTotal, chunkOfPayments);
+  const creditsQuery = useTutorCredits(chunkOfPayments.at(0).clientID ?? '', isUsingChunking);
 
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -240,8 +238,20 @@ function AddBillPayment({ billId, setVisible, setReloadBill, chunkOfPayments = [
         ...formData,
         maxParcelas: params?.maxParcelas || formData?.maxParcelas,
         installmentsValue: convertIntlCurrency(formData?.installmentsValue),
-        billId,
       };
+
+      if (isUsingChunking) {
+        Object.assign(payload, {
+          installmentsValue: virtualTotal,
+          clientCreditId: selectedRows.at(0) as string,
+          chunkOfBills: chunkOfPayments.map((i) => i.id),
+          creditOverflow
+        })
+      } else {
+        Object.assign(payload, {
+          billId,
+        })
+      }
 
       try {
         await api({
@@ -373,11 +383,11 @@ function AddBillPayment({ billId, setVisible, setReloadBill, chunkOfPayments = [
                   key: "missingValue",
                 },
               ]}
-              dataSource={chunkOfPayments?.map((item) => ({
+              dataSource={creditsQuery.data?.map((item) => ({
                 id: item.id,
-                date: moment(item.date).format("DD/MM/YYYY - HH:mm"),
-                originalValue: currencyFormatter(item.total_value),
-                missingValue: currencyFormatter(item.missing_value),
+                date: moment(item.created_at).format("DD/MM/YYYY - HH:mm"),
+                originalValue: currencyFormatter(item.originalValue),
+                missingValue: currencyFormatter(item.usedValue),
               }))}
               pagination={false}
             />
@@ -481,7 +491,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill, chunkOfPayments = [
             />
             <DetailsPanel
               locked={isUsingChunking}
-              fakeTotal={currencyFormatter(100)}
+              fakeTotal={isUsingChunking ? currencyFormatter(virtualTotal) : null}
               bill={data}
               formData={formData}
               setFormData={setFormData}
@@ -489,7 +499,9 @@ function AddBillPayment({ billId, setVisible, setReloadBill, chunkOfPayments = [
               setLoading={setLoading}
               submit={submitPayment}
             />
-            <ResumePanel bill={data} formData={formData} />
+            <ResumePanel bill={data} formData={formData} 
+              fakeTotal={isUsingChunking ? chunkingTotal : null}
+              fakePayment={isUsingChunking ? virtualTotal : null} />
           </div>
         </section>
         <hr />

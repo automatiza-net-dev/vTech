@@ -37,12 +37,12 @@ export function DetailsPanel({
       //   });
       // }
 
-      if (convertIntlCurrency(formData?.installmentsValue) <= 0) {
-        return createToast({
-          status: "error",
-          message: "O valor do pagamento deve ser maior que zero",
-        });
-      }
+      // if (convertIntlCurrency(formData?.installmentsValue) <= 0) {
+      //   return createToast({
+      //     status: "error",
+      //     message: "O valor do pagamento deve ser maior que zero",
+      //   });
+      // }
 
       await submit();
     } catch {

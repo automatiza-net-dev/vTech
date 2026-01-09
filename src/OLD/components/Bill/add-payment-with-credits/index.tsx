@@ -42,6 +42,8 @@ export default function AddBillPaymentWithCredits(props: {
     },
   });
 
+  const [overflowType, setOverflowType] = React.useState<null | 'vale' | 'troco'>(null)
+
   const selectedData = salesQuery.data
     ? salesQuery.data.filter((d) => selectedRows.includes(d.id))
     : [];
@@ -106,7 +108,14 @@ export default function AddBillPaymentWithCredits(props: {
         width={1200}
         footer={null}
       >
-        <AddBillPayment setVisible={setVisiblePayments} chunkOfPayments={selectedData} />
+        <AddBillPayment 
+          setVisible={setVisiblePayments} 
+          chunkOfPayments={selectedData} 
+          creditOverflow={overflowType === 'vale'}
+          virtualTotal={virtualTotal}
+        />
+
+
       </Modal>
 
 
@@ -340,9 +349,9 @@ export default function AddBillPaymentWithCredits(props: {
                       >
                         <p>{`Diferença de ${currencyFormatter(virtualTotal - literalTotal)}`}</p>
 
-                        <Radio.Group>
-                          <Radio value={1} defaultChecked>Vale Crédito</Radio>
-                          <Radio value={2}>Troco</Radio>
+                        <Radio.Group onChange={(e) => setOverflowType(e.target.value)}>
+                          <Radio value={'vale'} defaultChecked>Vale Crédito</Radio>
+                          <Radio value={'troco'}>Troco</Radio>
                         </Radio.Group>
 
 
