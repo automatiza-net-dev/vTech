@@ -39,6 +39,7 @@ export const usePatientSalesMetadata = (id: string, tutorID?: string, reload = f
 
     petsService
       .getPatientSalesMetadata(id, tutorID)
+      // @ts-expect-error bad api
       .then((res) => setSalesMetadata(res.data))
       .catch((_err) => setLoading(false))
       .finally(() => setLoading(false));
