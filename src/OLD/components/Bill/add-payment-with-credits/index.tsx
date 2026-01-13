@@ -36,11 +36,22 @@ export default function AddBillPaymentWithCredits(props: {
       const result = await petsService.getPatientSalesMetadata(
         props.params.patient,
         props.params.tutor,
+        {
+          onlyOpen: 1 
+        }
       );
 
       return result.data;
     },
   });
+
+  React.useEffect(() => {
+    if (!salesQuery.data) {
+      return
+    }
+
+    setSelectedRows(salesQuery.data.map(d => d.id))
+  }, [setSelectedRows, salesQuery.data])
 
   const [overflowType, setOverflowType] = React.useState<null | 'vale' | 'troco'>(null)
 
@@ -49,15 +60,13 @@ export default function AddBillPaymentWithCredits(props: {
     : [];
   
   const literalTotal = selectedData.reduce(
-    (acc, current) => acc + Number.parseFloat(current.total_value),
+    (acc, current) => acc + Number.parseFloat(current.missing_value),
     0,
   );
   const selectedClients = selectedData.reduce((acc, curr) => {
     if (!acc.find((d) => d.id === curr.clientID)) {
       acc.push({ id: curr.clientID, name: curr.client });
     }
-
-
     return acc
   }, [] as { id: string, name: string }[]);
   
@@ -69,6 +78,9 @@ export default function AddBillPaymentWithCredits(props: {
           acc +
           Number.parseFloat(
             salesQuery.data?.find((d) => d.id === current)?.total_value ?? "0",
+          ) - 
+          Number.parseFloat(
+            salesQuery.data?.find((d) => d.id === current)?.paid_value ?? "0",
           ),
         0,
       ),
@@ -101,7 +113,7 @@ export default function AddBillPaymentWithCredits(props: {
     <>
 
       <Modal
-        title="Vendas & Creditos"
+        title=""
         open={visiblePayments}
         onOk={() => setVisiblePayments(false)}
         onCancel={() => setVisiblePayments(false)}
@@ -120,11 +132,12 @@ export default function AddBillPaymentWithCredits(props: {
 
 
       <Modal
-        title="Vendas & Creditos"
+        title="Selecione as vendas para pagar"
         open={props.isOpen}
         onOk={props.toggle}
         onCancel={props.toggle}
         width={1200}
+        footer={null}
       >
         <Container>
           <div className="uk-margin-top">

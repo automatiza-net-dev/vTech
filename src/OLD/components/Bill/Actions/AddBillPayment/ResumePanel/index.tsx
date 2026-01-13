@@ -61,27 +61,30 @@ export default function ResumePanel({ bill, formData, fakePayment = null, fakeTo
           </div>
         </div>
       </section>
-      <section className="uk-margin-top">
-        <div>
-          Pagamento Atual:
-          <br />
-          <span className="uk-text-bold payment-description-label">
-            {formData?.paymentDescription}
-          </span>
-        </div>
-        <div className="uk-margin-small-top">
-          <span>Total venda:</span>
-          <br />
-          <Input
-            value={currencyFormatter(fakeTotal ?? bill?.total_value)}
-            disabled
-            className="payment-value-input uk-width-1-3"
-          />
-        </div>
-      </section>
+      {!fakePayment && (
+        <section className="uk-margin-top">
+          <div>
+            Pagamento Atual:
+            <br />
+            <span className="uk-text-bold payment-description-label">
+              {formData?.paymentDescription}
+            </span>
+          </div>
+          <div className="uk-margin-small-top">
+            <span>Total venda:</span>
+            <br />
+            <Input
+              value={currencyFormatter(fakeTotal ?? bill?.total_value)}
+              disabled
+              className="payment-value-input uk-width-1-3"
+            />
+          </div>
+        </section>
+      )}
     </Container>
   );
 }
+
 
 
 

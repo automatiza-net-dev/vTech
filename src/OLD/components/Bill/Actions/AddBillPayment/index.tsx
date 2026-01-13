@@ -163,7 +163,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
     }
     queryClient.refetch(["bills", true], { mode: "include" });
 
-    setReloadBill & setReloadBill((s) => !s);
+    setReloadBill?.((s) => !s);
     queryClient.invalidateQueries(["paymentsPreview"]);
 
     closePayment();
@@ -259,12 +259,14 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
           body: payload,
         });
 
+        queryClient.refetch(["sales-metadata-add-credits"], { mode: "include" });
         queryClient.refetch(["bills", true], { mode: "include" });
-        setReloadBill & setReloadBill((s) => !s);
+        setReloadBill?.((s) => !s);
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
           expirationDate: moment(),
         });
+        setVisible(false)
 
         return createToast({
           status: "success",
@@ -303,12 +305,12 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
           });
         }
 
-        setReloadBill & setReloadBill((s) => !s);
+        setReloadBill?.((s) => !s);
         queryClient.refetch(["bills", true], { mode: "include" });
       } finally {
       }
     },
-    [formData, billId],
+    [formData, billId, virtualTotal, isUsingChunking, chunkOfPayments, selectedRows],
   );
 
   const shouldShowModal = useMemo(() => {
@@ -352,44 +354,46 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
             <p>Data: {moment(chunkOfPayments.at(0).date).format("DD/MM/YYYY - HH:mm")}</p>
             <p>Cliente: {chunkOfPayments.at(0).client}</p>
 
-            <Table
-              style={{ width: '600px' }}
-              columns={[
-                {
-                  title: "",
-                  key: "controls",
-                  width: 20,
-                  render: (_, record) => (
-                    <Checkbox
-                      checked={selectedRows.includes(record.id)}
-                      onChange={() => handleToggleSelected(record.id)}
-                    />
-                  ),
-                },
-                {
-                  title: "Data",
-                  dataIndex: "date",
-                  key: "date",
-                },
-                {
-                  title: "Valor Original",
-                  dataIndex: "originalValue",
-                  key: "originalValue",
-                },
-                {
-                  title: "Valor Disponível",
-                  dataIndex: "missingValue",
-                  key: "missingValue",
-                },
-              ]}
-              dataSource={creditsQuery.data?.map((item) => ({
-                id: item.id,
-                date: moment(item.created_at).format("DD/MM/YYYY - HH:mm"),
-                originalValue: currencyFormatter(item.originalValue),
-                missingValue: currencyFormatter(item.usedValue),
-              }))}
-              pagination={false}
-            />
+            {creditsQuery.data?.length > 0 && (
+              <Table
+                style={{ width: '600px' }}
+                columns={[
+                  {
+                    title: "",
+                    key: "controls",
+                    width: 20,
+                    render: (_, record) => (
+                      <Checkbox
+                        checked={selectedRows.includes(record.id)}
+                        onChange={() => handleToggleSelected(record.id)}
+                      />
+                    ),
+                  },
+                  {
+                    title: "Data",
+                    dataIndex: "date",
+                    key: "date",
+                  },
+                  {
+                    title: "Valor Original",
+                    dataIndex: "originalValue",
+                    key: "originalValue",
+                  },
+                  {
+                    title: "Valor Disponível",
+                    dataIndex: "missingValue",
+                    key: "missingValue",
+                  },
+                ]}
+                dataSource={creditsQuery.data?.map((item) => ({
+                  id: item.id,
+                  date: moment(item.created_at).format("DD/MM/YYYY - HH:mm"),
+                  originalValue: currencyFormatter(item.originalValue),
+                  missingValue: currencyFormatter(item.usedValue),
+                }))}
+                pagination={false}
+              />
+            )}
 
           </div>
 

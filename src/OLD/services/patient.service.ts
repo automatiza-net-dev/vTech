@@ -33,12 +33,11 @@ const getSinglePatient = async (id) => {
   return api.get(`/patients/${id}`);
 };
 
-const checkPhone = async (data) =>
-  await api.post("/patients/check-phone", data);
+const checkPhone = async (data) => await api.post("/patients/check-phone", data);
 
 const getPatientMetadata = async (id) => api.get(`/patients/metadata/${id}`);
 
-const getPatientSalesMetadata = async (id: string, tutorID?: string) =>
+const getPatientSalesMetadata = async (id: string, tutorID?: string, extra = {}) =>
   api.get<
     {
       id: string;
@@ -161,7 +160,12 @@ const getPatientSalesMetadata = async (id: string, tutorID?: string) =>
       }>;
       patient?: string;
     }[]
-  >(`/patients/sales-metadata/${id}?tutor=${tutorID}`);
+  >(`/patients/sales-metadata/${id}`, {
+    params: {
+      tutorID,
+      ...extra,
+    },
+  });
 
 const getPatientHairTypes = async () => await api.get("/patient-animal-hairs");
 
@@ -195,8 +199,7 @@ const createPatient = async (data) => {
   });
 };
 
-const fastPatientRegister = async (data) =>
-  await api.post("/patients/fast", data);
+const fastPatientRegister = async (data) => await api.post("/patients/fast", data);
 
 const editPatient = async (data, id) => {
   return api.put(`/patients/${id}`, data, {
