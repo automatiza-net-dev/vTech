@@ -44,12 +44,27 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
   chunkOfPayments = [], creditOverflow = false, virtualTotal = null }: any) {
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
   const handleToggleSelected = (recordId: React.Key) => {
-    setSelectedRows([recordId]);
+    setSelectedRows((old) => old.includes(recordId) ? [] : [recordId]);
   };
 
   const isUsingChunking = chunkOfPayments.length > 0;
   const chunkingTotal = chunkOfPayments.reduce((acc, current) => acc + current.missing_value, 0);
   const creditsQuery = useTutorCredits(chunkOfPayments.at(0)?.clientID ?? '', isUsingChunking);
+
+  const relativeTotal = useMemo(() => {
+    if (selectedRows.length === 0) {
+      return virtualTotal
+    }
+
+    const credit = creditsQuery.data?.find((c) => c.id === selectedRows.at(0))
+    if (!credit) {
+      return virtualTotal
+    }
+
+    const offset = credit.originalValue - credit.usedValue
+
+    return Math.max(0, virtualTotal - offset)
+  }, [selectedRows, creditsQuery.data])
 
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -356,7 +371,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
 
             {creditsQuery.data?.length > 0 && (
               <Table
-                style={{ width: '600px' }}
+                style={{ width: '900px' }}
                 columns={[
                   {
                     title: "",
@@ -380,16 +395,30 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
                     key: "originalValue",
                   },
                   {
+                    title: "Valor Usado",
+                    dataIndex: "usedValue",
+                    key: "usedValue",
+                  },
+                  {
                     title: "Valor Disponível",
                     dataIndex: "missingValue",
                     key: "missingValue",
+                  },
+                  {
+                    title: "Valor Selecionado",
+                    dataIndex: "selectedValue",
+                    key: "selectedValue",
                   },
                 ]}
                 dataSource={creditsQuery.data?.map((item) => ({
                   id: item.id,
                   date: moment(item.created_at).format("DD/MM/YYYY - HH:mm"),
                   originalValue: currencyFormatter(item.originalValue),
-                  missingValue: currencyFormatter(item.usedValue),
+                  usedValue: currencyFormatter(item.usedValue),
+                  missingValue: currencyFormatter(item.originalValue - item.usedValue),
+                  selectedValue: selectedRows.includes(item.id) ? 
+                    currencyFormatter((item.originalValue - item.usedValue) - virtualTotal) 
+                    : '-',
                 }))}
                 pagination={false}
               />
@@ -494,7 +523,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
             />
             <DetailsPanel
               locked={isUsingChunking}
-              fakeTotal={isUsingChunking ? currencyFormatter(virtualTotal) : null}
+              fakeTotal={isUsingChunking ? currencyFormatter(relativeTotal) : null}
               bill={data}
               formData={formData}
               setFormData={setFormData}
