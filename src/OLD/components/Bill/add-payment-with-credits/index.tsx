@@ -77,11 +77,9 @@ export default function AddBillPaymentWithCredits(props: {
         (acc, current) =>
           acc +
           Number.parseFloat(
-            salesQuery.data?.find((d) => d.id === current)?.total_value ?? "0",
-          ) - 
-          Number.parseFloat(
-            salesQuery.data?.find((d) => d.id === current)?.paid_value ?? "0",
-          ),
+            salesQuery.data?.find((d) => d.id === current)?.missing_value ?? "0",
+          )
+        ,
         0,
       ),
     );
@@ -124,6 +122,7 @@ export default function AddBillPaymentWithCredits(props: {
           setVisible={setVisiblePayments} 
           chunkOfPayments={selectedData} 
           creditOverflow={overflowType === 'vale'}
+          literalTotal={literalTotal}
           virtualTotal={virtualTotal}
         />
 

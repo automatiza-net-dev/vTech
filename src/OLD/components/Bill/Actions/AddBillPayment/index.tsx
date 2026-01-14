@@ -40,31 +40,59 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { dailyCasherService } from "@/OLD/services/dailyCasher.service";
 import { useTutorCredits } from "../../../../hooks/useListCredits";
 
-function AddBillPayment({ billId, setVisible, setReloadBill, 
-  chunkOfPayments = [], creditOverflow = false, virtualTotal = null }: any) {
+function AddBillPayment({
+  billId,
+  setVisible,
+  setReloadBill,
+  chunkOfPayments = [],
+  creditOverflow = false,
+  literalTotal = null,
+  virtualTotal = null,
+}: any) {
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
   const handleToggleSelected = (recordId: React.Key) => {
-    setSelectedRows((old) => old.includes(recordId) ? [] : [recordId]);
+    setSelectedRows((old) => (old.includes(recordId) ? [] : [recordId]));
   };
 
   const isUsingChunking = chunkOfPayments.length > 0;
-  const chunkingTotal = chunkOfPayments.reduce((acc, current) => acc + current.missing_value, 0);
-  const creditsQuery = useTutorCredits(chunkOfPayments.at(0)?.clientID ?? '', isUsingChunking);
+  const chunkingTotal = chunkOfPayments.reduce(
+    (acc, current) => acc + current.missing_value,
+    0,
+  );
+  const creditsQuery = useTutorCredits(
+    chunkOfPayments.at(0)?.clientID ?? "",
+    isUsingChunking,
+  );
 
   const relativeTotal = useMemo(() => {
     if (selectedRows.length === 0) {
-      return virtualTotal
+      return virtualTotal;
     }
 
-    const credit = creditsQuery.data?.find((c) => c.id === selectedRows.at(0))
+    const credit = creditsQuery.data?.find((c) => c.id === selectedRows.at(0));
     if (!credit) {
-      return virtualTotal
+      return virtualTotal;
     }
 
-    const offset = credit.originalValue - credit.usedValue
+    const offset = credit.originalValue - credit.usedValue;
 
-    return Math.max(0, virtualTotal - offset)
-  }, [selectedRows, creditsQuery.data])
+    return Math.max(0, virtualTotal - offset);
+  }, [selectedRows, creditsQuery.data]);
+
+  const bypassInstallments = useMemo(() => {
+    if (selectedRows.length === 0 || !creditsQuery.data) {
+      return false;
+    }
+
+    const item = creditsQuery.data?.find((d) => d.id === selectedRows.at(0));
+    if (!item) {
+      return false;
+    }
+
+    const missingValue = item.originalValue - item.usedValue;
+
+    return missingValue > virtualTotal;
+  }, [selectedRows, creditsQuery.data, virtualTotal]);
 
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -121,7 +149,6 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
       };
     },
   });
-
 
   const filterMethods = () => {
     setDebitMethods(
@@ -237,6 +264,7 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
       }
 
       if (
+        !bypassInstallments &&
         paymentMethods.find(
           (method) => method?.id === formData?.paymentMethodId,
         ) !== "NÃO" &&
@@ -259,12 +287,12 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
           installmentsValue: virtualTotal,
           clientCreditId: selectedRows.at(0) as string,
           chunkOfBills: chunkOfPayments.map((i) => i.id),
-          creditOverflow
-        })
+          creditOverflow,
+        });
       } else {
         Object.assign(payload, {
           billId,
-        })
+        });
       }
 
       try {
@@ -274,14 +302,16 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
           body: payload,
         });
 
-        queryClient.refetch(["sales-metadata-add-credits"], { mode: "include" });
+        queryClient.refetch(["sales-metadata-add-credits"], {
+          mode: "include",
+        });
         queryClient.refetch(["bills", true], { mode: "include" });
         setReloadBill?.((s) => !s);
         queryClient.invalidateQueries(["paymentsPreview"]);
         setFormData({
           expirationDate: moment(),
         });
-        setVisible(false)
+        setVisible(false);
 
         return createToast({
           status: "success",
@@ -325,7 +355,14 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
       } finally {
       }
     },
-    [formData, billId, virtualTotal, isUsingChunking, chunkOfPayments, selectedRows],
+    [
+      formData,
+      billId,
+      virtualTotal,
+      isUsingChunking,
+      chunkOfPayments,
+      selectedRows,
+    ],
   );
 
   const shouldShowModal = useMemo(() => {
@@ -341,6 +378,28 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
     // o conteúdo vai variar apenas
     return true;
   }, [cashierStatusQuery?.data, hideCashierModal]);
+
+  const calculateSelected = useCallback(
+    (recordId: number) => {
+      if (!selectedRows.includes(recordId)) {
+        return "-";
+      }
+
+      const item = creditsQuery.data?.find((d) => d.id === recordId);
+      if (!item) {
+        return "-";
+      }
+
+      const missingValue = item.originalValue - item.usedValue;
+
+      if (missingValue > virtualTotal) {
+        return currencyFormatter(virtualTotal);
+      }
+
+      return currencyFormatter(0);
+    },
+    [selectedRows, creditsQuery.data, virtualTotal],
+  );
 
   return (
     <Container>
@@ -361,17 +420,25 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
 
       {isUsingChunking && (
         <>
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-          }}>
-            <p>Pagamento das vendas: {chunkOfPayments.map((p) => p.tag).join(', ')}</p>
-            <p>Data: {moment(chunkOfPayments.at(0).date).format("DD/MM/YYYY - HH:mm")}</p>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <p>
+              Pagamento das vendas:{" "}
+              {chunkOfPayments.map((p) => p.tag).join(", ")}
+            </p>
+            <p>
+              Data:{" "}
+              {moment(chunkOfPayments.at(0).date).format("DD/MM/YYYY - HH:mm")}
+            </p>
             <p>Cliente: {chunkOfPayments.at(0).client}</p>
 
             {creditsQuery.data?.length > 0 && (
               <Table
-                style={{ width: '900px' }}
+                style={{ width: "900px" }}
                 columns={[
                   {
                     title: "",
@@ -415,20 +482,17 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
                   date: moment(item.created_at).format("DD/MM/YYYY - HH:mm"),
                   originalValue: currencyFormatter(item.originalValue),
                   usedValue: currencyFormatter(item.usedValue),
-                  missingValue: currencyFormatter(item.originalValue - item.usedValue),
-                  selectedValue: selectedRows.includes(item.id) ? 
-                    currencyFormatter((item.originalValue - item.usedValue) - virtualTotal) 
-                    : '-',
+                  missingValue: currencyFormatter(
+                    item.originalValue - item.usedValue,
+                  ),
+                  selectedValue: calculateSelected(item.id),
                 }))}
                 pagination={false}
               />
             )}
-
           </div>
-
         </>
       )}
-
 
       <div className="uk-margin-top">
         {!isUsingChunking && (
@@ -523,7 +587,9 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
             />
             <DetailsPanel
               locked={isUsingChunking}
-              fakeTotal={isUsingChunking ? currencyFormatter(relativeTotal) : null}
+              fakeTotal={
+                isUsingChunking ? currencyFormatter(relativeTotal) : null
+              }
               bill={data}
               formData={formData}
               setFormData={setFormData}
@@ -531,9 +597,12 @@ function AddBillPayment({ billId, setVisible, setReloadBill,
               setLoading={setLoading}
               submit={submitPayment}
             />
-            <ResumePanel bill={data} formData={formData} 
+            <ResumePanel
+              bill={data}
+              formData={formData}
               fakeTotal={isUsingChunking ? chunkingTotal : null}
-              fakePayment={isUsingChunking ? virtualTotal : null} />
+              fakePayment={isUsingChunking ? virtualTotal : null}
+            />
           </div>
         </section>
         <hr />
@@ -607,7 +676,7 @@ function DailyCashierSync(props: {
   const closeCashierMutation = useMutation({
     queryKey: ["close-daily-cashier"],
     queryFn: async () => {
-      await dailyCasherService.closeDailyCasher(props?.id ?? '', {
+      await dailyCasherService.closeDailyCasher(props?.id ?? "", {
         observations: closeData?.observations,
         cashierTotal: Masks.noMoney(closeData?.cashierTotal),
         userId: user?.id,
