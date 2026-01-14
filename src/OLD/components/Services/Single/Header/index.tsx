@@ -135,12 +135,25 @@ const Header = memo(function Header({ service, setService }) {
             <Option value="exam">Exame</Option>
           </Select>
         </div>
-        <div>
+
+        <div className="uk-width-1-4 uk-margin-small-right">
           <label>Código do serviço</label>
           <Input
             value={service?.serviceCode}
+            type="number"
+            min={1}
+            max={9999999}
             onChange={(e) =>
               setService((prv) => ({ ...prv, serviceCode: e.target.value }))
+            }
+          />
+        </div>
+        <div>
+          <label>Código NBS</label>
+          <Input
+            value={service?.codigoNbs}
+            onChange={(e) =>
+              setService((prv) => ({ ...prv, codigoNbs: e.target.value }))
             }
           />
         </div>
