@@ -77,7 +77,7 @@ function AddBillPayment({
     const offset = credit.originalValue - credit.usedValue;
 
     return Math.max(0, virtualTotal - offset);
-  }, [selectedRows, creditsQuery.data]);
+  }, [selectedRows, creditsQuery.data, virtualTotal]);
 
   const bypassInstallments = useMemo(() => {
     if (selectedRows.length === 0 || !creditsQuery.data) {
@@ -357,6 +357,7 @@ function AddBillPayment({
     },
     [
       formData,
+      cashiers,
       billId,
       virtualTotal,
       isUsingChunking,
@@ -390,13 +391,15 @@ function AddBillPayment({
         return "-";
       }
 
+      // virtual -> valor input
+      // missing -> credito "sobrante" 
       const missingValue = item.originalValue - item.usedValue;
 
-      if (missingValue > virtualTotal) {
-        return currencyFormatter(virtualTotal);
+      if (virtualTotal > missingValue) {
+        return currencyFormatter(missingValue);
       }
 
-      return currencyFormatter(0);
+      return currencyFormatter(virtualTotal);
     },
     [selectedRows, creditsQuery.data, virtualTotal],
   );
@@ -472,7 +475,7 @@ function AddBillPayment({
                     key: "missingValue",
                   },
                   {
-                    title: "Valor Selecionado",
+                    title: "Valor a ser usado",
                     dataIndex: "selectedValue",
                     key: "selectedValue",
                   },
