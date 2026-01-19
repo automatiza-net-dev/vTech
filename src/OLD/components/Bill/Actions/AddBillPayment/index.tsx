@@ -447,10 +447,11 @@ function AddBillPayment({
                     title: "",
                     key: "controls",
                     width: 20,
-                    render: (_, record) => (
+                    render: (_, record) => creditOverflow ? <p>N/A</p> : (
                       <Checkbox
                         checked={selectedRows.includes(record.id)}
                         onChange={() => handleToggleSelected(record.id)}
+                        disabled={creditOverflow}
                       />
                     ),
                   },
