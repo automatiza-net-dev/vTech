@@ -121,7 +121,7 @@ export default function AddBillPaymentWithCredits(props: {
         <AddBillPayment 
           setVisible={setVisiblePayments} 
           chunkOfPayments={selectedData} 
-          creditOverflow={overflowType === 'vale'}
+          creditOverflow={virtualTotal > literalTotal && overflowType === 'vale'}
           literalTotal={literalTotal}
           virtualTotal={virtualTotal}
         />
@@ -362,8 +362,8 @@ export default function AddBillPaymentWithCredits(props: {
                         <p>{`Diferença de ${currencyFormatter(virtualTotal - literalTotal)}`}</p>
 
                         <Radio.Group onChange={(e) => setOverflowType(e.target.value)}>
-                          <Radio value={'vale'} defaultChecked>Vale Crédito</Radio>
-                          <Radio value={'troco'}>Troco</Radio>
+                          <Radio value={'vale'} checked={overflowType === 'vale'}>Vale Crédito</Radio>
+                          <Radio value={'troco'} checked={overflowType === 'troco'}>Troco</Radio>
                         </Radio.Group>
 
 
