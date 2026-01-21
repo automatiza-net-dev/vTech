@@ -292,7 +292,7 @@ function Page() {
                   <Option value=""> Todos </Option>
                   {depositsQuery.data?.map(
                     (elem) =>
-                      elem.type === "Venda" && (
+                      elem.type !== "Consumo" && (
                         <Option value={elem.id}>
                           {elem.description} - ({elem.id})
                         </Option>
@@ -539,8 +539,6 @@ function Page() {
                     return
                   }
                 }
-
-
 
                 createDepositMovementMutation.mutate(createMovementData)
               }}
