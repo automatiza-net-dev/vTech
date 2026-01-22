@@ -3,9 +3,13 @@ import { useFormikContext } from "formik";
 import { Select } from "infinity-forge";
 
 export function SelectOrigin(props: { errorMessage?: string }) {
-  const { data, isFetching } = useLoadTutorOrigins();
-
   const { values } = useFormikContext();
+
+  const { data, isFetching } = useLoadTutorOrigins({
+    // @ts-ignore error
+    existingOriginID: values?.clientOriginId
+  });
+
 
   const campaignsQuery = useLoadCampaings({
     active: true,
@@ -17,7 +21,7 @@ export function SelectOrigin(props: { errorMessage?: string }) {
   const selectedOrigin = data?.find((cq) => cq.id === values?.clientOriginId);
   const shouldDisplayMarketingSelect = selectedOrigin
     ? selectedOrigin.default ||
-      selectedOrigin.description === "Campanha de Mkt Ativa"
+    selectedOrigin.description === "Campanha de Mkt Ativa"
     : false;
 
   return (
