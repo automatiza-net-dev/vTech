@@ -48,7 +48,7 @@ export function Actions({
       return;
     }
 
-    if (event.event?.serviceType.type !== "P") {
+    if (event.event?.serviceType?.type !== "P") {
       return;
     }
 
