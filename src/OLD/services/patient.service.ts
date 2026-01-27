@@ -33,11 +33,38 @@ const getSinglePatient = async (id) => {
   return api.get(`/patients/${id}`);
 };
 
-const checkPhone = async (data) => await api.post("/patients/check-phone", data);
+const checkPhone = async (data) =>
+  await api.post("/patients/check-phone", data);
 
 const getPatientMetadata = async (id) => api.get(`/patients/metadata/${id}`);
 
-const getPatientSalesMetadata = async (id: string, tutorID?: string, extra = {}) =>
+const getTutorPayments = async (id: string, tutorID: string) =>
+  api.get<
+    {
+      id: number;
+      value: number;
+      payment_date: string;
+      created_at: string;
+      updated_at: string;
+      installments: number;
+      user: {
+        id: string;
+        name: string;
+      };
+      paymentMethod: {
+        id: string;
+        description: string;
+      } | null;
+    }[]
+  >(`/patients/tutor-payments/${tutorID}`, {
+    params: {},
+  });
+
+const getPatientSalesMetadata = async (
+  id: string,
+  tutorID?: string,
+  extra = {},
+) =>
   api.get<
     {
       id: string;
@@ -199,7 +226,8 @@ const createPatient = async (data) => {
   });
 };
 
-const fastPatientRegister = async (data) => await api.post("/patients/fast", data);
+const fastPatientRegister = async (data) =>
+  await api.post("/patients/fast", data);
 
 const editPatient = async (data, id) => {
   return api.put(`/patients/${id}`, data, {
@@ -246,4 +274,5 @@ export const petsService = {
   getPatientSalesMetadata,
   getPatientHairTypes,
   getNonPatients,
+  getTutorPayments,
 };

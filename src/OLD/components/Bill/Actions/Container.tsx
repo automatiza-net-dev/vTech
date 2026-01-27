@@ -133,7 +133,10 @@ function BillActions({
         <>
           <AddBillItem bill={bill} />
 
-          <Tooltip
+                  </>
+      )}
+
+<Tooltip
             idTooltip="test"
             enableHover
             position="top-right"
@@ -152,8 +155,7 @@ function BillActions({
               />
             }
           />
-        </>
-      )}
+
 
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (
