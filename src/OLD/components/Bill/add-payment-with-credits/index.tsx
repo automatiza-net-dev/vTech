@@ -11,7 +11,7 @@ import {
   Radio,
   Tabs,
 } from "antd";
-import { MdCancel } from "react-icons/md";
+import { IoMdTrash } from "react-icons/io";
 import { Button, Tooltip } from "infinity-forge";
 import { Container } from "../styles";
 import {
@@ -521,6 +521,11 @@ export default function AddBillPaymentWithCredits(props: {
                           dataIndex: "paymentMethod",
                         },
                         {
+                          title: "Parcelas",
+                          key: "installments",
+                          dataIndex: "installments",
+                        },
+                        {
                           title: "Usuário",
                           key: "user",
                           dataIndex: "user",
@@ -529,19 +534,23 @@ export default function AddBillPaymentWithCredits(props: {
                           title: "",
                           key: "actions",
                           dataIndex: "actions",
-                          render: (_, row) => (
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Tooltip
-                                idTooltip="action"
-                                enableHover
-                                position="top-center"
-                                content={"Cancelar"}
-                                trigger={<MdCancel size={16} />}
-                              />
-                            </div>
-                          ),
+                          render: (_, row) =>
+                            row.id === -1 ? null : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Tooltip
+                                  idTooltip="action"
+                                  enableHover
+                                  position="top-center"
+                                  content={"Cancelar"}
+                                  trigger={<IoMdTrash size={16} />}
+                                />
+                              </div>
+                            ),
                         },
                       ]}
                       rowKey={"id"}
@@ -550,6 +559,7 @@ export default function AddBillPaymentWithCredits(props: {
                           acc.unshift({
                             id: item.id,
                             value: currencyFormatter(item.value),
+                            installments: `${item.installments}x`,
                             payment_date: moment(item?.payment_date).format(
                               "DD/MM/YYYY",
                             ),
