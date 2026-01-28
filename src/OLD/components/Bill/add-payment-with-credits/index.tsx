@@ -11,7 +11,8 @@ import {
   Radio,
   Tabs,
 } from "antd";
-import { Button } from "infinity-forge";
+import { MdCancel } from "react-icons/md";
+import { Button, Tooltip } from "infinity-forge";
 import { Container } from "../styles";
 import {
   budgetStatusFormatter,
@@ -523,6 +524,24 @@ export default function AddBillPaymentWithCredits(props: {
                           title: "Usuário",
                           key: "user",
                           dataIndex: "user",
+                        },
+                        {
+                          title: "",
+                          key: "actions",
+                          dataIndex: "actions",
+                          render: (_, row) => (
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Tooltip
+                                idTooltip="action"
+                                enableHover
+                                position="top-center"
+                                content={"Cancelar"}
+                                trigger={<MdCancel size={16} />}
+                              />
+                            </div>
+                          ),
                         },
                       ]}
                       rowKey={"id"}
