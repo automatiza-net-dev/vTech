@@ -147,7 +147,7 @@ function BillActions({
                 size={20}
                 onClick={() => {
                   setSelectedTutor?.({
-                    patient: bill.patient.id,
+                    patient: bill.patient?.id,
                     tutor: bill.client.id,
                   });
                   setOpenCredits(true);
