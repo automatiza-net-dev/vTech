@@ -10,21 +10,24 @@ import {
   Table,
   Radio,
   Tabs,
+  Popconfirm,
 } from "antd";
 import { IoMdTrash } from "react-icons/io";
-import { Button, Tooltip } from "infinity-forge";
+import { Button, Tooltip, useToast } from "infinity-forge";
 import { Container } from "../styles";
 import {
   budgetStatusFormatter,
   currencyFormatter,
 } from "@/OLD/components/Budget";
 import { CgChevronDown, CgChevronUp } from "react-icons/cg";
-import { useDictionary, useQuery } from "@/presentation";
+import { useDictionary, useMutation, useQuery } from "@/presentation";
 import { petsService } from "@/OLD/services/patient.service";
+import { billService } from "@/OLD/services/bills.service";
 import moment from "moment";
 import { billStatusFormatter } from "../utils/status-formater";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import AddBillPayment from "../Actions/AddBillPayment";
+import { AxiosError } from "axios";
 
 export default function AddBillPaymentWithCredits(props: {
   isOpen: boolean;
@@ -36,6 +39,7 @@ export default function AddBillPaymentWithCredits(props: {
   const [visiblePayments, setVisiblePayments] = React.useState(false);
   const { getWord } = useDictionary();
   const [tabState, setTabState] = React.useState("vendas");
+  const { createToast } = useToast();
 
   const salesQuery = useQuery({
     enabled: props.isOpen,
@@ -73,13 +77,33 @@ export default function AddBillPaymentWithCredits(props: {
     ? tutorPaymentsQuery.data.reduce((acc, curr) => acc + curr.value, 0)
     : 0;
 
+  const deleteClientPayments = useMutation({
+    queryKey: ["delete-tutor-payments", props.params],
+    queryFn: async (id: number) => {
+      try {
+        await billService.removeClientPayment(id);
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          createToast({
+            message:
+              e.response.data?.message ?? "Erro na hora de remover o pagamento",
+            status: "error",
+          });
+        }
+      } finally {
+        salesQuery.refetch();
+        tutorPaymentsQuery.refetch();
+      }
+    },
+  });
+
   React.useEffect(() => {
     if (!salesQuery.data) {
       return;
     }
 
     setSelectedRows(salesQuery.data.map((d) => d.id));
-  }, [setSelectedRows, salesQuery.data]);
+  }, [salesQuery.data]);
 
   const [overflowType, setOverflowType] = React.useState<
     null | "vale" | "troco"
@@ -542,13 +566,18 @@ export default function AddBillPaymentWithCredits(props: {
                                   alignItems: "center",
                                 }}
                               >
-                                <Tooltip
-                                  idTooltip="action"
-                                  enableHover
-                                  position="top-center"
-                                  content={"Cancelar"}
-                                  trigger={<IoMdTrash size={16} />}
-                                />
+                                <Popconfirm
+                                  title="Tem certeza que deseja remover este registro?"
+                                  onConfirm={async () => {
+                                    deleteClientPayments.mutate(row.id);
+                                  }}
+                                  disabled={deleteClientPayments.isFetching}
+                                >
+                                  <IoMdTrash
+                                    size={16}
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </Popconfirm>
                               </div>
                             ),
                         },

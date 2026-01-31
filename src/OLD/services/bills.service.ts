@@ -1,14 +1,17 @@
 import api from "@/OLD/services";
 
-import { api as apiInfinity } from "infinity-forge"
+import { api as apiInfinity } from "infinity-forge";
 const normalize = (str?: string) =>
   str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "") ?? undefined;
 const getAllBills = async (params) => {
   const response = await apiInfinity({
-    method: "get", url: "bills", body: {
-      ...params, clientName: normalize(params?.clientName),
+    method: "get",
+    url: "bills",
+    body: {
+      ...params,
+      clientName: normalize(params?.clientName),
       patientName: normalize(params?.patientName),
-    }
+    },
   });
 
   return response;
@@ -46,7 +49,6 @@ const createMultipleItems = async (formData) => {
   const { data } = await api.post("/bills/create-items", formData);
 };
 
-
 const convertBillToTreatment = async (form) => {
   const { data } = await api.post("/bills/create-treatment", form);
 
@@ -55,9 +57,6 @@ const convertBillToTreatment = async (form) => {
 
 const verifyDiscount = async (data) =>
   await api.post("/bills/check-item-discount", data);
-
-
-
 
 // PUT
 const closeBillPayment = async (id) => await api.put(`/bills/close-bill/${id}`);
@@ -71,6 +70,9 @@ const reopenBillPayment = async (id) =>
   await api.put(`/bills/reopen-bill/${id}`);
 
 const removeBillItem = async (id) => await api.put(`/bills/delete-item/${id}`);
+
+const removeClientPayment = async (id: number) =>
+  await api.delete(`/bills/delete-client-payment/${id}`);
 
 const updateConferencePayment = async (data) =>
   await api.post("/daily-cashiers/update-conference", data);
@@ -102,4 +104,5 @@ export const billService = {
   updateExpirationDate,
   updateBillSeller,
   updateFinancialResponsible,
+  removeClientPayment,
 };
