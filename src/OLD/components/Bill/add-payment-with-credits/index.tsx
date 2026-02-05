@@ -28,6 +28,7 @@ import { billStatusFormatter } from "../utils/status-formater";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import AddBillPayment from "../Actions/AddBillPayment";
 import { AxiosError } from "axios";
+import TutorAggregatedCredits from "../tutor-aggregated-credits";
 
 export default function AddBillPaymentWithCredits(props: {
   isOpen: boolean;
@@ -135,7 +136,7 @@ export default function AddBillPaymentWithCredits(props: {
           acc +
           Number.parseFloat(
             salesQuery.data?.find((d) => d.id === current)?.missing_value ??
-              "0",
+            "0",
           ),
         0,
       ),
@@ -510,7 +511,9 @@ export default function AddBillPaymentWithCredits(props: {
                           onClick={() => setVisiblePayments(true)}
                         />
                       </div>
+
                     </section>
+                    <TutorAggregatedCredits tutorID={props.params.tutor} selectedDebits={virtualTotal} />
                   </div>
                 </Container>
               ),

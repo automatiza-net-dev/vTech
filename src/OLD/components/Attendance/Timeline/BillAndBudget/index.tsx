@@ -1,5 +1,7 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, {
+  useMemo,
+  useState, useEffect } from "react";
 
 import { usePatientSalesMetadata } from "@/OLD/hooks/usePatientMetadata";
 import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
@@ -7,6 +9,7 @@ import { useDailyCasher } from "@/OLD/hooks/useDailyCashiers";
 import { Table } from "antd";
 import BudgetActions from "@/OLD/components/Budget/Actions/Container";
 import BillActions from "@/OLD/components/Bill/Actions/Container";
+import TutorAggregatedCredits from "@/OLD/components/Bill/tutor-aggregated-credits";
 
 import { billAndBudgetColumns, billAndBudgetLiftColumns } from "./Columns";
 import moment from "moment";
@@ -51,6 +54,13 @@ export function BillAndBudget({ patient }) {
       status: "ABERTO",
     });
   }, []);
+
+  const openTotal = useMemo(() => {
+    console.log(salesMetadata)
+    return salesMetadata
+      .filter((item) => item._type === 'sale')
+      .reduce((acc, curr) => acc + Number.parseFloat(curr.total_value) - Number.parseFloat(curr.missing_value), 0)
+  }, [salesMetadata])
 
   const formatMetadata = () => {
     setFormatedMetadata(
@@ -113,6 +123,7 @@ export function BillAndBudget({ patient }) {
           patient: patient?.id,
         }}
       />
+      <TutorAggregatedCredits tutorID={mainTutor.id ?? patient.id} selectedDebits={openTotal} />
     </>
   );
 }

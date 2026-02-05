@@ -1,8 +1,10 @@
 import api from "@/OLD/services";
 
 import { api as apiInfinity } from "infinity-forge";
+
 const normalize = (str?: string) =>
   str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "") ?? undefined;
+
 const getAllBills = async (params) => {
   const response = await apiInfinity({
     method: "get",
@@ -16,6 +18,13 @@ const getAllBills = async (params) => {
 
   return response;
 };
+
+const getAgregateClientPayments = async (tutorID: string) => {
+  const { data } = await api.get(`/bills/aggregate-client-payments/${tutorID}`);
+
+  return data as { total: number };
+};
+
 
 const getSingleBill = async (id) => {
   const { data } = await api.get(`/bills/show/${id}`);
@@ -105,4 +114,5 @@ export const billService = {
   updateBillSeller,
   updateFinancialResponsible,
   removeClientPayment,
+  getAgregateClientPayments
 };
