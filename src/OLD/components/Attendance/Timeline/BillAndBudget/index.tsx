@@ -59,7 +59,7 @@ export function BillAndBudget({ patient }) {
     console.log(salesMetadata)
     return salesMetadata
       .filter((item) => item._type === 'sale')
-      .reduce((acc, curr) => acc + Number.parseFloat(curr.total_value) - Number.parseFloat(curr.missing_value), 0)
+      .reduce((acc, curr) => acc + Number.parseFloat(curr.missing_value), 0)
   }, [salesMetadata])
 
   const formatMetadata = () => {

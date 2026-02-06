@@ -50,7 +50,7 @@ export default function TutorAggregatedCredits(props: { tutorID: string, selecte
         borderBottom: '1px solid #e5e7eb',
         fontWeight: 500
       }}>
-        <p style={{ margin: 0 }}>Débitos selecionados:</p>
+        <p style={{ margin: 0 }}>Valor em aberto:</p>
       </div>
       <div style={{
         padding: '0.5rem 0.75rem',
