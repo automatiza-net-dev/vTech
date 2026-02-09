@@ -183,7 +183,7 @@ function ProductsPanel({
   }, [payments, editExpirationDate, data]);
 
   const shouldDisplayPrint2 = useMemo(() => {
-    if (!user) {
+    if (!user || !payments) {
       return false
     }
 
