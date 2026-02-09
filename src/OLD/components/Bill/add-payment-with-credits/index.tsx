@@ -513,7 +513,7 @@ export default function AddBillPaymentWithCredits(props: {
                       </div>
 
                     </section>
-                    <TutorAggregatedCredits tutorID={props.params.tutor} selectedDebits={virtualTotal} />
+                    <TutorAggregatedCredits tutorID={props?.params?.tutor} selectedDebits={virtualTotal} />
                   </div>
                 </Container>
               ),

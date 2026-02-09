@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useState, useEffect, useRef } from "react";
+import React, { memo, useMemo, useState, useEffect, useRef } from "react";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { useQueryClient } from "infinity-forge";
@@ -117,7 +117,7 @@ function ProductsPanel({
           nsu: payment?.nsu_document,
           downDate: payment?.finance?.payment_date
             ? moment(payment?.finance?.payment_date).format("DD/MM/YYYY") +
-              ` (${payment?.finance?.paymentMethod?.description})`
+            ` (${payment?.finance?.paymentMethod?.description})`
             : "-",
           cancelled: (
             <div
@@ -182,6 +182,19 @@ function ProductsPanel({
     payments?.length > 0 && formatPayments();
   }, [payments, editExpirationDate, data]);
 
+  const shouldDisplayPrint2 = useMemo(() => {
+    if (!user) {
+      return false
+    }
+
+    if (user.unit.configs.bills.bypass_print_verification) {
+      return true
+    }
+
+    return payments.filter((pay) => !pay?.finance?.payment_date).length !==
+      payments.length
+  }, [user, payments])
+
   return (
     payments?.length > 0 && (
       <Collapse className="uk-margin-small-top uk-width-1-1">
@@ -208,8 +221,7 @@ function ProductsPanel({
                 </div>
                 <div>{payments?.length}x</div>
               </div>
-              {payments.filter((pay) => !pay?.finance?.payment_date).length !==
-                payments.length && (
+              {shouldDisplayPrint2 && (
                 <div
                   onMouseOver={() => {
                     queryClient.invalidateQueries(["billPaymentsReceipts"]);
