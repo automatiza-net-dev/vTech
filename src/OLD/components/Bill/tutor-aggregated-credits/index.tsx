@@ -35,7 +35,7 @@ export default function TutorAggregatedCredits(props: { tutorID: string, selecte
         borderBottom: '1px solid #e5e7eb',
         fontWeight: 500
       }}>
-        <p style={{ margin: 0 }}>Total de créditos:</p>
+        <p style={{ margin: 0 }}>CRÉDITO disponível:</p>
       </div>
       <div style={{
         padding: '0.5rem 0.75rem',
