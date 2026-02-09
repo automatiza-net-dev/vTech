@@ -27,6 +27,7 @@ export interface PatientHuman {
   missingBills: string;
   vetMissingBills: string;
   vetMissingTutorBills: string;
+  vetMissingTutorCredits: number;
   openAttendances: boolean;
   death: boolean;
   deathDate: Date;
