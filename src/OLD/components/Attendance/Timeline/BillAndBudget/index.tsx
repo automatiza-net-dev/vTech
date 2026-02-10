@@ -40,10 +40,9 @@ export function BillAndBudget({ patient }) {
   const { type } = useConfigurationsSystem();
   const { getWord } = useDictionary();
   const { cashiers } = useDailyCasher(cashierFilters);
-  const { salesMetadata } = usePatientSalesMetadata(
+  const salesMetadataQuery = usePatientSalesMetadata(
     patient?.id,
     mainTutor?.id,
-    reload,
   );
   const [openCredits, setOpenCredits] = React.useState(false);
 
@@ -56,15 +55,18 @@ export function BillAndBudget({ patient }) {
   }, []);
 
   const openTotal = useMemo(() => {
-    console.log(salesMetadata)
-    return salesMetadata
-      .filter((item) => item._type === 'sale')
+    if (!salesMetadataQuery.data) {
+      return 0
+    }
+
+    return salesMetadataQuery.data
+      ?.filter((item) => item._type === 'sale')
       .reduce((acc, curr) => acc + Number.parseFloat(curr.missing_value), 0)
-  }, [salesMetadata])
+  }, [salesMetadataQuery.data])
 
   const formatMetadata = () => {
     setFormatedMetadata(
-      salesMetadata.map((item) => {
+      salesMetadataQuery?.data.map((item) => {
         return {
           mov: item._type === "sale" ? "Venda" : getWord("Orçamento"),
           code: item?.tag,
@@ -101,8 +103,8 @@ export function BillAndBudget({ patient }) {
   };
 
   useEffect(() => {
-    salesMetadata?.length > 0 && formatMetadata();
-  }, [salesMetadata, reload]);
+    salesMetadataQuery.data?.length > 0 && formatMetadata();
+  }, [salesMetadataQuery.data, reload]);
 
   return (
     <>

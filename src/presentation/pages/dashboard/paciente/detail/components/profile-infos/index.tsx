@@ -102,7 +102,9 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
 
     wrappers.forEach((content) => {
       // evita duplicar
-      if (content.querySelector('.credit-info')) return;
+      if (content.querySelector('.credit-info')) {
+        content.querySelectorAll('.credit-info').forEach((e) => e.remove())
+      }
 
       const span = document.createElement('span');
       span.className = 'font-14-regular detail-subtitle credit-info';

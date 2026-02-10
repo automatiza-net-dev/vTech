@@ -13,7 +13,7 @@ import {
   Popconfirm,
 } from "antd";
 import { IoMdTrash } from "react-icons/io";
-import { Button, Tooltip, useToast } from "infinity-forge";
+import { Button, Tooltip, useQueryClient, useToast } from "infinity-forge";
 import { Container } from "../styles";
 import {
   budgetStatusFormatter,
@@ -41,6 +41,7 @@ export default function AddBillPaymentWithCredits(props: {
   const { getWord } = useDictionary();
   const [tabState, setTabState] = React.useState("vendas");
   const { createToast } = useToast();
+  const queryClient = useQueryClient()
 
   const salesQuery = useQuery({
     enabled: props.isOpen,
@@ -94,6 +95,7 @@ export default function AddBillPaymentWithCredits(props: {
       } finally {
         salesQuery.refetch();
         tutorPaymentsQuery.refetch();
+        queryClient.refetch(['RemotePatient', props.params.patient])
       }
     },
   });

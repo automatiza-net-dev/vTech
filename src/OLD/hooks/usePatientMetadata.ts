@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { petsService } from "@/OLD/services/patient.service";
+import { useQuery } from "infinity-forge";
 
 export const usePatientMetadata = (id, reload = false) => {
   const [metadata, setMetadata] = useState([]);
@@ -30,28 +31,9 @@ export const usePatientMetadata = (id, reload = false) => {
   };
 };
 
-export const usePatientSalesMetadata = (id: string, tutorID?: string, reload = false) => {
-  const [salesMetadata, setSalesMetadata] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = () => {
-    setLoading(true);
-
-    petsService
-      .getPatientSalesMetadata(id, tutorID)
-      // @ts-expect-error bad api
-      .then((res) => setSalesMetadata(res.data))
-      .catch((_err) => setLoading(false))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [id, tutorID, reload]);
-
-  return {
-    salesMetadata,
-    loadingSalesMetadata: loading,
-    fetchSalesMetadata: fetchData,
-  };
+export const usePatientSalesMetadata = (id: string, tutorID?: string) => {
+  return useQuery({
+    queryKey: ['sales-metadata', id, tutorID],
+    queryFn: () => petsService.getPatientSalesMetadata(id, tutorID).then((r) => r.data)
+  })
 };
