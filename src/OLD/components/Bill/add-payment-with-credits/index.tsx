@@ -34,6 +34,7 @@ export default function AddBillPaymentWithCredits(props: {
   isOpen: boolean;
   toggle: () => void;
   params: { tutor: string; patient?: string };
+  onDelete?: () => void
 }) {
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
@@ -96,6 +97,8 @@ export default function AddBillPaymentWithCredits(props: {
         salesQuery.refetch();
         tutorPaymentsQuery.refetch();
         queryClient.refetch(['RemotePatient', props.params.patient])
+        queryClient.refetch(['Bills'])
+        props?.onDelete?.()
       }
     },
   });

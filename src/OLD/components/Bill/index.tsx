@@ -414,6 +414,7 @@ export default function Bills() {
           isOpen={openCredits}
           toggle={() => setOpenCredits((old) => !old)}
           params={selectedTutor}
+          onDelete={() => refetch()}
         />
       </PageWrapper>
     </PermissionItem>
