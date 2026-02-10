@@ -224,7 +224,7 @@ function ProductsPanel({
               {shouldDisplayPrint2 && (
                 <div
                   onMouseOver={() => {
-                    queryClient.invalidateQueries(["billPaymentsReceipts"]);
+                    // queryClient.invalidateQueries(["billPaymentsReceipts"]);
                     setBillPaymentReceiptsFilters((prv) => ({
                       fetch: true,
                       businessUnitId: user.unit.id,
