@@ -124,6 +124,7 @@ export function BillAndBudget({ patient }) {
           tutor: mainTutor?.id,
           patient: patient?.id,
         }}
+        onDelete={() => salesMetadataQuery.refetch()}
       />
       <TutorAggregatedCredits tutorID={mainTutor.id ?? patient.id} selectedDebits={openTotal} />
     </>

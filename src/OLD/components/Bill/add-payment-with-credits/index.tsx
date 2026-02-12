@@ -98,6 +98,7 @@ export default function AddBillPaymentWithCredits(props: {
         tutorPaymentsQuery.refetch();
         queryClient.refetch(['RemotePatient', props.params.patient])
         queryClient.refetch(['Bills'])
+        queryClient.refetch(['tutor-aggregated-credits', props.params.tutor])
         props?.onDelete?.()
       }
     },
