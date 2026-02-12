@@ -97,6 +97,24 @@ export function PdfPatientAttendance(
         </span>
       </div>
 
+      <div className="row" style={{ width: "100%" }}>
+        <span className="font-14-regular" style={{ display: "flex", width: "100%" }}>
+          <strong>Data de Lançamento:</strong>
+          <div>{['realizedAt', 'realized'].reduce((acc, curr) => {
+            if (acc !== '-') {
+              return acc
+            }
+
+            if (props[curr]) {
+              return moment(props[curr]).format("DD/MM/YYYY")
+            }
+
+            return acc
+          }, '-')}</div>
+        </span>
+      </div>
+
+
       <div className="attendance font-16">
         <h3>{props.service?.description}</h3>
 
