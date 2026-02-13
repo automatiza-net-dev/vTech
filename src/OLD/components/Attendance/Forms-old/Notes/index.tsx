@@ -36,7 +36,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
   const patient = useLoadPatient();
   const { createToast } = useToast();
 
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
   const router = useRouter();
 
   const beforeUpload = useCallback((file) => {
@@ -203,6 +203,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
           visible={modal}
           setVisible={setModal}
           data={data}
+          realizedAt={updateData?.timeline_info.realizedAt}
           setData={setData}
           submit={submit}
           beforeUpload={beforeUpload}
@@ -264,6 +265,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         visible={modal}
         setVisible={setModal}
         data={data}
+        realizedAt={updateData?.timeline_info.realizedAt}
         setData={setData}
         beforeUpload={beforeUpload}
         fileList={fileList}
@@ -336,8 +338,6 @@ export function FileUploader(props) {
   const { s3, loading } = useUploadS3({ src: props?.url });
 
   const image = isImage(s3?.view);
-
-  console.log("isImage", image, s3?.view)
 
   return (
     <div className="uk-flex uk-flex-between" style={{ marginTop: "10px" }}>

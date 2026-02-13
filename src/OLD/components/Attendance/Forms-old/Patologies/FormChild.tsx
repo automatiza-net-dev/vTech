@@ -23,6 +23,7 @@ function FormChild({
   print,
   remove,
   patient,
+  realizedAt = null
 }) {
   const [pathologySearch, setPathologySearch] = useState("");
 
@@ -89,6 +90,7 @@ function FormChild({
       <footer className="uk-flex uk-flex-right">
         <Print
           patient={patient}
+          realizedAt={realizedAt}
           triggerComponent={
             <Button
               text="Imprimir Laudo"

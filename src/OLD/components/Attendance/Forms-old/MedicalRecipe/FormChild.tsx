@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import {  Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 
 import Editor from "@/OLD/components/Editor";
 import { sortItems } from "@/OLD/utils/sortItems";
@@ -23,6 +23,7 @@ function FormChild({
   setRecipeSearch,
   patient,
   remove,
+  realizedAt = null,
 }: any) {
   useEffect(() => {
     if (!modal && recipeId) {
@@ -66,9 +67,9 @@ function FormChild({
           <h3>{recipeSearch}</h3>
         )}
       </div>
-     <div className="uk-margin-top">
+      <div className="uk-margin-top">
         <Editor editorState={body} setEditorState={setBody} />
-      </div> 
+      </div>
       <footer
         style={{
           marginTop: "10px",
@@ -79,6 +80,7 @@ function FormChild({
         <Print
           patient={patient}
           content={typeof body === "string" ? body : ""}
+          realizedAt={realizedAt}
           triggerComponent={
             <Button
               text="Imprimir"
@@ -90,7 +92,7 @@ function FormChild({
             submitUpdatePrint && submitUpdatePrint();
           }}
           string={true}
-        /> 
+        />
         {modal ? (
           <>
             <Button

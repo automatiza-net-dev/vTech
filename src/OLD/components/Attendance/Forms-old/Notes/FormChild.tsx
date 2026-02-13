@@ -29,6 +29,7 @@ function FormChild({
   print,
   patient,
   remove,
+  realizedAt = null
 }: any) {
   return (
     <FormHandler isStickyButtons disableEnterKeySubmitForm>
@@ -128,6 +129,7 @@ function FormChild({
                 />
               }
               content={data?.observations}
+              realizedAt={realizedAt}
               title={"Observações"}
               string={true}
               onBeforePrint={() => print()}
