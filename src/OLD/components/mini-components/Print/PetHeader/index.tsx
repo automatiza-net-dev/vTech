@@ -4,7 +4,7 @@ import React from "react";
 import moment from "moment";
 import { convertToAge } from "@/OLD/utils/generalUtils";
 
-export default function PatientHeader({ patient, tutor }) {
+export default function PatientHeader({ patient, tutor, realizedAt }) {
   const years = moment(new Date()).diff(patient?.birth_date, "years", true);
 
   return (
@@ -31,6 +31,7 @@ export default function PatientHeader({ patient, tutor }) {
           </div>
           <div>Responsável: {tutor?.name || "-"}</div>
           <div>Endereço: {tutor?.address || tutor?.fullAddress || "-"}</div>
+          <div>Data de Lançamento: {realizedAt ? moment(realizedAt).format("DD/MM/YYYY") : '-'}</div>
         </section>
         <section className="uk-text-left uk-width-1-3">
           <div>

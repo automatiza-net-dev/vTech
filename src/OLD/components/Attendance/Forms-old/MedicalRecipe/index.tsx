@@ -41,9 +41,9 @@ function AddMedicalRecipe({
   const { createToast } = useToast();
   const scheduleStatuses = useLoadAllScheduleStatuses();
 
-  const {type} = useConfigurationsSystem()
+  const { type } = useConfigurationsSystem()
 
-  const {refetch} = useQueryClient();
+  const { refetch } = useQueryClient();
 
   const replaceText = (str, setState) => {
 
@@ -53,9 +53,9 @@ function AddMedicalRecipe({
         base: str,
         businessUnitId: userInfo?.data?.unit?.id,
         userId: userInfo?.data?.id,
-        tutorId:  type === "Vet"
-            ? patient?.data?.tutor?.id
-            : patient?.data?.id,
+        tutorId: type === "Vet"
+          ? patient?.data?.tutor?.id
+          : patient?.data?.id,
         dependentId: type === "Vet" ? patient?.data?.id : undefined,
       })
       .then((res) => setState(res.data.result))
@@ -133,8 +133,8 @@ function AddMedicalRecipe({
         setBody("");
         setRecipeId(false);
         setRecipeSearch("");
-       refetch(["LastUpdates", patient.data?.id])
-       
+        refetch(["LastUpdates", patient.data?.id])
+
         return createToast({
           message: "Receita salva com sucesso!",
           status: "success",
@@ -160,7 +160,7 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
-          refetch(["LastUpdates", patient.data?.id])
+        refetch(["LastUpdates", patient.data?.id])
         return createToast({
           message: "Receita atualizada com sucesso!",
           status: "success",
@@ -189,7 +189,7 @@ function AddMedicalRecipe({
         technicianId: userInfo?.data?.id,
       })
       .then((_res) => {
-         refetch(["LastUpdates", patient.data?.id])
+        refetch(["LastUpdates", patient.data?.id])
         setLoading(false);
         setModal && setModal(false);
         return createToast({
@@ -213,7 +213,7 @@ function AddMedicalRecipe({
       .then((_res) => {
         setLoading(false);
 
-       refetch(["LastUpdates", patient.data?.id])
+        refetch(["LastUpdates", patient.data?.id])
         return createToast({
           message: "Registro removido com sucesso!",
           status: "success",
@@ -231,6 +231,7 @@ function AddMedicalRecipe({
       recipeId={recipeId}
       allRecipes={allRecipes}
       body={body}
+      realizedAt={updateData?.timeline_info?.realizedAt}
       setBody={setBody}
       loading={loading}
       setRecipeId={setRecipeId}
@@ -248,6 +249,7 @@ function AddMedicalRecipe({
       recipeId={recipeId}
       allRecipes={allRecipes}
       body={body}
+      realizedAt={updateData?.timeline_info?.realizedAt}
       setBody={setBody}
       loading={loading}
       setRecipeId={setRecipeId}
