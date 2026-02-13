@@ -19,6 +19,7 @@ export default function Print({
   onBeforePrint = false,
   tutor = false,
   patient = false,
+  realizedAt = null
 }: any) {
   const { clinic, user } = useProfile();
 
@@ -50,7 +51,7 @@ export default function Print({
           </div>
 
           {type === "Vet" && patient && (
-            <PatientHeader patient={patient} tutor={patient?.tutor} />
+            <PatientHeader patient={patient} tutor={patient?.tutor} realizedAt={realizedAt} />
           )}
           {title && (
             <div className="uk-text-center uk-margin-top">

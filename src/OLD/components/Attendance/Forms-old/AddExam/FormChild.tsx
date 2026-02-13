@@ -135,7 +135,7 @@ export default function FormChild({
                 />
               </div>
 
-          {data?.createdAt &&    <div>
+              {data?.createdAt && <div>
                 <label>Data lançamento</label>
                 <br />
                 <DatePicker
@@ -155,6 +155,7 @@ export default function FormChild({
                 <Print
                   title="Solicitação de Exame"
                   patient={patient.data}
+                  realizedAt={examPatientData?.timeline_info?.realized ?? examPatientData?.createdAt}
                   triggerComponent={
                     <Button
                       className="uk-margin-right uk-margin-top"
@@ -182,6 +183,7 @@ export default function FormChild({
 
                   <Print
                     patient={patient.data}
+                    realizedAt={examPatientData?.timeline_info?.realized ?? examPatientData?.createdAt}
                     triggerComponent={
                       <Button
                         className="uk-margin-right uk-margin-top"
