@@ -126,7 +126,7 @@ export function BillAndBudget({ patient }) {
         }}
         onDelete={() => salesMetadataQuery.refetch()}
       />
-      <TutorAggregatedCredits tutorID={mainTutor.id ?? patient.id} selectedDebits={openTotal} />
+      <TutorAggregatedCredits tutorID={mainTutor?.id ?? patient?.id} selectedDebits={openTotal} />
     </>
   );
 }
