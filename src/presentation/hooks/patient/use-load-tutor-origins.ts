@@ -4,17 +4,17 @@ import { RemoteTutor } from "@/data";
 import { callApiOneTime } from "@/presentation";
 import { container, patientTypes } from "@/container";
 
-export function useLoadTutorOrigins() {
+export function useLoadTutorOrigins(params = {}) {
   async function fetcher() {
     const response = await container
       .get<RemoteTutor>(patientTypes.RemoteTutor)
-      .loadOrigins();
+      .loadOrigins(params);
 
     return response;
   }
 
   return useQuery({
-    queryKey: ["RemoteLoadTutorOrigins"],
+    queryKey: ["RemoteLoadTutorOrigins", params],
     queryFn: fetcher,
     enableCache: true
   });

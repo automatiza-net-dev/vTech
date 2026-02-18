@@ -129,6 +129,8 @@ export default function Create({ setVisible }) {
                       />
 
                       <Input name="serviceCode" label="Código de Serviço" />
+
+                      <Input name="codigoNbs" label="Código NBS" />
                     </div>
 
                     <div>

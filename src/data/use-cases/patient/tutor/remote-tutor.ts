@@ -8,22 +8,21 @@ import * as domain from "@/domain";
 @injectable()
 export class RemoteTutor
   implements
-    domain.SetPhone,
-    domain.CreateTutor,
-    domain.AssignTutor,
-    domain.SetMainTutor,
-    domain.CreateContact,
-    domain.LoadTutorOrigins,
-    domain.LoadAllProfessions,
-    domain.LoadAllPatientTutor,
-    domain.LoadTutor,
-    domain.EditTutor
-{
+  domain.SetPhone,
+  domain.CreateTutor,
+  domain.AssignTutor,
+  domain.SetMainTutor,
+  domain.CreateContact,
+  domain.LoadTutorOrigins,
+  domain.LoadAllProfessions,
+  domain.LoadAllPatientTutor,
+  domain.LoadTutor,
+  domain.EditTutor {
   constructor(
     @inject(InfraTypes.makeApiURL) private readonly makeApiURL: makeApiURL,
     @inject(InfraTypes.authorizeDashboardHttp)
     private readonly httpClient: domain.HttpClient<any>
-  ) {}
+  ) { }
 
   async unlink(params: domain.UnlinkPetTutor.Params) {
     const response = await this.httpClient.request({
@@ -80,10 +79,11 @@ export class RemoteTutor
     return response as domain.EditTutor.Model;
   }
 
-  async loadOrigins() {
+  async loadOrigins(params = {}) {
     const response = await this.httpClient.request({
       url: this.makeApiURL.make("client-origins"),
       method: "get",
+      body: params 
     });
 
     return response as domain.LoadTutorOrigins.Model;

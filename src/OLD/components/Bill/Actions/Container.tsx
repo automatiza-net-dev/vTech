@@ -25,6 +25,7 @@ import { useQueryClient } from "infinity-forge";
 import { LaunchRelatedSale } from "./launch-related-sale";
 import { CancelAction } from "./cancel";
 import { AddBillPaymentModal } from "./add-bill-payment-modal";
+import { MdMonetizationOn } from "react-icons/md";
 
 const Container = styled.div`
   display: flex;
@@ -35,7 +36,12 @@ const Container = styled.div`
   }
 `;
 
-function BillActions({ bill, client, setReload, cashiers }: any) {
+function BillActions({
+  bill,
+  setReload,
+  setOpenCredits,
+  setSelectedTutor,
+}: any) {
   const [selectedId, setSelectedId] = React.useState(false);
   const [detailsVisible, setDetailsVisible] = React.useState(false);
 
@@ -68,8 +74,7 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
       })
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
-      })
-
+      });
   }, [bill?.id, queryClient, setReload]);
 
   const reopenBillPayment = React.useCallback(() => {
@@ -79,13 +84,13 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
         createToast({
           status: "success",
           message: "Venda reaberta com sucesso!",
-        })
+        }),
       )
       .catch((_err) =>
         createToast({
           status: "error",
           message: "Houve um problema ao finalizar a venda",
-        })
+        }),
       )
       .finally(() => {
         queryClient.invalidateQueries(["bills"]);
@@ -125,12 +130,32 @@ function BillActions({ bill, client, setReload, cashiers }: any) {
       {(bill?.status === "ABERTA" ||
         bill?.status === "Venda em Aberto" ||
         bill?.status === "Nao Aprovada") && (
-          <>
-            <AddBillItem bill={bill} />
+        <>
+          <AddBillItem bill={bill} />
 
-            <AddBillPaymentModal bill={bill} setReload={setReload} setSelectedId={setSelectedId} />
-          </>
-        )}
+                  </>
+      )}
+
+<Tooltip
+            idTooltip="test"
+            enableHover
+            position="top-right"
+            content={"Lançar Pagamentos"}
+            trigger={
+              <MdMonetizationOn
+                className="icon"
+                size={20}
+                onClick={() => {
+                  setSelectedTutor?.({
+                    patient: bill.patient?.id,
+                    tutor: bill.client.id,
+                  });
+                  setOpenCredits(true);
+                }}
+              />
+            }
+          />
+
 
       {(bill?.status === "ABERTA" || bill?.status === "Venda em Aberto") &&
         finishBillPermission && (

@@ -3,6 +3,8 @@ import { DetailCard, Error, IDetailCard } from "infinity-forge";
 import { Patient } from "@/domain";
 import { FormCreateTutor, useConfigurationsSystem } from "@/presentation";
 import { useQueryClient } from "infinity-forge";
+import { useEffect } from "react";
+import { currencyFormatter } from "@/OLD/components/Budget";
 
 import { Profile } from "./profile";
 
@@ -95,6 +97,28 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
     },
   ];
 
+  useEffect(() => {
+    const wrappers = document.querySelectorAll('.detail-wrapper .content');
+
+    wrappers.forEach((content) => {
+      // evita duplicar
+      if (content.querySelector('.credit-info')) {
+        content.querySelectorAll('.credit-info').forEach((e) => e.remove())
+      }
+
+      const span = document.createElement('span');
+      span.className = 'font-14-regular detail-subtitle credit-info';
+      span.textContent = `CRÉDITO Disponível: ${currencyFormatter(patient.vetMissingTutorCredits)}`;
+
+      span.style.color = 'green';
+      span.style.fontWeight = 'bold';
+      span.style.fontSize = '12px';
+
+      content.appendChild(span);
+    });
+  }, [patient]);
+
+
   return (
     <Error name="ProfileInfos">
       <S.ProfileInfos>
@@ -125,6 +149,15 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                     }
                   />
                 );
+              }
+
+              if (detail.active && detail.subTitle === 'Vendas em aberto (Tutor)') {
+
+                return (
+                  <div key={detail.id} className='detail-wrapper'>
+                    <DetailCard  {...detail} />
+                  </div>
+                )
               }
 
               return (

@@ -26,10 +26,11 @@ export function Tutors({
 	const [modal, setModal] = useState(false);
 	const [modalAddTutor, setModalAddTutor] = useState(false);
 	const { data, refetch } = useLoadAllPatientTutor({
-		enabled: modalAddTutor,
+		enabled: true,
 		modal,
 		patientFilters: { name: "" },
 	});
+
 
 	const { values, setFieldValue } = useFormikContext<{
 		holders: { id: string; main: boolean }[];

@@ -60,6 +60,7 @@ const Single = memo(function Single({
           serviceCode: res.data?.service_code,
           variations: res.data?.variations,
           serviceType: res?.data?.type,
+          codigoNbs: res?.data?.codigoNbs,
         });
       })
       .catch((err) => {

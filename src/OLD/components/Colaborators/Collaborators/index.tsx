@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { JSX, useCallback, useState } from "react";
 
-import {  Table } from "antd";
+import { Table } from "antd";
 
 import { convertDate } from "@/OLD/utils/convertDate";
 import { Delete } from "./Delete";
@@ -18,7 +18,7 @@ import { CreateCollaborator } from "@/presentation";
 
 function Colaborators() {
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<{ name: JSX.Element, active: boolean }[]>([]);
   const [refreshList, setRefreshList] = useState(false);
   const [filters, setFilters] = useState({});
 
@@ -80,6 +80,7 @@ function Colaborators() {
                   ? Masks.phone(user?.phone)
                   : "Telefone não informado",
                 createdAt: convertDate(user.created_at),
+                active: user.active,
                 actions: (
                   <div className="uk-flex uk-flex-middle uk-flex-around">
                     {canEditColaborator && (
@@ -164,6 +165,9 @@ function Colaborators() {
           columns={columnsColaborators}
           dataSource={Object.keys(filters).length === 0 ? [] : users}
           loading={loading}
+          rowClassName={(record, index) =>
+            `ant-table-row ant-table-row-level-0 ${!record.active ? "______table-row" : ""}`
+          }
           locale={{
             emptyText:
               Object.keys(filters).length === 0 ? (
