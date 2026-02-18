@@ -48,12 +48,8 @@ export default function AddBillPaymentWithCredits(props: {
     enabled: props.isOpen,
     queryKey: ["sales-metadata-add-credits", props.params],
     queryFn: async () => {
-      if (!props.params.patient) {
-        return [];
-      }
-
       const result = await petsService.getPatientSalesMetadata(
-        props.params.patient,
+        props.params.patient ?? props.params.tutor,
         props.params.tutor,
         {
           onlyOpen: 1,
