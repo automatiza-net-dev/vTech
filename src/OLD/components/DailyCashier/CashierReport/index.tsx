@@ -221,24 +221,6 @@ const CashierReport = memo(function({ selectedData, type, setVisible }) {
                   ))}
               </div>
               <div>
-                <label>Valor:</label>
-                {reports.bill_payments
-                  .filter(
-                    (bill) =>
-                      `${bill?.payment_method?.description}${bill?.payment_description?.tef_aquirer_description
-                        ? ` - ${bill?.payment_description?.tef_aquirer_description}`
-                        : ""
-                      }` === method
-                  )
-                  .map((bill) => (
-                    <p className="uk-margin-remove">
-                      {currencyFormatter(
-                        bill?.payment_description?.installment_value
-                      )}
-                    </p>
-                  ))}
-              </div>
-              <div>
                 <label>Valor total:</label>
                 {reports.bill_payments
                   .filter(
