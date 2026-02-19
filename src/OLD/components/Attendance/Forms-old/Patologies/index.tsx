@@ -162,7 +162,7 @@ function Patologies({
       setVisible={setModal}
       print={submit}
       remove={undefined}
-      realizedAt={updateData?.timeline_info.realizedAt}
+      realizedAt={updateData?.timeline_info?.realizedAt}
     />
   ) : (
     <FormChild
@@ -178,7 +178,7 @@ function Patologies({
       print={submitUpdate}
       remove={() => removeData(updateData?._id)}
       setVisible={undefined}
-      realizedAt={updateData?.timeline_info.realizedAt}
+      realizedAt={updateData?.timeline_info?.realizedAt}
     />
   );
 }

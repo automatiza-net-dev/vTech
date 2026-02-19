@@ -60,7 +60,9 @@ function AddBillPayment({
     0,
   );
   const creditsQuery = useTutorCredits(
-    chunkOfPayments.at(0)?.clientID ?? "",
+    chunkOfPayments.find((p) => p.clientID)?.clientID
+    ?? chunkOfPayments.find((p) => p.patientID)?.patientID
+    ?? '',
     isUsingChunking,
   );
 
