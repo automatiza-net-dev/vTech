@@ -203,7 +203,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
           visible={modal}
           setVisible={setModal}
           data={data}
-          realizedAt={updateData?.timeline_info.realizedAt}
+          realizedAt={updateData?.timeline_info?.realizedAt}
           setData={setData}
           submit={submit}
           beforeUpload={beforeUpload}
@@ -265,7 +265,7 @@ function Notes({ modal, setModal, updateData = false, flex = false }: any) {
         visible={modal}
         setVisible={setModal}
         data={data}
-        realizedAt={updateData?.timeline_info.realizedAt}
+        realizedAt={updateData?.timeline_info?.realizedAt}
         setData={setData}
         beforeUpload={beforeUpload}
         fileList={fileList}
