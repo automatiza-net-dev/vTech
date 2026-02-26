@@ -13,6 +13,7 @@ import {
   Popconfirm,
 } from "antd";
 import { IoMdTrash } from "react-icons/io";
+import { BsEye } from "react-icons/bs";
 import { Button, Tooltip, useQueryClient, useToast } from "infinity-forge";
 import { Container } from "../styles";
 import {
@@ -38,6 +39,7 @@ export default function AddBillPaymentWithCredits(props: {
 }) {
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
+  const [selectedPayment, setSelectedPayment] = React.useState<number | null>(null);
   const [visiblePayments, setVisiblePayments] = React.useState(false);
   const { getWord } = useDictionary();
   const [tabState, setTabState] = React.useState("vendas");
@@ -59,6 +61,35 @@ export default function AddBillPaymentWithCredits(props: {
       return result.data;
     },
   });
+
+
+  const paymentMetadataQuery = useQuery({
+    enabled: props.isOpen && !!selectedPayment,
+    queryKey: ["payment-metadata", selectedPayment],
+    queryFn: async () => {
+      if (!selectedPayment) {
+        return
+      }
+
+      const data = await billService.getClientPaymentSales(selectedPayment)
+
+      return data as {
+        credits: {
+          billId: string
+          tag: string
+          paidValue: number
+          totalValue: string
+        }[]
+        sales: {
+          id: number,
+          originalValue: number,
+          usedValue: number,
+          returned: boolean,
+        }[]
+      }
+    },
+  });
+
 
   const tutorPaymentsQuery = useQuery({
     enabled: props.isOpen,
@@ -206,6 +237,44 @@ export default function AddBillPaymentWithCredits(props: {
               label: "Selecione as vendas para pagar",
               children: (
                 <Container>
+                  <Modal
+                    title=""
+                    open={!!selectedPayment}
+                    onOk={() => setSelectedPayment(null)}
+                    onCancel={() => setSelectedPayment(null)}
+                    centered
+                    width={600}
+                    footer={null}
+                  >
+                    {paymentMetadataQuery.data && (
+                      <>
+                        <h4 style={{ marginTop: 16 }}>Vendas</h4>
+                        <Table
+                          columns={[
+                            { title: "Tag", dataIndex: "tag", key: "tag" },
+                            { title: "Valor Total", dataIndex: "totalValue", key: "totalValue" },
+                          ]}
+                          dataSource={paymentMetadataQuery.data.sales}
+                          pagination={false}
+                          rowKey="billId"
+                        />
+                        <h4 style={{ marginTop: 16 }}>Crédito</h4>
+                        <Table
+                          columns={[
+                            { title: "ID", dataIndex: "id", key: "id" },
+                            { title: "Valor Original", dataIndex: "originalValue", key: "originalValue" },
+                            { title: "Valor Usado", dataIndex: "usedValue", key: "usedValue" },
+                            { title: "Devolvido", dataIndex: "returned", key: "returned", render: (val) => <Checkbox checked={val} /> },
+                          ]}
+                          dataSource={paymentMetadataQuery.data.credits}
+                          pagination={false}
+                          rowKey="id"
+                        />
+                      </>
+                    )}
+
+                  </Modal>
+
                   <div className="uk-margin-top">
                     <Table
                       columns={[
@@ -569,8 +638,14 @@ export default function AddBillPaymentWithCredits(props: {
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
+                                  gap: '4px'
                                 }}
                               >
+                                <BsEye
+                                  size={16}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => setSelectedPayment(row.id)}
+                                />
                                 <Popconfirm
                                   title="Tem certeza que deseja remover este registro?"
                                   onConfirm={async () => {
