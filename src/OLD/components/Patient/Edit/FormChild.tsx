@@ -395,7 +395,7 @@ export const FormChild = React.memo(function FormChild({
         {selectedTutors?.length > 0 &&
           selectedTutors?.map((tutor) => ` ${tutor?.name} |`)}
       </p>
-      <Form.Item label="Tutor" className="uk-width-1-2">
+      <Form.Item label="Responsável" className="uk-width-1-2">
         <div className="uk-flex">
           {formatedTutors?.length > 0 && (
             <div className="custom-select">

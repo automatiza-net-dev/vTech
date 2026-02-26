@@ -73,7 +73,7 @@ export function useActionsPatient(patient?: Patient): {
 					case "TROCA_TUTOR_PRINCIPAL":
 						return (
 							<div>
-								<h3>Troca de tutor principal</h3>
+								<h3>Troca de responsável principal</h3>
 								<span>
 									<strong>Troca</strong> {props?.timeline_info?.old_tutor.name}{" "}
 									<br /> <strong>Para</strong>:{" "}
@@ -466,7 +466,7 @@ export function useActionsPatient(patient?: Patient): {
 		},
 		{
 			active: type === "Vet",
-			label: "Tutor",
+			label: "Responsável",
 			value: "Tutores",
 			Icon: <Icon name="IconPerson" />,
 			Component: (props) => (

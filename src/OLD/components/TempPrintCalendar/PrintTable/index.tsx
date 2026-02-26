@@ -45,7 +45,7 @@ const PrintTable = ({ data, date }) => {
           <div className="small-width">Hora</div>
           <div className="small-width">Duração</div>
           <div>Profissional</div>
-          <div>{type === "Vet" ? "Tutor" : "Paciente"}</div>
+          <div>{type === "Vet" ? "Responsável" : "Paciente"}</div>
           {type === "Vet" && <div>Paciente</div>}
           <div>Agendamento</div>
           <div>Status</div>

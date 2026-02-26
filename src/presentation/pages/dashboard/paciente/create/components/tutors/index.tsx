@@ -72,7 +72,7 @@ export function Tutors({
 	return (
 		<InputControl name="holders">
 			<S.Tutors>
-				<h4 className="font-18-bold">Tutores{isRequired ? "*" : ""}</h4>
+				<h4 className="font-18-bold">Responsáveis{isRequired ? "*" : ""}</h4>
 
 				{holders?.map((holder, index) => {
 					return (
@@ -110,7 +110,7 @@ export function Tutors({
 						/>
 					</svg>
 
-					<span className="font-16-regular">Adicionar tutor</span>
+					<span className="font-16-regular">Adicionar responsável</span>
 				</button>
 
 				<Modal
@@ -120,12 +120,12 @@ export function Tutors({
 					stylesContent={{ overflow: "unset" }}
 				>
 					<S.ModalAddTutor>
-						<h3 className="font-20-bold">Adicionar tutor</h3>
+						<h3 className="font-20-bold">Adicionar responsável</h3>
 						<Select
 							name="holderId"
-							label="Tutor"
+							label="Responsável pelo animal"
 							menuPlacement="top"
-							placeholder="Selecionar tutor"
+							placeholder="Selecionar responsável"
 							options={options || []}
 							onlyOneValue
 						/>
@@ -138,10 +138,10 @@ export function Tutors({
 
 						<div className="form-button sticky">
 							<Button
-								text="Vincular Tutor"
+								text="Vincular Responsável"
 								onClick={() => {
 									if (!tutorField?.value) {
-										setError("Selecione um tutor.");
+										setError("Selecione um responsável.");
 										return;
 									}
 									setError("");
@@ -150,7 +150,7 @@ export function Tutors({
 									if (holders.find((holder) => holder.id === value)) {
 										createToast({
 											status: "error",
-											message: "Tutor já adicionado",
+											message: "Responsável já adicionado",
 										});
 									} else {
 										setFieldValue("holders", [
@@ -170,7 +170,7 @@ export function Tutors({
 								}}
 							/>
 
-							<Button text="Novo Tutor" onClick={() => setModal(true)} />
+							<Button text="Novo Responsável" onClick={() => setModal(true)} />
 						</div>
 					</S.ModalAddTutor>
 				</Modal>

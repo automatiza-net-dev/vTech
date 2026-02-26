@@ -243,7 +243,7 @@ export function CreateTutor({ setVisible, onSuccess, isSchedule = false }) {
           createToast({
             status: "success",
             message: `${
-              type !== "Vet" ? "Cliente" : "Tutor"
+              type !== "Vet" ? "Cliente" : "Responsável"
             } cadastrado!`,
           });
         }

@@ -41,7 +41,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       icon: "IconPerson",
       color: "#F4BF00",
       title: patient?.tutor?.name,
-      subTitle: "Tutor Ativo",
+      subTitle: "Responsável Ativo",
       active: !!(type === "Vet" && patient.tutor),
     },
     {
@@ -75,7 +75,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
       icon: "IconShopping2",
       color: "#7E43D6",
       title: patient.vetMissingTutorBills || "R$ 0,00",
-      subTitle: "Vendas em aberto (Tutor)",
+      subTitle: "Vendas em aberto (Responsável)",
       active: type === "Vet",
     },
 

@@ -183,7 +183,7 @@ export function FormCreateScheduling() {
           <Input
             name={type === "Vet" ? "holderName" : "patientName"}
             disabled
-            label={type === "Vet" ? "Tutor" : "Cliente"}
+            label={type === "Vet" ? "Responsável" : "Cliente"}
           />
 
           {type === "Vet" && (

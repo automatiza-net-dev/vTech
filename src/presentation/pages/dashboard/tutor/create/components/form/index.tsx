@@ -141,7 +141,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
 
       if (err instanceof BadRequestError) {
         createToast({
-          message: err.error.message ?? "Erro ao criar tutor",
+          message: err.error.message ?? "Erro ao criar responsável",
           status: "warning",
         });
       }

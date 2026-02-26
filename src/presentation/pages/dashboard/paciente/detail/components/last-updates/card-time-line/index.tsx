@@ -59,7 +59,7 @@ export function CardTimeLine({
       case "OBITO":
         return <span>Óbito</span>
       case "TROCA_TUTOR_PRINCIPAL":
-        return <span>Troca tutor principal</span>
+        return <span>Troca responsável principal</span>
       case "INTERNACAO":
         return <span>Internação</span>
       case "ALTA":

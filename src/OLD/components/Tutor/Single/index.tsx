@@ -163,7 +163,7 @@ export function Single({
     <LoadingSkeleton />
   ) : (
     <div>
-      <h2>{type !== "Vet" ? "Cliente" : "Tutor"}</h2>
+      <h2>{type !== "Vet" ? "Cliente" : "Responsável"}</h2>
       <div
         className="uk-card uk-card-body uk-margin-bottom"
         style={{ background: "#fff", borderRadius: "20px", marginTop: "50px" }}

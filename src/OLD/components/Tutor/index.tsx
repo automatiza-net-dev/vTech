@@ -57,7 +57,7 @@ export function Tutor({
                   type="search"
                   placeholder={`Nome ${
                     type === "Vet"
-                      ? "Tutor"
+                      ? "Responsável"
                       : "Cliente"
                   }`}
                   onChange={(e) =>
@@ -73,7 +73,7 @@ export function Tutor({
                   type="search"
                   placeholder={`Telefone ${
                     type === "Vet"
-                      ? "Tutor"
+                      ? "Responsável"
                       : "Cliente"
                   }`}
                   onChange={(e) =>
@@ -100,7 +100,7 @@ export function Tutor({
                   type="search"
                   placeholder={`CPF ${
                     type === "Vet"
-                      ? "Tutor"
+                      ? "Responsável"
                       : "Cliente"
                   }`}
                   onChange={(e) =>

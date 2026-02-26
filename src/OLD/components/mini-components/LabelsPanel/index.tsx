@@ -27,7 +27,7 @@ const LabelsPanel = memo(function ({  handleInsert }: any) {
             />
           </Panel>
         )}
-        <Panel key={""}  header={type === "Vet" ? "Tutor" : "Cliente"}>
+        <Panel key={""}  header={type === "Vet" ? "Responsável" : "Cliente"}>
           <Variables
           handleInsert={handleInsert}
             templates={templates?.filter(

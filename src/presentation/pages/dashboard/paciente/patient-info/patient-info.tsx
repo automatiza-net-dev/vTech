@@ -72,7 +72,7 @@ function Single({ selectedId, setVisible }) {
   const hasPermission = useVerifyPermissions("PET04");
   const Columns = [
     {
-      title: "Tutor",
+      title: "Responsável",
       key: "name",
       dataIndex: "name",
       render: (_, data) =>
