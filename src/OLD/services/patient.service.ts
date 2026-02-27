@@ -38,25 +38,90 @@ const checkPhone = async (data) =>
 
 const getPatientMetadata = async (id) => api.get(`/patients/metadata/${id}`);
 
+export type TutorPaymentsResponse = Array<{
+  id: number
+  value: number
+  payment_date: string
+  created_at: string
+  updated_at: string
+  installments: number
+  user: {
+    id: string
+    name: string
+  }
+  paymentMethod: {
+    id: string
+    description: string
+    requires_document: boolean
+    tef: string
+    type?: string
+    fee: number
+    automatic_cancellation?: boolean
+    days_first_installment?: number
+    days_between_installments?: number
+    days_until_transfer?: number
+    installments_without_password: number
+    max_installments: number
+    allow_change_expiration_date: boolean
+    minimum_installment_value?: number
+    active: boolean
+    created_at: string
+    updated_at: string
+    usage: string
+    nfe_code: string
+    openInstallmentsAffectsBlock: boolean
+  }
+  finances: Array<{
+    id: string
+    type: string
+    fee_discount_value: number
+    fee_discount_percentage: number
+    document: string
+    installment: number
+    historic: string
+    issue_date: string
+    expiration_date: string
+    payment_date: any
+    down_date: any
+    original_value: number
+    value: number
+    total_value: number
+    payment_value: number
+    fee_value: number
+    fee_percentage: any
+    discount_value: number
+    discount_percentage: number
+    addition_value: number
+    addition_percentage: any
+    observation: any
+    origin_flag: string
+    origin_down_flag: any
+    accept: string
+    reversal_reason: any
+    status: string
+    created_at: string
+    updated_at: string
+    reconciled: boolean
+    competence_date: string
+    fiscal_note: any
+    user_document: any
+    nsu_document?: string
+    bar_code: any
+    bank: any
+    agency: any
+    account: any
+    block?: number
+    accepted_date: any
+    conciliated_date: any
+    qty_installments: number
+    internalCode: any
+    unaccepted_date: any
+  }>
+}>
+
+
 const getTutorPayments = async (id: string, tutorID: string) =>
-  api.get<
-    {
-      id: number;
-      value: number;
-      payment_date: string;
-      created_at: string;
-      updated_at: string;
-      installments: number;
-      user: {
-        id: string;
-        name: string;
-      };
-      paymentMethod: {
-        id: string;
-        description: string;
-      } | null;
-    }[]
-  >(`/patients/tutor-payments/${tutorID}`, {
+  api.get<TutorPaymentsResponse>(`/patients/tutor-payments/${tutorID}`, {
     params: {},
   });
 
