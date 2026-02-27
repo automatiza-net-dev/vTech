@@ -252,7 +252,7 @@ export default function AddBillPaymentWithCredits(props: {
                         <Table
                           columns={[
                             { title: "Tag", dataIndex: "tag", key: "tag" },
-                            { title: "Valor Total", dataIndex: "totalValue", key: "totalValue" },
+                            { title: "Valor Total", dataIndex: "totalValue", key: "totalValue", render: (val) => currencyFormatter(val) },
                           ]}
                           dataSource={paymentMetadataQuery.data.sales}
                           pagination={false}
@@ -262,8 +262,8 @@ export default function AddBillPaymentWithCredits(props: {
                         <Table
                           columns={[
                             { title: "ID", dataIndex: "id", key: "id" },
-                            { title: "Valor Original", dataIndex: "originalValue", key: "originalValue" },
-                            { title: "Valor Usado", dataIndex: "usedValue", key: "usedValue" },
+                            { title: "Valor Original", dataIndex: "originalValue", key: "originalValue", render: (val) => currencyFormatter(val) },
+                            { title: "Valor Usado", dataIndex: "usedValue", key: "usedValue", render: (val) => currencyFormatter(val) },
                             { title: "Devolvido", dataIndex: "returned", key: "returned", render: (val) => <Checkbox checked={val} /> },
                           ]}
                           dataSource={paymentMetadataQuery.data.credits}
