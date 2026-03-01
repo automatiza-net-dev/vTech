@@ -3,6 +3,7 @@ import * as React from "react";
 import {
   Input as AntInput,
   Checkbox,
+  DatePicker,
   Divider,
   InputNumber,
   Modal,
@@ -24,6 +25,7 @@ import { CgChevronDown, CgChevronUp } from "react-icons/cg";
 import { useDictionary, useMutation, useQuery } from "@/presentation";
 import { petsService } from "@/OLD/services/patient.service";
 import { billService } from "@/OLD/services/bills.service";
+import { financesService } from "@/OLD/services/finances.service";
 import moment from "moment";
 import { billStatusFormatter } from "../utils/status-formater";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
@@ -41,6 +43,9 @@ export default function AddBillPaymentWithCredits(props: {
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
   const [selectedPayment, setSelectedPayment] = React.useState<number | null>(null);
   const [visiblePayments, setVisiblePayments] = React.useState(false);
+  const [editingInstallments, setEditingInstallments] = React.useState<number | null>(null);
+  const [installmentDates, setInstallmentDates] = React.useState<Array<{ id: string, expirationDate: moment.Moment }>>([]);
+  const [savingInstallments, setSavingInstallments] = React.useState(false);
   const { getWord } = useDictionary();
   const [tabState, setTabState] = React.useState("vendas");
   const { createToast } = useToast();
@@ -132,6 +137,23 @@ export default function AddBillPaymentWithCredits(props: {
   });
 
   React.useEffect(() => {
+    if (!editingInstallments || !tutorPaymentsQuery.data) {
+      setInstallmentDates([]);
+      return;
+    }
+
+    const payment = tutorPaymentsQuery.data.find((p: any) => p.id === editingInstallments);
+    if (payment && payment.finances) {
+      setInstallmentDates(
+        payment.finances.map((finance: any) => ({
+          id: finance.id,
+          expirationDate: moment(finance.expiration_date),
+        }))
+      );
+    }
+  }, [editingInstallments, tutorPaymentsQuery.data]);
+
+  React.useEffect(() => {
     if (!salesQuery.data) {
       return;
     }
@@ -198,6 +220,40 @@ export default function AddBillPaymentWithCredits(props: {
     });
   };
 
+  const handleSaveInstallmentDates = async () => {
+    const payment = tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments);
+    if (!payment?.paymentMethod?.allow_change_expiration_date) {
+      createToast({
+        status: "error",
+        message: "Este método de pagamento não permite alterar datas de vencimento",
+      });
+      return;
+    }
+
+    setSavingInstallments(true);
+    try {
+      await financesService.updateExpirationDates({
+        items: installmentDates.map((item) => ({
+          id: item.id,
+          expirationDate: item.expirationDate.format("YYYY-MM-DD"),
+        })),
+      });
+      createToast({
+        status: "success",
+        message: "Datas de vencimento atualizadas com sucesso!",
+      });
+      setEditingInstallments(null);
+      tutorPaymentsQuery.refetch();
+    } catch (error) {
+      createToast({
+        status: "error",
+        message: "Erro ao atualizar datas de vencimento",
+      });
+    } finally {
+      setSavingInstallments(false);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -217,6 +273,76 @@ export default function AddBillPaymentWithCredits(props: {
           literalTotal={literalTotal}
           virtualTotal={virtualTotal}
         />
+      </Modal>
+
+      <Modal
+        title="Alterar Vencimento das Parcelas"
+        open={!!editingInstallments}
+        onOk={handleSaveInstallmentDates}
+        onCancel={() => setEditingInstallments(null)}
+        width={800}
+        confirmLoading={savingInstallments}
+        okText="Salvar"
+        cancelText="Cancelar"
+        okButtonProps={{
+          // disabled: !tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments)?.paymentMethod?.allow_change_expiration_date
+        }}
+      >
+        <div style={{ marginTop: 20 }}>
+          <Table
+            columns={[
+              {
+                title: "Parcela",
+                dataIndex: "installment",
+                key: "installment",
+                width: 100,
+              },
+              {
+                title: "Valor",
+                dataIndex: "value",
+                key: "value",
+                render: (val) => currencyFormatter(val),
+              },
+              {
+                title: "Data de Vencimento",
+                dataIndex: "expirationDate",
+                key: "expirationDate",
+                render: (_, record, index) => {
+                  const payment = tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments);
+                  const canEdit = payment?.paymentMethod?.allow_change_expiration_date ?? false;
+                  return (
+                    <DatePicker
+                      format="DD/MM/YYYY"
+                      value={installmentDates[index]?.expirationDate}
+                      onChange={(date) => {
+                        const newDates = [...installmentDates];
+                        newDates[index] = {
+                          ...newDates[index],
+                          expirationDate: date,
+                        };
+                        setInstallmentDates(newDates);
+                      }}
+                      style={{ width: "100%" }}
+                      disabled={!canEdit}
+                    />
+                  );
+                },
+              },
+            ]}
+            dataSource={tutorPaymentsQuery.data
+              ?.find((p: any) => p.id === editingInstallments)
+              ?.finances?.map((finance: any, index: number) => ({
+                key: finance.id,
+                id: finance.id,
+                installment: finance.installment || index + 1,
+                value: finance.value,
+                expirationDate: finance.expiration_date,
+              })) || []}
+            loading={tutorPaymentsQuery.isLoading}
+            pagination={false}
+            rowKey="id"
+          />
+        </div>
       </Modal>
 
       <Modal
@@ -622,6 +748,27 @@ export default function AddBillPaymentWithCredits(props: {
                           title: "Parcelas",
                           key: "installments",
                           dataIndex: "installments",
+                          render: (val, row) => {
+                            if (row.id === -1) {
+                              return val;
+                            }
+                            const canChangeExpiration = row.paymentMethodData?.allow_change_expiration_date;
+                            if (canChangeExpiration) {
+                              return (
+                                <span
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "#1890ff",
+                                    textDecoration: "underline",
+                                  }}
+                                  onClick={() => setEditingInstallments(row.id)}
+                                >
+                                  {val}
+                                </span>
+                              );
+                            }
+                            return <span>{val}</span>;
+                          },
                         },
                         {
                           title: "Usuário",
@@ -674,6 +821,7 @@ export default function AddBillPaymentWithCredits(props: {
                             ),
                             paymentMethod:
                               item.paymentMethod?.description ?? "-",
+                            paymentMethodData: item.paymentMethod,
                             user: item.user.name,
                           });
 

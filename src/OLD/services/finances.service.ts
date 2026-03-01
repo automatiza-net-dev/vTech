@@ -82,6 +82,9 @@ const update = async (id, data) =>
 
 const updateDown = async (data) => await api.put(`/finances/update-down`, data);
 
+const updateExpirationDates = async (data) =>
+	await api.put(`/finances/update-expiration-dates`, data);
+
 const groupedDown = async (data) =>
 	await api.put(`/finances/grouped-down`, data);
 
@@ -99,6 +102,7 @@ export const financesService = {
 	update,
 	remove,
 	updateDown,
+	updateExpirationDates,
 	updateReversal,
 	acceptManyFinances,
 	closeBordero,
