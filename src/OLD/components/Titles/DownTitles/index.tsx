@@ -65,6 +65,7 @@ function DownTitles({ setVisible, setReload }: any) {
             fee: currencyFormatter(0),
             feePercentage: title?.fee_percentage,
             feeDiscountPercentage: title?.fee_discount_percentage,
+            discountPercentage: title?.discount_percentage,
             discountValue: currencyFormatter(0),
             paymentValue: currencyFormatter(title?.value),
             agency: title?.agency,

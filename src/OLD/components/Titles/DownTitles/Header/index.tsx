@@ -132,7 +132,7 @@ const Header = memo(function ({
 
                     const totalDiscount =
                       (convertIntlCurrency(title?.originalValue) *
-                        title?.feeDiscountPercentage) /
+                        title?.discountPercentage) /
                       100;
 
                     return {
