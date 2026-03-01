@@ -194,6 +194,10 @@ export function useSubmitSchedule() {
             throw e;
           }
 
+          if (e.error.message === "Credenciais inválidas") {
+            throw e;
+          }
+
           if (
             window.confirm(
               "Profissional já possui Agendamento para este Horario, deseja continuar com o Agendamento ?"
