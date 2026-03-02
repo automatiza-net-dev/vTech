@@ -728,6 +728,23 @@ export default function AddBillPaymentWithCredits(props: {
                           key: "id",
                           dataIndex: "id",
                           render: (_, row) => (row.id === -1 ? "" : row.id),
+                          render: (val, row) => {
+                            if (row.id === -1) {
+                              return "";
+                            }
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#1890ff",
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() => setSelectedPayment(row.id)}
+                              >
+                                {row.id}
+                              </span>
+                            );
+                          },
                         },
                         {
                           title: "Data de Pagamento",
@@ -738,6 +755,23 @@ export default function AddBillPaymentWithCredits(props: {
                           title: "Valor",
                           key: "value",
                           dataIndex: "value",
+                          render: (val, row) => {
+                            if (row.id === -1) {
+                              return "";
+                            }
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#1890ff",
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() => setSelectedPayment(row.id)}
+                              >
+                                {row.value}
+                              </span>
+                            );
+                          },
                         },
                         {
                           title: "Método de Pagamento",
@@ -752,18 +786,18 @@ export default function AddBillPaymentWithCredits(props: {
                             if (row.id === -1) {
                               return val;
                             }
-                              return (
-                                <span
-                                  style={{
-                                    cursor: "pointer",
-                                    color: "#1890ff",
-                                    textDecoration: "underline",
-                                  }}
-                                  onClick={() => setEditingInstallments(row.id)}
-                                >
-                                  {val}
-                                </span>
-                              );
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#1890ff",
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() => setEditingInstallments(row.id)}
+                              >
+                                {val}
+                              </span>
+                            );
                           },
                         },
                         {
@@ -784,11 +818,6 @@ export default function AddBillPaymentWithCredits(props: {
                                   gap: '4px'
                                 }}
                               >
-                                <BsEye
-                                  size={16}
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => setSelectedPayment(row.id)}
-                                />
                                 <Popconfirm
                                   title="Tem certeza que deseja remover este registro?"
                                   onConfirm={async () => {
