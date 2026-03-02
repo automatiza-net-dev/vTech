@@ -285,7 +285,7 @@ export default function AddBillPaymentWithCredits(props: {
         okText="Salvar"
         cancelText="Cancelar"
         okButtonProps={{
-          // disabled: !tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments)?.paymentMethod?.allow_change_expiration_date
+          disabled: !tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments)?.paymentMethod?.allow_change_expiration_date
         }}
       >
         <div style={{ marginTop: 20 }}>
@@ -752,8 +752,6 @@ export default function AddBillPaymentWithCredits(props: {
                             if (row.id === -1) {
                               return val;
                             }
-                            const canChangeExpiration = row.paymentMethodData?.allow_change_expiration_date;
-                            if (canChangeExpiration) {
                               return (
                                 <span
                                   style={{
@@ -766,8 +764,6 @@ export default function AddBillPaymentWithCredits(props: {
                                   {val}
                                 </span>
                               );
-                            }
-                            return <span>{val}</span>;
                           },
                         },
                         {
