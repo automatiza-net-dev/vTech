@@ -96,7 +96,7 @@ export function Patient({
                   <Input>
                     <input
                       type="search"
-                      placeholder="Nome tutor"
+                      placeholder="Nome responsável"
                       onChange={(e) =>
                         setFilters({
                           ...filters,
@@ -108,7 +108,7 @@ export function Patient({
                   <Input>
                     <input
                       type="search"
-                      placeholder="Fone tutor"
+                      placeholder="Fone responsável"
                       onChange={(e) =>
                         setFilters({ ...filters, phone: e.target.value } as any)
                       }
