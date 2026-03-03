@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
 import moment from "moment";
@@ -24,6 +24,7 @@ import { Container } from "./styles";
 function Actions(casher) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
+  const dataRef = useRef({});
   const [obsVisible, setObsVisible] = useState(false);
   const [submitFunc, setSubmitFunc] = useState(null);
   const [numberInput, setNumberInput] = useState(true);
@@ -39,11 +40,12 @@ function Actions(casher) {
   const checkDailyCashierPermission = useUserHasPermission("CAI04");
 
   const closeCasher = useCallback(() => {
+    const currentData = dataRef.current;
     setLoading(true);
     dailyCasherService
       .closeDailyCasher(casher?.id, {
-        observations: data?.observations,
-        cashierTotal: Masks.noMoney(data?.cashierTotal),
+        observations: currentData?.observations,
+        cashierTotal: Masks.noMoney(currentData?.cashierTotal),
         userId: user?.id,
         closingDate: moment(new Date()).toISOString(),
       })
@@ -71,7 +73,7 @@ function Actions(casher) {
           status: "error",
         });
       });
-  }, [data, user?.id, casher?.id]);
+  }, [user?.id, casher?.id]);
 
   const reopenCasher = useCallback(() => {
     setLoading(true);
@@ -79,7 +81,7 @@ function Actions(casher) {
       .reopenDailyCasher(casher?.id, {
         userId: user?.id,
         reopeningDate: moment(new Date()).toISOString(),
-        observations: data?.observations,
+        observations: dataRef.current?.observations,
       })
       .then((_res) => {
         createToast({
@@ -104,7 +106,7 @@ function Actions(casher) {
           message: "Houve um erro ao realizar o fechamento do caixa...",
         });
       });
-  }, [user?.id, data, casher?.id]);
+  }, [user?.id, casher?.id]);
 
   const checkCasher = useCallback(() => {
     setLoading(true);
@@ -112,7 +114,7 @@ function Actions(casher) {
       .checkDailyCasher(casher?.id, {
         userId: user?.id,
         checkingDate: moment(new Date()).toISOString(),
-        observations: data?.observations,
+        observations: dataRef.current?.observations,
       })
       .then((_res) => {
         createToast({
@@ -137,7 +139,7 @@ function Actions(casher) {
           message: "Houve um erro ao realizar o fechamento do caixa...",
         });
       });
-  }, [data, casher?.id, user?.id]);
+  }, [casher?.id, user?.id]);
 
   const submitFuncControll = (e) => {
     if (!obsVisible) {
@@ -152,8 +154,22 @@ function Actions(casher) {
     }
   };
 
+  const handleSubmit = useCallback(() => {
+    submitFunc === "Fechamento" && closeCasher();
+    submitFunc === "Reabertura" && reopenCasher();
+    submitFunc === "Conferência" && checkCasher();
+    setObsVisible(false);
+  }, [submitFunc]);
+
+  // Atualiza a ref sempre que data mudar
   useEffect(() => {
-    setData({ cashierTotal: currencyFormatter(0) });
+    dataRef.current = data;
+  }, [data]);
+
+  useEffect(() => {
+    const initialData = { cashierTotal: currencyFormatter(0) };
+    setData(initialData);
+    dataRef.current = initialData;
   }, []);
 
   useEffect(() => {
@@ -185,24 +201,24 @@ function Actions(casher) {
       )}
       {(casher?.status === "FECHADO" ||
         (casher?.status === "REVISAO" && reopenDailyCashierPermission)) && (
-        <Tooltip
-          idTooltip="aberto"
-          position="top-left"
-          enableHover
-          content="Reabrir Caixa Diário"
-          trigger={
-            <VscUnlock
-              size={20}
-              className="icon"
-              onClick={() => {
-                setSubmitFunc("Reabertura");
-                setObsVisible(true);
-                setNumberInput(false);
-              }}
-            />
-          }
-        />
-      )}
+          <Tooltip
+            idTooltip="aberto"
+            position="top-left"
+            enableHover
+            content="Reabrir Caixa Diário"
+            trigger={
+              <VscUnlock
+                size={20}
+                className="icon"
+                onClick={() => {
+                  setSubmitFunc("Reabertura");
+                  setObsVisible(true);
+                  setNumberInput(false);
+                }}
+              />
+            }
+          />
+        )}
       {!casher?.checking_date ? (
         checkDailyCashierPermission && (
           <Tooltip
@@ -291,7 +307,7 @@ function Actions(casher) {
             submitFunc === "Conferência" && checkCasher();
           }}
         >
-          <FormChild data={data} setData={setData} numberInput={numberInput} />
+          <FormChild data={data} setData={setData} numberInput={numberInput} onSubmit={handleSubmit} />
         </Modal>
       )}
       <Modal

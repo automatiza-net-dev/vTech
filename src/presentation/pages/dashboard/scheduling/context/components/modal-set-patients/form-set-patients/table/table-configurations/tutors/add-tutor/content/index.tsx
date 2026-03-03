@@ -43,7 +43,7 @@ export function AddTutorContent({ id, setModal, origin }) {
 			await refetch(queryKeyLoadAllPatientTutor);
 
 			createToast({
-				message: "Tutor vinculado com sucesso!",
+			message: "Responsável vinculado com sucesso!",
 				status: "success",
 			});
 
@@ -77,7 +77,7 @@ export function AddTutorContent({ id, setModal, origin }) {
 		await refetch(queryKeyLoadAllPatientTutor);
 
 		createToast({
-			message: "Tutor vinculado com sucesso!",
+			message: "Responsável vinculado com sucesso!",
 			status: "success",
 		});
 

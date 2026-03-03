@@ -25,6 +25,11 @@ const getAgregateClientPayments = async (tutorID: string) => {
   return data as { total: number };
 };
 
+const getClientPaymentSales = async (id: string) => {
+  const { data } = await api.get(`/bills/client-payment-sales/${id}`);
+
+  return data;
+};
 
 const getSingleBill = async (id) => {
   const { data } = await api.get(`/bills/show/${id}`);
@@ -114,5 +119,6 @@ export const billService = {
   updateBillSeller,
   updateFinancialResponsible,
   removeClientPayment,
-  getAgregateClientPayments
+  getAgregateClientPayments,
+  getClientPaymentSales,
 };

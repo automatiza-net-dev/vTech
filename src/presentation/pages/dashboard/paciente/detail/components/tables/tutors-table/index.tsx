@@ -61,7 +61,7 @@ export function TutorsTable() {
       <Tooltip
         enableHover
         idTooltip="unlink"
-        content="Desvincular Tutor/Pet"
+        content="Desvincular Responsável/Pet"
         trigger={
           <button type="button" className="action-button">
             <Unlink patientId={props.id} tutorId={p.id} customSubmit={mutate} />

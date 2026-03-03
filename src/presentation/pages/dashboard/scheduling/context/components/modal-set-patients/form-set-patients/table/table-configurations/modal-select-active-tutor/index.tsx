@@ -43,7 +43,7 @@ export function ModalSelectActiveTutor({
       setModal(false);
 
       createToast({
-        message: "Tutor ativo vinculado com sucesso!",
+        message: "Responsável ativo vinculado com sucesso!",
         status: "success",
       });
 

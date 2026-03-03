@@ -41,7 +41,7 @@ export function BondPet({ tutor, setPatients }) {
           styles={{ width: "40rem", padding: 20, borderRadius: 10 }}
         >
           <S.BondPet>
-            <h3 className="title">Vincular pet - Tutor: {tutor?.name}</h3>
+            <h3 className="title">Vincular pet - Responsável: {tutor?.name}</h3>
             {data && (
               <FormHandler
                 onSucess={handleSubmit}

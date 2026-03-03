@@ -79,7 +79,7 @@ export function ButtonNewBudget() {
 
             <Select
               onlyOneValue
-              label={type === "Vet" ? "Tutor" : "Cliente"}
+              label={type === "Vet" ? "Responsável" : "Cliente"}
               name={"clientId"}
               options={
                 data?.map((tutor) => ({

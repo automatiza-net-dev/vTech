@@ -387,7 +387,7 @@ export const FormChild = React.memo(function FormChild({
         </div>
       </div>
       <h5 className="uk-heading-line uk-margin-remove">
-        <span>Tutores</span>
+        <span>Responsáveis</span>
       </h5>
       <p className="uk-text-muted">
         {data?.tutors?.length > 0 &&
@@ -395,7 +395,7 @@ export const FormChild = React.memo(function FormChild({
         {selectedTutors?.length > 0 &&
           selectedTutors?.map((tutor) => ` ${tutor?.name} |`)}
       </p>
-      <Form.Item label="Tutor" className="uk-width-1-2">
+      <Form.Item label="Responsável" className="uk-width-1-2">
         <div className="uk-flex">
           {formatedTutors?.length > 0 && (
             <div className="custom-select">
@@ -441,7 +441,7 @@ export const FormChild = React.memo(function FormChild({
                   }
 
                   return createToast({
-                    message: "Tutor já adicionado",
+                    message: "Responsável já adicionado",
                     status: "error",
                   });
                 }

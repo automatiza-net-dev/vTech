@@ -43,11 +43,11 @@ function TutorVincForm({ patient, setVisible, setReload, reload }: any) {
         holder: tutor?.tutorId,
         patient: patient?.id,
       })
-      .then((res) => createToast({ status: "success", message: "Tutor vinculado com sucesso!" })
+      .then((res) => createToast({ status: "success", message: "Responsável vinculado com sucesso!" })
       )
       .catch((err) => {
         setLoading(false);
-        return   createToast({ status: "error", message:"Houve um erro ao vincular o tutor..." })
+        return   createToast({ status: "error", message:"Houve um erro ao vincular o responsável..." })
       })
       .finally(() => {
         setTutor({});

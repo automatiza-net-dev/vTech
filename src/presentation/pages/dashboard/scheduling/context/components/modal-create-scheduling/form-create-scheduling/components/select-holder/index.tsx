@@ -22,7 +22,7 @@ export function SelectHolder() {
 
   return (
     <Select
-      label={type === "Vet" ? "Tutor" : "Cliente"}
+      label={type === "Vet" ? "Responsável" : "Cliente"}
       name={type === "Vet" ? "holderId" : "patientId"}
       options={
         initialValue ||

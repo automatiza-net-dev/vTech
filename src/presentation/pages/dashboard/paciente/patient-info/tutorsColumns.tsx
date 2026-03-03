@@ -1,6 +1,6 @@
 export const Columns = [
   {
-    title: "Tutor",
+    title: "Responsável",
     key: "name",
     dataIndex: "name",
     render: (_, data) => (data?.is_main ? `${data?.name} - Ativo` : data?.name),
@@ -18,7 +18,7 @@ export const Columns = [
     render: (_, data) => data?.tutor?.email,
   },
   {
-    title: "Tutor ativo",
+    title: "Responsável ativo",
     key: "activeTutor",
     dataIndex: "activeTutor",
   },

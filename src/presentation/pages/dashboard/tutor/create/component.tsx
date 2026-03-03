@@ -65,7 +65,7 @@ export function FormCreateTutor({
         ) : (
           <Button
             text={
-              type === "Vet" ? "Novo Tutor" : "Novo Cliente"
+              type === "Vet" ? "Novo Responsável" : "Novo Cliente"
             }
             type="button"
             onClick={() => setOpen(true)}

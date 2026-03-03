@@ -48,7 +48,7 @@ export function PatientHistoric({ id }) {
             </span>
             {clinic?.unitConfig?.requires_schedule_tutor && (
               <span>
-                <strong>Tutor:</strong>
+                <strong>Responsável:</strong>
                 {item.tutor.name}
               </span>
             )}

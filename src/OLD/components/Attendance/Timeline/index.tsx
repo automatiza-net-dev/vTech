@@ -138,7 +138,7 @@ function Timeline({ patient, reload, setReload, reloadExtern }) {
           />
         </TabPane>
         {type === "Vet" && (
-          <TabPane tab="Tutores" key="9">
+          <TabPane tab="Responsáveis" key="9">
             <TutorsList
               filters={{ patientId: patient?.id }}
               tutors={patient?.tutors}

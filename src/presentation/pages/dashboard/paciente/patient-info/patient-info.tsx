@@ -33,7 +33,7 @@ function Single({ selectedId, setVisible }) {
   const setActiveTutor = (tutorId) => {
     petsService
       .setMainTutor(selectedId, tutorId)
-      .then((_res) =>   createToast({ status: "success", message: "Tutor ativo com sucesso!" })
+      .then((_res) =>   createToast({ status: "success", message: "Responsável ativo com sucesso!" })
 
       )
       .finally(() => {
@@ -72,7 +72,7 @@ function Single({ selectedId, setVisible }) {
   const hasPermission = useVerifyPermissions("PET04");
   const Columns = [
     {
-      title: "Tutor",
+      title: "Responsável",
       key: "name",
       dataIndex: "name",
       render: (_, data) =>
@@ -91,12 +91,12 @@ function Single({ selectedId, setVisible }) {
       render: (_, data) => data?.tutor?.email,
     },
     {
-      title: "Tutor ativo",
+      title: "Responsável ativo",
       key: "activeTutor",
       dataIndex: "activeTutor",
     },
     hasPermission && {
-      title: "Desvincular Tutor/Pet",
+      title: "Desvincular Responsável/Pet",
       dataIndex: "unlinkTutorPet",
       key: "unlinkTutorPet",
     },
@@ -235,7 +235,7 @@ function Single({ selectedId, setVisible }) {
           <Accordion
             closeIcon={"IconTopNavigation"}
             openIcon={"IconArrowRight"}
-            title="Tutores"
+            title="Responsáveis"
             key="tutors"
             children={
               <>

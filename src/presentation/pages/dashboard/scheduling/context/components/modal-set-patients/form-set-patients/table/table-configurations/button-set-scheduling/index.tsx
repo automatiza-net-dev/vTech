@@ -77,7 +77,7 @@ export function ButtonSetSchedulling(props) {
 
               if (props.tutors.length === 0) {
                 createToast({
-                  message: "Cadastre um tutor para agendar.",
+                  message: "Cadastre um responsável para agendar.",
                   status: "error",
                 });
 

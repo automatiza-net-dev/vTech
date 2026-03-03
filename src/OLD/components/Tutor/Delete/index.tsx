@@ -24,7 +24,7 @@ export function Delete({ id, reload, setReload }) {
       .then((_res) =>
         createToast({
           status: "success",
-          message: "Tutor removido com sucesso!",
+          message: "Responsável removido com sucesso!",
         })
       )
       .catch((_err) => {

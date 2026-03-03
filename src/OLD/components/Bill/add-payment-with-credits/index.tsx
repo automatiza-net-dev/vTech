@@ -3,6 +3,7 @@ import * as React from "react";
 import {
   Input as AntInput,
   Checkbox,
+  DatePicker,
   Divider,
   InputNumber,
   Modal,
@@ -13,6 +14,7 @@ import {
   Popconfirm,
 } from "antd";
 import { IoMdTrash } from "react-icons/io";
+import { BsEye } from "react-icons/bs";
 import { Button, Tooltip, useQueryClient, useToast } from "infinity-forge";
 import { Container } from "../styles";
 import {
@@ -23,6 +25,7 @@ import { CgChevronDown, CgChevronUp } from "react-icons/cg";
 import { useDictionary, useMutation, useQuery } from "@/presentation";
 import { petsService } from "@/OLD/services/patient.service";
 import { billService } from "@/OLD/services/bills.service";
+import { financesService } from "@/OLD/services/finances.service";
 import moment from "moment";
 import { billStatusFormatter } from "../utils/status-formater";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
@@ -38,7 +41,11 @@ export default function AddBillPaymentWithCredits(props: {
 }) {
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
   const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
+  const [selectedPayment, setSelectedPayment] = React.useState<number | null>(null);
   const [visiblePayments, setVisiblePayments] = React.useState(false);
+  const [editingInstallments, setEditingInstallments] = React.useState<number | null>(null);
+  const [installmentDates, setInstallmentDates] = React.useState<Array<{ id: string, expirationDate: moment.Moment }>>([]);
+  const [savingInstallments, setSavingInstallments] = React.useState(false);
   const { getWord } = useDictionary();
   const [tabState, setTabState] = React.useState("vendas");
   const { createToast } = useToast();
@@ -59,6 +66,35 @@ export default function AddBillPaymentWithCredits(props: {
       return result.data;
     },
   });
+
+
+  const paymentMetadataQuery = useQuery({
+    enabled: props.isOpen && !!selectedPayment,
+    queryKey: ["payment-metadata", selectedPayment],
+    queryFn: async () => {
+      if (!selectedPayment) {
+        return
+      }
+
+      const data = await billService.getClientPaymentSales(selectedPayment)
+
+      return data as {
+        credits: {
+          billId: string
+          tag: string
+          paidValue: number
+          totalValue: string
+        }[]
+        sales: {
+          id: number,
+          originalValue: number,
+          usedValue: number,
+          returned: boolean,
+        }[]
+      }
+    },
+  });
+
 
   const tutorPaymentsQuery = useQuery({
     enabled: props.isOpen,
@@ -99,6 +135,23 @@ export default function AddBillPaymentWithCredits(props: {
       }
     },
   });
+
+  React.useEffect(() => {
+    if (!editingInstallments || !tutorPaymentsQuery.data) {
+      setInstallmentDates([]);
+      return;
+    }
+
+    const payment = tutorPaymentsQuery.data.find((p: any) => p.id === editingInstallments);
+    if (payment && payment.finances) {
+      setInstallmentDates(
+        payment.finances.map((finance: any) => ({
+          id: finance.id,
+          expirationDate: moment(finance.expiration_date),
+        }))
+      );
+    }
+  }, [editingInstallments, tutorPaymentsQuery.data]);
 
   React.useEffect(() => {
     if (!salesQuery.data) {
@@ -167,6 +220,40 @@ export default function AddBillPaymentWithCredits(props: {
     });
   };
 
+  const handleSaveInstallmentDates = async () => {
+    const payment = tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments);
+    if (!payment?.paymentMethod?.allow_change_expiration_date) {
+      createToast({
+        status: "error",
+        message: "Este método de pagamento não permite alterar datas de vencimento",
+      });
+      return;
+    }
+
+    setSavingInstallments(true);
+    try {
+      await financesService.updateExpirationDates({
+        items: installmentDates.map((item) => ({
+          id: item.id,
+          expirationDate: item.expirationDate.format("YYYY-MM-DD"),
+        })),
+      });
+      createToast({
+        status: "success",
+        message: "Datas de vencimento atualizadas com sucesso!",
+      });
+      setEditingInstallments(null);
+      tutorPaymentsQuery.refetch();
+    } catch (error) {
+      createToast({
+        status: "error",
+        message: "Erro ao atualizar datas de vencimento",
+      });
+    } finally {
+      setSavingInstallments(false);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -189,6 +276,76 @@ export default function AddBillPaymentWithCredits(props: {
       </Modal>
 
       <Modal
+        title="Alterar Vencimento das Parcelas"
+        open={!!editingInstallments}
+        onOk={handleSaveInstallmentDates}
+        onCancel={() => setEditingInstallments(null)}
+        width={800}
+        confirmLoading={savingInstallments}
+        okText="Salvar"
+        cancelText="Cancelar"
+        okButtonProps={{
+          disabled: !tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments)?.paymentMethod?.allow_change_expiration_date
+        }}
+      >
+        <div style={{ marginTop: 20 }}>
+          <Table
+            columns={[
+              {
+                title: "Parcela",
+                dataIndex: "installment",
+                key: "installment",
+                width: 100,
+              },
+              {
+                title: "Valor",
+                dataIndex: "value",
+                key: "value",
+                render: (val) => currencyFormatter(val),
+              },
+              {
+                title: "Data de Vencimento",
+                dataIndex: "expirationDate",
+                key: "expirationDate",
+                render: (_, record, index) => {
+                  const payment = tutorPaymentsQuery.data?.find((p: any) => p.id === editingInstallments);
+                  const canEdit = payment?.paymentMethod?.allow_change_expiration_date ?? false;
+                  return (
+                    <DatePicker
+                      format="DD/MM/YYYY"
+                      value={installmentDates[index]?.expirationDate}
+                      onChange={(date) => {
+                        const newDates = [...installmentDates];
+                        newDates[index] = {
+                          ...newDates[index],
+                          expirationDate: date,
+                        };
+                        setInstallmentDates(newDates);
+                      }}
+                      style={{ width: "100%" }}
+                      disabled={!canEdit}
+                    />
+                  );
+                },
+              },
+            ]}
+            dataSource={tutorPaymentsQuery.data
+              ?.find((p: any) => p.id === editingInstallments)
+              ?.finances?.map((finance: any, index: number) => ({
+                key: finance.id,
+                id: finance.id,
+                installment: finance.installment || index + 1,
+                value: finance.value,
+                expirationDate: finance.expiration_date,
+              })) || []}
+            loading={tutorPaymentsQuery.isLoading}
+            pagination={false}
+            rowKey="id"
+          />
+        </div>
+      </Modal>
+
+      <Modal
         title=""
         open={props.isOpen}
         onOk={props.toggle}
@@ -206,6 +363,44 @@ export default function AddBillPaymentWithCredits(props: {
               label: "Selecione as vendas para pagar",
               children: (
                 <Container>
+                  <Modal
+                    title=""
+                    open={!!selectedPayment}
+                    onOk={() => setSelectedPayment(null)}
+                    onCancel={() => setSelectedPayment(null)}
+                    centered
+                    width={600}
+                    footer={null}
+                  >
+                    {paymentMetadataQuery.data && (
+                      <>
+                        <h4 style={{ marginTop: 16 }}>Vendas</h4>
+                        <Table
+                          columns={[
+                            { title: "Tag", dataIndex: "tag", key: "tag" },
+                            { title: "Valor Total", dataIndex: "totalValue", key: "totalValue", render: (val) => currencyFormatter(val) },
+                          ]}
+                          dataSource={paymentMetadataQuery.data.sales}
+                          pagination={false}
+                          rowKey="billId"
+                        />
+                        <h4 style={{ marginTop: 16 }}>Crédito</h4>
+                        <Table
+                          columns={[
+                            { title: "ID", dataIndex: "id", key: "id" },
+                            { title: "Valor Original", dataIndex: "originalValue", key: "originalValue", render: (val) => currencyFormatter(val) },
+                            { title: "Valor Usado", dataIndex: "usedValue", key: "usedValue", render: (val) => currencyFormatter(val) },
+                            { title: "Devolvido", dataIndex: "returned", key: "returned", render: (val) => <Checkbox checked={val} /> },
+                          ]}
+                          dataSource={paymentMetadataQuery.data.credits}
+                          pagination={false}
+                          rowKey="id"
+                        />
+                      </>
+                    )}
+
+                  </Modal>
+
                   <div className="uk-margin-top">
                     <Table
                       columns={[
@@ -533,6 +728,23 @@ export default function AddBillPaymentWithCredits(props: {
                           key: "id",
                           dataIndex: "id",
                           render: (_, row) => (row.id === -1 ? "" : row.id),
+                          render: (val, row) => {
+                            if (row.id === -1) {
+                              return "";
+                            }
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#1890ff",
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() => setSelectedPayment(row.id)}
+                              >
+                                {row.id}
+                              </span>
+                            );
+                          },
                         },
                         {
                           title: "Data de Pagamento",
@@ -543,6 +755,23 @@ export default function AddBillPaymentWithCredits(props: {
                           title: "Valor",
                           key: "value",
                           dataIndex: "value",
+                          render: (val, row) => {
+                            if (row.id === -1) {
+                              return "";
+                            }
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#1890ff",
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() => setSelectedPayment(row.id)}
+                              >
+                                {row.value}
+                              </span>
+                            );
+                          },
                         },
                         {
                           title: "Método de Pagamento",
@@ -553,6 +782,23 @@ export default function AddBillPaymentWithCredits(props: {
                           title: "Parcelas",
                           key: "installments",
                           dataIndex: "installments",
+                          render: (val, row) => {
+                            if (row.id === -1) {
+                              return val;
+                            }
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  color: "#1890ff",
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() => setEditingInstallments(row.id)}
+                              >
+                                {val}
+                              </span>
+                            );
+                          },
                         },
                         {
                           title: "Usuário",
@@ -569,6 +815,7 @@ export default function AddBillPaymentWithCredits(props: {
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
+                                  gap: '4px'
                                 }}
                               >
                                 <Popconfirm
@@ -599,6 +846,7 @@ export default function AddBillPaymentWithCredits(props: {
                             ),
                             paymentMethod:
                               item.paymentMethod?.description ?? "-",
+                            paymentMethodData: item.paymentMethod,
                             user: item.user.name,
                           });
 

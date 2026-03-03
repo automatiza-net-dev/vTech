@@ -184,7 +184,7 @@ const Filters = memo(function Filters({ filters, setFilters }) {
       </div>
       <div className="uk-flex uk-margin-small-top" style={{ gap: "5px" }}>
         <InputBox className="uk-margin-top uk-width-1-3">
-          <label>Tutor</label>
+          <label>Responsável</label>
           <Input
             value={filters?.tutorName}
             onChange={(e) =>

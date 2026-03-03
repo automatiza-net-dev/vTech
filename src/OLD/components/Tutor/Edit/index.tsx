@@ -54,7 +54,7 @@ export function Edit({
 
     return createToast({
       message: `Erro ao editar ${
-        type !== "Vet" ? "Cliente" : "Tutor"
+        type !== "Vet" ? "Cliente" : "Responsável"
       }`,
       status: "error",
     });
@@ -302,7 +302,7 @@ export function Edit({
         updateContacts(() => setVisible(false));
         return createToast({
           message: `${
-            type !== "Vet" ? "Cliente" : "Tutor"
+            type !== "Vet" ? "Cliente" : "Responsável"
           } editado!`,
           status: "success",
         });
@@ -380,7 +380,7 @@ export function Edit({
   ) : (
     <Container>
       <h2>
-        {type !== "Vet" ? "Editar cliente" : "Editar Tutor"}
+        {type !== "Vet" ? "Editar cliente" : "Editar Responsável"}
       </h2>
 
       <Form

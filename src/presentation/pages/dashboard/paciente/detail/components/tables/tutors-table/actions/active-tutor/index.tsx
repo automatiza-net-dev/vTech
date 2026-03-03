@@ -26,7 +26,7 @@ export function ActiveTutor(props: Tutor) {
 
   async function handleSuccess() {
     if (isTutorActive) {
-      createToast({ message: "Tutor já vinculado", status: "error" });
+      createToast({ message: "Responsável já vinculado", status: "error" });
 
       return;
     }
@@ -38,7 +38,7 @@ export function ActiveTutor(props: Tutor) {
       holder: props?.id,
     });
 
-    createToast({ message: "Tutor vinculado com sucesso!", status: "success" });
+    createToast({ message: "Responsável vinculado com sucesso!", status: "success" });
 
     await refetch(["RemotePatient", patientId]);
     await refetch(["LastUpdates", patientId]);

@@ -127,7 +127,7 @@ export function AuthorizationPaymentForm({
       <div className="row">
         <Input name="email" label="Email Usuário" />
 
-        <InputPassword label="Senha" name="password"  />
+        <InputPassword label="Senha" name="password" autoComplete="off"  />
       </div>
 
       <Textarea label="Descrição" name="description" />

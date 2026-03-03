@@ -122,7 +122,7 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
                 <div className="uk-flex uk-flex-between uk-margin-small-top">
                   <div>
                     <p className="uk-text-muted uk-margin-remove">
-                      Tutor: {hospitalization?.tutor?.name}
+                      Responsável: {hospitalization?.tutor?.name}
                     </p>
                     <p className="uk-text-muted uk-margin-remove">
                       Data internação:{" "}
@@ -221,7 +221,7 @@ const HospitalizationConsult = memo(function HospitalizationConsult() {
               <Input disabled value={hospitalizationData?.technician} />
             </div>
             <div className="uk-margin-small-top">
-              <label>Tutor</label>
+              <label>Responsável</label>
               <Input disabled value={hospitalizationData?.tutor?.name} />
             </div>
             <div className="uk-margin-small-top">

@@ -29,7 +29,7 @@ export function ScheduleAuthorization({
         <div className="row">
           <Input name="userEmail" type="email" label="Usuário (e-mail)" />
 
-          <InputPassword name="userPwd" label="Senha" />
+          <InputPassword name="userPwd" label="Senha" autoComplete="off" />
         </div>
       )}
     </S.ScheduleAuthorization>

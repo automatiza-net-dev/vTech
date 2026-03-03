@@ -63,12 +63,12 @@ const TutorVincForm = memo(function TutorVincForm({
       })
       .then((_res) => {
         setLoading(false);
-        createToast({ status: "success", message: "Tutor vinculado com sucesso!" })
+        createToast({ status: "success", message: "Responsável vinculado com sucesso!" })
       })
       .catch((_err) => {
         setLoading(false);
 
-        return   createToast({ status: "error", message: "Houve um erro ao vincular o tutor..." })
+        return   createToast({ status: "error", message: "Houve um erro ao vincular o responsável..." })
     
       });
   }, [tutor, patient]);
@@ -89,7 +89,7 @@ const TutorVincForm = memo(function TutorVincForm({
 
   return (
     <div>
-      <label>Selecione o tutor a ser vinculado</label>
+      <label>Selecione o responsável a ser vinculado</label>
       <AutoComplete
         className="uk-width-1-1"
         required
@@ -116,7 +116,7 @@ const TutorVincForm = memo(function TutorVincForm({
       <hr />
       <footer className="uk-flex uk-flex-right">
         <Popconfirm
-          title="Deseja tornar esse tutor como ativo?"
+          title="Deseja tornar esse responsável como ativo?"
           onCancel={() => {
             setReload(!reload)
             setVisible(false);
@@ -137,7 +137,7 @@ const TutorVincForm = memo(function TutorVincForm({
             className="uk-margin-right"
             onClick={() => setCreateTutorVisible(true)}
           >
-            Novo Tutor
+            Novo Responsável
           </Button>
         )}
         <Button onClick={() => (setVisible(false), setTutor({}))}>

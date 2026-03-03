@@ -14,17 +14,34 @@ const FormChild = memo<{
 	setData: any;
 	numberInput?: boolean;
 	showObservations?: boolean;
-}>(function FormChild({ data, setData, numberInput, showObservations = true }) {
+	onSubmit?: () => void;
+}>(function FormChild({ data, setData, numberInput, showObservations = true, onSubmit }) {
+	const inputRef = React.useRef<any>(null);
+
+	const handlePressEnter = () => {
+		// Força atualização do estado com o valor atual do input antes de submeter
+		if (inputRef.current && inputRef.current.input) {
+			const currentValue = inputRef.current.input.value;
+			setData({ ...data, cashierTotal: Masks.money(currentValue) });
+		}
+		// Chama onSubmit após um pequeno delay para garantir que o estado foi atualizado
+		setTimeout(() => {
+			onSubmit?.();
+		}, 0);
+	};
+
 	return (
 		<section>
 			{numberInput && (
 				<div>
 					<label>Valor total</label>
 					<Input
+						ref={inputRef}
 						autoFocus
 						onChange={(e) =>
 							setData({ ...data, cashierTotal: Masks.money(e.target.value) })
 						}
+						onPressEnter={handlePressEnter}
 						value={data?.cashierTotal}
 					/>
 				</div>
