@@ -69,7 +69,7 @@ export function VaccinesPanel({ patientId }: { patientId: Patient["id"] }) {
                       </span>
                       <span>
                         {vaccineSchedule?.dataAplicacao
-                          ? moment(vaccineSchedule?.dataApplicacao).format(
+                          ? moment(vaccineSchedule?.dataAplicacao).format(
                               "DD/MM/YYYY - hh:mm"
                             )
                           : "--"}
