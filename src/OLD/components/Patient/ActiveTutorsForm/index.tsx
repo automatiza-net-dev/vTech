@@ -40,12 +40,12 @@ const ActiveTutorsForm = memo(function ({
 
   return (
     <Container>
-      <h2>Selecionar tutor ativo</h2>
+      <h2>Selecionar responsável ativo</h2>
 
       {patient?.tutors?.length > 0 &&
         patient?.tutors.map((tutor, i) => (
           <Popconfirm
-            title={`Deseja definir ${selectedTutor?.name} como o tutor ativo?`}
+            title={`Deseja definir ${selectedTutor?.name} como o responsável ativo?`}
             onConfirm={submitMainTutor}
             okText="Sim"
             cancelText="Não"

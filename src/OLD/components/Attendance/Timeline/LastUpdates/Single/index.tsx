@@ -119,7 +119,7 @@ export  function Vaccine({
         if (selectedUpdate?.timeline_info?.event === "TROCA_TUTOR_PRINCIPAL") {
           return {
             inf: "Troca tutor",
-            title: "Troca de tutor principal",
+            title: "Troca de responsável principal",
           };
         } else {
           return {

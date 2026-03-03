@@ -268,7 +268,7 @@ export default function FastCreateTutor({
 				title={
 					type !== "Vet"
 						? "Cadastro rápido de Clientes"
-						: "Cadastro rápido de tutor e paciente"
+						: "Cadastro rápido de responsável e paciente"
 				}
 				width={900}
 			>

@@ -132,7 +132,7 @@ const PrintContent = ({ obj, patient }) => {
                       Profissional responsável: {item?.data?.technician?.name}
                     </p>
                     <p className="uk-margin-remove">
-                      Tutor responsável: {item?.data?.tutor?.name}
+                      Responsável: {item?.data?.tutor?.name}
                     </p>
                   </section>
                 </div>

@@ -68,7 +68,7 @@ export function FormSetClients() {
             code: "400",
             message:
               type === "Vet"
-                ? `Preencha pelo menos um dos campos de filtro (Nome do pet 2 caracteres, Telefone 3 caracteres, CPF 3 caracteres, Tutor 3 caracteres, RG Pet 1 caractere)`
+                ? `Preencha pelo menos um dos campos de filtro (Nome do pet 2 caracteres, Telefone 3 caracteres, CPF 3 caracteres, Responsável 3 caracteres, RG Pet 1 caractere)`
                 : "Preencha pelo menos um dos campos de filtro (Telefone 3 caracteres, CPF 3 caracteres, nome 3 caracteres)",
           });
         }}
