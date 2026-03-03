@@ -17,7 +17,7 @@ export function PrintVaccinesVermifugeReport({
         <thead>
           <tr>
             <th>Unidade</th>
-            <th>Tutor</th>
+            <th>Responsável</th>
             <th>Telefone</th>
             <th>Paciente</th>
             <th>Nome {reports[0]?.vacina_vermifugo}</th>

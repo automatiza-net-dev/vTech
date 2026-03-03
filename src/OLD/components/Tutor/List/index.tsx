@@ -222,7 +222,7 @@ export function List({
 		petsService
 			.setMainTutor(patient?.id, tutorId)
 			.then((_res) =>
-				createToast({ status: "success", message: "Tutor ativo com sucesso!" }),
+				createToast({ status: "success", message: "Responsável ativo com sucesso!" }),
 			)
 			.finally(() => {
 				setPatientReload((prv) => !prv);
@@ -475,7 +475,7 @@ export function List({
 					onClose={() => setVincPetVisible(false)}
 					children={
 						<>
-							<h2>Vincular pet - Tutor: ${selectedTutor?.name}</h2>
+							<h2>Vincular pet - Responsável: ${selectedTutor?.name}</h2>
 
 							<label>Selecionar pet</label>
 							<AutoComplete

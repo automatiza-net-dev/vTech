@@ -127,7 +127,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
         {details && (
           <div className="details-box">
             {details?.map((detail) => {
-              if (detail.subTitle === "Tutor Ativo" && detail.active) {
+              if (detail.subTitle === "Responsável Ativo" && detail.active) {
                 return (
                   <FormCreateTutor
                     isModal

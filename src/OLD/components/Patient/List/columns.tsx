@@ -25,7 +25,7 @@ export const columns = [
     key: "race",
   },
   {
-    title: "Tutores",
+    title: "Responsáveis",
     dataIndex: "tutors",
     key: "tutors",
   },
@@ -73,7 +73,7 @@ export const customColumns = [
     key: "race",
   },
   {
-    title: "Tutores",
+    title: "Responsáveis",
     dataIndex: "tutors",
     key: "tutors",
   },
@@ -111,7 +111,7 @@ export const opportunitiesColumns = [
     key: "race",
   },
   {
-    title: "Tutores",
+    title: "Responsáveis",
     dataIndex: "tutors",
     key: "tutors",
   },

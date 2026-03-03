@@ -467,7 +467,7 @@ export function useActionsPatient(patient?: Patient): {
 		{
 			active: type === "Vet",
 			label: "Responsável",
-			value: "Tutores",
+			value: "Responsáveis",
 			Icon: <Icon name="IconPerson" />,
 			Component: (props) => (
 				<>

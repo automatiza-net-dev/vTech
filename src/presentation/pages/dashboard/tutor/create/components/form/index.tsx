@@ -166,7 +166,7 @@ export function CreateTutorForm(props: ICreateTutorFormProps) {
             {tutorId
               ? `Editar - ${data?.name}`
               : type === "Vet"
-                ? "Novo Tutor"
+                ? "Novo Responsável"
                 : "Novo Paciente"}
           </h2>
           <div className="row">

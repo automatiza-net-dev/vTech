@@ -64,7 +64,7 @@ export const columns: Column<SchedulePatient & Tutor>[] = [
   },
   {
     id: "tutors",
-    label: "Tutores",
+    label: "Responsáveis",
     width: 200,
     Component: {
       Element: (props) => <Tutors tutors={props?.tutors} id={props?.id} name={props?.name} />,

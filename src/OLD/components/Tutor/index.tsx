@@ -46,7 +46,7 @@ export function Tutor({
     <AccessDenied loading={listTutorsPermission} />
   ) : (
     <PageWrapper
-      title={type === "Vet" ? "Tutores" : "Clientes"}
+      title={type === "Vet" ? "Responsáveis" : "Clientes"}
     >
       <div>
         <div className="uk-flex uk-margin-bottom uk-flex-between uk-width-1-1">

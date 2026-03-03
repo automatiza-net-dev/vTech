@@ -29,7 +29,7 @@ export function PacientePage() {
       active: true,
     },
     {
-      title: "Tutores",
+      title: "Responsáveis",
       content: TutorsTable,
       key: "tutors",
       active: type === "Vet",

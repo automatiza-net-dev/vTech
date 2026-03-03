@@ -79,7 +79,7 @@ export function MedicalPrescription({ id }) {
       <FormHandler initialData={{ status: "Aberto" }} disableEnterKeySubmitForm>
         <div className="bottom">
           <span className="font-18-regular">
-            <strong>Tutor:</strong> {data?.tutor?.name} <br />
+            <strong>Responsável:</strong> {data?.tutor?.name} <br />
             <strong>Telefone:</strong>{" "}
             {data?.tutor?.telephone || "Não cadastrado"} <br />
             <strong>Celular:</strong>{" "}

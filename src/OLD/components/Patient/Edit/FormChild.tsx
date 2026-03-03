@@ -387,7 +387,7 @@ export const FormChild = React.memo(function FormChild({
         </div>
       </div>
       <h5 className="uk-heading-line uk-margin-remove">
-        <span>Tutores</span>
+        <span>Responsáveis</span>
       </h5>
       <p className="uk-text-muted">
         {data?.tutors?.length > 0 &&
@@ -441,7 +441,7 @@ export const FormChild = React.memo(function FormChild({
                   }
 
                   return createToast({
-                    message: "Tutor já adicionado",
+                    message: "Responsável já adicionado",
                     status: "error",
                   });
                 }

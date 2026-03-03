@@ -380,7 +380,7 @@ export function Edit({
   ) : (
     <Container>
       <h2>
-        {type !== "Vet" ? "Editar cliente" : "Editar Tutor"}
+        {type !== "Vet" ? "Editar cliente" : "Editar Responsável"}
       </h2>
 
       <Form

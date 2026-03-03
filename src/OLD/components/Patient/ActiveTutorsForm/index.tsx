@@ -24,11 +24,11 @@ const ActiveTutorsForm = memo(function ({
     setLoading(true);
     petsService
       .setMainTutor(patient?.id, selectedTutor?.id)
-      .then((_) => createToast({ status: "success", message: "Tutor ativo definido com sucesso!" })
+      .then((_) => createToast({ status: "success", message: "Responsável ativo definido com sucesso!" })
       )
       .catch((err) => {
         setLoading(false);
-        return  createToast({ status: "error", message: "Houve um erro ao definir o tutor ativo..." })
+        return  createToast({ status: "error", message: "Houve um erro ao definir o responsável ativo..." })
       })
       .finally(() => {
         setLoading(false);

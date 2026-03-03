@@ -64,7 +64,7 @@ export function Single({
       key: "patientRec",
     },
     hasPermission && {
-      title: "Desvincular Tutor/Pet",
+      title: "Desvincular Responsável/Pet",
       dataIndex: "unlinkTutorPet",
       key: "unlinkTutorPet",
     },
