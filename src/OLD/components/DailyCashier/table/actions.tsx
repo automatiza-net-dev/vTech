@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 
 import Link from "next/link";
 import { AxiosError } from "axios";
@@ -62,6 +62,15 @@ export function useDailyCashierTableActions({
 
   const { createToast } = useToast();
 
+  // Usar ref para manter a referência mais recente do mutate sem causar re-render
+  const mutateRef = useRef(mutate);
+  mutateRef.current = mutate;
+
+  // Memoize o componente Actions - criado apenas uma vez
+  const ActionsComponent = useMemo(() => {
+    return (props) => <Actions {...props} mutate={mutateRef.current} />;
+  }, []); // Sem dependências - criado apenas uma vez
+
   const action = user?.user && {
     Custom: !hasDailyMevements && CustomAction,
     title: "Abrir Caixa",
@@ -92,7 +101,7 @@ export function useDailyCashierTableActions({
           message: "Ação realizada com sucesso!",
         });
 
-        mutate();
+        mutateRef.current();
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response?.data.message) {
@@ -147,6 +156,6 @@ export function useDailyCashierTableActions({
   return {
     modalStyles: { maxWidth: 1024 },
     create: createDailyCashierPermission && action,
-    custom: [(props) => <Actions {...props} mutate={mutate} />],
+    custom: [ActionsComponent],
   };
 }
