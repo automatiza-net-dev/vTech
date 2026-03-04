@@ -9,7 +9,7 @@ import { Radio, Space, Checkbox, Select, DatePicker } from "antd";
 import { Container } from "./styles";
 const { Group } = Radio;
 
-const Header = memo(function ({
+const Header = memo(function({
   plans,
   paymentMethods,
   checkingAccounts,
@@ -29,31 +29,16 @@ const Header = memo(function ({
                 if (e.target.value === "now") {
                   setData(
                     data?.map((title) => {
-                      const dailyFee =
-                        (convertIntlCurrency(title?.originalValue) *
-                          title?.feePercentage) /
-                        100 /
-                        30;
-
-                      const totalFee =
-                        moment(new Date()).diff(title?.expirationDate, "days") *
-                        dailyFee;
-
-                      const totalDiscount =
-                        (convertIntlCurrency(title?.originalValue) *
-                          title?.feeDiscountPercentage) /
-                        100;
-
                       return {
                         ...title,
                         paymentDate: moment(new Date()),
-                        fee: currencyFormatter(totalFee),
-                        discountValue: currencyFormatter(totalDiscount),
-                        paymentValue: currencyFormatter(
-                          totalFee +
-                            convertIntlCurrency(title?.originalValue) -
-                            totalDiscount
-                        ),
+                        // fee: currencyFormatter(totalFee),
+                        // discountValue: currencyFormatter(totalDiscount),
+                        // paymentValue: currencyFormatter(
+                        //   totalFee +
+                        //   convertIntlCurrency(title?.originalValue) -
+                        //   totalDiscount
+                        // ),
                       };
                     })
                   );
@@ -67,33 +52,16 @@ const Header = memo(function ({
                 if (e.target.value === "expirationDate") {
                   setData(
                     data?.map((title) => {
-                      const dailyFee =
-                        (convertIntlCurrency(title?.originalValue) *
-                          title?.feePercentage) /
-                        100 /
-                        30;
-
-                      const totalFee =
-                        moment(title?.expirationDate).diff(
-                          title?.expirationDate,
-                          "days"
-                        ) * dailyFee;
-
-                      const totalDiscount =
-                        (convertIntlCurrency(title?.originalValue) *
-                          title?.feeDiscountPercentage) /
-                        100;
-
                       return {
                         ...title,
                         paymentDate: moment(title?.expirationDate),
-                        fee: currencyFormatter(totalFee),
-                        discountValue: currencyFormatter(totalDiscount),
-                        paymentValue: currencyFormatter(
-                          totalFee +
-                            convertIntlCurrency(title?.originalValue) -
-                            totalDiscount
-                        ),
+                        // fee: currencyFormatter(totalFee),
+                        // discountValue: currencyFormatter(totalDiscount),
+                        // paymentValue: currencyFormatter(
+                        //   totalFee +
+                        //     convertIntlCurrency(title?.originalValue) -
+                        //     totalDiscount
+                        // ),
                       };
                     })
                   );
@@ -142,8 +110,8 @@ const Header = memo(function ({
                       discountValue: currencyFormatter(totalDiscount),
                       paymentValue: currencyFormatter(
                         totalFee +
-                          convertIntlCurrency(title?.originalValue) -
-                          totalDiscount
+                        convertIntlCurrency(title?.originalValue) -
+                        totalDiscount
                       ),
                     };
                   })
@@ -222,7 +190,7 @@ const Header = memo(function ({
                 })
               );
             }}
-                 showSearch
+            showSearch
             optionFilterProp="children"
             filterOption={(input, option) =>
               option?.children?.toLowerCase().includes(input.toLowerCase())
@@ -266,7 +234,7 @@ const Header = memo(function ({
                 })
               );
             }}
-                 showSearch
+            showSearch
             optionFilterProp="children"
             filterOption={(input, option) =>
               option?.children?.toLowerCase().includes(input.toLowerCase())
