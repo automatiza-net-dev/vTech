@@ -151,7 +151,7 @@ export function ProfileInfos({ patient }: { patient: Patient }) {
                 );
               }
 
-              if (detail.active && detail.subTitle === 'Vendas em aberto (Tutor)') {
+              if (detail.active && detail.subTitle === 'Vendas em aberto (Responsável)') {
 
                 return (
                   <div key={detail.id} className='detail-wrapper'>
