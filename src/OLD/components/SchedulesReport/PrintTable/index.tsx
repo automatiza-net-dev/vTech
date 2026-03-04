@@ -58,8 +58,8 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
             motivo_cancelamento: item?.motivo_cancelamento,
             tem_retorno: item?.tem_retorno,
             e_um_retorno: item?.e_retorno,
-            data_cadastro_tutor: item?.datac_adastro_tutor
-              ? moment(item?.datac_adastro_tutor).format("DD/MM/YYYY - HH:mm")
+            data_cadastro_responsavel: item?.data_cadastro_tutor
+              ? moment(item?.data_cadastro_tutor).format("DD/MM/YYYY - HH:mm")
               : "-",
             nome_cliente: item?.nome_tutor,
             cpf_cnpj_tutor: item?.cpf_cnpj_tutor,
