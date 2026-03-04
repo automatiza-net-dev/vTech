@@ -149,7 +149,7 @@ const Edit = memo(function Edit({
         </div>
         <div className="uk-margin-small-right">
           <label>Valor tarifa forma pgto</label>
-          <Input disabled value={data?.feeValue} />
+          <Input disabled value={data?.feePaymentMethod} />
         </div>
         <div className="uk-margin-small-right">
           <label>percentual tarifa forma pgto</label>
