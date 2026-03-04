@@ -61,7 +61,7 @@ export function ModalSelectActiveTutor({
       onClose={() => setModal(false)}
     >
       <Error name="modal-select-active-tutor">
-        <h3 className="font-18-bold">Selecionar tutor ativo</h3>
+        <h3 className="font-18-bold">Selecionar responsável ativo</h3>
 
         <FormHandler
           isStickyButtons

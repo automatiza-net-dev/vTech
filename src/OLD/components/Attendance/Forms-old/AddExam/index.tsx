@@ -103,7 +103,6 @@ export default function LaunchExam({
       .showPatientExam(patientExamId)
       .then((res) => {
         res.data?.attachments?.length > 0 && setFileList(res.data?.attachments);
-        console.log("res", res)
         setData({
           patientExamId,
           examId: res?.data?.exam?.id,

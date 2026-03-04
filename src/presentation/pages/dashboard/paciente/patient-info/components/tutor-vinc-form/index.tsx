@@ -58,7 +58,7 @@ function TutorVincForm({ patient, setVisible, setReload, reload }: any) {
 
   return (
     <div>
-      <label>Selecione o tutor a ser vinculado</label>
+      <label>Selecione o responsável a ser vinculado</label>
       <AutoComplete
         className="uk-width-1-1"
         required

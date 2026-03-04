@@ -423,7 +423,7 @@ export const FormChild = React.memo(function FormChild({
             </div>
           )}
           <Popconfirm
-            title={`Deseja definir ${data?.holder?.name} como o tutor ativo?`}
+            title={`Deseja definir ${data?.holder?.name} como o responsável ativo?`}
             onConfirm={() => setActiveTutor(data?.holder)}
             okText="Sim"
             cancelText="Não"

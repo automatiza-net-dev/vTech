@@ -103,7 +103,7 @@ export function AddTutorContent({ id, setModal, origin }) {
 		>
 			<div className="select-box">
 				<Select
-					label="Selecione o tutor a ser vinculado"
+					label="Selecione o responsável a ser vinculado"
 					loading={isLoading}
 					name="holder"
 					onlyOneValue

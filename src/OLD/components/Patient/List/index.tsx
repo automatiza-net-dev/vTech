@@ -115,7 +115,7 @@ export function PatientList({
                       setPatient(patient);
                     }}
                   >
-                    Selecionar tutor ativo
+                    Selecionar responsável ativo
                   </span>
                 </>
               ),
@@ -211,7 +211,7 @@ export function PatientList({
       {modal && (
         <p className="uk-margin-remove">
           {" "}
-          O tutor ativo será o tutor responsável dentro do atendimento{" "}
+          O responsável ativo será o responsável dentro do atendimento{" "}
         </p>
       )}
       <Table

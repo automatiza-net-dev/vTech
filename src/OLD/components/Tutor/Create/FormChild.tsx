@@ -652,7 +652,7 @@ export const FormChild = React.memo(function FormChild({
 				{router.query.innerpage && (
 					<div className="uk-text-muted uk-text-center">
 						{" "}
-						Pet irá ser vinculado ao tutor adicionado{" "}
+						Pet irá ser vinculado ao responsável adicionado{" "}
 					</div>
 				)}
 			</div>

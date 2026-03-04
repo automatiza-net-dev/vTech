@@ -44,7 +44,7 @@ export function AddPatient({ tutorId, setReload, setCreatePetVisible }) {
 
       createToast({
         status: "success",
-        message: "Vinculo de paciente e tutor realizado",
+        message: "Vinculo de paciente e responsável realizado",
       });
 
       setIsVisible(false);

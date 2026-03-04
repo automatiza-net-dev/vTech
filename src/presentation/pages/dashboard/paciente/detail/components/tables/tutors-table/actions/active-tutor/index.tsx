@@ -50,7 +50,7 @@ export function ActiveTutor(props: Tutor) {
     <S.ActiveTutor>
       <Tooltip
         idTooltip="ActiveTutor"
-        content="Definir tutor ativo"
+        content="Definir responsável ativo"
         trigger={
           <button
             type="submit"
