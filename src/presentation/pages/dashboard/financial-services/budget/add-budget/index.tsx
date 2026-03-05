@@ -40,6 +40,7 @@ export function AddBudgetNew({
   budgetId,
   listCreated,
   attendanceId,
+  onSuccess,
 }: IAddBudgetProps) {
   const patient = useLoadPatient();
   const budgetDetail = useLoadBudget({ id: budgetId || "" });
@@ -185,6 +186,8 @@ export function AddBudgetNew({
       });
 
       patientId && refetch(["LastUpdates", patientId]);
+
+      onSuccess?.();
 
       setModal?.(false);
     } catch (err) {

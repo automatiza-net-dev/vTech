@@ -344,6 +344,11 @@ export function Service({ scheduleId, mutate, reloadSchedule, ...props }) {
         <AddBudgetNew
           attendanceId={timeLine?.timeline_info?.attendance?.id}
           setModal={setModal}
+          onSuccess={() => {
+            queryClient.invalidateQueries(["sales-metadata", patientId]);
+            queryClient.invalidateQueries(["openNegotiations", patientId]);
+            queryClient.refetch(["LastUpdates"], { mode: "include" });
+          }}
         />
       </Modal>
 

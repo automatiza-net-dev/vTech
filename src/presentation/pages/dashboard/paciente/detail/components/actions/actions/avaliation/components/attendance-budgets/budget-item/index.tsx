@@ -2,12 +2,13 @@ import { useState } from "react";
 
 import moment from "moment";
 
-import { Modal } from "infinity-forge";
+import { Modal, useQueryClient } from "infinity-forge";
 import { BudgetAttendance } from "@/domain";
 import { AddBudgetNew } from "@/presentation";
 
 export function BudgetItem(props: BudgetAttendance) {
   const [visible, setVisible] = useState(false);
+  const queryClient = useQueryClient();
 
   return (
     <>
@@ -54,7 +55,13 @@ export function BudgetItem(props: BudgetAttendance) {
         open={visible}
         onClose={() => setVisible(false)}
       >
-        <AddBudgetNew setModal={setVisible} budgetId={props?.id} />
+        <AddBudgetNew
+          setModal={setVisible}
+          budgetId={props?.id}
+          onSuccess={() => {
+            queryClient.invalidateQueries(["budget-attendance"]);
+          }}
+        />
       </Modal>
     </>
   );

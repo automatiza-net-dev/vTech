@@ -154,7 +154,15 @@ export function BudgetItem({
 				</div>
 
 				<Modal open={open} onClose={() => setOpen(false)}>
-					{open && <AddBudgetNew budgetId={budget.id} setModal={setOpen} />}
+					{open && (
+						<AddBudgetNew
+							budgetId={budget.id}
+							setModal={setOpen}
+							onSuccess={() => {
+								queryClient.invalidateQueries(["openNegotiations"]);
+							}}
+						/>
+					)}
 				</Modal>
 
 				{showObservations && (
