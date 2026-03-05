@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const Columns = ({
   hasInternalCode,
   hasRelatedBills,
@@ -32,6 +34,20 @@ export const Columns = ({
           title: "Paciente",
           dataIndex: "patient",
           key: "patient",
+          render: (text: string, record: any) => {
+            if (record.patientId) {
+              return (
+                <Link
+                  href={`/dashboard/paciente/${record.patientId}`}
+                  target="_blank"
+                  style={{ color: "var(--primary)", textDecoration: "underline" }}
+                >
+                  {text}
+                </Link>
+              );
+            }
+            return text;
+          },
         }
       : undefined,
     {
