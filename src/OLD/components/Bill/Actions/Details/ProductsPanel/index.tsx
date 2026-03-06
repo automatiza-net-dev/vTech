@@ -219,7 +219,6 @@ function ProductsPanel({
                     )
                   )}
                 </div>
-                <div>{payments?.length}x</div>
               </div>
               {shouldDisplayPrint2 && (
                 <div
