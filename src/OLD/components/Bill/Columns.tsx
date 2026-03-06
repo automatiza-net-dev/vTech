@@ -39,7 +39,6 @@ export const Columns = ({
               return (
                 <Link
                   href={`/dashboard/paciente/${record.patientId}`}
-                  target="_blank"
                   style={{ color: "var(--primary)", textDecoration: "underline" }}
                 >
                   {text}
