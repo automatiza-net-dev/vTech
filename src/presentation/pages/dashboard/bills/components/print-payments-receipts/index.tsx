@@ -24,7 +24,7 @@ export function PrintPaymentReceipts({
             Recebi de {billReceipts?.client?.name}, inscrito no CPF/CNJP{" "}
             {billReceipts?.client?.tutor?.document} os valores listados abaixo,
             referentes à venda {billReceipts?.tag} realizada no dia{" "}
-            {moment(billReceipts?.bill_date).format("DD/MM/YYYY")}:
+            {billReceipts?.bill_date ? moment(billReceipts?.bill_date).format("DD/MM/YYYY") : '-'}
           </span>
 
           <table>
@@ -44,9 +44,9 @@ export function PrintPaymentReceipts({
                       {moment(payment?.expiration_date).format("DD/MM/YYYY")}
                     </td>
                     <td>
-                      {moment(payment?.finance?.payment_date).format(
+                      {payment?.finance?.payment_date ? moment(payment?.finance?.payment_date).format(
                         "DD/MM/YYYY"
-                      )}
+                      ) : '-'}
                     </td>
                     <td>{payment?.total_value}</td>
                     <td>{payment?.finance?.paymentMethod.description}</td>

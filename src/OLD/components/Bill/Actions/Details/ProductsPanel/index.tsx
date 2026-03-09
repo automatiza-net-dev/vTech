@@ -232,7 +232,7 @@ function ProductsPanel({
                     }));
                   }}
                 >
-                  <Button text="Imprimir recibo" onClick={() => imprimir2()} />
+                  <Button text="Imprimir recibo" loading={billReceipts.isLoading} onClick={() => imprimir2()} />
                 </div>
               )}
             </div>
