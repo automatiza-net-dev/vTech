@@ -133,7 +133,7 @@ export function FormCreateScheduling() {
             : {}
         }
         customAction={
-          configsHasBlockFinancePending || temFinancasEmAberto
+          configsHasBlockFinancePending && temFinancasEmAberto
             ? {
                 Component: () => (
                   <ScheduleAuthorization
