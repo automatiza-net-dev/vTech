@@ -86,13 +86,9 @@ function ProductsPanel({
   }
 
   const formatPayments = () => {
-    const allFormatedPayments = [];
-
-    payments?.forEach((payment, paymentIndex) => {
-      // Se não tiver finances ou estiver vazio, cria uma linha com os dados do payment
-      if (!payment?.finances || payment?.finances?.length === 0) {
-        allFormatedPayments.push({
-          parcela: "1/1",
+    setFormatedPayments(
+      payments?.map((payment, i) => {
+        return {
           date: !editExpirationDate ? (
             moment(payment?.expiration_date).format("DD/MM/YYYY")
           ) : (
@@ -105,14 +101,11 @@ function ProductsPanel({
               }
               onChange={(val) => {
                 let newArr = [...data];
-                const dataIndex = newArr.findIndex(item => item.billPaymentId === payment?.id);
-                if (dataIndex >= 0) {
-                  newArr[dataIndex] = {
-                    ...newArr[dataIndex],
-                    expirationDate: val,
-                  };
-                  setData(newArr);
-                }
+                newArr.splice(i, 1, {
+                  ...data[i],
+                  expirationDate: val,
+                });
+                setData(newArr);
               }}
             />
           ),
@@ -171,120 +164,18 @@ function ProductsPanel({
               <Button text="imprimir" onClick={() => imprimir1()} />
             </div>
           ),
-        });
-      } else {
-        // Se tiver finances, cria uma linha para cada parcela
-        payment?.finances?.forEach((finance, financeIndex) => {
-          allFormatedPayments.push({
-            parcela: `${financeIndex + 1}/${payment?.qty_installments || payment?.finances?.length}`,
-            date: !editExpirationDate ? (
-              moment(finance?.expiration_date).format("DD/MM/YYYY")
-            ) : (
-              <DatePicker
-                slotProps={{ textField: { variant: "standard" } }}
-                format="DD/MM/YYYY"
-                value={
-                  data?.find((item) => item?.billPaymentId === payment?.id && item?.financeId === finance?.id)
-                    ?.expirationDate
-                }
-                onChange={(val) => {
-                  let newArr = [...data];
-                  const dataIndex = newArr.findIndex(
-                    item => item.billPaymentId === payment?.id && item.financeId === finance?.id
-                  );
-                  if (dataIndex >= 0) {
-                    newArr[dataIndex] = {
-                      ...newArr[dataIndex],
-                      expirationDate: val,
-                    };
-                    setData(newArr);
-                  }
-                }}
-              />
-            ),
-            value: currencyFormatter(finance?.original_value || payment?.installment_value),
-            paymentMethod:
-              payment?.paymentMethod?.tef !== "NAO"
-                ? `${payment?.paymentMethod?.tef} CARTÃO ${payment?.paymentMethod?.type} - ${payment?.flag?.description}`
-                : payment?.paymentMethod?.description,
-            nsu: finance?.nsu_document || payment?.nsu_document,
-            downDate: finance?.payment_date
-              ? moment(finance?.payment_date).format("DD/MM/YYYY") +
-              ` (${finance?.paymentMethod?.description || payment?.paymentMethod?.description})`
-              : "-",
-            cancelled: (
-              <div
-                className="font-16-regular"
-                style={{ textAlign: "right", display: "flex", alignItems: "center", gap: 15 }}
-              >
-                <div>
-                  {finance?.cancelled === "P" || payment?.cancelled === "P" ? (
-                    <FormatProductCanceled text={"Revisão pendente"} />
-                  ) : finance?.cancelled === "S" || payment?.cancelled === "S" ? (
-                    <FormatProductCanceled text={"Aprovado por"} item={finance?.cancelled ? finance : payment} />
-                  ) : finance?.cancelled === "N" || payment?.cancelled === "N" ? (
-                    <FormatProductCanceled text={"Recusado por"} item={finance?.cancelled ? finance : payment} />
-                  ) : (
-                    <></>
-                  )}
-                </div>
-
-                {(finance?.cancelled === "S" || payment?.cancelled === "S") && (
-                  <div
-                    style={{
-                      height: 20,
-                      minWidth: 20,
-                      borderRadius: "100%",
-                      background: "red",
-                    }}
-                  />
-                )}
-              </div>
-            ),
-            authorization: formatAuthorization(finance?.cancelled ? finance : payment),
-            print: finance?.payment_date && (
-              <div
-                onMouseOver={() => {
-                  queryClient.invalidateQueries(["billPaymentsReceipts"]);
-                  setBillPaymentReceiptsFilters((prv) => ({
-                    ...prv,
-                    block: payment.block,
-                    billPayment: payment.id,
-                    financeId: finance.id,
-                    fetch: true,
-                  }));
-                }}
-              >
-                <Button text="imprimir" onClick={() => imprimir1()} />
-              </div>
-            ),
-          });
-        });
-      }
-    });
-
-    setFormatedPayments(allFormatedPayments);
+        };
+      })
+    );
   };
 
   useEffect(() => {
-    const mappedData = [];
-    payments?.forEach((payment) => {
-      if (payment?.finances && payment?.finances?.length > 0) {
-        payment?.finances?.forEach((finance) => {
-          mappedData.push({
-            billPaymentId: payment?.id,
-            financeId: finance?.id,
-            expirationDate: moment(finance?.expiration_date),
-          });
-        });
-      } else {
-        mappedData.push({
-          billPaymentId: payment?.id,
-          expirationDate: moment(payment?.expiration_date),
-        });
-      }
-    });
-    setData(mappedData);
+    setData(
+      payments?.map((payment) => ({
+        billPaymentId: payment?.id,
+        expirationDate: moment(payment?.expiration_date),
+      }))
+    );
   }, [payments]);
 
   useEffect(() => {
@@ -328,10 +219,22 @@ function ProductsPanel({
                     )
                   )}
                 </div>
-                <div className="uk-margin-right">
-                  {payments[0]?.qty_installments}x
-                </div>
               </div>
+              {shouldDisplayPrint2 && (
+                <div
+                  onMouseOver={() => {
+                    // queryClient.invalidateQueries(["billPaymentsReceipts"]);
+                    setBillPaymentReceiptsFilters((prv) => ({
+                      fetch: true,
+                      businessUnitId: user.unit.id,
+                      billId: bill?.id,
+                      block: payments[0]?.block,
+                    }));
+                  }}
+                >
+                  <Button text="Imprimir recibo" loading={billReceipts.isLoading} onClick={() => imprimir2()} />
+                </div>
+              )}
             </div>
           }
         >
