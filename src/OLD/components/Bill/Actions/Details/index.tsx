@@ -367,7 +367,7 @@ export default function Details({ billId, setVisible }: any) {
             total: currencyFormatter(item?.total_value),
             courtesy: item?.courtesy ? "Sim" : "Não",
             max_discount: item?.max_discount ? "Sim" : "Não",
-            auth_data: <AuthorizationStatusProduct item={item} />,
+            auth_data: <AuthorizationStatusProduct item={item as any} />,
             cancelledStatus: item?.cancelled,
             cancelled: (
               <div className="font-16-regular" style={{ textAlign: "right" }}>
@@ -644,7 +644,7 @@ export default function Details({ billId, setVisible }: any) {
 
   useEffect(() => {
     if (data?.seller) {
-      setSeller({ seller: data?.sellerId, name: data?.seller?.name });
+      setSeller({ seller: data?.seller.id, name: data?.seller?.name });
     }
 
     if (data?.financialResponsible?.name) {
@@ -865,7 +865,7 @@ export default function Details({ billId, setVisible }: any) {
 
         <div style={{ display: "none" }}>
           <div ref={componentRef}>
-            <PrintScreen bill={data} />
+            <PrintScreen bill={data as any} />
           </div>
         </div>
 

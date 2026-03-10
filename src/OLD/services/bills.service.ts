@@ -65,13 +65,13 @@ const getSingleBill = async (id) => {
     additional_information: any
     cancelled_at: any
     cancellation_observation: any
-    status: string
-    created_at: string
-    updated_at: string
+    status: "BAIXADA" | "ABERTA" | "Venda em Aberto" | "Nao Aprovada"
+    created_at: any
+    updated_at: any
     tag: string
     closing_date: any
     paid_value: number
-    document_status: string
+    document_status: 'Gerados'
     pending: boolean
     internalCode: any
     origin_bill_id: any
@@ -109,8 +109,8 @@ const getSingleBill = async (id) => {
       lat: any
       lng: any
       active: boolean
-      created_at: string
-      updated_at: string
+      created_at: Date | string
+      updated_at: Date | string
       state_registration: any
       city_registration: any
       cnae: any

@@ -12,7 +12,7 @@ export type BillItem = Product & {};
 
 export type Bill = {
 	id: string;
-	bill_date: Date;
+	bill_date: Date | string;
 	billRelatedType?: {
 		id: number;
 		description: string;
