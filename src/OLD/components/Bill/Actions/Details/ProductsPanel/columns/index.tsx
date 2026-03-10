@@ -1,6 +1,11 @@
 export const paymentsColumns = [
   {
-    title: "data",
+    title: "Parcela",
+    key: "parcela",
+    dataIndex: "parcela",
+  },
+  {
+    title: "Data",
     key: "date",
     dataIndex: "date",
   },
