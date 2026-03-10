@@ -15,7 +15,8 @@ import {
   Popconfirm,
 } from "antd";
 import { IoMdTrash } from "react-icons/io";
-import { BsEye } from "react-icons/bs";
+import { FiPrinter } from "react-icons/fi";
+
 import {
   api,
   Button, useQueryClient, useToast
@@ -927,7 +928,7 @@ export default function AddBillPaymentWithCredits(props: {
                                 }}
                               >
 
-                                <BsEye
+                                <FiPrinter
                                   size={16}
                                   style={{ cursor: "pointer" }}
                                   onClick={() => {
@@ -1198,7 +1199,7 @@ function PrintPaymentReceipts(props: {
             </thead>
             <tbody>
               {clientPayment?.billPayments?.length > 0 &&
-                clientPayment?.billPayments?.flatMap((payment) => 
+                clientPayment?.billPayments?.flatMap((payment) =>
                   payment?.finances?.map((finance) => (
                     <tr key={finance?.id}>
                       <td>
