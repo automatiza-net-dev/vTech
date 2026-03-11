@@ -35,9 +35,9 @@ export function FormCreateScheduling() {
   const patientId =
     type !== "Vet"
       ? [
-          createSchedulingArgs?.event?.event?.patient?.id ||
-            createSchedulingArgs?.id,
-        ]
+        createSchedulingArgs?.event?.event?.patient?.id ||
+        createSchedulingArgs?.id,
+      ]
       : type === "Vet"
         ? createSchedulingArgs?.id
           ? [createSchedulingArgs?.id]
@@ -70,9 +70,9 @@ export function FormCreateScheduling() {
           ? [createSchedulingArgs.event.event.holder.name]
           : createSchedulingArgs?.tutors?.find((tutor) => tutor.isMain)?.name
             ? [
-                createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)
-                  ?.name,
-              ]
+              createSchedulingArgs?.tutors?.find((tutor) => tutor?.isMain)
+                ?.name,
+            ]
             : []
         : undefined,
     time: createSchedulingArgs?.date.toLocaleTimeString([], {
@@ -85,9 +85,9 @@ export function FormCreateScheduling() {
     patientName:
       type !== "Vet"
         ? [
-            createSchedulingArgs?.event?.event?.patient?.name ||
-              createSchedulingArgs?.name,
-          ]
+          createSchedulingArgs?.event?.event?.patient?.name ||
+          createSchedulingArgs?.name,
+        ]
         : type === "Vet"
           ? createSchedulingArgs?.event?.event?.patient?.name
             ? [createSchedulingArgs.event.event.patient.name]
@@ -115,6 +115,8 @@ export function FormCreateScheduling() {
     value: user.id,
   }));
 
+  const hasExtraProps = configsHasBlockFinancePending && (data?.["Valores em Atraso"] || 0) > 0
+
   return (
     <S.FormCreateScheduling>
       <FormHandler
@@ -125,23 +127,23 @@ export function FormCreateScheduling() {
         cleanFieldsOnSubmit={false}
         disableEnterKeySubmitForm
         schema={
-          configsHasBlockFinancePending
+          hasExtraProps
             ? {
-                userEmail: yup.string().required("Campo requerido"),
-                userPwd: yup.string().required("Campo requerido"),
-              }
+              userEmail: yup.string().required("Campo requerido"),
+              userPwd: yup.string().required("Campo requerido"),
+            }
             : {}
         }
         customAction={
-          configsHasBlockFinancePending && temFinancasEmAberto
+          hasExtraProps
             ? {
-                Component: () => (
-                  <ScheduleAuthorization
-                    blocking={configsHasBlockFinancePending as boolean}
-                    value={data?.["Valores em Atraso"] || 0}
-                  />
-                ),
-              }
+              Component: () => (
+                <ScheduleAuthorization
+                  blocking={configsHasBlockFinancePending as boolean}
+                  value={data?.["Valores em Atraso"] || 0}
+                />
+              ),
+            }
             : undefined
         }
       >
@@ -157,8 +159,8 @@ export function FormCreateScheduling() {
 
         {(createSchedulingArgs?.forceSelectUser ||
           !createSchedulingArgs?.scheduleUser?.id) && (
-          <Select name="userId" label="Usuário" options={users || []} />
-        )}
+            <Select name="userId" label="Usuário" options={users || []} />
+          )}
 
         <div className="row">
           <div style={{ width: "92%" }}>
