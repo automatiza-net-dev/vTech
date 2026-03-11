@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as React from "react";
+import { PrintHeader } from "@/presentation";
 import {
   Input as AntInput,
   Checkbox,
@@ -14,8 +15,12 @@ import {
   Popconfirm,
 } from "antd";
 import { IoMdTrash } from "react-icons/io";
-import { BsEye } from "react-icons/bs";
-import { Button, Tooltip, useQueryClient, useToast } from "infinity-forge";
+import { FiPrinter } from "react-icons/fi";
+
+import {
+  api,
+  Button, useQueryClient, useToast
+} from "infinity-forge";
 import { Container } from "../styles";
 import {
   budgetStatusFormatter,
@@ -32,6 +37,78 @@ import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import AddBillPayment from "../Actions/AddBillPayment";
 import { AxiosError } from "axios";
 import TutorAggregatedCredits from "../tutor-aggregated-credits";
+import { useReactToPrint } from "react-to-print";
+import { styled } from "styled-components";
+
+type ClientPaymentData = {
+  id: number
+  value: number
+  payment_date: string
+  paymentMethod: {
+    id: string
+    description: string
+  }
+  client: {
+    id: string
+    name: string
+    tutor: {
+      id: string
+      document: string
+      patient_id: string
+      fullAddress: string
+    }
+  }
+  billPayments: Array<{
+    id: string
+    total_value: number
+    expiration_date: string
+    printed_at: string | null
+    paymentMethod: {
+      id: string
+      description: string
+    }
+    printUser: {
+      id: string
+      name: string
+    } | null
+    bill: {
+      id: string
+      tag: string
+      bill_date: string
+      businessUnit: {
+        id: string
+        company_name: string
+        document: string
+        phone: string
+        postal_code: string
+        address: string
+        number: string
+        complement: string
+        district: string
+        city: string
+        state: string
+      }
+      client: {
+        id: string
+        name: string
+      }
+      additionalInformation: any
+    }
+    finances: Array<{
+      id: string
+      payment_date: string | null
+      expiration_date: string | null
+      total_value: number
+      original_value: number
+      value: number
+      payment_value: number
+      paymentMethod: {
+        id: string
+        description: string
+      }
+    }>
+  }>
+}
 
 export default function AddBillPaymentWithCredits(props: {
   isOpen: boolean;
@@ -48,8 +125,32 @@ export default function AddBillPaymentWithCredits(props: {
   const [savingInstallments, setSavingInstallments] = React.useState(false);
   const { getWord } = useDictionary();
   const [tabState, setTabState] = React.useState("vendas");
+  const [selectedPaymentToPrint, setSelectedPaymentToPrint] = React.useState<number | null>(null);
   const { createToast } = useToast();
   const queryClient = useQueryClient()
+
+  const componentRef = React.useRef(null);
+  const imprimir2 = useReactToPrint({ contentRef: componentRef });
+
+  const selectedPaymentPrintDataQuery = useQuery({
+    enabled: typeof selectedPaymentToPrint === 'number' && selectedPaymentToPrint > 0,
+    queryKey: ["client-payment-to-print", selectedPaymentToPrint],
+    queryFn: async () => {
+      const data = await api({
+        method: 'get',
+        url: `bills/print-client-payment-receipts/${selectedPaymentToPrint ?? 0}`
+      })
+
+      return data as ClientPaymentData
+    },
+  });
+
+  React.useEffect(() => {
+    if (selectedPaymentPrintDataQuery.data && !selectedPaymentPrintDataQuery.isLoading) {
+      imprimir2()
+      setSelectedPaymentToPrint(null)
+    }
+  }, [selectedPaymentPrintDataQuery.data, selectedPaymentPrintDataQuery.isLoading])
 
   const salesQuery = useQuery({
     enabled: props.isOpen,
@@ -256,6 +357,14 @@ export default function AddBillPaymentWithCredits(props: {
 
   return (
     <>
+      <section style={{ display: "none" }}>
+        <div ref={componentRef as any}>
+          <PrintPaymentReceipts
+            clientPayment={selectedPaymentPrintDataQuery.data}
+          />
+        </div>
+      </section>
+
       <Modal
         title=""
         open={visiblePayments}
@@ -815,9 +924,18 @@ export default function AddBillPaymentWithCredits(props: {
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
-                                  gap: '4px'
+                                  gap: '6px'
                                 }}
                               >
+
+                                <FiPrinter
+                                  size={16}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    setSelectedPaymentToPrint(row.id)
+                                  }}
+                                />
+
                                 <Popconfirm
                                   title="Tem certeza que deseja remover este registro?"
                                   onConfirm={async () => {
@@ -987,5 +1105,128 @@ export default function AddBillPaymentWithCredits(props: {
         />
       </Modal>
     </>
+  );
+}
+
+const PrintPaymentReceiptStyles = styled("div")`
+  margin: 15px;
+  .print-section {
+    font-size: 20px;
+    text-align: center;
+
+    h2 {
+      font-size: 23px;
+      margin-top: 50px;
+      margin-bottom: 30px;
+    }
+
+    .down-section {
+      margin-top: 200px;
+    }
+  }
+
+  table {
+    width: 100%;
+    margin-top: 20px;
+
+    border-collapse: collapse;
+  }
+
+  thead {
+    text-align: left;
+  }
+
+  tr {
+    display: table-row;
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    font-weight: bold;
+  }
+
+  td {
+    text-align: left;
+  }
+
+  .localization {
+    margin: 80px 0 60px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+  }
+`;
+
+function PrintPaymentReceipts(props: {
+  clientPayment: ClientPaymentData | undefined
+}) {
+  const { clientPayment } = props
+
+  if (!clientPayment) {
+    return null
+  }
+
+  const firstBillPayment = clientPayment.billPayments?.[0]
+  const bill = firstBillPayment?.bill
+
+  return (
+    <PrintPaymentReceiptStyles>
+      <PrintHeader />
+      <section className="print-section">
+        <h2>Recibo de pagamento</h2>
+        <div>
+          <span>
+            Recebi de {clientPayment?.client?.name}, inscrito no CPF/CNJP{" "}
+            {clientPayment?.client?.tutor?.document} os valores listados abaixo,
+            referentes à venda {bill?.tag} realizada no dia{" "}
+            {bill?.bill_date ? moment(bill?.bill_date).format("DD/MM/YYYY") : '-'}
+          </span>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Data Vencimento</th>
+                <th>Data Pagamento</th>
+                <th>Valor R$</th>
+                <th>Forma Pagamento</th>
+              </tr>
+            </thead>
+            <tbody>
+              {clientPayment?.billPayments?.length > 0 &&
+                clientPayment?.billPayments?.flatMap((payment) =>
+                  payment?.finances?.map((finance) => (
+                    <tr key={finance?.id}>
+                      <td>
+                        {moment(finance?.expiration_date).format("DD/MM/YYYY")}
+                      </td>
+                      <td>
+                        {finance?.payment_date ? moment(finance?.payment_date).format(
+                          "DD/MM/YYYY"
+                        ) : '-'}
+                      </td>
+                      <td>{currencyFormatter(finance?.value)}</td>
+                      <td>{finance?.paymentMethod?.description}</td>
+                    </tr>
+                  ))
+                )}
+            </tbody>
+          </table>
+
+          <div className="localization">
+            [{bill?.businessUnit?.city}, {moment().format("DD/MM/YYYY")}]
+          </div>
+        </div>
+
+        <div className="unity">
+          [{bill?.businessUnit?.company_name}, {firstBillPayment?.printUser?.name}]
+        </div>
+      </section>
+    </PrintPaymentReceiptStyles>
   );
 }

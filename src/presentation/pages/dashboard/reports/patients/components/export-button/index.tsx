@@ -16,11 +16,11 @@ export function ExportButton({ exportData }) {
         .loadAllPatientReports(exportData);
 
         const data = patientReports?.map((report) => ({
-          tutor: report?.tutorNome,
+          responsavel: report?.tutorNome,
           cel: report?.tutorCelular,
           fone: report?.tutorTelefone,
           email: report?.tutorEmail,
-          genero_tutor: report?.tutorGenero,
+          genero_responsavel: report?.tutorGenero,
           profissao: report?.tutorProfissao,
           dt_nasc_tutor: report?.tutorDtNasc
             ? moment(report?.tutorDtNasc).format("DD/MM/YYYY")

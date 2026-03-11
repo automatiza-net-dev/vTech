@@ -8,4 +8,5 @@ export interface IAddBudgetProps {
   attendanceId?: Attendace["id"];
   setModal?: Dispatch<SetStateAction<boolean>>;
   listCreated?: (id: Budget["id"]) => void | undefined;
+  onSuccess?: () => void;
 }

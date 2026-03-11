@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef, memo } from "react";
 import { useRouter } from "next/router";
 
 import moment from "moment";
@@ -21,7 +21,7 @@ import Masks from "@/OLD/utils/masks";
 
 import { Container } from "./styles";
 
-function Actions(casher) {
+const Actions = memo(function Actions(casher) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const dataRef = useRef({});
@@ -57,7 +57,6 @@ function Actions(casher) {
 
         setData({});
         setObsVisible(false);
-        setSubmitFunc(null);
         casher.mutate();
       })
       .catch((err) => {
@@ -89,8 +88,6 @@ function Actions(casher) {
           status: "success",
         });
 
-        setSubmitFunc(null);
-        setLoading(false);
         setData({});
         setObsVisible(false);
         casher.mutate();
@@ -122,8 +119,6 @@ function Actions(casher) {
           message: "Caixa conferido com sucesso!",
         });
 
-        setSubmitFunc(null);
-        setLoading(false);
         setData({});
         setObsVisible(false);
         casher.mutate();
@@ -150,7 +145,6 @@ function Actions(casher) {
       submitFunc === "Fechamento" && closeCasher();
       submitFunc === "Reabertura" && reopenCasher();
       submitFunc === "Conferência" && checkCasher();
-      setObsVisible(false);
     }
   };
 
@@ -158,7 +152,6 @@ function Actions(casher) {
     submitFunc === "Fechamento" && closeCasher();
     submitFunc === "Reabertura" && reopenCasher();
     submitFunc === "Conferência" && checkCasher();
-    setObsVisible(false);
   }, [submitFunc]);
 
   // Atualiza a ref sempre que data mudar
@@ -171,6 +164,15 @@ function Actions(casher) {
     setData(initialData);
     dataRef.current = initialData;
   }, []);
+
+  // Reset data when opening modal for "Fechamento"
+  useEffect(() => {
+    if (obsVisible && submitFunc === "Fechamento") {
+      const initialData = { cashierTotal: currencyFormatter(0) };
+      setData(initialData);
+      dataRef.current = initialData;
+    }
+  }, [obsVisible, submitFunc]);
 
   useEffect(() => {
     document.addEventListener("keypress", submitFuncControll);
@@ -296,20 +298,17 @@ function Actions(casher) {
         }
       />
 
-      {obsVisible && (
-        <Modal
-          visible={obsVisible}
-          title={`${submitFunc} de caixa`}
-          onCancel={() => setObsVisible(false)}
-          onOk={() => {
-            submitFunc === "Fechamento" && closeCasher();
-            submitFunc === "Reabertura" && reopenCasher();
-            submitFunc === "Conferência" && checkCasher();
-          }}
-        >
-          <FormChild data={data} setData={setData} numberInput={numberInput} onSubmit={handleSubmit} />
-        </Modal>
-      )}
+      <Modal
+        visible={obsVisible}
+        title={`${submitFunc} de caixa`}
+        onCancel={() => setObsVisible(false)}
+        onOk={() => handleSubmit()}
+        destroyOnClose={false}
+        maskClosable={false}
+        keyboard={false}
+      >
+        <FormChild data={data} setData={setData} numberInput={numberInput} onSubmit={handleSubmit} />
+      </Modal>
       <Modal
         visible={reportVisible}
         title={`Relatório caixa diário`}
@@ -325,6 +324,6 @@ function Actions(casher) {
       </Modal>
     </Container>
   );
-}
+});
 
 export default Actions;

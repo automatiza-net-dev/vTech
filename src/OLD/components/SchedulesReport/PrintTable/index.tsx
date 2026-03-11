@@ -58,11 +58,11 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
             motivo_cancelamento: item?.motivo_cancelamento,
             tem_retorno: item?.tem_retorno,
             e_um_retorno: item?.e_retorno,
-            data_cadastro_tutor: item?.datac_adastro_tutor
-              ? moment(item?.datac_adastro_tutor).format("DD/MM/YYYY - HH:mm")
+            data_cadastro_responsavel: item?.data_cadastro_tutor
+              ? moment(item?.data_cadastro_tutor).format("DD/MM/YYYY - HH:mm")
               : "-",
             nome_cliente: item?.nome_tutor,
-            cpf_cnpj_tutor: item?.cpf_cnpj_tutor,
+            cpf_cnpj_responsavel: item?.cpf_cnpj_tutor,
             celular: item?.cellphone,
             origem_cliente: item?.origem_tutor,
             profissao_cliente: item?.profissao_tutor,
@@ -170,7 +170,7 @@ function PrintTable({ schedules, filters, setReload, setFilters }) {
             {type === "Vet" && <div>nome_pet</div>}
             {type === "Vet" && <div>rg_paciente</div>}
             <div>
-              {type === "Vet" ? "tutor_resp" : "cliente_resp"}
+              {type === "Vet" ? "resp" : "cliente_resp"}
             </div>
             <div>
               {type === "Vet"

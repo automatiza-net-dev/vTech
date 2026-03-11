@@ -117,7 +117,7 @@ export function Patient({
                   <Input>
                     <input
                       type="search"
-                      placeholder="CPF tutor"
+                      placeholder="CPF responsável"
                       onChange={(e) =>
                         setFilters({
                           ...filters,

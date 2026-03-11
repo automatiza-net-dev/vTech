@@ -10,6 +10,7 @@ export type DropdownComponentProps = {
   setModal?: Dispatch<SetStateAction<boolean>>;
   value?: string;
   reloadSchedule?: any;
+  onSuccess?: () => void;
 } & Partial<TimeLine>;
 
 export type DropdownItemActionProps = {
@@ -20,6 +21,7 @@ export type DropdownItemActionProps = {
   value?: string;
   reloadSchedule?: any;
   defaultValue?: boolean;
+  onSuccess?: () => void;
 };
 
 export function DropdownItemAction({
@@ -29,6 +31,7 @@ export function DropdownItemAction({
   value,
   reloadSchedule,
   defaultValue = false,
+  onSuccess,
 }: DropdownItemActionProps) {
   const [open, setOpen] = useState(defaultValue);
 
@@ -58,6 +61,7 @@ export function DropdownItemAction({
               setModal={setOpen}
               value={value}
               reloadSchedule={reloadSchedule}
+              onSuccess={onSuccess}
             />
           )}
         </S.ModalContent>

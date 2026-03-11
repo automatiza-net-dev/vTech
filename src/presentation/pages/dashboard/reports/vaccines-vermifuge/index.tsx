@@ -54,7 +54,7 @@ export function VaccinesVermifugeReport({
 
     const formatted = response?.map((item) => ({
       unidade: item?.unidade,
-      tutor: item?.tutor,
+      responsavel: item?.tutor,
       telefone: item?.contato_tutor,
       paciente: item?.paciente,
       tipo: item?.vacina_vermifugo,

@@ -612,7 +612,7 @@ function AddBillPayment({
           </div>
         </section>
         <hr />
-        <PaymentsPreviewComponent {...data} setData={setFormData} />
+        <PaymentsPreviewComponent {...data as any} setData={setFormData} />
         <hr />
         {blockArr?.length > 0 &&
           blockArr?.map((i) => (

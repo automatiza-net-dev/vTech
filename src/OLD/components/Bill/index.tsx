@@ -74,6 +74,7 @@ export default function Bills() {
         code: bill?.tag ?? "-",
         client: bill?.client?.name || "-",
         patient: bill.patient?.name ?? "-",
+        patientId: bill.patient?.id,
         user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
         total: currencyFormatter(bill?.total_value),
         status:

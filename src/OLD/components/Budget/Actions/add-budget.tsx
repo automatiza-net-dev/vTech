@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Tooltip } from "infinity-forge";
+import { Modal, Tooltip, useQueryClient } from "infinity-forge";
 
 import { GrAddCircle } from "react-icons/gr";
 
@@ -7,6 +7,7 @@ import { AddBudgetNew, usePermission } from "@/presentation";
 
 export default function AddBudget({ budgetId }: { budgetId: string }) {
   const hasPermission = usePermission("ORC02");
+  const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
 
@@ -30,7 +31,15 @@ export default function AddBudget({ budgetId }: { budgetId: string }) {
       />
 
       <Modal open={open} onClose={() => setOpen(false)}>
-        {open && <AddBudgetNew budgetId={budgetId} setModal={setOpen} />}
+        {open && (
+          <AddBudgetNew
+            budgetId={budgetId}
+            setModal={setOpen}
+            onSuccess={() => {
+              queryClient.invalidateQueries(["budgets"]);
+            }}
+          />
+        )}
       </Modal>
     </>
   );
