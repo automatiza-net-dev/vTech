@@ -152,8 +152,9 @@ const Header = memo(function Header({ service, setService }) {
           <label>Código NBS</label>
           <Input
             value={service?.codigoNbs}
+            type={'number'}
             onChange={(e) =>
-              setService((prv) => ({ ...prv, codigoNbs: e.target.value }))
+              setService((prv) => ({ ...prv, codigoNbs: e.target.valueAsNumber }))
             }
           />
         </div>
