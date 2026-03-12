@@ -72,12 +72,12 @@ function Update({
 
       await opportunitiesService.executeActivity(activity?.id, data);
 
-      setReload((prv) => !prv);
       setVisible(false);
       setLoading(false);
       setNewActivityModal(true);
 
       if (!execution) {
+        setReload((prv) => !prv);
         return createToast({
           status: "success",
           message: "Atividade atualizada com sucesso!",
@@ -102,11 +102,11 @@ function Update({
         executionDate: moment(data?.executionDate).toISOString(),
       });
 
-      setReload((prv) => !prv);
       setVisible(false);
       setLoading(false);
 
       if (!execution) {
+        setReload((prv) => !prv);
         return createToast({
           status: "success",
           message: "Atividade atualizada com sucesso!",
@@ -158,8 +158,17 @@ function Update({
         <span>Deseja criar uma nova atividade para esta Oportunidade?</span>
 
         <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-          <Button text="Sim" onClick={() => setShowNewActivity(true)} />
-          <Button text="Não" onClick={() => setNewActivityModal(false)} />
+          <Button 
+            text="Sim" 
+            onClick={() => {
+              setNewActivityModal(false);
+              setShowNewActivity(true);
+            }} 
+          />
+          <Button text="Não" onClick={() => {
+            setNewActivityModal(false);
+            setReload((prv) => !prv);
+          }} />
         </div>
       </Modal>
 
