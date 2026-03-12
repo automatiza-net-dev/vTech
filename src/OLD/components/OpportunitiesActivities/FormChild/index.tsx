@@ -69,7 +69,7 @@ function FormChild({
       <div className="uk-flex uk-flex-between">
         <div className="uk-margin-small-right uk-width-2-3">
           <label>Cliente</label>
-          <Input value={op?.client?.name || op?.contact?.name} disabled />
+          <Input value={op?.contact?.name || op?.client?.name} disabled />
         </div>
         <div>
           <label>Telefone</label>

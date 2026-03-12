@@ -24,16 +24,22 @@ function Update({
   const [execution, setExecution] = useState(false);
   const [showNewActivity, setShowNewActivity] = useState(false);
   const [newActivityModal, setNewActivityModal] = useState(false);
+  const [savedOpportunity, setSavedOpportunity] = useState<any>(null);
 
   const { createToast } = useToast();
 
   const { user } = useProfile();
 
+  // Montar oportunidade completa usando dados da atividade
+  const currentOpportunity = activity?.opportunity
+    ? {
+        ...activity.opportunity,
+        client: activity.client,
+        contact: activity.contact,
+      }
+    : op;
+
   useEffect(() => {
-    console.log(
-      activity?.user?.name || activity?.openingUser?.name || user?.name,
-      "@@"
-    );
     setData({
       collabName:
         activity?.user?.name || activity?.openingUser?.name || user?.name,
@@ -74,6 +80,7 @@ function Update({
 
       setVisible(false);
       setLoading(false);
+      setSavedOpportunity(currentOpportunity); // Salvar a oportunidade correta
       setNewActivityModal(true);
 
       if (!execution) {
@@ -131,7 +138,10 @@ function Update({
       <Modal
         title={edit ? "Atualizar atividade" : "Detalhes atividade"}
         open={visible}
-        onClose={() => setVisible(false)}
+        onClose={() => {
+          setVisible(false);
+          setSavedOpportunity(null); // Limpar savedOpportunity ao fechar
+        }}
         styles={{ maxWidth: 1000 }}
       >
         <FormChild
@@ -145,7 +155,7 @@ function Update({
           setVisible={setVisible}
           edit={edit}
           type="update"
-          op={op}
+          op={currentOpportunity}
         />
       </Modal>
 
@@ -167,6 +177,7 @@ function Update({
           />
           <Button text="Não" onClick={() => {
             setNewActivityModal(false);
+            setSavedOpportunity(null); // Limpar savedOpportunity
             setReload((prv) => !prv);
           }} />
         </div>
@@ -177,10 +188,13 @@ function Update({
           visible={showNewActivity}
           setVisible={setShowNewActivity}
           setReload={setReload}
-          opportunity={op}
+          opportunity={savedOpportunity || currentOpportunity}
           colaborators={colaborators}
           actTypes={actTypes}
-          customSubmit={() => setNewActivityModal(false)}
+          customSubmit={() => {
+            setNewActivityModal(false);
+            setSavedOpportunity(null); // Limpar savedOpportunity após criar
+          }}
         />
       )}
     </>
