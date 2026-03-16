@@ -50,7 +50,7 @@ export const Columns = ({
         }
       : undefined,
     {
-      title: "Funcionário",
+      title: "Vendedor",
       dataIndex: "user",
       key: "user",
     },
