@@ -9,6 +9,9 @@ function decodeHtmlEntities(html: string): string {
 }
 
 function isHtmlEscaped(html: string): boolean {
+  if(!html){
+    return true
+  }
   return html.includes('&lt;') || html.includes('&gt;') || html.includes('&quot;') || html.includes('&amp;')
 }
 
