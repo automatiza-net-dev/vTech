@@ -296,7 +296,7 @@ function ProductsPanel({
       return false
     }
 
-    if (user.unit.configs.bills.bypass_print_verification) {
+    if (user.unit.configs.bills?.bypass_print_verification) {
       return true
     }
 
