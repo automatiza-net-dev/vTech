@@ -48,6 +48,7 @@ function Create({
         setLoading(false);
         setVisible(false);
         setData({ collabName: user?.name, userId: user?.id });
+        customSubmit && customSubmit();
 
         return createToast({ status: "success",  message: "Atividade criada com sucesso!" })
       })
@@ -55,8 +56,6 @@ function Create({
         setLoading(false);
         return createToast({ status: "error",  message:  "Houve um erro ao cadastrar a atividade, verifique os campos informados" })
       });
-
-    customSubmit && customSubmit();
   }, [JSON.stringify(data), opportunity?.id]);
 
   return (

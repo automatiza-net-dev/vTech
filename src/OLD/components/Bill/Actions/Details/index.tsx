@@ -195,7 +195,14 @@ export default function Details({ billId, setVisible }: any) {
     },
     onError: (err: any) => {
       setLoading(false);
-      createToast({
+      if (err instanceof AxiosError) {
+        return createToast({
+          message: err?.response?.data?.message ?? "Erro na emissão",
+          status: "error",
+        });
+      }
+
+      return createToast({
         message: err?.response?.data?.[0]?.message ?? "Erro na emissão",
         status: "error",
       });
@@ -264,6 +271,14 @@ export default function Details({ billId, setVisible }: any) {
     },
     onError: (err: any) => {
       setLoading(false);
+
+      if (err instanceof AxiosError) {
+        return createToast({
+          message: err?.response?.data?.message ?? "Erro na emissão",
+          status: "error",
+        });
+      }
+
 
       createToast({
         message: err?.response?.data?.message || "Erro na emissão",
