@@ -12,7 +12,7 @@ import { checkingAccountService } from "@/OLD/services/checkingAccount.service";
 // Components
 import { Container } from "./styles";
 import FormChild from "../FormChild";
-import { Button, PageWrapperm, useToast } from "infinity-forge";
+import { Button, PageWrapper, useToast } from "infinity-forge";
 import { Descriptions, Modal } from "antd";
 const { Item } = Descriptions;
 
