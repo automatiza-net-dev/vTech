@@ -9,6 +9,7 @@ export const initialData = ({ data, tutorId }) => {
         ...data,
         birthDate: moment(data?.birthDate).add("day", 1).utc(true).toDate(),
         id: tutorId,
+        marketingCampaignId: data?.marketingCampaign?.id,
         photo: [
           {
             id: 1,
