@@ -44,7 +44,7 @@ const Actions = memo(function Actions({ account, reload, setReload }) {
         agencyPhone: account?.agency_phone,
         managerEmail: account?.manager_email,
         limit: currencyFormatter(account?.limit),
-        balance: currencyFormatter(0),
+        balance: currencyFormatter(account?.balance),
         businessUnitId: account?.unit?.id,
       });
   }, [updateVisible, reload, account]);
