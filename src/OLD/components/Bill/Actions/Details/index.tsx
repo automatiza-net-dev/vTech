@@ -195,6 +195,7 @@ export default function Details({ billId, setVisible }: any) {
     },
     onError: (err: any) => {
       setLoading(false);
+      queryClient.invalidateQueries(["fiscalDocuments"]);
       if (err instanceof AxiosError) {
         return createToast({
           message: err?.response?.data?.message ?? "Erro na emissão",
@@ -271,6 +272,7 @@ export default function Details({ billId, setVisible }: any) {
     },
     onError: (err: any) => {
       setLoading(false);
+      queryClient.invalidateQueries(["fiscalDocuments"]);
 
       if (err instanceof AxiosError) {
         return createToast({
