@@ -16,6 +16,8 @@ export type Event = {
     }[];
     title?: string;
     id: string;
+    businessUnitId?: string;
+    identification?: string;
     specie: Specie;
     race: Race;
     week_day: string;

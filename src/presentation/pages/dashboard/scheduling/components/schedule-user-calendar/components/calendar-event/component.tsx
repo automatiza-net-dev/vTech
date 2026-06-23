@@ -4,6 +4,7 @@ import { Tooltip } from "@mui/material";
 import { SideBar } from "infinity-forge";
 
 import { Event, ScheduleUser } from "@/domain";
+import { useSystem } from "@/presentation";
 import { SideBarContent } from "./sidebar-content";
 import { ToolTipContent } from "./tooltip-content";
 import { useVerifyFinanceSchedule } from "../../../../utils";
@@ -22,6 +23,12 @@ export function CalendarEvent({
   refetchKeyWeekCalendar?: any;
 }) {
   const [open, setOpen] = useState(false);
+  const currentUser = useSystem();
+  const currentUnitId = currentUser?.unit?.id;
+
+  const isExternalUnit =
+    event.type === "schedule" &&
+    !!(event.event?.businessUnitId && event.event.businessUnitId !== currentUnitId);
 
   const title =
     event?.event?.title ||
@@ -76,7 +83,7 @@ export function CalendarEvent({
       )}
 
       <Tooltip
-        onClick={() => setOpen(true)}
+        onClick={() => !isExternalUnit && setOpen(true)}
         title={
           <ToolTipContent
             timeText={fullTime}
@@ -90,17 +97,32 @@ export function CalendarEvent({
           className="fc-event-main-frame"
           style={{
             padding: "5px",
-            borderLeft: `6px solid ${convertedColor}`,
-            backgroundColor: "#eee",
+            borderLeft: `6px solid ${isExternalUnit ? "#aaa" : convertedColor}`,
+            backgroundColor: isExternalUnit ? "#d6d6d6" : "#eee",
+            opacity: isExternalUnit ? 0.75 : 1,
             overflow: "hidden",
             borderRadius: "4px",
             display: "flex",
             justifyContent: "space-between",
             flexDirection: "row",
             flexWrap: "wrap",
+            cursor: isExternalUnit ? "default" : "pointer",
           }}
         >
           <div className="fc-event-title-container">
+            {isExternalUnit && event.event?.identification && (
+              <span style={{
+                fontSize: "10px",
+                background: "#888",
+                color: "#fff",
+                borderRadius: "3px",
+                padding: "1px 6px",
+                display: "inline-block",
+                marginBottom: "4px",
+              }}>
+                {event.event.identification}
+              </span>
+            )}
             <div
               className="fc-event-title fc-sticky"
               style={{ fontSize: "12px" }}
