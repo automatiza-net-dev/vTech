@@ -23,7 +23,11 @@ export function WeekCalendar({
   viewCalendar: "day" | "week";
   setViewCalendar: React.Dispatch<React.SetStateAction<"day" | "week">>;
 }) {
-  const [weekRange, setWeekRange] = useState({
+  const [weekRange, setWeekRange] = useState<{
+    from: Date | null;
+    to: Date | null;
+    professionals: string[];
+  }>({
     from: null,
     to: null,
     professionals: [],
