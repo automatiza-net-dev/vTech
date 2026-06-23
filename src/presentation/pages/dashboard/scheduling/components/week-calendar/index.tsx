@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import FullCalendar from "@fullcalendar/react";
-import { Autocomplete, TextField, Checkbox, Chip } from "@mui/material";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { FormHandler, Select } from "infinity-forge";
 
 import { useScheduling } from "../../context";
 import { CalendarEvent } from "../schedule-user-calendar/components";
@@ -18,9 +16,6 @@ import { configsWeekCalendar } from "./configs";
 
 import * as S from "./styles";
 
-type ProfessionalOption = { label: string; value: string };
-const SELECT_ALL_VALUE = "__select_all__";
-
 export function WeekCalendar({
   viewCalendar,
   setViewCalendar,
@@ -31,10 +26,8 @@ export function WeekCalendar({
   const [weekRange, setWeekRange] = useState({
     from: null,
     to: null,
-    professionals: [] as string[],
+    professionals: [],
   });
-  const [selectedProfessionals, setSelectedProfessionals] = useState<ProfessionalOption[]>([]);
-  const allInitialized = useRef(false);
 
   const changeDate = useScheduling((state) => state.changeDate);
   const selectedDate = useScheduling((state) => state.selectedDate);
@@ -43,35 +36,17 @@ export function WeekCalendar({
   );
 
   const professionals = useLoadProfessionalsSchedule();
-
-  const allOptions: ProfessionalOption[] =
-    professionals?.data?.map((p) => ({ label: p.name, value: p.id })) || [];
+  const allInitialized = useRef(false);
 
   useEffect(() => {
-    if (allOptions.length > 0 && !allInitialized.current) {
+    if (professionals?.data?.length > 0 && !allInitialized.current) {
       allInitialized.current = true;
-      setSelectedProfessionals(allOptions);
       setWeekRange((state) => ({
         ...state,
-        professionals: allOptions.map((p) => p.value),
+        professionals: professionals.data.map((p) => p.id),
       }));
     }
-  }, [allOptions.length]);
-
-  const isAllSelected = selectedProfessionals.length === allOptions.length && allOptions.length > 0;
-
-  const handleChange = (_: any, newValue: ProfessionalOption[]) => {
-    const toggleAll = newValue.find((opt) => opt.value === SELECT_ALL_VALUE);
-    const next = toggleAll
-      ? isAllSelected ? [] : allOptions
-      : newValue;
-
-    setSelectedProfessionals(next);
-    setWeekRange((state) => ({
-      ...state,
-      professionals: next.map((p) => p.value),
-    }));
-  };
+  }, [professionals?.data?.length]);
 
   const { data, refetchKeyWeekCalendar } = useLoadAllSchedulesUserWeek(
     DateToYYYYMMDD(weekRange?.to || new Date()) || "",
@@ -131,56 +106,34 @@ export function WeekCalendar({
       return endTime > max ? endTime : max;
     }, extractTime(events[0].end));
 
-  const selectAllOption: ProfessionalOption = {
-    label: isAllSelected ? "Desmarcar todos" : "Marcar todos",
-    value: SELECT_ALL_VALUE,
-  };
-
   return (
     <S.WeekCalendar>
-      <Autocomplete
-        multiple
-        disableCloseOnSelect
-        options={[selectAllOption, ...allOptions]}
-        value={selectedProfessionals}
-        onChange={handleChange}
-        getOptionLabel={(opt) => opt.label}
-        isOptionEqualToValue={(opt, val) => opt.value === val.value}
-        renderOption={(props, option, { selected }) => {
-          const isSelectAll = option.value === SELECT_ALL_VALUE;
-          return (
-            <li {...props} key={option.value}>
-              <Checkbox
-                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                checkedIcon={<CheckBoxIcon fontSize="small" />}
-                style={{ marginRight: 8 }}
-                checked={isSelectAll ? isAllSelected : selected}
-                indeterminate={isSelectAll && selectedProfessionals.length > 0 && !isAllSelected}
-              />
-              {option.label}
-            </li>
-          );
-        }}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip
-              {...getTagProps({ index })}
-              key={option.value}
-              label={option.label}
-              size="small"
-            />
-          ))
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder={selectedProfessionals.length === 0 ? "Selecione profissionais..." : ""}
-            variant="outlined"
-            size="small"
+      {professionals?.data && (
+        <FormHandler
+          initialData={{
+            professionals: professionals.data.map((p) => p.id),
+          }}
+          onChangeForm={{
+            callbackResult: (data) => {
+              if (data.professionals && Array.isArray(data.professionals)) {
+                setWeekRange((state) => ({
+                  ...state,
+                  professionals: data.professionals,
+                }));
+              }
+            },
+          }}
+        >
+          <Select
+            isMultiple
+            name="professionals"
+            options={professionals.data.map((professional) => ({
+              label: professional.name,
+              value: professional.id,
+            }))}
           />
-        )}
-        style={{ marginBottom: 16 }}
-      />
+        </FormHandler>
+      )}
 
       {weekRange.professionals.length > 0 ? (
         <FullCalendar
