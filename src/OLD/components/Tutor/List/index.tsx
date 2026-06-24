@@ -13,7 +13,6 @@ import { Delete } from "../Delete";
 import { Container } from "./styles";
 import { Tag, Table, Dropdown, Menu, AutoComplete } from "antd";
 import { Single } from "../Single";
-import { Edit } from "../Edit";
 
 import { sortItems } from "@/OLD/utils/sortItems";
 import Masks from "@/OLD/utils/masks";
@@ -45,14 +44,12 @@ export function List({
 }: any) {
 	const [petToVinc, setPetToVinc] = useState(false);
 
-	const canEditTutor = useUserHasPermission("TUT02");
 	const canDeleteTutor = useUserHasPermission("TUT03");
 	const canCreatePet = useUserHasPermission("PET01");
 
 	const [data, setData] = useState<any>(null);
 	const [detailsVisible, setDetailsVisible] = useState(false);
 	const [selectedId, setSelectedId] = useState(false);
-	const [editVisible, setEditVisible] = useState(false);
 	const [vincPetVisible, setVincPetVisible] = useState(false);
 	const [createPetVisible, setCreatePetVisible] = useState(false);
 	const [selectedTutor, setSelectedTutor] = useState<any>(null);
@@ -388,7 +385,7 @@ export function List({
 
 	useEffect(() => {
 		handleCreateTable();
-	}, [reload, filters, tutorsList, canEditTutor, canDeleteTutor]);
+	}, [reload, filters, tutorsList, canDeleteTutor]);
 
 	useEffect(() => {
 		document.addEventListener("keypress", (e) => {
@@ -451,20 +448,9 @@ export function List({
 						<Single
 							selectedId={selectedId}
 							setVisible={setDetailsVisible}
-							setEditVisible={setEditVisible}
 							setCreatePetVisible={setCreatePetVisible}
 							setVincPetVisible={setVincPetVisible}
 						/>
-					}
-				/>
-			)}
-			{editVisible && (
-				<Modal
-					styles={{ width: "1200px" }}
-					open={editVisible}
-					onClose={() => setEditVisible(false)}
-					children={
-						<Edit tutorId={selectedId as any} setVisible={setEditVisible} />
 					}
 				/>
 			)}
