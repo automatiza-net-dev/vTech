@@ -71,12 +71,12 @@ function Scheduling() {
 				</div>
 			</div>
 
-			<div style={{ display: viewCalendar === "week" ? "block" : "none" }}>
+			{viewCalendar === "week" && (
 				<WeekCalendar
 					setViewCalendar={setViewCalendar}
 					viewCalendar={viewCalendar}
 				/>
-			</div>
+			)}
 
 			<div
 				className="schedule_users"
