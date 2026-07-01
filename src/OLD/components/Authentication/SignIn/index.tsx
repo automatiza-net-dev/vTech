@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 
 import { useAuthAdmin, Button, useToast, api, cookies } from "infinity-forge";
+import { Modal, Radio, Button as AntdButton } from "antd";
 
 import { sessionService } from "@/OLD/services/session.service";
 
@@ -16,6 +17,8 @@ export function SignIn() {
     ip: "",
   });
   const [saveAccess, setSaveAccess] = useState(false);
+  const [unitGroups, setUnitGroups] = useState<any[] | null>(null);
+  const [selectedUnitId, setSelectedUnitId] = useState("");
 
   const { createToast } = useToast();
   const { loadUser } = useAuthAdmin();
@@ -33,9 +36,20 @@ export function SignIn() {
     }
   }, []);
 
+  const finishLogin = useCallback(
+    async (token?: string, message?: string) => {
+      if (message) {
+        return createToast({ status: "error", message });
+      }
+
+      await cookies.set("token", { value: token ?? null });
+      await loadUser({ roleName: "user" });
+    },
+    [createToast, loadUser]
+  );
+
   const handleSubmit = useCallback(
     async (e) => {
-      setLoading(true);
       e.preventDefault();
 
       if (data.email === "" || data.password === "") {
@@ -46,37 +60,24 @@ export function SignIn() {
         return;
       }
 
+      setLoading(true);
+
       try {
         const systemUrl = new URL(window.location.origin).origin;
 
-        const getBusinessUnits = await sessionService.login({
+        const response = await sessionService.login({
           ...data,
           systemUrl,
           system: name,
         });
 
-        const loginResponse =
-          Array.isArray(getBusinessUnits.data) &&
-          getBusinessUnits.data[0].businessUnits &&
-          ((await sessionService.login({
-            ...data,
-            systemUrl,
-            system: name,
-            business_unit_id: getBusinessUnits.data[0].businessUnits[0].id,
-          })) as any);
-
-        await cookies.set("token", {
-          value: getBusinessUnits?.data?.token || loginResponse?.data?.token,
-        });
-
-        if (loginResponse?.message) {
-          return createToast({
-            status: "error",
-            message: loginResponse.message,
-          });
+        // usuário tem mais de uma unidade de negócio: precisa escolher antes de logar
+        if (Array.isArray(response.data)) {
+          setUnitGroups(response.data);
+          return;
         }
 
-        await loadUser({ roleName: "user" });
+        await finishLogin(response.data?.token, response.data?.message);
       } catch (err: any) {
         createToast({
           status: "error",
@@ -89,8 +90,40 @@ export function SignIn() {
         setLoading(false);
       }
     },
-    [data]
+    [data, finishLogin, name]
   );
+
+  const handleChooseUnit = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const systemUrl = new URL(window.location.origin).origin;
+
+      const response = await sessionService.login({
+        ...data,
+        systemUrl,
+        system: name,
+        business_unit_id: selectedUnitId,
+      });
+
+      await finishLogin(response.data?.token, response.data?.message);
+    } catch (err: any) {
+      createToast({
+        status: "error",
+        duration: 7500,
+        message:
+          err?.response?.data?.message ||
+          "Erro ao logar. Por favor, tente novamente mais tarde.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [data, finishLogin, name, selectedUnitId]);
+
+  const closeChooseUnit = useCallback(() => {
+    setUnitGroups(null);
+    setSelectedUnitId("");
+  }, []);
 
   const { home_image_url } = useConfigurationsSystem();
 
@@ -151,6 +184,45 @@ export function SignIn() {
           </form>
         </div>
       </div>
+
+      <Modal
+        title="Selecione a unidade"
+        visible={!!unitGroups}
+        footer={null}
+        onCancel={closeChooseUnit}
+      >
+        <Radio.Group
+          className="uk-flex uk-flex-column"
+          value={selectedUnitId}
+          onChange={(e) => setSelectedUnitId(e.target.value)}
+        >
+          {unitGroups?.flatMap((group) =>
+            group.businessUnits.map((unit) => (
+              <Radio
+                key={unit.id}
+                className="uk-width-1-1 uk-margin-small-bottom"
+                value={unit.id}
+              >
+                {unit.identification}
+                {unitGroups.length > 1 ? ` (${group.companyName})` : ""}
+              </Radio>
+            ))
+          )}
+        </Radio.Group>
+        <hr />
+        <footer className="uk-flex uk-flex-right">
+          <AntdButton
+            type="primary"
+            className="uk-margin-small-right"
+            loading={loading}
+            disabled={!selectedUnitId}
+            onClick={handleChooseUnit}
+          >
+            Entrar
+          </AntdButton>
+          <AntdButton onClick={closeChooseUnit}>Cancelar</AntdButton>
+        </footer>
+      </Modal>
     </Container>
   );
 }

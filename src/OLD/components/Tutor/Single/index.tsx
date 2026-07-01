@@ -25,7 +25,6 @@ import { convertDate } from "@/OLD/utils/convertDate";
 export function Single({
   selectedId,
   setVisible,
-  setEditVisible,
   setCreatePetVisible,
   setVincPetVisible,
 }) {
