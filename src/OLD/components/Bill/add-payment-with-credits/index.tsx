@@ -1204,14 +1204,15 @@ const PrintPaymentReceiptStyles = styled("div")`
     margin: 4px 0;
   }
 
-  .sale-block .totals {
+  .totals {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 8px;
+    max-width: 500px;
+    margin: 16px auto 0;
     font-weight: bold;
-    border-top: 1px dashed #ddd;
-    padding-top: 6px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
   }
 
   .localization {
@@ -1229,6 +1230,38 @@ const PrintPaymentReceiptStyles = styled("div")`
   }
 `;
 
+type PaymentLine = {
+  total_value: number
+  installments: number
+  paymentMethodDescription: string
+  date: string | null
+}
+
+function groupPaymentLines(
+  items: Array<{ total_value: number; paymentMethodDescription: string; date: string | null }>,
+): PaymentLine[] {
+  const map = new Map<string, PaymentLine>()
+
+  for (const item of items) {
+    const key = `${item.paymentMethodDescription}|${item.date ?? "-"}`
+    const existing = map.get(key)
+
+    if (existing) {
+      existing.total_value += item.total_value
+      existing.installments += 1
+    } else {
+      map.set(key, {
+        total_value: item.total_value,
+        installments: 1,
+        paymentMethodDescription: item.paymentMethodDescription,
+        date: item.date,
+      })
+    }
+  }
+
+  return Array.from(map.values())
+}
+
 function PrintPaymentReceipts(props: {
   clientPayment: ClientPaymentData | undefined
 }) {
@@ -1241,7 +1274,7 @@ function PrintPaymentReceipts(props: {
   const firstBillPayment = clientPayment.billPayments?.[0]
   const bill = firstBillPayment?.bill
 
-  const groupsByTag = (clientPayment.billPayments ?? []).reduce(
+  const billPaymentsByTag = (clientPayment.billPayments ?? []).reduce(
     (acc, billPayment) => {
       const tag = billPayment.bill?.tag ?? "-"
       if (!acc[tag]) {
@@ -1264,29 +1297,34 @@ function PrintPaymentReceipts(props: {
           {clientPayment?.client?.tutor?.document}, os valores listados abaixo.
         </span>
 
-        {Object.entries(groupsByTag).map(([tag, billPayments]) => (
-          <div className="sale-block" key={tag}>
-            <h4>Recebimentos da Venda {tag}</h4>
-            {billPayments.map((payment) => (
-              <p key={payment.id}>
-                {currencyFormatter(payment.total_value)} em{" "}
-                {payment.finances?.length || 1}x no{" "}
-                {payment.paymentMethod?.description ?? "-"} em{" "}
-                {clientPayment.payment_date
-                  ? moment(clientPayment.payment_date).format("DD/MM/YYYY")
-                  : "-"}
-              </p>
-            ))}
-          </div>
-        ))}
+        {Object.entries(billPaymentsByTag).map(([tag, billPayments]) => {
+          const lines = groupPaymentLines(
+            billPayments.map((payment) => ({
+              total_value: Number(payment.total_value ?? 0),
+              paymentMethodDescription: payment.paymentMethod?.description ?? "-",
+              date: clientPayment.payment_date ?? null,
+            })),
+          )
+
+          return (
+            <div className="sale-block" key={tag}>
+              <h4>Recebimentos da Venda {tag}</h4>
+              {lines.map((line, index) => (
+                <p key={index}>
+                  {currencyFormatter(line.total_value)} em {line.installments}x no{" "}
+                  {line.paymentMethodDescription} em{" "}
+                  {line.date ? moment(line.date).format("DD/MM/YYYY") : "-"}
+                </p>
+              ))}
+            </div>
+          )
+        })}
 
         <div className="localization">
-          [{bill?.businessUnit?.city}, {moment().format("DD/MM/YYYY")}]
+          {bill?.businessUnit?.city}, {moment().format("DD/MM/YYYY")}
         </div>
 
-        <div className="unity">
-          [{bill?.businessUnit?.company_name}, {firstBillPayment?.printUser?.name}]
-        </div>
+        <div className="unity">{bill?.businessUnit?.company_name}</div>
       </section>
     </PrintPaymentReceiptStyles>
   );
@@ -1317,6 +1355,16 @@ function PrintFullReceipt(props: {
 
   const businessUnit = data.find((d) => d.bill?.businessUnit)?.bill?.businessUnit
 
+  let grandTotalValue = 0
+  let grandMissingValue = 0
+
+  for (const { sale } of data) {
+    grandTotalValue += Number.parseFloat(sale.total_value ?? "0")
+    grandMissingValue += Number.parseFloat(sale.missing_value ?? "0")
+  }
+
+  const grandPaidValue = grandTotalValue - grandMissingValue
+
   return (
     <PrintPaymentReceiptStyles>
       <PrintHeader />
@@ -1324,49 +1372,46 @@ function PrintFullReceipt(props: {
         <h2>Recibo completo</h2>
 
         {data.map(({ sale, bill }) => {
-          const totalValue = Number.parseFloat(sale.total_value ?? "0")
-          const missingValue = Number.parseFloat(sale.missing_value ?? "0")
-          const paidValue = totalValue - missingValue
+          const lines = groupPaymentLines(
+            (bill?.payments ?? []).map((payment) => ({
+              total_value: Number(payment.total_value ?? 0),
+              paymentMethodDescription: payment.paymentMethod?.description ?? "-",
+              date:
+                payment.finances?.find((finance) => finance.payment_date)?.payment_date ??
+                null,
+            })),
+          )
 
           return (
             <div className="sale-block" key={sale.id}>
-              <h3>Recebimentos da Venda {sale.tag}</h3>
+              <h4>Recebimentos da Venda {sale.tag}</h4>
 
-              {(bill?.payments?.length ?? 0) > 0 ? (
-                bill.payments.map((payment) => {
-                  const paymentDate = payment.finances?.find(
-                    (finance) => finance.payment_date,
-                  )?.payment_date
-
-                  return (
-                    <p key={payment.id}>
-                      {currencyFormatter(payment.total_value)} em{" "}
-                      {payment.finances?.length || 1}x no{" "}
-                      {payment.paymentMethod?.description ?? "-"}
-                      {paymentDate
-                        ? ` em ${moment(paymentDate).format("DD/MM/YYYY")}`
-                        : ""}
-                    </p>
-                  )
-                })
+              {lines.length > 0 ? (
+                lines.map((line, index) => (
+                  <p key={index}>
+                    {currencyFormatter(line.total_value)} em {line.installments}x no{" "}
+                    {line.paymentMethodDescription} em{" "}
+                    {line.date ? moment(line.date).format("DD/MM/YYYY") : "-"}
+                  </p>
+                ))
               ) : (
                 <p>Nenhum pagamento registrado.</p>
               )}
-
-              <div className="totals">
-                <span>Total: {currencyFormatter(totalValue)}</span>
-                <span>Pago: {currencyFormatter(paidValue)}</span>
-                <span>Pendente: {currencyFormatter(missingValue)}</span>
-              </div>
             </div>
           )
         })}
 
-        <div className="localization">
-          [{businessUnit?.city}, {moment().format("DD/MM/YYYY")}]
+        <div className="totals">
+          <span>Total: {currencyFormatter(grandTotalValue)}</span>
+          <span>Total pago: {currencyFormatter(grandPaidValue)}</span>
+          <span>Total pendente: {currencyFormatter(grandMissingValue)}</span>
         </div>
 
-        <div className="unity">[{businessUnit?.company_name}]</div>
+        <div className="localization">
+          {businessUnit?.city}, {moment().format("DD/MM/YYYY")}
+        </div>
+
+        <div className="unity">{businessUnit?.company_name}</div>
       </section>
     </PrintPaymentReceiptStyles>
   );
