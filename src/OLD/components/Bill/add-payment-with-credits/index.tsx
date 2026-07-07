@@ -138,6 +138,13 @@ export default function AddBillPaymentWithCredits(props: {
   const fullReceiptRef = React.useRef(null);
   const imprimirRecibocompleto = useReactToPrint({ contentRef: fullReceiptRef });
   const [printingFullReceipt, setPrintingFullReceipt] = React.useState(false);
+  const [selectedPaymentIds, setSelectedPaymentIds] = React.useState<React.Key[]>([]);
+
+  const handleTogglePaymentSelected = (id: React.Key) => {
+    setSelectedPaymentIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
 
   const selectedPaymentPrintDataQuery = useQuery({
     enabled: typeof selectedPaymentToPrint === 'number' && selectedPaymentToPrint > 0,
@@ -161,18 +168,16 @@ export default function AddBillPaymentWithCredits(props: {
 
   const fullReceiptQuery = useQuery({
     enabled: false,
-    queryKey: ["full-receipt-print", props.params],
+    queryKey: ["full-receipt-print", selectedPaymentIds],
     queryFn: async () => {
-      const openSales = (salesQuery.data ?? []).filter((sale) => sale._type === "sale");
-
       const results = await Promise.all(
-        openSales.map(async (sale) => {
-          const bill = await api({
+        selectedPaymentIds.map(async (id) => {
+          const data = await api({
             method: "get",
-            url: `bills/print-payment-receipts/${sale.id}`,
+            url: `bills/print-client-payment-receipts/${id}`,
           });
 
-          return { sale, bill };
+          return data as ClientPaymentData;
         }),
       );
 
@@ -181,6 +186,14 @@ export default function AddBillPaymentWithCredits(props: {
   });
 
   const handlePrintFullReceipt = async () => {
+    if (selectedPaymentIds.length === 0) {
+      createToast({
+        status: "warning",
+        message: "Selecione ao menos um pagamento para gerar o recibo completo",
+      });
+      return;
+    }
+
     setPrintingFullReceipt(true);
     await fullReceiptQuery.refetch();
   };
@@ -208,6 +221,10 @@ export default function AddBillPaymentWithCredits(props: {
     },
   });
 
+  const saldoPendente = (salesQuery.data ?? []).reduce(
+    (acc, sale) => acc + Number.parseFloat(sale.missing_value ?? "0"),
+    0,
+  );
 
   const paymentMetadataQuery = useQuery({
     enabled: props.isOpen && !!selectedPayment,
@@ -407,7 +424,10 @@ export default function AddBillPaymentWithCredits(props: {
 
       <section style={{ display: "none" }}>
         <div ref={fullReceiptRef as any}>
-          <PrintFullReceipt data={fullReceiptQuery.data} />
+          <PrintFullReceipt
+            clientPayments={fullReceiptQuery.data}
+            saldoPendente={saldoPendente}
+          />
         </div>
       </section>
 
@@ -879,6 +899,18 @@ export default function AddBillPaymentWithCredits(props: {
                     <Table
                       columns={[
                         {
+                          title: "",
+                          key: "select",
+                          width: 20,
+                          render: (_, row) =>
+                            row.id === -1 ? null : (
+                              <Checkbox
+                                checked={selectedPaymentIds.includes(row.id)}
+                                onChange={() => handleTogglePaymentSelected(row.id)}
+                              />
+                            ),
+                        },
+                        {
                           title: "#",
                           key: "id",
                           dataIndex: "id",
@@ -1160,7 +1192,6 @@ export default function AddBillPaymentWithCredits(props: {
           <Button
             text="Recibo Completo"
             loading={printingFullReceipt}
-            disabled={!salesQuery.data?.length}
             onClick={handlePrintFullReceipt}
           />
         </div>
@@ -1273,17 +1304,8 @@ function groupPaymentLines(
   return Array.from(map.values())
 }
 
-function PrintPaymentReceipts(props: {
-  clientPayment: ClientPaymentData | undefined
-}) {
+function ClientPaymentReceiptBlocks(props: { clientPayment: ClientPaymentData }) {
   const { clientPayment } = props
-
-  if (!clientPayment) {
-    return null
-  }
-
-  const firstBillPayment = clientPayment.billPayments?.[0]
-  const bill = firstBillPayment?.bill
 
   const billPaymentsByTag = (clientPayment.billPayments ?? []).reduce(
     (acc, billPayment) => {
@@ -1298,6 +1320,48 @@ function PrintPaymentReceipts(props: {
   )
 
   return (
+    <>
+      {Object.entries(billPaymentsByTag).map(([tag, billPayments]) => {
+        const lines = groupPaymentLines(
+          billPayments.map((payment) => ({
+            groupKey: `block-${payment.block ?? payment.id}`,
+            total_value: Number(payment.total_value ?? 0),
+            installments: Number(payment.qty_installments ?? payment.installments ?? 1),
+            paymentMethodDescription: payment.paymentMethod?.description ?? "-",
+            date: clientPayment.payment_date ?? null,
+          })),
+        )
+
+        return (
+          <div className="sale-block" key={tag}>
+            <h4>Recebimentos da Venda {tag}</h4>
+            {lines.map((line, index) => (
+              <p key={index}>
+                {currencyFormatter(line.total_value)} em {line.installments}x no{" "}
+                {line.paymentMethodDescription} em{" "}
+                {line.date ? moment(line.date).format("DD/MM/YYYY") : "-"}
+              </p>
+            ))}
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+function PrintPaymentReceipts(props: {
+  clientPayment: ClientPaymentData | undefined
+}) {
+  const { clientPayment } = props
+
+  if (!clientPayment) {
+    return null
+  }
+
+  const firstBillPayment = clientPayment.billPayments?.[0]
+  const bill = firstBillPayment?.bill
+
+  return (
     <PrintPaymentReceiptStyles>
       <PrintHeader />
       <section className="print-section">
@@ -1308,30 +1372,7 @@ function PrintPaymentReceipts(props: {
           {clientPayment?.client?.tutor?.document}, os valores listados abaixo.
         </span>
 
-        {Object.entries(billPaymentsByTag).map(([tag, billPayments]) => {
-          const lines = groupPaymentLines(
-            billPayments.map((payment) => ({
-              groupKey: `block-${payment.block ?? payment.id}`,
-              total_value: Number(payment.total_value ?? 0),
-              installments: Number(payment.qty_installments ?? payment.installments ?? 1),
-              paymentMethodDescription: payment.paymentMethod?.description ?? "-",
-              date: clientPayment.payment_date ?? null,
-            })),
-          )
-
-          return (
-            <div className="sale-block" key={tag}>
-              <h4>Recebimentos da Venda {tag}</h4>
-              {lines.map((line, index) => (
-                <p key={index}>
-                  {currencyFormatter(line.total_value)} em {line.installments}x no{" "}
-                  {line.paymentMethodDescription} em{" "}
-                  {line.date ? moment(line.date).format("DD/MM/YYYY") : "-"}
-                </p>
-              ))}
-            </div>
-          )
-        })}
+        <ClientPaymentReceiptBlocks clientPayment={clientPayment} />
 
         <div className="localization">
           {bill?.businessUnit?.city}, {moment().format("DD/MM/YYYY")}
@@ -1344,44 +1385,20 @@ function PrintPaymentReceipts(props: {
 }
 
 function PrintFullReceipt(props: {
-  data:
-    | Array<{
-        sale: { id: string; tag: string; total_value: string; missing_value: string }
-        bill: {
-          tag: string
-          businessUnit?: { city: string; company_name: string }
-          payments?: Array<{
-            id: string
-            total_value: number
-            block: number
-            qty_installments: number
-            installments: number
-            paymentMethod?: { description: string }
-            clientPayment?: { id: number; payment_date: string | null } | null
-            finance?: { payment_date: string | null } | null
-            finances?: Array<{ payment_date: string | null }>
-          }>
-        }
-      }>
-    | undefined
+  clientPayments: ClientPaymentData[] | undefined
+  saldoPendente: number
 }) {
-  const { data } = props
+  const { clientPayments, saldoPendente } = props
 
-  if (!data || data.length === 0) {
+  if (!clientPayments || clientPayments.length === 0) {
     return null
   }
 
-  const businessUnit = data.find((d) => d.bill?.businessUnit)?.bill?.businessUnit
-
-  let grandTotalValue = 0
-  let grandMissingValue = 0
-
-  for (const { sale } of data) {
-    grandTotalValue += Number.parseFloat(sale.total_value ?? "0")
-    grandMissingValue += Number.parseFloat(sale.missing_value ?? "0")
-  }
-
-  const grandPaidValue = grandTotalValue - grandMissingValue
+  const firstBillPayment = clientPayments
+    .flatMap((clientPayment) => clientPayment.billPayments ?? [])
+    .find((billPayment) => billPayment?.bill?.businessUnit)
+  const bill = firstBillPayment?.bill
+  const firstClientPayment = clientPayments[0]
 
   return (
     <PrintPaymentReceiptStyles>
@@ -1389,51 +1406,24 @@ function PrintFullReceipt(props: {
       <section className="print-section">
         <h2>Recibo completo</h2>
 
-        {data.map(({ sale, bill }) => {
-          const lines = groupPaymentLines(
-            (bill?.payments ?? []).map((payment) => ({
-              groupKey: `block-${payment.block ?? payment.id}`,
-              total_value: Number(payment.total_value ?? 0),
-              installments: Number(payment.qty_installments ?? payment.installments ?? 1),
-              paymentMethodDescription: payment.paymentMethod?.description ?? "-",
-              date:
-                payment.clientPayment?.payment_date ??
-                payment.finance?.payment_date ??
-                payment.finances?.find((finance) => finance.payment_date)?.payment_date ??
-                null,
-            })),
-          )
+        <span className="intro">
+          Recebi de {firstClientPayment?.client?.name}, inscrito no CPF/CNPJ{" "}
+          {firstClientPayment?.client?.tutor?.document}, os valores listados abaixo.
+        </span>
 
-          return (
-            <div className="sale-block" key={sale.id}>
-              <h4>Recebimentos da Venda {sale.tag}</h4>
-
-              {lines.length > 0 ? (
-                lines.map((line, index) => (
-                  <p key={index}>
-                    {currencyFormatter(line.total_value)} em {line.installments}x no{" "}
-                    {line.paymentMethodDescription} em{" "}
-                    {line.date ? moment(line.date).format("DD/MM/YYYY") : "-"}
-                  </p>
-                ))
-              ) : (
-                <p>Nenhum pagamento registrado.</p>
-              )}
-            </div>
-          )
-        })}
+        {clientPayments.map((clientPayment) => (
+          <ClientPaymentReceiptBlocks key={clientPayment.id} clientPayment={clientPayment} />
+        ))}
 
         <div className="totals">
-          <span>Total: {currencyFormatter(grandTotalValue)}</span>
-          <span>Total pago: {currencyFormatter(grandPaidValue)}</span>
-          <span>Total pendente: {currencyFormatter(grandMissingValue)}</span>
+          <span>Saldo pendente: {currencyFormatter(saldoPendente)}</span>
         </div>
 
         <div className="localization">
-          {businessUnit?.city}, {moment().format("DD/MM/YYYY")}
+          {bill?.businessUnit?.city}, {moment().format("DD/MM/YYYY")}
         </div>
 
-        <div className="unity">{businessUnit?.company_name}</div>
+        <div className="unity">{bill?.businessUnit?.company_name}</div>
       </section>
     </PrintPaymentReceiptStyles>
   );
