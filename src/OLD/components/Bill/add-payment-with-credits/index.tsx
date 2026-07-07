@@ -63,6 +63,9 @@ type ClientPaymentData = {
     total_value: number
     expiration_date: string
     printed_at: string | null
+    block: number
+    qty_installments: number
+    installments: number
     paymentMethod: {
       id: string
       description: string
@@ -1238,21 +1241,29 @@ type PaymentLine = {
 }
 
 function groupPaymentLines(
-  items: Array<{ total_value: number; paymentMethodDescription: string; date: string | null }>,
+  items: Array<{
+    groupKey: string
+    total_value: number
+    installments: number
+    paymentMethodDescription: string
+    date: string | null
+  }>,
 ): PaymentLine[] {
   const map = new Map<string, PaymentLine>()
 
   for (const item of items) {
-    const key = `${item.paymentMethodDescription}|${item.date ?? "-"}`
-    const existing = map.get(key)
+    const existing = map.get(item.groupKey)
 
     if (existing) {
       existing.total_value += item.total_value
-      existing.installments += 1
+      existing.installments = Math.max(existing.installments, item.installments)
+      if (!existing.date && item.date) {
+        existing.date = item.date
+      }
     } else {
-      map.set(key, {
+      map.set(item.groupKey, {
         total_value: item.total_value,
-        installments: 1,
+        installments: item.installments,
         paymentMethodDescription: item.paymentMethodDescription,
         date: item.date,
       })
@@ -1300,7 +1311,9 @@ function PrintPaymentReceipts(props: {
         {Object.entries(billPaymentsByTag).map(([tag, billPayments]) => {
           const lines = groupPaymentLines(
             billPayments.map((payment) => ({
+              groupKey: `block-${payment.block ?? payment.id}`,
               total_value: Number(payment.total_value ?? 0),
+              installments: Number(payment.qty_installments ?? payment.installments ?? 1),
               paymentMethodDescription: payment.paymentMethod?.description ?? "-",
               date: clientPayment.payment_date ?? null,
             })),
@@ -1340,7 +1353,12 @@ function PrintFullReceipt(props: {
           payments?: Array<{
             id: string
             total_value: number
+            block: number
+            qty_installments: number
+            installments: number
             paymentMethod?: { description: string }
+            clientPayment?: { id: number; payment_date: string | null } | null
+            finance?: { payment_date: string | null } | null
             finances?: Array<{ payment_date: string | null }>
           }>
         }
@@ -1374,9 +1392,13 @@ function PrintFullReceipt(props: {
         {data.map(({ sale, bill }) => {
           const lines = groupPaymentLines(
             (bill?.payments ?? []).map((payment) => ({
+              groupKey: `block-${payment.block ?? payment.id}`,
               total_value: Number(payment.total_value ?? 0),
+              installments: Number(payment.qty_installments ?? payment.installments ?? 1),
               paymentMethodDescription: payment.paymentMethod?.description ?? "-",
               date:
+                payment.clientPayment?.payment_date ??
+                payment.finance?.payment_date ??
                 payment.finances?.find((finance) => finance.payment_date)?.payment_date ??
                 null,
             })),
