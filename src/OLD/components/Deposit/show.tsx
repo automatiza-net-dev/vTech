@@ -62,9 +62,8 @@ export const ShowDeposit = memo(() => {
 
   return (
     <PageWrapper
-      title={`Detalhes do depósito: ${
-        showDepositQuery?.data?.description ?? ""
-      }`}
+      title={`Detalhes do depósito: ${showDepositQuery?.data?.description ?? ""
+        }`}
     >
       <section>
         {showDepositQuery.isLoading && <Skeleton paragraph={{ rows: 4 }} />}
@@ -117,7 +116,7 @@ export const ShowDeposit = memo(() => {
               columns={columns}
               dataSource={(showDepositQuery.data.items ?? []).map((elem) => ({
                 id: elem.id,
-                description: elem.variation.product.description,
+                description: elem.variation?.product ? elem.variation?.product?.description : 'Não informado',
                 barcode: elem.variation.barcode ?? "Não informado",
                 qty:
                   showDepositQuery?.data?.type === "Consumo"
@@ -131,8 +130,8 @@ export const ShowDeposit = memo(() => {
         <footer
           style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
         >
-     
-            <Button classCallback="uk-margin-small-right" text="Imprimir" onClick={() => imprimir()}/>
+
+          <Button classCallback="uk-margin-small-right" text="Imprimir" onClick={() => imprimir()} />
 
           <Button onClick={() => router.back()} text="Voltar" />
         </footer>
