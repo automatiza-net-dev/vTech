@@ -44,6 +44,7 @@ type ClientPaymentData = {
   id: number
   value: number
   payment_date: string
+  installments: number
   paymentMethod: {
     id: string
     description: string
@@ -1318,6 +1319,24 @@ function ClientPaymentReceiptBlocks(props: { clientPayment: ClientPaymentData })
     },
     {} as Record<string, ClientPaymentData["billPayments"]>,
   )
+
+  // Pagamento sem billPayments vinculados (ex: crédito ainda não conciliado a uma venda):
+  // mostra o recebimento direto pelos dados do próprio clientPayment, senão ele some do recibo.
+  if (Object.keys(billPaymentsByTag).length === 0) {
+    return (
+      <div className="sale-block">
+        <h4>Recebimento</h4>
+        <p>
+          {currencyFormatter(Number(clientPayment.value ?? 0))} em{" "}
+          {clientPayment.installments ?? 1}x no{" "}
+          {clientPayment.paymentMethod?.description ?? "-"} em{" "}
+          {clientPayment.payment_date
+            ? moment(clientPayment.payment_date).format("DD/MM/YYYY")
+            : "-"}
+        </p>
+      </div>
+    )
+  }
 
   return (
     <>
