@@ -76,6 +76,7 @@ export default function Bills() {
         patient: bill.patient?.name ?? "-",
         patientId: bill.patient?.id,
         user: bill?.seller ? bill?.seller?.name : bill?.user?.name,
+        reviewer: bill?.reviewer?.name ?? "-",
         total: currencyFormatter(bill?.total_value),
         status:
           billStatusFormatter(bill, setReload, visible2, setVisible2) || "-",

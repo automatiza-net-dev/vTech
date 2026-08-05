@@ -187,7 +187,10 @@ export default function Details({ billId, setVisible }: any) {
     },
     onSuccess: () => {
       setLoading(false);
-      createToast({ message: "Nota emitida com sucesso", status: "success" });
+      createToast({
+        message: "Nota enviada para processamento",
+        status: "success",
+      });
 
       setOpenModal(false);
       queryClient.invalidateQueries(["bills"]);
@@ -266,6 +269,10 @@ export default function Details({ billId, setVisible }: any) {
     },
     onSuccess: () => {
       setLoading(false);
+      createToast({
+        message: "Nota enviada para processamento",
+        status: "success",
+      });
       setOpenModal(false);
       queryClient.invalidateQueries(["bills"]);
       queryClient.invalidateQueries(["fiscalDocuments"]);

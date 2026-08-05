@@ -71,6 +71,10 @@ export const useGetAllBills = (params, enabled = true) => {
         destination_unit: any;
         receipts: never[];
         bill_related_type: { id: string; description: string } | null;
+        reviewer: {
+          id: string;
+          name: string;
+        } | null;
       }[];
     },
   });

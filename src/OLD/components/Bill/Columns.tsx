@@ -55,6 +55,11 @@ export const Columns = ({
       key: "user",
     },
     {
+      title: "Avaliador",
+      dataIndex: "reviewer",
+      key: "reviewer",
+    },
+    {
       title: "Total",
       dataIndex: "total",
       key: "total",
