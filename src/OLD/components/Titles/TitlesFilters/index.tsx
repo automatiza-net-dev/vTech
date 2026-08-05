@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, SyntheticEvent } from "react";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
+import { useEconomicGroupUnits } from "@/OLD/hooks/useEconomicGroupUnits";
 
 import {
   api,
@@ -28,13 +29,13 @@ export default function TitlesFilters({
   reload,
   suppliers,
   setReload,
-  clinics,
   loadingFinances,
   setCreateTitleVisible,
   isLoading = false,
 }: any) {
   const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
   const { setTitles } = useAuth();
+  const { unitOptions } = useEconomicGroupUnits();
 
   const clientOptions = useMemo(
     () =>
@@ -133,7 +134,6 @@ export default function TitlesFilters({
       const response = await api({
         method: "get",
         url: `checking-accounts`,
-        body: { unit: unit?.id },
       });
 
       return response;
@@ -187,7 +187,9 @@ export default function TitlesFilters({
               setFilters({
                 type: formValues?.type,
                 order: formValues.order,
-                unit: formValues.unit,
+                units: Array.isArray(formValues.units)
+                  ? formValues.units.join(",")
+                  : formValues.units,
                 groupBorderos: formValues.groupBorderos,
                 reconciled: formValues.reconciled,
                 status: formValues.status,
@@ -320,12 +322,26 @@ export default function TitlesFilters({
             />
 
             <Select
+              label="Unidade de negócio"
+              name="units"
+              isClearable
+              options={unitOptions}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
+            />
+
+            <Select
               label="Conta corrente"
               name="checkingAccountId"
               onlyOneValue
               isClearable
               options={checkingAccounts?.data?.map((item) => ({
-                label: item?.description,
+                label: item?.unit?.identification
+                  ? `${item?.description} (${item?.unit?.identification})`
+                  : `${item?.description} (Compartilhada)`,
                 value: item.id,
               }))}
               onKeyDown={(ev) => {

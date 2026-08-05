@@ -18,7 +18,7 @@ import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { usePlans } from "@/OLD/hooks/usePlans";
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
-import { useClinic } from "@/OLD/hooks/useClinics";
+import { useEconomicGroupUnits } from "@/OLD/hooks/useEconomicGroupUnits";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { useCheckingAccounts } from "@/OLD/hooks/useCheckingAccounts";
@@ -32,9 +32,6 @@ import { currencyFormatter } from "@/OLD/components/Budget";
 import { convertIntlCurrency } from "@/OLD/utils/convertIntl";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-
-// Icons
-import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
@@ -51,6 +48,7 @@ import Edit from "@/OLD/components/Titles/Actions/Edit";
 import BorderoDetails from "@/OLD/components/Titles/DetailsBordero";
 import PaymentGroupDetails from "./Details";
 import CreateTitle from "@/OLD/components/Titles/Create";
+import BusinessUnitLegend from "@/OLD/components/shared/BusinessUnitLegend";
 
 // Utils
 import * as XLSX from "xlsx/xlsx.mjs";
@@ -93,7 +91,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	const { plans } = usePlans();
 	const { tutors } = useTutor(false, false);
 	const { suppliers } = useSuppliers(suppliersFilters, false);
-	const { clinics } = useClinic(Reload);
+	const { units, unitIndexMap } = useEconomicGroupUnits();
 	const { titles, setTitles } = useAuth();
 	const { tefFlags } = useTefFlags(false, "");
 	const { finances: finance } = useShowFinance(id, reload, updateOpen);
@@ -273,6 +271,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 							}`
 						: "-",
 					nsu: finance?.nsu_document || "-",
+					unit: unitIndexMap[finance?.business_unit_id] ?? "-",
 					actions: (
 						<>
 							{finance?.source === "FINANCE" && (
@@ -458,9 +457,10 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					})}
 					reload={reload}
 					setReload={setReload}
-					clinics={clinics}
 					loadingFinances={loadingFinances}
 				/>
+
+				<BusinessUnitLegend units={units} />
 
 				{controlResumeQuery.data?.length > 0 && (
 					<>
@@ -494,7 +494,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 				)}
 				<Table
 					pagination={{ onChange: (page) => setCurrentPage(page) }}
-					columns={Columns(selectAllFinances)}
+					columns={Columns(selectAllFinances, units.length > 1)}
 					dataSource={formatedFinances}
 				/>
 				<div style={{ display: "none" }}>

@@ -31,7 +31,7 @@ function DownTitles({ setVisible, setReload }: any) {
 
   const { titles, setTitles } = useAuth();
   const { paymentMethods } = usePaymentMethods();
-  const { checkingAccounts } = useCheckingAccounts();
+  const { checkingAccounts } = useCheckingAccounts(false, false, true);
   const { plans } = usePlans();
   const { finances } = useShowFinance(ids);
 
