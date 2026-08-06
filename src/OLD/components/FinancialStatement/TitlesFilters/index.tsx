@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 import { useAuth } from "@/OLD/hooks/useAuth";
-import { useUserHasPermission } from "@/OLD/hooks/useProfile";
-import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import { useEconomicGroupUnits } from "@/OLD/hooks/useEconomicGroupUnits";
 import BusinessUnitLegend from "@/OLD/components/shared/BusinessUnitLegend";
 
-import { Collapse } from "antd";
+import { Collapse, Checkbox } from "antd";
 import {
 	api,
 	Input,
@@ -17,7 +15,7 @@ import {
 	InputDatePicker,
 } from "infinity-forge";
 
-import { Container, TopBar } from "./styles";
+import { Container } from "./styles";
 import { useQuery } from "infinity-forge";
 
 export default function TitlesFilters({
@@ -31,8 +29,6 @@ export default function TitlesFilters({
 	suppliers,
 	setReload,
 	loadingFinances,
-	setCreateTitleVisible,
-	setCreateTransferenceVisible,
 	isLoading = false,
 }: any) {
 	const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
@@ -152,49 +148,15 @@ export default function TitlesFilters({
 		},
 	});
 
-	const createTitlePermission = useUserHasPermission(
-		`${accessControlTitles(type)}01`,
-	);
-
 	return (
 		<Container>
-			<TopBar>
-				<h3>Filtros</h3>
-				<div className="actions">
-					<Button
-						onClick={() => {
-							setCreateTransferenceVisible(true);
-						}}
-						text="Nova transferência"
-					/>
-
-					{createTitlePermission && (
-						<Button
-							onClick={() => {
-								setCreateTitleVisible(true);
-							}}
-							text="Novo título"
-						/>
-					)}
-
-					<Button
-						onClick={() => {
-							setFilters((prev) => ({ ...prev, noSearch: false }));
-							setTitles([]);
-							setReload(!reload);
-						}}
-						loading={isLoading}
-						text="Filtrar"
-					/>
-				</div>
-			</TopBar>
-
 			<FormHandler
 					cleanFieldsOnSubmit={false}
 					initialData={filters}
 					onChangeForm={{
 						callbackResult: (formValues) => {
-							setFilters({
+							setFilters((prev) => ({
+								...prev,
 								tefAcquirerId: formValues?.tefAcquirerId,
 								fromAcceptDate: formValues?.fromAcceptDate,
 								toAcceptDate: formValues?.toAcceptDate,
@@ -203,7 +165,6 @@ export default function TitlesFilters({
 									? formValues.units.join(",")
 									: formValues.units,
 								checkingAccountId: formValues?.checkingAccountId,
-								groupBorderos: formValues.groupBorderos,
 								reconciled: formValues.reconciled,
 								status: formValues.status,
 								plan: formValues.plan,
@@ -226,7 +187,7 @@ export default function TitlesFilters({
 								type: formValues?.type,
 								internalCode: formValues?.internalCode,
 								historic: formValues?.historic,
-							});
+							}));
 						},
 					}}
 				>
@@ -283,24 +244,28 @@ export default function TitlesFilters({
 									}}
 								/>
 
-								<Input
-									label="Nº Comprovante / NSU"
-									name="nsu"
-									onKeyDown={(ev) => {
-										if (ev.key === "Enter") {
-											setReload((prev) => !prev);
-										}
-									}}
-								/>
-								<Input
-									label="Documento"
-									name="document"
-									onKeyDown={(ev) => {
-										if (ev.key === "Enter") {
-											setReload((prev) => !prev);
-										}
-									}}
-								/>
+								<div style={{ minWidth: "110px", maxWidth: "130px" }}>
+									<Input
+										label="Nº Comprovante / NSU"
+										name="nsu"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+								</div>
+								<div style={{ minWidth: "120px", maxWidth: "150px" }}>
+									<Input
+										label="Documento"
+										name="document"
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+								</div>
 								<Select
 									label="Tipo título"
 									onlyOneValue
@@ -337,22 +302,6 @@ export default function TitlesFilters({
 									}}
 								/>
 								<Select
-									onlyOneValue
-									options={[
-										{ label: "Sim", value: "sim" },
-										{ label: "Não", value: "nao" },
-									]}
-									name="groupBorderos"
-									label="Agrupa títulos borderô"
-									isClearable
-									onKeyDown={(ev) => {
-										if (ev.key === "Enter") {
-											setReload((prev) => !prev);
-										}
-									}}
-								/>
-
-								<Select
 									label="Ordenar por"
 									name="order"
 									onlyOneValue
@@ -370,6 +319,32 @@ export default function TitlesFilters({
 										}
 									}}
 								/>
+
+								<div style={{ display: "flex", alignItems: "center", minWidth: "150px" }}>
+									<Checkbox
+										checked={filters?.groupBorderos === "sim"}
+										onChange={(e) => {
+											setFilters((prev) => ({
+												...prev,
+												groupBorderos: e.target.checked ? "sim" : "nao",
+											}));
+										}}
+									>
+										Agrupa borderô
+									</Checkbox>
+								</div>
+
+								<div style={{ display: "flex", alignItems: "flex-end", minWidth: "110px" }}>
+									<Button
+										onClick={() => {
+											setFilters((prev) => ({ ...prev, noSearch: false }));
+											setTitles([]);
+											setReload(!reload);
+										}}
+										loading={isLoading}
+										text="Filtrar"
+									/>
+								</div>
 							</div>
 						</div>
 
