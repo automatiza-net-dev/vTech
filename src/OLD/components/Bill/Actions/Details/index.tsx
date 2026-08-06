@@ -14,7 +14,7 @@ import {
   serviceFiscalDocumentsColumns,
 } from "./Columns";
 
-import { Checkbox, Input, Popconfirm, Skeleton, Table, Typography, Tooltip } from "antd";
+import { Checkbox, Input, Popconfirm, Radio, Skeleton, Table, Typography, Tooltip } from "antd";
 
 import Header from "./Header";
 import PrintScreen from "./PrintScreen";
@@ -54,6 +54,7 @@ export default function Details({ billId, setVisible }: any) {
   const [disableNfeData, setDisableNfeData] = useState<any>({});
 
   const [documentsToIssue, setDocumentsToIssue] = useState<string[]>([]);
+  const [competencePeriod, setCompetencePeriod] = useState<"current" | "previous">("current");
   const [nfeErrorsVisible, setNfeErrorsVisible] = useState<any>(false);
   const [reload, setReload] = useState<any>(false);
 
@@ -107,6 +108,15 @@ export default function Details({ billId, setVisible }: any) {
         item.productVariation?.product?.type === "service" && !item.nfe_issued
     );
   }, [data]);
+
+  const competenceDate = useMemo(() => {
+    const base =
+      competencePeriod === "previous"
+        ? moment().subtract(1, "month")
+        : moment();
+
+    return base.format("YYYY-MM-DD");
+  }, [competencePeriod]);
 
   const tokens = useMemo(() => {
     if (!hasProducts && !hasServices) {
@@ -183,6 +193,7 @@ export default function Details({ billId, setVisible }: any) {
       return fiscalDocumentService.authorizeNfse({
         billId: data?.id,
         unitFiscalDocumentId: selected,
+        competenceDate,
       });
     },
     onSuccess: () => {
@@ -906,6 +917,27 @@ export default function Details({ billId, setVisible }: any) {
         </Typography.Title>
 
         {getFiscalDocumentsQuery.isLoading && <Skeleton />}
+
+        {hasServices && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginTop: "1rem",
+            }}
+          >
+            <Typography.Text strong>Competência</Typography.Text>
+            <Radio.Group
+              value={competencePeriod}
+              onChange={(e) => setCompetencePeriod(e.target.value)}
+            >
+              <Radio value="current">Mês Atual</Radio>
+              <Radio value="previous">Mês Passado</Radio>
+            </Radio.Group>
+          </div>
+        )}
 
         <form
           onSubmit={(e) => {
