@@ -34,7 +34,7 @@ import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 // Components
-import { Container } from "./styles";
+import { Container, PageWrapperScope, PageHeaderActions } from "./styles";
 import { Button, PageWrapper, useQuery, useToast } from "infinity-forge";
 import { Table, Modal, Row, Col, Divider, Typography } from "antd";
 import TitlesFilters from "./TitlesFilters";
@@ -433,11 +433,28 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	return !listTitlesPermission || listTitlesPermission === "loading" ? (
 		<AccessDenied loading={listTitlesPermission} />
 	) : (
-		<PageWrapper title="Controle financeiro">
-			<Container>
+		<PageWrapperScope>
+			<PageWrapper title="Controle financeiro" breadCrumb={[]}>
+				<PageHeaderActions>
+					<Button
+						onClick={() => {
+							setCreateTransferenceVisible(true);
+						}}
+						text="Nova transferência"
+					/>
+
+					{createTitlePermission && (
+						<Button
+							onClick={() => {
+								setCreateTitleVisible(true);
+							}}
+							text="Novo título"
+						/>
+					)}
+				</PageHeaderActions>
+
+				<Container>
 				<TitlesFilters
-					setCreateTransferenceVisible={setCreateTransferenceVisible}
-					setCreateTitleVisible={setCreateTitleVisible}
 					isLoading={loadingFinances}
 					type={type}
 					tefFlags={tefFlags}
@@ -583,8 +600,9 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 						}}
 					/>
 				</Modal>
-			</Container>
-		</PageWrapper>
+				</Container>
+			</PageWrapper>
+		</PageWrapperScope>
 	);
 });
 
