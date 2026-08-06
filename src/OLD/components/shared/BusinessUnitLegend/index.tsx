@@ -1,4 +1,5 @@
 import React from "react";
+import { useSystem } from "@/presentation";
 
 type Unit = {
   id: string;
@@ -7,6 +8,8 @@ type Unit = {
 };
 
 export default function BusinessUnitLegend({ units }: { units: Unit[] }) {
+  const { unit: loggedUnit } = useSystem();
+
   if (!units || units.length <= 1) {
     return null;
   }
@@ -18,15 +21,19 @@ export default function BusinessUnitLegend({ units }: { units: Unit[] }) {
         display: "flex",
         flexWrap: "wrap",
         gap: "1rem",
-        fontSize: "0.85rem",
+        fontSize: "1rem",
         color: "var(--text-secondary, #666)",
       }}
     >
-      {units.map((unit) => (
-        <span key={unit.id}>
-          <strong>{unit.index}.</strong> {unit.identification}
-        </span>
-      ))}
+      {units.map((unit) => {
+        const isLoggedUnit = unit.id === loggedUnit?.id;
+
+        return (
+          <span key={unit.id} style={isLoggedUnit ? { fontWeight: "bold" } : undefined}>
+            <strong>{unit.index}.</strong> {unit.identification}
+          </span>
+        );
+      })}
     </div>
   );
 }

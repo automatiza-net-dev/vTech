@@ -48,7 +48,6 @@ import Edit from "@/OLD/components/Titles/Actions/Edit";
 import BorderoDetails from "@/OLD/components/Titles/DetailsBordero";
 import PaymentGroupDetails from "./Details";
 import CreateTitle from "@/OLD/components/Titles/Create";
-import BusinessUnitLegend from "@/OLD/components/shared/BusinessUnitLegend";
 
 // Utils
 import * as XLSX from "xlsx/xlsx.mjs";
@@ -459,8 +458,6 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 					setReload={setReload}
 					loadingFinances={loadingFinances}
 				/>
-
-				<BusinessUnitLegend units={units} />
 
 				{controlResumeQuery.data?.length > 0 && (
 					<>

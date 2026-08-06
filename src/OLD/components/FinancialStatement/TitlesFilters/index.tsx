@@ -4,6 +4,7 @@ import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import { useEconomicGroupUnits } from "@/OLD/hooks/useEconomicGroupUnits";
+import BusinessUnitLegend from "@/OLD/components/shared/BusinessUnitLegend";
 
 import { Collapse } from "antd";
 import {
@@ -16,7 +17,7 @@ import {
 	InputDatePicker,
 } from "infinity-forge";
 
-import { Container } from "./styles";
+import { Container, TopBar } from "./styles";
 import { useQuery } from "infinity-forge";
 
 export default function TitlesFilters({
@@ -36,7 +37,7 @@ export default function TitlesFilters({
 }: any) {
 	const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
 	const { setTitles } = useAuth();
-	const { unitOptions } = useEconomicGroupUnits();
+	const { units, unitOptions } = useEconomicGroupUnits();
 
 	const clientOptions = useMemo(
 		() =>
@@ -156,48 +157,39 @@ export default function TitlesFilters({
 	);
 
 	return (
-		<>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "flex-end",
-					width: "100%",
-					gap: 20,
-					marginBottom: 20,
-					marginTop: -50,
-				}}
-			>
-				<Button
-					onClick={() => {
-						setCreateTransferenceVisible(true);
-					}}
-					text="Nova transferência"
-				/>
-
-				{createTitlePermission && (
+		<Container>
+			<TopBar>
+				<h3>Filtros</h3>
+				<div className="actions">
 					<Button
 						onClick={() => {
-							setCreateTitleVisible(true);
+							setCreateTransferenceVisible(true);
 						}}
-						text="Novo título"
+						text="Nova transferência"
 					/>
-				)}
 
-				<Button
-					onClick={() => {
-						setFilters((prev) => ({ ...prev, noSearch: false }));
-						setTitles([]);
-						setReload(!reload);
-					}}
-					loading={isLoading}
-					text="Filtrar"
-				/>
-			</div>
+					{createTitlePermission && (
+						<Button
+							onClick={() => {
+								setCreateTitleVisible(true);
+							}}
+							text="Novo título"
+						/>
+					)}
 
-			<hr />
+					<Button
+						onClick={() => {
+							setFilters((prev) => ({ ...prev, noSearch: false }));
+							setTitles([]);
+							setReload(!reload);
+						}}
+						loading={isLoading}
+						text="Filtrar"
+					/>
+				</div>
+			</TopBar>
 
-			<Container>
-				<FormHandler
+			<FormHandler
 					cleanFieldsOnSubmit={false}
 					initialData={filters}
 					onChangeForm={{
@@ -238,26 +230,23 @@ export default function TitlesFilters({
 						},
 					}}
 				>
-					<div
-						style={{ display: "flex", flexDirection: "column", width: "100%" }}
-					>
-						<div className="box">
-							<div className="row">
-								<div style={{ minWidth: "350px" }}>
-									<InputDateRange
-										id="Date"
-										isClearable
-										enableFilter
-										placeholder="DD/MM/YYYY"
-										label="Data Vencimento/Pagamento"
-										names={["iterationDateFrom", "iterationDateTo"]}
-										onKeyDown={(ev) => {
-											if (ev.key === "Enter") {
-												setReload((prev) => !prev);
-											}
-										}}
-									/>
-								</div>
+					<div className="box">
+						<div className="row">
+							<div style={{ minWidth: "350px" }}>
+								<InputDateRange
+									id="Date"
+									isClearable
+									enableFilter
+									placeholder="DD/MM/YYYY"
+									label="Data Vencimento/Pagamento"
+									names={["iterationDateFrom", "iterationDateTo"]}
+									onKeyDown={(ev) => {
+										if (ev.key === "Enter") {
+											setReload((prev) => !prev);
+										}
+									}}
+								/>
+							</div>
 
 								<Select
 									label="Unidade de negócio"
@@ -385,8 +374,23 @@ export default function TitlesFilters({
 						</div>
 
 						<Collapse defaultActiveKey={[]} ghost>
-							<Collapse.Panel header="Mais filtros" key="1">
-								<div className="row">
+							<Collapse.Panel
+							header={
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										width: "100%",
+									}}
+								>
+									<span>Mais filtros</span>
+									<BusinessUnitLegend units={units} />
+								</div>
+							}
+							key="1"
+						>
+							<div className="row">
 									<div style={{ minWidth: "350px" }}>
 										<InputDateRange
 											id="Date"
@@ -565,9 +569,7 @@ export default function TitlesFilters({
 								</div>
 							</Collapse.Panel>
 						</Collapse>
-					</div>
 				</FormHandler>
-			</Container>
-		</>
+		</Container>
 	);
 }

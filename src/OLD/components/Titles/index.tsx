@@ -36,7 +36,6 @@ import PrintScreen from "./PrintScreen";
 import Edit from "./Actions/Edit";
 import BorderoDetails from "./DetailsBordero";
 import CreateTitle from "./Create";
-import BusinessUnitLegend from "@/OLD/components/shared/BusinessUnitLegend";
 
 // Utils
 import * as XLSX from "xlsx/xlsx.mjs";
@@ -362,7 +361,6 @@ export default function Titles({ type }: any) {
           setCreateTitleVisible={setCreateTitleVisible}
           loadingFinances={loadingFinances}
         />
-        <BusinessUnitLegend units={units} />
         {titles?.length > 0 && (
           <ButtonsPanel
             setReload={setReload}
