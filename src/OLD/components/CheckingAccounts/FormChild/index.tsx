@@ -96,6 +96,9 @@ const FormChild = memo(function FormChild({
               </Option>
             ))}
           </Select>
+          <small style={{ color: "var(--text-secondary, #888)" }}>
+            Deixe em branco para a conta ficar disponível para baixar títulos de todas as unidades do grupo econômico.
+          </small>
         </div>
         <div className="uk-flex uk-margin-top">
           <div className="uk-margin-right">

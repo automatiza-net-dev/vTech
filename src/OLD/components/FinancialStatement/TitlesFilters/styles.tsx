@@ -1,6 +1,13 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  background: #fff;
+  border: 1px solid #e6e8eb;
+  border-radius: 12px;
+  padding: 20px 24px 12px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  margin-bottom: 16px;
+
   .daterange-box {
     * {
       font-size: 13px !important;
@@ -21,8 +28,9 @@ export const Container = styled.div`
 
   .conntent_form_infinity_forge {
     display: flex;
+    flex-direction: column;
     width: 100%;
-    gap: 20px;
+    gap: 4px;
 
     .list-radios {
       display: flex;
@@ -43,47 +51,76 @@ export const Container = styled.div`
       }
     }
 
-    > .box {
+    .box {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 16px;
+    }
 
-      > .box {
-        display: flex;
-        align-items: center;
-        gap: 5px;
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px 20px;
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
       }
+
+      > * {
+        flex: 1 1 170px;
+        min-width: 160px;
+      }
+    }
+  }
+
+  .ant-collapse {
+    border: none;
+    background: transparent;
+    margin-top: 8px;
+
+    .ant-collapse-item {
+      border: none;
+      border-top: 1px solid #f0f1f3;
+    }
+
+    .ant-collapse-header {
+      padding: 14px 0 !important;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--primary, #0f766e);
+
+      .ant-collapse-arrow {
+        color: var(--primary, #0f766e);
+      }
+    }
+
+    .ant-collapse-content-box {
+      padding: 4px 0 8px !important;
     }
   }
 `;
 
-export const InputBox = styled.div`
+export const TopBar = styled.div`
   display: flex;
   align-items: center;
-  height: 40px;
-  background-color: #fff;
-  border-radius: 40px;
-  padding: 0 10px;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 
-  .date-component {
-    div {
-      width: 100%;
-    }
-    input {
-      font-size: 14px;
-      width: 220px;
-    }
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
   }
 
-  input,
-  .date-component,
-  .select-component {
-    border: none;
-    width: 100%;
-  }
-
-  .custom-input {
-    border: 1px solid var(--cinza-200, #e1e1e1);
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 `;

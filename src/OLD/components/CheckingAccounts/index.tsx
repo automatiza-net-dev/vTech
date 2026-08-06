@@ -35,7 +35,7 @@ const CheckingAccounts = memo(function CheckingAccounts() {
   });
   const [loading, setLoading] = useState(false);
   const [formatedAccounts, setFormatedAccounts] = useState([]);
-  const { checkingAccounts } = useCheckingAccounts(reload, filters);
+  const { checkingAccounts } = useCheckingAccounts(reload, filters, true);
   const router = useRouter();
 
   const canCreateAccountBank = useUserHasPermission("CCO01");

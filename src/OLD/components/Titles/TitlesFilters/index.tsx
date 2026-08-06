@@ -3,7 +3,10 @@ import React, { useState, useEffect, useMemo, SyntheticEvent } from "react";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
+import { useEconomicGroupUnits } from "@/OLD/hooks/useEconomicGroupUnits";
+import BusinessUnitLegend from "@/OLD/components/shared/BusinessUnitLegend";
 
+import { Collapse } from "antd";
 import {
   api,
   Input,
@@ -14,7 +17,7 @@ import {
   InputDatePicker,
 } from "infinity-forge";
 
-import { Container } from "./styles";
+import { Container, TopBar } from "./styles";
 import { useSystem } from "@/presentation";
 import { useQuery } from "infinity-forge";
 
@@ -28,13 +31,13 @@ export default function TitlesFilters({
   reload,
   suppliers,
   setReload,
-  clinics,
   loadingFinances,
   setCreateTitleVisible,
   isLoading = false,
 }: any) {
   const [formatedTutors, setFormatedTutors] = useState<any[]>([]);
   const { setTitles } = useAuth();
+  const { units, unitOptions } = useEconomicGroupUnits();
 
   const clientOptions = useMemo(
     () =>
@@ -133,7 +136,6 @@ export default function TitlesFilters({
       const response = await api({
         method: "get",
         url: `checking-accounts`,
-        body: { unit: unit?.id },
       });
 
       return response;
@@ -145,109 +147,91 @@ export default function TitlesFilters({
   );
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          width: "100%",
-          gap: 20,
-          marginBottom: 20,
-          marginTop: -50,
-        }}
-      >
-        {createTitlePermission && (
+    <Container>
+      <TopBar>
+        <h3>Filtros</h3>
+        <div className="actions">
+          {createTitlePermission && (
+            <Button
+              onClick={() => {
+                setCreateTitleVisible(true);
+              }}
+              text="Novo título"
+            />
+          )}
+
           <Button
             onClick={() => {
-              setCreateTitleVisible(true);
+              setFilters((prev) => ({ ...prev, noSearch: false }));
+              setTitles([]);
+              setReload(!reload);
             }}
-            text="Novo título"
+            loading={isLoading}
+            text="Filtrar"
           />
-        )}
+        </div>
+      </TopBar>
 
-        <Button
-          onClick={() => {
-            setFilters((prev) => ({ ...prev, noSearch: false }));
-            setTitles([]);
-            setReload(!reload);
-          }}
-          loading={isLoading}
-          text="Filtrar"
-        />
-      </div>
+      <FormHandler
+        cleanFieldsOnSubmit={false}
+        initialData={filters}
+        onChangeForm={{
+          callbackResult: (formValues) => {
+            setFilters({
+              type: formValues?.type,
+              order: formValues.order,
+              units: Array.isArray(formValues.units)
+                ? formValues.units.join(",")
+                : formValues.units,
+              groupBorderos: formValues.groupBorderos,
+              reconciled: formValues.reconciled,
+              status: formValues.status,
+              plan: formValues.plan,
+              accept: formValues.accept,
+              checkingAccountId: formValues?.checkingAccountId,
+              paymentMethod: formValues.paymentMethod,
+              nsu: formValues.nsu,
+              client: formValues.client,
+              document: formValues.document,
+              fiscalNote: formValues.fiscalNote,
+              fromIssue: formValues.fromIssue,
+              toIssue: formValues.toIssue,
+              fromExpiration: formValues.fromExpiration,
+              toExpiration: formValues.toExpiration,
+              fromPayment: formValues.fromPayment,
+              toPayment: formValues.toPayment,
+              fromAcceptDate: formValues.fromAcceptDate,
+              toAcceptDate: formValues.toAcceptDate,
+              competence: formValues.competence,
+              internalCode: formValues?.internalCode,
+              historic: formValues?.historic,
+              tefFlagId: formValues?.tefFlagId,
+            });
+          },
+        }}
+      >
+        <div className="box">
+          <div className="row">
+            <div style={{ minWidth: "260px" }}>
+              <InputDateRange
+                isClearable
+                enableFilter
+                placeholder="DD/MM/YYYY"
+                label="Data Vencimento"
+                names={["fromExpiration", "toExpiration"]}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
+              />
+            </div>
 
-      <hr />
-
-      <Container>
-        <FormHandler
-          cleanFieldsOnSubmit={false}
-          initialData={filters}
-          onChangeForm={{
-            callbackResult: (formValues) => {
-              setFilters({
-                type: formValues?.type,
-                order: formValues.order,
-                unit: formValues.unit,
-                groupBorderos: formValues.groupBorderos,
-                reconciled: formValues.reconciled,
-                status: formValues.status,
-                plan: formValues.plan,
-                accept: formValues.accept,
-                checkingAccountId: formValues?.checkingAccountId,
-                paymentMethod: formValues.paymentMethod,
-                nsu: formValues.nsu,
-                client: formValues.client,
-                document: formValues.document,
-                fiscalNote: formValues.fiscalNote,
-                fromIssue: formValues.fromIssue,
-                toIssue: formValues.toIssue,
-                fromExpiration: formValues.fromExpiration,
-                toExpiration: formValues.toExpiration,
-                fromPayment: formValues.fromPayment,
-                toPayment: formValues.toPayment,
-                fromAcceptDate: formValues.fromAcceptDate,
-                toAcceptDate: formValues.toAcceptDate,
-                competence: formValues.competence,
-                internalCode: formValues?.internalCode,
-                historic: formValues?.historic,
-                tefFlagId: formValues?.tefFlagId,
-              });
-            },
-          }}
-        >
-          <div className="box">
-            <InputDateRange
+            <Select
+              label="Unidade de negócio"
+              name="units"
               isClearable
-              enableFilter
-              placeholder="DD/MM/YYYY"
-              label="Data emissão"
-              names={["fromIssue", "toIssue"]}
-            />
-
-            <InputDateRange
-              isClearable
-              enableFilter
-              placeholder="DD/MM/YYYY"
-              label="Data Vencimento"
-              names={["fromExpiration", "toExpiration"]}
-            />
-
-            <InputDateRange
-              isClearable
-              enableFilter
-              placeholder="DD/MM/YYYY"
-              label="Data Pagamento"
-              names={["fromPayment", "toPayment"]}
-            />
-          </div>
-
-          <div className="box">
-            <InputDateRange
-              isClearable
-              enableFilter
-              placeholder="DD/MM/YYYY"
-              label="Data aceite"
-              names={["fromAcceptDate", "toAcceptDate"]}
+              options={unitOptions}
               onKeyDown={(ev) => {
                 if (ev.key === "Enter") {
                   setReload((prev) => !prev);
@@ -255,7 +239,134 @@ export default function TitlesFilters({
               }}
             />
 
+            <Select
+              label="Conta corrente"
+              name="checkingAccountId"
+              onlyOneValue
+              isClearable
+              options={checkingAccounts?.data?.map((item) => ({
+                label: item?.unit?.identification
+                  ? `${item?.description} (${item?.unit?.identification})`
+                  : `${item?.description} (Compartilhada)`,
+                value: item.id,
+              }))}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
+            />
+
+            <Input
+              label="Documento"
+              name="document"
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
+            />
+
+            <Select
+              label="Tipo título"
+              onlyOneValue
+              disabled
+              isClearable
+              placeholder="Todos"
+              name="type"
+              options={[
+                { label: "Crédito", value: "CREDITO" },
+                { label: "Débito", value: "DEBITO" },
+              ]}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
+            />
+
+            <Select
+              isClearable
+              name="status"
+              label="Situação"
+              onlyOneValue
+              placeholder="Todos"
+              options={[
+                { label: "Aberto", value: "ABERTO" },
+                { label: "Baixado", value: "BAIXADO" },
+              ]}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  setReload((prev) => !prev);
+                }
+              }}
+            />
+          </div>
+        </div>
+
+        <Collapse defaultActiveKey={[]} ghost>
+          <Collapse.Panel
+            header={
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <span>Mais filtros</span>
+                <BusinessUnitLegend units={units} />
+              </div>
+            }
+            key="1"
+          >
             <div className="row">
+              <div style={{ minWidth: "260px" }}>
+                <InputDateRange
+                  isClearable
+                  enableFilter
+                  placeholder="DD/MM/YYYY"
+                  label="Data emissão"
+                  names={["fromIssue", "toIssue"]}
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      setReload((prev) => !prev);
+                    }
+                  }}
+                />
+              </div>
+
+              <div style={{ minWidth: "260px" }}>
+                <InputDateRange
+                  isClearable
+                  enableFilter
+                  placeholder="DD/MM/YYYY"
+                  label="Data Pagamento"
+                  names={["fromPayment", "toPayment"]}
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      setReload((prev) => !prev);
+                    }
+                  }}
+                />
+              </div>
+
+              <div style={{ minWidth: "260px" }}>
+                <InputDateRange
+                  isClearable
+                  enableFilter
+                  placeholder="DD/MM/YYYY"
+                  label="Data aceite"
+                  names={["fromAcceptDate", "toAcceptDate"]}
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") {
+                      setReload((prev) => !prev);
+                    }
+                  }}
+                />
+              </div>
+
               <InputDatePicker
                 id="Date"
                 mode="month"
@@ -268,7 +379,9 @@ export default function TitlesFilters({
                   }
                 }}
               />
+            </div>
 
+            <div className="row">
               <Input
                 label="Nº Comprovante / NSU"
                 name="nsu"
@@ -278,9 +391,7 @@ export default function TitlesFilters({
                   }
                 }}
               />
-            </div>
 
-            <div className="box">
               {unit?.configs?.businessUnits?.internal_code && (
                 <Input
                   label="Código Interno"
@@ -302,49 +413,20 @@ export default function TitlesFilters({
                   }
                 }}
               />
-            </div>
-          </div>
 
-          <div className="box">
-            <Select
-              onlyOneValue
-              label="Nome do Titular"
-              name="client"
-              options={clientOptions}
-              isClearable
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  setReload((prev) => !prev);
-                }
-              }}
-            />
-
-            <Select
-              label="Conta corrente"
-              name="checkingAccountId"
-              onlyOneValue
-              isClearable
-              options={checkingAccounts?.data?.map((item) => ({
-                label: item?.description,
-                value: item.id,
-              }))}
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  setReload((prev) => !prev);
-                }
-              }}
-            />
-
-            <div className="row">
-              <Input
-                label="Documento"
-                name="document"
+              <Select
+                onlyOneValue
+                label="Nome do Titular"
+                name="client"
+                options={clientOptions}
+                isClearable
                 onKeyDown={(ev) => {
                   if (ev.key === "Enter") {
                     setReload((prev) => !prev);
                   }
                 }}
               />
+
               <Input
                 label="Nota Fiscal"
                 name="fiscalNote"
@@ -355,65 +437,14 @@ export default function TitlesFilters({
                 }}
               />
             </div>
-          </div>
 
-          <div className="box">
-            <Select
-              onlyOneValue
-              label="Plano Contas"
-              name="plan"
-              options={planOptions}
-              isClearable
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  setReload((prev) => !prev);
-                }
-              }}
-            />
-
-            <Select
-              onlyOneValue
-              label="Forma de pagamento"
-              name="paymentMethod"
-              options={paymentMethodOptions}
-              isClearable
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  setReload((prev) => !prev);
-                }
-              }}
-            />
-
-            <Select
-              label="Bandeira Tef."
-              name="tefFlagId"
-              onlyOneValue
-              isClearable
-              options={tfeFlags?.data?.map((item) => ({
-                label: item?.description,
-                value: item.id,
-              }))}
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  setReload((prev) => !prev);
-                }
-              }}
-            />
-          </div>
-
-          <div className="box">
             <div className="row">
               <Select
-                label="Tipo título"
                 onlyOneValue
-                disabled
+                label="Plano Contas"
+                name="plan"
+                options={planOptions}
                 isClearable
-                placeholder="Todos"
-                name="type"
-                options={[
-                  { label: "Crédito", value: "CREDITO" },
-                  { label: "Débito", value: "DEBITO" },
-                ]}
                 onKeyDown={(ev) => {
                   if (ev.key === "Enter") {
                     setReload((prev) => !prev);
@@ -422,24 +453,34 @@ export default function TitlesFilters({
               />
 
               <Select
-                isClearable
-                name="status"
-                label="Situação"
                 onlyOneValue
-                placeholder="Todos"
-                options={[
-                  { label: "Aberto", value: "ABERTO" },
-                  { label: "Baixado", value: "BAIXADO" },
-                ]}
+                label="Forma de pagamento"
+                name="paymentMethod"
+                options={paymentMethodOptions}
+                isClearable
                 onKeyDown={(ev) => {
                   if (ev.key === "Enter") {
                     setReload((prev) => !prev);
                   }
                 }}
               />
-            </div>
 
-            <div className="row">
+              <Select
+                label="Bandeira Tef."
+                name="tefFlagId"
+                onlyOneValue
+                isClearable
+                options={tfeFlags?.data?.map((item) => ({
+                  label: item?.description,
+                  value: item.id,
+                }))}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    setReload((prev) => !prev);
+                  }
+                }}
+              />
+
               <Select
                 isClearable
                 onlyOneValue
@@ -473,9 +514,7 @@ export default function TitlesFilters({
                   }
                 }}
               />
-            </div>
 
-            <div className="row">
               <Select
                 onlyOneValue
                 isClearable
@@ -511,9 +550,9 @@ export default function TitlesFilters({
                 }}
               />
             </div>
-          </div>
-        </FormHandler>
-      </Container>
-    </>
+          </Collapse.Panel>
+        </Collapse>
+      </FormHandler>
+    </Container>
   );
 }

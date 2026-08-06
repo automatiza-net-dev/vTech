@@ -1,7 +1,14 @@
 import { Checkbox } from "antd";
 import { BsCheck, BsX } from "react-icons/bs";
 
-export const Columns = (selectAllFinances) => [
+export const Columns = (selectAllFinances, showUnitColumn) => [
+	showUnitColumn
+		? {
+				title: "Unid.",
+				dataIndex: "unit",
+				key: "unit",
+			}
+		: {},
 	{
 		title: "Tipo",
 		dataIndex: "type",

@@ -12,7 +12,7 @@ import { usePaymentMethods } from "@/OLD/hooks/usePaymentMethods";
 import { usePlans } from "@/OLD/hooks/usePlans";
 import { useTutor } from "@/OLD/hooks/useTutor";
 import { useSuppliers } from "@/OLD/hooks/useSuppliers";
-import { useClinic } from "@/OLD/hooks/useClinics";
+import { useEconomicGroupUnits } from "@/OLD/hooks/useEconomicGroupUnits";
 import { useAuth } from "@/OLD/hooks/useAuth";
 import { useUserHasPermission } from "@/OLD/hooks/useProfile";
 
@@ -22,9 +22,6 @@ import moment from "moment";
 import { currencyFormatter } from "@/OLD/components/Budget";
 import { accessControlTitles } from "@/OLD/utils/generalUtils";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-
-// Icons
-import { Reload } from "styled-icons/zondicons";
 
 // Components
 import { Container } from "./styles";
@@ -74,7 +71,7 @@ export default function Titles({ type }: any) {
   const { plans } = usePlans();
   const { tutors } = useTutor(false, false);
   const { suppliers } = useSuppliers(suppliersFilters, false);
-  const { clinics } = useClinic(Reload);
+  const { units, unitIndexMap } = useEconomicGroupUnits();
   const { titles, setTitles } = useAuth();
   const { finances: finance } = useShowFinance(id, reload, updateOpen);
   const { user } = useAuthAdmin();
@@ -187,6 +184,7 @@ export default function Titles({ type }: any) {
             : "-",
         nsu: finance?.nsu_document || "-",
         internalCode: finance?.internal_code || finance?.internalCode || "-",
+        unit: unitIndexMap[finance?.business_unit_id] ?? "-",
         actions:
           finance?.source === "FINANCE" ? (
             <FinancesActions
@@ -360,7 +358,6 @@ export default function Titles({ type }: any) {
           })}
           reload={reload}
           setReload={setReload}
-          clinics={clinics}
           setCreateTitleVisible={setCreateTitleVisible}
           loadingFinances={loadingFinances}
         />
@@ -373,7 +370,7 @@ export default function Titles({ type }: any) {
         )}
         <Table
           pagination={{ onChange: (page) => setCurrentPage(page) }}
-          columns={Columns(selectAllFinances, hasInternalCode)}
+          columns={Columns(selectAllFinances, hasInternalCode, units.length > 1)}
           dataSource={formatedFinances}
           footer={() => (
             <footer className="uk-flex uk-flex-center">

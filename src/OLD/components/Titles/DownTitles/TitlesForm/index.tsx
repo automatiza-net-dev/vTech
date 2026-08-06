@@ -427,7 +427,9 @@ function TitlesForm({
                       {checkingAccounts?.length > 0 &&
                         checkingAccounts?.map((account, i) => (
                           <Option value={account?.id} key={i}>
-                            {account?.description}
+                            {account?.unit?.identification
+                              ? `${account?.description} (${account?.unit?.identification})`
+                              : `${account?.description} (Compartilhada)`}
                           </Option>
                         ))}
                     </Select>

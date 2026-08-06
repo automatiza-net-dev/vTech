@@ -200,7 +200,9 @@ const Header = memo(function({
             {checkingAccounts?.length > 0 &&
               checkingAccounts?.map((checkingAccount, i) => (
                 <Option key={i} value={checkingAccount?.id}>
-                  {checkingAccount?.description}
+                  {checkingAccount?.unit?.identification
+                    ? `${checkingAccount?.description} (${checkingAccount?.unit?.identification})`
+                    : `${checkingAccount?.description} (Compartilhada)`}
                 </Option>
               ))}
           </Select>
