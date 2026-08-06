@@ -21,7 +21,7 @@ export default function BusinessUnitLegend({ units }: { units: Unit[] }) {
         display: "flex",
         flexWrap: "wrap",
         gap: "1rem",
-        fontSize: "15px",
+        fontSize: "12px",
         color: "var(--text-secondary, #666)",
       }}
     >
