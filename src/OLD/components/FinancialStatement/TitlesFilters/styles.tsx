@@ -73,6 +73,16 @@ export const Container = styled.div`
         flex: 1 1 170px;
         min-width: 160px;
       }
+
+      &.main {
+        flex-wrap: nowrap;
+        gap: 10px;
+
+        > * {
+          flex: 1 1 110px;
+          min-width: 90px;
+        }
+      }
     }
   }
 

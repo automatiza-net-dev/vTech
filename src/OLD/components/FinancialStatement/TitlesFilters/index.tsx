@@ -192,8 +192,8 @@ export default function TitlesFilters({
 					}}
 				>
 					<div className="box">
-						<div className="row">
-							<div style={{ minWidth: "350px" }}>
+						<div className="row main">
+							<div style={{ minWidth: "260px" }}>
 								<InputDateRange
 									id="Date"
 									isClearable
@@ -208,18 +208,6 @@ export default function TitlesFilters({
 									}}
 								/>
 							</div>
-
-								<Select
-									label="Unidade de negócio"
-									name="units"
-									isClearable
-									options={unitOptions}
-									onKeyDown={(ev) => {
-										if (ev.key === "Enter") {
-											setReload((prev) => !prev);
-										}
-									}}
-								/>
 
 								<Select
 									label="Conta corrente"
@@ -244,21 +232,10 @@ export default function TitlesFilters({
 									}}
 								/>
 
-								<div style={{ minWidth: "110px", maxWidth: "130px" }}>
+								<div style={{ minWidth: "90px", maxWidth: "110px" }}>
 									<Input
 										label="Nº Comprovante / NSU"
 										name="nsu"
-										onKeyDown={(ev) => {
-											if (ev.key === "Enter") {
-												setReload((prev) => !prev);
-											}
-										}}
-									/>
-								</div>
-								<div style={{ minWidth: "120px", maxWidth: "150px" }}>
-									<Input
-										label="Documento"
-										name="document"
 										onKeyDown={(ev) => {
 											if (ev.key === "Enter") {
 												setReload((prev) => !prev);
@@ -301,26 +278,7 @@ export default function TitlesFilters({
 										}
 									}}
 								/>
-								<Select
-									label="Ordenar por"
-									name="order"
-									onlyOneValue
-									isClearable
-									options={[
-										{ label: "Data Vencimento", value: "expiration_date" },
-										{ label: "Data Emissão", value: "issue_date" },
-										{ label: "Data Competência", value: "competence_date" },
-										{ label: "Data Pagamento", value: "payment_date" },
-										{ label: "Documento / Parcela", value: "doc" },
-									]}
-									onKeyDown={(ev) => {
-										if (ev.key === "Enter") {
-											setReload((prev) => !prev);
-										}
-									}}
-								/>
-
-								<div style={{ display: "flex", alignItems: "center", minWidth: "150px" }}>
+								<div style={{ display: "flex", alignItems: "center", minWidth: "120px" }}>
 									<Checkbox
 										checked={filters?.groupBorderos === "sim"}
 										onChange={(e) => {
@@ -334,7 +292,7 @@ export default function TitlesFilters({
 									</Checkbox>
 								</div>
 
-								<div style={{ display: "flex", alignItems: "flex-end", minWidth: "110px" }}>
+								<div style={{ display: "flex", alignItems: "flex-end", minWidth: "90px" }}>
 									<Button
 										onClick={() => {
 											setFilters((prev) => ({ ...prev, noSearch: false }));
@@ -366,6 +324,51 @@ export default function TitlesFilters({
 							key="1"
 						>
 							<div className="row">
+									<Select
+										label="Unidade de negócio"
+										name="units"
+										isClearable
+										options={unitOptions}
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+
+									<div style={{ minWidth: "120px", maxWidth: "150px" }}>
+										<Input
+											label="Documento"
+											name="document"
+											onKeyDown={(ev) => {
+												if (ev.key === "Enter") {
+													setReload((prev) => !prev);
+												}
+											}}
+										/>
+									</div>
+
+									<Select
+										label="Ordenar por"
+										name="order"
+										onlyOneValue
+										isClearable
+										options={[
+											{ label: "Data Vencimento", value: "expiration_date" },
+											{ label: "Data Emissão", value: "issue_date" },
+											{ label: "Data Competência", value: "competence_date" },
+											{ label: "Data Pagamento", value: "payment_date" },
+											{ label: "Documento / Parcela", value: "doc" },
+										]}
+										onKeyDown={(ev) => {
+											if (ev.key === "Enter") {
+												setReload((prev) => !prev);
+											}
+										}}
+									/>
+								</div>
+
+								<div className="row">
 									<div style={{ minWidth: "350px" }}>
 										<InputDateRange
 											id="Date"
