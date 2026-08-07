@@ -90,7 +90,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 	const { plans } = usePlans();
 	const { tutors } = useTutor(false, false);
 	const { suppliers } = useSuppliers(suppliersFilters, false);
-	const { units, unitIndexMap } = useEconomicGroupUnits();
+	const { units, unitIndexMap, unitIdentificationMap } = useEconomicGroupUnits();
 	const { titles, setTitles } = useAuth();
 	const { tefFlags } = useTefFlags(false, "");
 	const { finances: finance } = useShowFinance(id, reload, updateOpen);
@@ -148,6 +148,9 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 				: "-",
 			forma_de_pagamento: item?.payment_method,
 			"nsu/comprovante": item?.nsu_document,
+			numero_unidade: unitIndexMap[item?.business_unit_id] ?? "-",
+			unidade: unitIdentificationMap[item?.business_unit_id] ?? "-",
+			plano_de_contas: item?.accountPlan?.description ?? "-",
 		}));
 
 		let wb = XLSX.utils.book_new(),

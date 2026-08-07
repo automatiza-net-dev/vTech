@@ -21,6 +21,15 @@ export const useEconomicGroupUnits = () => {
     [units],
   );
 
+  const unitIdentificationMap = useMemo(
+    () =>
+      units.reduce<Record<string, string>>((acc, unit) => {
+        acc[unit.id] = unit.identification;
+        return acc;
+      }, {}),
+    [units],
+  );
+
   const unitOptions = useMemo(
     () =>
       units.map((unit) => ({
@@ -33,6 +42,7 @@ export const useEconomicGroupUnits = () => {
   return {
     units,
     unitIndexMap,
+    unitIdentificationMap,
     unitOptions,
     loadingUnits: loadingBusinessUnits,
   };
