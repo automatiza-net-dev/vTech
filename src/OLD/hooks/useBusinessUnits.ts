@@ -11,6 +11,7 @@ export const useBusinessUnitsByUser = (filters = false, reload?: any) => {
 			fantasyName: string;
 			companyName: string;
 			phone: string;
+			unitNumber: number;
 			group: {
 				id: string;
 				fantasy_name: string;

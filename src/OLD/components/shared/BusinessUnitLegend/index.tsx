@@ -3,7 +3,7 @@ import { useSystem } from "@/presentation";
 
 type Unit = {
   id: string;
-  index: number;
+  unitNumber: number;
   identification: string;
 };
 
@@ -30,7 +30,7 @@ export default function BusinessUnitLegend({ units }: { units: Unit[] }) {
 
         return (
           <span key={unit.id} style={isLoggedUnit ? { fontWeight: "bold" } : undefined}>
-            <strong>{unit.index}.</strong> {unit.identification}
+            <strong>{unit.unitNumber}.</strong> {unit.identification}
           </span>
         );
       })}
