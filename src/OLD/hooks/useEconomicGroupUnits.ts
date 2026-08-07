@@ -6,19 +6,16 @@ export const useEconomicGroupUnits = () => {
 
   const units = useMemo(
     () =>
-      [...(businessUnits || [])]
-        .sort((a, b) => (a?.identification || "").localeCompare(b?.identification || ""))
-        .map((unit, index) => ({
-          ...unit,
-          index: index + 1,
-        })),
+      [...(businessUnits || [])].sort((a, b) =>
+        (a?.identification || "").localeCompare(b?.identification || ""),
+      ),
     [businessUnits],
   );
 
   const unitIndexMap = useMemo(
     () =>
       units.reduce<Record<string, number>>((acc, unit) => {
-        acc[unit.id] = unit.index;
+        acc[unit.id] = unit.unitNumber;
         return acc;
       }, {}),
     [units],
@@ -27,7 +24,7 @@ export const useEconomicGroupUnits = () => {
   const unitOptions = useMemo(
     () =>
       units.map((unit) => ({
-        label: `${unit.index}. ${unit.identification}`,
+        label: `${unit.unitNumber}. ${unit.identification}`,
         value: unit.id,
       })),
     [units],
