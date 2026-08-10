@@ -150,7 +150,7 @@ const FinancialSteatment = memo(function Titles({ type }: any) {
 			"nsu/comprovante": item?.nsu_document,
 			numero_unidade: unitIndexMap[item?.business_unit_id] ?? "-",
 			unidade: unitIdentificationMap[item?.business_unit_id] ?? "-",
-			plano_de_contas: item?.accountPlan?.description ?? "-",
+			plano_de_contas: item?.account_plan ?? "-",
 		}));
 
 		let wb = XLSX.utils.book_new(),
