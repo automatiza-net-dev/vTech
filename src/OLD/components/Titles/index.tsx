@@ -112,7 +112,7 @@ export default function Titles({ type }: any) {
       usuario_lancamento: item?.user_name,
       numero_unidade: unitIndexMap[item?.business_unit_id] ?? "-",
       unidade: unitIdentificationMap[item?.business_unit_id] ?? "-",
-      plano_de_contas: item?.accountPlan?.description ?? "-",
+      plano_de_contas: item?.account_plan ?? "-",
     }));
 
     let wb = XLSX.utils.book_new(),
