@@ -211,14 +211,23 @@ export default function Details({ billId, setVisible }: any) {
       setLoading(false);
       queryClient.invalidateQueries(["fiscalDocuments"]);
       if (err instanceof AxiosError) {
+        const responseData = err?.response?.data;
+        // A API pode retornar um objeto ({ message }) ou uma lista de falhas ([{ success, message }])
+        const message = Array.isArray(responseData)
+          ? responseData
+              .map((item) => item?.message)
+              .filter(Boolean)
+              .join(" | ")
+          : responseData?.message;
+
         return createToast({
-          message: err?.response?.data?.message ?? "Erro na emissão",
+          message: message || "Erro na emissão",
           status: "error",
         });
       }
 
       return createToast({
-        message: err?.response?.data?.[0]?.message ?? "Erro na emissão",
+        message: err?.message || "Erro na emissão",
         status: "error",
       });
     },
@@ -1202,7 +1211,7 @@ export default function Details({ billId, setVisible }: any) {
         </div>
         {nfeErrors?.map((err) => (
           <div className="uk-flex uk-flex-between">
-            <div className="uk-width-1-5">{err?.cod || "-"}</div>
+            <div className="uk-width-1-5">{err?.cod || err?.codigo || "-"}</div>
             <div className="uk-width-4-5">{err?.mensagem || "-"}</div>
           </div>
         ))}
