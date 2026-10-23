@@ -43,6 +43,7 @@ jobs:
             cp $BASE/shared/.env $REL/.env
 
             cd $REL
+            export APP_ORIGIN="SRV DEV" APP_COMMIT=$SHA
             pnpm install --frozen-lockfile
             nice -n 10 pnpm build
             rm -rf .next/cache

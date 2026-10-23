@@ -34,3 +34,24 @@ export const ActionBox = styled.div`
     fill: currentColor;
   }
 `
+
+export const ProfileWrapper = styled.div`
+  position: relative;
+`
+
+export const VersionBadge = styled.span<{ $bg: string }>`
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  z-index: 23;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: ${(props) => props.$bg};
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+`
