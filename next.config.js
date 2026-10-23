@@ -7,8 +7,7 @@ const nextConfig = {
   env: {
     api: process.env.sancla_api ?? process.env.api,
     appOrigin: process.env.APP_ORIGIN ?? (process.env.VERCEL ? "VERCEL" : "LOCAL"),
-    appCommit: (process.env.APP_COMMIT ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "").slice(0, 8),
-    appBuiltAt: new Date().toISOString()
+    appCommit: (process.env.APP_COMMIT ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "").slice(0, 8)
   },
   compiler: {
     styledComponents: true
