@@ -17,6 +17,7 @@ import { RemoteBusinessUnits } from "@/data";
 import { TypesAutomatiza, container } from "@/container";
 
 import * as S from "./styles";
+import { versionMenuItem } from "./version-menu";
 
 export function LayoutDashboard({ children }) {
   return (
@@ -74,18 +75,19 @@ function LayoutPage({ children }) {
             src: logo_url,
             href: "/dashboard",
           }}
-          profile={
-            roleUser === "controller"
-              ? {
-                  menus: [
+          profile={{
+            menus: [
+              ...(roleUser === "controller"
+                ? [
                     {
                       title: "Voltar para o portal franqueador",
                       onClick: () => router.push("/admin"),
                     },
-                  ],
-                }
-              : undefined
-          }
+                  ]
+                : []),
+              versionMenuItem,
+            ],
+          }}
         >
           {children}
         </Layout>

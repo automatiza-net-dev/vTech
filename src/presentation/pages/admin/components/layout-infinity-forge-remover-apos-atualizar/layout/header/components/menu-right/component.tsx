@@ -2,6 +2,7 @@ import { Error, Profile, WorkSpace, Notifications } from 'infinity-forge'
 
 import * as S from './styles'
 import { SelectWorkSpace } from './select-workspace'
+import { versionMenuItem } from '@/presentation/components/layout/version-menu'
 
 interface IMenuRight {
   workspaces: WorkSpace
@@ -17,7 +18,7 @@ export function MenuRight(props: IMenuRight) {
 
         <Notifications />
 
-        <Pro />
+        <Pro profile={{ menus: [versionMenuItem] }} />
       </S.MenuRight>
     </Error>
   )
