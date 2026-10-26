@@ -1,0 +1,74 @@
+name: Deploy Web [prod]
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-web-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Web → prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy → Prod
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          port: ${{ secrets.PROD_SERVER_PORT }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          password: ${{ secrets.PROD_SERVER_PASSWORD }}
+          command_timeout: 30m
+          script: |
+            set -e
+            source ~/.nvm/nvm.sh && nvm use 20
+            export PATH="/home/automatiza/.local/share/pnpm:$PATH"
+            export CYPRESS_INSTALL_BINARY=0
+
+            BASE=/var/www/vetech
+            SHA=${{ github.sha }}
+            REL=$BASE/releases/$(date +%Y%m%d%H%M%S)-${SHA:0:8}
+            PREV=$(readlink -f $BASE/current || true)
+
+            # Gera a release a partir do commit, sem mexer na versão no ar
+            cd $BASE/vetech-web
+            git fetch origin main
+            mkdir -p $REL
+            git archive $SHA | tar -x -C $REL
+            cp $BASE/shared/.env $REL/.env
+
+            cd $REL
+            export APP_ORIGIN="SRV PROD" APP_COMMIT=$SHA
+            pnpm install --frozen-lockfile
+            nice -n 10 pnpm build
+            rm -rf .next/cache
+
+            # Troca a versão no ar
+            ln -sfn $REL $BASE/current
+            pm2 restart vetech-web
+
+            OK=0
+            for i in $(seq 1 30); do
+              if curl -sf -o /dev/null http://127.0.0.1:3010/login; then OK=1; break; fi
+              sleep 2
+            done
+
+            if [ "$OK" != "1" ]; then
+              echo "Healthcheck falhou, voltando para $PREV"
+              [ -n "$PREV" ] && ln -sfn $PREV $BASE/current && pm2 restart vetech-web
+              exit 1
+            fi
+
+            pm2 save
+
+            # Mantém as 3 releases mais recentes (nunca remove a que está no ar)
+            CUR=$(readlink -f $BASE/current)
+            cd $BASE/releases
+            ls -1t | tail -n +4 | while read r; do
+              if [ "$BASE/releases/$r" != "$CUR" ]; then rm -rf "$BASE/releases/$r"; fi
+            done
