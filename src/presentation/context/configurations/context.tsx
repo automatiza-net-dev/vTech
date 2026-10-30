@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 export type ConfigurationSystem = {
   colors: string;
   home_image_url: string;
+  icon_url?: string | null;
   id: number;
   logo_url: string;
   name: string;

@@ -8,6 +8,7 @@
     "sancla": "next dev -p 3058",
     "clinicas": "next dev -p 3057",
     "odonto": "next dev -p 3060",
+    "estetica": "next dev -p 3061",
     "build": "next build",
     "start": "next start -p 3058"
   },
