@@ -129,12 +129,14 @@ export function SignIn() {
 
   return (
     <Container>
-      <img
-        className="uk-margin-xlarge-right"
-        src={home_image_url}
-        width="500"
-      />
-      
+      {home_image_url && (
+        <img
+          className="uk-margin-xlarge-right"
+          src={home_image_url}
+          width="500"
+        />
+      )}
+
       <div className="left-side">
         <div className="uk-card uk-card-default uk-card-body uk-width-1-1 border-radius">
           <form onSubmit={(e) => handleSubmit(e)}>
