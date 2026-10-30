@@ -200,6 +200,9 @@ export default function App({ Component, pageProps }) {
                   <PermissionsProvider>
                     <Head>
                       <title>{configurations.name}</title>
+                      {configurations.icon_url && (
+                        <link rel="icon" href={configurations.icon_url} />
+                      )}
                     </Head>
 
                     <NotificationsModal />
