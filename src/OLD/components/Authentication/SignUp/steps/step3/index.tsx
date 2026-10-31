@@ -7,12 +7,15 @@ import { Input } from "antd";
 
 import api from "@/OLD/services";
 import { userService } from "@/OLD/services/user.service";
+import { useConfigurationsSystem } from "@/presentation";
 
 import * as S from "./styles";
 
 export function Step3({ data, setStep }) {
   const [code, setCode] = useState("");
   const [focusController, setFocusController] = useState(0);
+
+  const { id } = useConfigurationsSystem();
 
   const router = useRouter();
   const { createToast } = useToast();
@@ -37,13 +40,15 @@ export function Step3({ data, setStep }) {
   };
 
   const resendCode = useCallback(async () => {
-    await api?.get(`/users/resend-confirmation/${data?.email}`).then((_res) => {
-      createToast({
-        status: "success",
-        message: "Código reenviado com sucesso!",
+    await api
+      ?.get(`/users/resend-confirmation/${data?.email}`, { params: { systemId: id } })
+      .then((_res) => {
+        createToast({
+          status: "success",
+          message: "Código reenviado com sucesso!",
+        });
       });
-    });
-  }, [data.email]);
+  }, [data.email, id]);
 
   const submitCode = useCallback(() => {
     userService

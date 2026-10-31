@@ -90,6 +90,14 @@ export function Step2(props) {
       >
         <Input label="Nome" name="name" minLength={2} required type="text" />
 
+        <Input
+          label="Qual nome identifica sua clínica? (ex: Clínica Vida Nova, Clini Core)"
+          name="clinicName"
+          minLength={2}
+          required
+          type="text"
+        />
+
         <InputMask
           mask="(__) _____-____"
           label="Telefone"

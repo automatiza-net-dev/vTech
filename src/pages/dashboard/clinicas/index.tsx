@@ -44,8 +44,10 @@ function Page() {
           numero: initialData?.number,
           complemento: initialData?.complement,
           uf: initialData?.state,
-          localidade: initialData?.district,
-          postalCode: initialData?.postal_code,
+          localidade: initialData?.city,
+          ibge: initialData?.city_code,
+          // máscara do InputCep aceita só os 8 dígitos
+          postalCode: initialData?.postal_code?.replace(/\D/g, ""),
         },
         companyName: initialData?.company_name,
         fantasyName: initialData?.fantasy_name
@@ -59,7 +61,10 @@ function Page() {
         method: data.id ? "put" : "post",
         body: {
           ...data,
+          // criar espera postalCode e editar espera postal_code (antes o CEP nunca era gravado na edição)
           postalCode: data?.address?.postalCode,
+          postal_code: data?.address?.postalCode,
+          cityCode: data?.address?.ibge,
           phone: removeDigits(data.phone),
           document: removeDigits(data.document),
           address: data.address?.logradouro,
@@ -124,9 +129,34 @@ function Page() {
       ],
       [
         {
+          InputComponent: "Input",
+          name: "state_registration",
+          label: "Inscrição estadual",
+        },
+        {
+          InputComponent: "Input",
+          name: "city_registration",
+          label: "Inscrição municipal",
+        },
+        {
+          InputComponent: "Input",
+          name: "cnae",
+          label: "CNAE",
+        },
+      ],
+      [
+        {
           name: "InputCep",
           InputComponent: "InputCep",
           nameZipCode: "postalCode",
+          // mostra o endereço sempre (antes só aparecia após digitar um CEP)
+          // e deixa cidade/UF editáveis caso o CEP não seja encontrado
+          showAllFields: true,
+          fields: [
+            { logradouro: { label: "Rua" }, bairro: { label: "Bairro" } },
+            { localidade: { label: "Cidade" }, uf: { label: "Estado" } },
+            { complemento: { label: "Complemento" }, numero: { label: "Número" } },
+          ],
         },
       ],
     ],
