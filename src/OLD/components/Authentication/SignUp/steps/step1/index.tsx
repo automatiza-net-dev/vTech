@@ -3,6 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 import api from "@/OLD/services";
+import { useConfigurationsSystem } from "@/presentation";
 import { Button } from "infinity-forge";
 
 import * as S from "./styles";
@@ -14,13 +15,15 @@ export function Step1(props) {
 
   const router = useRouter();
 
+  const { id } = useConfigurationsSystem();
+
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       setLoading(true);
 
       await api
-        ?.get(`/users/check-email/${data.email}`)
+        ?.get(`/users/check-email/${data.email}`, { params: { systemId: id } })
         .then((res) => {
           if (res.data?.exists) {
             setError(true);
@@ -34,7 +37,7 @@ export function Step1(props) {
         .catch((err) => console.log(err.response))
         .finally(() => setLoading(false));
     },
-    [data]
+    [data, id]
   );
 
   return (
