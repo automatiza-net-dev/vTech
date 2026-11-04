@@ -40,7 +40,7 @@ export function SideBarContent({
   const date = DateToDDMMYYYY(event?.start || event?.event?.start_hour);
 
   const infos = {
-    title: `Evento em ${date} das ${timeText}`,
+    title: `Evento em ${date ?? '...'} das ${timeText}`,
     status: event?.event?.serviceStatus?.description,
   };
 
